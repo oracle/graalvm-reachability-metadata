@@ -1,0 +1,408 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/29-f07badfa
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd6cf-16ba-7530-ab3c-86d12ec04b22
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.cache2k:cache2k-core:2.6.1.Final
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.6.1.Final".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/29-f07badfa/metadata/org.cache2k/cache2k-core/index.json
+- Entry selector: "metadata-version" = "2.6.1.Final"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "2.6.1.Final".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/org/cache2k/cache2k-core/2.6.1.Final/cache2k-core-2.6.1.Final-sources.jar
+- repository-url: https://github.com/cache2k/cache2k
+- test-code-url: https://github.com/cache2k/cache2k/tree/v2.6.1.Final/cache2k-core/src/test/java
+- documentation-url: https://repo.maven.apache.org/maven2/org/cache2k/cache2k-core/2.6.1.Final/cache2k-core-2.6.1.Final-javadoc.jar
+- description: cache2k-core is the core implementation module for cache2k, a lightweight high-performance Java caching library. It provides the internal runtime used by cache2k APIs to create and manage caches, while applications are expected to depend on cache2k-api for stable public types.
+- language: <missing>
+
+Context:
+- Coordinate version: 2.6.1.Final
+- Entry test-version: 2.6.1.Final
+codex
+I’ll verify the existing entry and confirm the library metadata from authoritative sources before touching the JSON. Since the provided values are already populated except `language`, the key decision is whether this artifact is Kotlin/Groovy/Scala-specific.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.cache2k/cache2k-core/index.json" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/29-f07badfa
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.6.1.Final",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/cache2k/cache2k-core/2.6.1.Final/cache2k-core-2.6.1.Final-sources.jar",
+    "repository-url" : "https://github.com/cache2k/cache2k",
+    "test-code-url" : "https://github.com/cache2k/cache2k/tree/v2.6.1.Final/cache2k-core/src/test/java",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/cache2k/cache2k-core/2.6.1.Final/cache2k-core-2.6.1.Final-javadoc.jar",
+    "description" : "cache2k-core is the core implementation module for cache2k, a lightweight high-performance Java caching library. It provides the internal runtime used by cache2k APIs to create and manage caches, while applications are expected to depend on cache2k-api for stable public types.",
+    "tested-versions" : [
+      "2.6.1.Final"
+    ],
+    "allowed-packages" : [
+      "org.cache2k.core"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"2\\.6\\.1\\.Final\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.cache2k/cache2k-core/index.json" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/29-f07badfa
+ succeeded in 0ms:
+4:    "metadata-version" : "2.6.1.Final",
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/cache2k/cache2k-core/2.6.1.Final/cache2k-core-2.6.1.Final-sources.jar",
+6:    "repository-url" : "https://github.com/cache2k/cache2k",
+7:    "test-code-url" : "https://github.com/cache2k/cache2k/tree/v2.6.1.Final/cache2k-core/src/test/java",
+8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/cache2k/cache2k-core/2.6.1.Final/cache2k-core-2.6.1.Final-javadoc.jar",
+9:    "description" : "cache2k-core is the core implementation module for cache2k, a lightweight high-performance Java caching library. It provides the internal runtime used by cache2k APIs to create and manage caches, while applications are expected to depend on cache2k-api for stable public types.",
+
+web search: 
+web search: org.cache2k cache2k-core 2.6.1.Final Maven sources javadoc repository tag v2.6.1.Final
+web search: 
+web search: https://repo1.maven.org/maven2/org/cache2k/cache2k-core/2.6.1.Final/
+codex
+The entry already has non-blank values for all requested URL and description fields. I’m checking the published POM/artifacts now mainly to verify the canonical repo, Maven source/javadoc availability, and that there is no Kotlin/Groovy/Scala language binding marker that would require a `language` field.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/cache2k/cache2k-core/2.6.1.Final/cache2k-core-2.6.1.Final.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/29-f07badfa
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.cache2k</groupId>
+    <artifactId>cache2k-java11-parent</artifactId>
+    <version>2.6.1.Final</version>
+    <relativePath>../cache2k-java11-parent/pom.xml</relativePath>
+  </parent>
+
+  <artifactId>cache2k-core</artifactId>
+  <version>2.6.1.Final</version>
+  <name>cache2k core implementation</name>
+
+  <description>
+    A light weight and high performance Java caching library. Android and Java 6 compatible.
+    This artifact contains the implementation of the core functionality of cache2k.
+    For using and integrating cache2k in applications please use the definitions in the cache2k-api
+    artifact only. Classes within the implementation code are not stable within releases and may
+    move or even disappear.
+  </description>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>cache2k-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.32</version>
+      <optional>true</optional>
+    </dependency>
+    <!--
+      slf4j api is included in test scope by maven and it is the first pick.
+      add simple log output to see log output.
+      -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.32</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.cache2k</groupId>
+        <artifactId>cache2k-testing</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      <!-- Exclude JUnit5 to have parallel test execution with JUnit4 -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.junit.vintage</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.junit.jupiter</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.junit.platform</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit4.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Provides NotThreadSafe annotation, used for sure fire -->
+    <dependency>
+        <groupId>net.jcip</groupId>
+        <artifactId>jcip-annotations</artifactId>
+        <version>1.0</version>
+        <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>cache2k-schema</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+      <!-- Filtering adds the version, buildNumber and timestamp to org.cache2k.impl.version.txt
+           We use this mechanism instead of accessing the manifest, since it is working reliable on Android, too
+      -->
+      <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <filtering>true</filtering>
+          </resource>
+      </resources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <configuration>
+          <licenseName>apache_v2</licenseName>
+          <excludes>
+            <!-- Don't add header to XML config files. -->
+            <exclude>test/resources/**</exclude>
+            <!-- Don't add header to property files, safe space -->
+            <exclude>**/*.properties</exclude>
+            <!-- Don't add header to JSON, which does not support comments -->
+            <exclude>**/*.json</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
+      <!-- add OSGi bundle information. does not work yet.
+           https://github.com/cache2k/cache2k/issues/83
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Private-Package>*;-split-package:=merge-first</Private-Package>
+            <Export-Package>
+            </Export-Package>
+            <Import-Package>
+              javax.management,
+              javax.naming,
+              javax.xml.stream,
+              org.apache.commons.logging;resolution:=optional,
+              org.slf4j;resolution:=optional,
+              org.cache2k,
+              org.cache2k.spi,
+              org.cache2k.integration,
+              org.cache2k.expiry,
+              org.cache2k.event,
+              org.cache2k.processor,
+              org.cache2k.configuration
+            </Import-Package>
+            <Bundle-DocURL>https://cache2k.org</Bundle-DocURL>
+            <Implementation-Build>${buildNumber}</Implementation-Build>
+            <Implementation-Version>${project.version}</Implementation-Version>
+            <Implementation-Title>${project.name}</Implementation-Title>
+            <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
+            <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+            <Require-Capability>osgi.extender; filter:="(osgi.extender=osgi.serviceloader.registrar)"</Require-Capability>
+            <Provide-Capability>osgi.serviceloader; osgi.serviceloader=org.cache2k.spi.Cache2kCoreProvider</Provide-Capability>
+          </instructions>
+          <niceManifest>true</niceManifest>
+        </configuration>
+      </plugin>
+      -->
+
+    </plugins>
+  </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/org/cache2k/cache2k-core/2.6.1.Final/cache2k-core-2.6.1.Final-sources.jar' in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/29-f07badfa
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 29 Apr 2026 01:16:48 GMT
+content-type: application/java-archive
+content-length: 166857
+cf-ray: 9f3a76a1393524c0-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1460088
+etag: "9ea4f867f595ec306cba2a9caa2bafdf"
+last-modified: Mon, 07 Feb 2022 08:34:46 GMT
+x-checksum-md5: 9ea4f867f595ec306cba2a9caa2bafdf
+x-checksum-sha1: c79908a6668628ce291f6d98cf5d47e656033773
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/org/cache2k/cache2k-core/2.6.1.Final/cache2k-core-2.6.1.Final-javadoc.jar' in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/29-f07badfa
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 29 Apr 2026 01:16:48 GMT
+content-type: application/java-archive
+content-length: 1128621
+cf-ray: 9f3a76a1de52985f-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 386334
+etag: "adfabd8d962fb69117a061a01dea12b9"
+last-modified: Mon, 07 Feb 2022 08:34:38 GMT
+x-checksum-md5: adfabd8d962fb69117a061a01dea12b9
+x-checksum-sha1: 4679b2538f36b2a5600b02504230c7771dde2064
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/cache2k/cache2k/git/ref/tags/v2.6.1.Final' in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/29-f07badfa
+ succeeded in 174ms:
+{
+  "ref": "refs/tags/v2.6.1.Final",
+  "node_id": "MDM6UmVmMTUyODk1ODE6cmVmcy90YWdzL3YyLjYuMS5GaW5hbA==",
+  "url": "https://api.github.com/repos/cache2k/cache2k/git/refs/tags/v2.6.1.Final",
+  "object": {
+    "sha": "334aced7a6aa6bcbf4060c379050488484bb00fb",
+    "type": "commit",
+    "url": "https://api.github.com/repos/cache2k/cache2k/git/commits/334aced7a6aa6bcbf4060c379050488484bb00fb"
+  }
+}
+
+web search: 
+web search: 
+web search: 
+web search: https://github.com/cache2k/cache2k/tree/v2.6.1.Final/cache2k-core/src/test/java
+web search: 
+web search: repo.maven.apache.org maven2 org cache2k cache2k-core 2.6.1.Final cache2k-core-2.6.1.Final.pom
+web search: 
+web search: https://repo1.maven.org/maven2/org/cache2k/cache2k-core/2.6.1.Final/
+codex
+The published Maven directory for `2.6.1.Final` includes source and javadoc artifacts, and the project/tag test path exists on GitHub. The artifact is described as a Java caching implementation, not as a Kotlin, Groovy, or Scala-specific library, so the `language` field should stay absent under the requested schema.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.cache2k/cache2k-core/index.json && git diff -- metadata/org.cache2k/cache2k-core/index.json' in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/29-f07badfa
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/org/cache2k/cache2k-core/2.6.1.Final/cache2k-core-2.6.1.Final-tests.jar || true' in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/29-f07badfa
+ succeeded in 252ms:
+HTTP/2 404 
+date: Wed, 29 Apr 2026 01:17:05 GMT
+content-type: text/html
+cf-ray: 9f3a770b185cbe77-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/cache2k/cache2k-core/2.6.1.Final/cache2k-core-2.6.1.Final-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: cache2k-core 2.6.1.Final Maven Central
+web search: 
+web search: https://github.com/cache2k/cache2k/tree/v2.6.1.Final/cache2k-core/src/test/java
+codex
+Checked [index.json](/home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/29-f07badfa/metadata/org.cache2k/cache2k-core/index.json:4). All requested fields except `language` were already non-blank, so I left them unchanged as instructed.
+
+I did not add `language`: `cache2k-core` is a Java cache implementation module, not a Kotlin/Groovy/Scala-specific library. The exact-version Maven listing includes the sources and javadoc artifacts, and the GitHub `v2.6.1.Final` tag contains the test path already recorded. ([repo1.maven.org](https://repo1.maven.org/maven2/org/cache2k/cache2k-core/2.6.1.Final/?utm_source=openai))
+
+Verification: `jq empty metadata/org.cache2k/cache2k-core/index.json` passed, and `git diff -- metadata/org.cache2k/cache2k-core/index.json` is empty.
+2026-04-29T01:17:24.244250Z ERROR codex_core::session: failed to record rollout items: thread 019dd6cf-16ba-7530-ab3c-86d12ec04b22 not found
+tokens used
+48,848
+Checked [index.json](/home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/29-f07badfa/metadata/org.cache2k/cache2k-core/index.json:4). All requested fields except `language` were already non-blank, so I left them unchanged as instructed.
+
+I did not add `language`: `cache2k-core` is a Java cache implementation module, not a Kotlin/Groovy/Scala-specific library. The exact-version Maven listing includes the sources and javadoc artifacts, and the GitHub `v2.6.1.Final` tag contains the test path already recorded. ([repo1.maven.org](https://repo1.maven.org/maven2/org/cache2k/cache2k-core/2.6.1.Final/?utm_source=openai))
+
+Verification: `jq empty metadata/org.cache2k/cache2k-core/index.json` passed, and `git diff -- metadata/org.cache2k/cache2k-core/index.json` is empty.
+Ran agent for org.cache2k:cache2k-core:2.6.1.Final (exit 0). Log: /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/29-f07badfa/build/agent-url-discovery-logs/org.cache2k-cache2k-core-2.6.1.Final.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/29-f07badfa/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 55s
+9 actionable tasks: 1 executed, 8 up-to-date
