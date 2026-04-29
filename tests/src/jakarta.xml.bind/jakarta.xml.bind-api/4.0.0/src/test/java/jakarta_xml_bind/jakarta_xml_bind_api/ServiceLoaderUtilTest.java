@@ -14,7 +14,6 @@ import java.util.Enumeration;
 import java.util.Map;
 
 import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.ServiceLoaderUtilInvoker;
 import jakarta_xml_bind.jakarta_xml_bind_api.servicebound.ServiceBoundType;
 import jakarta_xml_bind.jakarta_xml_bind_api.support.FactoryBackedContextFactory;
@@ -22,7 +21,6 @@ import jakarta_xml_bind.jakarta_xml_bind_api.support.StubJaxbContext;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ServiceLoaderUtilTest {
     private static final String OSGI_CONTEXT_PATH =
@@ -58,13 +56,27 @@ public class ServiceLoaderUtilTest {
     }
 
     @Test
-    public void attemptsOsgiLookupBeforeFailingOverToTheMissingDefaultProvider() {
+    public void loadsContextPathProviderFromOsgiLocatorWhenServiceResourceIsAbsent() throws Exception {
         ClassLoader classLoader = new ServiceResourceHidingClassLoader(getClass().getClassLoader());
 
-        assertThatThrownBy(() -> withContextClassLoader(
+        JAXBContext context = withContextClassLoader(
                 classLoader,
-                () -> JAXBContext.newInstance(OSGI_CONTEXT_PATH, classLoader, Map.of())))
-                .isInstanceOf(JAXBException.class);
+                () -> JAXBContext.newInstance(OSGI_CONTEXT_PATH, classLoader, Map.of()));
+
+        assertThat(context).isInstanceOf(StubJaxbContext.class);
+        assertThat(((StubJaxbContext) context).getSource()).isEqualTo("factory-backed-context-path-factory");
+    }
+
+    @Test
+    public void loadsClassProviderFromOsgiLocatorWhenServiceResourceIsAbsent() throws Exception {
+        ClassLoader classLoader = new ServiceResourceHidingClassLoader(getClass().getClassLoader());
+
+        JAXBContext context = withContextClassLoader(
+                classLoader,
+                () -> JAXBContext.newInstance(ServiceBoundType.class));
+
+        assertThat(context).isInstanceOf(StubJaxbContext.class);
+        assertThat(((StubJaxbContext) context).getSource()).isEqualTo("factory-backed-classes-factory");
     }
 
     private static <T> T withContextClassLoader(
