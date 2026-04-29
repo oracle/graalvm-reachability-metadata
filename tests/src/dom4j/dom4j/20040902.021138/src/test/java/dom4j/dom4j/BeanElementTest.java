@@ -8,22 +8,27 @@ package dom4j.dom4j;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.dom4j.QName;
+import org.dom4j.Element;
 import org.dom4j.bean.BeanDocumentFactory;
 import org.dom4j.bean.BeanElement;
-import org.dom4j.tree.NamespaceStack;
+import org.dom4j.io.SAXContentHandler;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class BeanElementTest {
     @Test
-    void saxClassAttributeInitializesBackingBean() throws Exception {
-        BeanElement element = new BeanElement(QName.get("configuredBean"));
+    void saxContentHandlerInitializesBackingBeanFromClassAttribute() throws Exception {
+        SAXContentHandler handler = new SAXContentHandler(BeanDocumentFactory.getInstance());
         AttributesImpl attributes = new AttributesImpl();
         attributes.addAttribute("", "class", "class", "CDATA", BeanDocumentFactory.class.getName());
 
-        element.setAttributes(attributes, new NamespaceStack(), false);
+        handler.startDocument();
+        handler.startElement("", "configuredBean", "configuredBean", attributes);
+        handler.endElement("", "configuredBean", "configuredBean");
+        handler.endDocument();
 
-        assertThat(element.getData()).isInstanceOf(BeanDocumentFactory.class);
+        Element rootElement = handler.getDocument().getRootElement();
+        assertThat(rootElement).isInstanceOf(BeanElement.class);
+        assertThat(((BeanElement) rootElement).getData()).isInstanceOf(BeanDocumentFactory.class);
     }
 }
