@@ -9,30 +9,29 @@ package com_esotericsoftware.kryo_shaded;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.Registration;
+import com.esotericsoftware.kryo.util.Util;
 import org.junit.jupiter.api.Test;
 import org.objenesis.instantiator.ObjectInstantiator;
 import org.objenesis.strategy.InstantiatorStrategy;
 
 public class KryoInnerDefaultInstantiatorStrategyTest {
     @Test
-    void usesFallbackInstantiatorForNonStaticMemberClass() {
-        NonStaticMember expected = new NonStaticMember("fallback-created");
+    void usesFallbackAfterReflectionCannotConstructLibraryType() {
+        Object expected = new Object();
         RecordingFallbackStrategy fallbackStrategy = new RecordingFallbackStrategy(expected);
         Kryo.DefaultInstantiatorStrategy strategy = new Kryo.DefaultInstantiatorStrategy(fallbackStrategy);
+        boolean originalIsAndroid = Util.isAndroid;
 
-        ObjectInstantiator instantiator = strategy.newInstantiatorOf(NonStaticMember.class);
-        Object created = instantiator.newInstance();
+        try {
+            Util.isAndroid = true;
+            ObjectInstantiator instantiator = strategy.newInstantiatorOf(Registration.class);
+            Object created = instantiator.newInstance();
 
-        assertThat(fallbackStrategy.requestedType).isSameAs(NonStaticMember.class);
-        assertThat(created).isSameAs(expected);
-        assertThat(((NonStaticMember) created).value).isEqualTo("fallback-created");
-    }
-
-    private class NonStaticMember {
-        final String value;
-
-        NonStaticMember(String value) {
-            this.value = value;
+            assertThat(fallbackStrategy.requestedType).isSameAs(Registration.class);
+            assertThat(created).isSameAs(expected);
+        } finally {
+            Util.isAndroid = originalIsAndroid;
         }
     }
 
