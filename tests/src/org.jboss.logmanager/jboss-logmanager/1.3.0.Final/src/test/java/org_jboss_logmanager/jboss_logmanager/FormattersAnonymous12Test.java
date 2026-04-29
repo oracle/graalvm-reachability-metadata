@@ -53,7 +53,7 @@ public class FormattersAnonymous12Test {
 
     @Test
     void bootstrapClassLoaderFallbackIsUsedWhenTheLibraryLoaderRejectsTheFrameClass() throws Throwable {
-        final String className = "java.util.HexFormat";
+        final String className = "javax.crypto.Cipher";
         final BootstrapFallbackClassLoader bootstrapFallbackClassLoader = new BootstrapFallbackClassLoader(className);
         final BootstrapFormattingAction formattingAction = bootstrapFallbackClassLoader.loadFormattingAction();
 
