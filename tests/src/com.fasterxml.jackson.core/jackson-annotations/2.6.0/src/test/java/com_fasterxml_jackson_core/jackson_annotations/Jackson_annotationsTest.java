@@ -42,7 +42,8 @@ class Jackson_annotationsTest {
                 "yyyy-MM-dd",
                 JsonFormat.Shape.STRING,
                 "fr",
-                "UTC"
+                "UTC",
+                JsonFormat.Features.empty()
         );
 
         assertThat(explicitValue.getPattern()).isEqualTo("yyyy-MM-dd");
@@ -54,7 +55,8 @@ class Jackson_annotationsTest {
                 "pattern",
                 JsonFormat.Shape.OBJECT,
                 JsonFormat.DEFAULT_LOCALE,
-                JsonFormat.DEFAULT_TIMEZONE
+                JsonFormat.DEFAULT_TIMEZONE,
+                JsonFormat.Features.empty()
         );
 
         assertThat(defaultMarkerValue.getLocale()).isNull();
@@ -64,7 +66,8 @@ class Jackson_annotationsTest {
                 "pattern",
                 JsonFormat.Shape.ARRAY,
                 "",
-                ""
+                "",
+                JsonFormat.Features.empty()
         );
 
         assertThat(emptyMarkerValue.getLocale()).isNull();
@@ -85,13 +88,22 @@ class Jackson_annotationsTest {
         assertThat(explicitValue.getLocale()).isEqualTo(Locale.FRENCH);
         assertThat(explicitValue.getTimeZone().getID()).isEqualTo("UTC");
 
-        JsonFormat annotation = jsonFormatAnnotation("dd/MM", JsonFormat.Shape.BOOLEAN, "de", "Europe/Berlin");
+        JsonFormat annotation = jsonFormatAnnotation(
+                "dd/MM",
+                JsonFormat.Shape.BOOLEAN,
+                "de",
+                "Europe/Berlin",
+                new JsonFormat.Feature[] {JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY},
+                new JsonFormat.Feature[] {JsonFormat.Feature.WRITE_SORTED_MAP_ENTRIES}
+        );
         JsonFormat.Value annotationValue = new JsonFormat.Value(annotation);
 
         assertThat(annotationValue.getPattern()).isEqualTo("dd/MM");
         assertThat(annotationValue.getShape()).isEqualTo(JsonFormat.Shape.BOOLEAN);
         assertThat(annotationValue.getLocale()).isEqualTo(Locale.GERMAN);
         assertThat(annotationValue.getTimeZone().getID()).isEqualTo("Europe/Berlin");
+        assertThat(annotationValue.getFeature(JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)).isTrue();
+        assertThat(annotationValue.getFeature(JsonFormat.Feature.WRITE_SORTED_MAP_ENTRIES)).isFalse();
     }
 
     @Test
@@ -196,10 +208,14 @@ class Jackson_annotationsTest {
         assertThat(JsonInclude.Include.values()).containsExactly(
                 JsonInclude.Include.ALWAYS,
                 JsonInclude.Include.NON_NULL,
+                JsonInclude.Include.NON_ABSENT,
+                JsonInclude.Include.NON_EMPTY,
                 JsonInclude.Include.NON_DEFAULT,
-                JsonInclude.Include.NON_EMPTY
+                JsonInclude.Include.USE_DEFAULTS
         );
         assertThat(JsonInclude.Include.valueOf("NON_EMPTY")).isEqualTo(JsonInclude.Include.NON_EMPTY);
+        assertThat(JsonInclude.Include.valueOf("NON_ABSENT")).isEqualTo(JsonInclude.Include.NON_ABSENT);
+        assertThat(JsonInclude.Include.valueOf("USE_DEFAULTS")).isEqualTo(JsonInclude.Include.USE_DEFAULTS);
     }
 
     @Test
@@ -219,12 +235,20 @@ class Jackson_annotationsTest {
 
     @Test
     void propertyAnnotationsExposeIgnoreOrderAndUnwrapConfiguration() {
-        JsonIgnoreProperties ignoreProperties = jsonIgnorePropertiesAnnotation(true, "internalId", "debugOnly");
+        JsonIgnoreProperties ignoreProperties = jsonIgnorePropertiesAnnotation(
+                true,
+                true,
+                false,
+                "internalId",
+                "debugOnly"
+        );
         JsonPropertyOrder propertyOrder = jsonPropertyOrderAnnotation(true, "id", "name", "createdAt");
         JsonUnwrapped unwrapped = jsonUnwrappedAnnotation(true, "address.", ".value");
 
         assertThat(ignoreProperties.value()).containsExactly("internalId", "debugOnly");
         assertThat(ignoreProperties.ignoreUnknown()).isTrue();
+        assertThat(ignoreProperties.allowGetters()).isTrue();
+        assertThat(ignoreProperties.allowSetters()).isFalse();
 
         assertThat(propertyOrder.value()).containsExactly("id", "name", "createdAt");
         assertThat(propertyOrder.alphabetic()).isTrue();
@@ -346,7 +370,9 @@ class Jackson_annotationsTest {
             final String pattern,
             final JsonFormat.Shape shape,
             final String locale,
-            final String timezone
+            final String timezone,
+            final JsonFormat.Feature[] with,
+            final JsonFormat.Feature[] without
     ) {
         return new JsonFormat() {
             @Override
@@ -367,6 +393,16 @@ class Jackson_annotationsTest {
             @Override
             public String timezone() {
                 return timezone;
+            }
+
+            @Override
+            public JsonFormat.Feature[] with() {
+                return with;
+            }
+
+            @Override
+            public JsonFormat.Feature[] without() {
+                return without;
             }
 
             @Override
@@ -411,6 +447,8 @@ class Jackson_annotationsTest {
 
     private static JsonIgnoreProperties jsonIgnorePropertiesAnnotation(
             final boolean ignoreUnknown,
+            final boolean allowGetters,
+            final boolean allowSetters,
             final String... value
     ) {
         return new JsonIgnoreProperties() {
@@ -422,6 +460,16 @@ class Jackson_annotationsTest {
             @Override
             public boolean ignoreUnknown() {
                 return ignoreUnknown;
+            }
+
+            @Override
+            public boolean allowGetters() {
+                return allowGetters;
+            }
+
+            @Override
+            public boolean allowSetters() {
+                return allowSetters;
             }
 
             @Override
