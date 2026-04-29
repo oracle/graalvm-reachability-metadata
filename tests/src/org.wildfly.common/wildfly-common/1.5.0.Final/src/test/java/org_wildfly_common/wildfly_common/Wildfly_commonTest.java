@@ -9,19 +9,26 @@ package org_wildfly_common.wildfly_common;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Inet4Address;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.zip.CRC32;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.junit.jupiter.api.Test;
+import org.wildfly.common.archive.Archive;
 import org.wildfly.common.array.ArrayIterator;
 import org.wildfly.common.array.Arrays2;
 import org.wildfly.common.bytes.ByteStringBuilder;
@@ -241,6 +248,49 @@ public class Wildfly_commonTest {
     }
 
     @Test
+    void archivesReadEntriesAndNestedArchives() throws Exception {
+        Path archivePath = Files.createTempFile("wildfly-common-archive", ".zip");
+        byte[] settings = "mode=dev\n".getBytes(StandardCharsets.UTF_8);
+        byte[] nestedArchive = createZip("nested/readme.txt", "nested archive".getBytes(StandardCharsets.UTF_8));
+        try {
+            try (ZipOutputStream zip = new ZipOutputStream(Files.newOutputStream(archivePath))) {
+                addZipEntry(zip, "config/", new byte[0]);
+                addZipEntry(zip, "config/settings.txt", settings);
+                addZipEntry(zip, "nested.zip", nestedArchive);
+            }
+
+            try (Archive archive = Archive.open(archivePath)) {
+                long directoryHandle = archive.getEntryHandle("config/");
+                assertThat(directoryHandle).isNotEqualTo(-1L);
+                assertThat(archive.getEntryName(directoryHandle)).isEqualTo("config/");
+
+                long settingsHandle = archive.getEntryHandle("config/settings.txt");
+                assertThat(settingsHandle).isNotEqualTo(-1L);
+                assertThat(archive.entryNameEquals(settingsHandle, "config/settings.txt")).isTrue();
+                assertThat(archive.getEntryName(settingsHandle)).isEqualTo("config/settings.txt");
+                assertThat(archive.isDirectory(settingsHandle)).isFalse();
+                assertThat(archive.getUncompressedSize(settingsHandle)).isEqualTo((long) settings.length);
+                assertThat(readBuffer(archive.getEntryContents(settingsHandle))).isEqualTo(settings);
+
+                List<String> entryNames = new ArrayList<>();
+                for (long handle = archive.getFirstEntryHandle(); handle != -1L; handle = archive.getNextEntryHandle(handle)) {
+                    entryNames.add(archive.getEntryName(handle));
+                }
+                assertThat(entryNames).containsExactly("config/", "config/settings.txt", "nested.zip");
+
+                try (Archive nested = archive.getNestedArchive(archive.getEntryHandle("nested.zip"))) {
+                    long nestedHandle = nested.getEntryHandle("nested/readme.txt");
+                    assertThat(nestedHandle).isNotEqualTo(-1L);
+                    assertThat(readBuffer(nested.getEntryContents(nestedHandle)))
+                            .isEqualTo("nested archive".getBytes(StandardCharsets.UTF_8));
+                }
+            }
+        } finally {
+            Files.deleteIfExists(archivePath);
+        }
+    }
+
+    @Test
     void arraysFlagsAndHashHelpersBehaveAsValueUtilities() {
         byte[] bytes = {0, 1, 2, 3, 2};
         assertThat(Arrays2.equals(bytes, 1, new byte[] {1, 2, 3}, 0, 3)).isTrue();
@@ -365,6 +415,33 @@ public class Wildfly_commonTest {
             ContextValue.MANAGER.setThreadDefault(null);
             ContextValue.MANAGER.setGlobalDefault(null);
         }
+    }
+
+    private static byte[] createZip(String entryName, byte[] contents) throws IOException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ZipOutputStream zip = new ZipOutputStream(bytes)) {
+            addZipEntry(zip, entryName, contents);
+        }
+        return bytes.toByteArray();
+    }
+
+    private static void addZipEntry(ZipOutputStream zip, String name, byte[] contents) throws IOException {
+        CRC32 crc = new CRC32();
+        crc.update(contents);
+        ZipEntry entry = new ZipEntry(name);
+        entry.setMethod(ZipEntry.STORED);
+        entry.setSize(contents.length);
+        entry.setCompressedSize(contents.length);
+        entry.setCrc(crc.getValue());
+        zip.putNextEntry(entry);
+        zip.write(contents);
+        zip.closeEntry();
+    }
+
+    private static byte[] readBuffer(ByteBuffer buffer) {
+        byte[] bytes = new byte[buffer.remaining()];
+        buffer.get(bytes);
+        return bytes;
     }
 
     private enum TestFlag {
