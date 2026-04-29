@@ -199,6 +199,23 @@ def resolve_repo_paths(
     return res_reachability_repo, resolved_metrics_repo, res_metrics_repo
 
 
+def resolve_add_new_library_support_metrics_json(
+        run_metrics: dict,
+        metrics_repo_dir: str,
+        metrics_repo_root: str | None,
+        is_benchmark_mode: bool,
+) -> str:
+    """Resolve the metrics JSON path for the current execution mode."""
+    if is_benchmark_mode:
+        return os.path.join(metrics_repo_dir, "add_new_library_support.json")
+
+    in_repo_root = metrics_writer.in_metadata_repo_metrics_root(metrics_repo_root)
+    if in_repo_root:
+        return metrics_writer.execution_metrics_path(in_repo_root, run_metrics)
+
+    return os.path.join(metrics_repo_dir, "add_new_library_support.json")
+
+
 def create_feature_branch_for_library(group, artifact, library_version):
     """
     Reset the feature branch for the given coordinates to the current detached HEAD.
@@ -317,14 +334,22 @@ def write_add_new_library_support_metrics(run_metrics, metrics_json, is_benchmar
     else:
         in_repo_root = metrics_writer.in_metadata_repo_metrics_root(metrics_repo_root)
         if in_repo_root:
-            metrics_writer.append_execution_metrics(in_repo_root, run_metrics, "add_new_library_support")
+            written_metrics_json = metrics_writer.append_execution_metrics(
+                in_repo_root,
+                run_metrics,
+                "add_new_library_support",
+            )
+            if written_metrics_json != metrics_json:
+                raise ValueError(
+                    f"ERROR: Resolved metrics path {metrics_json} does not match written path {written_metrics_json}"
+                )
         else:
             metrics_writer.append_run_metrics(run_metrics, metrics_json)
         if metrics_repo_root:
             metrics_writer.write_pending_metrics(metrics_repo_root, run_metrics)
 
     log_stage("schema-validation", "Validating schema")
-    if not is_benchmark_mode and not metrics_writer.in_metadata_repo_metrics_root(metrics_repo_root):
+    if not is_benchmark_mode:
         validate_run_metrics(metrics_json)
     elif is_benchmark_mode:
         validate_benchmark_run_metrics(metrics_json)
@@ -529,7 +554,12 @@ def main(argv=None):
             post_generation_intervention=strategy_obj.post_generation_intervention,
         )
 
-    metrics_json = os.path.join(metrics_repo_dir, "add_new_library_support.json")
+    metrics_json = resolve_add_new_library_support_metrics_json(
+        run_metrics=run_metrics,
+        metrics_repo_dir=metrics_repo_dir,
+        metrics_repo_root=metrics_repo_root,
+        is_benchmark_mode=is_benchmark_mode,
+    )
     write_add_new_library_support_metrics(
         run_metrics=run_metrics,
         metrics_json=metrics_json,

@@ -656,7 +656,7 @@ def _run_metrics_key(task_type: str, timestamp: str) -> str:
     return f"{task_type}:{date}"
 
 
-def _execution_metrics_path(repo_path: str, run_metrics: dict) -> str:
+def execution_metrics_path(repo_path: str, run_metrics: dict) -> str:
     """Return the per-library execution metrics path for a run metrics entry."""
     library = run_metrics.get("library")
     if not isinstance(library, str):
@@ -689,7 +689,7 @@ def append_execution_metrics(repo_path: str, run_metrics: dict, task_type: str) 
     if not isinstance(timestamp, str) or not timestamp:
         raise TypeError("ERROR: run_metrics timestamp must be a string")
 
-    metrics_path = _execution_metrics_path(repo_path, run_metrics)
+    metrics_path = execution_metrics_path(repo_path, run_metrics)
     entries = _load_execution_metrics_entries(metrics_path)
     entries[_run_metrics_key(task_type, timestamp)] = run_metrics
 
