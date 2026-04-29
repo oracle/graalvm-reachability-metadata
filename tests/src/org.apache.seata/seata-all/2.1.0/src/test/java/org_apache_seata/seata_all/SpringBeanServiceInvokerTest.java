@@ -9,6 +9,11 @@ package org_apache_seata.seata_all;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
 import java.util.List;
 
 import org.apache.seata.saga.engine.exception.EngineExecutionException;
@@ -16,9 +21,17 @@ import org.apache.seata.saga.engine.invoker.impl.SpringBeanServiceInvoker;
 import org.apache.seata.saga.statelang.domain.impl.AbstractTaskState.RetryImpl;
 import org.apache.seata.saga.statelang.domain.impl.ServiceTaskStateImpl;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.context.support.StaticApplicationContext;
 
 public class SpringBeanServiceInvokerTest {
+    private static final String CONTEXT_ONLY_PARAMETER_CLASS = "yv66vgAAAEUADQoAAgADBwAEDAAFAAYBABBqYXZh"
+            + "L2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClWBwAIAQAmb3JnL2V4YW1wbGUv"
+            + "c2VhdGEvQ29udGV4dE9ubHlQYXJhbWV0ZXIBAARDb2RlAQAPTGluZU51bWJl"
+            + "clRhYmxlAQAKU291cmNlRmlsZQEAGUNvbnRleHRPbmx5UGFyYW1ldGVyLmph"
+            + "dmEAIQAHAAIAAAAAAAEAAQAFAAYAAQAJAAAAHQABAAEAAAAFKrcAAbEAAAAB"
+            + "AAoAAAAGAAEAAAADAAEACwAAAAIADA==";
+
     @Test
     void invokesBeanMethodUsingConfiguredParameterTypeNames() throws Throwable {
         InvocationService service = new InvocationService();
@@ -30,6 +43,29 @@ public class SpringBeanServiceInvokerTest {
 
         assertThat(result).isEqualTo("echo:spring");
         assertThat(service.getEchoCount()).isEqualTo(1);
+    }
+
+    @Test
+    void resolvesClassAvailableOnlyFromContextClassLoader(@TempDir Path tempDir) throws Exception {
+        String contextOnlyParameterType = "org.example.seata.ContextOnlyParameter";
+        Path classesDirectory = tempDir.resolve("context-loader-classes");
+        Path classFile = classesDirectory.resolve("org/example/seata/ContextOnlyParameter.class");
+        Files.createDirectories(classFile.getParent());
+        Files.write(classFile, Base64.getDecoder().decode(CONTEXT_ONLY_PARAMETER_CLASS));
+
+        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+        try (URLClassLoader contextClassLoader = new URLClassLoader(
+                new URL[] {classesDirectory.toUri().toURL()},
+                null)) {
+            Thread.currentThread().setContextClassLoader(contextClassLoader);
+
+            Class<?> resolvedClass = new TestableSpringBeanServiceInvoker().resolveClassName(contextOnlyParameterType);
+
+            assertThat(resolvedClass.getName()).isEqualTo(contextOnlyParameterType);
+            assertThat(resolvedClass.getClassLoader()).isSameAs(contextClassLoader);
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
     }
 
     @Test
@@ -115,6 +151,12 @@ public class SpringBeanServiceInvokerTest {
                 return super.loadClass(name);
             }
         };
+    }
+
+    public static class TestableSpringBeanServiceInvoker extends SpringBeanServiceInvoker {
+        public Class<?> resolveClassName(String className) {
+            return classForName(className);
+        }
     }
 
     public static class InvocationService {
