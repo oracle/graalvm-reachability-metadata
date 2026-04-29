@@ -23,7 +23,6 @@
 //   - Duplicate "blocked by" links are treated as a successful no-op
 const fs = require('fs');
 const path = require('path');
-const { spawnSync } = require('child_process');
 
 /**
  * Resolves the workspace directory used to read repository files and helper scripts.
@@ -446,30 +445,31 @@ function parseCreateTSV(createTSV) {
 }
 
 /**
- * Checks whether repository automation already supports the given coordinates.
+ * Checks whether the repository already contains metadata for the given GA.
  */
-function isRepositorySupported(workspaceDir, gav) {
-  const supportScriptPath = path.join(workspaceDir, 'check-library-support.sh');
-  const result = spawnSync('bash', [supportScriptPath, gav], {
-    cwd: workspaceDir,
-    encoding: 'utf8'
-  });
-
-  if (result.error) {
-    throw result.error;
+function isRepositorySupportedGA(workspaceDir, ga) {
+  const parts = String(ga || '').split(':');
+  if (parts.length !== 2 || parts.some((part) => part.length === 0)) {
+    return false;
   }
 
-  const output = `${result.stdout || ''}${result.stderr || ''}`;
-  return output.includes('is supported by the GraalVM Reachability Metadata repository.');
+  const [group, artifact] = parts;
+  return fs.existsSync(path.join(workspaceDir, 'metadata', group, artifact, 'index.json'));
 }
 
 /**
  * Derives creation candidates directly from the dependency plan and repository checks.
+ *
+ * Transitive dependency issues are version-agnostic: once a GA exists in this
+ * repository, automation must not open another request for a different version.
+ * The source issue may still request a different version because that exact
+ * GAV is validated earlier in the workflow.
  */
 function prepareCreationInputs(plan, workspaceDir) {
   const supportedGA = new Set();
   const excludedGA = new Set();
   const toCreate = new Map();
+  const nodeByGA = new Map();
 
   for (const node of Array.isArray(plan.nodes) ? plan.nodes : []) {
     const ga = node?.ga;
@@ -478,18 +478,46 @@ function prepareCreationInputs(plan, workspaceDir) {
       continue;
     }
 
-    const gav = `${ga}:${version}`;
-    if (isRepositorySupported(workspaceDir, gav)) {
+    nodeByGA.set(ga, node);
+
+    if (isRepositorySupportedGA(workspaceDir, ga)) {
       supportedGA.add(ga);
       continue;
     }
 
     if (isExcludedGA(ga)) {
       excludedGA.add(ga);
+    }
+  }
+
+  const rootGA = plan.root;
+  const reachableForCreation = new Set();
+
+  function visit(ga) {
+    if (!ga || reachableForCreation.has(ga)) {
+      return;
+    }
+
+    reachableForCreation.add(ga);
+
+    if (ga !== rootGA && (supportedGA.has(ga) || excludedGA.has(ga))) {
+      return;
+    }
+
+    for (const blockerGA of uniqueStrings(nodeByGA.get(ga)?.blockedBy)) {
+      visit(blockerGA);
+    }
+  }
+
+  visit(rootGA);
+
+  for (const ga of reachableForCreation) {
+    const node = nodeByGA.get(ga);
+    if (!node?.version || supportedGA.has(ga) || excludedGA.has(ga)) {
       continue;
     }
 
-    toCreate.set(ga, version);
+    toCreate.set(ga, node.version);
   }
 
   return { excludedGA, supportedGA, toCreate };
@@ -680,7 +708,7 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
   }
 
   /**
-   * Expands blockers transitively while skipping blockers already supported or excluded.
+   * Expands blockers transitively while stopping at supported or excluded blockers.
    *
    * The resulting list contains only blockers that still need issue relationships.
    */
@@ -701,10 +729,10 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
       const blockers = blockedByGA.get(currentGA) || [];
       for (const blockerGA of blockers) {
         if (supportedGA.has(blockerGA) || excludedGA.has(blockerGA)) {
-          dfs(blockerGA);
-        } else {
-          result.push(blockerGA);
+          continue;
         }
+
+        result.push(blockerGA);
       }
     }
 

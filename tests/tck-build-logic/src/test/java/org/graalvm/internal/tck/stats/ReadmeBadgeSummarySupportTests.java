@@ -67,6 +67,26 @@ class ReadmeBadgeSummarySupportTests {
                         }
                       },
                       "version": "1.0.0"
+                    },
+                    {
+                      "dynamicAccess": {
+                        "breakdown": {
+                          "reflection": {
+                            "coveredCalls": 1,
+                            "coverageRatio": 0.125,
+                            "totalCalls": 8
+                          }
+                        },
+                        "coveredCalls": 1,
+                        "coverageRatio": 0.125,
+                        "totalCalls": 8
+                      },
+                      "libraryCoverage": {
+                        "instruction": "N/A",
+                        "line": "N/A",
+                        "method": "N/A"
+                      },
+                      "version": "1.0.1"
                     }
 	                  ]
 	                }
@@ -185,12 +205,12 @@ class ReadmeBadgeSummarySupportTests {
 
         assertThat(summary.date()).isEqualTo("2026-04-07");
         assertThat(summary.badges().librariesSupported()).isEqualTo("2");
-        assertThat(summary.badges().dynamicAccessCoverage()).isEqualTo("75.0%");
+        assertThat(summary.badges().dynamicAccessCoverage()).isEqualTo("20.0%");
         assertThat(summary.badges().testedLibraryVersions()).isEqualTo("4");
         assertThat(summary.badges().testedLinesOfCode()).isEqualTo("1");
 
         assertThat(summary.metrics().stats().coverageStatsArtifacts()).isEqualTo(2);
-        assertThat(summary.metrics().stats().avgDynamicAccessCoveragePercent()).isEqualByComparingTo("75.0");
+        assertThat(summary.metrics().stats().dynamicAccessCallCoveragePercent()).isEqualByComparingTo("20.0");
         assertThat(summary.metrics().stats().testedLinesOfCode()).isEqualTo(1);
         assertThat(summary.metrics().metadataIndexes().metadataIndexes()).isEqualTo(2);
         assertThat(summary.metrics().metadataIndexes().metadataBaselines()).isEqualTo(3);
@@ -203,7 +223,7 @@ class ReadmeBadgeSummarySupportTests {
         );
         assertThat(updatedHistory.history()).hasSize(1);
         assertThat(updatedHistory.history().get(0).date()).isEqualTo("2026-04-07");
-        assertThat(updatedHistory.history().get(0).metrics().stats().avgDynamicAccessCoveragePercent()).isEqualByComparingTo("75.0");
+        assertThat(updatedHistory.history().get(0).metrics().stats().dynamicAccessCallCoveragePercent()).isEqualByComparingTo("20.0");
     }
 
     @Test
@@ -230,7 +250,7 @@ class ReadmeBadgeSummarySupportTests {
 
         ReadmeBadgeSummarySupport.ReadmeMetricsHistory updatedHistory = ReadmeBadgeSummarySupport.withSnapshot(history, summary);
         assertThat(updatedHistory.history()).hasSize(1);
-        assertThat(updatedHistory.history().get(0).metrics().stats().avgDynamicAccessCoveragePercent()).isEqualByComparingTo("25.0");
+        assertThat(updatedHistory.history().get(0).metrics().stats().dynamicAccessCallCoveragePercent()).isEqualByComparingTo("25.0");
         assertThat(updatedHistory.history().get(0).metrics().metadataIndexes().testedVersions()).isEqualTo(24);
     }
 
@@ -271,7 +291,7 @@ class ReadmeBadgeSummarySupportTests {
         assertThat(svg).contains("Supported libraries");
         assertThat(svg).contains("Libraries with reachability metadata in the repository");
         assertThat(svg).contains("Dynamic access coverage");
-        assertThat(svg).contains("Average dynamic-access call coverage across repository metadata");
+        assertThat(svg).contains("Dynamic-access call coverage across repository metadata");
         assertThat(svg).contains("Tested library versions");
         assertThat(svg).contains("Tested library versions recorded across metadata indexes");
         assertThat(svg).contains("Tested lines of code");
