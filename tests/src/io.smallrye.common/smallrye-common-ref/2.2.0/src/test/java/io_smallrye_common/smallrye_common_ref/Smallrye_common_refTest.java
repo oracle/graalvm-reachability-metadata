@@ -251,6 +251,37 @@ public class Smallrye_common_refTest {
     }
 
     @Test
+    void sharedReaperThreadContinuesAfterAReaperThrows() throws Exception {
+        CountDownLatch throwingReaperLatch = new CountDownLatch(1);
+        Reaper<Payload, String> throwingReaper = reference -> {
+            throwingReaperLatch.countDown();
+            throw new IllegalStateException("reaper failure");
+        };
+        WeakReference<Payload, String> throwingReference = new WeakReference<>(
+                new Payload("throwing-reaper"),
+                "throwing-reaper-attachment",
+                throwingReaper);
+
+        assertThat(throwingReference.enqueue()).isTrue();
+        assertThat(throwingReaperLatch.await(5L, TimeUnit.SECONDS)).isTrue();
+
+        CountDownLatch followingReaperLatch = new CountDownLatch(1);
+        AtomicReference<String> followingAttachment = new AtomicReference<>();
+        Reaper<Payload, String> followingReaper = reference -> {
+            followingAttachment.set(reference.getAttachment());
+            followingReaperLatch.countDown();
+        };
+        WeakReference<Payload, String> followingReference = new WeakReference<>(
+                new Payload("following-reaper"),
+                "following-reaper-attachment",
+                followingReaper);
+
+        assertThat(followingReference.enqueue()).isTrue();
+        assertThat(followingReaperLatch.await(5L, TimeUnit.SECONDS)).isTrue();
+        assertThat(followingAttachment.get()).isEqualTo("following-reaper-attachment");
+    }
+
+    @Test
     void cleanerReferenceIsIdentityBasedAndUsesTheSharedReaperQueue() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
         AtomicReference<Reference<Payload, String>> reapedReference = new AtomicReference<>();
