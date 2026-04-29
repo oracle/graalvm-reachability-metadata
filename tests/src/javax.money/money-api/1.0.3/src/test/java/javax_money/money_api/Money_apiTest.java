@@ -62,6 +62,8 @@ import javax.money.format.MonetaryFormats;
 import javax.money.format.MonetaryParseException;
 import javax.money.spi.Bootstrap;
 import javax.money.spi.CurrencyProviderSpi;
+import javax.money.spi.MonetaryAmountsSingletonQuerySpi;
+import javax.money.spi.MonetaryAmountsSingletonSpi;
 import javax.money.spi.MonetaryConversionsSingletonSpi;
 import javax.money.spi.MonetaryCurrenciesSingletonSpi;
 import javax.money.spi.MonetaryFormatsSingletonSpi;
@@ -177,6 +179,48 @@ public class Money_apiTest {
         assertThat(copied.getContext()).isEqualTo(context);
         assertThat(new SimpleAmountFactory().getMaximalMonetaryContext())
                 .isEqualTo(new SimpleAmountFactory().getDefaultMonetaryContext());
+    }
+
+    @Test
+    void staticAmountFactoryFacadeResolvesRegisteredFactoriesByTypeAndQuery() {
+        assertThat(Monetary.getDefaultAmountType()).isEqualTo(SimpleAmount.class);
+        assertThat(Monetary.getAmountTypes()).containsExactly(SimpleAmount.class);
+        assertThat(Monetary.getAmountFactories())
+                .singleElement()
+                .extracting(MonetaryAmountFactory::getAmountType)
+                .isEqualTo(SimpleAmount.class);
+
+        MonetaryAmountFactory<SimpleAmount> typedFactory = Monetary.getAmountFactory(SimpleAmount.class);
+        SimpleAmount usdAmount = typedFactory
+                .setCurrency(USD)
+                .setNumber(new BigDecimal("5.25"))
+                .create();
+        assertThat(usdAmount.getCurrency()).isEqualTo(USD);
+        assertThat(usdAmount.getNumber().numberValue(BigDecimal.class)).isEqualByComparingTo("5.25");
+
+        MonetaryAmountFactoryQuery query = MonetaryAmountFactoryQueryBuilder.of()
+                .setTargetType(SimpleAmount.class)
+                .setPrecision(18)
+                .setMaxScale(2)
+                .build();
+        MonetaryContext queryContext = MonetaryContext.from(query, SimpleAmount.class);
+
+        assertThat(Monetary.isAvailable(query)).isTrue();
+        assertThat(Monetary.getAmountFactories(query))
+                .singleElement()
+                .extracting(MonetaryAmountFactory::getAmountType)
+                .isEqualTo(SimpleAmount.class);
+
+        MonetaryAmountFactory<?> queriedFactory = Monetary.getAmountFactory(query);
+        MonetaryAmount eurAmount = queriedFactory
+                .setContext(queryContext)
+                .setCurrency(EUR)
+                .setNumber(15L)
+                .create();
+        assertThat(eurAmount.getCurrency()).isEqualTo(EUR);
+        assertThat(eurAmount.getNumber().numberValue(BigDecimal.class)).isEqualByComparingTo("15");
+        assertThat(eurAmount.getContext().getPrecision()).isEqualTo(18);
+        assertThat(eurAmount.getContext().getMaxScale()).isEqualTo(2);
     }
 
     @Test
@@ -314,6 +358,7 @@ public class Money_apiTest {
         private final List<Object> services = List.of(
                 new TestCurrencySingleton(),
                 new TestCurrencyProvider(),
+                new TestAmountsSingleton(),
                 new TestRoundingsSingleton(),
                 new TestRoundingProvider(),
                 new TestFormatsSingleton(),
@@ -359,6 +404,38 @@ public class Money_apiTest {
         @Override
         public Set<CurrencyUnit> getCurrencies(CurrencyQuery query) {
             return filterCurrencies(query);
+        }
+    }
+
+    private static final class TestAmountsSingleton
+            implements MonetaryAmountsSingletonSpi, MonetaryAmountsSingletonQuerySpi {
+        @Override
+        @SuppressWarnings("unchecked")
+        public <T extends MonetaryAmount> MonetaryAmountFactory<T> getAmountFactory(Class<T> amountType) {
+            if (SimpleAmount.class.equals(amountType)) {
+                return (MonetaryAmountFactory<T>) new SimpleAmountFactory();
+            }
+            return null;
+        }
+
+        @Override
+        public Class<? extends MonetaryAmount> getDefaultAmountType() {
+            return SimpleAmount.class;
+        }
+
+        @Override
+        public Collection<Class<? extends MonetaryAmount>> getAmountTypes() {
+            return List.of(SimpleAmount.class);
+        }
+
+        @Override
+        public Collection<MonetaryAmountFactory<? extends MonetaryAmount>> getAmountFactories(
+                MonetaryAmountFactoryQuery query) {
+            Class<?> targetType = query.getTargetType();
+            if (targetType == null || targetType.isAssignableFrom(SimpleAmount.class)) {
+                return List.of(new SimpleAmountFactory());
+            }
+            return List.of();
         }
     }
 
