@@ -6,7 +6,6 @@
  */
 package org.graalvm.reachability.graphql;
 
-import graphql.GraphQLException;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.DataFetchingEnvironmentImpl;
 import graphql.schema.PropertyDataFetcher;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.Test;
 
 import static graphql.Scalars.GraphQLString;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class PropertyFetchingImplTest {
 
@@ -61,11 +59,12 @@ public class PropertyFetchingImplTest {
   }
 
   @Test
-  void reportsPublicMethodOnInaccessibleClass() {
+  void fetchesPublicMethodFromInaccessibleClass() {
     InaccessibleGetterSource source = new InaccessibleGetterSource();
 
-    assertThatThrownBy(() -> fetchProperty("name", source))
-            .isInstanceOf(GraphQLException.class);
+    Object fetchedValue = fetchProperty("name", source);
+
+    assertThat(fetchedValue).isEqualTo("package private getter");
   }
 
   public String getDisplayName() {
