@@ -8,6 +8,7 @@ package org_apache_calcite.calcite_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.StringReader;
 import java.util.List;
 import org.apache.calcite.sql.parser.SqlAbstractParserImpl;
 import org.apache.calcite.sql.parser.SqlParser;
@@ -16,7 +17,7 @@ import org.junit.jupiter.api.Test;
 public class SqlAbstractParserImplInnerMetadataImplTest {
     @Test
     void parserMetadataBuildsKeywordCatalogThroughParserApi() {
-        SqlAbstractParserImpl.Metadata metadata = SqlParser.create("").getMetadata();
+        SqlAbstractParserImpl.Metadata metadata = buildFreshMetadata();
 
         List<String> tokens = metadata.getTokens();
 
@@ -29,5 +30,12 @@ public class SqlAbstractParserImplInnerMetadataImplTest {
         assertThat(metadata.isReservedFunctionName("COUNT")).isTrue();
         assertThat(metadata.isContextVariableName("CURRENT_DATE")).isTrue();
         assertThat(metadata.getJdbcKeywords()).contains("CURRENT_CATALOG");
+    }
+
+    private static SqlAbstractParserImpl.Metadata buildFreshMetadata() {
+        SqlAbstractParserImpl parser = SqlParser.config()
+                .parserFactory()
+                .getParser(new StringReader(""));
+        return new SqlAbstractParserImpl.MetadataImpl(parser);
     }
 }
