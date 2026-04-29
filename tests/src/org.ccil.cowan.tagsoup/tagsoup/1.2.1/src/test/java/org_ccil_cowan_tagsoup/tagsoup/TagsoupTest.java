@@ -63,7 +63,7 @@ public class TagsoupTest {
         assertThat(handler.startNames()).containsSequence("html", "head", "title");
         assertThat(handler.startNames()).contains("body", "p", "b", "i", "br", "img");
         assertThat(handler.endNames()).contains("i", "b", "p", "body", "html");
-        assertThat(handler.fullText()).contains("Example", "First ", "bold ", "italic", " tail ©");
+        assertThat(handler.fullText()).contains("Example", "First ", "bold ", "italic", " tail \u00A9");
         assertThat(handler.comments).contains(" note ");
 
         StartElement p = handler.firstStart("p");
