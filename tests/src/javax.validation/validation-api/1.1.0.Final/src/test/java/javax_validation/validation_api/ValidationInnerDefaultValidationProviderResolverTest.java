@@ -17,9 +17,11 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Enumeration;
 
+import javax.validation.BootstrapConfiguration;
 import javax.validation.Configuration;
 import javax.validation.ConstraintValidatorFactory;
 import javax.validation.MessageInterpolator;
+import javax.validation.ParameterNameProvider;
 import javax.validation.TraversableResolver;
 import javax.validation.Validation;
 import javax.validation.ValidationException;
@@ -219,6 +221,11 @@ public class ValidationInnerDefaultValidationProviderResolverTest {
         }
 
         @Override
+        public TestValidationConfiguration parameterNameProvider(ParameterNameProvider parameterNameProvider) {
+            return this;
+        }
+
+        @Override
         public TestValidationConfiguration addMapping(InputStream stream) {
             return this;
         }
@@ -240,6 +247,16 @@ public class ValidationInnerDefaultValidationProviderResolverTest {
 
         @Override
         public ConstraintValidatorFactory getDefaultConstraintValidatorFactory() {
+            return null;
+        }
+
+        @Override
+        public ParameterNameProvider getDefaultParameterNameProvider() {
+            return null;
+        }
+
+        @Override
+        public BootstrapConfiguration getBootstrapConfiguration() {
             return null;
         }
 
@@ -277,8 +294,17 @@ public class ValidationInnerDefaultValidationProviderResolverTest {
         }
 
         @Override
+        public ParameterNameProvider getParameterNameProvider() {
+            return null;
+        }
+
+        @Override
         public <T> T unwrap(Class<T> type) {
             throw new ValidationException("No provider-specific API available for " + type.getName());
+        }
+
+        @Override
+        public void close() {
         }
     }
 }
