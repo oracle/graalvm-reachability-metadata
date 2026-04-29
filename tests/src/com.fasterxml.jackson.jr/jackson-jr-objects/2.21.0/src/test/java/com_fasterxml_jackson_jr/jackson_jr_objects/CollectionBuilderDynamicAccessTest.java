@@ -8,6 +8,7 @@ package com_fasterxml_jackson_jr.jackson_jr_objects;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fasterxml.jackson.jr.ob.JSON;
 import com.fasterxml.jackson.jr.ob.api.CollectionBuilder;
@@ -99,7 +100,7 @@ public class CollectionBuilderDynamicAccessTest {
         assertThat(singletonValues).isInstanceOf(String[].class);
         assertThat(multipleValues).containsExactly("left", "right");
         assertThat(multipleValues).isInstanceOf(String[].class);
-        assertThat(builder.startedCollections).isEqualTo(1);
+        assertThat(builder.startedCollections.get()).isEqualTo(1);
     }
 
     @Test
@@ -146,30 +147,31 @@ public class CollectionBuilderDynamicAccessTest {
     }
 
     private static final class RecordingCollectionBuilder extends CollectionBuilder {
+        private final AtomicInteger startedCollections;
         private Collection<Object> values;
-        private int startedCollections;
 
         private RecordingCollectionBuilder() {
-            this(0, null);
+            this(0, null, new AtomicInteger());
         }
 
-        private RecordingCollectionBuilder(int features, Class<?> collectionType) {
+        private RecordingCollectionBuilder(int features, Class<?> collectionType, AtomicInteger startedCollections) {
             super(features, collectionType);
+            this.startedCollections = startedCollections;
         }
 
         @Override
         public CollectionBuilder newBuilder(int features) {
-            return new RecordingCollectionBuilder(features, _collectionType);
+            return new RecordingCollectionBuilder(features, _collectionType, startedCollections);
         }
 
         @Override
         public CollectionBuilder newBuilder(Class<?> collectionType) {
-            return new RecordingCollectionBuilder(_features, collectionType);
+            return new RecordingCollectionBuilder(_features, collectionType, startedCollections);
         }
 
         @Override
         public CollectionBuilder start() {
-            startedCollections++;
+            startedCollections.incrementAndGet();
             values = new ArrayList<>();
             return this;
         }
