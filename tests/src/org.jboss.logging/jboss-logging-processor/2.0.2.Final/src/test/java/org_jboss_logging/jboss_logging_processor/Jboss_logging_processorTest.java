@@ -130,18 +130,18 @@ public class Jboss_logging_processorTest {
     void printfTranslationValidationAcceptsEquivalentConversions() {
         StringFormatValidator translation = StringFormatValidator.withTranslation(
                 "Processing %1$s took %2$d ms",
-                "Traitement de %1$s terminé en %2$d ms");
+                "Traitement de %1$s termin\u00e9 en %2$d ms");
 
         assertThat(translation.isValid()).isTrue();
         assertThat(translation.argumentCount()).isEqualTo(2);
-        assertThat(translation.format()).isEqualTo("Traitement de %1$s terminé en %2$d ms");
+        assertThat(translation.format()).isEqualTo("Traitement de %1$s termin\u00e9 en %2$d ms");
     }
 
     @Test
     void printfTranslationValidationRejectsChangedConversionTypes() {
         StringFormatValidator translation = StringFormatValidator.withTranslation(
                 "Processing %1$s took %2$d ms",
-                "Traitement de %1$d terminé en %2$s ms");
+                "Traitement de %1$d termin\u00e9 en %2$s ms");
 
         assertThat(translation.isValid()).isFalse();
         assertThat(translation.summaryMessage()).contains("translated message format does not match");
