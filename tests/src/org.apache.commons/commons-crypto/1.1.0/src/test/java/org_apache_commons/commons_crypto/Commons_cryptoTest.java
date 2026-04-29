@@ -8,7 +8,7 @@ package org_apache_commons.commons_crypto;
 
 import org.junit.jupiter.api.Test;
 
-class Commons_cryptoTest {
+public class Commons_cryptoTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
