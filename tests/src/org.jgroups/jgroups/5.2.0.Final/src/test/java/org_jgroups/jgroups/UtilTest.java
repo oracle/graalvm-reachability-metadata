@@ -58,9 +58,11 @@ public class UtilTest {
         ProbeStreamable original = new ProbeStreamable("bravo", 11);
 
         byte[] streamableBytes = Util.streamableToByteBuffer(original);
-        assertThat(Util.streamableFromByteBuffer(ProbeStreamable.class, streamableBytes)).isEqualTo(original);
-        assertThat(Util.streamableFromByteBuffer(ProbeStreamable.class, ByteBuffer.wrap(streamableBytes)))
-            .isEqualTo(original);
+        ProbeStreamable fromByteArray = Util.streamableFromByteBuffer(ProbeStreamable.class, streamableBytes);
+        ProbeStreamable fromByteBuffer = Util.streamableFromByteBuffer(ProbeStreamable.class,
+            ByteBuffer.wrap(streamableBytes));
+        assertThat(fromByteArray).isEqualTo(original);
+        assertThat(fromByteBuffer).isEqualTo(original);
 
         byte[] genericBytes = Util.objectToByteBuffer(original);
         assertThat((ProbeStreamable)Util.objectFromByteBuffer(genericBytes)).isEqualTo(original);
