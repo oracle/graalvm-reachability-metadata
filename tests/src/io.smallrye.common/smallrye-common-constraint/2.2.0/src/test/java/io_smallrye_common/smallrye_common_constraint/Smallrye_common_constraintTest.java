@@ -239,6 +239,15 @@ public class Smallrye_common_constraintTest {
     }
 
     @Test
+    void unsupportedFactoryReportsTheCallingMethodAndClass() {
+        UnsupportedOperationException unsupported = unsupportedFromNamedCaller();
+
+        assertThat(unsupported)
+                .hasMessageContaining("unsupportedFromNamedCaller")
+                .hasMessageContaining(Smallrye_common_constraintTest.class.getName());
+    }
+
+    @Test
     void nullableAndNotNullAnnotationsCanBeUsedOnPublicContractsAndLocalVariables() {
         optionalLabel = null;
         String first = normalizeLabel(REQUIRED_LABEL, optionalLabel);
@@ -297,6 +306,10 @@ public class Smallrye_common_constraintTest {
     }
 
     private static UnsupportedOperationException unsupportedFromHelper() {
+        return Assert.unsupported();
+    }
+
+    private static UnsupportedOperationException unsupportedFromNamedCaller() {
         return Assert.unsupported();
     }
 }
