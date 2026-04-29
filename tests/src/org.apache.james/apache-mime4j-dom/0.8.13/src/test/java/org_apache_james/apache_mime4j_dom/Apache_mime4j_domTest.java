@@ -8,7 +8,7 @@ package org_apache_james.apache_mime4j_dom;
 
 import org.junit.jupiter.api.Test;
 
-class Apache_mime4j_domTest {
+public class Apache_mime4j_domTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
