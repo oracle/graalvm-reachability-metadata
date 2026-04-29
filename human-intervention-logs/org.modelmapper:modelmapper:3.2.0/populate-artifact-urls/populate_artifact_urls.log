@@ -1,0 +1,421 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/426-b711281c
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd72f-1312-7c93-bb43-1ac81dedf8be
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.modelmapper:modelmapper:3.2.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.2.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/426-b711281c/metadata/org.modelmapper/modelmapper/index.json
+- Entry selector: "metadata-version" = "3.2.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "3.2.0".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/org/modelmapper/modelmapper/3.2.0/modelmapper-3.2.0-sources.jar
+- repository-url: https://github.com/modelmapper/modelmapper
+- test-code-url: https://github.com/modelmapper/modelmapper/tree/modelmapper-parent-3.2.0/core/src/test
+- documentation-url: https://repo.maven.apache.org/maven2/org/modelmapper/modelmapper/3.2.0/modelmapper-3.2.0-javadoc.jar
+- description: ModelMapper is an object mapping library that automatically maps data between Java objects using convention-based matching. It also provides a refactoring-safe API for configuring explicit mappings and handling custom mapping cases.
+- language: <missing>
+
+Context:
+- Coordinate version: 3.2.0
+- Entry test-version: 3.2.0
+codex
+I’ll verify the existing entry and the versioned URLs first, then only patch fields that are actually missing under the `metadata-version` 3.2.0 entry.
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.modelmapper/modelmapper/index.json" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/426-b711281c
+ succeeded in 0ms:
+4:    "metadata-version" : "3.2.0",
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/modelmapper/modelmapper/3.2.0/modelmapper-3.2.0-sources.jar",
+6:    "repository-url" : "https://github.com/modelmapper/modelmapper",
+7:    "test-code-url" : "https://github.com/modelmapper/modelmapper/tree/modelmapper-parent-3.2.0/core/src/test",
+8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/modelmapper/modelmapper/3.2.0/modelmapper-3.2.0-javadoc.jar",
+9:    "description" : "ModelMapper is an object mapping library that automatically maps data between Java objects using convention-based matching. It also provides a refactoring-safe API for configuring explicit mappings and handling custom mapping cases.",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.modelmapper/modelmapper/index.json" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/426-b711281c
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.2.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/modelmapper/modelmapper/3.2.0/modelmapper-3.2.0-sources.jar",
+    "repository-url" : "https://github.com/modelmapper/modelmapper",
+    "test-code-url" : "https://github.com/modelmapper/modelmapper/tree/modelmapper-parent-3.2.0/core/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/modelmapper/modelmapper/3.2.0/modelmapper-3.2.0-javadoc.jar",
+    "description" : "ModelMapper is an object mapping library that automatically maps data between Java objects using convention-based matching. It also provides a refactoring-safe API for configuring explicit mappings and handling custom mapping cases.",
+    "tested-versions" : [
+      "3.2.0"
+    ],
+    "allowed-packages" : [
+      "org.modelmapper"
+    ]
+  }
+]
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/modelmapper/modelmapper/3.2.0/
+web search: 
+web search: 
+web search: 
+web search: 
+codex
+The target entry already has non-blank values for the five requested URL/description fields. I’m checking the artifact metadata and repository tag now so I can decide whether `language` should be added or intentionally left absent.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/modelmapper/modelmapper/3.2.0/modelmapper-3.2.0.pom' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/426-b711281c
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>modelmapper-parent</artifactId>
+    <groupId>org.modelmapper</groupId>
+    <version>3.2.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>modelmapper</artifactId>
+  <name>ModelMapper</name>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <relocations>
+            <relocation>
+              <pattern>net.bytebuddy</pattern>
+              <shadedPattern>org.modelmapper.internal.bytebuddy</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>org.objectweb.asm</pattern>
+              <shadedPattern>org.modelmapper.internal.asm</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>org.objenesis</pattern>
+              <shadedPattern>org.modelmapper.internal.objenesis</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>net.jodah.typetools</pattern>
+              <shadedPattern>org.modelmapper.internal.typetools</shadedPattern>
+            </relocation>
+          </relocations>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M5</version>
+        <configuration>
+          <suiteXmlFiles>
+            <suiteXmlFile>src/test/resources/testngAll.xml</suiteXmlFile>
+          </suiteXmlFiles>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9.1</version>
+        <configuration>
+          <author>false</author>
+          <excludePackageNames>*.internal</excludePackageNames>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>3.5.0</version>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+            <Export-Package>!org.modelmapper.internal.*,
+              org.modelmapper*;-noimport:=true</Export-Package>
+            <Embed-Dependency>*;scope=runtime;inline=true</Embed-Dependency>
+            <Import-Package>!net.bytebuddy*,
+              !org.objectweb*,
+              !net.jodah*,
+              !org.objenesis*,
+              sun.misc;resolution:=optional,
+              *</Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>3.12.1.GA</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>4.2.0</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>byte-buddy</artifactId>
+          <groupId>net.bytebuddy</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>byte-buddy-agent</artifactId>
+          <groupId>net.bytebuddy</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>2.0.206</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>5.6.3.Final</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>jboss-logging</artifactId>
+          <groupId>org.jboss.logging</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>hibernate-core</artifactId>
+          <groupId>org.hibernate</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>hibernate-commons-annotations</artifactId>
+          <groupId>org.hibernate.common</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>javax.persistence-api</artifactId>
+          <groupId>javax.persistence</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+          <groupId>org.jboss.spec.javax.transaction</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>byte-buddy</artifactId>
+          <groupId>net.bytebuddy</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+      <version>3.3.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.dozer</groupId>
+      <artifactId>dozer</artifactId>
+      <version>5.5.1</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-beanutils</artifactId>
+          <groupId>commons-beanutils</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-lang3</artifactId>
+          <groupId>org.apache.commons</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>slf4j-api</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jcl-over-slf4j</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>ma.glasnost.orika</groupId>
+      <artifactId>orika-core</artifactId>
+      <version>1.5.4</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>javassist</artifactId>
+          <groupId>org.javassist</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>paranamer</artifactId>
+          <groupId>com.thoughtworks.paranamer</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>java-sizeof</artifactId>
+          <groupId>com.carrotsearch</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>janino</artifactId>
+          <groupId>org.codehaus.janino</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>slf4j-api</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>7.5</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>jsr305</artifactId>
+          <groupId>com.google.code.findbugs</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jcommander</artifactId>
+          <groupId>com.beust</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jquery</artifactId>
+          <groupId>org.webjars</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>slf4j-api</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/426-b711281c
+ succeeded in 0ms:
+?? metadata/org.modelmapper/
+?? tests/src/org.modelmapper/
+
+web search: 
+web search: https://github.com/modelmapper/modelmapper/tree/modelmapper-parent-3.2.0/core/src/test
+web search: 
+web search: org.modelmapper modelmapper 3.2.0 Maven Central sources javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/org.modelmapper/modelmapper/3.2.0
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/modelmapper/modelmapper/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/modelmapper/modelmapper/3.2.0/
+web search: 
+web search: https://github.com/modelmapper/modelmapper
+codex
+The Maven Central page confirms the 3.2.0 sources and javadocs exist, and GitHub confirms the tagged test directory. The repository language is Java, so it does not match the Kotlin/Groovy/Scala-only `language` field rules and should remain absent.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.modelmapper/modelmapper/index.json' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/426-b711281c
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.modelmapper/modelmapper/index.json' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/426-b711281c
+ succeeded in 0ms:
+web search: 
+web search: Maven Central org.modelmapper modelmapper 3.2.0 sources jar javadoc jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/modelmapper/modelmapper/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/modelmapper/modelmapper/3.2.0/
+web search: 
+web search: https://github.com/modelmapper/modelmapper/tree/modelmapper-parent-3.2.0/core/src/test
+codex
+No file changes were needed in [index.json](/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/426-b711281c/metadata/org.modelmapper/modelmapper/index.json): all requested URL and description fields are already non-blank for `metadata-version` `3.2.0`.
+
+I left `language` absent because ModelMapper is a Java library, not Kotlin, Groovy, Scala 2, or Scala 3. Maven Central confirms the exact `3.2.0` sources and javadoc artifacts, and the tagged GitHub test directory exists at `modelmapper-parent-3.2.0/core/src/test`. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/modelmapper/modelmapper/3.2.0/))
+
+Validation run: `jq empty metadata/org.modelmapper/modelmapper/index.json` passed, and `git diff -- metadata/org.modelmapper/modelmapper/index.json` is empty.
+2026-04-29T03:02:20.625583Z ERROR codex_core::session: failed to record rollout items: thread 019dd72f-1312-7c93-bb43-1ac81dedf8be not found
+tokens used
+54,355
+No file changes were needed in [index.json](/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/426-b711281c/metadata/org.modelmapper/modelmapper/index.json): all requested URL and description fields are already non-blank for `metadata-version` `3.2.0`.
+
+I left `language` absent because ModelMapper is a Java library, not Kotlin, Groovy, Scala 2, or Scala 3. Maven Central confirms the exact `3.2.0` sources and javadoc artifacts, and the tagged GitHub test directory exists at `modelmapper-parent-3.2.0/core/src/test`. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/modelmapper/modelmapper/3.2.0/))
+
+Validation run: `jq empty metadata/org.modelmapper/modelmapper/index.json` passed, and `git diff -- metadata/org.modelmapper/modelmapper/index.json` is empty.
+Ran agent for org.modelmapper:modelmapper:3.2.0 (exit 0). Log: /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/426-b711281c/build/agent-url-discovery-logs/org.modelmapper-modelmapper-3.2.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/426-b711281c/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 1s
+9 actionable tasks: 1 executed, 8 up-to-date

@@ -13,23 +13,10 @@ import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.Test;
 import org.modelmapper.internal.bytebuddy.utility.Invoker;
-import org.modelmapper.internal.bytebuddy.utility.dispatcher.JavaDispatcher;
 
 public class JavaDispatcherInnerDirectInvokerTest {
     private static final String DIRECT_INVOKER_TYPE_NAME =
         "org.modelmapper.internal.bytebuddy.utility.dispatcher.JavaDispatcher$DirectInvoker";
-
-    @Test
-    void dispatchesConstructorAndInstanceMethodThroughInvoker() {
-        DispatcherTargetDispatcher dispatcher = new TestJavaDispatcher<>(
-            DispatcherTargetDispatcher.class).run();
-
-        DispatcherTarget target = dispatcher.make("direct");
-        DispatcherTarget returned = dispatcher.appendValue(target, "-invoker");
-
-        assertThat(returned).isSameAs(target);
-        assertThat(target.value()).isEqualTo("direct-invoker");
-    }
 
     @Test
     void directInvokerCallsConstructorAndMethodReflectionContracts() throws Exception {
@@ -50,14 +37,6 @@ public class JavaDispatcherInnerDirectInvokerTest {
         return (Invoker) constructor.newInstance();
     }
 
-    @JavaDispatcher.Proxied("org_modelmapper.modelmapper.JavaDispatcherInnerDirectInvokerTest$DispatcherTarget")
-    public interface DispatcherTargetDispatcher {
-        @JavaDispatcher.IsConstructor
-        DispatcherTarget make(String value);
-
-        @JavaDispatcher.Proxied("append")
-        DispatcherTarget appendValue(DispatcherTarget target, String suffix);
-    }
 
     public static final class DispatcherTarget {
         private final StringBuilder value;
@@ -76,9 +55,4 @@ public class JavaDispatcherInnerDirectInvokerTest {
         }
     }
 
-    private static final class TestJavaDispatcher<T> extends JavaDispatcher<T> {
-        private TestJavaDispatcher(Class<T> proxy) {
-            super(proxy, JavaDispatcherInnerDirectInvokerTest.class.getClassLoader(), false);
-        }
-    }
 }

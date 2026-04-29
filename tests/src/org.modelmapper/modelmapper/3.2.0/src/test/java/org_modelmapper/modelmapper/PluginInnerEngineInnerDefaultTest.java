@@ -8,7 +8,6 @@ package org_modelmapper.modelmapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
 
@@ -30,15 +29,6 @@ public class PluginInnerEngineInnerDefaultTest {
         assertThat(plugins).contains(NoOpPlugin.class.getName());
     }
 
-    @Test
-    void mainLoadsPluginClassByNameAndProcessesEmptyFolder() throws Exception {
-        Path source = Files.createDirectory(tempDirectory.resolve("source"));
-        Path target = Files.createDirectory(tempDirectory.resolve("target"));
-
-        Plugin.Engine.Default.main(source.toString(), target.toString(), NoOpPlugin.class.getName());
-
-        assertThat(target).isDirectory();
-    }
 
     public static class NoOpPlugin implements Plugin {
         @Override

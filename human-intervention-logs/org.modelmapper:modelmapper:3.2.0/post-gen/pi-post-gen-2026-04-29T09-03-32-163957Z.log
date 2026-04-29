@@ -1,0 +1,16 @@
+Done.
+
+- Removed the generated non-metadata native-image-incompatible tests for `org.modelmapper:modelmapper:3.2.0`
+- Kept the metadata-signaling test `SunReflectionFactoryHelperTest`
+- Preserved passing methods in mixed classes:
+  - `tests/src/org.modelmapper/modelmapper/3.2.0/src/test/java/org_modelmapper/modelmapper/JavaDispatcherInnerDirectInvokerTest.java`
+  - `tests/src/org.modelmapper/modelmapper/3.2.0/src/test/java/org_modelmapper/modelmapper/PluginInnerEngineInnerDefaultTest.java`
+  - `tests/src/org.modelmapper/modelmapper/3.2.0/src/test/java/org_modelmapper/modelmapper/TypeResolverTest.java`
+- Wrote the report to:
+  - `post-gen-interventions/org.modelmapper_modelmapper_3.2.0.md`
+
+Verification:
+- Ran `./gradlew test -Pcoordinates=org.modelmapper:modelmapper:3.2.0 --stacktrace`
+- Current result: `43` tests passed, `1` failed
+- Remaining failure: `SunReflectionFactoryHelperTest`
+  - still a metadata-related `MissingReflectionRegistrationError` for `java.lang.Object.<init>()`

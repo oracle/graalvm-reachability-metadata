@@ -16,20 +16,6 @@ import org.modelmapper.internal.typetools.TypeResolver;
 
 public class TypeResolverTest {
     @Test
-    void resolvesLambdaMethodReferenceArgumentsFromConstantPool() {
-        TypeResolver.disableCache();
-        try {
-            Transformer<String, Integer> transformer = Integer::valueOf;
-
-            assertThat(transformer.transform("42")).isEqualTo(42);
-            assertThat(TypeResolver.resolveRawArguments(Transformer.class, transformer.getClass()))
-                .containsExactly(String.class, Integer.class);
-        } finally {
-            TypeResolver.enableCache();
-        }
-    }
-
-    @Test
     void resolvesRawGenericArrayArgument() {
         assertThat(TypeResolver.resolveRawArguments(ArrayValue.class, StringArrayValue.class))
             .containsExactly(String[].class);
@@ -44,10 +30,6 @@ public class TypeResolverTest {
         assertThat(parameterizedType.getActualTypeArguments()).containsExactly(String[].class);
     }
 
-    @FunctionalInterface
-    private interface Transformer<S, D> {
-        D transform(S source);
-    }
 
     private interface ArrayValue<T> {
     }
