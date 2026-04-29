@@ -25,6 +25,7 @@ import org.graalvm.internal.tck.harness.tasks.CleanInvocationTask
 import org.graalvm.internal.tck.harness.tasks.CompileTestJavaInvocationTask
 import org.graalvm.internal.tck.harness.tasks.JavaTestInvocationTask
 import org.graalvm.internal.tck.harness.tasks.NativeTestCompileInvocationTask
+import org.graalvm.internal.tck.harness.tasks.NativeTraceImageInvocationTask
 import org.graalvm.internal.tck.harness.tasks.FetchExistingLibrariesWithNewerVersionsTask
 import org.gradle.util.internal.VersionNumber
 import org.graalvm.internal.tck.harness.tasks.ComputeAndPullAllowedDockerImagesTask
@@ -43,7 +44,9 @@ import org.graalvm.internal.tck.harness.tasks.GenerateLibraryStatsTask
 import org.graalvm.internal.tck.harness.tasks.ValidateLibraryStatsTask
 import org.graalvm.internal.tck.harness.tasks.AnalyzeExternalLibraryDynamicAccessTask
 import org.graalvm.internal.tck.harness.tasks.GenerateReadmeBadgeSummaryTask
+import org.graalvm.internal.tck.harness.tasks.RunNativeTraceImageInvocationTask
 import org.graalvm.internal.tck.harness.tasks.SplitTestOnlyMetadataTask
+import org.graalvm.internal.tck.harness.tasks.VerifyExactReachabilityMetadataInvocationTask
 import org.graalvm.internal.tck.utils.NativeImageConfigUtils
 
 
@@ -76,6 +79,66 @@ def writeGithubEnv(String key, String value) {
 
 String coordinateFilter = Objects.requireNonNullElse(project.findProperty("coordinates"), "")
 
+String requiredGradleProperty(String propertyName) {
+    String propertyValue = providers.gradleProperty(propertyName).getOrElse("")
+    if (propertyValue.trim().isEmpty()) {
+        throw new GradleException("Missing '${propertyName}' property! Rerun Gradle with '-P${propertyName}=<value>'")
+    }
+    return propertyValue
+}
+
+List<String> commaSeparatedGradleProperty(String propertyName) {
+    String propertyValue = providers.gradleProperty(propertyName).getOrElse("")
+    if (propertyValue.trim().isEmpty()) {
+        return []
+    }
+    return propertyValue.split(",")
+            .collect { String value -> value.trim() }
+            .findAll { String value -> !value.isEmpty() }
+}
+
+List<File> requiredDirectoryListProperty(String propertyName, boolean requireAbsolute) {
+    List<String> propertyValues = commaSeparatedGradleProperty(propertyName)
+    if (propertyValues.isEmpty()) {
+        requiredGradleProperty(propertyName)
+    }
+    return propertyValues.collect { String propertyValue ->
+        File directory = file(propertyValue)
+        if (requireAbsolute && !new File(propertyValue).isAbsolute()) {
+            throw new GradleException("Property '${propertyName}' must contain absolute paths. Got: ${propertyValue}")
+        }
+        if (!directory.isDirectory()) {
+            throw new GradleException("Property '${propertyName}' must contain existing directories. Missing: ${directory.absolutePath}")
+        }
+        return directory
+    }
+}
+
+String requiredAbsolutePathProperty(String propertyName) {
+    String propertyValue = requiredGradleProperty(propertyName)
+    if (!new File(propertyValue).isAbsolute()) {
+        throw new GradleException("Property '${propertyName}' must contain an absolute path. Got: ${propertyValue}")
+    }
+    return propertyValue
+}
+
+static String nativeImageTool(String toolName) {
+    List<String> toolHomeVariables = ["GRAALVM_HOME", "JAVA_HOME"]
+    for (String toolHomeVariable : toolHomeVariables) {
+        String toolHome = System.getenv(toolHomeVariable)
+        if (toolHome != null && !toolHome.trim().isEmpty()) {
+            List<File> candidates = [
+                    new File(new File(toolHome, "bin"), toolName),
+                    new File(new File(new File(toolHome, "lib"), "svm/bin"), toolName)
+            ]
+            File candidate = candidates.find { File file -> file.isFile() }
+            if (candidate != null) {
+                return candidate.absolutePath
+            }
+        }
+    }
+    return toolName
+}
 
 List<String> matchingCoordinates
 if (CoordinateUtils.isFractionalBatch(coordinateFilter)) {
@@ -110,6 +173,56 @@ tasks.register("javaTest", JavaTestInvocationTask.class) { task ->
 tasks.register("nativeTestCompile", NativeTestCompileInvocationTask.class) { task ->
     task.setDescription("Compiles native tests (nativeTestCompile) for all subprojects")
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
+}
+
+// gradle nativeTraceImage -Pcoordinates=<maven-coordinates> [-PmetadataConfigDirs=<dir1,dir2,...>]
+tasks.register("nativeTraceImage", NativeTraceImageInvocationTask.class) { task ->
+    task.setDescription("Builds trace-enabled native tests for matching coordinates")
+    task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
+    task.doFirst {
+        if (project.hasProperty("metadataConfigDirs")) {
+            requiredDirectoryListProperty("metadataConfigDirs", false)
+        }
+    }
+}
+
+// gradle runNativeTraceImage -Pcoordinates=<maven-coordinates> -PtraceMetadataPath=<path>
+//     -PtraceMetadataConditionPackages=<pkg1,pkg2,...>
+tasks.register("runNativeTraceImage", RunNativeTraceImageInvocationTask.class) { task ->
+    task.setDescription("Runs trace-enabled native tests once for matching coordinates")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+    task.doFirst {
+        if (project.hasProperty("metadataConfigDirs")) {
+            requiredDirectoryListProperty("metadataConfigDirs", false)
+        }
+        requiredAbsolutePathProperty("traceMetadataPath")
+        requiredGradleProperty("traceMetadataConditionPackages")
+    }
+}
+
+tasks.register("mergeNativeTraceMetadata", Exec) { Exec task ->
+    task.setDescription("Merges runtime metadata trace output directories with native-image-utils generate")
+    task.setGroup(METADATA_GROUP)
+    task.doFirst {
+        List<File> inputDirs = requiredDirectoryListProperty("inputDirs", false)
+        File outputDir = file(requiredAbsolutePathProperty("outputDir"))
+        delete(outputDir)
+        List<String> commandLineArgs = [nativeImageTool("native-image-utils"), "generate"]
+        commandLineArgs.addAll(inputDirs.collect { File inputDir -> "--input-dir=${inputDir.absolutePath}" })
+        commandLineArgs.add("--output-dir=${outputDir.absolutePath}")
+        task.commandLine(commandLineArgs)
+    }
+}
+
+// gradle verifyExactReachabilityMetadata -Pcoordinates=<maven-coordinates> -PmetadataConfigDirs=<dir>
+//     -PexactPackages=<pkg1,pkg2,...>
+tasks.register("verifyExactReachabilityMetadata", VerifyExactReachabilityMetadataInvocationTask.class) { task ->
+    task.setDescription("Builds native tests with exact reachability metadata for matching coordinates")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+    task.doFirst {
+        requiredDirectoryListProperty("metadataConfigDirs", true)
+        requiredGradleProperty("exactPackages")
+    }
 }
 
 // gradle jacocoTestReport -Pcoordinates=<maven-coordinates>

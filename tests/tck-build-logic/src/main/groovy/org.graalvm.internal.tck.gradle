@@ -8,6 +8,8 @@ import groovy.json.JsonSlurper
 import org.graalvm.internal.tck.utils.DynamicAccessUtils
 import org.graalvm.internal.tck.utils.NativeImageConfigUtils
 
+import org.graalvm.buildtools.gradle.tasks.BuildNativeImageTask
+import org.graalvm.buildtools.gradle.tasks.NativeRunTask
 import org.gradle.api.tasks.PathSensitivity
 
 import java.util.jar.JarFile
@@ -69,6 +71,11 @@ String libraryVersion = System.getenv("GVM_TCK_LV") ?: providers.gradleProperty(
 
 String libraryGAV = System.getenv("GVM_TCK_LC") ?: providers.gradleProperty('library.coordinates').getOrElse(null)
 libraryGAV = libraryGAV ?: ""
+String libraryGA = ""
+def libraryGAVParts = libraryGAV.split(":")
+if (libraryGAVParts.length >= 2) {
+    libraryGA = "${libraryGAVParts[0]}:${libraryGAVParts[1]}"
+}
 
 String overrideVal = System.getenv("GVM_TCK_EXCLUDE") ?: providers.gradleProperty('library.override').getOrElse(null)
 overrideVal = overrideVal ?: "false"
@@ -79,6 +86,93 @@ boolean generateDynamicAccessReportTaskRequested = gradle.startParameter.taskNam
     taskName == "generateDynamicAccessReport" || taskName.endsWith(":generateDynamicAccessReport")
 }
 boolean generateDynamicAccessReport = generateDynamicAccessReportVal.toBoolean() || generateDynamicAccessReportTaskRequested
+
+Closure<Boolean> isTaskRequested = { String taskName ->
+    gradle.startParameter.taskNames.any { String requestedTaskName ->
+        requestedTaskName == taskName || requestedTaskName.endsWith(":${taskName}")
+    }
+}
+
+boolean informationalTaskRequested = isTaskRequested("help") || isTaskRequested("tasks") || isTaskRequested("properties")
+boolean nativeTraceImageTaskRequested = !informationalTaskRequested &&
+        (isTaskRequested("nativeTraceImage") || isTaskRequested("runNativeTraceImage"))
+boolean runNativeTraceImageTaskRequested = !informationalTaskRequested && isTaskRequested("runNativeTraceImage")
+boolean verifyExactReachabilityMetadataTaskRequested = !informationalTaskRequested &&
+        isTaskRequested("verifyExactReachabilityMetadata")
+
+Closure<String> requiredGradleProperty = { String propertyName ->
+    String propertyValue = providers.gradleProperty(propertyName).getOrElse("")
+    if (propertyValue.trim().isEmpty()) {
+        throw new GradleException("Missing '${propertyName}' property! Rerun Gradle with '-P${propertyName}=<value>'")
+    }
+    return propertyValue
+}
+
+Closure<List<String>> commaSeparatedGradleProperty = { String propertyName ->
+    String propertyValue = providers.gradleProperty(propertyName).getOrElse("")
+    if (propertyValue.trim().isEmpty()) {
+        return []
+    }
+    return propertyValue.split(",")
+            .collect { String value -> value.trim() }
+            .findAll { String value -> !value.isEmpty() }
+}
+
+Closure<List<File>> requiredDirectoryListProperty = { String propertyName, boolean requireAbsolute ->
+    List<String> propertyValues = commaSeparatedGradleProperty(propertyName)
+    if (propertyValues.isEmpty()) {
+        requiredGradleProperty(propertyName)
+    }
+    return propertyValues.collect { String propertyValue ->
+        File directory = file(propertyValue)
+        if (requireAbsolute && !new File(propertyValue).isAbsolute()) {
+            throw new GradleException("Property '${propertyName}' must contain absolute paths. Got: ${propertyValue}")
+        }
+        if (!directory.isDirectory()) {
+            throw new GradleException("Property '${propertyName}' must contain existing directories. Missing: ${directory.absolutePath}")
+        }
+        return directory
+    }
+}
+
+Closure<String> requiredAbsolutePathProperty = { String propertyName ->
+    String propertyValue = requiredGradleProperty(propertyName)
+    if (!new File(propertyValue).isAbsolute()) {
+        throw new GradleException("Property '${propertyName}' must contain an absolute path. Got: ${propertyValue}")
+    }
+    return propertyValue
+}
+
+Closure<String> nativeImageTool = { String toolName ->
+    List<String> toolHomeVariables = ["GRAALVM_HOME", "JAVA_HOME"]
+    for (String toolHomeVariable : toolHomeVariables) {
+        String toolHome = System.getenv(toolHomeVariable)
+        if (toolHome != null && !toolHome.trim().isEmpty()) {
+            List<File> candidates = [
+                    new File(new File(toolHome, "bin"), toolName),
+                    new File(new File(new File(toolHome, "lib"), "svm/bin"), toolName)
+            ]
+            File candidate = candidates.find { File file -> file.isFile() }
+            if (candidate != null) {
+                return candidate.absolutePath
+            }
+        }
+    }
+    return toolName
+}
+
+if (runNativeTraceImageTaskRequested) {
+    requiredAbsolutePathProperty("traceMetadataPath")
+    requiredGradleProperty("traceMetadataConditionPackages")
+}
+if (nativeTraceImageTaskRequested && project.hasProperty("metadataConfigDirs")) {
+    requiredDirectoryListProperty("metadataConfigDirs", false)
+}
+if (verifyExactReachabilityMetadataTaskRequested) {
+    requiredGradleProperty("metadataConfigDirs")
+    requiredGradleProperty("exactPackages")
+    requiredDirectoryListProperty("metadataConfigDirs", true)
+}
 
 // Determine native-image build arguments from ci.json.
 def ciJsonFile = tck.repoRoot.file("ci.json").get().asFile
@@ -187,6 +281,93 @@ tasks.register("generateDynamicAccessReport") { task ->
             .withPropertyName("dynamicAccessOutputDir")
 }
 
+Provider<List<String>> nativeTraceBuildArgs = providers.provider {
+    List<String> buildArgs = []
+    if (nativeTraceImageTaskRequested) {
+        buildArgs.add("-H:+UnlockExperimentalVMOptions")
+        buildArgs.add("-H:+MetadataTracingSupport")
+        buildArgs.add("-H:-UnlockExperimentalVMOptions")
+    }
+    List<String> metadataConfigDirs = commaSeparatedGradleProperty("metadataConfigDirs")
+    boolean metadataConfigDirsRequested = nativeTraceImageTaskRequested || verifyExactReachabilityMetadataTaskRequested
+    if (metadataConfigDirsRequested && !metadataConfigDirs.isEmpty()) {
+        buildArgs.add("-H:ConfigurationFileDirectories=${metadataConfigDirs.join(",")}")
+    }
+    if (verifyExactReachabilityMetadataTaskRequested) {
+        buildArgs.add("--exact-reachability-metadata=${requiredGradleProperty("exactPackages")}")
+    }
+    return buildArgs
+}
+
+tasks.named("nativeTestCompile", BuildNativeImageTask).configure { BuildNativeImageTask task ->
+    if (verifyExactReachabilityMetadataTaskRequested) {
+        task.outputs.upToDateWhen { false }
+    }
+    if (runNativeTraceImageTaskRequested) {
+        task.doFirst {
+            requiredGradleProperty("traceMetadataPath")
+            requiredGradleProperty("traceMetadataConditionPackages")
+        }
+    }
+    if (verifyExactReachabilityMetadataTaskRequested) {
+        task.doFirst {
+            requiredDirectoryListProperty("metadataConfigDirs", true)
+            requiredGradleProperty("exactPackages")
+        }
+    }
+}
+
+tasks.register("nativeTraceImage") { task ->
+    task.setDescription("Builds the test native image with runtime metadata tracing support enabled")
+    task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
+    task.dependsOn(tasks.named("nativeTestCompile"))
+}
+
+tasks.register("runNativeTraceImage", Exec) { Exec task ->
+    task.setDescription("Runs the trace-enabled test native image once and writes runtime metadata trace output")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+    task.dependsOn(tasks.named("nativeTraceImage"))
+    task.ignoreExitValue = true
+    task.doFirst {
+        String traceMetadataPath = requiredAbsolutePathProperty("traceMetadataPath")
+        String traceMetadataConditionPackages = requiredGradleProperty("traceMetadataConditionPackages")
+        BuildNativeImageTask nativeTestCompile = tasks.named("nativeTestCompile", BuildNativeImageTask).get()
+        NativeRunTask nativeTest = tasks.named("nativeTest", NativeRunTask).get()
+        File imageFile = nativeTestCompile.outputFile.get().asFile
+        List<String> runtimeArgs = []
+        runtimeArgs.addAll(nativeTest.internalRuntimeArgs.get())
+        runtimeArgs.addAll(nativeTest.runtimeArgs.get())
+        runtimeArgs.add("-XX:TraceMetadata=path=${traceMetadataPath}")
+        runtimeArgs.add("-XX:TraceMetadataConditionPackages=${traceMetadataConditionPackages}")
+        task.executable = imageFile.absolutePath
+        task.args = runtimeArgs
+    }
+}
+
+tasks.register("mergeNativeTraceMetadata", Exec) { Exec task ->
+    task.setDescription("Merges runtime metadata trace output directories with native-image-utils generate")
+    task.setGroup("Metadata")
+    task.doFirst {
+        List<File> inputDirs = requiredDirectoryListProperty("inputDirs", false)
+        File outputDir = file(requiredAbsolutePathProperty("outputDir"))
+        delete(outputDir)
+        List<String> commandLineArgs = [nativeImageTool("native-image-utils"), "generate"]
+        commandLineArgs.addAll(inputDirs.collect { File inputDir -> "--input-dir=${inputDir.absolutePath}" })
+        commandLineArgs.add("--output-dir=${outputDir.absolutePath}")
+        task.commandLine(commandLineArgs)
+    }
+}
+
+tasks.register("verifyExactReachabilityMetadata") { task ->
+    task.setDescription("Builds the test native image with exact reachability metadata for the supplied packages")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+    task.dependsOn(tasks.named("nativeTestCompile"))
+    task.doFirst {
+        requiredDirectoryListProperty("metadataConfigDirs", true)
+        requiredGradleProperty("exactPackages")
+    }
+}
+
 // Ensure detailed exception/stacktrace logging for all Test tasks, including nativeTest
 tasks.withType(Test).configureEach {
     testLogging {
@@ -274,13 +455,17 @@ graalvmNative {
     metadataRepository {
         enabled = true
         uri(tck.metadataRoot.get().asFile)
+        if (verifyExactReachabilityMetadataTaskRequested && !libraryGA.isBlank()) {
+            excludedModules.add(libraryGA)
+        }
     }
     binaries {
         test {
-            if (override) {
+            if (override || verifyExactReachabilityMetadataTaskRequested) {
                 excludeConfig.put(libraryGAV, [".*"])
             }
             buildArgs.addAll(nativeImageArgs)
+            buildArgs.addAll(nativeTraceBuildArgs)
             if (generateDynamicAccessReport) {
                 buildArgs.addAll(providers.provider {
                     DynamicAccessUtils.buildArgsForClasspathEntries(resolveTestedLibraryJars())
