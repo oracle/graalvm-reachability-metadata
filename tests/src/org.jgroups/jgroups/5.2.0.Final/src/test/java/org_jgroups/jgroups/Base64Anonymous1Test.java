@@ -16,14 +16,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class Base64Anonymous1Test {
     @Test
-    void decodeToObjectFallsBackToDefaultClassResolutionWhenCustomLoaderReturnsNull() throws Exception {
+    void decodeToObjectResolvesSerializedClassThroughCustomLoader() throws Exception {
         SerializableMessage message = new SerializableMessage("cluster-event", 19);
         String encodedObject = Base64.encodeObject(message);
-        ClassLoader classLoader = new NullReturningClassLoader(SerializableMessage.class.getName());
+        RecordingClassLoader classLoader = new RecordingClassLoader(SerializableMessage.class.getName());
 
         Object decodedObject = Base64.decodeToObject(encodedObject, Base64.NO_OPTIONS, classLoader);
 
         assertThat(decodedObject).isEqualTo(message);
+        assertThat(classLoader.resolvedExpectedClass()).isTrue();
     }
 
     public static final class SerializableMessage implements Serializable {
@@ -55,20 +56,25 @@ public class Base64Anonymous1Test {
         }
     }
 
-    private static final class NullReturningClassLoader extends ClassLoader {
-        private final String unresolvedClassName;
+    private static final class RecordingClassLoader extends ClassLoader {
+        private final String expectedClassName;
+        private boolean resolvedExpectedClass;
 
-        private NullReturningClassLoader(String unresolvedClassName) {
+        private RecordingClassLoader(String expectedClassName) {
             super(Base64Anonymous1Test.class.getClassLoader());
-            this.unresolvedClassName = unresolvedClassName;
+            this.expectedClassName = expectedClassName;
         }
 
         @Override
         protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-            if(unresolvedClassName.equals(name)) {
-                return null;
+            if(expectedClassName.equals(name)) {
+                resolvedExpectedClass = true;
             }
             return super.loadClass(name, resolve);
+        }
+
+        private boolean resolvedExpectedClass() {
+            return resolvedExpectedClass;
         }
     }
 }
