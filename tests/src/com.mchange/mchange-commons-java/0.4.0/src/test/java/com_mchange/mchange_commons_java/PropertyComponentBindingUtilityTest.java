@@ -17,6 +17,10 @@ import javax.swing.SwingUtilities;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PropertyComponentBindingUtilityTest {
+    static {
+        configureJavaHomeForSwing();
+    }
+
     @Test
     void textFieldBindingReadsInitialBeanValue() throws Exception {
         ObservableValueBean bean = new ObservableValueBean();
@@ -44,6 +48,13 @@ public class PropertyComponentBindingUtilityTest {
     private static void flushSwingEvents() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
         });
+    }
+
+    private static void configureJavaHomeForSwing() {
+        String environmentJavaHome = System.getenv("JAVA_HOME");
+        if (System.getProperty("java.home") == null && environmentJavaHome != null) {
+            System.setProperty("java.home", environmentJavaHome);
+        }
     }
 
     public static class ObservableValueBean {
