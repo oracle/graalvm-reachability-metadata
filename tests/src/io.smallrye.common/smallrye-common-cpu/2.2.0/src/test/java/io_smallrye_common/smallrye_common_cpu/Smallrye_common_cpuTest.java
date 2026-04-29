@@ -166,7 +166,7 @@ public class Smallrye_common_cpuTest {
 
         try {
             System.setOut(new PrintStream(output, true, StandardCharsets.UTF_8));
-            CacheInfo.main(new String[] { "ignored" });
+            CacheInfo.main(new String[] {"ignored"});
         } finally {
             System.setOut(originalOut);
         }
