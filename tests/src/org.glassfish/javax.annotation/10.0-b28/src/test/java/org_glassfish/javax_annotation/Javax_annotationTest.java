@@ -21,7 +21,6 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import javax.annotation.Generated;
-import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
@@ -31,23 +30,18 @@ import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.annotation.security.RunAs;
-import javax.annotation.sql.DataSourceDefinition;
-import javax.annotation.sql.DataSourceDefinitions;
 import org.junit.jupiter.api.Test;
 
 public class Javax_annotationTest {
 
     @Test
     void defaultLifecycleAndResourceAnnotationsExposeExpectedValues() throws Exception {
-        ManagedBean managedBean = annotation(DefaultManagedBean.class, ManagedBean.class);
-        Resource fieldResource = annotation(field(DefaultManagedBean.class, "defaultResource"), Resource.class);
-        Method init = method(DefaultManagedBean.class, "init");
-        Method destroy = method(DefaultManagedBean.class, "destroy");
+        Resource fieldResource = annotation(field(DefaultAnnotatedComponent.class, "defaultResource"), Resource.class);
+        Method init = method(DefaultAnnotatedComponent.class, "init");
+        Method destroy = method(DefaultAnnotatedComponent.class, "destroy");
 
-        assertThat(managedBean.value()).isEmpty();
         assertThat(fieldResource.annotationType()).isSameAs(Resource.class);
         assertThat(fieldResource.name()).isEmpty();
-        assertThat(fieldResource.lookup()).isEmpty();
         assertThat(fieldResource.type()).isEqualTo(Object.class);
         assertThat(fieldResource.authenticationType()).isEqualTo(Resource.AuthenticationType.CONTAINER);
         assertThat(fieldResource.shareable()).isTrue();
@@ -58,11 +52,9 @@ public class Javax_annotationTest {
     }
 
     @Test
-    void typeLevelAnnotationsDescribeNamedManagedComponentDependencies() {
-        ManagedBean managedBean = annotation(NamedResourceManagedBean.class, ManagedBean.class);
-        Resource resource = annotation(NamedResourceManagedBean.class, Resource.class);
+    void typeLevelResourceAnnotationDescribesNamedComponentDependencies() {
+        Resource resource = annotation(NamedResourceComponent.class, Resource.class);
 
-        assertThat(managedBean.value()).isEqualTo("inventoryService");
         assertThat(resource.name()).isEqualTo("jms/auditQueue");
         assertThat(resource.type()).isEqualTo(Runnable.class);
         assertThat(resource.authenticationType()).isEqualTo(Resource.AuthenticationType.APPLICATION);
@@ -79,7 +71,6 @@ public class Javax_annotationTest {
 
         assertThat(declareRoles.value()).containsExactly("admin", "auditor", "operator");
         assertThat(runAs.value()).isEqualTo("system");
-        assertThat(annotationPresent(SecuredComponent.class, DenyAll.class)).isTrue();
         assertThat(annotation(adminOperation, RolesAllowed.class).value()).containsExactly("admin", "operator");
         assertThat(annotationPresent(publicOperation, PermitAll.class)).isTrue();
         assertThat(annotationPresent(blockedOperation, DenyAll.class)).isTrue();
@@ -91,7 +82,7 @@ public class Javax_annotationTest {
 
         assertThat(rolesAllowed.value()).containsExactly("writer", "reviewer");
         assertThat(annotationPresent(OpenComponent.class, PermitAll.class)).isTrue();
-        assertThat(annotationPresent(RoleRestrictedComponent.class, DenyAll.class)).isFalse();
+        assertThat(annotationPresent(RoleRestrictedComponent.class, PermitAll.class)).isFalse();
     }
 
     @Test
@@ -107,7 +98,6 @@ public class Javax_annotationTest {
         assertThat(resources.value()[0].shareable()).isFalse();
         assertThat(resources.value()[0].description()).isEqualTo("Primary resource");
         assertThat(resources.value()[0].mappedName()).isEqualTo("mapped/primary");
-        assertThat(resources.value()[0].lookup()).isEqualTo("java:comp/env/jdbc/primary");
         assertThat(resources.value()[1].name()).isEqualTo("mail/session");
         assertThat(resources.value()[1].type()).isEqualTo(Object.class);
         assertThat(resources.value()[1].authenticationType()).isEqualTo(Resource.AuthenticationType.CONTAINER);
@@ -116,7 +106,6 @@ public class Javax_annotationTest {
 
         assertThat(fieldResource.name()).isEqualTo("queue/orders");
         assertThat(fieldResource.type()).isEqualTo(String.class);
-        assertThat(fieldResource.lookup()).isEqualTo("java:comp/env/queue/orders");
         assertThat(methodResource.name()).isEqualTo("service/config");
         assertThat(methodResource.type()).isEqualTo(Integer.class);
         assertThat(methodResource.mappedName()).isEqualTo("mapped/config");
@@ -125,47 +114,6 @@ public class Javax_annotationTest {
                 .containsExactly(Resource.AuthenticationType.CONTAINER, Resource.AuthenticationType.APPLICATION);
         assertThat(Resource.AuthenticationType.valueOf("APPLICATION"))
                 .isSameAs(Resource.AuthenticationType.APPLICATION);
-    }
-
-    @Test
-    void dataSourceDefinitionExposesConfiguredValuesAndDefaults() {
-        DataSourceDefinition dataSourceDefinition = annotation(
-                DataSourceConfiguredComponent.class, DataSourceDefinition.class);
-        DataSourceDefinitions dataSourceDefinitions = annotation(
-                MultipleDataSources.class, DataSourceDefinitions.class);
-
-        assertThat(dataSourceDefinition.annotationType()).isSameAs(DataSourceDefinition.class);
-        assertThat(dataSourceDefinition.className()).isEqualTo("org.example.Driver");
-        assertThat(dataSourceDefinition.name()).isEqualTo("jdbc/main");
-        assertThat(dataSourceDefinition.description()).isEqualTo("Main datasource");
-        assertThat(dataSourceDefinition.url()).isEqualTo("jdbc:example:mem:test");
-        assertThat(dataSourceDefinition.user()).isEqualTo("app");
-        assertThat(dataSourceDefinition.password()).isEqualTo("secret");
-        assertThat(dataSourceDefinition.databaseName()).isEqualTo("inventory");
-        assertThat(dataSourceDefinition.portNumber()).isEqualTo(15432);
-        assertThat(dataSourceDefinition.serverName()).isEqualTo("db.example.test");
-        assertThat(dataSourceDefinition.isolationLevel()).isEqualTo(2);
-        assertThat(dataSourceDefinition.transactional()).isFalse();
-        assertThat(dataSourceDefinition.initialPoolSize()).isEqualTo(1);
-        assertThat(dataSourceDefinition.maxPoolSize()).isEqualTo(8);
-        assertThat(dataSourceDefinition.minPoolSize()).isEqualTo(1);
-        assertThat(dataSourceDefinition.maxIdleTime()).isEqualTo(60);
-        assertThat(dataSourceDefinition.maxStatements()).isEqualTo(32);
-        assertThat(dataSourceDefinition.properties()).containsExactly("ssl=false", "trace=true");
-        assertThat(dataSourceDefinition.loginTimeout()).isEqualTo(5);
-
-        assertThat(dataSourceDefinitions.value()).hasSize(2);
-        assertThat(dataSourceDefinitions.value()[0].name()).isEqualTo("jdbc/first");
-        assertThat(dataSourceDefinitions.value()[0].className()).isEqualTo("org.example.FirstDriver");
-        assertThat(dataSourceDefinitions.value()[0].serverName()).isEqualTo("localhost");
-        assertThat(dataSourceDefinitions.value()[0].portNumber()).isEqualTo(-1);
-        assertThat(dataSourceDefinitions.value()[0].isolationLevel()).isEqualTo(-1);
-        assertThat(dataSourceDefinitions.value()[0].transactional()).isTrue();
-        assertThat(dataSourceDefinitions.value()[0].initialPoolSize()).isEqualTo(-1);
-        assertThat(dataSourceDefinitions.value()[0].loginTimeout()).isEqualTo(0);
-        assertThat(dataSourceDefinitions.value()[0].properties()).isEmpty();
-        assertThat(dataSourceDefinitions.value()[1].name()).isEqualTo("jdbc/second");
-        assertThat(dataSourceDefinitions.value()[1].properties()).containsExactly("cache=true");
     }
 
     @Test
@@ -186,10 +134,8 @@ public class Javax_annotationTest {
 
     @Test
     void runtimeAnnotationsAreNotInheritedBySubclassesOrOverrides() throws Exception {
-        assertThat(annotation(DerivedComponent.class, ManagedBean.class)).isNull();
         assertThat(annotation(DerivedComponent.class, RunAs.class)).isNull();
-        assertThat(annotation(DerivedComponent.class, DataSourceDefinition.class)).isNull();
-        assertThat(annotationPresent(DerivedComponent.class, DenyAll.class)).isFalse();
+        assertThat(annotation(DerivedComponent.class, DeclareRoles.class)).isNull();
 
         Method adminOperation = method(DerivedComponent.class, "adminOperation");
         Method loadConfig = method(DerivedComponent.class, "loadConfig");
@@ -201,7 +147,6 @@ public class Javax_annotationTest {
 
     @Test
     void annotationTypesExposeRetentionPolicies() {
-        assertThat(annotation(ManagedBean.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(annotation(PostConstruct.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(annotation(PreDestroy.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(annotation(Resource.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
@@ -211,25 +156,20 @@ public class Javax_annotationTest {
         assertThat(annotation(PermitAll.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(annotation(RolesAllowed.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(annotation(RunAs.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(annotation(DataSourceDefinition.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(annotation(DataSourceDefinitions.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(annotation(Generated.class, Retention.class).value()).isEqualTo(RetentionPolicy.SOURCE);
     }
 
     @Test
     void annotationTypesExposeTargetsAndDocumentationContracts() {
-        assertThat(annotation(ManagedBean.class, Target.class).value()).containsExactly(TYPE);
         assertThat(annotation(Resource.class, Target.class).value()).containsExactlyInAnyOrder(TYPE, FIELD, METHOD);
         assertThat(annotation(Resources.class, Target.class).value()).containsExactly(TYPE);
         assertThat(annotation(PostConstruct.class, Target.class).value()).containsExactly(METHOD);
         assertThat(annotation(PreDestroy.class, Target.class).value()).containsExactly(METHOD);
         assertThat(annotation(DeclareRoles.class, Target.class).value()).containsExactly(TYPE);
-        assertThat(annotation(DenyAll.class, Target.class).value()).containsExactlyInAnyOrder(TYPE, METHOD);
+        assertThat(annotation(DenyAll.class, Target.class).value()).containsExactly(METHOD);
         assertThat(annotation(PermitAll.class, Target.class).value()).containsExactlyInAnyOrder(TYPE, METHOD);
         assertThat(annotation(RolesAllowed.class, Target.class).value()).containsExactlyInAnyOrder(TYPE, METHOD);
         assertThat(annotation(RunAs.class, Target.class).value()).containsExactly(TYPE);
-        assertThat(annotation(DataSourceDefinition.class, Target.class).value()).containsExactly(TYPE);
-        assertThat(annotation(DataSourceDefinitions.class, Target.class).value()).containsExactly(TYPE);
         assertThat(annotation(Generated.class, Target.class).value())
                 .containsExactly(
                         ElementType.PACKAGE,
@@ -250,7 +190,6 @@ public class Javax_annotationTest {
         assertThat(annotationPresent(PostConstruct.class, Documented.class)).isTrue();
         assertThat(annotationPresent(PreDestroy.class, Documented.class)).isTrue();
         assertThat(annotationPresent(Generated.class, Documented.class)).isTrue();
-        assertThat(annotationPresent(ManagedBean.class, Documented.class)).isFalse();
         assertThat(annotationPresent(Resource.class, Documented.class)).isFalse();
     }
 
@@ -271,8 +210,7 @@ public class Javax_annotationTest {
         return type.getDeclaredMethod(name);
     }
 
-    @ManagedBean
-    private static final class DefaultManagedBean {
+    private static final class DefaultAnnotatedComponent {
 
         @Resource
         private Object defaultResource;
@@ -286,18 +224,16 @@ public class Javax_annotationTest {
         }
     }
 
-    @ManagedBean("inventoryService")
     @Resource(
             name = "jms/auditQueue",
             type = Runnable.class,
             authenticationType = Resource.AuthenticationType.APPLICATION,
             shareable = false)
-    private static final class NamedResourceManagedBean {
+    private static final class NamedResourceComponent {
     }
 
     @DeclareRoles({"admin", "auditor", "operator"})
     @RunAs("system")
-    @DenyAll
     private static final class SecuredComponent {
 
         @RolesAllowed({"admin", "operator"})
@@ -328,13 +264,12 @@ public class Javax_annotationTest {
                     authenticationType = Resource.AuthenticationType.APPLICATION,
                     shareable = false,
                     description = "Primary resource",
-                    mappedName = "mapped/primary",
-                    lookup = "java:comp/env/jdbc/primary"),
+                    mappedName = "mapped/primary"),
             @Resource(name = "mail/session", description = "Mail session")
     })
     private static final class ResourceConfiguredComponent {
 
-        @Resource(name = "queue/orders", type = String.class, lookup = "java:comp/env/queue/orders")
+        @Resource(name = "queue/orders", type = String.class)
         private String queueName;
 
         @Resource(name = "service/config", type = Integer.class, mappedName = "mapped/config")
@@ -343,42 +278,8 @@ public class Javax_annotationTest {
         }
     }
 
-    @DataSourceDefinition(
-            className = "org.example.Driver",
-            name = "jdbc/main",
-            description = "Main datasource",
-            url = "jdbc:example:mem:test",
-            user = "app",
-            password = "secret",
-            databaseName = "inventory",
-            portNumber = 15432,
-            serverName = "db.example.test",
-            isolationLevel = 2,
-            transactional = false,
-            initialPoolSize = 1,
-            maxPoolSize = 8,
-            minPoolSize = 1,
-            maxIdleTime = 60,
-            maxStatements = 32,
-            properties = {"ssl=false", "trace=true"},
-            loginTimeout = 5)
-    private static final class DataSourceConfiguredComponent {
-    }
-
-    @DataSourceDefinitions({
-            @DataSourceDefinition(className = "org.example.FirstDriver", name = "jdbc/first"),
-            @DataSourceDefinition(
-                    className = "org.example.SecondDriver",
-                    name = "jdbc/second",
-                    properties = "cache=true")
-    })
-    private static final class MultipleDataSources {
-    }
-
-    @ManagedBean("parentBean")
+    @DeclareRoles("parent")
     @RunAs("system-parent")
-    @DenyAll
-    @DataSourceDefinition(className = "org.example.ParentDriver", name = "jdbc/parent")
     private static class BaseComponent {
 
         @RolesAllowed("admin")
