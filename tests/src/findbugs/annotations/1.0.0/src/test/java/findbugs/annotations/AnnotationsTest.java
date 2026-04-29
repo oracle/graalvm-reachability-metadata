@@ -165,6 +165,21 @@ public class AnnotationsTest {
         assertThat(lifecycle.isClosed()).isTrue();
     }
 
+    @Test
+    void checkReturnValueContractCanBeDeclaredOnBaseFactoriesAndUsedThroughOverrides() {
+        PlanFactory factory = new NumberedPlanFactory("  Metadata  ");
+        BuildPlan firstPlan = factory.createPlan("  Native Image  ");
+        assertThat(firstPlan.coordinate()).isEqualTo("metadata:native image:1");
+
+        NumberedPlanFactory concreteFactory = new NumberedPlanFactory("  Reachability  ");
+        BuildPlan secondPlan = concreteFactory.createPlan("  Agent Config  ");
+        BuildPlan thirdPlan = concreteFactory.createPlan("  Test Runtime  ");
+
+        assertThat(secondPlan.coordinate()).isEqualTo("reachability:agent config:1");
+        assertThat(thirdPlan.coordinate()).isEqualTo("reachability:test runtime:2");
+        assertThat(concreteFactory.issuedPlans()).isEqualTo(2);
+    }
+
     private static CheckForNull checkForNull() {
         return new CheckForNull() {
             @Override
@@ -543,6 +558,55 @@ public class AnnotationsTest {
         @Override
         String finish(String reason) {
             return super.finish(reason);
+        }
+    }
+
+    private abstract static class PlanFactory {
+        private final String group;
+
+        private PlanFactory(String group) {
+            this.group = normalize(group);
+        }
+
+        @CheckReturnValue(priority = Priority.HIGH, explanation = "callers must use the generated plan")
+        abstract BuildPlan createPlan(String taskName);
+
+        final String group() {
+            return group;
+        }
+    }
+
+    private static final class NumberedPlanFactory extends PlanFactory {
+        private int issuedPlans;
+
+        private NumberedPlanFactory(String group) {
+            super(group);
+        }
+
+        @Override
+        BuildPlan createPlan(String taskName) {
+            issuedPlans++;
+            return new BuildPlan(group(), normalize(taskName), issuedPlans);
+        }
+
+        private int issuedPlans() {
+            return issuedPlans;
+        }
+    }
+
+    private static final class BuildPlan {
+        private final String group;
+        private final String taskName;
+        private final int sequence;
+
+        private BuildPlan(String group, String taskName, int sequence) {
+            this.group = group;
+            this.taskName = taskName;
+            this.sequence = sequence;
+        }
+
+        private String coordinate() {
+            return group + ":" + taskName + ":" + sequence;
         }
     }
 
