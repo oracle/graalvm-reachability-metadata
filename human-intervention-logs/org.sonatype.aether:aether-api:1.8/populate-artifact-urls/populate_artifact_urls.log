@@ -1,0 +1,796 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ddad7-7478-7c71-93ff-cfb7690fcb2d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.sonatype.aether:aether-api:1.8
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.8".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6/metadata/org.sonatype.aether/aether-api/index.json
+- Entry selector: "metadata-version" = "1.8"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.8".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.8
+- Entry test-version: 1.8
+codex
+I’ll verify the existing metadata shape first, then check Maven/repository sources for the exact `1.8` artifacts so the URLs line up with this repo’s conventions.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"1\\.8\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.sonatype.aether/aether-api/index.json" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6
+ succeeded in 0ms:
+/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6
+4:    "metadata-version" : "1.8",
+14:    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.7/aether-api-1.7-sources.jar",
+15:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+16:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-api/src/test/java",
+17:    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.7/aether-api-1.7-javadoc.jar",
+18:    "description" : "Aether API defines the core interfaces for artifact resolution and repository access in a Maven-style dependency system. It provides contracts for dependency collection, version resolution, and local or remote repository interactions that implementations execute.",
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"\\s*:\\s*\"https://repo1.maven.org|\"documentation-url\"\\s*:\\s*\"https://repo1.maven.org|\"test-code-url\"\\s*:\\s*\"https://repo1.maven.org|\"repository-url\"' metadata | head -n 80" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6
+ succeeded in 0ms:
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+metadata/com.google.android/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-sources.jar",
+metadata/com.google.android/annotations/index.json:7:    "repository-url": "https://android.googlesource.com/platform/sdk",
+metadata/com.google.android/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-javadoc.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:6:    "repository-url" : "https://github.com/jbossinterceptors/jbossinterceptors",
+metadata/org.lz4/lz4-java/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-sources.jar",
+metadata/org.lz4/lz4-java/index.json:7:    "repository-url": "https://github.com/lz4/lz4-java",
+metadata/org.lz4/lz4-java/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-javadoc.jar",
+metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/1.0.3/compress-lzf-1.0.3-sources.jar",
+metadata/com.ning/compress-lzf/index.json:6:    "repository-url" : "https://github.com/ning/compress",
+metadata/com.ning/compress-lzf/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/1.0.3/compress-lzf-1.0.3-javadoc.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-sources.jar",
+metadata/org.jctools/jctools-core/index.json:9:    "repository-url": "https://github.com/JCTools/JCTools",
+metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:6:    "repository-url" : "https://github.com/dropwizard/metrics",
+metadata/org.codehaus.plexus/plexus-component-annotations/index.json:6:    "repository-url" : "https://github.com/codehaus-plexus/plexus-containers",
+metadata/org.springframework.security/spring-security-crypto/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/5.7.3/spring-security-crypto-5.7.3-sources.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-security",
+metadata/org.springframework.security/spring-security-crypto/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/5.7.3/spring-security-crypto-5.7.3-javadoc.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:10:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/persistence",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/dropwizard/metrics/metrics-jvm/4.2.0/metrics-jvm-4.2.0-sources.jar",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:6:    "repository-url" : "https://github.com/dropwizard/metrics/",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/dropwizard/metrics/metrics-jvm/4.2.0/metrics-jvm-4.2.0-javadoc.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:6:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+metadata/org.eclipse.angus/jakarta.mail/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/angus/jakarta.mail/1.0.0/jakarta.mail-1.0.0-sources.jar",
+metadata/org.eclipse.angus/jakarta.mail/index.json:9:    "repository-url": "https://github.com/eclipse-ee4j/angus-mail",
+metadata/org.eclipse.angus/jakarta.mail/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/angus/jakarta.mail/1.0.0/jakarta.mail-1.0.0-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:5:    "repository-url" : "https://github.com/apache/commons-compress",
+metadata/org.apache.commons/commons-compress/index.json:20:    "repository-url" : "https://github.com/apache/commons-compress",
+metadata/software.amazon.awssdk/s3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-sources.jar",
+metadata/software.amazon.awssdk/s3/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/s3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5-sources.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:5:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.httpcomponents/httpclient/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5-tests.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14-sources.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:20:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.httpcomponents/httpclient/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14-tests.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14-javadoc.jar",
+metadata/org.apache.maven/maven-monitor/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6",
+metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:6:    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+metadata/com.google.auth/google-auth-library-credentials/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+metadata/org.apache.santuario/xmlsec/index.json:9:    "repository-url": "https://github.com/apache/santuario-xml-security-java",
+metadata/org.apache.commons/commons-dbcp2/index.json:9:    "repository-url": "https://github.com/apache/commons-dbcp",
+metadata/com.sun.xml.fastinfoset/FastInfoset/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/xml/fastinfoset/FastInfoset/1.2.15/FastInfoset-1.2.15-sources.jar",
+metadata/com.sun.xml.fastinfoset/FastInfoset/index.json:7:    "repository-url": "https://github.com/javaee/metro-fi",
+metadata/com.sun.xml.fastinfoset/FastInfoset/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/com/sun/xml/fastinfoset/FastInfosetRoundTripTests/1.2.15/FastInfosetRoundTripTests-1.2.15-sources.jar",
+metadata/com.sun.xml.fastinfoset/FastInfoset/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/xml/fastinfoset/FastInfoset/1.2.15/FastInfoset-1.2.15-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-interpolation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/plexus-interpolation-1.0-sources.jar",
+metadata/org.codehaus.plexus/plexus-interpolation/index.json:6:    "repository-url" : "https://github.com/codehaus-plexus/plexus-interpolation",
+metadata/org.codehaus.plexus/plexus-interpolation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/plexus-interpolation-1.0-javadoc.jar",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:6:    "repository-url" : "https://github.com/apache/maven-surefire",
+metadata/io.perfmark/perfmark-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/perfmark/perfmark-api/0.25.0/perfmark-api-0.25.0-sources.jar",
+metadata/io.perfmark/perfmark-api/index.json:6:    "repository-url" : "https://github.com/perfmark/perfmark",
+metadata/io.perfmark/perfmark-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/perfmark/perfmark-api/0.25.0/perfmark-api-0.25.0-javadoc.jar",
+metadata/io.swagger.core.v3/swagger-annotations/index.json:6:    "repository-url" : "https://github.com/swagger-api/swagger-core",
+metadata/org.apache.commons/commons-text/index.json:6:    "repository-url" : "https://gitbox.apache.org/repos/asf?p=commons-text.git",
+metadata/org.apache.httpcomponents/httpcore/index.json:6:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:20:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/javax.jcr/jcr/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/jcr/jcr/1.0/jcr-1.0-sources.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.sonatype.aether/aether-api/index.json" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.8",
+    "tested-versions" : [
+      "1.8"
+    ],
+    "allowed-packages" : [
+      "org.sonatype.aether"
+    ]
+  },
+  {
+    "metadata-version" : "1.7",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.7/aether-api-1.7-sources.jar",
+    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-api/src/test/java",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.7/aether-api-1.7-javadoc.jar",
+    "description" : "Aether API defines the core interfaces for artifact resolution and repository access in a Maven-style dependency system. It provides contracts for dependency collection, version resolution, and local or remote repository interactions that implementations execute.",
+    "tested-versions" : [
+      "1.7"
+    ],
+    "allowed-packages" : [
+      "org.sonatype.aether"
+    ]
+  }
+]
+
+web search: 
+web search: org.sonatype.aether aether-api 1.8 Maven Central sources javadoc tests
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8.pom
+web search: 
+web search: "org/sonatype/aether/aether-api/1.8" "aether-api-1.8-javadoc.jar"
+codex
+The local entry has only the `1.8` object missing those fields; the older `1.7` entry already uses Maven Central source and javadoc jars plus the Sonatype Aether GitHub repo. I’m checking whether version `1.8` also published a test jar before falling back to the tagged repository tests.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/ | sed -n '1,220p'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8.pom | sed -n '1,220p'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Copyright (c) 2010 Sonatype, Inc.
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the Eclipse Public License v1.0
+which accompanies this distribution, and is available at
+http://www.eclipse.org/legal/epl-v10.html
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.aether</groupId>
+    <artifactId>aether-parent</artifactId>
+    <version>1.8</version>
+  </parent>
+
+  <artifactId>aether-api</artifactId>
+
+  <name>Aether :: API</name>
+  <description>
+    The application programming interface for the repository system.
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/sonatype/aether/aether-api/1.8</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/sonatype/aether/aether-api/1.8</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="aether-api-1.8-javadoc.jar" title="aether-api-1.8-javadoc.jar">aether-api-1.8-javadoc.jar</a>                        2010-11-18 20:55    534969      
+<a href="aether-api-1.8-javadoc.jar.asc" title="aether-api-1.8-javadoc.jar.asc">aether-api-1.8-javadoc.jar.asc</a>                    2010-11-18 20:55       194      
+<a href="aether-api-1.8-javadoc.jar.asc.md5" title="aether-api-1.8-javadoc.jar.asc.md5">aether-api-1.8-javadoc.jar.asc.md5</a>                2010-11-18 20:55        32      
+<a href="aether-api-1.8-javadoc.jar.asc.sha1" title="aether-api-1.8-javadoc.jar.asc.sha1">aether-api-1.8-javadoc.jar.asc.sha1</a>               2010-11-18 20:55        40      
+<a href="aether-api-1.8-javadoc.jar.md5" title="aether-api-1.8-javadoc.jar.md5">aether-api-1.8-javadoc.jar.md5</a>                    2010-11-18 20:55        32      
+<a href="aether-api-1.8-javadoc.jar.sha1" title="aether-api-1.8-javadoc.jar.sha1">aether-api-1.8-javadoc.jar.sha1</a>                   2010-11-18 20:55        40      
+<a href="aether-api-1.8-sources.jar" title="aether-api-1.8-sources.jar">aether-api-1.8-sources.jar</a>                        2010-11-18 20:55     88754      
+<a href="aether-api-1.8-sources.jar.asc" title="aether-api-1.8-sources.jar.asc">aether-api-1.8-sources.jar.asc</a>                    2010-11-18 20:55       194      
+<a href="aether-api-1.8-sources.jar.asc.md5" title="aether-api-1.8-sources.jar.asc.md5">aether-api-1.8-sources.jar.asc.md5</a>                2010-11-18 20:55        32      
+<a href="aether-api-1.8-sources.jar.asc.sha1" title="aether-api-1.8-sources.jar.asc.sha1">aether-api-1.8-sources.jar.asc.sha1</a>               2010-11-18 20:55        40      
+<a href="aether-api-1.8-sources.jar.md5" title="aether-api-1.8-sources.jar.md5">aether-api-1.8-sources.jar.md5</a>                    2010-11-18 20:55        32      
+<a href="aether-api-1.8-sources.jar.sha1" title="aether-api-1.8-sources.jar.sha1">aether-api-1.8-sources.jar.sha1</a>                   2010-11-18 20:55        40      
+<a href="aether-api-1.8.jar" title="aether-api-1.8.jar">aether-api-1.8.jar</a>                                2010-11-18 20:55     77252      
+<a href="aether-api-1.8.jar.asc" title="aether-api-1.8.jar.asc">aether-api-1.8.jar.asc</a>                            2010-11-18 20:55       194      
+<a href="aether-api-1.8.jar.asc.md5" title="aether-api-1.8.jar.asc.md5">aether-api-1.8.jar.asc.md5</a>                        2010-11-18 20:55        32      
+<a href="aether-api-1.8.jar.asc.sha1" title="aether-api-1.8.jar.asc.sha1">aether-api-1.8.jar.asc.sha1</a>                       2010-11-18 20:55        40      
+<a href="aether-api-1.8.jar.md5" title="aether-api-1.8.jar.md5">aether-api-1.8.jar.md5</a>                            2010-11-18 20:55        32      
+<a href="aether-api-1.8.jar.sha1" title="aether-api-1.8.jar.sha1">aether-api-1.8.jar.sha1</a>                           2010-11-18 20:55        40      
+<a href="aether-api-1.8.pom" title="aether-api-1.8.pom">aether-api-1.8.pom</a>                                2010-11-18 20:55      1275      
+<a href="aether-api-1.8.pom.asc" title="aether-api-1.8.pom.asc">aether-api-1.8.pom.asc</a>                            2010-11-18 20:55       194      
+<a href="aether-api-1.8.pom.asc.md5" title="aether-api-1.8.pom.asc.md5">aether-api-1.8.pom.asc.md5</a>                        2010-11-18 20:55        32      
+<a href="aether-api-1.8.pom.asc.sha1" title="aether-api-1.8.pom.asc.sha1">aether-api-1.8.pom.asc.sha1</a>                       2010-11-18 20:55        40      
+<a href="aether-api-1.8.pom.md5" title="aether-api-1.8.pom.md5">aether-api-1.8.pom.md5</a>                            2010-11-18 20:55        32      
+<a href="aether-api-1.8.pom.sha1" title="aether-api-1.8.pom.sha1">aether-api-1.8.pom.sha1</a>                           2010-11-18 20:55        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/sonatype/sonatype-aether.git 'refs/tags/*1.8*' 'refs/tags/aether-*' | sed -n '1,120p'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6
+ succeeded in 340ms:
+65b1adf4ebdcf54782f68def6661450d3fe3fa68	refs/tags/aether-1.0
+efa59b797625d22c8a534cf82c9ded5011e166bc	refs/tags/aether-1.0^{}
+e232a5dfd16fee712ac6ae065145e260df8d0132	refs/tags/aether-1.1
+98c954e1862c944e3948a7e60e060f46bbdc2671	refs/tags/aether-1.1^{}
+067f7a2049a23856bda88916f8efdacf1da03cc1	refs/tags/aether-1.1.1
+fe17a2ba82cde9df247fe1ddebadc7f5fd107d3b	refs/tags/aether-1.1.1^{}
+167930e0ad2f31741bbfb7b4fd39acd724bbdcac	refs/tags/aether-1.10
+d71c5197d2e20a2c316b287dfc982554a8cb20fa	refs/tags/aether-1.10^{}
+a656249f119581df50acc0528f8d2510c89d8547	refs/tags/aether-1.10.1
+76f98140fc1f16b7fcc9159c8735606fc4292a65	refs/tags/aether-1.10.1^{}
+5fdaf8ad32b374619fa4ebb03230b06467fafdd9	refs/tags/aether-1.11
+fe0c31efdceef5cbf27e1916a82e5fe98717004f	refs/tags/aether-1.11^{}
+e54745906a2072052fd42a5719f7c91963408e28	refs/tags/aether-1.12
+1adb762cd909d153ee88c505e45955cb62c271a8	refs/tags/aether-1.12^{}
+d842d0e2fe0fad6df396873f4939edc45fd3ea0d	refs/tags/aether-1.13
+ad94c23417e8dac7859abcc02bba4384dad4efb6	refs/tags/aether-1.13^{}
+d2c4b5c5e2bb3d5cb46dca694e3f6c355b8df750	refs/tags/aether-1.13.1
+50983e14b99ff694cbb150612352c621b3d7d695	refs/tags/aether-1.13.1^{}
+3310c1ff32811f8909d6d0c9ad160f7245644ca2	refs/tags/aether-1.2
+f95e3e6c52d348493a8856543e87614526d6219c	refs/tags/aether-1.2^{}
+05dc9fa24e4161c791badf25e1b3247cb5098f82	refs/tags/aether-1.3
+f24b8f3c7a9276d58f03d0fad9a5af106810d9dc	refs/tags/aether-1.3^{}
+797f3680f5a9ab0cffb857ddfc99bdbca21d6f3f	refs/tags/aether-1.4
+cc08b07360bb850e166733a4d5461bf2e11387bd	refs/tags/aether-1.4^{}
+cda45110d0252e3eb89d50d60afa50ef7b1367e1	refs/tags/aether-1.5
+91fe6f1329eab38c269d206388875af104fefaaf	refs/tags/aether-1.5^{}
+74f8754e096da3384b18d588c715572bfaeb7196	refs/tags/aether-1.6
+77bd2525a90e1e5d4dbdf419de1c5d708e21186d	refs/tags/aether-1.6^{}
+074c2fb83fb0bd88d7bfe4db80f9fec35c97edcb	refs/tags/aether-1.7
+6ef7c0475459b9204bea7370ae97c6ea2921f0f4	refs/tags/aether-1.7^{}
+52629b29b3920dd2d76b0b8c95a2834a94a0106a	refs/tags/aether-1.8
+af9a0611350ecf4aa835c97f5c97411811db62fe	refs/tags/aether-1.8^{}
+1b7a5bf7f3e9e181fde132e7ff319dde8ad23e3c	refs/tags/aether-1.8.1
+0688bc7895319a8547ab93ff21c2db4ae9e942ce	refs/tags/aether-1.8.1^{}
+333a9442d170baa4f6ad27bcf77c46d39946aab9	refs/tags/aether-1.9
+23f7474dd2de47a67484c10f74b44b6e2dc9b85f	refs/tags/aether-1.9^{}
+
+web search: 
+web search: https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-api/src/test/java
+web search: 
+web search: site:repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/ "aether-api-1.8-sources.jar"
+web search: 
+web search: https://central.sonatype.com/artifact/org.sonatype.aether/aether-api
+web search: 
+web search: https://mvnrepository.com/artifact/org.sonatype.aether/aether-api/1.8
+web search: 
+web search: https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/
+codex
+Maven Central has the exact `1.8` source and javadoc jars, but no `1.8` tests jar in that artifact directory. I’ll use Maven Central for source/docs, the canonical GitHub root for `repository-url`, and the `aether-1.8` tag’s `aether-api/src/test/java` directory for tests.
+apply patch
+patch: completed
+/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6/metadata/org.sonatype.aether/aether-api/index.json
+diff --git a/metadata/org.sonatype.aether/aether-api/index.json b/metadata/org.sonatype.aether/aether-api/index.json
+index c7a9f3c3ca16beb00953f14839d7f650c9c1953f..2bc1ac8daf5061912fbe7995b560b54a7e111827
+--- a/metadata/org.sonatype.aether/aether-api/index.json
++++ b/metadata/org.sonatype.aether/aether-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sonatype-aether",
++    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-api/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-javadoc.jar",
++    "description" : "Aether API defines the core interfaces for artifact resolution and repository access in a Maven-style dependency system. It provides contracts for dependency collection, version resolution, and local or remote repository interactions that implementations execute.",
+     "tested-versions" : [
+       "1.8"
+     ],
+
+diff --git a/metadata/org.sonatype.aether/aether-api/index.json b/metadata/org.sonatype.aether/aether-api/index.json
+index c7a9f3c3ca16beb00953f14839d7f650c9c1953f..2bc1ac8daf5061912fbe7995b560b54a7e111827
+--- a/metadata/org.sonatype.aether/aether-api/index.json
++++ b/metadata/org.sonatype.aether/aether-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sonatype-aether",
++    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-api/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-javadoc.jar",
++    "description" : "Aether API defines the core interfaces for artifact resolution and repository access in a Maven-style dependency system. It provides contracts for dependency collection, version resolution, and local or remote repository interactions that implementations execute.",
+     "tested-versions" : [
+       "1.8"
+     ],
+
+web search: 
+web search: https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-api/src/test/java
+web search: 
+web search: central sonatype aether-api 1.8 sources javadoc org.sonatype.aether
+web search: 
+web search: https://central.sonatype.com/artifact/org.sonatype.aether/aether-api
+web search: 
+web search: 
+web search: 
+web search: "central.sonatype.com/artifact/org.sonatype.aether/aether-api/1.8"
+codex
+The edit is in place. I’m doing a JSON parse and the targeted metadata validation now so we catch formatting or schema issues before wrapping up.
+exec
+/usr/bin/bash -lc "jq 'map(select(.\"metadata-version\" == \"1.8\"))' metadata/org.sonatype.aether/aether-api/index.json" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "metadata-version": "1.8",
+    "source-code-url": "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-sources.jar",
+    "repository-url": "https://github.com/sonatype/sonatype-aether",
+    "test-code-url": "https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-api/src/test/java",
+    "documentation-url": "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-javadoc.jar",
+    "description": "Aether API defines the core interfaces for artifact resolution and repository access in a Maven-style dependency system. It provides contracts for dependency collection, version resolution, and local or remote repository interactions that implementations execute.",
+    "tested-versions": [
+      "1.8"
+    ],
+    "allowed-packages": [
+      "org.sonatype.aether"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.sonatype.aether/aether-api/index.json' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6
+ succeeded in 0ms:
+diff --git i/metadata/org.sonatype.aether/aether-api/index.json w/metadata/org.sonatype.aether/aether-api/index.json
+index c7a9f3c3ca..2bc1ac8daf 100644
+--- i/metadata/org.sonatype.aether/aether-api/index.json
++++ w/metadata/org.sonatype.aether/aether-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sonatype-aether",
++    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-api/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-javadoc.jar",
++    "description" : "Aether API defines the core interfaces for artifact resolution and repository access in a Maven-style dependency system. It provides contracts for dependency collection, version resolution, and local or remote repository interactions that implementations execute.",
+     "tested-versions" : [
+       "1.8"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.sonatype.aether:aether-api:1.8 --stacktrace' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6
+diff --git a/metadata/org.sonatype.aether/aether-api/index.json b/metadata/org.sonatype.aether/aether-api/index.json
+index c7a9f3c3ca16beb00953f14839d7f650c9c1953f..2bc1ac8daf5061912fbe7995b560b54a7e111827
+--- a/metadata/org.sonatype.aether/aether-api/index.json
++++ b/metadata/org.sonatype.aether/aether-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sonatype-aether",
++    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-api/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-javadoc.jar",
++    "description" : "Aether API defines the core interfaces for artifact resolution and repository access in a Maven-style dependency system. It provides contracts for dependency collection, version resolution, and local or remote repository interactions that implementations execute.",
+     "tested-versions" : [
+       "1.8"
+     ],
+
+ exited 1 in 548ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.sonatype.aether:aether-api:1.8: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6/metadata/org.sonatype.aether/aether-api/1.8/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.sonatype.aether:aether-api:1.8: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6/metadata/org.sonatype.aether/aether-api/1.8/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.sonatype.aether:aether-api:1.8: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6/metadata/org.sonatype.aether/aether-api/1.8/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 539ms
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The targeted metadata check fails before validating the URL fields because this coordinate has no `metadata/org.sonatype.aether/aether-api/1.8/reachability-metadata.json` directory content. The JSON itself parses cleanly; I’ll run a whitespace diff check as a narrower verification for the file I changed.
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.sonatype.aether/aether-api/index.json metadata/org.sonatype.aether/aether-api/1.8' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6
+ succeeded in 0ms:
+ M metadata/org.sonatype.aether/aether-api/index.json
+
+exec
+/usr/bin/bash -lc 'git diff --check -- metadata/org.sonatype.aether/aether-api/index.json' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'find metadata/org.sonatype.aether/aether-api -maxdepth 2 -type f -print | sort' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6
+ succeeded in 0ms:
+metadata/org.sonatype.aether/aether-api/1.7/reachability-metadata.json
+metadata/org.sonatype.aether/aether-api/index.json
+
+diff --git a/metadata/org.sonatype.aether/aether-api/index.json b/metadata/org.sonatype.aether/aether-api/index.json
+index c7a9f3c3ca16beb00953f14839d7f650c9c1953f..2bc1ac8daf5061912fbe7995b560b54a7e111827
+--- a/metadata/org.sonatype.aether/aether-api/index.json
++++ b/metadata/org.sonatype.aether/aether-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sonatype-aether",
++    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-api/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-javadoc.jar",
++    "description" : "Aether API defines the core interfaces for artifact resolution and repository access in a Maven-style dependency system. It provides contracts for dependency collection, version resolution, and local or remote repository interactions that implementations execute.",
+     "tested-versions" : [
+       "1.8"
+     ],
+
+web search: 
+web search: Sonatype Aether GitHub repository aether-1.8 aether-api src/test/java
+web search: 
+web search: https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-api/src/test/java
+web search: 
+web search: 
+web search: 
+web search: "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/"
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.sonatype.aether/aether-api/index.json | sed -n '1,28p'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "1.8",
+     5	    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-sources.jar",
+     6	    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+     7	    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-api/src/test/java",
+     8	    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-javadoc.jar",
+     9	    "description" : "Aether API defines the core interfaces for artifact resolution and repository access in a Maven-style dependency system. It provides contracts for dependency collection, version resolution, and local or remote repository interactions that implementations execute.",
+    10	    "tested-versions" : [
+    11	      "1.8"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "org.sonatype.aether"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "1.7",
+    19	    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.7/aether-api-1.7-sources.jar",
+    20	    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+    21	    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-api/src/test/java",
+    22	    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.7/aether-api-1.7-javadoc.jar",
+    23	    "description" : "Aether API defines the core interfaces for artifact resolution and repository access in a Maven-style dependency system. It provides contracts for dependency collection, version resolution, and local or remote repository interactions that implementations execute.",
+    24	    "tested-versions" : [
+    25	      "1.7"
+    26	    ],
+    27	    "allowed-packages" : [
+    28	      "org.sonatype.aether"
+
+diff --git a/metadata/org.sonatype.aether/aether-api/index.json b/metadata/org.sonatype.aether/aether-api/index.json
+index c7a9f3c3ca16beb00953f14839d7f650c9c1953f..2bc1ac8daf5061912fbe7995b560b54a7e111827
+--- a/metadata/org.sonatype.aether/aether-api/index.json
++++ b/metadata/org.sonatype.aether/aether-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sonatype-aether",
++    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-api/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-javadoc.jar",
++    "description" : "Aether API defines the core interfaces for artifact resolution and repository access in a Maven-style dependency system. It provides contracts for dependency collection, version resolution, and local or remote repository interactions that implementations execute.",
+     "tested-versions" : [
+       "1.8"
+     ],
+
+codex
+Updated [index.json](/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6/metadata/org.sonatype.aether/aether-api/index.json:5) for `metadata-version` `1.8`.
+
+Filled:
+- `source-code-url`
+- `repository-url`
+- `test-code-url`
+- `documentation-url`
+- `description`
+
+I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+Validation:
+- `jq` JSON parse passed.
+- `git diff --check` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.sonatype.aether:aether-api:1.8 --stacktrace` failed because `metadata/org.sonatype.aether/aether-api/1.8/reachability-metadata.json` is missing, which is outside the requested field update.
+diff --git a/metadata/org.sonatype.aether/aether-api/index.json b/metadata/org.sonatype.aether/aether-api/index.json
+index c7a9f3c3ca16beb00953f14839d7f650c9c1953f..2bc1ac8daf5061912fbe7995b560b54a7e111827
+--- a/metadata/org.sonatype.aether/aether-api/index.json
++++ b/metadata/org.sonatype.aether/aether-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sonatype-aether",
++    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-api/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-javadoc.jar",
++    "description" : "Aether API defines the core interfaces for artifact resolution and repository access in a Maven-style dependency system. It provides contracts for dependency collection, version resolution, and local or remote repository interactions that implementations execute.",
+     "tested-versions" : [
+       "1.8"
+     ],
+
+2026-04-29T20:05:45.851875Z ERROR codex_core::session: failed to record rollout items: thread 019ddad7-7478-7c71-93ff-cfb7690fcb2d not found
+tokens used
+117,969
+Updated [index.json](/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6/metadata/org.sonatype.aether/aether-api/index.json:5) for `metadata-version` `1.8`.
+
+Filled:
+- `source-code-url`
+- `repository-url`
+- `test-code-url`
+- `documentation-url`
+- `description`
+
+I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+Validation:
+- `jq` JSON parse passed.
+- `git diff --check` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.sonatype.aether:aether-api:1.8 --stacktrace` failed because `metadata/org.sonatype.aether/aether-api/1.8/reachability-metadata.json` is missing, which is outside the requested field update.
+Ran agent for org.sonatype.aether:aether-api:1.8 (exit 0). Log: /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6/build/agent-url-discovery-logs/org.sonatype.aether-aether-api-1.8.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3362-fd704af6/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 40s
+9 actionable tasks: 1 executed, 8 up-to-date
