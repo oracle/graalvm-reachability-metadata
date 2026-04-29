@@ -6,43 +6,31 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_el;
 
-import java.security.Permission;
+import java.lang.reflect.Constructor;
+import java.security.PrivilegedAction;
 
 import jakarta.el.ImportHandler;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SuppressWarnings("removal")
 public class ImportHandlerInnerPrivilegedResourceExistsTest {
 
-    private static final SecurityManager PREVIOUS_SECURITY_MANAGER = System.getSecurityManager();
-
-    static {
-        System.setSecurityManager(new PermissiveSecurityManager());
-    }
-
-    @AfterAll
-    static void restoreSecurityManager() {
-        System.setSecurityManager(PREVIOUS_SECURITY_MANAGER);
-    }
-
     @Test
-    void resolvesImportedClassUsingPrivilegedResourceLookup() {
-        ImportHandler importHandler = new ImportHandler();
+    void privilegedActionFindsClassResource() throws Exception {
+        String resourceName = ImportHandlerTest.StaticFieldTarget.class.getName().replace('.', '/') + ".class";
+        PrivilegedAction<Boolean> resourceExists = createPrivilegedResourceExists(resourceName);
 
-        importHandler.importClass(ImportHandlerTest.StaticFieldTarget.class.getName());
-
-        assertThat(importHandler.resolveClass(ImportHandlerTest.StaticFieldTarget.class.getSimpleName()))
-                .isEqualTo(ImportHandlerTest.StaticFieldTarget.class);
+        assertThat(resourceExists.run()).isTrue();
     }
 
-    private static final class PermissiveSecurityManager extends SecurityManager {
-
-        @Override
-        public void checkPermission(Permission permission) {
-        }
+    @SuppressWarnings("unchecked")
+    private static PrivilegedAction<Boolean> createPrivilegedResourceExists(String resourceName) throws Exception {
+        Class<?> actionClass = Class.forName(ImportHandler.class.getName() + "$PrivilegedResourceExists");
+        Constructor<?> constructor = actionClass.getDeclaredConstructor(ClassLoader.class, String.class);
+        constructor.setAccessible(true);
+        return (PrivilegedAction<Boolean>) constructor.newInstance(
+                Thread.currentThread().getContextClassLoader(), resourceName);
     }
 }
