@@ -7,7 +7,6 @@
 package org_modelmapper.modelmapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +17,7 @@ import org.modelmapper.internal.bytebuddy.ByteBuddy;
 import org.modelmapper.internal.bytebuddy.description.modifier.Visibility;
 import org.modelmapper.internal.bytebuddy.dynamic.DynamicType;
 import org.modelmapper.internal.bytebuddy.implementation.FieldAccessor;
+import org.modelmapper.internal.cglib.BridgeVisibleType;
 
 public class BridgeClassLoaderFactoryInnerBridgeClassLoaderTest {
     private static final String PACKAGE_NAME = "org_modelmapper.modelmapper.bridge";
@@ -46,9 +46,10 @@ public class BridgeClassLoaderFactoryInnerBridgeClassLoaderTest {
         assertThat(bridgeClassLoader.getClass().getName())
             .isEqualTo("org.modelmapper.internal.BridgeClassLoaderFactory$BridgeClassLoader");
 
-        assertThatThrownBy(() ->
-            bridgeClassLoader.loadClass("org.modelmapper.internal.cglib.DoesNotExist"))
-            .isInstanceOf(ClassNotFoundException.class);
+        String internalBridgeTypeName = BridgeVisibleType.class.getName();
+        Class<?> internalBridgeType = bridgeClassLoader.loadClass(internalBridgeTypeName);
+        assertThat(internalBridgeType.getName()).isEqualTo(internalBridgeTypeName);
+        assertThat(internalBridgeType).isSameAs(BridgeVisibleType.class);
 
         Class<?> additionalOnlyType = bridgeClassLoader.loadClass(ADDITIONAL_ONLY_NAME);
         assertThat(additionalOnlyType.getName()).isEqualTo(ADDITIONAL_ONLY_NAME);
