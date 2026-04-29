@@ -19,8 +19,10 @@ import org.gradle.api.tasks.TaskAction;
 import org.gradle.util.internal.VersionNumber;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -80,19 +82,28 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
     }
 
     static List<String> getNewerVersionsFor(String library, String startingVersion) {
+        String baseUrl = "https://repo1.maven.org/maven2";
+        String[] libraryParts = library.split(":");
+        String group = libraryParts[0].replace(".", "/");
+        String artifact = libraryParts[1];
+        Optional<String> metadata = readMavenMetadata(baseUrl + "/" + group + "/" + artifact + "/maven-metadata.xml");
+        if (metadata.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<String> newerVersions = getNewerVersionsFromLibraryIndex(metadata.get(), startingVersion, library);
+
+        List<String> testedVersions = getTestedVersions(library);
+        newerVersions.removeAll(testedVersions);
+
+        return filterPreReleases(newerVersions);
+    }
+
+    static Optional<String> readMavenMetadata(String metadataUrl) {
         try {
-            String baseUrl = "https://repo1.maven.org/maven2";
-            String[] libraryParts = library.split(":");
-            String group = libraryParts[0].replace(".", "/");
-            String artifact = libraryParts[1];
-            String data = new String(new URL(baseUrl + "/" + group + "/" + artifact + "/maven-metadata.xml").openStream().readAllBytes());
-
-            List<String> newerVersions = getNewerVersionsFromLibraryIndex(data, startingVersion, library);
-
-            List<String> testedVersions = getTestedVersions(library);
-            newerVersions.removeAll(testedVersions);
-
-            return filterPreReleases(newerVersions);
+            return Optional.of(new String(URI.create(metadataUrl).toURL().openStream().readAllBytes(), StandardCharsets.UTF_8));
+        } catch (FileNotFoundException e) {
+            return Optional.empty();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
