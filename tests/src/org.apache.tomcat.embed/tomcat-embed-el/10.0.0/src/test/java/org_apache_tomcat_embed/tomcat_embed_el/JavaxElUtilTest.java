@@ -6,14 +6,18 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_el;
 
+import java.util.Locale;
+
 import jakarta.el.ELClass;
 import jakarta.el.ELContext;
 import jakarta.el.ELManager;
+import jakarta.el.PropertyNotFoundException;
 import jakarta.el.StaticFieldELResolver;
 
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class JavaxElUtilTest {
 
@@ -29,6 +33,21 @@ public class JavaxElUtilTest {
                 new Object[] {"prefix", "alpha", "beta"});
 
         assertThat(value).isEqualTo("prefix[alpha,beta]");
+    }
+
+    @Test
+    void formatsStaticFieldLookupFailureMessageForRequestedLocale() {
+        StaticFieldELResolver resolver = new StaticFieldELResolver();
+        ELContext context = newContext();
+        context.setLocale(Locale.ROOT);
+
+        assertThatThrownBy(() -> resolver.getValue(
+                context,
+                new ELClass(PublicStaticVarargsBase.class),
+                "missingField"))
+                .isInstanceOf(PropertyNotFoundException.class)
+                .hasMessageContaining("missingField")
+                .hasMessageContaining(PublicStaticVarargsBase.class.getName());
     }
 
     private static ELContext newContext() {
