@@ -19,6 +19,7 @@ import io.smallrye.common.ref.StrongReference;
 import io.smallrye.common.ref.WeakReference;
 import java.lang.ref.ReferenceQueue;
 import java.util.EnumSet;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -211,6 +212,42 @@ public class Smallrye_common_refTest {
         assertReaperProcessesReference(Reference.Type.WEAK, new Payload("reaped-weak"), "weak-reaper");
         assertReaperProcessesReference(Reference.Type.SOFT, new Payload("reaped-soft"), "soft-reaper");
         assertReaperProcessesReference(Reference.Type.PHANTOM, new Payload("reaped-phantom"), "phantom-reaper");
+    }
+
+    @Test
+    void directReaperConstructorsUseProvidedReaperForWeakSoftAndPhantomReferences() throws Exception {
+        CountDownLatch latch = new CountDownLatch(3);
+        ConcurrentLinkedQueue<String> reapedAttachments = new ConcurrentLinkedQueue<>();
+        Reaper<Payload, String> reaper = reference -> {
+            reapedAttachments.add(reference.getAttachment());
+            latch.countDown();
+        };
+
+        WeakReference<Payload, String> weak = new WeakReference<>(
+                new Payload("direct-reaped-weak"),
+                "direct-weak-reaper",
+                reaper);
+        SoftReference<Payload, String> soft = new SoftReference<>(
+                new Payload("direct-reaped-soft"),
+                "direct-soft-reaper",
+                reaper);
+        PhantomReference<Payload, String> phantom = new PhantomReference<>(
+                new Payload("direct-reaped-phantom"),
+                "direct-phantom-reaper",
+                reaper);
+
+        assertThat(weak.getReaper()).isSameAs(reaper);
+        assertThat(soft.getReaper()).isSameAs(reaper);
+        assertThat(phantom.getReaper()).isSameAs(reaper);
+
+        assertThat(weak.enqueue()).isTrue();
+        assertThat(soft.enqueue()).isTrue();
+        assertThat(phantom.enqueue()).isTrue();
+        assertThat(latch.await(5L, TimeUnit.SECONDS)).isTrue();
+        assertThat(reapedAttachments).containsExactlyInAnyOrder(
+                "direct-weak-reaper",
+                "direct-soft-reaper",
+                "direct-phantom-reaper");
     }
 
     @Test
