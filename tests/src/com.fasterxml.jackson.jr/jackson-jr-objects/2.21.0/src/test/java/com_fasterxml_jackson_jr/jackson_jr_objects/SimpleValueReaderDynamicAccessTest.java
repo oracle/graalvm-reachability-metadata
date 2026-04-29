@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.jr.ob.JSON;
+import com.fasterxml.jackson.jr.ob.ValueIterator;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,6 +46,28 @@ public class SimpleValueReaderDynamicAccessTest {
 
         assertThat(classesByName.get("primary")).isEqualTo(LoadableType.class);
         assertThat(classes).singleElement().isEqualTo(LoadableType.class);
+    }
+
+    @Test
+    void resolvesClassesInsideTypedArrays() throws Exception {
+        String json = "[\"" + String.class.getName() + "\",\""
+                + Integer.class.getName() + "\"]";
+
+        Class[] classes = JSON.std.arrayOfFrom(Class.class, json);
+
+        assertThat(classes).containsExactly(String.class, Integer.class);
+    }
+
+    @Test
+    void resolvesClassValuesFromBeanSequences() throws Exception {
+        String json = "[\"" + String.class.getName() + "\",\""
+                + Integer.class.getName() + "\"]";
+
+        try (ValueIterator<Class> classes = JSON.std.beanSequenceFrom(Class.class, json)) {
+            assertThat(classes.next()).isEqualTo(String.class);
+            assertThat(classes.next()).isEqualTo(Integer.class);
+            assertThat(classes.hasNext()).isFalse();
+        }
     }
 
     private static String loadableClassName() {
