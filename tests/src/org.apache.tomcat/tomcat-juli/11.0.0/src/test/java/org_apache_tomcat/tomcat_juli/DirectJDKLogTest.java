@@ -8,8 +8,13 @@ package org_apache_tomcat.tomcat_juli;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
@@ -24,19 +29,28 @@ import org.junit.jupiter.api.Test;
 public class DirectJDKLogTest {
     private static final String LOGGING_CONFIG_CLASS_PROPERTY = "java.util.logging.config.class";
     private static final String LOGGING_CONFIG_FILE_PROPERTY = "java.util.logging.config.file";
+    private static final String JULI_FORMATTER_PROPERTY = "org.apache.juli.formatter";
+    private static final String LOG_SERVICE_RESOURCE = "META-INF/services/org.apache.juli.logging.Log";
 
     @Test
     void createsDefaultLogAndPublishesMessagesThroughJdkLogging() {
         String previousConfigClass = System.clearProperty(LOGGING_CONFIG_CLASS_PROPERTY);
         String previousConfigFile = System.clearProperty(LOGGING_CONFIG_FILE_PROPERTY);
+        String previousFormatter = System.setProperty(JULI_FORMATTER_PROPERTY, TrackingFormatter.class.getName());
+        ClassLoader previousContextClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(new ServiceResourceFilteringClassLoader(previousContextClassLoader));
+        int formatterCreations = TrackingFormatter.getCreations();
         List<HandlerFormatter> rootHandlerFormatters = captureRootConsoleFormatterState();
         try {
             Log log = LogFactory.getLog("coverage.direct-jdk-log");
 
+            assertThat(TrackingFormatter.getCreations()).isGreaterThan(formatterCreations);
             exerciseLoggingMethods(log);
         } finally {
+            Thread.currentThread().setContextClassLoader(previousContextClassLoader);
             restoreProperty(LOGGING_CONFIG_CLASS_PROPERTY, previousConfigClass);
             restoreProperty(LOGGING_CONFIG_FILE_PROPERTY, previousConfigFile);
+            restoreProperty(JULI_FORMATTER_PROPERTY, previousFormatter);
             restoreRootConsoleFormatterState(rootHandlerFormatters);
         }
     }
@@ -110,6 +124,45 @@ public class DirectJDKLogTest {
         private HandlerFormatter(Handler handler, Formatter formatter) {
             this.handler = handler;
             this.formatter = formatter;
+        }
+    }
+
+    public static final class TrackingFormatter extends Formatter {
+        private static final AtomicInteger CREATIONS = new AtomicInteger();
+
+        public TrackingFormatter() {
+            CREATIONS.incrementAndGet();
+        }
+
+        static int getCreations() {
+            return CREATIONS.get();
+        }
+
+        @Override
+        public String format(LogRecord record) {
+            return record.getMessage() + System.lineSeparator();
+        }
+    }
+
+    private static final class ServiceResourceFilteringClassLoader extends ClassLoader {
+        private ServiceResourceFilteringClassLoader(ClassLoader parent) {
+            super(parent);
+        }
+
+        @Override
+        public URL getResource(String name) {
+            if (LOG_SERVICE_RESOURCE.equals(name)) {
+                return null;
+            }
+            return super.getResource(name);
+        }
+
+        @Override
+        public Enumeration<URL> getResources(String name) throws IOException {
+            if (LOG_SERVICE_RESOURCE.equals(name)) {
+                return Collections.emptyEnumeration();
+            }
+            return super.getResources(name);
         }
     }
 
