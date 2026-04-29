@@ -19,10 +19,10 @@ import org.apache.seata.core.model.Resource;
 import org.apache.seata.core.model.ResourceManager;
 import org.apache.seata.integration.tx.api.interceptor.handler.ProxyInvocationHandler;
 import org.apache.seata.rm.DefaultResourceManager;
-import io.seata.rm.tcc.api.BusinessActionContext;
-import io.seata.rm.tcc.api.TwoPhaseBusinessAction;
-import io.seata.rm.tcc.interceptor.TccActionInterceptorHandler;
-import io.seata.rm.tcc.interceptor.parser.TccActionInterceptorParser;
+import org.apache.seata.rm.tcc.api.BusinessActionContext;
+import org.apache.seata.rm.tcc.api.TwoPhaseBusinessAction;
+import org.apache.seata.rm.tcc.interceptor.TccActionInterceptorHandler;
+import org.apache.seata.rm.tcc.interceptor.parser.TccActionInterceptorParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
