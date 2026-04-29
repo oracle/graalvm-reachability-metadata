@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -283,6 +285,32 @@ public class Jackson_databindTest {
         assertThat(restored.payments()).containsExactly(new Money(new BigDecimal("2.50"), CurrencyCode.USD));
     }
 
+    @Test
+    void anyGetterAndSetterBindExtensionPropertiesBesideDeclaredFields() throws Exception {
+        CatalogItem item = MAPPER.readValue("""
+                {
+                  "sku": "beans-ethiopia",
+                  "roastLevel": "medium",
+                  "organic": true,
+                  "inventory": 12
+                }
+                """, CatalogItem.class);
+
+        assertThat(item.sku).isEqualTo("beans-ethiopia");
+        assertThat(item.attributes())
+                .containsEntry("roastLevel", "medium")
+                .containsEntry("organic", true)
+                .containsEntry("inventory", 12);
+
+        JsonNode tree = MAPPER.readTree(MAPPER.writeValueAsString(item));
+
+        assertThat(tree.get("sku").asText()).isEqualTo("beans-ethiopia");
+        assertThat(tree.get("roastLevel").asText()).isEqualTo("medium");
+        assertThat(tree.get("organic").booleanValue()).isTrue();
+        assertThat(tree.get("inventory").intValue()).isEqualTo(12);
+        assertThat(tree.has("attributes")).isFalse();
+    }
+
     private static CoffeeOrder coffeeOrder(String id, String customer, String itemName, String city) {
         CoffeeOrder order = new CoffeeOrder();
         order.id = id;
@@ -415,6 +443,22 @@ public class Jackson_databindTest {
     }
 
     public record Receipt(String id, Optional<Money> discount, List<Money> payments) {
+    }
+
+    public static class CatalogItem {
+        public String sku;
+
+        private final Map<String, Object> attributes = new LinkedHashMap<>();
+
+        @JsonAnySetter
+        public void putAttribute(String name, Object value) {
+            attributes.put(name, value);
+        }
+
+        @JsonAnyGetter
+        public Map<String, Object> attributes() {
+            return attributes;
+        }
     }
 
     public record Money(BigDecimal amount, CurrencyCode currency) {
