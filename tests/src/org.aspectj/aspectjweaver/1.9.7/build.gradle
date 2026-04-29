@@ -9,6 +9,7 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String traceFactoryOverride = 'org_aspectj.aspectjweaver.TraceFactoryUnavailableFactory'
 
 dependencies {
     testImplementation "org.aspectj:aspectjweaver:$libraryVersion"
@@ -17,7 +18,8 @@ dependencies {
 
 tasks.withType(Test).configureEach {
     jvmArgs += [
-        "--add-opens=java.base/java.lang=ALL-UNNAMED"
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        "-Dorg.aspectj.tracing.factory=$traceFactoryOverride"
     ]
 }
 
@@ -33,6 +35,7 @@ graalvmNative {
     binaries {
         all {
             buildArgs.add('--add-opens=java.base/java.lang=ALL-UNNAMED')
+            buildArgs.add("-Dorg.aspectj.tracing.factory=$traceFactoryOverride")
         }
     }
 }
