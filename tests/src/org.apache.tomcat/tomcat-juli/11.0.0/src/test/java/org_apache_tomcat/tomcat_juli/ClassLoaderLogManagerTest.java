@@ -8,7 +8,6 @@ package org_apache_tomcat.tomcat_juli;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -56,23 +55,29 @@ public class ClassLoaderLogManagerTest {
 
     @Test
     void readsWebappClassLoaderConfigurationResource() throws Exception {
+        Path loggingProperties = temporaryDirectory.resolve("logging.properties");
+        Files.writeString(loggingProperties, webappLoggingProperties(), StandardCharsets.UTF_8);
+
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
-        WebappLoggingClassLoader webappClassLoader = new WebappLoggingClassLoader(getClass().getClassLoader(),
-                loggingProperties());
-        Thread.currentThread().setContextClassLoader(webappClassLoader);
-        ClassLoaderLogManager logManager = newLogManager();
-        try {
-            logManager.readConfiguration();
+        URL[] urls = {temporaryDirectory.toUri().toURL()};
+        try (WebappLoggingClassLoader webappClassLoader = new WebappLoggingClassLoader(urls,
+                getClass().getClassLoader())) {
+            Thread.currentThread().setContextClassLoader(webappClassLoader);
+            ClassLoaderLogManager logManager = newLogManager();
+            try {
+                logManager.readConfiguration();
 
-            Logger rootLogger = logManager.getLogger("");
-            RecordingHandler handler = findRecordingHandler(rootLogger);
-            rootLogger.info("message from webapp class loader configuration");
+                Logger rootLogger = logManager.getLogger("");
+                RecordingHandler handler = findRecordingHandler(rootLogger);
+                rootLogger.info("message from webapp class loader configuration");
 
-            assertThat(webappClassLoader.wasLoggingConfigurationRequested()).isTrue();
-            assertThat(handler.getPublishedRecords()).isEqualTo(1);
-        } finally {
-            logManager.shutdown();
-            Thread.currentThread().setContextClassLoader(originalClassLoader);
+                assertThat(webappClassLoader.wasLoggingConfigurationRequested()).isTrue();
+                assertThat(logManager.getProperty("webapp.name")).isEqualTo("coverage-webapp");
+                assertThat(handler.getPublishedRecords()).isEqualTo(1);
+            } finally {
+                logManager.shutdown();
+                Thread.currentThread().setContextClassLoader(originalClassLoader);
+            }
         }
     }
 
@@ -97,6 +102,10 @@ public class ClassLoaderLogManagerTest {
                 .level = FINE
                 sample.category.level = FINEST
                 """.formatted(RecordingHandler.class.getName());
+    }
+
+    private static String webappLoggingProperties() {
+        return loggingProperties() + "webapp.name = ${classloader.webappName}\n";
     }
 
     public static final class RecordingHandler extends Handler {
@@ -124,24 +133,22 @@ public class ClassLoaderLogManagerTest {
         }
     }
 
-    public static final class WebappLoggingClassLoader extends ClassLoader implements WebappProperties {
-        private final byte[] loggingProperties;
+    public static final class WebappLoggingClassLoader extends URLClassLoader implements WebappProperties {
         private boolean loggingConfigurationRequested;
 
-        WebappLoggingClassLoader(ClassLoader parent, String loggingProperties) {
-            super(parent);
-            this.loggingProperties = loggingProperties.getBytes(StandardCharsets.UTF_8);
+        WebappLoggingClassLoader(URL[] urls, ClassLoader parent) {
+            super(urls, parent);
         }
 
         @Override
         public InputStream getResourceAsStream(String name) {
             if ("logging.properties".equals(name)) {
                 loggingConfigurationRequested = true;
-                return new ByteArrayInputStream(loggingProperties);
             }
             return super.getResourceAsStream(name);
         }
 
+        @Deprecated
         @Override
         public boolean hasLoggingConfig() {
             return true;
