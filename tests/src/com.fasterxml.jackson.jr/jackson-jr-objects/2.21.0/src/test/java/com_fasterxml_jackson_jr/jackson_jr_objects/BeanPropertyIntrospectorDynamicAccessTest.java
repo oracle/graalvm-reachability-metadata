@@ -52,6 +52,18 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
     }
 
     @Test
+    void registersSupportedNonRecordConstructorsFromDeclaredConstructors() {
+        AccessibleBeanConstructors constructors = new AccessibleBeanConstructors(ConstructorSelectionBean.class);
+
+        BeanPropertyIntrospector.addNonRecordConstructors(ConstructorSelectionBean.class, constructors);
+
+        assertThat(constructors.hasNoArgsConstructor()).isTrue();
+        assertThat(constructors.hasStringConstructor()).isTrue();
+        assertThat(constructors.hasIntegerConstructor()).isTrue();
+        assertThat(constructors.hasLongConstructor()).isTrue();
+    }
+
+    @Test
     void collectsDeclaredFieldsAndMethodsForSerialization() throws Exception {
         POJODefinition definition = INTROSPECTOR.pojoDefinitionForSerialization(JSON_WRITER, IntrospectedBean.class);
         POJODefinition libraryDefinition = INTROSPECTOR.pojoDefinitionForSerialization(JSON_WRITER, POJODefinition.class);
@@ -161,6 +173,45 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
 
         private IntConstructorBean(int visible) {
             this.visible = visible;
+        }
+    }
+
+    static final class AccessibleBeanConstructors extends BeanConstructors {
+        AccessibleBeanConstructors(Class<?> valueType) {
+            super(valueType);
+        }
+
+        boolean hasNoArgsConstructor() {
+            return _noArgsCtor != null;
+        }
+
+        boolean hasStringConstructor() {
+            return _stringCtor != null;
+        }
+
+        boolean hasIntegerConstructor() {
+            return _intCtor != null;
+        }
+
+        boolean hasLongConstructor() {
+            return _longCtor != null;
+        }
+    }
+
+    public static final class ConstructorSelectionBean {
+        public ConstructorSelectionBean() {
+        }
+
+        public ConstructorSelectionBean(String value) {
+        }
+
+        public ConstructorSelectionBean(Integer value) {
+        }
+
+        public ConstructorSelectionBean(Long value) {
+        }
+
+        public ConstructorSelectionBean(double value) {
         }
     }
 
