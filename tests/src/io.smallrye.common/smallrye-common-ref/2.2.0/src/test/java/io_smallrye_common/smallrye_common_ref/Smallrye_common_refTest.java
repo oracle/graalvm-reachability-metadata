@@ -146,6 +146,46 @@ public class Smallrye_common_refTest {
     }
 
     @Test
+    void referencesFactoryCreatesReaperBackedSoftAndPhantomReferences() throws Exception {
+        ConcurrentLinkedQueue<String> reapedAttachments = new ConcurrentLinkedQueue<>();
+        CountDownLatch reaped = new CountDownLatch(2);
+        Reaper<Object, String> reaper = reference -> {
+            reapedAttachments.add(reference.getAttachment());
+            reaped.countDown();
+        };
+
+        Object softReferent = new Object();
+        Reference<Object, String> soft = References.create(
+                Reference.Type.SOFT,
+                softReferent,
+                "factory-soft-reaper",
+                reaper);
+        assertThat(soft).isInstanceOf(SoftReference.class);
+        assertThat(soft.get()).isSameAs(softReferent);
+        assertThat(soft.getAttachment()).isEqualTo("factory-soft-reaper");
+        assertThat(soft.getType()).isEqualTo(Reference.Type.SOFT);
+        assertThat(((SoftReference<Object, String>) soft).getReaper()).isSameAs(reaper);
+
+        Object phantomReferent = new Object();
+        Reference<Object, String> phantom = References.create(
+                Reference.Type.PHANTOM,
+                phantomReferent,
+                "factory-phantom-reaper",
+                reaper);
+        assertThat(phantom).isInstanceOf(PhantomReference.class);
+        assertThat(phantom.get()).isNull();
+        assertThat(phantom.getAttachment()).isEqualTo("factory-phantom-reaper");
+        assertThat(phantom.getType()).isEqualTo(Reference.Type.PHANTOM);
+        assertThat(((PhantomReference<Object, String>) phantom).getReaper()).isSameAs(reaper);
+
+        assertThat(((SoftReference<Object, String>) soft).enqueue()).isTrue();
+        assertThat(((PhantomReference<Object, String>) phantom).enqueue()).isTrue();
+
+        assertThat(reaped.await(5, TimeUnit.SECONDS)).isTrue();
+        assertThat(reapedAttachments).containsExactlyInAnyOrder("factory-soft-reaper", "factory-phantom-reaper");
+    }
+
+    @Test
     void cleanerReferenceIsRetainedUntilQueuedAndThenReaped() throws Exception {
         AtomicReference<Reference<Object, String>> reapedReference = new AtomicReference<>();
         CountDownLatch reaped = new CountDownLatch(1);
