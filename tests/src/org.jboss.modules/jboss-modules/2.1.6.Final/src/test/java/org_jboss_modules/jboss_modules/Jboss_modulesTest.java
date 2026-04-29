@@ -23,10 +23,23 @@ import java.util.List;
 import org.jboss.modules.IterableResourceLoader;
 import org.jboss.modules.Resource;
 import org.jboss.modules.ResourceLoaders;
+import org.jboss.modules.Version;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 class Jboss_modulesTest {
+    @Test
+    void versionsParseAndCompareNumericAndQualifiedParts() {
+        Version betaVersion = Version.parse("1.0.0.Beta1");
+        Version finalVersion = Version.parse("1.0.0.Final");
+        Version nextMinorVersion = Version.parse("1.1.0");
+
+        assertTrue(finalVersion.compareTo(betaVersion) > 0);
+        assertTrue(nextMinorVersion.compareTo(finalVersion) > 0);
+        assertEquals(Version.parse("1.0.0.Final"), finalVersion);
+        assertEquals("1.0.0.Final", finalVersion.toString());
+    }
+
     @Test
     void pathResourceLoaderReadsAndIteratesFileSystemResources(@TempDir Path resourceRoot) throws Exception {
         Path configDirectory = Files.createDirectories(resourceRoot.resolve("config"));
