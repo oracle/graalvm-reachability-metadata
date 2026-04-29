@@ -26,10 +26,20 @@ public class FormattersAnonymous12Test {
     }
 
     @Test
+    void extendedExceptionFormattingFallsBackToCallerClassLoaderWhenTcclCannotLoadFrameClass() {
+        String className = PatternFormatter.class.getName();
+        ClassLoader blockingTccl = new BlockingClassLoader(className);
+
+        String formatted = formatWithTccl(blockingTccl, newFailure(className));
+
+        assertThat(formatted).contains("\tat " + className + ".invoke");
+    }
+
+    @Test
     void extendedExceptionFormattingFallsBackThroughClassLookupStrategiesForUnknownFrameClass() {
         String className = "org.jboss.logmanager.coverage.DoesNotExist";
 
-        String formatted = formatWithTccl(FormattersAnonymous12Test.class.getClassLoader(), newFailure(className));
+        String formatted = formatWithTccl(null, newFailure(className));
 
         assertThat(formatted).contains("\tat " + className + ".invoke");
     }
@@ -57,5 +67,22 @@ public class FormattersAnonymous12Test {
                 new StackTraceElement(className, "invoke", "GeneratedFrame.java", 17)
         });
         return failure;
+    }
+
+    private static final class BlockingClassLoader extends ClassLoader {
+        private final String blockedClassName;
+
+        private BlockingClassLoader(final String blockedClassName) {
+            super(FormattersAnonymous12Test.class.getClassLoader());
+            this.blockedClassName = blockedClassName;
+        }
+
+        @Override
+        protected Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
+            if (blockedClassName.equals(name)) {
+                throw new ClassNotFoundException(name);
+            }
+            return super.loadClass(name, resolve);
+        }
     }
 }
