@@ -177,6 +177,7 @@ Schema:
 
 - `generateLibraryStats`: recomputes selected coordinates and updates matching exploded stats files under `stats/`.
 - `validateLibraryStats`: validates mirrored committed stats files, schema compliance, and normalized sorting without recomputing metrics.
+- `generateReadmeBadgeSummary`: derives repository-wide badges, split execution metrics in `latest/execution-metrics/<groupId>/<artifactId>/metrics.json`, coverage Markdown, and metrics history from the committed stats files.
 
 For new-library issue triage, the repository also exposes:
 
