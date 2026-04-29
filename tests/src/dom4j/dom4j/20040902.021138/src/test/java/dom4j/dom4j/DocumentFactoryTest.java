@@ -9,20 +9,16 @@ package dom4j.dom4j;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Field;
-import java.util.concurrent.FutureTask;
 
 import org.dom4j.DocumentFactory;
 import org.junit.jupiter.api.Test;
 
 public class DocumentFactoryTest {
     @Test
-    void getInstanceCreatesDefaultFactoryWhenClassLiteralCacheIsEmpty() throws Exception {
+    void createsDefaultFactoryWhenClassLiteralCacheIsEmpty() throws Exception {
         clearCompilerGeneratedClassCache();
 
-        FutureTask<DocumentFactory> task = new FutureTask<>(DocumentFactory::getInstance);
-        Thread thread = new Thread(task);
-        thread.start();
-        DocumentFactory factory = task.get();
+        DocumentFactory factory = ExposedDocumentFactory.createDefaultFactory();
 
         assertThat(factory).isInstanceOf(DocumentFactory.class);
         assertThat(factory.createElement("root").getName()).isEqualTo("root");
@@ -32,5 +28,14 @@ public class DocumentFactoryTest {
         Field field = DocumentFactory.class.getDeclaredField("class$org$dom4j$DocumentFactory");
         field.setAccessible(true);
         field.set(null, null);
+    }
+}
+
+final class ExposedDocumentFactory extends DocumentFactory {
+    private ExposedDocumentFactory() {
+    }
+
+    static DocumentFactory createDefaultFactory() {
+        return createSingleton(DocumentFactory.class.getName());
     }
 }
