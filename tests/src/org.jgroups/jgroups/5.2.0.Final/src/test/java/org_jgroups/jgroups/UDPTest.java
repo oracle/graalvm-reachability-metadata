@@ -10,14 +10,23 @@ import org.jgroups.protocols.UDP;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
+import java.net.MulticastSocket;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class UDPTest extends UDP {
+public class UDPTest {
     @Test
-    void findMethodReturnsNullWhenDeclaredMethodIsUnavailable() {
-        Method method = findMethod(UDP.class, "missingDeclaredUdpHook", String.class);
+    void findMethodLocatesDeclaredUdpMethod() {
+        Method method = UdpHarness.findUdpMethod("setTimeToLive", int.class, MulticastSocket.class);
 
-        assertThat(method).isNull();
+        assertThat(method).isNotNull();
+        assertThat(method.getDeclaringClass()).isEqualTo(UDP.class);
+        assertThat(method.getName()).isEqualTo("setTimeToLive");
+    }
+
+    private static final class UdpHarness extends UDP {
+        private static Method findUdpMethod(String methodName, Class<?>... parameters) {
+            return findMethod(UDP.class, methodName, parameters);
+        }
     }
 }
