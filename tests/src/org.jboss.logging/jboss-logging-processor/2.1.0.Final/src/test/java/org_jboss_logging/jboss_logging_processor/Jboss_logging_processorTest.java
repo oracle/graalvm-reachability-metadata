@@ -13,8 +13,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ElementVisitor;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.Name;
+import javax.lang.model.element.NestingKind;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
+import javax.lang.model.type.TypeMirror;
 
 import org.jboss.logging.annotations.Cause;
+import org.jboss.logging.annotations.ConstructType;
 import org.jboss.logging.annotations.Field;
 import org.jboss.logging.annotations.FormatWith;
 import org.jboss.logging.annotations.LoggingClass;
@@ -22,18 +33,18 @@ import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageBundle;
 import org.jboss.logging.annotations.MessageLogger;
+import org.jboss.logging.annotations.Once;
 import org.jboss.logging.annotations.Param;
 import org.jboss.logging.annotations.Pos;
 import org.jboss.logging.annotations.Property;
+import org.jboss.logging.annotations.Signature;
 import org.jboss.logging.annotations.Transform;
 import org.jboss.logging.annotations.ValidIdRange;
 import org.jboss.logging.annotations.ValidIdRanges;
 import org.jboss.logging.processor.apt.LoggingToolsProcessor;
 import org.jboss.logging.processor.model.MessageInterface;
 import org.jboss.logging.processor.model.MessageMethod;
-import org.jboss.logging.processor.model.MessageObject;
 import org.jboss.logging.processor.util.Objects;
-import org.jboss.logging.processor.util.Strings;
 import org.jboss.logging.processor.util.VersionComparator;
 import org.jboss.logging.processor.validation.FormatValidator;
 import org.jboss.logging.processor.validation.FormatValidatorFactory;
@@ -49,19 +60,25 @@ public class Jboss_logging_processorTest {
         LoggingToolsProcessor processor = new LoggingToolsProcessor();
 
         assertThat(processor.getSupportedSourceVersion()).isEqualTo(SourceVersion.latest());
-        assertThat(processor.getSupportedOptions()).containsExactly(LoggingToolsProcessor.DEBUG_OPTION);
+        assertThat(processor.getSupportedOptions()).containsExactlyInAnyOrder(
+                LoggingToolsProcessor.DEBUG_OPTION,
+                "org.jboss.logging.tools.addGeneratedAnnotation",
+                "org.jboss.logging.tools.expressionProperties");
         assertThat(processor.getSupportedAnnotationTypes()).containsExactlyInAnyOrder(
                 MessageBundle.class.getName(),
                 MessageLogger.class.getName(),
                 Cause.class.getName(),
+                ConstructType.class.getName(),
                 Field.class.getName(),
                 FormatWith.class.getName(),
                 LoggingClass.class.getName(),
                 LogMessage.class.getName(),
                 Message.class.getName(),
+                Once.class.getName(),
                 Param.class.getName(),
                 Pos.class.getName(),
                 Property.class.getName(),
+                Signature.class.getName(),
                 Transform.class.getName(),
                 ValidIdRange.class.getName(),
                 ValidIdRanges.class.getName());
@@ -144,31 +161,23 @@ public class Jboss_logging_processorTest {
                 "Traitement de %1$d termin\u00e9 en %2$s ms");
 
         assertThat(translation.isValid()).isFalse();
-        assertThat(translation.summaryMessage()).contains("translated message format does not match");
+        assertThat(translation.summaryMessage()).contains("does not match the initial message format");
         assertThat(translation.detailMessage()).contains("Processing %1$s took %2$d ms");
     }
 
     @Test
-    void stringsUtilityRepeatsCharactersAndSequences() {
-        assertThat(Strings.fill('*', 5)).isEqualTo("*****");
-        assertThat(Strings.fill("ab", 3)).isEqualTo("ababab");
-        assertThat(Strings.fill('x', 0)).isEmpty();
-        assertThat(Strings.fill("ignored", 0)).isEmpty();
-    }
+    void validationMessageFactoryCreatesTypedMessagesForElements() {
+        MessageInterface messageInterface = new TestMessageInterface("org.example.BundleMessages", "EX", 4);
 
-    @Test
-    void validationMessageFactoryCreatesTypedMessagesForMessageObjects() {
-        MessageObject messageObject = new TestMessageObject("bundleMethod", "bundleReference");
-
-        ValidationMessage error = ValidationMessageFactory.createError(messageObject, "Invalid id %d", 42);
-        ValidationMessage warning = ValidationMessageFactory.createWarning(messageObject, "Range may overlap");
+        ValidationMessage error = ValidationMessageFactory.createError(messageInterface, "Invalid id %d", 42);
+        ValidationMessage warning = ValidationMessageFactory.createWarning(messageInterface, "Range may overlap");
 
         assertThat(error.type()).isEqualTo(ValidationMessage.Type.ERROR);
-        assertThat(error.getMessageObject()).isSameAs(messageObject);
+        assertThat(error.getElement()).isSameAs(messageInterface);
         assertThat(error.getMessage()).isEqualTo("Invalid id 42");
 
         assertThat(warning.type()).isEqualTo(ValidationMessage.Type.WARN);
-        assertThat(warning.getMessageObject()).isSameAs(messageObject);
+        assertThat(warning.getElement()).isSameAs(messageInterface);
         assertThat(warning.getMessage()).isEqualTo("Range may overlap");
     }
 
@@ -225,13 +234,80 @@ public class Jboss_logging_processorTest {
                 });
     }
 
-    private record TestMessageObject(String name, Object reference) implements MessageObject {
-    }
-
     private record TestMessageInterface(String name, String projectCode, int getIdLength) implements MessageInterface {
         @Override
-        public Object reference() {
-            return name;
+        public TypeElement getDelegate() {
+            return null;
+        }
+
+        @Override
+        public TypeMirror asType() {
+            return null;
+        }
+
+        @Override
+        public ElementKind getKind() {
+            return ElementKind.INTERFACE;
+        }
+
+        @Override
+        public Set<Modifier> getModifiers() {
+            return Set.of(Modifier.PUBLIC);
+        }
+
+        @Override
+        public Name getSimpleName() {
+            return new TestName(simpleName());
+        }
+
+        @Override
+        public Element getEnclosingElement() {
+            return null;
+        }
+
+        @Override
+        public List<? extends Element> getEnclosedElements() {
+            return List.of();
+        }
+
+        @Override
+        public NestingKind getNestingKind() {
+            return NestingKind.TOP_LEVEL;
+        }
+
+        @Override
+        public Name getQualifiedName() {
+            return new TestName(name);
+        }
+
+        @Override
+        public TypeMirror getSuperclass() {
+            return null;
+        }
+
+        @Override
+        public List<? extends TypeMirror> getInterfaces() {
+            return List.of();
+        }
+
+        @Override
+        public List<? extends TypeParameterElement> getTypeParameters() {
+            return List.of();
+        }
+
+        @Override
+        public List<? extends AnnotationMirror> getAnnotationMirrors() {
+            return List.of();
+        }
+
+        @Override
+        public <A extends Annotation> A[] getAnnotationsByType(Class<A> annotation) {
+            return null;
+        }
+
+        @Override
+        public <R, P> R accept(ElementVisitor<R, P> visitor, P parameter) {
+            return null;
         }
 
         @Override
@@ -267,11 +343,6 @@ public class Jboss_logging_processorTest {
         }
 
         @Override
-        public AnnotatedType getAnnotatedType() {
-            return AnnotatedType.MESSAGE_BUNDLE;
-        }
-
-        @Override
         public List<ValidIdRange> validIdRanges() {
             return List.of();
         }
@@ -284,11 +355,6 @@ public class Jboss_logging_processorTest {
         @Override
         public <A extends Annotation> A getAnnotation(Class<A> annotation) {
             return null;
-        }
-
-        @Override
-        public String type() {
-            return name;
         }
 
         @Override
@@ -314,6 +380,33 @@ public class Jboss_logging_processorTest {
         @Override
         public int compareTo(MessageInterface other) {
             return name.compareTo(other.name());
+        }
+    }
+
+    private record TestName(String value) implements Name {
+        @Override
+        public boolean contentEquals(CharSequence characterSequence) {
+            return value.contentEquals(characterSequence);
+        }
+
+        @Override
+        public int length() {
+            return value.length();
+        }
+
+        @Override
+        public char charAt(int index) {
+            return value.charAt(index);
+        }
+
+        @Override
+        public CharSequence subSequence(int start, int end) {
+            return value.subSequence(start, end);
+        }
+
+        @Override
+        public String toString() {
+            return value;
         }
     }
 }
