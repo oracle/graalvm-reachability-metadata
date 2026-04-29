@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.sonatype.aether.RepositoryEvent;
 import org.sonatype.aether.RepositoryException;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.artifact.Artifact;
@@ -462,8 +463,10 @@ public class Aether_utilTest {
                 .setDataBuffer(data)
                 .setException(failure);
         Artifact artifact = new DefaultArtifact("org.example:demo:jar:1.0").setFile(payload.toFile());
+        RepositorySystemSession session = new DefaultRepositorySystemSession();
         DefaultRepositoryEvent repositoryEvent = new DefaultRepositoryEvent(
-                new DefaultRepositorySystemSession(), artifact)
+                RepositoryEvent.EventType.ARTIFACT_RESOLVED, session)
+                .setArtifact(artifact)
                 .setRepository(centralRepository())
                 .setFile(payload.toFile())
                 .setException(failure)
@@ -485,6 +488,8 @@ public class Aether_utilTest {
         assertThat(transferEvent.getDataBuffer()).isEqualTo(data.asReadOnlyBuffer());
         assertThat(transferEvent.getDataLength()).isEqualTo(4);
         assertThat(transferEvent.getException()).isEqualTo(failure);
+        assertThat(repositoryEvent.getType()).isEqualTo(RepositoryEvent.EventType.ARTIFACT_RESOLVED);
+        assertThat(repositoryEvent.getSession()).isEqualTo(session);
         assertThat(repositoryEvent.getArtifact()).isEqualTo(artifact);
         assertThat(repositoryEvent.getRepository()).isEqualTo(centralRepository());
         assertThat(repositoryEvent.getFile()).isEqualTo(payload.toFile());
