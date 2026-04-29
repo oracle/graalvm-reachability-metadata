@@ -8,7 +8,7 @@ package org_javamoney_moneta.moneta_core;
 
 import org.junit.jupiter.api.Test;
 
-class Moneta_coreTest {
+public class Moneta_coreTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
