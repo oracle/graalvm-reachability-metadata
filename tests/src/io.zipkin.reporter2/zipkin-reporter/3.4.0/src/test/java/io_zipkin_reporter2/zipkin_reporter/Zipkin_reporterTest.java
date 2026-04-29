@@ -11,14 +11,10 @@ import zipkin2.Span;
 import zipkin2.codec.SpanBytesDecoder;
 import zipkin2.codec.SpanBytesEncoder;
 import zipkin2.reporter.AsyncReporter;
-import zipkin2.reporter.AwaitableCallback;
 import zipkin2.reporter.BytesEncoder;
-import zipkin2.reporter.BytesMessageEncoder;
-import zipkin2.reporter.Call;
-import zipkin2.reporter.CheckResult;
+import zipkin2.reporter.BytesMessageSender;
 import zipkin2.reporter.Encoding;
 import zipkin2.reporter.InMemoryReporterMetrics;
-import zipkin2.reporter.Sender;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -31,9 +27,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Zipkin_reporterTest {
@@ -72,7 +69,7 @@ public class Zipkin_reporterTest {
             assertThat(metrics.messages()).isEqualTo(1);
             assertThat(metrics.messageBytes()).isEqualTo(firstSpanMessageBytes);
             assertThat(metrics.queuedSpans()).isEqualTo(1);
-            assertThat(metrics.queuedBytes()).isEqualTo(encodedSize(SECOND_SPAN));
+            assertThat(metrics.queuedBytes()).isZero();
             assertThat(metrics.spansDropped()).isZero();
 
             reporter.flush();
@@ -225,43 +222,46 @@ public class Zipkin_reporterTest {
     }
 
     @Test
-    void awaitableCallbackReturnsOnSuccessAndPropagatesFailures() {
-        AwaitableCallback success = new AwaitableCallback();
-        success.onSuccess(null);
+    void asyncReporterRecordsDroppedMessagesWhenSenderFails() {
+        FailingSender sender = new FailingSender(Encoding.JSON, Integer.MAX_VALUE);
+        InMemoryReporterMetrics metrics = new InMemoryReporterMetrics();
+        Logger logger = Logger.getLogger("zipkin2.reporter.internal.AsyncReporter$BoundedAsyncReporter");
+        Level previousLevel = logger.getLevel();
+        logger.setLevel(Level.OFF);
 
-        assertThatCode(success::await).doesNotThrowAnyException();
+        try {
+            try (AsyncReporter<Span> reporter = AsyncReporter.builder(sender)
+                    .metrics(metrics)
+                    .messageTimeout(0, TimeUnit.MILLISECONDS)
+                    .build()) {
+                reporter.report(FIRST_SPAN);
+                reporter.flush();
 
-        AwaitableCallback runtimeFailure = new AwaitableCallback();
-        runtimeFailure.onError(new IllegalStateException("boom"));
-
-        assertThatThrownBy(runtimeFailure::await)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("boom");
-
-        AwaitableCallback checkedFailure = new AwaitableCallback();
-        checkedFailure.onError(new IOException("io failure"));
-
-        assertThatThrownBy(checkedFailure::await)
-                .isInstanceOf(RuntimeException.class)
-                .hasCauseInstanceOf(IOException.class);
+                assertThat(metrics.messages()).isEqualTo(1);
+                assertThat(metrics.messagesDropped()).isEqualTo(1);
+                assertThat(metrics.messagesDroppedByCause()).containsEntry(IOException.class, 1L);
+                assertThat(metrics.spansDropped()).isEqualTo(1);
+                assertThat(metrics.queuedSpans()).isZero();
+            }
+        } finally {
+            logger.setLevel(previousLevel);
+        }
     }
 
     @Test
-    void bytesMessageEncoderAndInMemoryMetricsExposeExpectedPublicBehavior() {
+    void encodingAndInMemoryMetricsExposeExpectedPublicBehavior() {
         byte[] firstJson = SpanBytesEncoder.JSON_V2.encode(FIRST_SPAN);
         byte[] secondJson = SpanBytesEncoder.JSON_V2.encode(SECOND_SPAN);
         byte[] firstProto = SpanBytesEncoder.PROTO3.encode(FIRST_SPAN);
         byte[] secondProto = SpanBytesEncoder.PROTO3.encode(SECOND_SPAN);
 
-        assertThat(BytesMessageEncoder.forEncoding(Encoding.JSON)).isSameAs(BytesMessageEncoder.JSON);
-        assertThat(BytesMessageEncoder.forEncoding(Encoding.PROTO3)).isSameAs(BytesMessageEncoder.PROTO3);
-        assertThat(new String(BytesMessageEncoder.JSON.encode(List.of(firstJson, secondJson)), StandardCharsets.UTF_8))
+        assertThat(new String(Encoding.JSON.encode(List.of(firstJson, secondJson)), StandardCharsets.UTF_8))
                 .startsWith("[")
                 .contains(",")
                 .endsWith("]");
-        assertThat(SpanBytesDecoder.JSON_V2.decodeList(BytesMessageEncoder.JSON.encode(List.of(firstJson, secondJson))))
+        assertThat(SpanBytesDecoder.JSON_V2.decodeList(Encoding.JSON.encode(List.of(firstJson, secondJson))))
                 .containsExactly(FIRST_SPAN, SECOND_SPAN);
-        assertThat(SpanBytesDecoder.PROTO3.decodeList(BytesMessageEncoder.PROTO3.encode(List.of(firstProto, secondProto))))
+        assertThat(SpanBytesDecoder.PROTO3.decodeList(Encoding.PROTO3.encode(List.of(firstProto, secondProto))))
                 .containsExactly(FIRST_SPAN, SECOND_SPAN);
 
         InMemoryReporterMetrics metrics = new InMemoryReporterMetrics();
@@ -365,9 +365,32 @@ public class Zipkin_reporterTest {
 
     }
 
-    private static final class CapturingSender extends Sender {
+    private static final class FailingSender extends BytesMessageSender.Base {
 
-        private final Encoding encoding;
+        private final int messageMaxBytes;
+
+        private FailingSender(Encoding encoding, int messageMaxBytes) {
+            super(encoding);
+            this.messageMaxBytes = messageMaxBytes;
+        }
+
+        @Override
+        public int messageMaxBytes() {
+            return messageMaxBytes;
+        }
+
+        @Override
+        public void send(List<byte[]> encodedSpans) throws IOException {
+            throw new IOException("send failed");
+        }
+
+        @Override
+        public void close() {
+        }
+    }
+
+    private static final class CapturingSender extends BytesMessageSender.Base {
+
         private final int messageMaxBytes;
         private final List<List<byte[]>> rawMessages = new ArrayList<>();
         private final Consumer<List<byte[]>> onSend;
@@ -379,14 +402,9 @@ public class Zipkin_reporterTest {
         }
 
         private CapturingSender(Encoding encoding, int messageMaxBytes, Consumer<List<byte[]>> onSend) {
-            this.encoding = encoding;
+            super(encoding);
             this.messageMaxBytes = messageMaxBytes;
             this.onSend = onSend;
-        }
-
-        @Override
-        public Encoding encoding() {
-            return encoding;
         }
 
         @Override
@@ -395,17 +413,7 @@ public class Zipkin_reporterTest {
         }
 
         @Override
-        public int messageSizeInBytes(List<byte[]> encodedSpans) {
-            return encoding.listSizeInBytes(encodedSpans);
-        }
-
-        @Override
-        public int messageSizeInBytes(int encodedSizeInBytes) {
-            return encoding.listSizeInBytes(encodedSizeInBytes);
-        }
-
-        @Override
-        public Call<Void> sendSpans(List<byte[]> encodedSpans) {
+        public void send(List<byte[]> encodedSpans) throws IOException {
             if (closed) {
                 throw new IllegalStateException("closed");
             }
@@ -415,12 +423,6 @@ public class Zipkin_reporterTest {
             }
             rawMessages.add(copiedMessage);
             onSend.accept(copiedMessage);
-            return Call.create(null);
-        }
-
-        @Override
-        public CheckResult check() {
-            return CheckResult.OK;
         }
 
         @Override
