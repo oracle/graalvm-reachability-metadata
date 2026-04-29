@@ -23,7 +23,7 @@ import org.jsoup.nodes.Entities;
 import org.jsoup.nodes.FormElement;
 import org.jsoup.nodes.Node;
 import org.jsoup.parser.Parser;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 import org.jsoup.select.Elements;
 import org.jsoup.select.NodeTraversor;
 import org.jsoup.select.NodeVisitor;
@@ -137,13 +137,13 @@ public class JsoupTest {
                     <img src="https://example.test/logo.png" onerror="steal()" alt="logo">
                 </section>
                 """;
-        Whitelist whitelist = Whitelist.relaxed()
+        Safelist safelist = Safelist.relaxed()
                 .addTags("section")
                 .addAttributes("section", "data-safe")
                 .addProtocols("a", "href", "https")
                 .addProtocols("img", "src", "https");
 
-        String sanitized = Jsoup.clean(dirtyHtml, whitelist);
+        String sanitized = Jsoup.clean(dirtyHtml, safelist);
         Document cleaned = Jsoup.parseBodyFragment(sanitized);
         Element section = requireFirst(cleaned, "section[data-safe=yes]");
         Element safeLink = requireFirst(cleaned, "a[href='https://example.test/read']");
