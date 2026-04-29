@@ -22,7 +22,7 @@ public class Opentelemetry_semconvTest {
 
     @Test
     void resourceAttributesExposeTypedKeysAndWorkWithAttributesBuilders() {
-        assertThat(ResourceAttributes.SCHEMA_URL).isEqualTo("https://opentelemetry.io/schemas/1.16.0");
+        assertThat(ResourceAttributes.SCHEMA_URL).isEqualTo("https://opentelemetry.io/schemas/1.18.0");
 
         assertAttributeKey(ResourceAttributes.SERVICE_NAME, "service.name", AttributeType.STRING);
         assertAttributeKey(ResourceAttributes.CLOUD_PROVIDER, "cloud.provider", AttributeType.STRING);
@@ -81,7 +81,7 @@ public class Opentelemetry_semconvTest {
 
     @Test
     void traceAttributesExposeTypedKeysAndSupportTypedAttributePayloads() {
-        assertThat(SemanticAttributes.SCHEMA_URL).isEqualTo("https://opentelemetry.io/schemas/1.16.0");
+        assertThat(SemanticAttributes.SCHEMA_URL).isEqualTo("https://opentelemetry.io/schemas/1.17.0");
         assertThat(SemanticAttributes.EXCEPTION_EVENT_NAME).isEqualTo("exception");
 
         assertAttributeKey(SemanticAttributes.DB_SYSTEM, "db.system", AttributeType.STRING);
