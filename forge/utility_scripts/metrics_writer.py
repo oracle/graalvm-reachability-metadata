@@ -683,6 +683,13 @@ def _load_execution_metrics_entries(path: str) -> dict:
     return data
 
 
+def _public_execution_metrics_entry(run_metrics: dict) -> dict:
+    """Return the committed execution-metrics entry without local-only PR details."""
+    public_metrics = dict(run_metrics)
+    public_metrics.pop("post_generation_intervention", None)
+    return public_metrics
+
+
 def append_execution_metrics(repo_path: str, run_metrics: dict, task_type: str) -> str:
     """Append one run metrics entry under stats/<group>/<artifact>/<version>/execution-metrics.json."""
     timestamp = run_metrics.get("timestamp")
@@ -691,7 +698,7 @@ def append_execution_metrics(repo_path: str, run_metrics: dict, task_type: str) 
 
     metrics_path = execution_metrics_path(repo_path, run_metrics)
     entries = _load_execution_metrics_entries(metrics_path)
-    entries[_run_metrics_key(task_type, timestamp)] = run_metrics
+    entries[_run_metrics_key(task_type, timestamp)] = _public_execution_metrics_entry(run_metrics)
 
     os.makedirs(os.path.dirname(metrics_path), exist_ok=True)
     with open(metrics_path, "w", encoding="utf-8") as metrics_file:

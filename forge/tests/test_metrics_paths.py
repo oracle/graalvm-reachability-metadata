@@ -37,6 +37,22 @@ def _minimal_run_metrics(library: str = "org.example:demo:1.0.0") -> dict:
     }
 
 
+def _with_post_generation_intervention(run_metrics: dict) -> dict:
+    run_metrics = dict(run_metrics)
+    run_metrics["post_generation_intervention"] = {
+        "stage": "metadata_fix_failed",
+        "intervention_file": "post-gen-interventions/org.example_demo_1.0.0.md",
+        "analysis_markdown": "Manual intervention report.",
+    }
+    return run_metrics
+
+
+def _public_execution_metrics(run_metrics: dict) -> dict:
+    run_metrics = dict(run_metrics)
+    run_metrics.pop("post_generation_intervention", None)
+    return run_metrics
+
+
 class MetricsPathTests(unittest.TestCase):
     def test_in_repo_add_new_library_support_metrics_resolves_to_stats_path(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -47,7 +63,7 @@ class MetricsPathTests(unittest.TestCase):
             os.makedirs(os.path.join(reachability_repo, "stats"))
             os.makedirs(metrics_repo_dir)
 
-            run_metrics = _minimal_run_metrics()
+            run_metrics = _with_post_generation_intervention(_minimal_run_metrics())
             metrics_json = resolve_add_new_library_support_metrics_json(
                 run_metrics=run_metrics,
                 metrics_repo_dir=metrics_repo_dir,
@@ -80,7 +96,13 @@ class MetricsPathTests(unittest.TestCase):
             self.assertFalse(os.path.exists(os.path.join(metrics_repo_dir, "add_new_library_support.json")))
             with open(metrics_json, "r", encoding="utf-8") as file_handle:
                 persisted = json.load(file_handle)
-            self.assertEqual(persisted, {"add_new_library_support:2026-04-29": run_metrics})
+            self.assertEqual(
+                persisted,
+                {"add_new_library_support:2026-04-29": _public_execution_metrics(run_metrics)},
+            )
+            with open(os.path.join(forge_root, ".pending_metrics.json"), "r", encoding="utf-8") as file_handle:
+                pending = json.load(file_handle)
+            self.assertEqual(pending, run_metrics)
 
     def test_in_repo_java_fail_metrics_resolves_to_stats_path(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -91,7 +113,7 @@ class MetricsPathTests(unittest.TestCase):
             os.makedirs(os.path.join(reachability_repo, "stats"))
             os.makedirs(metrics_repo_dir)
 
-            run_metrics = _minimal_run_metrics()
+            run_metrics = _with_post_generation_intervention(_minimal_run_metrics())
             metrics_json = resolve_fix_metrics_json(
                 config=JAVAC_CONFIG,
                 run_metrics=run_metrics,
@@ -121,7 +143,10 @@ class MetricsPathTests(unittest.TestCase):
             self.assertFalse(os.path.exists(os.path.join(metrics_repo_dir, "fix_javac_fail.json")))
             with open(metrics_json, "r", encoding="utf-8") as file_handle:
                 persisted = json.load(file_handle)
-            self.assertEqual(persisted, {"fix_javac_fail:2026-04-29": run_metrics})
+            self.assertEqual(persisted, {"fix_javac_fail:2026-04-29": _public_execution_metrics(run_metrics)})
+            with open(os.path.join(forge_root, ".pending_metrics.json"), "r", encoding="utf-8") as file_handle:
+                pending = json.load(file_handle)
+            self.assertEqual(pending, run_metrics)
 
 
 if __name__ == "__main__":
