@@ -7,6 +7,7 @@
 package com_mchange.mchange_commons_java;
 
 import com.mchange.v2.naming.ReferenceableUtils;
+import com.mchange.v2.naming.SecurityConfigKey;
 import org.junit.jupiter.api.Test;
 
 import javax.naming.Context;
@@ -18,8 +19,23 @@ import java.util.Hashtable;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 public class ReferenceableUtilsTest {
+    @Test
+    void assertAcceptableNameInstantiatesDefaultNameGuardForLocalJndiName() {
+        String previousNameGuard = System.getProperty(SecurityConfigKey.NAME_GUARD_CLASS_NAME);
+
+        try {
+            System.clearProperty(SecurityConfigKey.NAME_GUARD_CLASS_NAME);
+
+            assertThatCode(() -> ReferenceableUtils.assertAcceptableName("java:comp/env/jdbc/dataSource", null))
+                .doesNotThrowAnyException();
+        } finally {
+            restoreSystemProperty(SecurityConfigKey.NAME_GUARD_CLASS_NAME, previousNameGuard);
+        }
+    }
+
     @Test
     void referenceToObjectInstantiatesConfiguredFactoryAndDelegatesReferenceResolution() throws Exception {
         Reference reference = new Reference(String.class.getName(), CapturingObjectFactory.class.getName(), null);
@@ -35,6 +51,14 @@ public class ReferenceableUtilsTest {
         );
 
         assertThat(resolved).isEqualTo("resolved:alpha");
+    }
+
+    private static void restoreSystemProperty(String key, String value) {
+        if (value == null) {
+            System.clearProperty(key);
+        } else {
+            System.setProperty(key, value);
+        }
     }
 
     public static class CapturingObjectFactory implements ObjectFactory {
