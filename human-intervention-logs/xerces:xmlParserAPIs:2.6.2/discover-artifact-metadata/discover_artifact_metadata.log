@@ -1,0 +1,1335 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd681-a87c-7942-b169-addacabd9ec3
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: xerces:xmlParserAPIs:2.6.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.6.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+- Set "coordinates" to "xerces:xmlParserAPIs:2.6.2".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from authoritative sources first, then update the JSON in place with only the requested fields.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json && sed -n '1,200p' build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+-rw-rw-r-- 1 vjovanov vjovanov 51 Apr 29 01:51 build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+{
+  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "xmlParserAPIs|xerces" build/discovered-artifact-metadata metadata -S' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+ succeeded in 0ms:
+build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json:2:  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
+metadata/org.ehcache/ehcache/3.10.8-jakarta/reachability-metadata.json:74:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
+metadata/org.ehcache/ehcache/3.10.8-jakarta/reachability-metadata.json:86:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.ehcache/ehcache/3.10.8-jakarta/reachability-metadata.json:98:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.ehcache/ehcache/3.10.8-jakarta/reachability-metadata.json:110:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.ehcache/ehcache/3.10.8-jakarta/reachability-metadata.json:122:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.ehcache/ehcache/3.10.8-jakarta/reachability-metadata.json:134:      "type": "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+metadata/org.ehcache/ehcache/3.10.8-jakarta/reachability-metadata.json:4241:      "bundle": "com.sun.org.apache.xerces.internal.impl.msg.SAXMessages"
+metadata/org.ehcache/ehcache/3.10.8-jakarta/reachability-metadata.json:4244:      "bundle": "com.sun.org.apache.xerces.internal.impl.xpath.regex.message"
+metadata/org.eclipse.jetty/jetty-server/12.1.3/reachability-metadata.json:7:      "type": "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+metadata/org.eclipse.jetty/jetty-server/12.1.3/reachability-metadata.json:19:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/org.eclipse.jetty/jetty-server/11.0.12/reachability-metadata.json:7:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/org.eclipse.jetty/jetty-server/12.0.1/reachability-metadata.json:7:      "type": "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+metadata/org.eclipse.jetty/jetty-server/12.0.1/reachability-metadata.json:19:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/xml-apis/xml-apis/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/",
+metadata/xml-apis/xml-apis/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/README.html",
+metadata/org.apache.santuario/xmlsec/4.0.4/reachability-metadata.json:55:      "type": "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+metadata/org.apache.santuario/xmlsec/4.0.4/reachability-metadata.json:67:      "type": "com.sun.org.apache.xerces.internal.jaxp.datatype.DatatypeFactoryImpl",
+metadata/org.liquibase/liquibase-core/4.25.0/reachability-metadata.json:7:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
+metadata/org.liquibase/liquibase-core/4.25.0/reachability-metadata.json:19:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.liquibase/liquibase-core/4.25.0/reachability-metadata.json:31:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/org.liquibase/liquibase-core/4.25.0/reachability-metadata.json:9019:      "bundle": "com.sun.org.apache.xerces.internal.impl.xpath.regex.message"
+metadata/org.liquibase/liquibase-core/5.0.1/reachability-metadata.json:133:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
+metadata/org.liquibase/liquibase-core/5.0.1/reachability-metadata.json:145:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.liquibase/liquibase-core/5.0.1/reachability-metadata.json:157:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/org.liquibase/liquibase-core/5.0.1/reachability-metadata.json:8081:      "bundle": "com.sun.org.apache.xerces.internal.impl.xpath.regex.message"
+metadata/org.liquibase/liquibase-core/4.27.0/reachability-metadata.json:133:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
+metadata/org.liquibase/liquibase-core/4.27.0/reachability-metadata.json:145:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.liquibase/liquibase-core/4.27.0/reachability-metadata.json:157:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/org.liquibase/liquibase-core/4.27.0/reachability-metadata.json:6992:      "bundle": "com.sun.org.apache.xerces.internal.impl.xpath.regex.message"
+metadata/org.liquibase/liquibase-core/4.17.0/reachability-metadata.json:7:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/io.netty/netty-common/4.1.80.Final/reachability-metadata.json:1187:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/org.liquibase/liquibase-core/4.20.0/reachability-metadata.json:7:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/ch.qos.logback/logback-classic/1.5.7/reachability-metadata.json:1133:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/io.netty/netty-common/4.1.115.Final/reachability-metadata.json:1187:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/dom4j/dom4j/1.6.1/reachability-metadata.json:114:      "type" : "org.apache.xerces.dom.DocumentImpl"
+metadata/org.apache.tomcat.embed/tomcat-embed-core/10.1.0/reachability-metadata.json:155:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/com.hazelcast/hazelcast/5.2.1/reachability-metadata.json:6237:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
+metadata/com.hazelcast/hazelcast/5.2.1/reachability-metadata.json:6249:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/com.hazelcast/hazelcast/5.2.1/reachability-metadata.json:6261:      "type": "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+metadata/com.hazelcast/hazelcast/5.2.1/reachability-metadata.json:8094:      "bundle": "com.sun.org.apache.xerces.internal.impl.xpath.regex.message"
+metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json:55:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json:67:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json:79:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.hibernate/hibernate-core/6.0.0.Final/reachability-metadata.json:227:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
+metadata/org.hibernate/hibernate-core/6.0.0.Final/reachability-metadata.json:239:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.hibernate/hibernate-core/6.0.0.Final/reachability-metadata.json:251:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.hibernate/hibernate-core/6.0.0.Final/reachability-metadata.json:263:      "type": "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+metadata/org.hibernate/hibernate-core/6.0.0.Final/reachability-metadata.json:275:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/org.hibernate/hibernate-core/6.0.0.Final/reachability-metadata.json:3259:      "bundle": "com.sun.org.apache.xerces.internal.impl.xpath.regex.message"
+metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:97:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
+metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:109:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:11112:      "bundle": "com.sun.org.apache.xerces.internal.impl.xpath.regex.message"
+
+web search: 
+web search: xerces xmlParserAPIs 2.6.2 Maven Central sources javadoc tests
+web search: 
+web search: https://repo1.maven.org/maven2/xerces/xmlParserAPIs/2.6.2/
+web search: 
+web search: Apache Xerces-J 2.6.2 source tag xmlParserAPIs
+web search: 
+web search: 
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/java/tags/
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/
+codex
+Maven Central only exposes the binary jar and POM for this coordinate, so there is no Maven-hosted sources, tests, or Javadocs artifact to prefer. I found the matching Apache Xerces-J `2.6.2` SVN tag and am checking the tag layout to choose version-exact source, tests, and docs URLs.
+exec
+/usr/bin/bash -lc 'curl -Lsf https://repo1.maven.org/maven2/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2.pom' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>xerces</groupId>
+  <artifactId>xmlParserAPIs</artifactId>
+  <version>2.6.2</version>
+</project>
+exec
+/usr/bin/bash -lc "curl -Lsf https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/build.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+exec
+/usr/bin/bash -lc "curl -Lsf https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/Readme.html | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+exec
+/usr/bin/bash -lc "curl -Lsf https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+ succeeded in 118ms:
+<html><head><title>asf - Revision 1933468: /xerces/java/tags/Xerces-J_2_6_2/tests</title></head>
+<body>
+ <h2>asf - Revision 1933468: /xerces/java/tags/Xerces-J_2_6_2/tests</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="dom/">dom/</a></li>
+  <li><a href="io/">io/</a></li>
+  <li><a href="jaxp/">jaxp/</a></li>
+  <li><a href="schema/">schema/</a></li>
+  <li><a href="thread/">thread/</a></li>
+  <li><a href="xinclude/">xinclude/</a></li>
+ </ul>
+</body></html>
+ succeeded in 125ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html>
+ <head>
+  <meta http-equiv="Refresh" content="3; URL=docs/index.html">
+  <title>Xerces Java Parser</title>
+ </head>
+ <body>
+  <h1 align='center'>Xerces Java Parser</h1>
+  <h2>Redirecting to Documentation...</h2>
+  <p>
+   In a few seconds, you should be redirected to the Xerces Java Parser 
+   documentation. If you are not automatically redirected, please click 
+   on the following link:
+   <blockquote>
+    <a href='docs/index.html'>Xerces Java Documentation</a>
+   </blockquote>
+  </p>
+  <p>
+   <strong>Note:</strong> 
+   You must download the binary distribution to get the documentation.
+   If you downloaded the source distribution, then you must build the
+   documentation first.
+  </p>
+ </body>
+</html>
+
+ succeeded in 229ms:
+<?xml version="1.0"?>
+
+<!-- ===================================================================
+
+Read the README file for build instruction.
+
+Authors:
+  Stefano Mazzocchi <stefano@apache.org>
+  Anupam Bagchi     <abagchi@apache.org>
+  Andy Clark, IBM
+
+Copyright:
+  Copyright (c) 2000-2004 The Apache Software Foundation.
+
+   $Id$
+
+==================================================================== -->
+
+<project default="usage" basedir=".">
+
+  <!-- enable compilation under IBM JDK 1.4 -->
+  <taskdef name="xjavac" classname="org.apache.xerces.util.XJavac"/>
+
+  <!-- Allow properties following these statements to be overridden -->
+  <!-- Note that all of these don't have to exist.  They've just been defined
+       incase they are used. -->
+  <property file="build.properties"/>
+  <property file=".ant.properties"/>
+  <property file="${user.home}/.ant.properties"/>
+  <property file="default.properties"/>  
+
+  <target name="init">
+    <property name='parser.Name' value='Xerces-J'/>
+    <property name='parser.name' value='xerces-j'/>
+    <property name='parser.shortname' value='xerces'/>
+    <property name='parser.Version' value='2.6.2'/>
+    <property name='parser.version' value='2.6.2'/>
+    <property name='parser_version' value='2_6_2'/>
+
+    <property name='deprecatedjar.parser' value='xerces.jar'/>
+    <property name='jar.apis' value='xml-apis.jar'/>
+    <property name='deprecatedjar.apis' value='xmlParserAPIs.jar'/>
+    <property name='jar.parser' value='xercesImpl.jar'/>
+    <property name='jar.samples' value='xercesSamples.jar'/>
+    <property name='jar.dv' value='xercesDV.jar'/>
+    <property name='jar.resolver' value='resolver.jar'/>
+    
+    <property name='default.parser.config.name' value='XML11Configuration'/>
+    <property name='default.parser.config.qualified' value='org.apache.xerces.parsers.XML11Configuration'/>
+
+    <property name="year" value="1999-2004"/>
+    <property name="copyright" value="Copyright &#169; ${year} Apache XML Project. All Rights Reserved."/>
+
+    <echo message= "---------------- ${parser.Name} ${parser.Version} [${year}] ---------------"/>
+    <!-- changed made to synchronize with a patch from Sam Ruby (<rubys@apache.org>) to Xerces1
+    <property name="build.compiler" value="classic"/> -->
+    <property name="debug" value="off"/>
+    <property name="optimize" value="on"/>
+    <property name="deprecation" value="off"/>
+
+    <property name="src.dir" value="./src"/>
+    <property name="tools.dir" value="./tools"/>
+    <property name="docs.dir" value="./docs"/>
+    <property name="data.dir" value="./data"/>
+    <property name="samples.dir" value="./samples"/>
+    <property name="tests.dir" value="./tests"/>
+    <property name="tools.dir" value="./tools"/>
+    <property name="docs.book" value="${docs.dir}/docs-book.xml"/>
+
+    <property name="packages" value="org.*"/>
+
+    <property name="doc.generator" value="org.apache.stylebook.StyleBook"/>
+    <property name="doc.generator.package" value="${tools.dir}/stylebook-1.0-b2.jar"/>
+
+    <property name="build.dir" value="./build"/>
+    <property name="build.src" value="${build.dir}/src"/>
+    <property name="build.dest" value="${build.dir}/classes"/>
+    <property name="build.docs" value="${build.dir}/docs"/>
+    <property name="build.samples" value="${build.dir}/samples"/>
+    <property name="build.tests" value="${build.dir}/tests"/>
+    <property name="build.data" value="${build.dir}/data"/>
+    <property name="build.javadocs" value="${build.dir}/docs/javadocs"/>
+
+    <property name="distsrc.dir" value="${build.dir}/${parser.shortname}-${parser_version}"/>
+    <property name="disttools.dir" value="${build.dir}/tools"/>
+    <property name="distbin.dir" value="${build.dir}/${parser.shortname}-${parser_version}"/>
+    <property name='src.apis.zip' value="${tools.dir}/xml-commons-external-1.2.01-src.zip"/>
+
+    <filter token="year" value="${year}"/>
+    <filter token="version" value="${parser.Version}"/>
+    <filter token="date" value="${TODAY}"/>
+    <filter token="log" value="true"/>
+    <filter token="verbose" value="true"/>
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Help on usage                                                       -->
+  <!-- =================================================================== -->
+  <target name="usage" depends="init">
+    <echo message=""/>
+    <echo message=""/>
+    <echo message="${parser.Name} Build instructions"/>
+    <echo message="-------------------------------------------------------------"/>
+    <echo message=""/>
+    <echo message=" available targets are:"/>
+    <echo message=""/>
+    
+    <echo message=" jar      --> generates the xercesImpl.jar file"/>
+    <echo message=" sampjar  --> generates the xercesSamples.jar file"/>
+    <echo message=" jars --> generates xercesImpl &amp; xercesSamples jars"/>
+    <echo message=" jar-dom3  --> 'jar' + DOM Level 3 support"/>
+    <echo message=" sampjar-dom3  --> 'sampjar' + DOM Level 3 support"/>
+    <echo message=" apijar-dom3   --> 'apijar' + DOM Level 3 support."/>
+    <echo message=" jars-dom3  --> 'jars' + DOM Level 3 support."/>
+    <echo message=" docs     --> generates the HTML documentation"/>
+    <echo message=" javadocs --> generates the API docs (needs Java 1.2 or higher)"/>
+    <echo message=" samples  --> compiles the samples source code"/>
+    <echo message=" samples-dom3  --> 'samples' + DOM Level 3 support."/>
+    <echo message=" compile  --> compiles the source code"/>
+    <echo message=" compile-dom3  --> 'compile' + DOM Level 3 support."/>
+    <echo message=" deprecatedjar  --> generates the xerces.jar file"/>
+    <echo message=" tests    --> compiles the tests source code"/>
+    <echo message=" tests-dom3    --> 'tests' + DOM Level 3 support."/>
+    <echo message=" deprecatedjars --> generates xerces.jar and samples jar"/>
+    <echo message=" dtdjars --> generates xercesImpl containing no schema support or WML/HTML DOM and xercesSamples &amp; xmlParserAPIs jars"/>
+    <echo message=" dvjar --> generates a Schema datatype jar"/>
+    <echo message=" pack-tools --> generates the tools distributions (zip and tar.gz)"/>
+    <echo message=" pack-src   --> generates the source distributions (zip and tar.gz)"/>
+    <echo message=" deprecated-bin --> generates the binary distributions (zip and tar.gz)"/>
+    <echo message=" pack-bin --> generates the binary distributions (zip and tar.gz)"/>
+    <echo message=" all      --> generates the binary, source and tools distributions"/>
+    <echo message=" deprecatedall --> generates the binary, source and tools distributions with the xerces.jar"/>
+    <echo message=" test     --> runs a sanity test on the sample files"/>
+    <echo message=" test-dom3     --> 'test' + DOM Level 3 support."/>
+    <echo message=" clean    --> cleans up all generated files and directories"/>
+    <echo message=" usage    --> provides help on using the build tool (default)"/>
+    <echo message=""/>
+    <echo message=" See comments inside the build.xml file for more details."/>
+    <echo message="-------------------------------------------------------------"/>
+    <echo message=""/>
+    <echo message=""/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Prepares the build directory                                        -->
+  <!-- =================================================================== -->
+  <target name="prepare" depends="init">
+    <mkdir dir="${build.dir}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- directory creation and file copying common to all configurations    -->
+  <!-- =================================================================== -->
+  <target name="prepare-common" depends="prepare">
+    <!-- create directories -->
+    <mkdir dir="${build.src}"/>
+    <mkdir dir="${build.dest}"/>
+    <mkdir dir="${build.dest}/META-INF"/>
+    <mkdir dir="${build.dest}/META-INF/services"/>
+
+    <copy file="${src.dir}/org/apache/xerces/jaxp/javax.xml.parsers.DocumentBuilderFactory"
+      tofile="${build.dest}/META-INF/services/javax.xml.parsers.DocumentBuilderFactory"/>
+
+    <copy file="${src.dir}/org/apache/xerces/jaxp/javax.xml.parsers.SAXParserFactory"
+      tofile="${build.dest}/META-INF/services/javax.xml.parsers.SAXParserFactory"/>
+
+    <copy file="${src.dir}/org/apache/xerces/parsers/org.xml.sax.driver"
+      tofile="${build.dest}/META-INF/services/org.xml.sax.driver"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Prepares the source code                                            -->
+  <!-- =================================================================== -->
+  <target name="prepare-src" depends="prepare-common">
+    <copy file="${src.dir}/org/apache/xerces/parsers/org.apache.xerces.xni.parser.XMLParserConfiguration"
+      tofile="${build.dest}/META-INF/services/org.apache.xerces.xni.parser.XMLParserConfiguration"/>
+
+    <!-- copy src files -->
+    <copy todir="${build.src}">
+        <fileset 
+            dir="${src.dir}"
+            includes="org/apache/**
+                org/w3c/dom/ls/**
+                org/w3c/dom/html/HTMLDOMImplementation.java"
+            excludes="**/classfiles_updated **/CVS* **/.#* **/XMLMessages.java
+                       **/DatatypeContentModel.java **/ComplexTypeInfo.java
+                       **/v1/** **/v2/**
+                       javax.xml.parsers.ConvertToURI.java">
+        </fileset>
+    </copy>
+
+    <!-- now deal with API's:  -->
+    <unzip src="${src.apis.zip}" dest="${build.src}">
+        <patternset
+            includes="org/xml/sax/** 
+                javax/xml/parsers/**
+                org/w3c/dom/*
+                org/w3c/dom/events/**
+                org/w3c/dom/html/**
+                org/w3c/dom/ranges/**
+                org/w3c/dom/traversal/**"
+        />
+    </unzip>
+    
+    <!-- substitute tokens as needed -->
+    <replace file="${build.dir}/src/org/apache/xerces/impl/Version.java" 
+             token="@@VERSION@@" value="${parser.Name} ${parser.Version}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the source directory                                       -->
+  <!-- =================================================================== -->
+  <target name="compile" depends="prepare-src">
+    <copy todir="${build.dest}">
+      <fileset dir="${build.src}"
+        includes="**/*.res, **/*.properties">
+      </fileset>
+    </copy>
+
+
+exec
+/usr/bin/bash -lc "curl -Lsf https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/build.xml | rg -n \"apijar|xmlParserAPIs|jar\\.apis|src\\.apis|deprecatedjar\\.apis|xml-apis\" -C 4" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+exec
+/usr/bin/bash -lc "curl -Lsf https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/ | sed -n '1,140p'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933468: /xerces/java/tags/Xerces-J_2_6_2/tools</title></head>
+<body>
+ <h2>asf - Revision 1933468: /xerces/java/tags/Xerces-J_2_6_2/tools</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="ant.LICENSE.txt">ant.LICENSE.txt</a></li>
+  <li><a href="ant.jar">ant.jar</a></li>
+  <li><a href="bin/">bin/</a></li>
+  <li><a href="junit.LICENSE.txt">junit.LICENSE.txt</a></li>
+  <li><a href="junit.jar">junit.jar</a></li>
+  <li><a href="optional.LICENSE.txt">optional.LICENSE.txt</a></li>
+  <li><a href="optional.jar">optional.jar</a></li>
+  <li><a href="resolver.LICENSE.txt">resolver.LICENSE.txt</a></li>
+  <li><a href="resolver.jar">resolver.jar</a></li>
+  <li><a href="src/">src/</a></li>
+  <li><a href="stylebook-1.0-b2.LICENSE.txt">stylebook-1.0-b2.LICENSE.txt</a></li>
+  <li><a href="stylebook-1.0-b2.jar">stylebook-1.0-b2.jar</a></li>
+  <li><a href="xalan.LICENSE.txt">xalan.LICENSE.txt</a></li>
+  <li><a href="xalan.jar">xalan.jar</a></li>
+  <li><a href="xercesImpl.LICENSE.txt">xercesImpl.LICENSE.txt</a></li>
+  <li><a href="xercesImpl.jar">xercesImpl.jar</a></li>
+  <li><a href="xml-apis.LICENSE.txt">xml-apis.LICENSE.txt</a></li>
+  <li><a href="xml-apis.jar">xml-apis.jar</a></li>
+  <li><a href="xml-commons-external-1.2.01-src.LICENSE.txt">xml-commons-external-1.2.01-src.LICENSE.txt</a></li>
+  <li><a href="xml-commons-external-1.2.01-src.zip">xml-commons-external-1.2.01-src.zip</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc "curl -Lsf https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/ | sed -n '1,140p'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+exec
+/usr/bin/bash -lc "curl -Lsf https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/src/ | sed -n '1,100p'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933468: /xerces/java/tags/Xerces-J_2_6_2/src</title></head>
+<body>
+ <h2>asf - Revision 1933468: /xerces/java/tags/Xerces-J_2_6_2/src</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="dom3/">dom3/</a></li>
+  <li><a href="manifest.xerces">manifest.xerces</a></li>
+  <li><a href="org/">org/</a></li>
+ </ul>
+</body></html>
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933468: /xerces/java/tags/Xerces-J_2_6_2/docs</title></head>
+<body>
+ <h2>asf - Revision 1933468: /xerces/java/tags/Xerces-J_2_6_2/docs</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="api.xml">api.xml</a></li>
+  <li><a href="bugzilla.xml">bugzilla.xml</a></li>
+  <li><a href="docs-book.xml">docs-book.xml</a></li>
+  <li><a href="dom.xml">dom.xml</a></li>
+  <li><a href="dom3.xml">dom3.xml</a></li>
+  <li><a href="download.cgi">download.cgi</a></li>
+  <li><a href="download.xml">download.xml</a></li>
+  <li><a href="dtd/">dtd/</a></li>
+  <li><a href="faq-build.xml">faq-build.xml</a></li>
+  <li><a href="faq-common.xml">faq-common.xml</a></li>
+  <li><a href="faq-contributing.xml">faq-contributing.xml</a></li>
+  <li><a href="faq-dom.xml">faq-dom.xml</a></li>
+  <li><a href="faq-general.xml">faq-general.xml</a></li>
+  <li><a href="faq-grammars.xml">faq-grammars.xml</a></li>
+  <li><a href="faq-pcfp.xml">faq-pcfp.xml</a></li>
+  <li><a href="faq-performance.xml">faq-performance.xml</a></li>
+  <li><a href="faq-sax.xml">faq-sax.xml</a></li>
+  <li><a href="faq-write.xml">faq-write.xml</a></li>
+  <li><a href="faq-xcatalogs.xml">faq-xcatalogs.xml</a></li>
+  <li><a href="faq-xinclude.xml">faq-xinclude.xml</a></li>
+  <li><a href="faq-xni.xml">faq-xni.xml</a></li>
+  <li><a href="faq-xs.xml">faq-xs.xml</a></li>
+  <li><a href="features.xml">features.xml</a></li>
+  <li><a href="install.xml">install.xml</a></li>
+  <li><a href="limitations.xml">limitations.xml</a></li>
+  <li><a href="properties.xml">properties.xml</a></li>
+  <li><a href="readme.xml">readme.xml</a></li>
+  <li><a href="releases.xml">releases.xml</a></li>
+  <li><a href="samples-dom.xml">samples-dom.xml</a></li>
+  <li><a href="samples-sax.xml">samples-sax.xml</a></li>
+  <li><a href="samples-socket.xml">samples-socket.xml</a></li>
+  <li><a href="samples-ui.xml">samples-ui.xml</a></li>
+  <li><a href="samples-xni.xml">samples-xni.xml</a></li>
+  <li><a href="samples.xml">samples.xml</a></li>
+  <li><a href="sax.xml">sax.xml</a></li>
+  <li><a href="style/">style/</a></li>
+  <li><a href="xml-schema.xml">xml-schema.xml</a></li>
+  <li><a href="xni-components-dependence.gif">xni-components-dependence.gif</a></li>
+  <li><a href="xni-components-overview.gif">xni-components-overview.gif</a></li>
+  <li><a href="xni-config.xml">xni-config.xml</a></li>
+  <li><a href="xni-core.xml">xni-core.xml</a></li>
+  <li><a href="xni-design.xml">xni-design.xml</a></li>
+  <li><a href="xni-entity-manager.gif">xni-entity-manager.gif</a></li>
+  <li><a href="xni-parser-configuration.gif">xni-parser-configuration.gif</a></li>
+  <li><a href="xni-pipeline-basic.gif">xni-pipeline-basic.gif</a></li>
+  <li><a href="xni-pipeline-detailed.gif">xni-pipeline-detailed.gif</a></li>
+  <li><a href="xni-xerces2.xml">xni-xerces2.xml</a></li>
+  <li><a href="xni.xml">xni.xml</a></li>
+ </ul>
+</body></html>
+ succeeded in 168ms:
+37-    <property name='parser.version' value='2.6.2'/>
+38-    <property name='parser_version' value='2_6_2'/>
+39-
+40-    <property name='deprecatedjar.parser' value='xerces.jar'/>
+41:    <property name='jar.apis' value='xml-apis.jar'/>
+42:    <property name='deprecatedjar.apis' value='xmlParserAPIs.jar'/>
+43-    <property name='jar.parser' value='xercesImpl.jar'/>
+44-    <property name='jar.samples' value='xercesSamples.jar'/>
+45-    <property name='jar.dv' value='xercesDV.jar'/>
+46-    <property name='jar.resolver' value='resolver.jar'/>
+--
+83-
+84-    <property name="distsrc.dir" value="${build.dir}/${parser.shortname}-${parser_version}"/>
+85-    <property name="disttools.dir" value="${build.dir}/tools"/>
+86-    <property name="distbin.dir" value="${build.dir}/${parser.shortname}-${parser_version}"/>
+87:    <property name='src.apis.zip' value="${tools.dir}/xml-commons-external-1.2.01-src.zip"/>
+88-
+89-    <filter token="year" value="${year}"/>
+90-    <filter token="version" value="${parser.Version}"/>
+91-    <filter token="date" value="${TODAY}"/>
+--
+110-    <echo message=" sampjar  --> generates the xercesSamples.jar file"/>
+111-    <echo message=" jars --> generates xercesImpl &amp; xercesSamples jars"/>
+112-    <echo message=" jar-dom3  --> 'jar' + DOM Level 3 support"/>
+113-    <echo message=" sampjar-dom3  --> 'sampjar' + DOM Level 3 support"/>
+114:    <echo message=" apijar-dom3   --> 'apijar' + DOM Level 3 support."/>
+115-    <echo message=" jars-dom3  --> 'jars' + DOM Level 3 support."/>
+116-    <echo message=" docs     --> generates the HTML documentation"/>
+117-    <echo message=" javadocs --> generates the API docs (needs Java 1.2 or higher)"/>
+118-    <echo message=" samples  --> compiles the samples source code"/>
+--
+122-    <echo message=" deprecatedjar  --> generates the xerces.jar file"/>
+123-    <echo message=" tests    --> compiles the tests source code"/>
+124-    <echo message=" tests-dom3    --> 'tests' + DOM Level 3 support."/>
+125-    <echo message=" deprecatedjars --> generates xerces.jar and samples jar"/>
+126:    <echo message=" dtdjars --> generates xercesImpl containing no schema support or WML/HTML DOM and xercesSamples &amp; xmlParserAPIs jars"/>
+127-    <echo message=" dvjar --> generates a Schema datatype jar"/>
+128-    <echo message=" pack-tools --> generates the tools distributions (zip and tar.gz)"/>
+129-    <echo message=" pack-src   --> generates the source distributions (zip and tar.gz)"/>
+130-    <echo message=" deprecated-bin --> generates the binary distributions (zip and tar.gz)"/>
+--
+190-        </fileset>
+191-    </copy>
+192-
+193-    <!-- now deal with API's:  -->
+194:    <unzip src="${src.apis.zip}" dest="${build.src}">
+195-        <patternset
+196-            includes="org/xml/sax/** 
+197-                javax/xml/parsers/**
+198-                org/w3c/dom/*
+--
+219-    </copy>
+220-
+221-    <xjavac srcdir="${build.src}"
+222-           destdir="${build.dest}"
+223:           classpath="${build.dir}/classes:${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}"
+224-           debug="${debug}"
+225-           deprecation="${deprecation}"
+226-           optimize="${optimize}"
+227-           includeAntRuntime="false"
+--
+286-                     dom/DOM3.java" />
+287-    </copy>
+288-    <xjavac srcdir="${build.samples}"
+289-           destdir="${build.dest}"
+290:           classpath="${build.dir}/classes:${tools.dir}/${jar.apis}"
+291-           debug="${debug}"
+292-           includeAntRuntime="false"
+293-           includeJavaRuntime="true"/>
+294-  </target>
+--
+303-         excludes="dom/rename/**, dom/registry/**" />
+304-    </copy>
+305-    <xjavac srcdir="${build.tests}"
+306-           destdir="${build.dest}"
+307:           classpath="${tools.dir}/${jar.apis}:${build.dir}/classes:./tools/junit.jar"
+308-           debug="${debug}"
+309-           includeAntRuntime="false"
+310-           includeJavaRuntime="true"/>
+311-  </target>
+--
+585-  <!-- =================================================================== -->
+586-  <target name="pack-bin" depends="pack-bin-common, jars">
+587-    <copy file="${build.dir}/${jar.parser}" tofile="${distbin.dir}/${jar.parser}"/>
+588-    <!-- support xml-commons APIs -->
+589:    <copy file="${tools.dir}/${jar.apis}" tofile="${distbin.dir}/${jar.apis}"/>
+590:    <copy file="${tools.dir}/${jar.apis}" tofile="${distbin.dir}/${deprecatedjar.apis}"/>
+591-    <!-- support xml-commons resolver -->
+592-    <copy file="${tools.dir}/${jar.resolver}" tofile="${distbin.dir}/${jar.resolver}"/>
+593-
+594-    <zip zipfile="${build.dir}/${parser.Name}-bin.${parser.version}.zip" 
+--
+617-
+618-    <zip zipfile="${build.dir}/deprecated${parser.Name}-bin.${parser.version}.zip" 
+619-         basedir="${build.dir}"
+620-         includes="${parser.shortname}-${parser_version}/**" 
+621:         excludes="*.class, **/${jar.parser}, **/${jar.apis}"/>
+622-    <tar tarfile="${build.dir}/deprecated${parser.Name}-bin.${parser.version}.tar" 
+623-         basedir="${build.dir}"
+624-         includes="${parser.shortname}-${parser_version}/**" 
+625:         excludes="*.class, **/${jar.parser}, **/${jar.apis}"/>
+626-    <gzip zipfile="${build.dir}/deprecated${parser.Name}-bin.${parser.version}.tar.gz"
+627-          src="${build.dir}/deprecated${parser.Name}-bin.${parser.version}.tar" />
+628-    <!-- as before, let's kill of the ungzip'd tarball! -->
+629-    <delete file="${build.dir}/deprecated${parser.Name}-bin.${parser.version}.tar"/>
+--
+634-  <!-- Do a sanity test using samples                                      -->
+635-  <!-- =================================================================== -->
+636-  <target name="test" depends="tests">
+637-    <echo message="Performing sanity test for ${parser.Name} ${parser.Version} ..." />
+638:    <echo message="Using classpath=&apos;${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes&apos;" />
+639-    <echo message="Running sax.Counter ..." />
+640-    <java fork="yes"
+641:          classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+642-          classname="sax.Counter"
+643-          failOnError="yes">
+644-       <arg value="${data.dir}/personal.xml"/>
+645-    </java>
+646-    <echo message="Running sax.Writer ..." />
+647-    <java fork="yes"
+648:          classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes" 
+649-          classname="sax.Writer"
+650-          failOnError="yes">
+651-       <arg value="${data.dir}/personal.xml"/>
+652-    </java>
+653-    <echo message="Running dom.Counter ..." />
+654-    <java fork="yes"
+655:          classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+656-          classname="dom.Counter"
+657-          failOnError="yes">
+658-       <arg value="${data.dir}/personal.xml"/>
+659-    </java>
+660-    <echo message="Running dom.Writer ..." />
+661-    <java fork="yes"
+662:          classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes" 
+663-          classname="dom.Writer"
+664-          failOnError="yes">
+665-       <arg value="${data.dir}/personal.xml"/>
+666-    </java>
+667-    <echo message="Running thread.Test dom" />
+668-    <java fork="yes"
+669:          classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+670-          classname="thread.Test"
+671-          failOnError="yes">
+672-           <arg value="-dom"/>
+673-           <arg value="-threads"/>
+--
+678-
+679-    </java>
+680-    <echo message="Running thread.Test sax" />
+681-    <java fork="yes"
+682:          classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+683-          classname="thread.Test"
+684-          failOnError="yes">
+685-           <arg value="-threads"/>
+686-           <arg value="20"/>
+--
+694-
+695-    <!--
+696-    <echo message="Running DOMFilter ..." />
+697-    <java fork="yes"
+698:          classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+699-          classname="dom.DOMFilter"
+700-          args="-p dom.wrappers.DOMParser ${data.dir}/personal.xml"/>
+701-    -->
+702-    <!-- The following are samples but not command-line applications.
+703-    <echo message="Running IteratorView ..." />
+704-    <java fork="yes"
+705:          classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+706-          classname="dom.traversal.IteratorView"
+707-          failOnError="yes"
+708-          args="${data.dir}/personal.xml"/>
+709-    <echo message="Running TreeWalkerView ..." />
+710-    <java fork="yes"
+711:          classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+712-          classname="dom.traversal.TreeWalkerView"
+713-          failOnError="yes"
+714-          args="${data.dir}/personal.xml"/>
+715-    <echo message="Running TreeViewer ..." />
+716-    <java fork="yes"
+717:          classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+718-          classname="dom.TreeViewer"
+719-          failOnError="yes"
+720-          args="${data.dir}/personal.xml"/>
+721-     -->
+722-    <echo message="Running dom.DTest ..." />
+723-    <java fork="yes"
+724:          classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+725-          classname="dom.DTest"
+726-          failOnError="yes">
+727-    </java>
+728-    <echo message="Running dom.mem.Test ..." />
+729-    <java fork="yes"
+730:          classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+731-          classname="dom.mem.Test"
+732-          failOnError="yes">
+733-    </java>
+734-    <echo message="Running dom.range.Test ..." />
+735-    <java fork="yes"
+736:          classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+737-          classname="dom.range.Test"
+738-          failOnError="yes">
+739-		<arg value="all"/>
+740-    </java>
+741-
+742-    <echo message="Running dom.ids.Test ..." />
+743-    <java fork="yes"
+744:          classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+745-          classname="dom.ids.Test"
+746-          failOnError="yes">
+747-    </java>
+748-    <echo message="Running dom.serialization.Test ..." />
+749-    <java fork="yes"
+750:          classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+751-          classname="dom.serialization.Test"
+752-          failOnError="yes">
+753-           <arg value="${data.dir}/personal-schema.xml"/>
+754-           <arg value="out.xml"/>
+755-    </java>
+756-    <echo message="Running schema.Test ..." />
+757-    <java fork="yes"
+758:          classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+759-          classname="schema.Test"
+760-          failOnError="yes">
+761-    </java>
+762-    <echo message="Running jaxp.PropertyTest ..." />
+763-    <java fork="yes"
+764:          classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+765-          classname="jaxp.PropertyTest"
+766-          failOnError="yes">
+767-    </java>
+768-    <echo message="Running jaxp.JAXPSpecTest ..." />
+769-    <java fork="yes"
+770:          classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+771-          classname="jaxp.JAXPSpecTest"
+772-          failOnError="yes">
+773-           <arg value="testSchemaLanguageSAX"/>
+774-           <arg value="testSchemaSourceSAX"/>
+--
+776-           <arg value="testSchemaSourceDOM"/>
+777-    </java>
+778-    <echo message="Running xinclude.Test ..." />
+779-    <java fork="yes"
+780:          classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+781-          classname="xinclude.Test"
+782-          failOnError="yes">
+783-    </java>
+784-  </target>
+--
+791-    <copy file="${tools.dir}/${jar.resolver}" tofile="${build.dir}/${jar.resolver}"/>
+792-  </target>
+793-
+794-  <!-- =================================================================== -->
+795:  <!-- Builds xercesImpl, xmlParserAPIs and sample jar files               -->
+796-  <!-- =================================================================== -->
+797-  <target name="jars" depends="jar, sampjar">
+798-    <!-- support xml-commons APIs -->
+799:    <copy file="${tools.dir}/${jar.apis}" tofile="${build.dir}/${jar.apis}"/>
+800:    <copy file="${tools.dir}/${jar.apis}" tofile="${build.dir}/${deprecatedjar.apis}"/>
+801-    <!-- support xml-commons resolver -->
+802-    <copy file="${tools.dir}/${jar.resolver}" tofile="${build.dir}/${jar.resolver}"/>
+803-  </target>
+804-
+--
+941-    <replace file="${build.dir}/src/org/apache/xerces/dom/AttrNSImpl.java" 
+942-             token="return ((String)type).getNamespace();" value="return null;"/>
+943- 
+944-    <!-- now deal with API's:  -->
+945:    <unzip src="${src.apis.zip}" dest="${build.src}">
+946-        <patternset
+947-            includes="org/xml/sax/** 
+948-                javax/xml/parsers/**
+949-                org/w3c/dom/*
+--
+960-             token="@@VERSION@@" value="${parser.Name} ${parser.Version}"/>
+961-  </target>
+962-
+963-  <!-- =================================================================== -->
+964:  <!-- Builds xercesImpl (dtd), xmlParserAPIs, and sample jars            -->
+965-  <!-- =================================================================== -->
+966-  <target name="dtdjars" depends="dtdjar, sampjar">
+967-    <!-- support xml-commons APIs -->
+968:    <copy file="${tools.dir}/${jar.apis}" tofile="${build.dir}/${jar.apis}"/>
+969:    <copy file="${tools.dir}/${jar.apis}" tofile="${build.dir}/${deprecatedjar.apis}"/>
+970-    
+971-    <!-- support xml-commons resolver -->
+972-    <copy file="${tools.dir}/${jar.resolver}" tofile="${build.dir}/${jar.resolver}"/>
+973-       
+--
+1089-      <arg value="nv"/>
+1090-      <arg value="${parser.version}"/>
+1091-      <classpath>
+1092-        <pathelement location="tests/conformance/utilities.jar"/>
+1093:        <pathelement location="build/xmlParserAPIs.jar"/>
+1094-        <pathelement location="build/xercesImpl.jar"/>
+1095-      </classpath>
+1096-    </java>
+1097-
+--
+1102-      <arg value="val"/>
+1103-      <arg value="${parser.version}"/>
+1104-      <classpath>
+1105-        <pathelement location="tests/conformance/utilities.jar"/>
+1106:        <pathelement location="build/xmlParserAPIs.jar"/>
+1107-        <pathelement location="build/xercesImpl.jar"/>
+1108-      </classpath>
+1109-    </java>
+1110-
+--
+1225-           deprecation="${deprecation}"
+1226-           optimize="${optimize}"
+1227-           includeAntRuntime="false"
+1228-           includeJavaRuntime="true"
+1229:           classpath="${tools.dir}/${jar.apis}:${tools.dir}/${jar.resolver}"/>
+1230-  </target>
+1231-
+1232-  <!-- =================================================================== -->
+1233-  <!-- Compiles the samples with DOM Level 3                               -->
+1234-  <!-- =================================================================== -->
+1235:  <target name="samples-dom3" depends="jar-dom3, apijar-dom3">
+1236-    <mkdir dir="${build.samples}"/>
+1237-    <copy todir="${build.samples}" >
+1238-        <fileset dir="${samples.dir}" />
+1239-    </copy>
+--
+1251-             token="org.apache.xerces.dom3" value="org.w3c.dom"/> 
+1252- 
+1253-   <xjavac srcdir="${build.samples}"
+1254-           destdir="${build.dest}"
+1255:           classpath="${build.dir}/classes:${build.dir}/dom3-${jar.parser}:${build.dir}/dom3-${jar.apis}:${tools.dir}/${jar.apis}"
+1256-           debug="${debug}"
+1257-           includeAntRuntime="false"
+1258-           includeJavaRuntime="true"/>
+1259-
+--
+1281-             token="org.apache.xerces.dom3" value="org.w3c.dom"/>
+1282-
+1283-    <xjavac srcdir="${build.tests}"
+1284-           destdir="${build.dest}"
+1285:           classpath="${build.dir}/dom3-${jar.apis}:${build.dir}/classes:./tools/junit.jar"
+1286-           debug="${debug}"
+1287-           includeAntRuntime="false"
+1288-           includeJavaRuntime="true"/>
+1289-  </target>
+--
+1295-    <echo message="Performing sanity test for ${parser.Name} ${parser.Version} ..." />
+1296-    <echo message="Using classpath=&apos;${build.dir}/classes&apos;" />
+1297-    <echo message="Running sax.Counter ..." />
+1298-   <java fork="yes"
+1299:          classpath="${build.dir}/dom3-${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+1300-          classname="sax.Counter"
+1301-          failOnError="yes">
+1302-       <arg value="${data.dir}/personal.xml"/>
+1303-    </java>
+1304-    <echo message="Running sax.Writer ..." />
+1305-    <java fork="yes"
+1306:          classpath="${build.dir}/dom3-${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes" 
+1307-          classname="sax.Writer"
+1308-          failOnError="yes">
+1309-       <arg value="${data.dir}/personal.xml"/>
+1310-    </java>
+1311-    <echo message="Running dom.Counter ..." />
+1312-    <java fork="yes"
+1313:          classpath="${build.dir}/dom3-${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+1314-          classname="dom.Counter"
+1315-          failOnError="yes">
+1316-       <arg value="${data.dir}/personal.xml"/>
+1317-    </java>
+1318-    <echo message="Running dom.Writer ..." />
+1319-    <java fork="yes"
+1320:          classpath="${build.dir}/dom3-${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes" 
+1321-          classname="dom.Writer"
+1322-          failOnError="yes">
+1323-       <arg value="${data.dir}/personal.xml"/>
+1324-    </java>
+1325-
+1326-    <echo message="Running QueryXS ..." />
+1327-    <java fork="yes"
+1328:          classpath="${build.dir}/dom3-${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+1329-          classname="xs.QueryXS"
+1330-          args="${data.dir}/personal.xsd"/>
+1331-
+1332-    <!-- The following are samples but not command-line applications.
+1333-    <echo message="Running IteratorView ..." />
+1334-    <java fork="yes"
+1335:          classpath="${build.dir}/dom3-${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+1336-          classname="dom.traversal.IteratorView"
+1337-          failOnError="yes"
+1338-          args="${data.dir}/personal.xml"/>
+1339-    <echo message="Running TreeWalkerView ..." />
+1340-    <java fork="yes"
+1341:          classpath="${build.dir}/dom3-${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+1342-          classname="dom.traversal.TreeWalkerView"
+1343-          failOnError="yes"
+1344-          args="${data.dir}/personal.xml"/>
+1345-    <echo message="Running TreeViewer ..." />
+1346-    <java fork="yes"
+1347:          classpath="${build.dir}/dom3-${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+1348-          classname="dom.TreeViewer"
+1349-          failOnError="yes"
+1350-          args="${data.dir}/personal.xml"/>
+1351-     -->
+1352-    <echo message="Running dom.mem.Test ..." />
+1353-    <java fork="yes"
+1354:          classpath="${build.dir}/dom3-${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+1355-          classname="dom.mem.Test"
+1356-          failOnError="yes">
+1357-    </java>
+1358-    <echo message="Running thread.Test ..." />
+1359-    <java fork="yes"
+1360:          classpath="${build.dir}/dom3-${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+1361-          classname="thread.Test"
+1362-          failOnError="yes">
+1363-           <arg value="-dom"/>
+1364-           <arg value="-threads"/>
+--
+1370-    </java>
+1371-
+1372-    <echo message="Running dom.ids.Test ..." />
+1373-    <java fork="yes"
+1374:          classpath="${build.dir}/dom3-${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+1375-          classname="dom.ids.Test"
+1376-          failOnError="yes">
+1377-    </java>
+1378-    <echo message="Running dom.DTest ..." />
+1379-    <java fork="yes"
+1380:          classpath="${build.dir}/dom3-${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+1381-          classname="dom.DTest"
+1382-          failOnError="yes">
+1383-    </java>
+1384-    <echo message="Running dom.serialization.Test ..." />
+1385-    <java fork="yes"
+1386:          classpath="${build.dir}/dom3-${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+1387-          classname="dom.serialization.Test"
+1388-          failOnError="yes">
+1389-           <arg value="${data.dir}/personal.xml"/>
+1390-           <arg value="out.xml"/>
+1391-    </java>
+1392-    <java fork="yes"
+1393:          classpath="${build.dir}/dom3-${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+1394-          classname="dom.registry.Test"
+1395-          failOnError="yes">
+1396-    </java>
+1397-
+1398-    <java fork="yes"
+1399:          classpath="${build.dir}/dom3-${jar.apis}:${tools.dir}/${jar.resolver}:${build.dir}/classes"
+1400-          classname="dom.dom3.Test"
+1401-          failOnError="yes">
+1402-    </java>
+1403-
+--
+1415-
+1416-  <!-- =================================================================== -->
+1417-  <!-- Creates the API class package with DOM Level 3                      -->
+1418-  <!-- =================================================================== -->
+1419:  <target name="apijar-dom3" depends="compile-dom3">
+1420:    <copy file="${tools.dir}/${jar.apis}"
+1421:        tofile="${build.dir}/dom3-${jar.apis}"/>
+1422:    <jar jarfile="${build.dir}/dom3-${jar.apis}"
+1423-         basedir="${build.dest}"
+1424-         compress="true"
+1425-         includes="org/xml/**, org/w3c/**"
+1426-         update="yes"/>
+--
+1437-         includes="dom/**,sax/**,socket/**,ui/**,xni/**,xs/**"/>
+1438-  </target>
+1439-
+1440-  <!-- =================================================================== -->
+1441:  <!-- Builds xercesImpl, xmlParserAPIs, and sample jars with DOM Level 3  -->
+1442-  <!-- =================================================================== -->
+1443:  <target name="jars-dom3" depends="jar-dom3, apijar-dom3, sampjar-dom3">
+1444-    <!-- support xml-commons resolver -->
+1445-    <copy file="${tools.dir}/${jar.resolver}" tofile="${build.dir}/${jar.resolver}"/>
+1446-  </target>
+1447-
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -name '*.json' | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+ succeeded in 0ms:
+{
+  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
+}
+
+exec
+/usr/bin/bash -lc "find metadata -name index.json | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "12.1.3",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-sources.jar",
+    "repository-url" : "https://github.com/jetty/jetty.project",
+    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.1.3/jetty-core/jetty-server/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-javadoc.jar",
+    "description" : "Jetty Server provides the core Eclipse Jetty server components for accepting connections, handling requests, and serving HTTP-based applications. It can be embedded in Java applications as the foundation for Jetty-based HTTP servers, handlers, and higher-level web modules.",
+    "tested-versions" : [
+      "12.1.3",
+      "12.1.4",
+      "12.1.5",
+      "12.1.6",
+      "12.1.7",
+      "12.1.8"
+    ],
+    "allowed-packages" : [
+      "org.eclipse"
+    ]
+  },
+  {
+    "default-for" : "12\\.0\\..*",
+    "metadata-version" : "12.0.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-sources.jar",
+    "repository-url" : "https://github.com/jetty/jetty.project",
+    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.1/jetty-core/jetty-server/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-javadoc.jar",
+    "description" : "Jetty Server provides the core server components of Eclipse Jetty for handling HTTP requests in Java applications. It can be embedded as the foundation for Jetty-based HTTP servers and higher-level web application modules.",
+    "tested-versions" : [
+      "12.0.1",
+      "12.0.2",
+      "12.0.3",
+      "12.0.4",
+      "12.0.5",
+      "12.0.6",
+      "12.0.7",
+      "12.0.8",
+      "12.0.9",
+      "12.0.10",
+      "12.0.11",
+      "12.0.12",
+      "12.0.13",
+      "12.0.14",
+      "12.0.15",
+      "12.0.16"
+    ],
+    "allowed-packages" : [
+      "org.eclipse"
+    ]
+  },
+  {
+    "default-for" : "11\\..*",
+    "metadata-version" : "11.0.12",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-sources.jar",
+    "repository-url" : "https://github.com/jetty/jetty.project",
+    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-11.0.12/jetty-server/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-javadoc.jar",
+    "description" : "Jetty Server provides the core server components of Eclipse Jetty for handling HTTP requests in Java applications. It can be embedded as the foundation for Servlet-based web applications and higher-level Jetty modules.",
+    "tested-versions" : [
+      "11.0.12"
+    ],
+    "allowed-packages" : [
+      "org.eclipse"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "12.1.5",
+    "test-version" : "12.0.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-sources.jar",
+    "repository-url" : "https://github.com/jetty/jetty.project",
+    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.1.5/jetty-core/jetty-client/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-javadoc.jar",
+    "description" : "Jetty Client is an efficient, asynchronous, non-blocking HTTP client library for Java that also supports blocking request workflows through a simple API. It provides the HttpClient implementation, request and response APIs, connection pooling, and central configuration for network parameters, redirects, and cookies.",
+    "tested-versions" : [
+      "12.1.5",
+      "12.1.6",
+
+exec
+/usr/bin/bash -lc "curl -Lsf https://repo1.maven.org/maven2/xerces/xmlParserAPIs/2.6.2/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: xerces/xmlParserAPIs/2.6.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>xerces/xmlParserAPIs/2.6.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:52       118      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:52        82      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:52       137      
+<a href="xmlParserAPIs-2.6.2.jar" title="xmlParserAPIs-2.6.2.jar">xmlParserAPIs-2.6.2.jar</a>                           2005-09-20 05:52    124724      
+<a href="xmlParserAPIs-2.6.2.jar.md5" title="xmlParserAPIs-2.6.2.jar.md5">xmlParserAPIs-2.6.2.jar.md5</a>                       2005-09-20 05:52        32      
+<a href="xmlParserAPIs-2.6.2.jar.sha1" title="xmlParserAPIs-2.6.2.jar.sha1">xmlParserAPIs-2.6.2.jar.sha1</a>                      2005-09-20 05:52        40      
+<a href="xmlParserAPIs-2.6.2.pom" title="xmlParserAPIs-2.6.2.pom">xmlParserAPIs-2.6.2.pom</a>                           2005-09-20 05:52       153      
+<a href="xmlParserAPIs-2.6.2.pom.md5" title="xmlParserAPIs-2.6.2.pom.md5">xmlParserAPIs-2.6.2.pom.md5</a>                       2005-09-20 05:52        32      
+<a href="xmlParserAPIs-2.6.2.pom.sha1" title="xmlParserAPIs-2.6.2.pom.sha1">xmlParserAPIs-2.6.2.pom.sha1</a>                      2005-09-20 05:52        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -Lsf https://repo.maven.apache.org/maven2/xerces/xmlParserAPIs/2.6.2/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+exec
+/usr/bin/bash -lc 'curl -I -Lsf https://repo.maven.apache.org/maven2/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2-sources.jar || true; curl -I -Lsf https://repo.maven.apache.org/maven2/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2-javadoc.jar || true; curl -I -Lsf https://repo.maven.apache.org/maven2/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2-tests.jar || true' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+ succeeded in 304ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: xerces/xmlParserAPIs/2.6.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>xerces/xmlParserAPIs/2.6.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:52       118      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:52        82      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:52       137      
+<a href="xmlParserAPIs-2.6.2.jar" title="xmlParserAPIs-2.6.2.jar">xmlParserAPIs-2.6.2.jar</a>                           2005-09-20 05:52    124724      
+<a href="xmlParserAPIs-2.6.2.jar.md5" title="xmlParserAPIs-2.6.2.jar.md5">xmlParserAPIs-2.6.2.jar.md5</a>                       2005-09-20 05:52        32      
+<a href="xmlParserAPIs-2.6.2.jar.sha1" title="xmlParserAPIs-2.6.2.jar.sha1">xmlParserAPIs-2.6.2.jar.sha1</a>                      2005-09-20 05:52        40      
+<a href="xmlParserAPIs-2.6.2.pom" title="xmlParserAPIs-2.6.2.pom">xmlParserAPIs-2.6.2.pom</a>                           2005-09-20 05:52       153      
+<a href="xmlParserAPIs-2.6.2.pom.md5" title="xmlParserAPIs-2.6.2.pom.md5">xmlParserAPIs-2.6.2.pom.md5</a>                       2005-09-20 05:52        32      
+<a href="xmlParserAPIs-2.6.2.pom.sha1" title="xmlParserAPIs-2.6.2.pom.sha1">xmlParserAPIs-2.6.2.pom.sha1</a>                      2005-09-20 05:52        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 653ms:
+HTTP/2 404 
+date: Tue, 28 Apr 2026 23:52:39 GMT
+content-type: text/html
+cf-ray: 9f39fb5aaac9be8b-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Tue, 28 Apr 2026 23:52:39 GMT
+content-type: text/html
+cf-ray: 9f39fb5bfe6cbc05-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Tue, 28 Apr 2026 23:52:39 GMT
+content-type: text/html
+cf-ray: 9f39fb5d4cc5e5d9-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 xerces xmlParserAPIs 2.6.2 xmlParserAPIs-2.6.2.jar
+web search: 
+web search: 'Xerces-J_2_6_2' in https://svn.apache.org/repos/asf/xerces/java/tags/
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/
+codex
+I’m going to write the metadata using the Apache SVN `Xerces-J_2_6_2` tag for source, tests, and docs. Since the coordinate is a Java artifact and not Kotlin, Groovy, or Scala-specific under the requested schema, I’ll leave `language` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+diff --git a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+index 867722e8c20e2d0224340ac720739b140c070558..77fd9c32d64e7aaec8ce3ed4f3863b9a351380fe
+--- a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
++++ b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
++  "coordinates" : "xerces:xmlParserAPIs:2.6.2",
++  "source-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip",
++  "repository-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/",
++  "description" : "xmlParserAPIs 2.6.2 provides the standard XML API classes distributed with Apache Xerces-J, including SAX, DOM, and JAXP interfaces used by Java XML parsers and applications. It supplies API definitions rather than the Xerces parser implementation, allowing code to compile against common XML processing contracts."
+ }
+
+diff --git a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+index 867722e8c20e2d0224340ac720739b140c070558..77fd9c32d64e7aaec8ce3ed4f3863b9a351380fe
+--- a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
++++ b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
++  "coordinates" : "xerces:xmlParserAPIs:2.6.2",
++  "source-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip",
++  "repository-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/",
++  "description" : "xmlParserAPIs 2.6.2 provides the standard XML API classes distributed with Apache Xerces-J, including SAX, DOM, and JAXP interfaces used by Java XML parsers and applications. It supplies API definitions rather than the Xerces parser implementation, allowing code to compile against common XML processing contracts."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "python3 -m json.tool build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json >/dev/null && sed -n '1,120p' build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+ succeeded in 0ms:
+{
+  "coordinates" : "xerces:xmlParserAPIs:2.6.2",
+  "source-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip",
+  "repository-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/",
+  "test-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/",
+  "documentation-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/",
+  "description" : "xmlParserAPIs 2.6.2 provides the standard XML API classes distributed with Apache Xerces-J, including SAX, DOM, and JAXP interfaces used by Java XML parsers and applications. It supplies API definitions rather than the Xerces parser implementation, allowing code to compile against common XML processing contracts."
+}
+
+diff --git a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+index 867722e8c20e2d0224340ac720739b140c070558..77fd9c32d64e7aaec8ce3ed4f3863b9a351380fe
+--- a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
++++ b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
++  "coordinates" : "xerces:xmlParserAPIs:2.6.2",
++  "source-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip",
++  "repository-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/",
++  "description" : "xmlParserAPIs 2.6.2 provides the standard XML API classes distributed with Apache Xerces-J, including SAX, DOM, and JAXP interfaces used by Java XML parsers and applications. It supplies API definitions rather than the Xerces parser implementation, allowing code to compile against common XML processing contracts."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+index 867722e8c20e2d0224340ac720739b140c070558..77fd9c32d64e7aaec8ce3ed4f3863b9a351380fe
+--- a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
++++ b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
++  "coordinates" : "xerces:xmlParserAPIs:2.6.2",
++  "source-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip",
++  "repository-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/",
++  "description" : "xmlParserAPIs 2.6.2 provides the standard XML API classes distributed with Apache Xerces-J, including SAX, DOM, and JAXP interfaces used by Java XML parsers and applications. It supplies API definitions rather than the Xerces parser implementation, allowing code to compile against common XML processing contracts."
+ }
+
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/
+web search: 
+web search: site:repo.maven.apache.org/maven2/xerces/xmlParserAPIs/2.6.2 xmlParserAPIs-2.6.2.jar
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/
+codex
+Updated [xerces-xmlParserAPIs-2.6.2.json](/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json) with the Xerces-J `2.6.2` SVN tag URLs. The tag contains the `tools/xml-commons-external-1.2.01-src.zip` source archive plus `tests/` and `docs/` directories, which I used for the exact-version source, test, and documentation fields. ([svn.apache.org](https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/))
+
+Validated the file as JSON with `python3 -m json.tool`. No `language` field was added because this is not Kotlin, Groovy, or Scala-specific under the requested schema.
+diff --git a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+index 867722e8c20e2d0224340ac720739b140c070558..77fd9c32d64e7aaec8ce3ed4f3863b9a351380fe
+--- a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
++++ b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
++  "coordinates" : "xerces:xmlParserAPIs:2.6.2",
++  "source-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip",
++  "repository-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/",
++  "description" : "xmlParserAPIs 2.6.2 provides the standard XML API classes distributed with Apache Xerces-J, including SAX, DOM, and JAXP interfaces used by Java XML parsers and applications. It supplies API definitions rather than the Xerces parser implementation, allowing code to compile against common XML processing contracts."
+ }
+
+2026-04-28T23:53:24.003882Z ERROR codex_core::session: failed to record rollout items: thread 019dd681-a87c-7942-b169-addacabd9ec3 not found
+tokens used
+89,336
+Updated [xerces-xmlParserAPIs-2.6.2.json](/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json) with the Xerces-J `2.6.2` SVN tag URLs. The tag contains the `tools/xml-commons-external-1.2.01-src.zip` source archive plus `tests/` and `docs/` directories, which I used for the exact-version source, test, and documentation fields. ([svn.apache.org](https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/))
+
+Validated the file as JSON with `python3 -m json.tool`. No `language` field was added because this is not Kotlin, Groovy, or Scala-specific under the requested schema.
+Ran agent for xerces:xmlParserAPIs:2.6.2 (exit 0). Log: /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15/build/agent-artifact-discovery-logs/xerces-xmlParserAPIs-2.6.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2719-c3869e15/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 30s
+9 actionable tasks: 4 executed, 5 from cache
