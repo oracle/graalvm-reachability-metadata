@@ -8,8 +8,17 @@ package org_apache_seata.seata_all;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Collections;
+import java.util.Set;
+
+import org.apache.seata.common.loader.LoadLevel;
+import org.apache.seata.common.loader.Scope;
+import org.apache.seata.integration.tx.api.interceptor.InvocationWrapper;
+import org.apache.seata.integration.tx.api.interceptor.SeataInterceptorPosition;
+import org.apache.seata.integration.tx.api.interceptor.handler.ProxyInvocationHandler;
+import org.apache.seata.integration.tx.api.interceptor.parser.IfNeedEnhanceBean;
+import org.apache.seata.integration.tx.api.interceptor.parser.InterfaceParser;
 import org.apache.seata.integration.tx.api.util.ProxyUtil;
-import org.apache.seata.spring.annotation.GlobalTransactional;
 import org.junit.jupiter.api.Test;
 
 public class ProxyUtilTest {
@@ -48,9 +57,52 @@ public class ProxyUtilTest {
             return message;
         }
 
-        @GlobalTransactional
         public void updateMessage(String newMessage) {
             this.message = newMessage;
+        }
+    }
+
+    @LoadLevel(name = "proxy-util", scope = Scope.PROTOTYPE)
+    public static class ProxyTargetInterfaceParser implements InterfaceParser {
+        @Override
+        public ProxyInvocationHandler parserInterfaceToProxy(Object target, String objectName) {
+            if (target instanceof TransactionalService) {
+                return new ProceedingProxyInvocationHandler();
+            }
+            return null;
+        }
+
+        @Override
+        public IfNeedEnhanceBean parseIfNeedEnhancement(Class<?> beanClass) {
+            IfNeedEnhanceBean ifNeedEnhanceBean = new IfNeedEnhanceBean();
+            ifNeedEnhanceBean.setIfNeed(TransactionalService.class.isAssignableFrom(beanClass));
+            return ifNeedEnhanceBean;
+        }
+    }
+
+    public static class ProceedingProxyInvocationHandler implements ProxyInvocationHandler {
+        @Override
+        public Set<String> getMethodsToProxy() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public Object invoke(InvocationWrapper invocation) throws Throwable {
+            return invocation.proceed();
+        }
+
+        @Override
+        public SeataInterceptorPosition getPosition() {
+            return SeataInterceptorPosition.Any;
+        }
+
+        @Override
+        public String type() {
+            return "proxy-util-test";
+        }
+
+        @Override
+        public void setNextProxyInvocationHandler(ProxyInvocationHandler next) {
         }
     }
 }
