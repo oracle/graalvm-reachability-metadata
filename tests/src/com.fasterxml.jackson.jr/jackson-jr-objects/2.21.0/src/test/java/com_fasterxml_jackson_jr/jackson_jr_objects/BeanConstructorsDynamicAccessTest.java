@@ -59,7 +59,7 @@ public class BeanConstructorsDynamicAccessTest {
 final class BeanConstructorsDefaultCtorBean {
     static final AtomicInteger CONSTRUCTOR_CALLS = new AtomicInteger();
 
-    String name;
+    public String name;
 
     BeanConstructorsDefaultCtorBean() {
         CONSTRUCTOR_CALLS.incrementAndGet();
