@@ -17,11 +17,14 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class ConcurrentReferenceHashMapTest {
 
     @Test
     void serializationRoundTripPreservesEntries() throws Exception {
+        assumeFalse(isNativeImageRuntime(), "ConcurrentReferenceHashMap serializes JDK lock internals");
+
         Map<String, String> map = newConcurrentReferenceHashMap();
         Map<String, String> expectedEntries = new LinkedHashMap<>();
         expectedEntries.put("logger", "main");
@@ -47,6 +50,10 @@ public class ConcurrentReferenceHashMapTest {
         assertThat(restoredMap)
                 .hasSize(expectedEntries.size())
                 .containsAllEntriesOf(expectedEntries);
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
