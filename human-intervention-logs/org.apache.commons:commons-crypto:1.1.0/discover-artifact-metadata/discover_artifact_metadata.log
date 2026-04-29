@@ -1,0 +1,647 @@
+Starting a Gradle Daemon, 2 busy and 3 incompatible and 107 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ddb6a-ef19-7113-b4f3-47711153b928
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.commons:commons-crypto:1.1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json
+- Set "coordinates" to "org.apache.commons:commons-crypto:1.1.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the exact 1.1.0 artifacts and release tag first, then update the JSON in place using the repository’s existing metadata style.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.commons:commons-crypto:1.1.0"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -40' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920
+build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json
+
+exec
+/usr/bin/bash -lc "rg -n 'commons-crypto|source-code-url|test-code-url|documentation-url' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json:2:  "coordinates" : "org.apache.commons:commons-crypto:1.1.0"
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-sources.jar",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-sources.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-tests.jar",
+metadata/org.awaitility/awaitility/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.9/jetty-core/jetty-util/src/test",
+metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:8:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.1.5/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:25:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.0/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:62:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:64:    "test-code-url" : "https://github.com/eclipse/jetty.project/tree/jetty-11.0.12/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:65:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.1.3/jetty-core/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:27:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.1/jetty-core/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:28:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:55:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:57:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-11.0.12/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:58:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/3.0.7/istack-commons-runtime-3.0.7-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:6:    "test-code-url" : "https://github.com/javaee/jaxb-istack-commons/tree/3.0.7-RELEASE/istack-commons/test",
+metadata/com.sun.istack/istack-commons-runtime/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/3.0.7/istack-commons-runtime-3.0.7-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/4.0.0/istack-commons-runtime-4.0.0-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:21:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.0.0/istack-commons/runtime/src/test",
+metadata/com.sun.istack/istack-commons-runtime/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/4.0.0/istack-commons-runtime-4.0.0-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/javax.cache/cache-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/1.1.0/cache-api-1.1.0-sources.jar",
+metadata/javax.cache/cache-api/index.json:6:    "test-code-url" : "N/A",
+metadata/javax.cache/cache-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/1.1.0/cache-api-1.1.0-javadoc.jar",
+metadata/javax.cache/cache-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/1.1.1/cache-api-1.1.1-sources.jar",
+metadata/javax.cache/cache-api/index.json:21:    "test-code-url" : "N/A",
+metadata/javax.cache/cache-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/1.1.1/cache-api-1.1.1-javadoc.jar",
+metadata/io.reactivex.rxjava3/rxjava/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/reactivex/rxjava3/rxjava/3.1.5/rxjava-3.1.5-sources.jar",
+metadata/io.reactivex.rxjava3/rxjava/index.json:7:    "test-code-url" : "https://github.com/ReactiveX/RxJava/tree/v3.1.5/src/test",
+metadata/io.reactivex.rxjava3/rxjava/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/reactivex/rxjava3/rxjava/3.1.5/rxjava-3.1.5-javadoc.jar",
+metadata/org.attoparser/attoparser/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/2.0.5.RELEASE/attoparser-2.0.5.RELEASE-sources.jar",
+metadata/org.attoparser/attoparser/index.json:7:    "test-code-url" : "https://github.com/attoparser/attoparser/tree/attoparser-2.0.5.RELEASE/src/test",
+metadata/org.attoparser/attoparser/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/2.0.5.RELEASE/attoparser-2.0.5.RELEASE-javadoc.jar",
+metadata/org.lz4/lz4-java/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-sources.jar",
+metadata/org.lz4/lz4-java/index.json:8:    "test-code-url": "https://github.com/lz4/lz4-java/tree/1.8.0/src/test",
+metadata/org.lz4/lz4-java/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-javadoc.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-metrics/1.56.0/opentelemetry-sdk-metrics-1.56.0-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.56.0/sdk/metrics/src/test/java",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.opentelemetry/opentelemetry-sdk-metrics/1.56.0/index.html",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:22:    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-metrics/1.19.0/opentelemetry-sdk-metrics-1.19.0-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:24:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.19.0/sdk/metrics/src/test",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:25:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v1.19.0/sdk/metrics/README.md",
+metadata/commons-logging/commons-logging-api/index.json:5:    "source-code-url" : "https://github.com/apache/commons-logging/tree/LOGGING_1_1_0/src/java",
+metadata/commons-logging/commons-logging-api/index.json:7:    "test-code-url" : "https://github.com/apache/commons-logging/tree/LOGGING_1_1_0/src/test",
+metadata/commons-logging/commons-logging-api/index.json:8:    "documentation-url" : "https://github.com/apache/commons-logging/blob/LOGGING_1_1_0/xdocs/guide.xml",
+metadata/io.projectreactor/reactor-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/3.5.1/reactor-core-3.5.1-sources.jar",
+metadata/io.projectreactor/reactor-core/index.json:7:    "test-code-url" : "https://github.com/reactor/reactor-core/tree/v3.5.1/reactor-core/src/test/java",
+metadata/io.projectreactor/reactor-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/3.5.1/reactor-core-3.5.1-docs.zip",
+metadata/org.springframework.security/spring-security-crypto/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/6.0.0/spring-security-crypto-6.0.0-sources.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-security/tree/6.0.0/crypto/src/test",
+metadata/org.springframework.security/spring-security-crypto/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/6.0.0/spring-security-crypto-6.0.0-javadoc.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/5.7.3/spring-security-crypto-5.7.3-sources.jar",
+
+web search: 
+web search: org.apache.commons commons-crypto 1.1.0 Maven Central sources tests javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/commons/commons-crypto/1.1.0/
+codex
+Maven Central has all three exact 1.1.0 auxiliary artifacts: sources, test sources/tests, and javadocs. I’m checking the SCM/repository convention now so the JSON matches the surrounding entries.
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"' metadata/org.apache.commons metadata/commons-logging metadata/org.apache -g 'index.json' | head -80" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920
+ succeeded in 0ms:
+rg: metadata/org.apache: No such file or directory (os error 2)
+metadata/org.apache.commons/commons-compress/index.json:5:    "repository-url" : "https://github.com/apache/commons-compress",
+metadata/org.apache.commons/commons-compress/index.json:20:    "repository-url" : "https://github.com/apache/commons-compress",
+metadata/org.apache.commons/commons-dbcp2/index.json:9:    "repository-url": "https://github.com/apache/commons-dbcp",
+metadata/org.apache.commons/commons-text/index.json:6:    "repository-url" : "https://gitbox.apache.org/repos/asf?p=commons-text.git",
+metadata/org.apache.commons/commons-pool2/index.json:9:    "repository-url": "https://github.com/apache/commons-pool",
+metadata/org.apache.commons/commons-lang3/index.json:6:    "repository-url" : "https://github.com/apache/commons-lang",
+metadata/org.apache.commons/commons-collections4/index.json:6:    "repository-url" : "https://github.com/apache/commons-collections",
+metadata/commons-logging/commons-logging-api/index.json:6:    "repository-url" : "https://github.com/apache/commons-logging",
+metadata/commons-logging/commons-logging/index.json:7:    "repository-url": "https://github.com/apache/commons-logging",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0.pom | sed -n '120,210p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920
+ succeeded in 0ms:
+    <commons.jira.id>CRYPTO</commons.jira.id>
+    <commons.jira.pid>12320024</commons.jira.pid>
+    <project.inceptionYear>2016</project.inceptionYear>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <commons.javadoc.java.link>http://docs.oracle.com/javase/8/docs/api/</commons.javadoc.java.link>
+    <!-- Ensure copies work OK (can be removed later when this is in parent POM) -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <!--
+        Encoding of Java source files: ensures that the compiler and
+        the javadoc generator use the right encoding. Subprojects may
+        overwrite this, if they are using another encoding.
+    -->
+    <commons.encoding>iso-8859-1</commons.encoding>
+    <!-- used in this pom to provide the Javadoc HTML file encoding -->
+    <commons.docEncoding>${commons.encoding}</commons.docEncoding>
+    <!-- Define source encoding for filtering; used by general plugins -->
+    <project.build.sourceEncoding>${commons.encoding}</project.build.sourceEncoding>
+    <!-- This is used by reporting plugins -->
+    <project.reporting.outputEncoding>${commons.encoding}</project.reporting.outputEncoding>
+
+    <checkstyle.version>3.1.1</checkstyle.version>
+    <checkstyle.header.file>${basedir}/LICENSE-header.txt</checkstyle.header.file>
+    <checkstyle.resourceExcludes>LICENSE.txt, NOTICE.txt, **/maven-archiver/pom.properties</checkstyle.resourceExcludes>
+
+    <commons.pmd.version>3.13.0</commons.pmd.version>
+    <japicmp.skip>false</japicmp.skip>
+    <commons.japicmp.version>0.14.3</commons.japicmp.version>
+    
+    <clirr.skip>true</clirr.skip>
+    
+    <commons.release.isDistModule>true</commons.release.isDistModule>
+    <commons.releaseManagerName>Gary Gregory</commons.releaseManagerName>    
+    <commons.releaseManagerKey>86fdc7e2a11262cb</commons.releaseManagerKey>
+  
+    <jna.version>5.5.0</jna.version>
+    <commons.jacoco.version>0.8.5</commons.jacoco.version>
+
+    <!-- The property "target.name" is used to specify the ant target, The All target will use
+    OsInfo.java to detect the OS info and arch to generate the native binary for detected platform.
+    User is able to specify the platform by maven profiles.-->
+    <target.name>all</target.name>
+    <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
+    <junit.version>4.13</junit.version>
+
+    <!-- Override default buildNumber timestamp format, needed for coveralls plugin -->
+    <maven.buildNumber.timestampFormat>{0,date,yyyy-MM-dd HH:mm:ssZ}</maven.buildNumber.timestampFormat>
+  </properties>
+
+  <developers>
+    <developer>
+      <name>Aaron T Myers</name>
+      <email>atm@apache.org</email>
+      <id>atm</id>
+    </developer>
+    <developer>
+      <name>Andrew Wang</name>
+      <email>wang@apache.org</email>
+      <id>wang</id>
+    </developer>
+    <developer>
+      <name>Chris Nauroth</name>
+      <email>cnauroth@apache.org</email>
+      <id>cnauroth</id>
+    </developer>
+    <developer>
+      <name>Colin P. McCabe</name>
+      <email>cmccabe@apache.org</email>
+      <id>cmccabe</id>
+    </developer>
+    <developer>
+      <name>Dapeng Sun</name>
+      <email>sdp@apache.org</email>
+      <id>sdp</id>
+    </developer>
+    <developer>
+      <name>Dian Fu</name>
+      <email>dianfu@apache.org</email>
+      <id>dianfu</id>
+    </developer>
+    <developer>
+      <name>Dong Chen</name>
+      <email>dongc@apache.org</email>
+      <id>dongc</id>
+    </developer>
+    <developer>
+      <name>Ferdinand Xu</name>
+      <email>xuf@apache.org</email>
+      <id>xuf</id>
+    </developer>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-sources.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-tests.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-test-sources.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-javadoc.jar' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920
+ succeeded in 533ms:
+HTTP/2 200 
+date: Wed, 29 Apr 2026 22:45:35 GMT
+content-type: application/java-archive
+content-length: 72455
+cf-ray: 9f41d67c8fc30d25-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "5c3c2316e777f97c158a0214cf68a39e"
+last-modified: Fri, 28 Aug 2020 20:20:17 GMT
+x-checksum-md5: 5c3c2316e777f97c158a0214cf68a39e
+x-checksum-sha1: fcfdfa439b5dcd399bd22b0a2f1a24ffd27349b1
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Wed, 29 Apr 2026 22:45:35 GMT
+content-type: application/java-archive
+content-length: 216028
+cf-ray: 9f41d67edb140215-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 603173
+etag: "7dc6048e3b826daef668b8f6ff00d467"
+last-modified: Fri, 28 Aug 2020 20:20:15 GMT
+x-checksum-md5: 7dc6048e3b826daef668b8f6ff00d467
+x-checksum-sha1: 11a1aa02c0cdab417ca6298d2d0afaf164af5bc3
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "rg -n 'test-sources.jar' metadata build/discovered-artifact-metadata -g '*.json' | head -20" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920
+ succeeded in 0ms:
+metadata/org.apache.commons/commons-compress/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-test-sources.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-test-sources.jar",
+metadata/org.apache.commons/commons-text/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-test-sources.jar",
+metadata/org.apache.commons/commons-pool2/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-test-sources.jar",
+metadata/org.apache.commons/commons-lang3/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-test-sources.jar",
+metadata/org.apache.commons/commons-collections4/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-test-sources.jar",
+metadata/commons-io/commons-io/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.17.0/commons-io-2.17.0-test-sources.jar",
+metadata/commons-io/commons-io/index.json:26:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.11.0/commons-io-2.11.0-test-sources.jar",
+metadata/commons-cli/commons-cli/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/1.5.0/commons-cli-1.5.0-test-sources.jar",
+metadata/commons-codec/commons-codec/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.1.3/logback-core-1.1.3-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.12/logback-core-1.2.12-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.7/logback-classic-1.5.7-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:44:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.9/logback-classic-1.4.9-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:72:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.1/logback-classic-1.4.1-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:87:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11-test-sources.jar",
+metadata/commons-logging/commons-logging/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-test-sources.jar",
+metadata/dev.langchain4j/langchain4j/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/dev/langchain4j/langchain4j/1.9.0/langchain4j-1.9.0-test-sources.jar",
+metadata/org.apache.kafka/kafka-clients/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/3.5.1/kafka-clients-3.5.1-test-sources.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0.pom | sed -n '1,120p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-parent</artifactId>
+    <version>52</version>
+  </parent>
+
+  <artifactId>commons-crypto</artifactId>
+  <version>1.1.0</version>
+  <packaging>jar</packaging>
+
+  <name>Apache Commons Crypto</name>
+  <description>
+Apache Commons Crypto is a cryptographic library optimized with AES-NI (Advanced Encryption
+Standard New Instructions). It provides Java API for both cipher level and Java stream level.
+Developers can use it to implement high performance AES encryption/decryption with the minimum
+code and effort. Please note that Crypto doesn't implement the cryptographic algorithm such as
+AES directly. It wraps to Openssl or JCE which implement the algorithms.
+
+Features
+--------
+
+1. Cipher API for low level cryptographic operations.
+2. Java stream API (CryptoInputStream/CryptoOutputStream) for high level stream encryption/decryption.
+3. Both optimized with high performance AES encryption/decryption. (1400 MB/s - 1700 MB/s throughput in modern Xeon processors).
+4. JNI-based implementation to achieve comparable performance to the native C/C++ version based on OpenSsl.
+5. Portable across various operating systems (currently only Linux/MacOSX/Windows);
+   Apache Commons Crypto loads the library according to your machine environment (it checks system properties, `os.name` and `os.arch`).
+6. Simple usage. Add the commons-crypto-(version).jar file to your classpath.
+
+
+Export restrictions
+-------------------
+
+This distribution includes cryptographic software.
+The country in which you currently reside may have restrictions
+on the import, possession, use, and/or re-export to another country,
+of encryption software. BEFORE using any encryption software,
+please check your country's laws, regulations and policies
+concerning the import, possession, or use, and re-export of
+encryption software, to see if this is permitted.
+See &lt;http://www.wassenaar.org/&gt; for more information.
+
+The U.S. Government Department of Commerce, Bureau of Industry and Security (BIS),
+has classified this software as Export Commodity Control Number (ECCN) 5D002.C.1,
+which includes information security software using or performing
+cryptographic functions with asymmetric algorithms.
+The form and manner of this Apache Software Foundation distribution makes
+it eligible for export under the License Exception
+ENC Technology Software Unrestricted (TSU) exception
+(see the BIS Export Administration Regulations, Section 740.13)
+for both object code and source code.
+
+The following provides more details on the included cryptographic software:
+
+* Commons Crypto use [Java Cryptography Extension](http://docs.oracle.com/javase/8/docs/technotes/guides/security/crypto/CryptoSpec.html) provided by Java
+* Commons Crypto link to and use [OpenSSL](https://www.openssl.org/) ciphers
+
+  </description>
+
+  <inceptionYear>2016</inceptionYear>
+  <url>https://commons.apache.org/proper/commons-crypto/</url>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.apache.org/jira/browse/CRYPTO</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:git:http://gitbox.apache.org/repos/asf/commons-crypto.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/commons-crypto.git</developerConnection>
+    <url>https://gitbox.apache.org/repos/asf?p=commons-crypto.git</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <ciManagement>
+    <system>Jenkins</system>
+    <url>https://builds.apache.org/search/?q=Commons-CRYPTO</url>
+  </ciManagement>
+
+  <distributionManagement>
+    <site>
+      <id>commons.site</id>
+      <name>Apache Commons Site</name>
+      <url>scm:svn:${commons.scmPubUrl}</url>
+    </site>
+  </distributionManagement>
+
+  <properties>
+    <commons.release.version>1.1.0</commons.release.version>
+    <commons.release.desc>(Java 8)</commons.release.desc>
+    <!-- The RC version used in the staging repository URL. -->
+    <commons.rc.version>RC1</commons.rc.version>
+    <commons.bc.version>1.0.0</commons.bc.version>
+    <commons.componentid>crypto</commons.componentid>
+    <commons.module.name>org.apache.commons.crypto</commons.module.name>
+    <commons.jira.id>CRYPTO</commons.jira.id>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/commons/commons-crypto/1.1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/commons/commons-crypto/1.1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="commons-crypto-1.1.0-javadoc.jar" title="commons-crypto-1.1.0-javadoc.jar">commons-crypto-1.1.0-javadoc.jar</a>                  2020-08-28 20:20    216028      
+<a href="commons-crypto-1.1.0-javadoc.jar.asc" title="commons-crypto-1.1.0-javadoc.jar.asc">commons-crypto-1.1.0-javadoc.jar.asc</a>              2020-08-28 20:20       488      
+<a href="commons-crypto-1.1.0-javadoc.jar.md5" title="commons-crypto-1.1.0-javadoc.jar.md5">commons-crypto-1.1.0-javadoc.jar.md5</a>              2020-08-28 20:20        32      
+<a href="commons-crypto-1.1.0-javadoc.jar.sha1" title="commons-crypto-1.1.0-javadoc.jar.sha1">commons-crypto-1.1.0-javadoc.jar.sha1</a>             2020-08-28 20:20        40      
+<a href="commons-crypto-1.1.0-sources.jar" title="commons-crypto-1.1.0-sources.jar">commons-crypto-1.1.0-sources.jar</a>                  2020-08-28 20:20    108901      
+<a href="commons-crypto-1.1.0-sources.jar.asc" title="commons-crypto-1.1.0-sources.jar.asc">commons-crypto-1.1.0-sources.jar.asc</a>              2020-08-28 20:20       488      
+<a href="commons-crypto-1.1.0-sources.jar.md5" title="commons-crypto-1.1.0-sources.jar.md5">commons-crypto-1.1.0-sources.jar.md5</a>              2020-08-28 20:20        32      
+<a href="commons-crypto-1.1.0-sources.jar.sha1" title="commons-crypto-1.1.0-sources.jar.sha1">commons-crypto-1.1.0-sources.jar.sha1</a>             2020-08-28 20:20        40      
+<a href="commons-crypto-1.1.0-test-sources.jar" title="commons-crypto-1.1.0-test-sources.jar">commons-crypto-1.1.0-test-sources.jar</a>             2020-08-28 20:20     72455      
+<a href="commons-crypto-1.1.0-test-sources.jar.asc" title="commons-crypto-1.1.0-test-sources.jar.asc">commons-crypto-1.1.0-test-sources.jar.asc</a>         2020-08-28 20:20       488      
+<a href="commons-crypto-1.1.0-test-sources.jar.md5" title="commons-crypto-1.1.0-test-sources.jar.md5">commons-crypto-1.1.0-test-sources.jar.md5</a>         2020-08-28 20:20        32      
+<a href="commons-crypto-1.1.0-test-sources.jar.sha1" title="commons-crypto-1.1.0-test-sources.jar.sha1">commons-crypto-1.1.0-test-sources.jar.sha1</a>        2020-08-28 20:20        40      
+<a href="commons-crypto-1.1.0-tests.jar" title="commons-crypto-1.1.0-tests.jar">commons-crypto-1.1.0-tests.jar</a>                    2020-08-28 20:20     85452      
+<a href="commons-crypto-1.1.0-tests.jar.asc" title="commons-crypto-1.1.0-tests.jar.asc">commons-crypto-1.1.0-tests.jar.asc</a>                2020-08-28 20:20       488      
+<a href="commons-crypto-1.1.0-tests.jar.md5" title="commons-crypto-1.1.0-tests.jar.md5">commons-crypto-1.1.0-tests.jar.md5</a>                2020-08-28 20:20        32      
+<a href="commons-crypto-1.1.0-tests.jar.sha1" title="commons-crypto-1.1.0-tests.jar.sha1">commons-crypto-1.1.0-tests.jar.sha1</a>               2020-08-28 20:20        40      
+<a href="commons-crypto-1.1.0.jar" title="commons-crypto-1.1.0.jar">commons-crypto-1.1.0.jar</a>                          2020-08-28 20:20    166244      
+<a href="commons-crypto-1.1.0.jar.asc" title="commons-crypto-1.1.0.jar.asc">commons-crypto-1.1.0.jar.asc</a>                      2020-08-28 20:20       488      
+<a href="commons-crypto-1.1.0.jar.md5" title="commons-crypto-1.1.0.jar.md5">commons-crypto-1.1.0.jar.md5</a>                      2020-08-28 20:20        32      
+<a href="commons-crypto-1.1.0.jar.sha1" title="commons-crypto-1.1.0.jar.sha1">commons-crypto-1.1.0.jar.sha1</a>                     2020-08-28 20:20        40      
+<a href="commons-crypto-1.1.0.pom" title="commons-crypto-1.1.0.pom">commons-crypto-1.1.0.pom</a>                          2020-08-28 20:20     25365      
+<a href="commons-crypto-1.1.0.pom.asc" title="commons-crypto-1.1.0.pom.asc">commons-crypto-1.1.0.pom.asc</a>                      2020-08-28 20:20       488      
+<a href="commons-crypto-1.1.0.pom.md5" title="commons-crypto-1.1.0.pom.md5">commons-crypto-1.1.0.pom.md5</a>                      2020-08-28 20:20        32      
+<a href="commons-crypto-1.1.0.pom.sha1" title="commons-crypto-1.1.0.pom.sha1">commons-crypto-1.1.0.pom.sha1</a>                     2020-08-28 20:20        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/commons-crypto' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920
+ succeeded in 798ms:
+HTTP/2 200 
+date: Wed, 29 Apr 2026 22:45:46 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"fc7c7fa4e6d780e3fd5a88968603533d"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=r0ap2RFlIITMtey0wA7YNCK2sysTt%2FGR1vJyxhKcSPybU1z1NQbqKEOseRY%2FlOn9d13SM4Z5x5ynvoYwcRxIgGRkcv2nrZRPQB7SUfMH3chd8LHrDjrBskTRDwkUISntSpY2vA3nP3v%2BqVx0tln4GYUjydEdk7TzyfxiKcHFSek%2BIyRj%2BXzW9EvY3vEQTkndpivnPfe268QE4doxvTesrGJk4i0pZbaAZUumPK9ZP%2B1eJ6W2%2FRDX%2BtK0DXPU9DAnFosl3trdY5J8E2m4UJZr%2Fg%3D%3D--Lo9JcmybTRSgFXGA--I1wKVnrP737Mgzz33DwlQw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1399188784.1777502745; expires=Thu, 29 Apr 2027 22:45:45 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 29 Apr 2027 22:45:45 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FE:23742C:2016F8B:183932C:69F28A19
+
+
+codex
+I found the exact Maven Central URLs, including `*-test-sources.jar`, so I’ll use those for the versioned source, test, and documentation fields. Commons Crypto is a Java artifact but not one of the Kotlin/Groovy/Scala language-specific libraries requested, so I’m leaving `language` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json
+diff --git a/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json b/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json
+index a9282a89723e1a2ede45cc1cafa362af286d8f95..7cf7c05d6ea09247f8bf1405c0b5970d3681f8d9
+--- a/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.commons:commons-crypto:1.1.0"
++  "coordinates" : "org.apache.commons:commons-crypto:1.1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-crypto",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-javadoc.jar",
++  "description" : "Apache Commons Crypto provides Java APIs for cipher-level and stream-level encryption and decryption. It is optimized for high-performance AES operations by wrapping OpenSSL or JCE implementations rather than implementing the cryptographic algorithms directly."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json b/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json
+index a9282a89723e1a2ede45cc1cafa362af286d8f95..7cf7c05d6ea09247f8bf1405c0b5970d3681f8d9
+--- a/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.commons:commons-crypto:1.1.0"
++  "coordinates" : "org.apache.commons:commons-crypto:1.1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-crypto",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-javadoc.jar",
++  "description" : "Apache Commons Crypto provides Java APIs for cipher-level and stream-level encryption and decryption. It is optimized for high-performance AES operations by wrapping OpenSSL or JCE implementations rather than implementing the cryptographic algorithms directly."
+ }
+
+web search: 
+web search: https://github.com/apache/commons-crypto
+web search: 
+web search: repo.maven.apache.org maven2 org apache commons commons-crypto 1.1.0 commons-crypto-1.1.0-sources.jar test-sources javadoc
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.commons:commons-crypto:1.1.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-sources.jar",
+  "repository-url": "https://github.com/apache/commons-crypto",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-test-sources.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-javadoc.jar",
+  "description": "Apache Commons Crypto provides Java APIs for cipher-level and stream-level encryption and decryption. It is optimized for high-performance AES operations by wrapping OpenSSL or JCE implementations rather than implementing the cryptographic algorithms directly."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json b/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json
+index a9282a89723e1a2ede45cc1cafa362af286d8f95..7cf7c05d6ea09247f8bf1405c0b5970d3681f8d9
+--- a/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.commons:commons-crypto:1.1.0"
++  "coordinates" : "org.apache.commons:commons-crypto:1.1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-crypto",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-javadoc.jar",
++  "description" : "Apache Commons Crypto provides Java APIs for cipher-level and stream-level encryption and decryption. It is optimized for high-performance AES operations by wrapping OpenSSL or JCE implementations rather than implementing the cryptographic algorithms directly."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json && git ls-files --stage build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json b/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json
+index a9282a89723e1a2ede45cc1cafa362af286d8f95..7cf7c05d6ea09247f8bf1405c0b5970d3681f8d9
+--- a/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.commons:commons-crypto:1.1.0"
++  "coordinates" : "org.apache.commons:commons-crypto:1.1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-crypto",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-javadoc.jar",
++  "description" : "Apache Commons Crypto provides Java APIs for cipher-level and stream-level encryption and decryption. It is optimized for high-performance AES operations by wrapping OpenSSL or JCE implementations rather than implementing the cryptographic algorithms directly."
+ }
+
+web search: 
+web search: Apache Commons Crypto Maven Central 1.1.0 sources test-sources javadoc
+codex
+Updated [org.apache.commons-commons-crypto-1.1.0.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json) with Maven Central exact-version source, test-source, and javadoc artifacts, plus the Apache GitHub repository URL. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/commons/commons-crypto/1.1.0/?utm_source=openai))
+
+I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library. Verified the edited file with `jq`.
+diff --git a/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json b/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json
+index a9282a89723e1a2ede45cc1cafa362af286d8f95..7cf7c05d6ea09247f8bf1405c0b5970d3681f8d9
+--- a/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.commons:commons-crypto:1.1.0"
++  "coordinates" : "org.apache.commons:commons-crypto:1.1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-crypto",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-crypto/1.1.0/commons-crypto-1.1.0-javadoc.jar",
++  "description" : "Apache Commons Crypto provides Java APIs for cipher-level and stream-level encryption and decryption. It is optimized for high-performance AES operations by wrapping OpenSSL or JCE implementations rather than implementing the cryptographic algorithms directly."
+ }
+
+2026-04-29T22:46:20.947106Z ERROR codex_core::session: failed to record rollout items: thread 019ddb6a-ef19-7113-b4f3-47711153b928 not found
+tokens used
+51,470
+Updated [org.apache.commons-commons-crypto-1.1.0.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920/build/discovered-artifact-metadata/org.apache.commons-commons-crypto-1.1.0.json) with Maven Central exact-version source, test-source, and javadoc artifacts, plus the Apache GitHub repository URL. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/commons/commons-crypto/1.1.0/?utm_source=openai))
+
+I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library. Verified the edited file with `jq`.
+Ran agent for org.apache.commons:commons-crypto:1.1.0 (exit 0). Log: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920/build/agent-artifact-discovery-logs/org.apache.commons-commons-crypto-1.1.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3024-4cce8920/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 13s
+9 actionable tasks: 4 executed, 5 from cache
