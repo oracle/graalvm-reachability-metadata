@@ -297,6 +297,34 @@ final class Test_interfaceTest {
     assertThat(LegacyResult.valueOf("Skipped")).isEqualTo(LegacyResult.Skipped)
   }
 
+  @Test
+  def legacyRunnerExecutesTestFingerprintDirectlyAndReportsFailures(): Unit = {
+    val fingerprint = LegacyTestFingerprint(module = true, superclass = "legacy.DirectBase")
+    val failure = new IllegalStateException("direct runner failed")
+    val logger = new RecordingLegacyLogger(ansi = true)
+    val runner: org.scalatools.testing.Runner = new DirectLegacyRunner(
+      Array[org.scalatools.testing.Logger](logger),
+      LegacyResult.Failure,
+      failure
+    )
+    val eventHandler = new RecordingLegacyEventHandler()
+
+    runner.run("legacy.DirectSuite", fingerprint, eventHandler, Array("--test", "direct path"))
+
+    assertThat(fingerprint.isModule()).isTrue()
+    assertThat(fingerprint.superClassName()).isEqualTo("legacy.DirectBase")
+    assertThat(logger.ansiCodesSupported()).isTrue()
+    assertThat(logger.messages).containsExactly(
+      "warn:legacy.DirectSuite uses legacy.DirectBase",
+      "trace:java.lang.IllegalStateException:direct runner failed"
+    )
+    assertThat(eventHandler.events).hasSize(1)
+    assertThat(eventHandler.events.get(0).testName()).isEqualTo("legacy.DirectSuite")
+    assertThat(eventHandler.events.get(0).description()).isEqualTo("legacy.DirectSuite --test direct path")
+    assertThat(eventHandler.events.get(0).result()).isEqualTo(LegacyResult.Failure)
+    assertThat(eventHandler.events.get(0).error()).isSameAs(failure)
+  }
+
   private final case class ModernAnnotatedFingerprint(module: Boolean, annotation: String) extends AnnotatedFingerprint {
     override def isModule(): Boolean = module
 
@@ -479,6 +507,30 @@ final class Test_interfaceTest {
         descriptionValue = s"$testClassName ${args.mkString(" ")}",
         resultValue = LegacyResult.Success,
         errorValue = null
+      ))
+    }
+  }
+
+  private final class DirectLegacyRunner(
+    loggers: Array[org.scalatools.testing.Logger],
+    result: LegacyResult,
+    failure: Throwable
+  ) extends org.scalatools.testing.Runner {
+    override def run(
+      testClassName: String,
+      fingerprint: org.scalatools.testing.TestFingerprint,
+      eventHandler: org.scalatools.testing.EventHandler,
+      args: Array[String]
+    ): Unit = {
+      loggers.foreach { logger =>
+        logger.warn(s"$testClassName uses ${fingerprint.superClassName()}")
+        logger.trace(failure)
+      }
+      eventHandler.handle(LegacyEvent(
+        testNameValue = testClassName,
+        descriptionValue = s"$testClassName ${args.mkString(" ")}",
+        resultValue = result,
+        errorValue = failure
       ))
     }
   }
