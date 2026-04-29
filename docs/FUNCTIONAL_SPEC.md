@@ -21,16 +21,31 @@ Reachability metadata describes reflection, JNI, resource access, serialization,
 | **Reviewer / Maintainer** of this repo | Sign off on PRs after automated review has enforced licensing, security, and metadata quality rules. | Agents run the review skills under [skills/](../skills/) (e.g. `review-library-new-request`, `review-fixes-javac-fail`, `review-fixes-java-run-fail`, `review-fixes-native-image-run-fail`, `review-library-bulk-update`, `close-new-library-support-pr`) against the [REVIEWING.md](REVIEWING.md) checklist; CI runs the same gates. The reviewer does the final human check before merge. |
 | **Repository automation (Metadata Forge)** | Generate or repair metadata using LLM-driven pipelines. | Per coordinate, the toolkit can: (1) **add support for a new library** — generate a JUnit / Kotlin / Scala test suite, scaffold metadata, and iterate until JVM-mode tests pass and dynamic-access is collected ([`add_new_library_support.py`](../forge/ai_workflows/add_new_library_support.py)); (2) **fix a Java compilation (`javac`) failure** raised by a library version bump ([`fix_javac_fail.py`](../forge/ai_workflows/fix_javac_fail.py)); (3) **fix a JVM-mode (`javaTest`) runtime failure** raised by a version bump ([`fix_java_run_fail.py`](../forge/ai_workflows/fix_java_run_fail.py)); (4) **fix a `native-image` runtime failure** raised by a version bump ([`fix_ni_run.py`](../forge/ai_workflows/fix_ni_run.py)); (5) **improve dynamic-access coverage** of already-supported libraries by targeting uncovered call sites; (6) **post-generation repair** of the metadata produced by a previous run ([`fix_post_generation_pi.py`](../forge/ai_workflows/fix_post_generation_pi.py), [`fix_metadata_codex.py`](../forge/ai_workflows/fix_metadata_codex.py)). Each task runs Gradle tasks against a worktree of this repo, appends a schema-validated metrics record, and — when invoked through [`forge/git_scripts/make_pr_*.py`](../forge/git_scripts/) — opens a PR for human review. See [forge/docs/overview.md](../forge/docs/overview.md). |
 
-## 3. What the System Provides
+## 3. Hard Constraints
 
-### 3.1 Metadata distribution
+Application developers consume this repository indirectly: native-build-tools resolves metadata for every dependency in their build and passes it to `native-image`. The user never opts into individual metadata entries. Because of that, the repository's overarching invariant is:
+
+> **Adding this repository to a user's build must never change how the user's code runs.** The metadata is purely additive — it can only fill in registrations `native-image` would otherwise miss; it cannot alter class initialization, replace user bytecode, or execute code at image-build time.
+
+Two properties make this achievable: the reachability-metadata schema is itself additive (every entry is gated on `typeReachable`, FR-M-2), and `native-image` defaults to runtime initialization when no build-time directives are supplied. The hard constraints below preserve that additivity — they are not editorial scope choices but direct consequences of the invariant. See [ADR 0002](adr/0002-metadata-must-not-break-user-code.md) for the full rationale.
+
+- **HC-1 No build-time-initialization tweaks.** Metadata bundles must not ship `native-image.properties` or any other directive that moves class `<clinit>` execution into the image builder. Build-time initialization captures state from a non-user environment into the image and breaks additivity. Every library is runtime-initialized by default (FR-M-1).
+- **HC-2 No library patching.** No substitutions, bytecode rewrites, or shaded forks of upstream libraries. Patching ships a different version than the one the user resolved through Maven Central, is invisible at the dependency-resolution layer, and is unstable across upstream releases.
+- **HC-3 No `Feature` classes.** Metadata bundles must not ship `org.graalvm.nativeimage.hosted.Feature` implementations or any other artifact that runs arbitrary Java inside the image builder. `Feature`s are a security concern (full filesystem / network / reflective access at build time) and break additivity because their effect is whatever code the author wrote.
+- **HC-4 No untested metadata.** Metadata that has not passed the test gates defined in [§5.2 Tests](#52-tests-fr-t) and [§5.4 CI gates](#54-ci-gates-fr-ci) is not published from this repository, regardless of provenance (human or Forge).
+
+These constraints apply uniformly to human-authored PRs and to Metadata Forge output, and are enforced by `checkMetadataFiles` plus the reviewer skills.
+
+## 4. What the System Provides
+
+### 4.1 Metadata distribution
 
 - A directory tree under `metadata/<groupId>/<artifactId>/<metadata-version>/` containing JSON files in the format described by GraalVM's [Native Image Manual Configuration](https://www.graalvm.org/latest/reference-manual/native-image/dynamic-features/Reflection/#manual-configuration) reference.
 - An artifact-level `metadata/<groupId>/<artifactId>/index.json` that records, per metadata version: tested library versions, allowed packages, source/test/documentation URLs, optional `requires`, `default-for`, `skipped-versions`, and `override` flags.
 - A repository-level `metadata/library-and-framework-list.json` enumerating every supported library, with `test_level` ∈ `{untested, community-tested, fully-tested}`.
 - A `stats/<groupId>/<artifactId>/<metadata-version>/stats.json` mirror of per-version metrics (dynamic-access call sites, coverage, lines of code, dependency information).
 
-### 3.2 Test harness
+### 4.2 Test harness
 
 A Gradle-based TCK that, given a library coordinate `group:artifact:version`, runs:
 
@@ -41,7 +56,7 @@ A Gradle-based TCK that, given a library coordinate `group:artifact:version`, ru
 
 The harness uses a single coordinates filter `-Pcoordinates=` accepting `all`, `group:artifact`, `group:artifact:version`, or shard `k/n`. It also exposes authoring helpers (`generateMetadata`, `splitTestOnlyMetadata`, `fixTestNativeImageRun`, `addTestedVersion`, `fetchExistingLibrariesWithNewerVersions`), reporting tasks (`jacocoTestReport`, `generateDynamicAccessCoverageReport`, `generateLibraryStats`, `analyzeExternalLibraryDynamicAccess`), and the `package` release task. The full task reference lives in [DEVELOPING.md](DEVELOPING.md).
 
-### 3.3 Continuous integration
+### 4.3 Continuous integration
 
 GitHub Actions, configured by [`ci.json`](../ci.json) as the single source of truth for OS/JDK matrix, run the workflows enumerated in [CI.md](CI.md):
 - PR-scoped: changed-metadata, changed-infrastructure, new-library-version, Spring AOT smoke, library-stats validation, library-and-framework-list validation, checkstyle.
@@ -49,11 +64,11 @@ GitHub Actions, configured by [`ci.json`](../ci.json) as the single source of tr
 
 CI must pass before any merge, and is the authoritative gate — local runs are best-effort.
 
-### 3.4 Releases
+### 4.4 Releases
 
 Every two weeks the `create-scheduled-release` workflow packages metadata if it has changed. The packaged artifact is what the GraalVM Gradle/Maven plugins consume.
 
-### 3.5 Coverage and metrics dashboard
+### 4.5 Coverage and metrics dashboard
 
 `publish-scheduled-coverage.yml` derives, from committed `stats/` and `metadata/**/index.json`:
 - `latest/badges.json` — badges shown in the README (libraries supported, tested versions, dynamic-access coverage, tested LOC).
@@ -63,7 +78,7 @@ Every two weeks the `create-scheduled-release` workflow packages metadata if it 
 
 These are force-pushed to the `stats/coverage` branch.
 
-### 3.6 Metadata Forge automation
+### 4.6 Metadata Forge automation
 
 The `forge/` toolkit composes LLM agents (Aider, Codex, Pi) with deterministic Gradle pipelines to:
 1. **Add new library support** — generate a JUnit test suite, scaffold metadata, iterate until JVM-mode tests pass and dynamic-access metadata is collected.
@@ -73,7 +88,7 @@ The `forge/` toolkit composes LLM agents (Aider, Codex, Pi) with deterministic G
 
 Each Forge run produces a schema-validated metrics record (under `metrics_repo/...`) and, when invoked through `complete_pipelines/` or `git_scripts/make_pr_*.py`, opens a PR ready for human review. See [forge/README.md](../forge/README.md) and [forge/docs/overview.md](../forge/docs/overview.md).
 
-### 3.7 Consumption by native-build-tools
+### 4.7 Consumption by native-build-tools
 
 Application developers consume this repository indirectly, through the `org.graalvm.buildtools` Gradle plugin or its Maven counterpart (collectively *native-build-tools*). They never check this repository out themselves.
 
@@ -153,9 +168,9 @@ Auxiliary contracts: `requires` triggers the plugin to also load metadata for th
 
 All four elements are versioned through the schema `$id` URLs and the GitHub Release tag — the plugin is expected to tolerate older repository releases, so schema changes are additive only (new optional fields, never renamed or removed required fields). NFR-4 (schema fidelity) and the bi-weekly release cadence (3.4) keep this contract live.
 
-## 4. Functional Requirements
+## 5. Functional Requirements
 
-### 4.1 Metadata content (FR-M)
+### 5.1 Metadata content (FR-M)
 
 - **FR-M-1** Metadata files contain only JSON entries described by GraalVM's manual-configuration reference. Native-image properties (`native-image.properties`) and other build-time tweaks are forbidden — by default every library is runtime-initialized.
 - **FR-M-2** Every metadata entry must use [Conditional Configuration](https://www.graalvm.org/latest/reference-manual/native-image/metadata/#specifying-reflection-metadata-in-json) (`typeReachable`) so registration is gated on actual reachability.
@@ -165,7 +180,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - **FR-M-6** Exactly one entry in a non-empty `index.json` must carry `latest: true`. If a library version is not in `tested-versions`, the harness selects an entry by matching the optional `default-for` regex.
 - **FR-M-7** Metadata can declare dependencies on other artifacts via `requires`. Test-only metadata must be moved to the test resources file (via `splitTestOnlyMetadata`).
 
-### 4.2 Tests (FR-T)
+### 5.2 Tests (FR-T)
 
 - **FR-T-1** Every supported library version must have tests that exercise the library's reachable surface enough to fail when metadata is wrong or missing.
 - **FR-T-2** Tests live under `tests/src/<group>/<artifact>/<version>` unless an `index.json` entry sets `test-version` to share a suite across versions.
@@ -175,43 +190,36 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - **FR-T-6** Newly added `tested-versions` entries are recorded in `index.json` only after they pass on **every** required environment (enforced by `verify-new-library-version-compatibility`).
 - **FR-T-7** Dynamic-access coverage between consecutive tested versions of a library must not regress (enforced by reviewer skills `review-fixes-javac-fail`, `review-fixes-native-image-run-fail`, `review-fixes-java-run-fail`).
 
-### 4.3 Contributions and review (FR-R)
+### 5.3 Contributions and review (FR-R)
 
-- **FR-R-1** PRs without the auto-injected checklist (from `.github/pull_request_template.md`) must not be reviewed.
-- **FR-R-2** Contributors must be the original authors of all included tests; PRs containing third-party test code must be rejected.
-- **FR-R-3** Each PR must be confined to a single library. PRs that spread changes across multiple libraries must be split or closed.
-- **FR-R-4** PRs that extend `allowed-docker-images` must:
+- **FR-R-1** Contributors must be the original authors of all included tests; PRs containing third-party test code must be rejected.
+- **FR-R-2** Each PR must be confined to a single library. PRs that spread changes across multiple libraries must be split or closed.
+- **FR-R-3** PRs that extend `allowed-docker-images` must:
   - Include a `Dockerfile-<dockerImageName>` containing only `FROM <dockerImageName>`.
-  - Add `@matneu` as a reviewer.
+  - Add `@jormundur00` as a reviewer.
   - Post `grype <dockerImageName>` output in the PR description.
-- **FR-R-5** Network access, file access, executable invocation, and external process spawns inside tests must be justified, statically scoped where possible, and subject to the security review rules in [REVIEWING.md](REVIEWING.md).
-- **FR-R-6** Library support requests are filed via the `01_support_new_library` issue template; updates via `02_update_existing_library`.
+- **FR-R-4** Network access, file access, executable invocation, and external process spawns inside tests must be justified, statically scoped where possible, and subject to the security review rules in [REVIEWING.md](REVIEWING.md).
+- **FR-R-5** Library support requests are filed via the `01_support_new_library` issue template; updates via `02_update_existing_library`.
 
-### 4.4 CI gates (FR-CI)
+### 5.4 CI gates (FR-CI)
 
 - **FR-CI-1** Every PR is gated on the relevant subset of: `checkstyle`, `spotlessCheck`, `validateIndexFiles`, `checkMetadataFiles`, `validateLibraryStats`, `library-and-framework-list-validation`, and the appropriate `test-*` workflow.
 - **FR-CI-2** Docker images used in tests are pre-pulled from `allowed-docker-images`, after which the runner disables Docker networking for deterministic, isolated test runs.
 - **FR-CI-3** The release workflow runs `spotlessCheck` before packaging.
 - **FR-CI-4** The Spring AOT smoke matrix runs only when `metadata/` changes affect a Spring AOT project.
-- **FR-CI-5** `verify-new-library-version-compatibility` caps each scheduled run at a fixed library budget and at most 30 newer versions per library, expanding across the configured GraalVM JDK/OS combinations, and creates one aggregated GitHub issue per failed `(library, version)` pair.
+- **FR-CI-5** `verify-new-library-version-compatibility` caps each scheduled run at a fixed library budget and at most 30 newer versions per library (see [ADR 0001](adr/0001-cap-newer-versions-per-library.md)), expanding across the configured GraalVM JDK/OS combinations, and creates one aggregated GitHub issue per failed `(library, version)` pair.
 - **FR-CI-6** Dependabot updates to `allowed-docker-images` trigger `sync-docker-tags.yml`, which back-commits the synchronized tags into the Dependabot PR.
 
-### 4.5 Native-image modes (FR-NI)
+### 5.5 Native-image modes (FR-NI)
 
 - **FR-NI-1** Local runs default to `current-defaults`.
 - **FR-NI-2** `future-defaults-all` is run only against early-access / `latest` / `dev` GraalVM builds, both locally (via `GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all`) and in scheduled CI lanes that explicitly opt in via `ci.json`'s `nativeImageModeJavaVersions`.
 
-### 4.6 Metadata Forge (FR-F)
+### 5.6 Metadata Forge (FR-F)
 
-- **FR-F-1** Forge entry scripts accept `--coordinates`, `--strategy-name`, optional path overrides, and `--in-metadata-repo` for the bundled-checkout layout.
-- **FR-F-2** Either `GRAALVM_HOME` or `JAVA_HOME` must point to a GraalVM distribution; the entry script aligns both. Otherwise it exits with an error.
-- **FR-F-3** Agents never invoke Gradle directly. Build/test commands are issued by the workflow strategy via `agent.run_test_command(...)`.
-- **FR-F-4** All generated changes must live under `tests/src/<group>/<artifact>/<version>` and the matching `metadata/<group>/<artifact>/index.json` of the reachability repo.
-- **FR-F-5** Every successful run appends a metrics record validated against `forge/schemas/evaluation_output_schema.json`.
-- **FR-F-6** The workflow returns one of three statuses — `RUN_STATUS_SUCCESS`, `SUCCESS_WITH_INTERVENTION_STATUS`, `RUN_STATUS_FAILURE` — mapping to exit codes 0, 0, 1 respectively. On failure the feature branch is reset to the scaffold checkpoint and no PR is opened.
-- **FR-F-7** The dynamic-access strategies require a coverage report to drive iteration. If a library has no dynamic access at all, they must fall back to `basic_iterative` automatically.
+Forge's functional requirements are specified in [forge/docs/overview.md §10](../forge/docs/overview.md#10-functional-requirements-fr-f).
 
-## 5. Non-Functional Requirements
+## 6. Non-Functional Requirements
 
 - **NFR-1 Determinism.** Tests must be reproducible. Network-dependent tests are not allowed except where they declare an `allowed-docker-image` and run against that pre-pulled image with networking disabled.
 - **NFR-2 Isolation.** Per-coordinate test execution must not depend on or affect other coordinates' build outputs.
@@ -221,9 +229,9 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - **NFR-6 Sharded scalability.** Any Gradle task that accepts `-Pcoordinates=` must accept `k/n` shards so CI can parallelize. The harness must handle adding a new library without code changes (purely metadata-driven discovery).
 - **NFR-7 Auditability.** Every Forge run produces a schema-validated metrics record; every coverage publish writes to a force-pushed branch with retained history.
 
-## 6. Inputs and Outputs
+## 7. Inputs and Outputs
 
-### 6.1 Inputs
+### 7.1 Inputs
 
 - A library coordinate `group:artifact:version` (or shard `k/n`, or `all`).
 - Metadata JSON files contributed by a human or generated by Forge.
@@ -231,7 +239,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - An `index.json` describing metadata versions and tested versions.
 - For Forge: a predefined strategy name selecting agent + workflow + prompts.
 
-### 6.2 Outputs
+### 7.2 Outputs
 
 - Validated metadata + tests + index.json under `metadata/` and `tests/src/`.
 - Mirrored stats under `stats/` and aggregated coverage artifacts on `stats/coverage`.
@@ -239,13 +247,6 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - Forge metrics records under `metrics_repo_path` (or `metadata-forge/{script_run_metrics,benchmark_run_metrics}/` in merged-repo mode).
 - GitHub PRs (only when initiated through Forge `complete_pipelines/` or `git_scripts/`).
 - GitHub issues for new-version compatibility failures, one per `(library, version)`.
-
-## 7. Out of Scope
-
-- Build-time-initialization tweaks (e.g., custom `native-image.properties`).
-- Patching libraries themselves.
-- Hosting metadata that did not pass the test gates.
-- Anything that does not produce reachability metadata or its supporting tests for this repo.
 
 ## 8. References
 
