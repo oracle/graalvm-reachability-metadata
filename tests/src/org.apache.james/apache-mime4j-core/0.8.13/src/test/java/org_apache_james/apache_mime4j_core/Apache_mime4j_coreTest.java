@@ -145,6 +145,40 @@ public class Apache_mime4j_coreTest {
     }
 
     @Test
+    void rawMimeStreamParserEmitsNestedEntityAsRawContent() throws Exception {
+        String message = "Subject: Raw mode\r\n"
+                + "Content-Type: multipart/mixed; boundary=frontier\r\n"
+                + "\r\n"
+                + "Preamble ignored by raw mode\r\n"
+                + "--frontier\r\n"
+                + "Content-Type: text/plain\r\n"
+                + "\r\n"
+                + "Nested body\r\n"
+                + "--frontier--\r\n";
+        RecordingContentHandler handler = new RecordingContentHandler();
+        MimeStreamParser parser = new MimeStreamParser(MimeConfig.DEFAULT);
+        parser.setRaw();
+        parser.setContentHandler(handler);
+
+        assertThat(parser.isRaw()).isTrue();
+        parser.parse(input(message));
+
+        assertThat(handler.events).containsExactly(
+                "startMessage",
+                "startHeader",
+                "field:Subject",
+                "field:Content-Type",
+                "endHeader",
+                "startMultipart:multipart/mixed:frontier",
+                "preamble:Preamble ignored by raw mode",
+                "raw:Content-Type: text/plain\r\n\r\nNested body",
+                "endMultipart",
+                "endMessage");
+        assertThat(handler.events).doesNotContain("startBodyPart", "body:text/plain:7bit:Nested body");
+        assertThat(handler.fieldBodies).contains("multipart/mixed; boundary=frontier");
+    }
+
+    @Test
     void mimeParserParsesHeadlessEntityUsingConfiguredContentType() throws Exception {
         String body = "headless text body\r\nsecond line\r\n";
         RecordingContentHandler handler = new RecordingContentHandler();
