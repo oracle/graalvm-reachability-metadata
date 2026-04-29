@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.logging.Level;
 
+import org.apache.log4j.Logger;
 import org.hsqldb.lib.FrameworkLogger;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +19,9 @@ public class FrameworkLoggerTest {
     void logsMessagesThroughDetectedLoggingBackend() {
         String loggerName = FrameworkLoggerTest.class.getName() + ".dynamicAccess";
         RuntimeException failure = new RuntimeException("details for the logging backend");
+        Logger backendLogger = Logger.getLogger(loggerName);
+
+        assertThat(backendLogger.getName()).isEqualTo(loggerName);
 
         FrameworkLogger.clearLoggers(loggerName);
 
