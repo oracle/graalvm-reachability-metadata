@@ -14,6 +14,7 @@ import java.security.ProtectionDomain;
 import org.modelmapper.internal.bytebuddy.dynamic.loading.ClassInjector.UsingReflection.Dispatcher;
 import org.modelmapper.internal.bytebuddy.dynamic.loading.ClassInjector.UsingReflection.Dispatcher.Direct;
 import org.modelmapper.internal.bytebuddy.dynamic.loading.ClassInjector.UsingReflection.Dispatcher.Initializable;
+import org.modelmapper.internal.bytebuddy.dynamic.loading.ClassInjector.UsingReflection.Dispatcher.Unavailable;
 import org.modelmapper.internal.bytebuddy.dynamic.loading.ClassInjector.UsingReflection.Dispatcher.UsingUnsafeOverride;
 
 import sun.misc.Unsafe;
@@ -36,6 +37,10 @@ public final class UnsafeOverrideDispatcherAccess {
             throw new IllegalStateException("Direct reflection dispatcher is unavailable");
         }
         return new Operations(initializeWithSecurityManager(initializable));
+    }
+
+    public static Operations createUnavailable() {
+        return new Operations(new UnavailableAccess());
     }
 
     public static void exerciseSecurityManagerPermissionCheck() throws Exception {
@@ -190,6 +195,12 @@ public final class UnsafeOverrideDispatcherAccess {
 
         static Initializable makeDispatcher() throws Exception {
             return make();
+        }
+    }
+
+    private static final class UnavailableAccess extends Unavailable {
+        private UnavailableAccess() {
+            super("Test unavailable dispatcher");
         }
     }
 }
