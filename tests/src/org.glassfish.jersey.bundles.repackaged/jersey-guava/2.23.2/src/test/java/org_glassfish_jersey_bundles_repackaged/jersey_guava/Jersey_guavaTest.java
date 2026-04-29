@@ -8,7 +8,7 @@ package org_glassfish_jersey_bundles_repackaged.jersey_guava;
 
 import org.junit.jupiter.api.Test;
 
-class Jersey_guavaTest {
+public class Jersey_guavaTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
