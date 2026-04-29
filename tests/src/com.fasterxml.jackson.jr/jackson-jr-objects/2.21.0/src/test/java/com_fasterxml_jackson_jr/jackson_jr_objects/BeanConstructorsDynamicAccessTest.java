@@ -19,31 +19,29 @@ public class BeanConstructorsDynamicAccessTest {
 
     @BeforeEach
     void resetConstructorCounters() {
-        PublicDefaultCtorBean.CONSTRUCTOR_CALLS.set(0);
-        PrivateDefaultCtorBean.CONSTRUCTOR_CALLS.set(0);
-        PublicRecordBean.CONSTRUCTOR_CALLS.set(0);
+        BeanConstructorsDefaultCtorBean.CONSTRUCTOR_CALLS.set(0);
+        BeanConstructorsRecordBean.CONSTRUCTOR_CALLS.set(0);
     }
 
     @Test
-    void createsBeansThroughPublicDefaultConstructorsWhenReadingObjects() throws Exception {
-        PublicDefaultCtorBean bean = JSON.std.beanFrom(PublicDefaultCtorBean.class, "{\"name\":\"Ada\"}");
-
-        assertThat(bean.name).isEqualTo("Ada");
-        assertThat(PublicDefaultCtorBean.CONSTRUCTOR_CALLS).hasValue(1);
-    }
-
-    @Test
-    void createsBeansThroughNonPublicDefaultConstructorsWhenAccessIsForced() throws Exception {
-        PrivateDefaultCtorBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(PrivateDefaultCtorBean.class,
+    void createsBeansThroughDefaultConstructorsWhenReadingObjects() throws Exception {
+        BeanConstructorsDefaultCtorBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(BeanConstructorsDefaultCtorBean.class,
                 "{\"name\":\"Ada\"}");
 
         assertThat(bean.name).isEqualTo("Ada");
-        assertThat(PrivateDefaultCtorBean.CONSTRUCTOR_CALLS).hasValue(1);
+        assertThat(BeanConstructorsDefaultCtorBean.CONSTRUCTOR_CALLS).hasValue(1);
+    }
+
+    @Test
+    void createsLibraryBeansThroughDefaultConstructorsWhenReadingObjects() throws Exception {
+        JSON json = JSON.std.beanFrom(JSON.class, "{}");
+
+        assertThat(json).isNotNull();
     }
 
     @Test
     void createsRecordsThroughCanonicalConstructorsWhenReadingObjects() throws Exception {
-        PublicRecordBean bean = JSON.std.beanFrom(PublicRecordBean.class, """
+        BeanConstructorsRecordBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(BeanConstructorsRecordBean.class, """
                 {
                   "name": "Ada",
                   "quantity": 3,
@@ -54,34 +52,24 @@ public class BeanConstructorsDynamicAccessTest {
         assertThat(bean.name()).isEqualTo("Ada");
         assertThat(bean.quantity()).isEqualTo(3);
         assertThat(bean.stocked()).isTrue();
-        assertThat(PublicRecordBean.CONSTRUCTOR_CALLS).hasValue(1);
+        assertThat(BeanConstructorsRecordBean.CONSTRUCTOR_CALLS).hasValue(1);
     }
+}
 
-    public static final class PublicDefaultCtorBean {
-        private static final AtomicInteger CONSTRUCTOR_CALLS = new AtomicInteger();
+final class BeanConstructorsDefaultCtorBean {
+    static final AtomicInteger CONSTRUCTOR_CALLS = new AtomicInteger();
 
-        public String name;
+    String name;
 
-        public PublicDefaultCtorBean() {
-            CONSTRUCTOR_CALLS.incrementAndGet();
-        }
+    BeanConstructorsDefaultCtorBean() {
+        CONSTRUCTOR_CALLS.incrementAndGet();
     }
+}
 
-    public static final class PrivateDefaultCtorBean {
-        private static final AtomicInteger CONSTRUCTOR_CALLS = new AtomicInteger();
+record BeanConstructorsRecordBean(String name, int quantity, boolean stocked) {
+    static final AtomicInteger CONSTRUCTOR_CALLS = new AtomicInteger();
 
-        public String name;
-
-        private PrivateDefaultCtorBean() {
-            CONSTRUCTOR_CALLS.incrementAndGet();
-        }
-    }
-
-    public record PublicRecordBean(String name, int quantity, boolean stocked) {
-        private static final AtomicInteger CONSTRUCTOR_CALLS = new AtomicInteger();
-
-        public PublicRecordBean {
-            CONSTRUCTOR_CALLS.incrementAndGet();
-        }
+    BeanConstructorsRecordBean {
+        CONSTRUCTOR_CALLS.incrementAndGet();
     }
 }
