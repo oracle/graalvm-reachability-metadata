@@ -6,9 +6,9 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_el;
 
-import javax.el.ELContext;
-import javax.el.ELManager;
-import javax.el.MethodExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ELManager;
+import jakarta.el.MethodExpression;
 
 import org.apache.el.ExpressionFactoryImpl;
 import org.junit.jupiter.api.Test;

@@ -8,7 +8,7 @@ package org_apache_tomcat_embed.tomcat_embed_el;
 
 import java.lang.reflect.Method;
 
-import javax.el.ELProcessor;
+import jakarta.el.ELProcessor;
 
 import org.junit.jupiter.api.Test;
 

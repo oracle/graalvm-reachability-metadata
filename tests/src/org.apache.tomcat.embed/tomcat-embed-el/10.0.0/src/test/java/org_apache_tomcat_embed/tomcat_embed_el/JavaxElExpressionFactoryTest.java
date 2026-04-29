@@ -8,10 +8,10 @@ package org_apache_tomcat_embed.tomcat_embed_el;
 
 import java.util.Properties;
 
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class JavaxElExpressionFactoryTest {
-    private static final String EXPRESSION_FACTORY_PROPERTY = "javax.el.ExpressionFactory";
+    private static final String EXPRESSION_FACTORY_PROPERTY = "jakarta.el.ExpressionFactory";
 
     private final Thread currentThread = Thread.currentThread();
     private final ClassLoader originalContextClassLoader = currentThread.getContextClassLoader();
@@ -54,7 +54,7 @@ public class JavaxElExpressionFactoryTest {
         System.clearProperty(EXPRESSION_FACTORY_PROPERTY);
 
         Properties properties = new Properties();
-        properties.setProperty("javax.el.cacheSize", "32");
+        properties.setProperty("jakarta.el.cacheSize", "32");
 
         ExpressionFactory expressionFactory = ExpressionFactory.newInstance(properties);
 
@@ -62,7 +62,7 @@ public class JavaxElExpressionFactoryTest {
         ServiceExpressionFactory serviceExpressionFactory = (ServiceExpressionFactory) expressionFactory;
         assertThat(serviceExpressionFactory.getConstructorMode()).isEqualTo("properties");
         assertThat(serviceExpressionFactory.getProperties()).isSameAs(properties);
-        assertThat(serviceExpressionFactory.getProperties()).containsEntry("javax.el.cacheSize", "32");
+        assertThat(serviceExpressionFactory.getProperties()).containsEntry("jakarta.el.cacheSize", "32");
     }
 
     public static final class ServiceExpressionFactory extends ExpressionFactory {

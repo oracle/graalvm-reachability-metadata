@@ -6,10 +6,10 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_el;
 
-import javax.el.ELClass;
-import javax.el.ELContext;
-import javax.el.ELManager;
-import javax.el.StaticFieldELResolver;
+import jakarta.el.ELClass;
+import jakarta.el.ELContext;
+import jakarta.el.ELManager;
+import jakarta.el.StaticFieldELResolver;
 
 import org.junit.jupiter.api.Test;
 
