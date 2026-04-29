@@ -1,0 +1,128 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org_apache_calcite.calcite_core;
+
+import org.apache.calcite.jdbc.JavaTypeFactoryImpl;
+import org.apache.calcite.plan.RelOptCluster;
+import org.apache.calcite.plan.volcano.VolcanoPlanner;
+import org.apache.calcite.rel.RelNode;
+import org.apache.calcite.rel.logical.LogicalValues;
+import org.apache.calcite.rel.metadata.BuiltInMetadata;
+import org.apache.calcite.rel.metadata.ChainedRelMetadataProvider;
+import org.apache.calcite.rel.metadata.Metadata;
+import org.apache.calcite.rel.metadata.MetadataDef;
+import org.apache.calcite.rel.metadata.MetadataHandler;
+import org.apache.calcite.rel.metadata.RelMetadataProvider;
+import org.apache.calcite.rel.metadata.RelMetadataQuery;
+import org.apache.calcite.rel.metadata.UnboundMetadata;
+import org.apache.calcite.rex.RexBuilder;
+
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class ChainedRelMetadataProviderTest {
+    @Test
+    @SuppressWarnings("deprecation")
+    public void bindsMultipleMetadataProvidersUsingChainedProxy() {
+        RelNode rel = relNode();
+        RowCountProvider unknownRowCountProvider = new RowCountProvider(null);
+        RowCountProvider knownRowCountProvider = new RowCountProvider(9.0d);
+        RelMetadataProvider provider = ChainedRelMetadataProvider.of(Arrays.asList(
+            unknownRowCountProvider, knownRowCountProvider));
+
+        UnboundMetadata<BuiltInMetadata.RowCount> rowCountFactory = provider.apply(
+            rel.getClass(), BuiltInMetadata.RowCount.class);
+
+        assertThat(rowCountFactory).isNotNull();
+        BuiltInMetadata.RowCount rowCount = rowCountFactory.bind(rel, RelMetadataQuery.instance());
+
+        assertThat(rowCount.getRowCount()).isEqualTo(9.0d);
+        assertThat(unknownRowCountProvider.boundMetadata.invocationCount()).isEqualTo(1);
+        assertThat(knownRowCountProvider.boundMetadata.invocationCount()).isEqualTo(1);
+    }
+
+    private static RelNode relNode() {
+        VolcanoPlanner planner = new VolcanoPlanner();
+        RexBuilder rexBuilder = new RexBuilder(new JavaTypeFactoryImpl());
+        RelOptCluster cluster = RelOptCluster.create(planner, rexBuilder);
+        return LogicalValues.createOneRow(cluster);
+    }
+
+    private static class RowCountProvider implements RelMetadataProvider {
+        private final @Nullable Double rowCount;
+        private RowCountMetadata boundMetadata;
+
+        RowCountProvider(@Nullable Double rowCount) {
+            this.rowCount = rowCount;
+        }
+
+        @Deprecated
+        @Override
+        @SuppressWarnings("unchecked")
+        public <@Nullable M extends @Nullable Metadata> @Nullable UnboundMetadata<M> apply(
+            Class<? extends RelNode> relClass, Class<? extends M> metadataClass) {
+            if (metadataClass == BuiltInMetadata.RowCount.class) {
+                UnboundMetadata<BuiltInMetadata.RowCount> metadata = (rel, mq) -> {
+                    boundMetadata = new RowCountMetadata(rel, rowCount);
+                    return boundMetadata;
+                };
+                return (UnboundMetadata<M>) metadata;
+            }
+            return null;
+        }
+
+        @Deprecated
+        @Override
+        public <M extends Metadata> Multimap<Method, MetadataHandler<M>> handlers(
+            MetadataDef<M> def) {
+            return ImmutableMultimap.of();
+        }
+
+        @Override
+        public List<MetadataHandler<?>> handlers(
+            Class<? extends MetadataHandler<?>> handlerClass) {
+            return Collections.emptyList();
+        }
+    }
+
+    public static class RowCountMetadata implements BuiltInMetadata.RowCount {
+        private final RelNode rel;
+        private final @Nullable Double rowCount;
+        private int invocationCount;
+
+        RowCountMetadata(RelNode rel, @Nullable Double rowCount) {
+            this.rel = rel;
+            this.rowCount = rowCount;
+        }
+
+        @Override
+        public RelNode rel() {
+            return rel;
+        }
+
+        @Override
+        public @Nullable Double getRowCount() {
+            invocationCount++;
+            return rowCount;
+        }
+
+        int invocationCount() {
+            return invocationCount;
+        }
+    }
+}
