@@ -10,7 +10,6 @@ import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
-import jakarta.xml.bind.Validator;
 
 public class StubJaxbContext extends JAXBContext {
     private final String source;
@@ -31,10 +30,5 @@ public class StubJaxbContext extends JAXBContext {
     @Override
     public Marshaller createMarshaller() throws JAXBException {
         throw new UnsupportedOperationException("Marshaller is not needed for this test");
-    }
-
-    @Override
-    public Validator createValidator() throws JAXBException {
-        throw new UnsupportedOperationException("Validator is not needed for this test");
     }
 }

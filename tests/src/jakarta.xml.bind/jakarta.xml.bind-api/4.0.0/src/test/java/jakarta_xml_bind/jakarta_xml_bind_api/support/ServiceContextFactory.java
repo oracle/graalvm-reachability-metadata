@@ -9,16 +9,18 @@ package jakarta_xml_bind.jakarta_xml_bind_api.support;
 import java.util.Map;
 
 import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBContextFactory;
+import jakarta.xml.bind.JAXBException;
 
-public final class ServiceContextFactory {
-    private ServiceContextFactory() {
-    }
-
-    public static JAXBContext createContext(String contextPath, ClassLoader classLoader) {
+public final class ServiceContextFactory implements JAXBContextFactory {
+    @Override
+    public JAXBContext createContext(String contextPath, ClassLoader classLoader, Map<String, ?> properties)
+            throws JAXBException {
         return new StubJaxbContext("service-context-factory-string");
     }
 
-    public static JAXBContext createContext(Class<?>[] classes, Map<?, ?> properties) {
+    @Override
+    public JAXBContext createContext(Class<?>[] classes, Map<String, ?> properties) throws JAXBException {
         return new StubJaxbContext("service-context-factory-classes");
     }
 }

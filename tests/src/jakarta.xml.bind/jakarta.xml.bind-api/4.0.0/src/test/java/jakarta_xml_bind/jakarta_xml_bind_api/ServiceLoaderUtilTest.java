@@ -6,14 +6,17 @@
  */
 package jakarta_xml_bind.jakarta_xml_bind_api;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Map;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.ServiceLoaderUtilInvoker;
-import jakarta_xml_bind.jakarta_xml_bind_api.classproperties.PropertiesBoundType;
+import jakarta_xml_bind.jakarta_xml_bind_api.servicebound.ServiceBoundType;
 import jakarta_xml_bind.jakarta_xml_bind_api.support.FactoryBackedContextFactory;
 import jakarta_xml_bind.jakarta_xml_bind_api.support.StubJaxbContext;
 import org.junit.jupiter.api.Test;
@@ -24,24 +27,25 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class ServiceLoaderUtilTest {
     private static final String OSGI_CONTEXT_PATH =
             "jakarta_xml_bind.jakarta_xml_bind_api.contextpath.osgi";
-    private static final String JAXB_CONTEXT_SERVICE_RESOURCE = "META-INF/services/jakarta.xml.bind.JAXBContext";
+    private static final String JAXB_CONTEXT_FACTORY_SERVICE_RESOURCE =
+            "META-INF/services/jakarta.xml.bind.JAXBContextFactory";
 
     @Test
     public void loadsProviderClassUsingContextClassLoader() throws Exception {
         JAXBContext context = withContextClassLoader(
                 getClass().getClassLoader(),
-                () -> JAXBContext.newInstance(PropertiesBoundType.class));
+                () -> JAXBContext.newInstance(ServiceBoundType.class));
 
         assertThat(context).isInstanceOf(StubJaxbContext.class);
-        assertThat(((StubJaxbContext) context).getSource()).isEqualTo("properties-classes-factory");
+        assertThat(((StubJaxbContext) context).getSource()).isEqualTo("service-context-factory-classes");
     }
 
     @Test
     public void loadsProviderClassWithoutContextClassLoader() throws Exception {
-        JAXBContext context = withContextClassLoader(null, () -> JAXBContext.newInstance(PropertiesBoundType.class));
+        JAXBContext context = withContextClassLoader(null, () -> JAXBContext.newInstance(ServiceBoundType.class));
 
         assertThat(context).isInstanceOf(StubJaxbContext.class);
-        assertThat(((StubJaxbContext) context).getSource()).isEqualTo("properties-classes-factory");
+        assertThat(((StubJaxbContext) context).getSource()).isEqualTo("service-context-factory-classes");
     }
 
     @Test
@@ -57,7 +61,9 @@ public class ServiceLoaderUtilTest {
     public void attemptsOsgiLookupBeforeFailingOverToTheMissingDefaultProvider() {
         ClassLoader classLoader = new ServiceResourceHidingClassLoader(getClass().getClassLoader());
 
-        assertThatThrownBy(() -> JAXBContext.newInstance(OSGI_CONTEXT_PATH, classLoader, Map.of()))
+        assertThatThrownBy(() -> withContextClassLoader(
+                classLoader,
+                () -> JAXBContext.newInstance(OSGI_CONTEXT_PATH, classLoader, Map.of())))
                 .isInstanceOf(JAXBException.class);
     }
 
@@ -86,15 +92,23 @@ public class ServiceLoaderUtilTest {
 
         @Override
         public URL getResource(String name) {
-            if (JAXB_CONTEXT_SERVICE_RESOURCE.equals(name)) {
+            if (JAXB_CONTEXT_FACTORY_SERVICE_RESOURCE.equals(name)) {
                 return null;
             }
             return super.getResource(name);
         }
 
         @Override
+        public Enumeration<URL> getResources(String name) throws IOException {
+            if (JAXB_CONTEXT_FACTORY_SERVICE_RESOURCE.equals(name)) {
+                return Collections.emptyEnumeration();
+            }
+            return super.getResources(name);
+        }
+
+        @Override
         public InputStream getResourceAsStream(String name) {
-            if (JAXB_CONTEXT_SERVICE_RESOURCE.equals(name)) {
+            if (JAXB_CONTEXT_FACTORY_SERVICE_RESOURCE.equals(name)) {
                 return null;
             }
             return super.getResourceAsStream(name);

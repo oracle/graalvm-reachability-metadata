@@ -7,18 +7,8 @@
       "type" : "jakarta_xml_bind.jakarta_xml_bind_api.support.ServiceContextFactory",
       "methods" : [
         {
-          "name" : "createContext",
-          "parameterTypes" : [
-            "java.lang.String",
-            "java.lang.ClassLoader"
-          ]
-        },
-        {
-          "name" : "createContext",
-          "parameterTypes" : [
-            "java.lang.Class[]",
-            "java.util.Map"
-          ]
+          "name" : "<init>",
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -41,6 +31,21 @@
           "parameterTypes" : [
             "java.lang.Class[]",
             "java.util.Map"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "jakarta.xml.bind.ContextFinder"
+      },
+      "type" : "jakarta_xml_bind.jakarta_xml_bind_api.support.LegacyContextFactory",
+      "methods" : [
+        {
+          "name" : "createContext",
+          "parameterTypes" : [
+            "java.lang.String",
+            "java.lang.ClassLoader"
           ]
         }
       ]
@@ -97,27 +102,27 @@
   "resources" : [
     {
       "condition" : {
-        "typeReached" : "jakarta.xml.bind.ContextFinder"
+        "typeReached" : "jakarta.xml.bind.Messages"
       },
-      "glob" : "jakarta_xml_bind/jakarta_xml_bind_api/classproperties/jaxb.properties"
+      "bundle" : "jakarta.xml.bind.Messages"
+    },
+    {
+      "condition" : {
+        "typeReached" : "jakarta.xml.bind.helpers.Messages"
+      },
+      "bundle" : "jakarta.xml.bind.helpers.Messages"
+    },
+    {
+      "condition" : {
+        "typeReached" : "jakarta.xml.bind.util.Messages"
+      },
+      "bundle" : "jakarta.xml.bind.util.Messages"
     },
     {
       "condition" : {
         "typeReached" : "jakarta.xml.bind.ContextFinder"
       },
-      "glob" : "jakarta_xml_bind/jakarta_xml_bind_api/contextpath/properties/jaxb.properties"
-    },
-    {
-      "condition" : {
-        "typeReached" : "jakarta.xml.bind.ContextFinder"
-      },
-      "glob" : "jakarta_xml_bind/jakarta_xml_bind_api/factorybacked/jaxb.properties"
-    },
-    {
-      "condition" : {
-        "typeReached" : "jakarta.xml.bind.ContextFinder"
-      },
-      "glob" : "jakarta_xml_bind/jakarta_xml_bind_api/wrongtype/jaxb.properties"
+      "glob" : "META-INF/services/jakarta.xml.bind.JAXBContextFactory"
     },
     {
       "condition" : {
