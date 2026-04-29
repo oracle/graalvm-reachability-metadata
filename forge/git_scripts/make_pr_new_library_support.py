@@ -21,6 +21,7 @@ from git_scripts.common_git import (
     format_stats_section,
     format_forge_revision_section,
     build_ai_branch_name,
+    delete_remote_branch_if_exists,
     get_configured_reviewers,
 )
 from utility_scripts.metrics_writer import (
@@ -286,6 +287,7 @@ def push_current_branch_to_origin(coordinates, repo_path, metrics_repo_path=None
         f"add-lib-support-{group}-{artifact}-{library_version}",
         cwd=repo_path,
     )
+    delete_remote_branch_if_exists(new_branch, cwd=repo_path)
     subprocess.run(["git", "switch", "-C", new_branch], check=True, cwd=repo_path)
 
     stage_and_commit(
@@ -300,15 +302,6 @@ def push_current_branch_to_origin(coordinates, repo_path, metrics_repo_path=None
 
     base_ref = _fetch_pr_base(repo_path)
     subprocess.run(["git", "rebase", base_ref], check=True, cwd=repo_path)
-    remote_branch = subprocess.run(
-        ["git", "ls-remote", "--exit-code", "--heads", "origin", new_branch],
-        cwd=repo_path,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
-    if remote_branch.returncode == 0:
-        subprocess.run(["git", "push", "origin", "--delete", new_branch], check=True, cwd=repo_path)
-
     subprocess.run(
         ["git", "push", "origin", new_branch],
         check=True,

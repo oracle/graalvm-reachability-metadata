@@ -19,7 +19,7 @@ from ai_workflows.workflow_strategies.workflow_strategy import (
     SUCCESS_WITH_INTERVENTION_STATUS,
 )
 from ai_workflows.workflow_strategies.workflow_strategy import WorkflowStrategy
-from git_scripts.common_git import build_ai_branch_name, ensure_gh_authenticated
+from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated
 from utility_scripts import metrics_writer
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
 from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, resolve_repo_roots
@@ -232,6 +232,7 @@ def create_project_prep_checkpoint(config: JavaFailWorkflowConfig, group, artifa
     new_branch = build_ai_branch_name(
         f"{config.branch_prefix}-{group}-{artifact}-{updated_library_version}",
     )
+    delete_remote_branch_if_exists(new_branch)
     subprocess.run(
         ["git", "switch", "-C", new_branch],
         check=True,

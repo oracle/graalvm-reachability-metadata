@@ -8,6 +8,7 @@ import subprocess
 import sys
 
 from ai_workflows.fix_metadata_codex import run_codex_metadata_fix
+from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
 from utility_scripts.library_finalization import run_library_finalization
 from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, resolve_repo_roots
 from utility_scripts.source_context import populate_artifact_urls
@@ -79,6 +80,7 @@ def run_gradle_test(
 
 def create_or_switch_branch(reachability_metadata_path: str, branch: str) -> None:
     """Reset the workflow branch to the current detached HEAD."""
+    delete_remote_branch_if_exists(branch, cwd=reachability_metadata_path)
     subprocess.run(
         ["git", "switch", "-C", branch],
         cwd=reachability_metadata_path,
@@ -100,7 +102,10 @@ def main(argv=None) -> int:
     new_version = args.new_version
 
     group, artifact, _ = current_coordinates.split(":")
-    branch = f"auto/fix-{group}-{artifact}-{new_version}"
+    branch = build_ai_branch_name(
+        f"fix-native-image-run-{group}-{artifact}-{new_version}",
+        cwd=reachability_metadata_path,
+    )
     print(f"[pipeline] Creating branch: {branch}")
     create_or_switch_branch(reachability_metadata_path, branch)
 

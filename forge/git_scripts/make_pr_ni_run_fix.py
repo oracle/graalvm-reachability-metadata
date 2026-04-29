@@ -16,6 +16,8 @@ from git_scripts.common_git import (
     find_issue_for_coordinates as find_issue_common,
     format_stats_diff,
     format_forge_revision_section,
+    build_ai_branch_name,
+    delete_remote_branch_if_exists,
     get_configured_reviewers,
 )
 from utility_scripts.metrics_writer import (
@@ -195,9 +197,13 @@ def push_current_branch_to_origin(
     group, artifact, old_version = parse_coordinate_parts(old_coordinates)
     new_coordinates = f"{group}:{artifact}:{new_version}"
 
-    branch = f"auto/fix-{group}-{artifact}-{new_version}"
+    branch = build_ai_branch_name(
+        f"fix-native-image-run-{group}-{artifact}-{new_version}",
+        cwd=repo_path,
+    )
+    delete_remote_branch_if_exists(branch, cwd=repo_path)
     subprocess.run(
-        ["git", "switch", branch],
+        ["git", "switch", "-C", branch],
         cwd=repo_path,
         check=True,
     )

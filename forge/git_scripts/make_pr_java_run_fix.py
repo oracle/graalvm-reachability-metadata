@@ -19,6 +19,7 @@ from git_scripts.common_git import (
     format_stats_diff,
     format_forge_revision_section,
     build_ai_branch_name,
+    delete_remote_branch_if_exists,
 )
 from git_scripts.make_pr_javac_fix import generate_diff_text
 from utility_scripts.library_stats import stats_artifact_dir
@@ -241,9 +242,10 @@ def push_current_branch_to_origin(
         f"fix-java-run-{group}-{artifact}-{new_version}",
         cwd=repo_path,
     )
+    delete_remote_branch_if_exists(branch, cwd=repo_path)
     subprocess.run(
-        ["git", "switch", branch],
-        check=False,
+        ["git", "switch", "-C", branch],
+        check=True,
         cwd=repo_path,
     )
     stage_and_commit(

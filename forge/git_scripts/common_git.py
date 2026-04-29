@@ -284,6 +284,37 @@ def build_ai_branch_name(branch_suffix: str, cwd=None) -> str:
     return f"ai/{authenticated_login}/{branch_suffix}"
 
 
+def git_remote_branch_exists(branch: str, remote: str = "origin", cwd: str | None = None) -> bool:
+    """Return True when the remote has a branch with this name."""
+    result = subprocess.run(
+        ["git", "ls-remote", "--exit-code", "--heads", remote, branch],
+        cwd=cwd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        check=False,
+    )
+    if result.returncode == 0:
+        return True
+    if result.returncode == 2:
+        return False
+    print(
+        f"ERROR: Failed to check whether `{remote}/{branch}` exists:\n{result.stderr.strip()}",
+        file=sys.stderr,
+    )
+    result.check_returncode()
+    return False
+
+
+def delete_remote_branch_if_exists(branch: str, remote: str = "origin", cwd: str | None = None) -> bool:
+    """Delete a remote branch when it exists, returning True if deletion ran."""
+    if not git_remote_branch_exists(branch, remote=remote, cwd=cwd):
+        return False
+    print(f"[git-branch] Deleting existing remote branch {remote}/{branch}.")
+    subprocess.run(["git", "push", remote, "--delete", branch], cwd=cwd, check=True)
+    return True
+
+
 def _project_item_status_fields() -> str:
     """Return the reusable GraphQL selection for project item status lookup."""
     return """

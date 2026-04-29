@@ -23,6 +23,29 @@ class ForgeRevisionSectionTests(unittest.TestCase):
         self.assertIn("- Forge commit hash: `abc123`", section)
 
 
+class RemoteBranchDeletionTests(unittest.TestCase):
+    def test_delete_remote_branch_if_exists_skips_missing_remote_branch(self) -> None:
+        with patch.object(common_git, "git_remote_branch_exists", return_value=False), \
+                patch.object(common_git.subprocess, "run") as run:
+            deleted = common_git.delete_remote_branch_if_exists("ai/user/fix-lib")
+
+        self.assertFalse(deleted)
+        run.assert_not_called()
+
+    def test_delete_remote_branch_if_exists_deletes_existing_remote_branch(self) -> None:
+        with patch.object(common_git, "git_remote_branch_exists", return_value=True), \
+                patch.object(common_git.subprocess, "run") as run, \
+                patch("sys.stdout", new_callable=io.StringIO):
+            deleted = common_git.delete_remote_branch_if_exists("ai/user/fix-lib", cwd="/repo")
+
+        self.assertTrue(deleted)
+        run.assert_called_once_with(
+            ["git", "push", "origin", "--delete", "ai/user/fix-lib"],
+            cwd="/repo",
+            check=True,
+        )
+
+
 class GitHubRateLimitTests(unittest.TestCase):
     def test_common_gh_raises_typed_rate_limit_error_from_stderr(self) -> None:
         completed_process = subprocess.CompletedProcess(

@@ -30,6 +30,7 @@ from ai_workflows.workflow_strategies.workflow_strategy import (
     SUCCESS_WITH_INTERVENTION_STATUS,
 )
 from ai_workflows.workflow_strategies.workflow_strategy import WorkflowStrategy
+from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
 from utility_scripts import metrics_writer
 from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, resolve_repo_roots
 from utility_scripts.schema_validator import validate_run_metrics, validate_benchmark_run_metrics
@@ -218,10 +219,11 @@ def create_feature_branch_for_library(group, artifact, library_version):
     """
     Reset the feature branch for the given coordinates to the current detached HEAD.
     Branch name is in the following format:
-    ai/add-lib-support-<group>-<artifact>-<version>
+    ai/<login>/add-lib-support-<group>-<artifact>-<version>
     """
 
-    new_branch = f"ai/add-lib-support-{group}-{artifact}-{library_version}"
+    new_branch = build_ai_branch_name(f"add-lib-support-{group}-{artifact}-{library_version}")
+    delete_remote_branch_if_exists(new_branch)
     subprocess.run(
         ["git", "switch", "-C", new_branch],
         check=True,

@@ -30,6 +30,7 @@ BENCHMARK_WORKTREE_DIRNAME = "forge_benchmark_worktrees"
 
 from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, resolve_repo_roots
 from utility_scripts.metrics_writer import count_metadata_entries
+from git_scripts.common_git import build_ai_branch_name
 
 
 def parse_args(argv):
@@ -414,7 +415,7 @@ def main(argv: Optional[List[str]] = None):
 
         for coords in libraries:
             group, artifact, library_version = split_coords(coords)
-            new_branch = f"ai/add-lib-support-{group}-{artifact}-{library_version}"
+            new_branch = build_ai_branch_name(f"add-lib-support-{group}-{artifact}-{library_version}")
             subprocess.run([
                 "git",
                 "branch",
