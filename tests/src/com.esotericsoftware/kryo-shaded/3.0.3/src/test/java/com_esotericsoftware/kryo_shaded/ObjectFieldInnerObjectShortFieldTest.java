@@ -12,6 +12,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
+import com.esotericsoftware.reflectasm.ConstructorAccess;
 import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
 
@@ -96,6 +97,18 @@ public class ObjectFieldInnerObjectShortFieldTest {
 
         short priority() {
             return priority;
+        }
+    }
+
+    public static class ShortFieldSubjectConstructorAccess extends ConstructorAccess<ShortFieldSubject> {
+        @Override
+        public ShortFieldSubject newInstance() {
+            return new ShortFieldSubject();
+        }
+
+        @Override
+        public ShortFieldSubject newInstance(Object enclosingInstance) {
+            return newInstance();
         }
     }
 }

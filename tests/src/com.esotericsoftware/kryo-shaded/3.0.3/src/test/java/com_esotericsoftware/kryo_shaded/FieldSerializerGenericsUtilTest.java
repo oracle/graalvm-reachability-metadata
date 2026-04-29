@@ -12,6 +12,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
+import com.esotericsoftware.reflectasm.ConstructorAccess;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
@@ -120,6 +121,18 @@ public class FieldSerializerGenericsUtilTest {
         public List<T[]> values;
 
         public GenericArrayContainer() {
+        }
+    }
+
+    public static class GenericArrayContainerConstructorAccess extends ConstructorAccess<GenericArrayContainer> {
+        @Override
+        public GenericArrayContainer newInstance() {
+            return new GenericArrayContainer();
+        }
+
+        @Override
+        public GenericArrayContainer newInstance(Object enclosingInstance) {
+            return newInstance();
         }
     }
 

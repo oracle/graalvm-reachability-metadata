@@ -12,6 +12,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
+import com.esotericsoftware.reflectasm.ConstructorAccess;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
@@ -105,6 +106,18 @@ public class ObjectFieldInnerObjectIntFieldTest {
 
         int count() {
             return count;
+        }
+    }
+
+    public static class IntFieldSubjectConstructorAccess extends ConstructorAccess<IntFieldSubject> {
+        @Override
+        public IntFieldSubject newInstance() {
+            return new IntFieldSubject();
+        }
+
+        @Override
+        public IntFieldSubject newInstance(Object enclosingInstance) {
+            return newInstance();
         }
     }
 }

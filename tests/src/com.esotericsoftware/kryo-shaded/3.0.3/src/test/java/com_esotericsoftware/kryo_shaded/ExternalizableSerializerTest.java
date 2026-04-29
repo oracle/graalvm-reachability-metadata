@@ -12,6 +12,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.ExternalizableSerializer;
+import com.esotericsoftware.reflectasm.ConstructorAccess;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -93,6 +94,18 @@ public class ExternalizableSerializerTest {
             label = input.readUTF();
             value = input.readInt();
             readExternalCalls++;
+        }
+    }
+
+    public static class PlainExternalizableConstructorAccess extends ConstructorAccess<PlainExternalizable> {
+        @Override
+        public PlainExternalizable newInstance() {
+            return new PlainExternalizable();
+        }
+
+        @Override
+        public PlainExternalizable newInstance(Object enclosingInstance) {
+            return newInstance();
         }
     }
 

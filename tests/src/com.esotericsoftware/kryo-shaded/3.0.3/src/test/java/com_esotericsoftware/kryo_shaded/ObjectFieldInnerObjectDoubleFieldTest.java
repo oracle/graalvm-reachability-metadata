@@ -12,6 +12,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
+import com.esotericsoftware.reflectasm.ConstructorAccess;
 import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
 
@@ -97,6 +98,18 @@ public class ObjectFieldInnerObjectDoubleFieldTest {
 
         double measurement() {
             return measurement;
+        }
+    }
+
+    public static class DoubleFieldSubjectConstructorAccess extends ConstructorAccess<DoubleFieldSubject> {
+        @Override
+        public DoubleFieldSubject newInstance() {
+            return new DoubleFieldSubject();
+        }
+
+        @Override
+        public DoubleFieldSubject newInstance(Object enclosingInstance) {
+            return newInstance();
         }
     }
 }

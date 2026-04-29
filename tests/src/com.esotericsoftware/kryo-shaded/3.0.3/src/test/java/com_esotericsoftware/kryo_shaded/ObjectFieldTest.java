@@ -12,6 +12,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
+import com.esotericsoftware.reflectasm.ConstructorAccess;
 import org.junit.jupiter.api.Test;
 
 public class ObjectFieldTest {
@@ -71,6 +72,18 @@ public class ObjectFieldTest {
 
         Object value() {
             return value;
+        }
+    }
+
+    public static class ObjectFieldSubjectConstructorAccess extends ConstructorAccess<ObjectFieldSubject> {
+        @Override
+        public ObjectFieldSubject newInstance() {
+            return new ObjectFieldSubject();
+        }
+
+        @Override
+        public ObjectFieldSubject newInstance(Object enclosingInstance) {
+            return newInstance();
         }
     }
 }

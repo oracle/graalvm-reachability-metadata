@@ -12,6 +12,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
+import com.esotericsoftware.reflectasm.ConstructorAccess;
 import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +21,7 @@ public class ObjectFieldInnerObjectCharFieldTest {
     void serializesReadsAndCopiesPrivateCharFieldWithObjectCachedField() {
         Kryo kryo = newKryo();
         FieldSerializer<CharFieldSubject> serializer = new FieldSerializer<>(kryo, CharFieldSubject.class);
-        CharFieldSubject original = new CharFieldSubject('Ω');
+        CharFieldSubject original = new CharFieldSubject('\u03A9');
 
         CharFieldSubject read = roundTrip(kryo, serializer, original, CharFieldSubject.class);
         CharFieldSubject copy = serializer.copy(kryo, original);
@@ -35,7 +36,7 @@ public class ObjectFieldInnerObjectCharFieldTest {
         Kryo kryo = newKryo();
         FieldSerializer<CharFieldSubject> serializer = new FieldSerializer<>(kryo, CharFieldSubject.class);
         FieldSerializer.CachedField<?> cachedField = objectCharField(serializer);
-        CharFieldSubject subject = new CharFieldSubject('字');
+        CharFieldSubject subject = new CharFieldSubject('\u5B57');
 
         Method getField = cachedField.getClass().getMethod("getField", Object.class);
         getField.setAccessible(true);
@@ -96,6 +97,18 @@ public class ObjectFieldInnerObjectCharFieldTest {
 
         char marker() {
             return marker;
+        }
+    }
+
+    public static class CharFieldSubjectConstructorAccess extends ConstructorAccess<CharFieldSubject> {
+        @Override
+        public CharFieldSubject newInstance() {
+            return new CharFieldSubject();
+        }
+
+        @Override
+        public CharFieldSubject newInstance(Object enclosingInstance) {
+            return newInstance();
         }
     }
 }

@@ -21,7 +21,7 @@ public class DefaultArraySerializersInnerObjectArraySerializerTest {
         CharSequence[] original = {
                 new StringBuilder("alpha"),
                 "beta",
-                new StringBuffer("gamma"),
+                new StringBuilder("gamma"),
                 null
         };
 
@@ -36,7 +36,7 @@ public class DefaultArraySerializersInnerObjectArraySerializerTest {
         assertThat(read).hasSize(original.length);
         assertThat(read[0]).isInstanceOf(StringBuilder.class).hasToString("alpha");
         assertThat(read[1]).isInstanceOf(String.class).hasToString("beta");
-        assertThat(read[2]).isInstanceOf(StringBuffer.class).hasToString("gamma");
+        assertThat(read[2]).isInstanceOf(StringBuilder.class).hasToString("gamma");
         assertThat(read[3]).isNull();
     }
 }

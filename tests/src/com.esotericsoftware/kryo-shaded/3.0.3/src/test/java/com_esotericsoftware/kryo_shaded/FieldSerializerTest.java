@@ -12,6 +12,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
+import com.esotericsoftware.reflectasm.ConstructorAccess;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
@@ -136,6 +137,19 @@ public class FieldSerializerTest {
         }
     }
 
+    public static class FieldSerializerSubjectConstructorAccess
+            extends ConstructorAccess<FieldSerializerSubject> {
+        @Override
+        public FieldSerializerSubject newInstance() {
+            return new FieldSerializerSubject();
+        }
+
+        @Override
+        public FieldSerializerSubject newInstance(Object enclosingInstance) {
+            return newInstance();
+        }
+    }
+
     public static class PrimitiveRegionSubject {
         public int first;
         public long second;
@@ -150,6 +164,19 @@ public class FieldSerializerTest {
             value.second = 987654321L;
             value.third = 12.5d;
             return value;
+        }
+    }
+
+    public static class PrimitiveRegionSubjectConstructorAccess
+            extends ConstructorAccess<PrimitiveRegionSubject> {
+        @Override
+        public PrimitiveRegionSubject newInstance() {
+            return new PrimitiveRegionSubject();
+        }
+
+        @Override
+        public PrimitiveRegionSubject newInstance(Object enclosingInstance) {
+            return newInstance();
         }
     }
 }

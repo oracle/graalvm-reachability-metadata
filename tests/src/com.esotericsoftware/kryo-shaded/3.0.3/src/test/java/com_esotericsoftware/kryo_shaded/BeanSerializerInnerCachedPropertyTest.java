@@ -12,6 +12,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.BeanSerializer;
+import com.esotericsoftware.reflectasm.ConstructorAccess;
 import org.junit.jupiter.api.Test;
 
 public class BeanSerializerInnerCachedPropertyTest {
@@ -73,6 +74,18 @@ public class BeanSerializerInnerCachedPropertyTest {
 
         public void setCount(int count) {
             this.count = count;
+        }
+    }
+
+    public static class FallbackBeanConstructorAccess extends ConstructorAccess<FallbackBean> {
+        @Override
+        public FallbackBean newInstance() {
+            return new FallbackBean();
+        }
+
+        @Override
+        public FallbackBean newInstance(Object enclosingInstance) {
+            return newInstance();
         }
     }
 
