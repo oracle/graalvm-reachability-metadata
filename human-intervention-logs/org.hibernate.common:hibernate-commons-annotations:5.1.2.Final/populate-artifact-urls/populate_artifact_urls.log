@@ -1,0 +1,214 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd822-53f5-7262-80ee-869959a0229f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.hibernate.common:hibernate-commons-annotations:5.1.2.Final
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "5.1.2.Final".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa/metadata/org.hibernate.common/hibernate-commons-annotations/index.json
+- Entry selector: "metadata-version" = "5.1.2.Final"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "5.1.2.Final".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/hibernate-commons-annotations-5.1.2.Final-sources.jar
+- repository-url: https://github.com/hibernate/hibernate-commons-annotations
+- test-code-url: https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src/test
+- documentation-url: https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/readme.txt
+- description: Hibernate Commons Annotations provides shared reflection utilities used by Hibernate projects to support annotation processing. It helps discover Java generic type information and supports overriding Java annotations through XML metadata.
+- language: <missing>
+
+Context:
+- Coordinate version: 5.1.2.Final
+- Entry test-version: 5.1.2.Final
+codex
+I’ll verify the existing metadata against Maven/GitHub for the exact `5.1.2.Final` version, then inspect the JSON entry and only patch fields that are actually missing. Since the only listed missing field is `language`, I’ll first confirm whether this artifact is Kotlin/Groovy/Scala-specific before editing.
+web search: 
+web search: org.hibernate.common hibernate-commons-annotations 5.1.2.Final Maven sources jar
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"5\\.1\\.2\\.Final\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.hibernate.common/hibernate-commons-annotations/index.json" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 0ms:
+4:    "metadata-version" : "5.1.2.Final",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/hibernate-commons-annotations-5.1.2.Final-sources.jar",
+6:    "repository-url" : "https://github.com/hibernate/hibernate-commons-annotations",
+7:    "test-code-url" : "https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src/test",
+8:    "documentation-url" : "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/readme.txt",
+9:    "description" : "Hibernate Commons Annotations provides shared reflection utilities used by Hibernate projects to support annotation processing. It helps discover Java generic type information and supports overriding Java annotations through XML metadata.",
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 0ms:
+?? metadata/org.hibernate.common/
+?? tests/src/org.hibernate.common/
+
+web search: 
+web search: site:repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final hibernate-commons-annotations-5.1.2.Final-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/
+web search: 
+web search: https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src/test
+codex
+The entry already has non-blank values for all URL and description fields. The upstream tag and README show this is a Java project, but it is not a Kotlin, Groovy, or Scala-specific artifact, so the missing `language` field should remain absent.
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/org.hibernate.common/hibernate-commons-annotations/index.json" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.1.2.Final",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/hibernate-commons-annotations-5.1.2.Final-sources.jar",
+    "repository-url" : "https://github.com/hibernate/hibernate-commons-annotations",
+    "test-code-url" : "https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src/test",
+    "documentation-url" : "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/readme.txt",
+    "description" : "Hibernate Commons Annotations provides shared reflection utilities used by Hibernate projects to support annotation processing. It helps discover Java generic type information and supports overriding Java annotations through XML metadata.",
+    "tested-versions" : [
+      "5.1.2.Final"
+    ],
+    "allowed-packages" : [
+      "org.hibernate.annotations.common"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.hibernate.common/hibernate-commons-annotations/index.json' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 0ms:
+web search: 
+web search: hibernate-commons-annotations 5.1.2.Final tag github hibernate commons annotations
+web search: 
+web search: https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final
+web search: 
+web search: https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/readme.txt
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.hibernate.common/hibernate-commons-annotations/index.json' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "git diff --no-index -- /dev/null metadata/org.hibernate.common/hibernate-commons-annotations/index.json | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 0ms:
+diff --git 1/metadata/org.hibernate.common/hibernate-commons-annotations/index.json 2/metadata/org.hibernate.common/hibernate-commons-annotations/index.json
+new file mode 100644
+index 0000000000..55e86546e3
+--- /dev/null
++++ 2/metadata/org.hibernate.common/hibernate-commons-annotations/index.json
+@@ -0,0 +1,17 @@
++[
++  {
++    "latest" : true,
++    "metadata-version" : "5.1.2.Final",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/hibernate-commons-annotations-5.1.2.Final-sources.jar",
++    "repository-url" : "https://github.com/hibernate/hibernate-commons-annotations",
++    "test-code-url" : "https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src/test",
++    "documentation-url" : "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/readme.txt",
++    "description" : "Hibernate Commons Annotations provides shared reflection utilities used by Hibernate projects to support annotation processing. It helps discover Java generic type information and supports overriding Java annotations through XML metadata.",
++    "tested-versions" : [
++      "5.1.2.Final"
++    ],
++    "allowed-packages" : [
++      "org.hibernate.annotations.common"
++    ]
++  }
++]
+
+web search: 
+web search: repo1.maven.org maven2 org hibernate common hibernate-commons-annotations 5.1.2.Final sources jar pom
+web search: 
+web search: https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src/test
+web search: 
+web search: https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final
+codex
+No patch was necessary. In [index.json](/home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa/metadata/org.hibernate.common/hibernate-commons-annotations/index.json:4), the requested URL and description fields are already non-blank, and `language` should remain absent because this is a Java library, not Kotlin/Groovy/Scala-specific. The exact-version sources are on Maven Central, the tagged GitHub tree contains `src/test` and `readme.txt`, and the POM SCM points to the repository root. ([repo1.maven.org](https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/?utm_source=openai))
+
+Selected values remain:
+
+```json
+{
+  "source-code-url": "https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/hibernate-commons-annotations-5.1.2.Final-sources.jar",
+  "repository-url": "https://github.com/hibernate/hibernate-commons-annotations",
+  "test-code-url": "https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src/test",
+  "documentation-url": "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/readme.txt",
+  "language": "<absent>"
+}
+```
+
+Validation: `jq empty metadata/org.hibernate.common/hibernate-commons-annotations/index.json` passed.
+2026-04-29T07:28:04.403414Z ERROR codex_core::session: failed to record rollout items: thread 019dd822-53f5-7262-80ee-869959a0229f not found
+tokens used
+76,835
+No patch was necessary. In [index.json](/home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa/metadata/org.hibernate.common/hibernate-commons-annotations/index.json:4), the requested URL and description fields are already non-blank, and `language` should remain absent because this is a Java library, not Kotlin/Groovy/Scala-specific. The exact-version sources are on Maven Central, the tagged GitHub tree contains `src/test` and `readme.txt`, and the POM SCM points to the repository root. ([repo1.maven.org](https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/?utm_source=openai))
+
+Selected values remain:
+
+```json
+{
+  "source-code-url": "https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/hibernate-commons-annotations-5.1.2.Final-sources.jar",
+  "repository-url": "https://github.com/hibernate/hibernate-commons-annotations",
+  "test-code-url": "https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src/test",
+  "documentation-url": "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/readme.txt",
+  "language": "<absent>"
+}
+```
+
+Validation: `jq empty metadata/org.hibernate.common/hibernate-commons-annotations/index.json` passed.
+Ran agent for org.hibernate.common:hibernate-commons-annotations:5.1.2.Final (exit 0). Log: /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa/build/agent-url-discovery-logs/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 3s
+9 actionable tasks: 1 executed, 8 up-to-date

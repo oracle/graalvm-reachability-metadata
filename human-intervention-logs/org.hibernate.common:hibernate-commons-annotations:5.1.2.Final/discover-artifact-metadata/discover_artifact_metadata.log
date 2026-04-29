@@ -1,0 +1,1534 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd820-9e22-7223-ab40-b7616ae4d3c1
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.hibernate.common:hibernate-commons-annotations:5.1.2.Final
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "5.1.2.Final".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json
+- Set "coordinates" to "org.hibernate.common:hibernate-commons-annotations:5.1.2.Final".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven Central and the Hibernate source tag, then patch the JSON in place with only confident exact-version URLs.
+web search: 
+web search: org.hibernate.common hibernate-commons-annotations 5.1.2.Final maven sources tests
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 0ms:
+{
+  "coordinates" : "org.hibernate.common:hibernate-commons-annotations:5.1.2.Final"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files | rg '("'^|/)org'"\\.hibernate\\.common-hibernate-commons-annotations-5\\.1\\.2\\.Final\\.json"'$|AGENTS'"\\.md"'$'"'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+tests/src/AGENTS.md
+AGENTS.md
+
+web search: 
+web search: site:mvnrepository.com/artifact/org.hibernate.common/hibernate-commons-annotations/5.1.2.Final hibernate commons annotations
+web search: 
+web search: https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/
+web search: 
+web search: 
+codex
+Maven Central confirms a `5.1.2.Final` sources JAR exists for the artifact. I’m checking the published POM and upstream tags now to avoid using a branch URL for version-specific fields.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/hibernate-commons-annotations-5.1.2.Final.pom' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.hibernate.common</groupId>
+  <artifactId>hibernate-commons-annotations</artifactId>
+  <version>5.1.2.Final</version>
+  <name>Hibernate Commons Annotations</name>
+  <description>Common reflection code used in support of annotation processing</description>
+  <url>http://hibernate.org</url>
+  <organization>
+    <name>Hibernate.org</name>
+    <url>http://hibernate.org</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>GNU Library General Public License v2.1 or later</name>
+      <url>http://www.opensource.org/licenses/LGPL-2.1</url>
+      <distribution>repo</distribution>
+      <comments>See discussion at http://hibernate.org/community/license/ for more details.</comments>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>hibernate-team</id>
+      <name>The Hibernate Development Team</name>
+      <organization>Hibernate.org</organization>
+      <organizationUrl>http://hibernate.org</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:http://github.com/hibernate/hibernate-commons-annotations.git</connection>
+    <developerConnection>scm:git:git@github.com:hibernate/hibernate-commons-annotations.git</developerConnection>
+    <url>http://github.com/hibernate/hibernate-commons-annotations</url>
+  </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>https://hibernate.atlassian.net/browse/HCANN</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <version>3.3.2.Final</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/hibernate/common/hibernate-commons-annotations/5.1.2.Final</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/hibernate/common/hibernate-commons-annotations/5.1.2.Final</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="hibernate-commons-annotations-5.1.2.Final-sources.jar" title="hibernate-commons-annotations-5.1.2.Final-sources.jar">hibernate-commons-annotations-5.1.2.Final-sou...</a>  2020-10-30 16:12     52076      
+<a href="hibernate-commons-annotations-5.1.2.Final-sources.jar.md5" title="hibernate-commons-annotations-5.1.2.Final-sources.jar.md5">hibernate-commons-annotations-5.1.2.Final-sou...</a>  2020-10-30 16:12        32      
+<a href="hibernate-commons-annotations-5.1.2.Final-sources.jar.sha1" title="hibernate-commons-annotations-5.1.2.Final-sources.jar.sha1">hibernate-commons-annotations-5.1.2.Final-sou...</a>  2020-10-30 16:12        40      
+<a href="hibernate-commons-annotations-5.1.2.Final.jar" title="hibernate-commons-annotations-5.1.2.Final.jar">hibernate-commons-annotations-5.1.2.Final.jar</a>     2020-10-30 16:12     78948      
+<a href="hibernate-commons-annotations-5.1.2.Final.jar.md5" title="hibernate-commons-annotations-5.1.2.Final.jar.md5">hibernate-commons-annotations-5.1.2.Final.jar...</a>  2020-10-30 16:12        32      
+<a href="hibernate-commons-annotations-5.1.2.Final.jar.sha1" title="hibernate-commons-annotations-5.1.2.Final.jar.sha1">hibernate-commons-annotations-5.1.2.Final.jar...</a>  2020-10-30 16:12        40      
+<a href="hibernate-commons-annotations-5.1.2.Final.pom" title="hibernate-commons-annotations-5.1.2.Final.pom">hibernate-commons-annotations-5.1.2.Final.pom</a>     2020-10-30 16:12      1939      
+<a href="hibernate-commons-annotations-5.1.2.Final.pom.md5" title="hibernate-commons-annotations-5.1.2.Final.pom.md5">hibernate-commons-annotations-5.1.2.Final.pom...</a>  2020-10-30 16:12        32      
+<a href="hibernate-commons-annotations-5.1.2.Final.pom.sha1" title="hibernate-commons-annotations-5.1.2.Final.pom.sha1">hibernate-commons-annotations-5.1.2.Final.pom...</a>  2020-10-30 16:12        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/hibernate/hibernate-commons-annotations/tags?per_page=100'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2 | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 204ms:
+[
+  {
+    "name": "7.0.3.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/7.0.3.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/7.0.3.Final",
+    "commit": {
+      "sha": "d5fb5d73f329af64e3e8d5934907bcfbc9d5bb36",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/d5fb5d73f329af64e3e8d5934907bcfbc9d5bb36"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNy4wLjMuRmluYWw="
+  },
+  {
+    "name": "7.0.2.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/7.0.2.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/7.0.2.Final",
+    "commit": {
+      "sha": "7fafeb5a2ed0504898af2559a8d6c51beb244835",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/7fafeb5a2ed0504898af2559a8d6c51beb244835"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNy4wLjIuRmluYWw="
+  },
+  {
+    "name": "7.0.1.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/7.0.1.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/7.0.1.Final",
+    "commit": {
+      "sha": "e0c1c87a881ac9ee19b9037943e7a3f8c065ca31",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/e0c1c87a881ac9ee19b9037943e7a3f8c065ca31"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNy4wLjEuRmluYWw="
+  },
+  {
+    "name": "7.0.0.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/7.0.0.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/7.0.0.Final",
+    "commit": {
+      "sha": "08111feca2176da852f04468f8df47b4d7032d87",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/08111feca2176da852f04468f8df47b4d7032d87"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNy4wLjAuRmluYWw="
+  },
+  {
+    "name": "6.0.6.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/6.0.6.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/6.0.6.Final",
+    "commit": {
+      "sha": "36a98821b84ff44b9da09d66871917d1bddf95eb",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/36a98821b84ff44b9da09d66871917d1bddf95eb"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNi4wLjYuRmluYWw="
+  },
+  {
+    "name": "6.0.5.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/6.0.5.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/6.0.5.Final",
+    "commit": {
+      "sha": "9928456ce4e991f7bc2fbc67fb5d3a80deca834b",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/9928456ce4e991f7bc2fbc67fb5d3a80deca834b"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNi4wLjUuRmluYWw="
+  },
+  {
+    "name": "6.0.4.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/6.0.4.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/6.0.4.Final",
+    "commit": {
+      "sha": "d3f0871a4d8dd2d7b9bb6013e2f5343134bccf4a",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/d3f0871a4d8dd2d7b9bb6013e2f5343134bccf4a"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNi4wLjQuRmluYWw="
+  },
+  {
+    "name": "6.0.3.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/6.0.3.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/6.0.3.Final",
+    "commit": {
+      "sha": "33cdac2ceaff8c721f41cd772bf8ef356a5e926e",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/33cdac2ceaff8c721f41cd772bf8ef356a5e926e"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNi4wLjMuRmluYWw="
+  },
+  {
+    "name": "6.0.2.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/6.0.2.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/6.0.2.Final",
+    "commit": {
+      "sha": "39e05d0be0cabef835b1a1c826008c2e7851edf4",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/39e05d0be0cabef835b1a1c826008c2e7851edf4"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNi4wLjIuRmluYWw="
+  },
+  {
+    "name": "6.0.1.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/6.0.1.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/6.0.1.Final",
+    "commit": {
+      "sha": "9a3001f3c737021de0db99c3c249ec29d1c95338",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/9a3001f3c737021de0db99c3c249ec29d1c95338"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNi4wLjEuRmluYWw="
+  },
+  {
+    "name": "6.0.0.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/6.0.0.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/6.0.0.Final",
+    "commit": {
+      "sha": "ddb9c273281e4271eccc3b96325bfe737a343c71",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/ddb9c273281e4271eccc3b96325bfe737a343c71"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNi4wLjAuRmluYWw="
+  },
+  {
+    "name": "6.0.0.CR1",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/6.0.0.CR1",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/6.0.0.CR1",
+    "commit": {
+      "sha": "ae7c70d85f569b4ccf2020e667626359d1fb9d79",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/ae7c70d85f569b4ccf2020e667626359d1fb9d79"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNi4wLjAuQ1Ix"
+  },
+  {
+    "name": "6.0.0.Beta1",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/6.0.0.Beta1",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/6.0.0.Beta1",
+    "commit": {
+      "sha": "a1d2b877080a295f6734c012a7dced9bf9bd0c41",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/a1d2b877080a295f6734c012a7dced9bf9bd0c41"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNi4wLjAuQmV0YTE="
+  },
+  {
+    "name": "5.1.2.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/5.1.2.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/5.1.2.Final",
+    "commit": {
+      "sha": "92b6f64ad0d571cd4a094c522b4cef1304a3bd1a",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/92b6f64ad0d571cd4a094c522b4cef1304a3bd1a"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNS4xLjIuRmluYWw="
+  },
+  {
+    "name": "5.1.1.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/5.1.1.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/5.1.1.Final",
+    "commit": {
+      "sha": "689d4089cbf610a51b4546cd7dd4b7f62014b9a8",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/689d4089cbf610a51b4546cd7dd4b7f62014b9a8"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNS4xLjEuRmluYWw="
+  },
+  {
+    "name": "5.1.0.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/5.1.0.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/5.1.0.Final",
+    "commit": {
+      "sha": "ce4b070e8334a8d149d9809359becf183a951753",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/ce4b070e8334a8d149d9809359becf183a951753"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNS4xLjAuRmluYWw="
+  },
+  {
+    "name": "5.0.5.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/5.0.5.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/5.0.5.Final",
+    "commit": {
+      "sha": "93dc1a17f4bc0cbd0c8e7caf831290af5d5c735b",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/93dc1a17f4bc0cbd0c8e7caf831290af5d5c735b"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNS4wLjUuRmluYWw="
+  },
+  {
+    "name": "5.0.4.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/5.0.4.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/5.0.4.Final",
+    "commit": {
+      "sha": "62755148e1facae47c7ec4ac9806dd0ed60c6be1",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/62755148e1facae47c7ec4ac9806dd0ed60c6be1"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNS4wLjQuRmluYWw="
+  },
+  {
+    "name": "5.0.3.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/5.0.3.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/5.0.3.Final",
+    "commit": {
+      "sha": "49107255439b6aa695ce162414db7f1f79787486",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/49107255439b6aa695ce162414db7f1f79787486"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNS4wLjMuRmluYWw="
+  },
+  {
+    "name": "5.0.2.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/5.0.2.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/5.0.2.Final",
+    "commit": {
+      "sha": "a464ea1173124729ddcedf6da5557ef1efcfa64d",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/a464ea1173124729ddcedf6da5557ef1efcfa64d"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNS4wLjIuRmluYWw="
+  },
+  {
+    "name": "5.0.1.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/5.0.1.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/5.0.1.Final",
+    "commit": {
+      "sha": "90a4cb9c82461645a8ac61b68fbb50a672fcd75b",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/90a4cb9c82461645a8ac61b68fbb50a672fcd75b"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNS4wLjEuRmluYWw="
+  },
+  {
+    "name": "5.0.0.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/5.0.0.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/5.0.0.Final",
+    "commit": {
+      "sha": "34c818242e2982685351e9d876e8fb00bd93220d",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/34c818242e2982685351e9d876e8fb00bd93220d"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNS4wLjAuRmluYWw="
+  },
+  {
+    "name": "4.0.5.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/4.0.5.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/4.0.5.Final",
+    "commit": {
+      "sha": "fbdfb4f198d4846becfacaa0e618b0542d97267b",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/fbdfb4f198d4846becfacaa0e618b0542d97267b"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNC4wLjUuRmluYWw="
+  },
+  {
+    "name": "4.0.4.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/4.0.4.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/4.0.4.Final",
+    "commit": {
+      "sha": "838023a72d10bfe4c0b54c2606709d45310beaa4",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/838023a72d10bfe4c0b54c2606709d45310beaa4"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNC4wLjQuRmluYWw="
+  },
+  {
+    "name": "4.0.3.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/4.0.3.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/4.0.3.Final",
+    "commit": {
+      "sha": "a53809bf01e7390fe50e2aa3be92570e8097b32f",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/a53809bf01e7390fe50e2aa3be92570e8097b32f"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNC4wLjMuRmluYWw="
+  },
+  {
+    "name": "4.0.2.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/4.0.2.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/4.0.2.Final",
+    "commit": {
+      "sha": "628c3affed4eabf0f4cce4fe195a80cc49401b49",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/628c3affed4eabf0f4cce4fe195a80cc49401b49"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNC4wLjIuRmluYWw="
+  },
+  {
+    "name": "4.0.1.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/4.0.1.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/4.0.1.Final",
+    "commit": {
+      "sha": "01d519d3eb68a6c2add35c0e337178f7fb5a7770",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/01d519d3eb68a6c2add35c0e337178f7fb5a7770"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNC4wLjEuRmluYWw="
+  },
+  {
+    "name": "4.0.0.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/4.0.0.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/4.0.0.Final",
+    "commit": {
+      "sha": "7dc51ecea02962d795296ae56800c658db467f9b",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/7dc51ecea02962d795296ae56800c658db467f9b"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNC4wLjAuRmluYWw="
+  },
+  {
+    "name": "4.0.0.CR2",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/4.0.0.CR2",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/4.0.0.CR2",
+    "commit": {
+      "sha": "1648a8eba66c762e33d07f73ec468f1b6b8d9d31",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/1648a8eba66c762e33d07f73ec468f1b6b8d9d31"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNC4wLjAuQ1Iy"
+  },
+  {
+    "name": "4.0.0.CR1",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/4.0.0.CR1",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/4.0.0.CR1",
+    "commit": {
+      "sha": "250091210ce9d745a8b1e47cf265ba810e130bdf",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/250091210ce9d745a8b1e47cf265ba810e130bdf"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvNC4wLjAuQ1Ix"
+  },
+  {
+    "name": "3.2.0.Final",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/3.2.0.Final",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/3.2.0.Final",
+    "commit": {
+      "sha": "b70bbc1acf367196770aa518da6e22e6de8ccee9",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/b70bbc1acf367196770aa518da6e22e6de8ccee9"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvMy4yLjAuRmluYWw="
+  },
+  {
+    "name": "3.2.0.Beta1",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/3.2.0.Beta1",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/3.2.0.Beta1",
+    "commit": {
+      "sha": "2149629266e0fc1f1e685712436198a461e90802",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/2149629266e0fc1f1e685712436198a461e90802"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvMy4yLjAuQmV0YTE="
+  },
+  {
+    "name": "3.1.0.GA",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/3.1.0.GA",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/3.1.0.GA",
+    "commit": {
+      "sha": "fa9b3cade0458f2117137bba7ea42ed2b7639909",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/fa9b3cade0458f2117137bba7ea42ed2b7639909"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvMy4xLjAuR0E="
+  },
+  {
+    "name": "3.1.0.CR2",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/3.1.0.CR2",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/3.1.0.CR2",
+    "commit": {
+      "sha": "0d6e06a8423323a54a76031f1be4e8d64e0ef26d",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/0d6e06a8423323a54a76031f1be4e8d64e0ef26d"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvMy4xLjAuQ1Iy"
+  },
+  {
+    "name": "3.1.0.CR1",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/3.1.0.CR1",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/3.1.0.CR1",
+    "commit": {
+      "sha": "0bf9e0a4a21eb99643ed6b7667e4cc3cba64daa7",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/0bf9e0a4a21eb99643ed6b7667e4cc3cba64daa7"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvMy4xLjAuQ1Ix"
+  },
+  {
+    "name": "3.0.0.GA",
+    "zipball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/zipball/refs/tags/3.0.0.GA",
+    "tarball_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/tarball/refs/tags/3.0.0.GA",
+    "commit": {
+      "sha": "004773946c2718588c7c0a024bc738738d367e80",
+      "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/commits/004773946c2718588c7c0a024bc738738d367e80"
+    },
+    "node_id": "MDM6UmVmMTgzMTU4NjpyZWZzL3RhZ3MvMy4wLjAuR0E="
+  }
+]
+
+ succeeded in 344ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 29 Apr 2026 07:25:34 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=2wYw9Xr0e17%2Bsp4zbOYf0xgJ2NkBTNxDb3nZtl3PgitJf%2BpHrlYphWgIRsueJKdqn2L9KjEGfMigCKZ5PUZZz0DTxReM0GodwiLxo1PvC%2FY4m5knEH8%2B29n%2BzrxlyQGttMXCHcyRq4NGDzRpjkhAxtZRsb5ofzJ0yiQluwiB8iYoHA52uK%2BJ8PiCi%2Bj5YJJi4OVJcw3vNtJd87XMZIMGptcpzDKruyZ6l%2F2S77%2BoExM%2F0BVC4TOA%2FLohwuC9H%2Bg8X6wIjj98WcaIO74IR6qxmg%3D%3D--4F7YI3QmOhNt3%2BMS--hX1hEfng13HUx6RpvOwVOg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1798563300.1777447534; expires=Thu, 29 Apr 2027 07:25:34 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 29 Apr 2027 07:25:34 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5109:A9BEE:79573A0:5CC9D4A:69F1B26E
+
+
+ succeeded in 826ms:
+HTTP/2 200 
+date: Wed, 29 Apr 2026 07:25:35 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"3ff47dc7044ddeb1b1a75655b6bc3df3"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=ozvvxDqMzVLDHESuzZfJ2ueta2Hk9sTJQQbzY28PZ5TaGIKlPaBYdwIg6KUi5Y54eWQHR87%2FN5zsil9uTNccI%2FXc9W1%2Be9P6Cpl5k%2FUjEHdP7SB5dOFH2Mpraq2wNvT6yMIj6TnabZeS6w7hPJkmEiMuej1HyLsEAKbAeqq8E%2Fs81ZkSjBhBL678lkHIxDuFlEGiVfvLI5U5nCHvtdO02%2Bm73dvtukFJgBf4cWoEebB%2FNLotlKYvmyGU6hDQW1vRSdMp0MMdDHnrtgbByd2i6w%3D%3D--5hu6t0x3e6XtRdq0--hr5KgT4dswEl6zcU9THlrw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.445271712.1777447534; expires=Thu, 29 Apr 2027 07:25:34 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 29 Apr 2027 07:25:34 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FD:1BC970:7726CDA:5B50076:69F1B26E
+
+
+web search: 
+web search: javadoc.io org.hibernate.common hibernate-commons-annotations 5.1.2.Final
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/?ref=5.1.2.Final' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/hibernate-commons-annotations-5.1.2.Final-test-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/src?ref=5.1.2.Final' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/hibernate-commons-annotations-5.1.2.Final-tests.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 161ms:
+[
+  {
+    "name": "main",
+    "path": "src/main",
+    "sha": "a64554187583889122f65db742d4a4bcb6b1363b",
+    "size": 0,
+    "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/src/main?ref=5.1.2.Final",
+    "html_url": "https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src/main",
+    "git_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/trees/a64554187583889122f65db742d4a4bcb6b1363b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/src/main?ref=5.1.2.Final",
+      "git": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/trees/a64554187583889122f65db742d4a4bcb6b1363b",
+      "html": "https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "src/test",
+    "sha": "ebb689ca115f6e23273670fa29ac79d9912cc213",
+    "size": 0,
+    "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/src/test?ref=5.1.2.Final",
+    "html_url": "https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src/test",
+    "git_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/trees/ebb689ca115f6e23273670fa29ac79d9912cc213",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/src/test?ref=5.1.2.Final",
+      "git": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/trees/ebb689ca115f6e23273670fa29ac79d9912cc213",
+      "html": "https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src/test"
+    }
+  }
+]
+
+ succeeded in 177ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "a54324ff7aeba80781af5287a148da2a2a8db70c",
+    "size": 436,
+    "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/.gitignore?ref=5.1.2.Final",
+    "html_url": "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/.gitignore",
+    "git_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/blobs/a54324ff7aeba80781af5287a148da2a2a8db70c",
+    "download_url": "https://raw.githubusercontent.com/hibernate/hibernate-commons-annotations/5.1.2.Final/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/.gitignore?ref=5.1.2.Final",
+      "git": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/blobs/a54324ff7aeba80781af5287a148da2a2a8db70c",
+      "html": "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/.gitignore"
+    }
+  },
+  {
+    "name": "build.gradle",
+    "path": "build.gradle",
+    "sha": "14bd482061411d3a5bdc004f79f8413a7126915d",
+    "size": 8873,
+    "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/build.gradle?ref=5.1.2.Final",
+    "html_url": "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/build.gradle",
+    "git_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/blobs/14bd482061411d3a5bdc004f79f8413a7126915d",
+    "download_url": "https://raw.githubusercontent.com/hibernate/hibernate-commons-annotations/5.1.2.Final/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/build.gradle?ref=5.1.2.Final",
+      "git": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/blobs/14bd482061411d3a5bdc004f79f8413a7126915d",
+      "html": "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/build.gradle"
+    }
+  },
+  {
+    "name": "changelog.txt",
+    "path": "changelog.txt",
+    "sha": "6b82a765400a4504a64fe239e20161abdee31f9e",
+    "size": 1553,
+    "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/changelog.txt?ref=5.1.2.Final",
+    "html_url": "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/changelog.txt",
+    "git_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/blobs/6b82a765400a4504a64fe239e20161abdee31f9e",
+    "download_url": "https://raw.githubusercontent.com/hibernate/hibernate-commons-annotations/5.1.2.Final/changelog.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/changelog.txt?ref=5.1.2.Final",
+      "git": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/blobs/6b82a765400a4504a64fe239e20161abdee31f9e",
+      "html": "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/changelog.txt"
+    }
+  },
+  {
+    "name": "gradle",
+    "path": "gradle",
+    "sha": "9d0c0fb62350d74d3078615baac6312f9371b978",
+    "size": 0,
+    "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/gradle?ref=5.1.2.Final",
+    "html_url": "https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/gradle",
+    "git_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/trees/9d0c0fb62350d74d3078615baac6312f9371b978",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/gradle?ref=5.1.2.Final",
+      "git": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/trees/9d0c0fb62350d74d3078615baac6312f9371b978",
+      "html": "https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/gradle"
+    }
+  },
+  {
+    "name": "gradlew",
+    "path": "gradlew",
+    "sha": "cccdd3d517fc5249beaefa600691cf150f2fa3e6",
+    "size": 5296,
+    "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/gradlew?ref=5.1.2.Final",
+    "html_url": "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/gradlew",
+    "git_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/blobs/cccdd3d517fc5249beaefa600691cf150f2fa3e6",
+    "download_url": "https://raw.githubusercontent.com/hibernate/hibernate-commons-annotations/5.1.2.Final/gradlew",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/gradlew?ref=5.1.2.Final",
+      "git": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/blobs/cccdd3d517fc5249beaefa600691cf150f2fa3e6",
+      "html": "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/gradlew"
+    }
+  },
+  {
+    "name": "gradlew.bat",
+    "path": "gradlew.bat",
+    "sha": "e95643d6a2ca62258464e83c72f5156dc941c609",
+    "size": 2260,
+    "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/gradlew.bat?ref=5.1.2.Final",
+    "html_url": "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/gradlew.bat",
+    "git_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/blobs/e95643d6a2ca62258464e83c72f5156dc941c609",
+    "download_url": "https://raw.githubusercontent.com/hibernate/hibernate-commons-annotations/5.1.2.Final/gradlew.bat",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/gradlew.bat?ref=5.1.2.Final",
+      "git": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/blobs/e95643d6a2ca62258464e83c72f5156dc941c609",
+      "html": "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/gradlew.bat"
+    }
+  },
+  {
+    "name": "lgpl.txt",
+    "path": "lgpl.txt",
+    "sha": "4362b49151d7b34ef83b3067a8f9c9f877d72a0e",
+    "size": 26530,
+    "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/lgpl.txt?ref=5.1.2.Final",
+    "html_url": "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/lgpl.txt",
+    "git_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/blobs/4362b49151d7b34ef83b3067a8f9c9f877d72a0e",
+    "download_url": "https://raw.githubusercontent.com/hibernate/hibernate-commons-annotations/5.1.2.Final/lgpl.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/lgpl.txt?ref=5.1.2.Final",
+      "git": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/blobs/4362b49151d7b34ef83b3067a8f9c9f877d72a0e",
+      "html": "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/lgpl.txt"
+    }
+  },
+  {
+    "name": "readme.txt",
+    "path": "readme.txt",
+    "sha": "9ebd26092da1c42626162b829374eeb1ac499f3b",
+    "size": 1235,
+    "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/readme.txt?ref=5.1.2.Final",
+    "html_url": "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/readme.txt",
+    "git_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/blobs/9ebd26092da1c42626162b829374eeb1ac499f3b",
+    "download_url": "https://raw.githubusercontent.com/hibernate/hibernate-commons-annotations/5.1.2.Final/readme.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/readme.txt?ref=5.1.2.Final",
+      "git": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/blobs/9ebd26092da1c42626162b829374eeb1ac499f3b",
+      "html": "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/readme.txt"
+    }
+  },
+  {
+    "name": "settings.gradle",
+    "path": "settings.gradle",
+    "sha": "6cabb642781bbed994635be7cfd01944c9770b58",
+    "size": 448,
+    "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/settings.gradle?ref=5.1.2.Final",
+    "html_url": "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/settings.gradle",
+    "git_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/blobs/6cabb642781bbed994635be7cfd01944c9770b58",
+    "download_url": "https://raw.githubusercontent.com/hibernate/hibernate-commons-annotations/5.1.2.Final/settings.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/settings.gradle?ref=5.1.2.Final",
+      "git": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/blobs/6cabb642781bbed994635be7cfd01944c9770b58",
+      "html": "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/settings.gradle"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "cf96c6ab68653dd5fdddd307955e6374d530afef",
+    "size": 0,
+    "url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/src?ref=5.1.2.Final",
+    "html_url": "https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src",
+    "git_url": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/trees/cf96c6ab68653dd5fdddd307955e6374d530afef",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/contents/src?ref=5.1.2.Final",
+      "git": "https://api.github.com/repos/hibernate/hibernate-commons-annotations/git/trees/cf96c6ab68653dd5fdddd307955e6374d530afef",
+      "html": "https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src"
+    }
+  }
+]
+
+ succeeded in 246ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 29 Apr 2026 07:25:43 GMT
+content-type: text/html
+cf-ray: 9f3c930b9b351a65-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/hibernate-commons-annotations-5.1.2.Final-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 279ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 29 Apr 2026 07:25:43 GMT
+content-type: text/html
+cf-ray: 9f3c930baf0d24c0-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/hibernate-commons-annotations-5.1.2.Final-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/hibernate/hibernate-commons-annotations/5.1.2.Final/readme.txt' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/hibernate/hibernate-commons-annotations/5.1.2.Final/build.gradle | sed -n '1,240p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://javadoc.io/doc/org.hibernate.common/hibernate-commons-annotations/5.1.2.Final/ | sed -n '1,25p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://docs.jboss.org/hibernate/commons/annotations/5.1/api/ | sed -n '1,25p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 209ms:
+Hibernate Commons Annotations
+==================================================
+
+Description
+-----------
+
+Hibernate Commons Annotations is a utility project used by several Hibernate projects;
+as a user of Hibernate libraries you probably are not going to use this directly.
+
+It's first scope is to support Java Generics type discovery.
+It's second scope is to support Java Annotations overriding through XML files
+(mainly but not conceptually limited to).
+
+Requirements
+------------
+Since version 5.1 this project requires Java 8.
+
+Instructions
+------------
+
+TODO: Do something here
+
+
+Contact
+------------
+
+Latest Documentation:
+
+This project has no documentation per se, because of its internal use focus.
+Please ask questions to the technical support forum.
+
+Bug Reports:
+
+   Hibernate JIRA (preferred): https://hibernate.atlassian.net
+
+Or contact us via chat, mailing list, etc as described on:
+
+   http://hibernate.org/community/
+
+Free, volunteers based technical support:
+
+   https://discourse.hibernate.org
+
+
+Notes
+-----------
+
+If you want to contribute, go to http://www.hibernate.org/
+
+This software and its documentation are distributed under the terms of the
+GNU Lesser General Public License v2.1 or later (see lgpl.txt).
+
+ succeeded in 173ms:
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.hibernate.build.gradle:gradle-maven-publish-auth:2.0.1'
+        classpath 'org.hibernate.build.gradle:version-injection-plugin:1.0.0'
+        classpath 'org.hibernate.build.gradle:gradle-animalSniffer-plugin:1.0.1.Final'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+apply plugin: 'java'
+apply plugin: 'osgi'
+
+apply plugin: 'version-injection'
+
+apply plugin: 'maven-publish'
+apply plugin: 'maven-publish-auth'
+
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+group = 'org.hibernate.common'
+version = '5.1.2.Final'
+
+buildDir = "target"
+
+ext.javaLanguageLevel = '1.8'
+targetCompatibility = project.javaLanguageLevel
+sourceCompatibility = project.javaLanguageLevel
+
+configurations {
+    jbossLoggingTool {
+        description = 'Configuration for defining dependencies needed to run the JBoss Logging AnnotationProcessor tool'
+    }
+}
+
+dependencies {
+    compile 'org.jboss.logging:jboss-logging:3.3.2.Final'
+
+    jbossLoggingTool 'org.jboss.logging:jboss-logging-annotations:2.1.0.Final'
+    jbossLoggingTool 'org.jboss.logging:jboss-logging-processor:2.1.0.Final'
+
+    testCompile( 'junit:junit:3.8.1' )
+}
+
+// create a special 'compile' task that performs all the tasks normally associated with compiling a project
+// via task dependencies
+task compile
+compile.dependsOn compileJava, processResources, compileTestJava, processTestResources
+
+
+project.getConvention().findPlugin( JavaPluginConvention.class ).sourceSets.each { sourceSet ->
+    JavaCompile javaCompileTask = project.tasks.findByName( sourceSet.compileJavaTaskName ) as JavaCompile
+
+    File aptDir = project.file( "${project.buildDir}/generated-src/apt/${sourceSet.name}" )
+    sourceSet.allJava.srcDir( aptDir )
+    sourceSet.compileClasspath += configurations.jbossLoggingTool
+
+    javaCompileTask.options.compilerArgs += [
+            "-nowarn",
+            "-encoding", "UTF-8",
+            "-s", "${aptDir.absolutePath}"
+    ]
+
+    javaCompileTask.doFirst {
+        aptDir.mkdirs()
+    }
+}
+
+
+// Project version injection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+versionInjection {
+    into( 'org.hibernate.annotations.common.Version', 'getVersionString' )
+}
+
+jar {
+    manifest = osgiManifest { manifest ->
+        mainAttributes(
+                'Main-Class': 'org.hibernate.annotations.common.Version'
+        )
+        // See https://discuss.gradle.org/t/balancing-deprecation-of-sourcesetoutput-classesdir-and-other-parts-of-gradle-that-only-accept-a-dir-file/25283
+        classesDir = sourceSets.main.output.classesDir
+        classpath = configurations.runtime
+
+        instruction 'Bundle-Vendor', 'Hibernate.org'
+
+        // Java 9 module name
+        instruction 'Automatic-Module-Name', 'org.hibernate.commons.annotations'
+
+        OsgiManifestPackagingInfo.buildInfo( project ).applyTo( manifest )
+
+        instruction 'Implementation-Url', 'http://hibernate.org'
+        instruction 'Implementation-Version', version
+        instruction 'Implementation-Vendor', 'Hibernate.org'
+        instruction 'Implementation-Vendor-Id', 'org.hibernate'
+    }
+}
+
+// publishing ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourceJar {
+                classifier 'sources'
+            }
+
+            pom {
+                name = 'Hibernate Commons Annotations'
+                description = 'Common reflection code used in support of annotation processing'
+                url = 'http://hibernate.org'
+
+                organization {
+                    name = 'Hibernate.org'
+                    url = 'http://hibernate.org'
+                }
+
+                licenses {
+                    license {
+                        name = 'GNU Library General Public License v2.1 or later'
+                        url = 'http://www.opensource.org/licenses/LGPL-2.1'
+                        comments = 'See discussion at http://hibernate.org/community/license/ for more details.'
+                        distribution = 'repo'
+                    }
+                }
+
+                scm {
+                    url = 'http://github.com/hibernate/hibernate-commons-annotations'
+                    connection = 'scm:git:http://github.com/hibernate/hibernate-commons-annotations.git'
+                    developerConnection = 'scm:git:git@github.com:hibernate/hibernate-commons-annotations.git'
+                }
+
+                issueManagement {
+                    system = 'jira'
+                    url = 'https://hibernate.atlassian.net/browse/HCANN'
+                }
+
+                developers {
+                    developer {
+                        id = 'hibernate-team'
+                        name = 'The Hibernate Development Team'
+                        organization = 'Hibernate.org'
+                        organizationUrl = 'http://hibernate.org'
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            if ( version.endsWith( 'SNAPSHOT' ) ) {
+                name 'jboss-snapshots-repository'
+                url 'https://repository.jboss.org/nexus/content/repositories/snapshots'
+            }
+            else {
+                name 'jboss-releases-repository'
+                url 'https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/'
+            }
+        }
+    }
+}
+
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+}
+
+
+// OSGi manifest helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class OsgiManifestPackagingInfo {
+    private String[] exportPackageInstructions;
+    private String[] privatePackageInstructions;
+
+    String[] getExportPackageInstructions() {
+        return exportPackageInstructions
+    }
+
+    String[] getPrivatePackageInstructions() {
+        return privatePackageInstructions
+    }
+
+    public static OsgiManifestPackagingInfo buildInfo(Project project) {
+        final String exportPackageVersion = project.version.replaceAll( "-SNAPSHOT", "" )
+                .replaceAll( ".Final-redhat-", "DO_NOT_REPLACE" )
+                .replaceAll( ".Final", "" )
+                .replaceAll( "DO_NOT_REPLACE", ".Final-redhat-" );
+
+        final Set<String> exportPackageInstructionSet = new HashSet<String>()
+        final Set<String> privatePackageInstructionSet = new HashSet<String>()
+
+        final SourceDirectorySet sourceDirectorySet = project.sourceSets.main.java;
+        sourceDirectorySet.each { javaSrcFile ->
+            final String packageName = determinePackageName( sourceDirectorySet, javaSrcFile );
+            if ( packageName.endsWith( ".internal" )
+                    || packageName.contains( ".internal." ) ) {
+                privatePackageInstructionSet.add( packageName );
+            }
+            else {
+                exportPackageInstructionSet.add( packageName + ";version=\"" + exportPackageVersion + "\"" );
+            }
+        }
+
+        return new OsgiManifestPackagingInfo(
+                exportPackageInstructionSet.toArray( new String[ exportPackageInstructionSet.size() ] ),
+                privatePackageInstructionSet.toArray( new String[ privatePackageInstructionSet.size() ] )
+        );
+    }
+
+    private static String determinePackageName(SourceDirectorySet sourceDirectorySet, File javaFile) {
+        final javaFileAbsolutePath = javaFile.absolutePath;
+        for ( File sourceDirectory : sourceDirectorySet.srcDirs ) {
+            final String sourceDirectoryAbsolutePath = sourceDirectory.absolutePath;
+            if ( javaFileAbsolutePath.startsWith( sourceDirectoryAbsolutePath ) ) {
+                final String javaFileRelativePath = javaFileAbsolutePath.substring(
+                        sourceDirectoryAbsolutePath.length() + 1,
+                        javaFileAbsolutePath.lastIndexOf( File.separator )
+                );
+                return javaFileRelativePath.replace( File.separator, "." );
+            }
+        }
+        throw new RuntimeException( "ugh" );
+    }
+
+    private OsgiManifestPackagingInfo(String[] exportPackageInstructions, String[] privatePackageInstructions) {
+        this.exportPackageInstructions = exportPackageInstructions
+        this.privatePackageInstructions = privatePackageInstructions
+    }
+
+
+ succeeded in 351ms:
+HTTP/2 301 
+date: Wed, 29 Apr 2026 07:25:51 GMT
+content-length: 0
+location: /doc/org.hibernate.common/hibernate-commons-annotations/5.1.2.Final
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Bow%2F8WEqNFEeLN5eWydzNwQOgAbq7piVpkoTtj8z%2Fer9NSYoA5bxlf2yy%2FtLG2bwfzdm61vycdJLotr7C6V0HqSY%2FqgIz3jH%2FNohy3%2Be1N3VSt5vv%2BVKiK9hilTM6P2MSbZ12efGIRd1"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f3c9339cf203b5d-GVA
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 303 
+date: Wed, 29 Apr 2026 07:25:51 GMT
+content-length: 0
+location: /doc/org.hibernate.common/hibernate-commons-annotations/5.1.2.Final/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+
+ succeeded in 863ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 301 
+location: https://docs.hibernate.org/commons/annotations/5.1/api/
+cache-control: max-age=1800
+expires: Wed, 29 Apr 2026 07:55:43 GMT
+content-type: text/html; charset=iso-8859-1
+cache-control: private
+content-length: 0
+date: Wed, 29 Apr 2026 07:25:51 GMT
+set-cookie: 07aec87f08df1ec23a2099a4c5a6a0c0=c4abc9e855e68c55b081d0f17002febc; path=/; HttpOnly; Secure; SameSite=None
+x-rh-edge-request-id: 3d3f61f
+x-rh-edge-reference-id: 0.6161502.1777447551.3d3f61f
+x-rh-edge-cache-status: Miss from child, Miss from parent
+strict-transport-security: max-age=86400 ; includeSubDomains
+
+HTTP/2 404 
+date: Wed, 29 Apr 2026 07:25:51 GMT
+content-type: text/html; charset=UTF-8
+server: cloudflare
+last-modified: Fri, 03 Oct 2025 10:19:31 GMT
+accept-ranges: bytes
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=iXEK2EcjFaX0E6XmFuT6CcwHtLq%2FS7Nq7hbWP23rJaw3GHI9B1%2BvIixE08mDppdmU6urs86vsjxxH5n1CZzAJaH5INBhdGwng%2BWi%2BwwVFferdysb9gQFzFoiZ2iFtCLqyJUeCq%2BrpNOhsJU6PYY7xvI%3D"}]}
+content-security-policy: default-src 'self'; form-action 'none'; base-uri 'none'; frame-ancestors 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com https://cdnjs.cloudflare.com; style-src 'unsafe-inline' 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com https://use.fontawesome.com/; img-src 'self' data: https://static.jboss.org https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://static.jboss.org https://fonts.gstatic.com https://fonts.googleapis.com https://use.fontawesome.com/; connect-src 'self' https://hibernate.org https://api.github.com
+x-frame-options: sameorigin
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+
+codex
+The artifact does not publish Maven test-source or tests JARs, but the `5.1.2.Final` tag contains `src/test`. For documentation, the tag README says there is no separate project documentation, so I’m using the exact-version Javadoc URL instead of a non-versioned project page.
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\"|\"source-code-url\"|\"test-code-url\"|javadoc.io|repo1.maven.org' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/hibernate/hibernate-commons-annotations/languages' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/org.hibernate.common/hibernate-commons-annotations/5.1.2.Final/index.html | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 0ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>hibernate-commons-annotations 5.1.2.Final javadoc (org.hibernate.common)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/org.hibernate.common">org.hibernate.common</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						hibernate-commons-annotations
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/org.hibernate.common/hibernate-commons-annotations" class="dropdown-item">
+							hibernate-commons-annotations
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						5.1.2.Final
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						<a href="/doc/org.hibernate.common/hibernate-commons-annotations/latest/index.html" class="dropdown-item">
+							7.0.3.Final
+						</a>
+
+						
+						<a href="/doc/org.hibernate.common/hibernate-commons-annotations/7.0.2.Final/index.html" class="dropdown-item">
+							7.0.2.Final
+						</a>
+						
+						<a href="/doc/org.hibernate.common/hibernate-commons-annotations/7.0.1.Final/index.html" class="dropdown-item">
+							7.0.1.Final
+						</a>
+						
+						<a href="/doc/org.hibernate.common/hibernate-commons-annotations/7.0.0.Final/index.html" class="dropdown-item">
+							7.0.0.Final
+
+ succeeded in 171ms:
+{
+  "Java": 123347
+}
+
+web search: 
+web search: Maven Central org.hibernate.common hibernate-commons-annotations 5.1.2.Final sources jar
+web search: 
+web search: https://central.sonatype.com/artifact/org.hibernate.common/hibernate-commons-annotations/5.1.2.Final
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\"\\s*:' . | head -80" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 0ms:
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+./metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:8:    "documentation-url" : "N/A",
+./metadata/com.graphql-java/java-dataloader/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/3.2.0/java-dataloader-3.2.0-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-javadoc.jar",
+./metadata/org.apache.commons/commons-compress/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-javadoc.jar",
+./metadata/org.apache.commons/commons-compress/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-javadoc.jar",
+./metadata/com.graphql-java/graphql-java/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/19.2/graphql-java-19.2-javadoc.jar",
+./metadata/org.apache.commons/commons-dbcp2/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-javadoc.jar",
+./metadata/jakarta.jms/jakarta.jms-api/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/2.0.3/jakarta.jms-api-2.0.3-javadoc.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-javadoc.jar",
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/19.0/graphql-java-extended-scalars-19.0-javadoc.jar",
+./metadata/org.apache.commons/commons-text/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-javadoc.jar",
+./metadata/org.jboss.logging/jboss-logging/index.json:18:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/logging/jboss-logging/3.5.0.Final/jboss-logging-3.5.0.Final-javadoc.jar",
+./metadata/com.graphql-java/graphql-java-extended-validation/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/19.1/graphql-java-extended-validation-19.1-javadoc.jar",
+./metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.2_spec/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/spec/javax/interceptor/jboss-interceptors-api_1.2_spec/1.0.1.Final/jboss-interceptors-api_1.2_spec-1.0.1.Final-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77-javadoc.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+./metadata/tools.jackson.core/jackson-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/tools/jackson/core/jackson-core/3.0.0-rc2/jackson-core-3.0.0-rc2-javadoc.jar",
+./metadata/org.apache.commons/commons-pool2/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-javadoc.jar",
+./metadata/jakarta.servlet/jakarta.servlet-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/4.0.4/jakarta.servlet-api-4.0.4-javadoc.jar",
+./metadata/jakarta.servlet/jakarta.servlet-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/5.0.0/jakarta.servlet-api-5.0.0-javadoc.jar",
+./metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/3.0.0/jakarta.xml.bind-api-3.0.0-javadoc.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.70/bcpkix-jdk15on-1.70-javadoc.jar",
+./metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/1.0.0.Beta1/index.html",
+./metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.1_spec/1.0/geronimo-annotation_1.1_spec-1.0-javadoc.jar",
+./metadata/org.apache.commons/commons-lang3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-javadoc.jar",
+./metadata/org.hamcrest/hamcrest-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3-javadoc.jar",
+./metadata/org.jboss/jandex/index.json:8:    "documentation-url" : "https://github.com/smallrye/jandex/blob/2.4.2.Final/README.md",
+./metadata/schemas/metadata-library-index-schema-v2.0.1.json:46:      "documentation-url": {
+./metadata/schemas/metadata-library-index-schema-v2.0.1.json:184:        "documentation-url": "https://github.com/example/project/tree/main/README.md",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-javadoc.jar",
+./metadata/org.apache.geronimo.specs/geronimo-osgi-registry/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-osgi-registry/1.0/geronimo-osgi-registry-1.0-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:32:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+./metadata/org.hamcrest/hamcrest/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/hamcrest/hamcrest/2.2/hamcrest-2.2-javadoc.jar",
+./metadata/org.rocksdb/rocksdbjni/index.json:11:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/10.4.2/rocksdbjni-10.4.2-javadoc.jar",
+./metadata/org.rocksdb/rocksdbjni/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/7.1.2/rocksdbjni-7.1.2-javadoc.jar",
+./metadata/org.rocksdb/rocksdbjni/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/7.9.2/rocksdbjni-7.9.2-javadoc.jar",
+./metadata/org.apache.commons/commons-collections4/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-javadoc.jar",
+./metadata/com.h2database/h2/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/h2-2.1.210-javadoc.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:223:                    "documentation-url": "https://example.com/docs-a",
+./docs/CONTRIBUTING.md:143:     "documentation-url": "https://github.com/example/repo/tree/main/README.md",
+./metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-javadoc.jar",
+./metadata/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-atinject_1.0_spec/1.0/geronimo-atinject_1.0_spec-1.0-javadoc.jar",
+./metadata/org.antlr/antlr4-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-javadoc.jar",
+./metadata/info.picocli/picocli/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-javadoc.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+./metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/2.7.18/spring-boot-configuration-processor-2.7.18-javadoc.jar",
+./metadata/org.example/library/index.json:12:    "documentation-url": "N/A",
+./metadata/org.apache.geronimo.specs/geronimo-jta_1.1_spec/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jta_1.1_spec/1.1/geronimo-jta_1.1_spec-1.1-javadoc.jar",
+./metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-javadoc.jar",
+./metadata/org.scala-js/scalajs-javalib-intf/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-js/scalajs-javalib-intf/1.16.0/scalajs-javalib-intf-1.16.0-javadoc.jar",
+./metadata/com.github.docker-java/docker-java-transport/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/docker-java/docker-java-transport/3.2.13/docker-java-transport-3.2.13-javadoc.jar",
+./metadata/org.apache.kerby/kerby-asn1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-asn1/1.0.1/kerby-asn1-1.0.1-javadoc.jar",
+./metadata/org.eclipse.aether/aether-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-javadoc.jar",
+./metadata/io.netty/netty-transport-classes-epoll/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/4.1.99.Final/netty-transport-classes-epoll-4.1.99.Final-javadoc.jar",
+./metadata/net.razorvine/pickle/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/net/razorvine/pickle/1.2/pickle-1.2-javadoc.jar",
+./metadata/joda-time/joda-time/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/joda-time/joda-time/2.9.9/joda-time-2.9.9-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:34:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-javadoc.jar",
+./metadata/org.eclipse.aether/aether-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-javadoc.jar",
+./metadata/org.apache.kerby/kerby-config/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-config/1.0.1/kerby-config-1.0.1-javadoc.jar",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-javadoc.jar",
+./metadata/org.jetbrains/annotations-java5/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/annotations-java5/23.0.0/annotations-java5-23.0.0-javadoc.jar",
+./metadata/com.mysql/mysql-connector-j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.31/mysql-connector-j-8.0.31-javadoc.jar",
+./metadata/org.eclipse.aether/aether-spi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-spi/1.0.2.v20150114/aether-spi-1.0.2.v20150114-javadoc.jar",
+./metadata/org.hibernate.orm/hibernate-jcache/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-jcache/7.2.1.Final/hibernate-jcache-7.2.1.Final-javadoc.jar",
+./metadata/org.jetbrains/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/jetbrains/annotations/13.0/annotations-13.0-javadoc.jar",
+./metadata/org.xmlunit/xmlunit-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/hibernate-commons-annotations-5.1.2.Final-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 29 Apr 2026 07:26:11 GMT
+content-type: text/html
+cf-ray: 9f3c93bc7a327a85-ZRH
+cf-cache-status: HIT
+age: 815
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/hibernate-commons-annotations-5.1.2.Final-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/readme.txt | sed -n '1,18p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 646ms:
+HTTP/2 200 
+date: Wed, 29 Apr 2026 07:26:12 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+x-repository-download: git clone https://github.com/hibernate/hibernate-commons-annotations.git
+x-raw-download: https://raw.githubusercontent.com/hibernate/hibernate-commons-annotations/5.1.2.Final/readme.txt
+etag: W/"431441916f83db6245f19a3b35c4df08"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=IdM36J9OZY0VYFzF4BREeR3RtqSwrd7UXOmj%2F%2BYdjFWGWXa9gYQ4UN9PezGS4Ksh2qe63lfx7q2uvzRVvbSYBKqRdKasdSqwxu38yPnYpGjlWQKA9iNAZLV6UgLNnI71xzkJAxfkPU2eLi%2FtDoUN0qdtFO9emKjDBU1e17qFVNSDX6mFcLc3K6%2BwnDgwl0LEiQbK1MTDo8jBZFFK23axbmjU%2FGRd8VpyDETlG4G8t%2FKDxKb3RNsBPDCjdP6LamVWrvAA9p8Rizuoctg0l1mNzg%3D%3D--YkdOWI8f5oK39%2FFv--rRjSZ%2BXRhOrRF%2B2XCtfh%2Bw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1458712304.1777447571; expires=Thu, 29 Apr 2027 07:26:11 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+
+codex
+I have enough confidence to update the metadata: Maven source JAR for sources, GitHub tagged `src/test` for tests, and the tagged README for documentation because no Maven Javadoc artifact is published for this version.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json
+diff --git a/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json b/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json
+index 453b0bc112c290b6b6624a6dfccfc7ae38ceb692..3f2f451cb6ccf79315b833814207cddd8c5a21b8
+--- a/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json
++++ b/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.hibernate.common:hibernate-commons-annotations:5.1.2.Final"
++  "coordinates" : "org.hibernate.common:hibernate-commons-annotations:5.1.2.Final",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/hibernate-commons-annotations-5.1.2.Final-sources.jar",
++  "repository-url" : "https://github.com/hibernate/hibernate-commons-annotations",
++  "test-code-url" : "https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src/test",
++  "documentation-url" : "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/readme.txt",
++  "description" : "Hibernate Commons Annotations provides shared reflection utilities used by Hibernate projects to support annotation processing. It helps discover Java generic type information and supports overriding Java annotations through XML metadata."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json b/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json
+index 453b0bc112c290b6b6624a6dfccfc7ae38ceb692..3f2f451cb6ccf79315b833814207cddd8c5a21b8
+--- a/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json
++++ b/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.hibernate.common:hibernate-commons-annotations:5.1.2.Final"
++  "coordinates" : "org.hibernate.common:hibernate-commons-annotations:5.1.2.Final",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/hibernate-commons-annotations-5.1.2.Final-sources.jar",
++  "repository-url" : "https://github.com/hibernate/hibernate-commons-annotations",
++  "test-code-url" : "https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src/test",
++  "documentation-url" : "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/readme.txt",
++  "description" : "Hibernate Commons Annotations provides shared reflection utilities used by Hibernate projects to support annotation processing. It helps discover Java generic type information and supports overriding Java annotations through XML metadata."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 0ms:
+{
+  "coordinates": "org.hibernate.common:hibernate-commons-annotations:5.1.2.Final",
+  "source-code-url": "https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/hibernate-commons-annotations-5.1.2.Final-sources.jar",
+  "repository-url": "https://github.com/hibernate/hibernate-commons-annotations",
+  "test-code-url": "https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src/test",
+  "documentation-url": "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/readme.txt",
+  "description": "Hibernate Commons Annotations provides shared reflection utilities used by Hibernate projects to support annotation processing. It helps discover Java generic type information and supports overriding Java annotations through XML metadata."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json b/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json
+index 453b0bc112c290b6b6624a6dfccfc7ae38ceb692..3f2f451cb6ccf79315b833814207cddd8c5a21b8
+--- a/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json
++++ b/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.hibernate.common:hibernate-commons-annotations:5.1.2.Final"
++  "coordinates" : "org.hibernate.common:hibernate-commons-annotations:5.1.2.Final",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/hibernate-commons-annotations-5.1.2.Final-sources.jar",
++  "repository-url" : "https://github.com/hibernate/hibernate-commons-annotations",
++  "test-code-url" : "https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src/test",
++  "documentation-url" : "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/readme.txt",
++  "description" : "Hibernate Commons Annotations provides shared reflection utilities used by Hibernate projects to support annotation processing. It helps discover Java generic type information and supports overriding Java annotations through XML metadata."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git ls-files --error-unmatch build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json >/dev/null 2>&1; echo $?' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa
+ succeeded in 0ms:
+1
+
+diff --git a/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json b/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json
+index 453b0bc112c290b6b6624a6dfccfc7ae38ceb692..3f2f451cb6ccf79315b833814207cddd8c5a21b8
+--- a/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json
++++ b/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.hibernate.common:hibernate-commons-annotations:5.1.2.Final"
++  "coordinates" : "org.hibernate.common:hibernate-commons-annotations:5.1.2.Final",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/hibernate-commons-annotations-5.1.2.Final-sources.jar",
++  "repository-url" : "https://github.com/hibernate/hibernate-commons-annotations",
++  "test-code-url" : "https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src/test",
++  "documentation-url" : "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/readme.txt",
++  "description" : "Hibernate Commons Annotations provides shared reflection utilities used by Hibernate projects to support annotation processing. It helps discover Java generic type information and supports overriding Java annotations through XML metadata."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/
+web search: 
+web search: https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src/test
+codex
+Updated [org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json](/home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json).
+
+I used the exact-version Maven Central sources JAR, the `5.1.2.Final` GitHub tag for the test suite and README documentation, and left `language` absent because this is Java-only, not Kotlin/Groovy/Scala-specific. ([repo1.maven.org](https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/))
+
+Validation: `jq .` succeeds.
+diff --git a/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json b/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json
+index 453b0bc112c290b6b6624a6dfccfc7ae38ceb692..3f2f451cb6ccf79315b833814207cddd8c5a21b8
+--- a/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json
++++ b/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.hibernate.common:hibernate-commons-annotations:5.1.2.Final"
++  "coordinates" : "org.hibernate.common:hibernate-commons-annotations:5.1.2.Final",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/hibernate-commons-annotations-5.1.2.Final-sources.jar",
++  "repository-url" : "https://github.com/hibernate/hibernate-commons-annotations",
++  "test-code-url" : "https://github.com/hibernate/hibernate-commons-annotations/tree/5.1.2.Final/src/test",
++  "documentation-url" : "https://github.com/hibernate/hibernate-commons-annotations/blob/5.1.2.Final/readme.txt",
++  "description" : "Hibernate Commons Annotations provides shared reflection utilities used by Hibernate projects to support annotation processing. It helps discover Java generic type information and supports overriding Java annotations through XML metadata."
+ }
+
+2026-04-29T07:26:46.463401Z ERROR codex_core::session: failed to record rollout items: thread 019dd820-9e22-7223-ab40-b7616ae4d3c1 not found
+tokens used
+119,230
+Updated [org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json](/home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa/build/discovered-artifact-metadata/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.json).
+
+I used the exact-version Maven Central sources JAR, the `5.1.2.Final` GitHub tag for the test suite and README documentation, and left `language` absent because this is Java-only, not Kotlin/Groovy/Scala-specific. ([repo1.maven.org](https://repo1.maven.org/maven2/org/hibernate/common/hibernate-commons-annotations/5.1.2.Final/))
+
+Validation: `jq .` succeeds.
+Ran agent for org.hibernate.common:hibernate-commons-annotations:5.1.2.Final (exit 0). Log: /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa/build/agent-artifact-discovery-logs/org.hibernate.common-hibernate-commons-annotations-5.1.2.Final.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/1521-214181aa/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 37s
+9 actionable tasks: 4 executed, 5 from cache
