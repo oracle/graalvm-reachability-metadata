@@ -85,6 +85,183 @@ class ValidateLibraryStatsTaskTests {
     }
 
     @Test
+    void validateAcceptsExecutionMetricsForExistingTestedVersion() throws IOException {
+        Project project = createProjectSkeleton();
+        createMetadataVersion("com.example", "demo", "1.0.0");
+        writeStatsFile(
+                "com.example",
+                "demo",
+                "1.0.0",
+                """
+                {
+                  "versions": [
+                    {
+                      "dynamicAccess": "N/A",
+                      "libraryCoverage": {
+                        "instruction": "N/A",
+                        "line": "N/A",
+                        "method": "N/A"
+                      },
+                      "version": "1.0.0"
+                    }
+                  ]
+                }
+                """
+        );
+        Path statsFile = LibraryStatsSupport.repositoryStatsFile(tempDir.resolve("stats"), "com.example", "demo", "1.0.0");
+        LibraryStatsSupport.writeMetadataVersionStats(statsFile, LibraryStatsSupport.loadMetadataVersionStats(statsFile));
+        writeExecutionMetricsFile("com.example", "demo", "1.0.0", "com.example:demo:1.0.0", "1.0.0");
+
+        TestValidateLibraryStatsTask task = project.getTasks().register("validateLibraryStats", TestValidateLibraryStatsTask.class).get();
+        assertThatCode(task::validate).doesNotThrowAnyException();
+    }
+
+    @Test
+    void validateRejectsExecutionMetricsForUnknownLibrary() throws IOException {
+        Project project = createProjectSkeleton();
+        createMetadataVersion("com.example", "demo", "1.0.0");
+        writeStatsFile(
+                "com.example",
+                "demo",
+                "1.0.0",
+                """
+                {
+                  "versions": [
+                    {
+                      "dynamicAccess": "N/A",
+                      "libraryCoverage": {
+                        "instruction": "N/A",
+                        "line": "N/A",
+                        "method": "N/A"
+                      },
+                      "version": "1.0.0"
+                    }
+                  ]
+                }
+                """
+        );
+        Path statsFile = LibraryStatsSupport.repositoryStatsFile(tempDir.resolve("stats"), "com.example", "demo", "1.0.0");
+        LibraryStatsSupport.writeMetadataVersionStats(statsFile, LibraryStatsSupport.loadMetadataVersionStats(statsFile));
+        writeExecutionMetricsFile("com.example", "other", "1.0.0", "com.example:other:1.0.0", "1.0.0");
+
+        TestValidateLibraryStatsTask task = project.getTasks().register("validateLibraryStats", TestValidateLibraryStatsTask.class).get();
+        assertThatThrownBy(task::validate)
+                .hasMessageContaining("Execution metrics library has no matching metadata index")
+                .hasMessageContaining("com.example:other:1.0.0");
+    }
+
+    @Test
+    void validateRejectsExecutionMetricsForUntestedVersion() throws IOException {
+        Project project = createProjectSkeleton();
+        createMetadataVersion("com.example", "demo", "1.0.0");
+        writeStatsFile(
+                "com.example",
+                "demo",
+                "1.0.0",
+                """
+                {
+                  "versions": [
+                    {
+                      "dynamicAccess": "N/A",
+                      "libraryCoverage": {
+                        "instruction": "N/A",
+                        "line": "N/A",
+                        "method": "N/A"
+                      },
+                      "version": "1.0.0"
+                    }
+                  ]
+                }
+                """
+        );
+        Path statsFile = LibraryStatsSupport.repositoryStatsFile(tempDir.resolve("stats"), "com.example", "demo", "1.0.0");
+        LibraryStatsSupport.writeMetadataVersionStats(statsFile, LibraryStatsSupport.loadMetadataVersionStats(statsFile));
+        writeExecutionMetricsFile("com.example", "demo", "2.0.0", "com.example:demo:2.0.0", "2.0.0");
+
+        TestValidateLibraryStatsTask task = project.getTasks().register("validateLibraryStats", TestValidateLibraryStatsTask.class).get();
+        assertThatThrownBy(task::validate)
+                .hasMessageContaining("Execution metrics library version is not listed in metadata index tested-versions")
+                .hasMessageContaining("com.example:demo:2.0.0");
+    }
+
+    @Test
+    void validateRejectsExecutionMetricsStatsVersionMismatch() throws IOException {
+        Project project = createProjectSkeleton();
+        createMetadataVersion("com.example", "demo", "1.0.0");
+        writeStatsFile(
+                "com.example",
+                "demo",
+                "1.0.0",
+                """
+                {
+                  "versions": [
+                    {
+                      "dynamicAccess": "N/A",
+                      "libraryCoverage": {
+                        "instruction": "N/A",
+                        "line": "N/A",
+                        "method": "N/A"
+                      },
+                      "version": "1.0.0"
+                    }
+                  ]
+                }
+                """
+        );
+        Path statsFile = LibraryStatsSupport.repositoryStatsFile(tempDir.resolve("stats"), "com.example", "demo", "1.0.0");
+        LibraryStatsSupport.writeMetadataVersionStats(statsFile, LibraryStatsSupport.loadMetadataVersionStats(statsFile));
+        writeExecutionMetricsFile("com.example", "demo", "1.0.0", "com.example:demo:1.0.0", "2.0.0");
+
+        TestValidateLibraryStatsTask task = project.getTasks().register("validateLibraryStats", TestValidateLibraryStatsTask.class).get();
+        assertThatThrownBy(task::validate)
+                .hasMessageContaining("Execution metrics stats.version mismatch")
+                .hasMessageContaining("expected 1.0.0")
+                .hasMessageContaining("found 2.0.0");
+    }
+
+    @Test
+    void validateRejectsExecutionMetricsForUntestedPreviousLibraryVersion() throws IOException {
+        Project project = createProjectSkeleton();
+        createMetadataVersion("com.example", "demo", "1.0.0");
+        writeStatsFile(
+                "com.example",
+                "demo",
+                "1.0.0",
+                """
+                {
+                  "versions": [
+                    {
+                      "dynamicAccess": "N/A",
+                      "libraryCoverage": {
+                        "instruction": "N/A",
+                        "line": "N/A",
+                        "method": "N/A"
+                      },
+                      "version": "1.0.0"
+                    }
+                  ]
+                }
+                """
+        );
+        Path statsFile = LibraryStatsSupport.repositoryStatsFile(tempDir.resolve("stats"), "com.example", "demo", "1.0.0");
+        LibraryStatsSupport.writeMetadataVersionStats(statsFile, LibraryStatsSupport.loadMetadataVersionStats(statsFile));
+        writeExecutionMetricsFile(
+                "com.example",
+                "demo",
+                "1.0.0",
+                "com.example:demo:1.0.0",
+                "1.0.0",
+                "com.example:demo:0.9.0",
+                "0.9.0"
+        );
+
+        TestValidateLibraryStatsTask task = project.getTasks().register("validateLibraryStats", TestValidateLibraryStatsTask.class).get();
+        assertThatThrownBy(task::validate)
+                .hasMessageContaining("Execution metrics previous_library version is not listed in metadata index tested-versions")
+                .hasMessageContaining("com.example:demo:0.9.0");
+    }
+
+    @Test
     void validateRejectsMissingMirroredStatsFile() throws IOException {
         Project project = createProjectSkeleton();
         createMetadataVersion("com.example", "demo", "1.0.0");
@@ -480,6 +657,14 @@ class ValidateLibraryStatsTaskTests {
                 ),
                 StandardCharsets.UTF_8
         );
+        Files.writeString(
+                tempDir.resolve("stats/schemas/run_metrics_output_schema.json"),
+                Files.readString(
+                        locateRepoFile("stats/schemas/run_metrics_output_schema.json"),
+                        StandardCharsets.UTF_8
+                ),
+                StandardCharsets.UTF_8
+        );
 
         Project project = ProjectBuilder.builder()
                 .withProjectDir(tempDir.toFile())
@@ -514,6 +699,83 @@ class ValidateLibraryStatsTaskTests {
         Path statsFile = LibraryStatsSupport.repositoryStatsFile(tempDir.resolve("stats"), groupId, artifactId, metadataVersion);
         Files.createDirectories(statsFile.getParent());
         Files.writeString(statsFile, statsJson, StandardCharsets.UTF_8);
+    }
+
+    private void writeExecutionMetricsFile(
+            String groupId,
+            String artifactId,
+            String version,
+            String library,
+            String statsVersion
+    ) throws IOException {
+        writeExecutionMetricsFile(groupId, artifactId, version, library, statsVersion, null, null);
+    }
+
+    private void writeExecutionMetricsFile(
+            String groupId,
+            String artifactId,
+            String version,
+            String library,
+            String statsVersion,
+            String previousLibrary,
+            String previousLibraryStatsVersion
+    ) throws IOException {
+        Path metricsFile = tempDir.resolve("stats")
+                .resolve(groupId)
+                .resolve(artifactId)
+                .resolve(version)
+                .resolve("execution-metrics.json");
+        Files.createDirectories(metricsFile.getParent());
+        String previousLibraryFields = "";
+        if (previousLibrary != null) {
+            previousLibraryFields = """
+                    "previous_library": "%s",
+                    "previous_library_stats": {
+                      "version": "%s"
+                    },
+                """.formatted(previousLibrary, previousLibraryStatsVersion);
+        }
+        Files.writeString(
+                metricsFile,
+                """
+                {
+                  "add_new_library_support:2026-04-27": {
+                    "artifacts": {
+                      "metadata_file": "metadata/%s/%s/%s/reachability-metadata.json",
+                      "test_file": "tests/src/%s/%s/%s/src/test/java/Test.java"
+                    },
+                    "library": "%s",
+                %s
+                    "metrics": {
+                      "code_coverage_percent": 0.0,
+                      "cost_usd": 0.0,
+                      "input_tokens_used": 0,
+                      "iterations": 0,
+                      "metadata_entries": 0,
+                      "output_tokens_used": 0,
+                      "tested_library_loc": 0
+                    },
+                    "stats": {
+                      "version": "%s"
+                    },
+                    "status": "success",
+                    "strategy_name": "test",
+                    "timestamp": "2026-04-27T20:43:22.869870Z"
+                  }
+                }
+                """.formatted(
+                        groupId,
+                        artifactId,
+                        version,
+                        groupId,
+                        artifactId,
+                        version,
+                        library,
+                        previousLibraryFields,
+                        statsVersion
+                ),
+                StandardCharsets.UTF_8
+        );
     }
 
     private Path locateRepoFile(String relativePath) throws IOException {
