@@ -6,163 +6,123 @@
  */
 package io_netty.netty_resolver;
 
-import java.io.StringReader;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.UnknownHostException;
+import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import io.netty.resolver.AddressResolver;
-import io.netty.resolver.AddressResolverGroup;
-import io.netty.resolver.CompositeNameResolver;
 import io.netty.resolver.DefaultNameResolver;
-import io.netty.resolver.HostsFileEntries;
-import io.netty.resolver.HostsFileEntriesProvider;
-import io.netty.resolver.HostsFileParser;
-import io.netty.resolver.InetSocketAddressResolver;
-import io.netty.resolver.RoundRobinInetAddressResolver;
+import io.netty.resolver.NameResolver;
+import io.netty.resolver.NameResolverGroup;
+import io.netty.resolver.NoopNameResolver;
+import io.netty.resolver.NoopNameResolverGroup;
 import io.netty.resolver.SimpleNameResolver;
-import io.netty.util.concurrent.DefaultEventExecutor;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Netty_resolverTest {
 
     private static final EventExecutor EXECUTOR = ImmediateEventExecutor.INSTANCE;
 
     @Test
-    void hostsFileParsersNormalizeAliasesAndPreserveProviderAddressLists() throws Exception {
-        String hostsFile = """
-                # loopback aliases
-                127.0.0.1 LOCALHOST loopback
-                10.0.0.10 Example.Test alias
-                10.0.0.11 example.test
-                ::1 LOCALHOST ip6-localhost
-                2001:db8::1 Example.Test
-                not-an-ip ignored.example
-                """;
-
-        HostsFileEntriesProvider provider = HostsFileEntriesProvider.parser().parse(new StringReader(hostsFile));
-
-        assertThat(provider.ipv4Entries()).containsKeys("localhost", "loopback", "example.test", "alias");
-        assertThat(provider.ipv6Entries()).containsKeys("localhost", "ip6-localhost", "example.test");
-        assertThat(provider.ipv4Entries()).doesNotContainKey("LOCALHOST");
-        assertThat(provider.ipv4Entries().get("example.test"))
-                .containsExactly(ip("10.0.0.10"), ip("10.0.0.11"));
-        assertThat(provider.ipv6Entries().get("example.test"))
-                .containsExactly(ip("2001:db8::1"));
-
-        HostsFileEntries entries = HostsFileParser.parse(new StringReader(hostsFile));
-
-        assertThat(entries.inet4Entries().get("localhost")).isEqualTo(ip("127.0.0.1"));
-        assertThat(entries.inet6Entries().get("localhost")).isEqualTo(ip("::1"));
-        assertThat(entries.inet4Entries().get("example.test")).isEqualTo(ip("10.0.0.10"));
-        assertThat(entries.inet6Entries().get("example.test")).isEqualTo(ip("2001:db8::1"));
-        assertThat(entries.inet4Entries()).doesNotContainKey("ignored.example");
-    }
-
-    @Test
-    void defaultNameResolverResolvesIpv4AndIpv6Literals() throws Exception {
+    void defaultNameResolverResolvesIpv4AndIpv6SocketAddresses() throws Exception {
         DefaultNameResolver resolver = new DefaultNameResolver(EXECUTOR);
 
         try {
-            InetAddress resolvedIpv4 = resolver.resolve("198.51.100.70").syncUninterruptibly().getNow();
-            List<InetAddress> resolvedAllIpv4 = resolver.resolveAll("198.51.100.70").syncUninterruptibly().getNow();
-            InetAddress resolvedIpv6 = resolver.resolve("2001:db8::70").syncUninterruptibly().getNow();
-            List<InetAddress> resolvedAllIpv6 = resolver.resolveAll("2001:db8::70").syncUninterruptibly().getNow();
+            InetSocketAddress unresolvedIpv4 = InetSocketAddress.createUnresolved("198.51.100.70", 8080);
+            InetSocketAddress resolvedIpv4 = resolver.resolve(unresolvedIpv4).syncUninterruptibly().getNow();
+            InetSocketAddress resolvedByHostAndPort = resolver.resolve("198.51.100.71", 8443)
+                    .syncUninterruptibly()
+                    .getNow();
+            InetSocketAddress unresolvedIpv6 = InetSocketAddress.createUnresolved("2001:db8::70", 9090);
+            InetSocketAddress resolvedIpv6 = resolver.resolve(unresolvedIpv6).syncUninterruptibly().getNow();
 
-            assertThat(resolvedIpv4).isEqualTo(ip("198.51.100.70"));
-            assertThat(resolvedAllIpv4).containsExactly(ip("198.51.100.70"));
-            assertThat(resolvedIpv6).isEqualTo(ip("2001:db8::70"));
-            assertThat(resolvedAllIpv6).containsExactly(ip("2001:db8::70"));
+            assertThat(resolvedIpv4.isUnresolved()).isFalse();
+            assertThat(resolvedIpv4.getAddress()).isEqualTo(ip("198.51.100.70"));
+            assertThat(resolvedIpv4.getPort()).isEqualTo(8080);
+            assertThat(resolvedByHostAndPort.getAddress()).isEqualTo(ip("198.51.100.71"));
+            assertThat(resolvedByHostAndPort.getPort()).isEqualTo(8443);
+            assertThat(resolvedIpv6.isUnresolved()).isFalse();
+            assertThat(resolvedIpv6.getAddress()).isEqualTo(ip("2001:db8::70"));
+            assertThat(resolvedIpv6.getPort()).isEqualTo(9090);
         } finally {
             resolver.close();
         }
     }
 
     @Test
-    void compositeNameResolverFallsBackToLaterResolvers() throws Exception {
-        RecordingNameResolver firstResolver = new RecordingNameResolver(EXECUTOR, Map.of());
-        RecordingNameResolver secondResolver = new RecordingNameResolver(
+    void simpleNameResolverReportsSupportAndReturnsAlreadyResolvedAddresses() throws Exception {
+        RecordingNameResolver resolver = new RecordingNameResolver(
                 EXECUTOR,
-                Map.of("example.test", List.of(ip("203.0.113.10"), ip("203.0.113.11")))
+                Map.of("example.test", List.of(ip("203.0.113.10")))
         );
-        CompositeNameResolver<InetAddress> resolver = new CompositeNameResolver<>(EXECUTOR, firstResolver, secondResolver);
+        InetSocketAddress resolvedAddress = new InetSocketAddress(ip("203.0.113.20"), 443);
+        SocketAddress unsupportedAddress = new SocketAddress() { };
 
         try {
-            InetAddress resolved = resolver.resolve("example.test").syncUninterruptibly().getNow();
-            List<InetAddress> resolvedAll = resolver.resolveAll("example.test").syncUninterruptibly().getNow();
+            InetSocketAddress result = resolver.resolve(resolvedAddress).syncUninterruptibly().getNow();
 
-            assertThat(resolved).isEqualTo(ip("203.0.113.10"));
-            assertThat(resolvedAll).containsExactly(ip("203.0.113.10"), ip("203.0.113.11"));
-            assertThat(firstResolver.resolveHosts).containsExactly("example.test");
-            assertThat(firstResolver.resolveAllHosts).containsExactly("example.test");
-            assertThat(secondResolver.resolveHosts).containsExactly("example.test");
-            assertThat(secondResolver.resolveAllHosts).containsExactly("example.test");
+            assertThat(resolver.isSupported(resolvedAddress)).isTrue();
+            assertThat(resolver.isSupported(unsupportedAddress)).isFalse();
+            assertThat(resolver.isResolved(resolvedAddress)).isTrue();
+            assertThat(result).isSameAs(resolvedAddress);
+            assertThat(resolver.resolveHosts).isEmpty();
+            assertThatThrownBy(() -> resolver.isResolved(unsupportedAddress))
+                    .isInstanceOf(UnsupportedAddressTypeException.class);
         } finally {
             resolver.close();
         }
+
+        assertThat(resolver.closed).isTrue();
     }
 
     @Test
-    void inetSocketAddressResolverResolvesSingleAndAllAddressesWithOriginalPort() throws Exception {
-        RecordingNameResolver nameResolver = new RecordingNameResolver(
+    void simpleNameResolverResolvesUnresolvedAddressesAndPropagatesFailures() throws Exception {
+        RecordingNameResolver resolver = new RecordingNameResolver(
                 EXECUTOR,
-                Map.of("example.test", List.of(ip("198.51.100.20"), ip("198.51.100.21")))
+                Map.of("example.test", List.of(ip("203.0.113.30")))
         );
-        InetSocketAddressResolver resolver = new InetSocketAddressResolver(EXECUTOR, nameResolver);
-        InetSocketAddress unresolved = InetSocketAddress.createUnresolved("example.test", 8443);
 
         try {
-            assertThat(resolver.isSupported(unresolved)).isTrue();
-            assertThat(resolver.isResolved(unresolved)).isFalse();
-
+            InetSocketAddress unresolved = InetSocketAddress.createUnresolved("Example.Test", 8443);
             InetSocketAddress resolved = resolver.resolve(unresolved).syncUninterruptibly().getNow();
-            List<InetSocketAddress> resolvedAll = resolver.resolveAll(unresolved).syncUninterruptibly().getNow();
+            Throwable failure = resolver.resolve("missing.test", 9443).awaitUninterruptibly().cause();
 
             assertThat(resolved.isUnresolved()).isFalse();
-            assertThat(resolved.getAddress()).isEqualTo(ip("198.51.100.20"));
+            assertThat(resolved.getAddress()).isEqualTo(ip("203.0.113.30"));
             assertThat(resolved.getPort()).isEqualTo(8443);
-            assertThat(resolvedAll)
-                    .extracting(InetSocketAddress::getAddress)
-                    .containsExactly(ip("198.51.100.20"), ip("198.51.100.21"));
-            assertThat(resolvedAll)
-                    .extracting(InetSocketAddress::getPort)
-                    .containsOnly(8443);
-            assertThat(nameResolver.resolveHosts).containsExactly("example.test");
-            assertThat(nameResolver.resolveAllHosts).containsExactly("example.test");
+            assertThat(resolver.resolveHosts).containsExactly("Example.Test", "missing.test");
+            assertThat(failure).isInstanceOf(UnknownHostException.class)
+                    .hasMessage("missing.test");
         } finally {
             resolver.close();
         }
-
-        assertThat(nameResolver.closed).isTrue();
     }
 
     @Test
-    void addressResolverGroupCachesResolversPerExecutorAndClosesCreatedResolvers() throws Exception {
-        RecordingAddressResolverGroup group = new RecordingAddressResolverGroup(
+    void nameResolverGroupCachesResolverAndClosesCreatedResolver() throws Exception {
+        RecordingNameResolverGroup group = new RecordingNameResolverGroup(
                 Map.of("example.test", List.of(ip("192.0.2.44")))
         );
-        DefaultEventExecutor otherExecutor = new DefaultEventExecutor();
-
         try {
-            AddressResolver<InetSocketAddress> firstResolver = group.getResolver(EXECUTOR);
-            AddressResolver<InetSocketAddress> cachedResolver = group.getResolver(EXECUTOR);
-            AddressResolver<InetSocketAddress> otherResolver = group.getResolver(otherExecutor);
+            NameResolver<InetSocketAddress> firstResolver = group.getResolver(EXECUTOR);
+            NameResolver<InetSocketAddress> cachedResolver = group.getResolver(EXECUTOR);
 
             assertThat(firstResolver).isSameAs(cachedResolver);
-            assertThat(otherResolver).isNotSameAs(firstResolver);
-            assertThat(group.createdNameResolvers).hasSize(2);
+            assertThat(group.createdNameResolvers).hasSize(1);
 
             InetSocketAddress resolved = firstResolver
-                    .resolve(InetSocketAddress.createUnresolved("example.test", 8080))
+                    .resolve("example.test", 8080)
                     .syncUninterruptibly()
                     .getNow();
 
@@ -174,69 +134,73 @@ public class Netty_resolverTest {
             assertThat(group.createdNameResolvers)
                     .allSatisfy(nameResolver -> assertThat(nameResolver.closed).isTrue());
         } finally {
-            otherExecutor.shutdownGracefully().syncUninterruptibly();
+            group.close();
         }
     }
 
     @Test
-    void roundRobinInetAddressResolverUsesResolveAllResultsForSingleAndBulkLookups() throws Exception {
-        List<InetAddress> addresses = List.of(ip("203.0.113.30"), ip("203.0.113.31"), ip("203.0.113.32"));
-        RecordingNameResolver nameResolver = new RecordingNameResolver(
-                EXECUTOR,
-                Map.of("roundrobin.test", addresses)
-        );
-        RoundRobinInetAddressResolver resolver = new RoundRobinInetAddressResolver(EXECUTOR, nameResolver);
+    void noopNameResolverTreatsSocketAddressesAsAlreadyResolved() {
+        NoopNameResolver resolver = new NoopNameResolver(EXECUTOR);
+        InetSocketAddress unresolved = InetSocketAddress.createUnresolved("unresolved.example", 8080);
 
         try {
-            InetAddress resolved = resolver.resolve("roundrobin.test").syncUninterruptibly().getNow();
-            List<InetAddress> resolvedAll = resolver.resolveAll("roundrobin.test").syncUninterruptibly().getNow();
+            SocketAddress resolved = resolver.resolve(unresolved).syncUninterruptibly().getNow();
 
-            assertThat(resolved).isIn(addresses);
-            assertThat(resolvedAll).containsExactlyInAnyOrderElementsOf(addresses);
-            assertThat(nameResolver.resolveHosts).isEmpty();
-            assertThat(nameResolver.resolveAllHosts).containsExactly("roundrobin.test", "roundrobin.test");
+            assertThat(resolver.isSupported(unresolved)).isTrue();
+            assertThat(resolver.isResolved(unresolved)).isTrue();
+            assertThat(resolved).isSameAs(unresolved);
         } finally {
             resolver.close();
         }
+    }
 
-        assertThat(nameResolver.closed).isTrue();
+    @Test
+    void noopNameResolverGroupReusesResolverForExecutor() {
+        try {
+            NameResolver<SocketAddress> resolver = NoopNameResolverGroup.INSTANCE.getResolver(EXECUTOR);
+            NameResolver<SocketAddress> cachedResolver = NoopNameResolverGroup.INSTANCE.getResolver(EXECUTOR);
+            InetSocketAddress unresolved = InetSocketAddress.createUnresolved("pipeline-resolved.example", 443);
+            SocketAddress resolved = resolver.resolve(unresolved).syncUninterruptibly().getNow();
+
+            assertThat(resolver).isSameAs(cachedResolver);
+            assertThat(resolved).isSameAs(unresolved);
+        } finally {
+            NoopNameResolverGroup.INSTANCE.close();
+        }
     }
 
     private static InetAddress ip(String literal) throws UnknownHostException {
         return InetAddress.getByName(literal);
     }
 
-    private static final class RecordingNameResolver extends SimpleNameResolver<InetAddress> {
+    private static final class RecordingNameResolver extends SimpleNameResolver<InetSocketAddress> {
         private final Map<String, List<InetAddress>> addressesByHost;
         private final List<String> resolveHosts = new ArrayList<>();
-        private final List<String> resolveAllHosts = new ArrayList<>();
         private boolean closed;
 
         private RecordingNameResolver(EventExecutor executor, Map<String, List<InetAddress>> addressesByHost) {
-            super(executor);
+            super(executor, InetSocketAddress.class);
             this.addressesByHost = addressesByHost;
         }
 
         @Override
-        protected void doResolve(String inetHost, Promise<InetAddress> promise) throws Exception {
+        protected boolean doIsResolved(InetSocketAddress address) {
+            return !address.isUnresolved();
+        }
+
+        @Override
+        protected void doResolve(
+                InetSocketAddress unresolvedAddress,
+                Promise<InetSocketAddress> promise
+        ) throws Exception {
+            String inetHost = unresolvedAddress.getHostString();
             resolveHosts.add(inetHost);
             List<InetAddress> addresses = addressesByHost.get(normalize(inetHost));
             if (addresses == null || addresses.isEmpty()) {
                 promise.setFailure(new UnknownHostException(inetHost));
                 return;
             }
-            promise.setSuccess(addresses.get(0));
-        }
-
-        @Override
-        protected void doResolveAll(String inetHost, Promise<List<InetAddress>> promise) throws Exception {
-            resolveAllHosts.add(inetHost);
-            List<InetAddress> addresses = addressesByHost.get(normalize(inetHost));
-            if (addresses == null || addresses.isEmpty()) {
-                promise.setFailure(new UnknownHostException(inetHost));
-                return;
-            }
-            promise.setSuccess(List.copyOf(addresses));
+            promise.setSuccess(new InetSocketAddress(addresses.get(0), unresolvedAddress.getPort()));
         }
 
         @Override
@@ -249,19 +213,19 @@ public class Netty_resolverTest {
         }
     }
 
-    private static final class RecordingAddressResolverGroup extends AddressResolverGroup<InetSocketAddress> {
+    private static final class RecordingNameResolverGroup extends NameResolverGroup<InetSocketAddress> {
         private final Map<String, List<InetAddress>> addressesByHost;
         private final List<RecordingNameResolver> createdNameResolvers = new ArrayList<>();
 
-        private RecordingAddressResolverGroup(Map<String, List<InetAddress>> addressesByHost) {
+        private RecordingNameResolverGroup(Map<String, List<InetAddress>> addressesByHost) {
             this.addressesByHost = addressesByHost;
         }
 
         @Override
-        protected AddressResolver<InetSocketAddress> newResolver(EventExecutor executor) {
+        protected NameResolver<InetSocketAddress> newResolver(EventExecutor executor) {
             RecordingNameResolver nameResolver = new RecordingNameResolver(executor, addressesByHost);
             createdNameResolvers.add(nameResolver);
-            return new InetSocketAddressResolver(executor, nameResolver);
+            return nameResolver;
         }
     }
 }
