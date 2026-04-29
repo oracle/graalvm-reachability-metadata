@@ -8,7 +8,7 @@ package org_jline.jline_terminal;
 
 import org.junit.jupiter.api.Test;
 
-class Jline_terminalTest {
+public class Jline_terminalTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
