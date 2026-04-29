@@ -36,7 +36,8 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
         IntrospectedBean objectBean = JSON_WITH_FORCE_ACCESS.beanFrom(IntrospectedBean.class,
                 "{\"name\":\"Ada\",\"active\":true,\"visible\":7}");
         IntrospectedBean stringBean = JSON_WITH_FORCE_ACCESS.beanFrom(IntrospectedBean.class, "\"Ada\"");
-        IntrospectedBean longBean = JSON_WITH_FORCE_ACCESS.beanFrom(IntrospectedBean.class, "7");
+        IntConstructorBean intBean = JSON_WITH_FORCE_ACCESS.beanFrom(IntConstructorBean.class, "13");
+        IntrospectedBean longBean = JSON_WITH_FORCE_ACCESS.beanFrom(IntrospectedBean.class, "7000000000");
 
         assertThat(definition.constructors()).isNotNull();
         assertThat(libraryDefinition.constructors()).isNotNull();
@@ -46,7 +47,8 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
         assertThat(objectBean.isActive()).isTrue();
         assertThat(objectBean.visible).isEqualTo(7);
         assertThat(stringBean.getName()).isEqualTo("Ada");
-        assertThat(longBean.visible).isEqualTo(7);
+        assertThat(intBean.visible).isEqualTo(13);
+        assertThat(longBean.visible).isEqualTo(700000000);
     }
 
     @Test
@@ -75,9 +77,24 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
 
     @Test
     void supportsFieldNamedGettersWhenEnabled() throws Exception {
+        POJODefinition definition = INTROSPECTOR.pojoDefinitionForSerialization(JSON_WRITER,
+                FieldNamedGetterBean.class);
         String json = JSON_WITH_FIELD_MATCHING_GETTERS.asString(new FieldNamedGetterBean("Ada"));
 
+        assertThat(propertyNames(definition)).isEmpty();
         assertThat(json).contains("\"title\":\"Ada\"");
+    }
+
+    @Test
+    void introspectsInheritedDeclaredFieldsAndMethods() throws Exception {
+        POJODefinition definition = INTROSPECTOR.pojoDefinitionForSerialization(JSON_WRITER,
+                InheritedAccessBean.class);
+        String json = JSON_WITH_FORCE_ACCESS.asString(new InheritedAccessBean("Ada", 7));
+
+        assertThat(propertyNames(definition)).containsExactlyInAnyOrder("count", "name");
+        assertThat(property(definition, "count").field).isNotNull();
+        assertThat(property(definition, "name").getter).isNotNull();
+        assertThat(json).contains("\"name\":\"Ada\"", "\"count\":7");
     }
 
     private static List<String> propertyNames(POJODefinition definition) {
@@ -106,8 +123,12 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
             this.name = name;
         }
 
+        private IntrospectedBean(int visible) {
+            this.visible = visible;
+        }
+
         private IntrospectedBean(long visible) {
-            this.visible = (int) visible;
+            this.visible = (int) (visible / 10L);
         }
 
         static IntrospectedBean create(String name, boolean active, int visible) {
@@ -132,6 +153,35 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
 
         public void setActive(boolean active) {
             this.active = active;
+        }
+    }
+
+    static final class IntConstructorBean {
+        private final int visible;
+
+        private IntConstructorBean(int visible) {
+            this.visible = visible;
+        }
+    }
+
+    static class InheritedBaseBean {
+        private final String name;
+
+        InheritedBaseBean(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
+    static final class InheritedAccessBean extends InheritedBaseBean {
+        public final int count;
+
+        InheritedAccessBean(String name, int count) {
+            super(name);
+            this.count = count;
         }
     }
 
