@@ -8,6 +8,7 @@ package org_jboss_logging.jboss_logging_annotations;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -92,6 +93,18 @@ public class Jboss_logging_annotationsTest {
         assertThat(new UppercaseFormatter("jboss logging").toString()).isEqualTo("JBOSS LOGGING");
     }
 
+    @Test
+    void supportsMappingOneArgumentToMultipleMessagePositions() {
+        Pos position = new TestPosition(new int[] {1, 2}, new Transform[] {
+                new TestTransform(TransformType.GET_CLASS, TransformType.HASH_CODE)
+        });
+
+        assertThat(position.value()).containsExactly(1, 2);
+        assertThat(position.transform()).hasSize(1);
+        assertThat(position.transform()[0].value()).containsExactly(TransformType.GET_CLASS, TransformType.HASH_CODE);
+        assertThat(new RepeatedArgumentBundleImpl().sameValueTwice("metadata")).isEqualTo("metadata mirrors metadata");
+    }
+
     @MessageBundle(projectCode = "BND", length = 4, rootLocale = "en")
     @ValidIdRanges({
             @ValidIdRange(min = 1000, max = 1099),
@@ -139,6 +152,62 @@ public class Jboss_logging_annotationsTest {
                 @Field(name = "code") int code,
                 @Property(name = "detail") String detail,
                 @Param String message);
+    }
+
+    @MessageBundle(projectCode = "REP")
+    private interface RepeatedArgumentBundle {
+        @Message(id = 1, value = "%s mirrors %s")
+        String sameValueTwice(@Pos({1, 2}) String value);
+    }
+
+    private static final class RepeatedArgumentBundleImpl implements RepeatedArgumentBundle {
+        @Override
+        public String sameValueTwice(String value) {
+            return String.format("%s mirrors %s", value, value);
+        }
+    }
+
+    private static final class TestPosition implements Pos {
+        private final int[] value;
+        private final Transform[] transform;
+
+        private TestPosition(int[] value, Transform[] transform) {
+            this.value = value;
+            this.transform = transform;
+        }
+
+        @Override
+        public int[] value() {
+            return value;
+        }
+
+        @Override
+        public Transform[] transform() {
+            return transform;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return Pos.class;
+        }
+    }
+
+    private static final class TestTransform implements Transform {
+        private final TransformType[] value;
+
+        private TestTransform(TransformType... value) {
+            this.value = value;
+        }
+
+        @Override
+        public TransformType[] value() {
+            return value;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return Transform.class;
+        }
     }
 
     public static final class AuditCategory {
