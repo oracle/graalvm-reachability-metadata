@@ -61,12 +61,14 @@ public class PointcutDesignatorHandlerBasedPointcutTest {
         }
 
         @Override
-        public boolean couldMatchJoinPointsInType(Class<?> aClass) {
+        @SuppressWarnings("rawtypes")
+        public boolean couldMatchJoinPointsInType(Class aClass) {
             return couldMatch;
         }
 
         @Override
-        public boolean couldMatchJoinPointsInType(Class<?> aClass, MatchingContext context) {
+        @SuppressWarnings("rawtypes")
+        public boolean couldMatchJoinPointsInType(Class aClass, MatchingContext context) {
             matchedType = aClass;
             matchingContext = context;
             return couldMatch;
