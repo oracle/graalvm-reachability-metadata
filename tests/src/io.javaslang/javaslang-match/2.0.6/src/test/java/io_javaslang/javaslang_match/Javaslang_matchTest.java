@@ -11,6 +11,7 @@ import javaslang.Tuple0;
 import javaslang.Tuple1;
 import javaslang.Tuple2;
 import javaslang.Tuple3;
+import javaslang.Tuple4;
 import javaslang.control.Option;
 import javaslang.match.annotation.Patterns;
 import javaslang.match.annotation.Unapply;
@@ -112,6 +113,23 @@ public class Javaslang_matchTest {
         assertThat(product).isEqualTo(30);
     }
 
+    @Test
+    void generatedFourArityPatternCanMatchHigherArityExtractor() {
+        Rectangle rectangle = new Rectangle(2, 3, 5, 7);
+
+        Integer perimeter = Match(rectangle).of(
+                Case(Javaslang_matchTestPatterns.rectangle($(0), $(), $(), $()), (left, top, right, bottom) -> -1),
+                Case(Javaslang_matchTestPatterns.rectangle(
+                                $(2),
+                                $((Integer top) -> top > 0),
+                                $(5),
+                                $((Integer bottom) -> bottom > 6)),
+                        (left, top, right, bottom) -> 2 * ((right - left) + (bottom - top))),
+                Case($(), ignored -> 0));
+
+        assertThat(perimeter).isEqualTo(14);
+    }
+
     @Unapply
     static Tuple2<String, Integer> person(Person person) {
         return Tuple.of(person.name(), person.age());
@@ -135,6 +153,11 @@ public class Javaslang_matchTest {
     @Unapply
     static <T> Tuple1<T> box(Box<T> box) {
         return Tuple.of(box.value());
+    }
+
+    @Unapply
+    static Tuple4<Integer, Integer, Integer, Integer> rectangle(Rectangle rectangle) {
+        return Tuple.of(rectangle.left(), rectangle.top(), rectangle.right(), rectangle.bottom());
     }
 
     static final class Person {
@@ -218,6 +241,36 @@ public class Javaslang_matchTest {
 
         T value() {
             return value;
+        }
+    }
+
+    static final class Rectangle {
+        private final int left;
+        private final int top;
+        private final int right;
+        private final int bottom;
+
+        Rectangle(int left, int top, int right, int bottom) {
+            this.left = left;
+            this.top = top;
+            this.right = right;
+            this.bottom = bottom;
+        }
+
+        int left() {
+            return left;
+        }
+
+        int top() {
+            return top;
+        }
+
+        int right() {
+            return right;
+        }
+
+        int bottom() {
+            return bottom;
         }
     }
 }
