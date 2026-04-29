@@ -14,14 +14,14 @@ import org.junit.jupiter.api.Test;
 
 public class ConstantsTest {
     @Test
-    void experimentalApiChecksVisitorBytecodeResourceBeforeRejectingNonPreviewClass() {
+    void experimentalApiChecksTopLevelVisitorBytecodeResourceBeforeRejectingNonPreviewClass() {
         assertThatThrownBy(ExperimentalClassVisitor::new)
                 .isInstanceOf(IllegalStateException.class);
     }
+}
 
-    private static final class ExperimentalClassVisitor extends ClassVisitor {
-        private ExperimentalClassVisitor() {
-            super(Opcodes.ASM10_EXPERIMENTAL);
-        }
+final class ExperimentalClassVisitor extends ClassVisitor {
+    ExperimentalClassVisitor() {
+        super(Opcodes.ASM10_EXPERIMENTAL);
     }
 }
