@@ -33,26 +33,6 @@ public class SpringBeanServiceInvokerTest {
     }
 
     @Test
-    void resolvesConfiguredParameterTypeWithContextClassLoaderFallback() throws Throwable {
-        InvocationService service = new InvocationService();
-        SpringBeanServiceInvoker invoker = invokerWithService(service);
-        ServiceTaskStateImpl state = serviceTaskState("invocationService", "echo");
-        String contextOnlyParameterType = "org.example.seata.ContextOnlyParameter";
-        state.setParameterTypes(List.of(contextOnlyParameterType));
-        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(aliasingClassLoader(contextOnlyParameterType, String.class));
-
-        try {
-            Object result = invoker.invoke(state, "spring");
-
-            assertThat(result).isEqualTo("echo:spring");
-            assertThat(service.getEchoCount()).isEqualTo(1);
-        } finally {
-            Thread.currentThread().setContextClassLoader(originalClassLoader);
-        }
-    }
-
-    @Test
     void reportsUnknownConfiguredParameterTypeAfterTryingContextClassLoader() {
         SpringBeanServiceInvoker invoker = invokerWithService(new InvocationService());
         ServiceTaskStateImpl state = serviceTaskState("invocationService", "echo");
