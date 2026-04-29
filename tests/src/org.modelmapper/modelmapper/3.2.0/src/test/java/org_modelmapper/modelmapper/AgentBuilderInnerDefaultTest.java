@@ -8,14 +8,11 @@ package org_modelmapper.modelmapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.VarHandle;
-import java.sql.Date;
-
 import org.junit.jupiter.api.Test;
 import org.modelmapper.internal.bytebuddy.agent.Installer;
 import org.modelmapper.internal.bytebuddy.agent.builder.AgentBuilder;
 import org.modelmapper.internal.bytebuddy.agent.builder.ResettableClassFileTransformer;
+import org.modelmapper.internal.bytebuddy.utility.JavaModuleAccess;
 
 public class AgentBuilderInnerDefaultTest {
     @Test
@@ -32,26 +29,15 @@ public class AgentBuilderInnerDefaultTest {
     }
 
     @Test
-    void installsTransformerAfterAddingReadEdgeToInstallerModule() throws Throwable {
+    void installsTransformerAfterAddingReadEdgeToInstallerModule() throws Exception {
         Installer.RecordingInstrumentation instrumentation = Installer.resetInstrumentation();
-        Module originalModule = replaceAgentBuilderModule(Date.class.getModule());
-        try {
+        try (JavaModuleAccess.Reset ignored = JavaModuleAccess.forceUnreadableModules()) {
             ResettableClassFileTransformer transformer = new AgentBuilder.Default().installOnByteBuddyAgent();
 
             assertThat(transformer).isNotNull();
             assertThat(instrumentation.getAddedTransformers()).containsExactly(transformer);
         } finally {
-            replaceAgentBuilderModule(originalModule);
             Installer.resetInstrumentation();
         }
-    }
-
-    private static Module replaceAgentBuilderModule(Module module) throws ReflectiveOperationException {
-        VarHandle moduleHandle = MethodHandles
-            .privateLookupIn(Class.class, MethodHandles.lookup())
-            .findVarHandle(Class.class, "module", Module.class);
-        Module originalModule = (Module) moduleHandle.get(AgentBuilder.class);
-        moduleHandle.set(AgentBuilder.class, module);
-        return originalModule;
     }
 }
