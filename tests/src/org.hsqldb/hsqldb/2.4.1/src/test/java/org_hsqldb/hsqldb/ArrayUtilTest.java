@@ -56,4 +56,20 @@ public class ArrayUtilTest {
         assertArrayEquals(new String[]{"alpha", "beta", "gamma", "delta"}, inserted);
         assertArrayEquals(new String[]{"alpha", "beta", "delta"}, removed);
     }
+
+    @Test
+    public void handlesPrimitiveArraysWithDynamicAllocationUtilities() {
+        int[] source = {1, 2, 3};
+
+        int[] duplicate = (int[]) ArrayUtil.duplicateArray(source);
+        int[] resized = (int[]) ArrayUtil.resizeArray(source, 5);
+        int[] smaller = (int[]) ArrayUtil.resizeArrayIfDifferent(source, 2);
+        int[] inserted = (int[]) ArrayUtil.toAdjustedArray(source, 9, 1, 1);
+
+        assertNotSame(source, duplicate);
+        assertArrayEquals(source, duplicate);
+        assertArrayEquals(new int[]{1, 2, 3, 0, 0}, resized);
+        assertArrayEquals(new int[]{1, 2}, smaller);
+        assertArrayEquals(new int[]{1, 9, 2, 3}, inserted);
+    }
 }
