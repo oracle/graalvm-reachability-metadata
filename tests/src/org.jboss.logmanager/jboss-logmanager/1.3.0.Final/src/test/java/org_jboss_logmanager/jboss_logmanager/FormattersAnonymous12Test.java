@@ -22,12 +22,15 @@ import org.jboss.logmanager.formatters.PatternFormatter;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class FormattersAnonymous12Test {
 
     @Test
     void extendedExceptionFormattingUsesTcclDefinedClassAndResourceLookupWhenCodeSourceLocationIsMissing()
             throws Exception {
+        assumeFalse(isNativeImageRuntime(), "Runtime class definition is not supported in native-image tests");
+
         final String className = FormattersAnonymous12DefinedClass.class.getName();
         final TrackingDefinedClassLoader trackingLoader = new TrackingDefinedClassLoader(className);
 
@@ -39,6 +42,11 @@ public class FormattersAnonymous12Test {
 
     @Test
     void oneArgumentClassForNameIsUsedWhenTheContextClassLoaderRejectsTheFrameClass() {
+        assumeFalse(
+                isNativeImageRuntime(),
+                "Native image does not preserve JVM class-loader fallback observability for linked classes"
+        );
+
         final String className = String.class.getName();
         final RejectingClassLoader rejectingLoader = new RejectingClassLoader(
                 Thread.currentThread().getContextClassLoader(),
@@ -53,6 +61,8 @@ public class FormattersAnonymous12Test {
 
     @Test
     void bootstrapClassLoaderFallbackIsUsedWhenTheLibraryLoaderRejectsTheFrameClass() throws Throwable {
+        assumeFalse(isNativeImageRuntime(), "Runtime class definition is not supported in native-image tests");
+
         final String className = "javax.crypto.Cipher";
         final BootstrapFallbackClassLoader bootstrapFallbackClassLoader = new BootstrapFallbackClassLoader(className);
         final BootstrapFormattingAction formattingAction = bootstrapFallbackClassLoader.loadFormattingAction();
@@ -86,6 +96,10 @@ public class FormattersAnonymous12Test {
                 new StackTraceElement(className, "invoke", "GeneratedFrame.java", 17)
         });
         return failure;
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static final class TrackingDefinedClassLoader extends ClassLoader {
