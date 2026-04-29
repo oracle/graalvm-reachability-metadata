@@ -8,6 +8,8 @@ package dom4j.dom4j;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.reflect.Field;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -24,6 +26,7 @@ public class DOMWriterTest {
     @Test
     @Order(1)
     void resolvesDefaultDomDocumentClassThroughPublicAccessor() throws Exception {
+        clearCompilerGeneratedClassCache();
         DOMWriter defaultWriter = new DOMWriter();
 
         Class<?> defaultDocumentClass = defaultWriter.getDomDocumentClass();
@@ -69,6 +72,12 @@ public class DOMWriterTest {
                 .isEqualTo("sample");
         assertThat(document.getDocumentElement().getFirstChild().getNodeName())
                 .isEqualTo("child");
+    }
+
+    private static void clearCompilerGeneratedClassCache() throws Exception {
+        Field field = DOMWriter.class.getDeclaredField("class$org$dom4j$io$DOMWriter");
+        field.setAccessible(true);
+        field.set(null, null);
     }
 
     public static final class RecordingDomDocument extends DOMDocument {
