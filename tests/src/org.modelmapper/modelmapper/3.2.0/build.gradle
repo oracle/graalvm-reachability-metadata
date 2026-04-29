@@ -16,10 +16,20 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += [
+        "--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED",
+        "--add-exports=java.base/jdk.internal.reflect=ALL-UNNAMED"
+    ]
+}
+
 tasks.withType(Test).configureEach {
     jvmArgs += [
         "-Dorg.modelmapper.internal.bytebuddy.safe=false",
         "-Dorg.modelmapper.internal.bytebuddy.experimental=true",
+        "--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED",
+        "--add-exports=java.base/jdk.internal.reflect=ALL-UNNAMED",
+        "--add-opens=java.base/java.io=ALL-UNNAMED",
         "--add-opens=java.base/java.lang=ALL-UNNAMED",
         "--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED",
         "--add-opens=jdk.unsupported/sun.misc=ALL-UNNAMED"
@@ -43,6 +53,9 @@ graalvmNative {
         all {
             buildArgs.addAll([
                 '-Dorg.modelmapper.internal.bytebuddy.experimental=true',
+                '--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED',
+                '--add-exports=java.base/jdk.internal.reflect=ALL-UNNAMED',
+                '--add-opens=java.base/java.io=ALL-UNNAMED',
                 '--add-opens=java.base/java.lang=ALL-UNNAMED',
                 '--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED',
                 '--add-opens=jdk.unsupported/sun.misc=ALL-UNNAMED'
