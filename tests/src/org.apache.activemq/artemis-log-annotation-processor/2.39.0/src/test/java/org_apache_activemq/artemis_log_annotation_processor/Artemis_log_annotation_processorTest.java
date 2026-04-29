@@ -123,16 +123,16 @@ public class Artemis_log_annotation_processorTest {
                         new LogMessageLiteral(203, "Error {}", LogMessage.Level.ERROR)
                 ),
                 new FakeExecutableElement(
-                        "debugState",
+                        "warnState",
                         voidType(),
                         List.of(new FakeVariableElement("state", declaredType("java.lang.String"))),
-                        new LogMessageLiteral(204, "Debug {}", LogMessage.Level.DEBUG)
+                        new LogMessageLiteral(204, "Warn state {}", LogMessage.Level.WARN)
                 ),
                 new FakeExecutableElement(
-                        "traceTick",
+                        "infoTick",
                         voidType(),
                         List.of(),
-                        new LogMessageLiteral(205, "Trace tick", LogMessage.Level.TRACE)
+                        new LogMessageLiteral(205, "Info tick", LogMessage.Level.INFO)
                 )
         );
 
@@ -168,10 +168,10 @@ public class Artemis_log_annotation_processorTest {
                 "logger.info(\"TST202: Info {}\", service);",
                 "if (logger.isErrorEnabled()) {",
                 "logger.error(\"TST203: Error {}\", task, failure);",
-                "if (logger.isDebugEnabled()) {",
-                "logger.debug(\"TST204: Debug {}\", state);",
-                "if (logger.isTraceEnabled()) {",
-                "logger.trace(\"TST205: Trace tick\");"
+                "if (logger.isWarnEnabled()) {",
+                "logger.warn(\"TST204: Warn state {}\", state);",
+                "if (logger.isInfoEnabled()) {",
+                "logger.info(\"TST205: Info tick\");"
         );
     }
 
@@ -291,7 +291,7 @@ public class Artemis_log_annotation_processorTest {
 
         assertProcessingError(
                 duplicateIdResult,
-                "message 20 with definition = Second was previously defined as First"
+                "example.logs.DuplicateIdsBundle: ID 20 with message 'Second' was previously used already, to define message 'First'. Consider trying ID 21 which is the next unused value."
         );
 
         ProcessingResult regexMismatchResult = process(FakeTypeElement.interfaceType(
@@ -307,7 +307,7 @@ public class Artemis_log_annotation_processorTest {
 
         assertProcessingError(
                 regexMismatchResult,
-                "Code 10 does not match regular expression ^99\\d$ specified on the LogBundle"
+                "example.logs.RegexBundle: Code 10 does not match regular expression specified on the LogBundle: ^99\\d$"
         );
     }
 
@@ -1055,6 +1055,11 @@ public class Artemis_log_annotation_processorTest {
         }
 
         @Override
+        public int[] retiredIDs() {
+            return new int[0];
+        }
+
+        @Override
         public Class<? extends Annotation> annotationType() {
             return LogBundle.class;
         }
@@ -1119,6 +1124,11 @@ public class Artemis_log_annotation_processorTest {
         @Override
         public Level level() {
             return level;
+        }
+
+        @Override
+        public String loggerName() {
+            return "";
         }
 
         @Override
