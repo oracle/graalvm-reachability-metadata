@@ -81,7 +81,7 @@ public class Apache_mime4j_coreTest {
                 "startMultipart:multipart/mixed:frontier",
                 "preamble:Human-readable preamble",
                 "startBodyPart",
-                "body:text/plain:quoted-printable:Hello, café!",
+                "body:text/plain:quoted-printable:Hello, caf\u00e9!",
                 "endBodyPart",
                 "startBodyPart",
                 "body:application/octet-stream:base64:Binary payload",
@@ -140,7 +140,7 @@ public class Apache_mime4j_coreTest {
         assertThat(textDescriptor.getMimeType()).isEqualTo("text/plain");
         assertThat(textDescriptor.getCharset()).isEqualTo("ISO-8859-1");
         assertThat(textDescriptor.getTransferEncoding()).isEqualTo("quoted-printable");
-        assertThat(decodedBody).isEqualTo("Olá Mundo");
+        assertThat(decodedBody).isEqualTo("Ol\u00e1 Mundo");
         assertThat(MimeTokenStream.stateToString(EntityState.T_BODY)).isNotBlank();
     }
 
@@ -236,18 +236,18 @@ public class Apache_mime4j_coreTest {
         parameters.addParameter("Content-Language", "en-US");
         Map<String, String> resolvedParameters = parameters.getParameters();
 
-        assertThat(parameters.get("filename")).isEqualTo("café menu.txt");
-        assertThat(parameters.get("title")).isEqualTo("Quarterly café report");
+        assertThat(parameters.get("filename")).isEqualTo("caf\u00e9 menu.txt");
+        assertThat(parameters.get("title")).isEqualTo("Quarterly caf\u00e9 report");
         assertThat(parameters.get("content-language")).isEqualTo("en-US");
         assertThat(resolvedParameters)
-                .containsEntry("filename", "café menu.txt")
-                .containsEntry("title", "Quarterly café report")
+                .containsEntry("filename", "caf\u00e9 menu.txt")
+                .containsEntry("title", "Quarterly caf\u00e9 report")
                 .containsEntry("content-language", "en-US");
     }
 
     @Test
     void codecUtilitiesRoundTripEncodedWordsBase64AndQuotedPrintableStreams() throws Exception {
-        String displayName = "Résumé café";
+        String displayName = "R\u00e9sum\u00e9 caf\u00e9";
         String encodedWord = EncoderUtil.encodeEncodedWord(
                 displayName,
                 EncoderUtil.Usage.TEXT_TOKEN,
@@ -268,7 +268,7 @@ public class Apache_mime4j_coreTest {
         assertThat(DecoderUtil.decodeEncodedWords(encodedWord, DecodeMonitor.STRICT)).isEqualTo(displayName);
         assertThat(EncoderUtil.encodeB("mime4j".getBytes(StandardCharsets.US_ASCII))).isEqualTo("bWltZTRq");
         assertThat(ContentUtil.toString(base64Decoded, StandardCharsets.UTF_8)).isEqualTo("Stream body");
-        assertThat(ContentUtil.toString(quotedPrintableDecoded, StandardCharsets.UTF_8)).isEqualTo("softline café");
+        assertThat(ContentUtil.toString(quotedPrintableDecoded, StandardCharsets.UTF_8)).isEqualTo("softline caf\u00e9");
         assertThat(EncoderUtil.isToken("multipart-mixed_123")).isTrue();
         assertThat(EncoderUtil.isToken("needs space")).isFalse();
     }
@@ -278,7 +278,7 @@ public class Apache_mime4j_coreTest {
         String header = "Subject: This header contains enough words to require folding by mime4j "
                 + "while preserving all unfolded words in their original order";
         String folded = MimeUtil.fold(header, 9);
-        ByteSequence utf8Bytes = ContentUtil.encode(StandardCharsets.UTF_8, "Grüße");
+        ByteSequence utf8Bytes = ContentUtil.encode(StandardCharsets.UTF_8, "Gr\u00fc\u00dfe");
         byte[] asciiBytes = ContentUtil.toAsciiByteArray("plain-ascii");
         String boundary = MimeUtil.createUniqueBoundary();
         String messageId = MimeUtil.createUniqueMessageId("example.org");
@@ -290,7 +290,7 @@ public class Apache_mime4j_coreTest {
         assertThat(MimeUtil.isQuotedPrintableEncoded("quoted-printable")).isTrue();
         assertThat(folded).contains("\r\n");
         assertThat(MimeUtil.unfold(folded)).isEqualTo(header);
-        assertThat(ContentUtil.decode(StandardCharsets.UTF_8, utf8Bytes)).isEqualTo("Grüße");
+        assertThat(ContentUtil.decode(StandardCharsets.UTF_8, utf8Bytes)).isEqualTo("Gr\u00fc\u00dfe");
         assertThat(ContentUtil.toAsciiString(asciiBytes)).isEqualTo("plain-ascii");
         assertThat(boundary).isNotBlank();
         assertThat(messageId).startsWith("<").endsWith("@example.org>");
