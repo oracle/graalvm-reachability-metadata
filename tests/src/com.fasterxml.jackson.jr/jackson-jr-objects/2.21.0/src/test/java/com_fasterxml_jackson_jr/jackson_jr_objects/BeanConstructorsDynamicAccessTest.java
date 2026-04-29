@@ -6,11 +6,9 @@
  */
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
-import java.lang.reflect.Constructor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fasterxml.jackson.jr.ob.JSON;
-import com.fasterxml.jackson.jr.ob.impl.BeanConstructors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,31 +21,7 @@ public class BeanConstructorsDynamicAccessTest {
     void resetConstructorCounters() {
         PublicDefaultCtorBean.CONSTRUCTOR_CALLS.set(0);
         PrivateDefaultCtorBean.CONSTRUCTOR_CALLS.set(0);
-    }
-
-    @Test
-    void createsBeansDirectlyThroughPublicDefaultConstructors() throws Exception {
-        Constructor<PublicDefaultCtorBean> constructor = PublicDefaultCtorBean.class.getDeclaredConstructor();
-        AccessibleBeanConstructors constructors = new AccessibleBeanConstructors(PublicDefaultCtorBean.class);
-        constructors.addNoArgsConstructor(constructor);
-
-        PublicDefaultCtorBean bean = (PublicDefaultCtorBean) constructors.createBean();
-
-        assertThat(bean).isNotNull();
-        assertThat(PublicDefaultCtorBean.CONSTRUCTOR_CALLS).hasValue(1);
-    }
-
-    @Test
-    void createsBeansDirectlyThroughNonPublicDefaultConstructorsWhenAccessIsForced() throws Exception {
-        Constructor<PrivateDefaultCtorBean> constructor = PrivateDefaultCtorBean.class.getDeclaredConstructor();
-        AccessibleBeanConstructors constructors = new AccessibleBeanConstructors(PrivateDefaultCtorBean.class);
-        constructors.addNoArgsConstructor(constructor);
-        constructors.forceAccess();
-
-        PrivateDefaultCtorBean bean = (PrivateDefaultCtorBean) constructors.createBean();
-
-        assertThat(bean).isNotNull();
-        assertThat(PrivateDefaultCtorBean.CONSTRUCTOR_CALLS).hasValue(1);
+        PublicRecordBean.CONSTRUCTOR_CALLS.set(0);
     }
 
     @Test
@@ -67,14 +41,20 @@ public class BeanConstructorsDynamicAccessTest {
         assertThat(PrivateDefaultCtorBean.CONSTRUCTOR_CALLS).hasValue(1);
     }
 
-    static final class AccessibleBeanConstructors extends BeanConstructors {
-        AccessibleBeanConstructors(Class<?> valueType) {
-            super(valueType);
-        }
+    @Test
+    void createsRecordsThroughCanonicalConstructorsWhenReadingObjects() throws Exception {
+        PublicRecordBean bean = JSON.std.beanFrom(PublicRecordBean.class, """
+                {
+                  "name": "Ada",
+                  "quantity": 3,
+                  "stocked": true
+                }
+                """);
 
-        Object createBean() throws Exception {
-            return create();
-        }
+        assertThat(bean.name()).isEqualTo("Ada");
+        assertThat(bean.quantity()).isEqualTo(3);
+        assertThat(bean.stocked()).isTrue();
+        assertThat(PublicRecordBean.CONSTRUCTOR_CALLS).hasValue(1);
     }
 
     public static final class PublicDefaultCtorBean {
@@ -93,6 +73,14 @@ public class BeanConstructorsDynamicAccessTest {
         public String name;
 
         private PrivateDefaultCtorBean() {
+            CONSTRUCTOR_CALLS.incrementAndGet();
+        }
+    }
+
+    public record PublicRecordBean(String name, int quantity, boolean stocked) {
+        private static final AtomicInteger CONSTRUCTOR_CALLS = new AtomicInteger();
+
+        public PublicRecordBean {
             CONSTRUCTOR_CALLS.incrementAndGet();
         }
     }
