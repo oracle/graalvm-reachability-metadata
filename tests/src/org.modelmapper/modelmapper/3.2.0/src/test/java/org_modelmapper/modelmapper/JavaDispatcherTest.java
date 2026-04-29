@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.Permission;
+import java.security.ProtectionDomain;
 import java.util.concurrent.Callable;
 
 import org.junit.jupiter.api.Test;
@@ -139,10 +140,19 @@ public class JavaDispatcherTest {
                     throw new ClassNotFoundException(name);
                 }
                 byte[] binaryRepresentation = inputStream.readAllBytes();
+                ProtectionDomain protectionDomain = null;
+                if (isJavaDispatcherType(name)) {
+                    protectionDomain = JavaDispatcher.class.getProtectionDomain();
+                }
                 if (JavaDispatcher.class.getName().equals(name)) {
                     binaryRepresentation = redirectSystemReferences(binaryRepresentation);
                 }
-                return defineClass(name, binaryRepresentation, 0, binaryRepresentation.length);
+                return defineClass(
+                    name,
+                    binaryRepresentation,
+                    0,
+                    binaryRepresentation.length,
+                    protectionDomain);
             } catch (IOException exception) {
                 throw new ClassNotFoundException(name, exception);
             }
@@ -151,7 +161,11 @@ public class JavaDispatcherTest {
         private static boolean isChildFirst(String name) {
             return name.equals(IsolatedRunner.class.getName())
                 || name.equals(MissingTypeDispatcher.class.getName())
-                || name.equals(JavaDispatcher.class.getName())
+                || isJavaDispatcherType(name);
+        }
+
+        private static boolean isJavaDispatcherType(String name) {
+            return name.equals(JavaDispatcher.class.getName())
                 || name.startsWith(JavaDispatcher.class.getName() + "$");
         }
 
