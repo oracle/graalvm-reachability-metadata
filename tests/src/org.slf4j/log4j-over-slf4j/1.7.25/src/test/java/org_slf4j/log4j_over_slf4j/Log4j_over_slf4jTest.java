@@ -22,6 +22,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.RollingFileAppender;
 import org.apache.log4j.SimpleLayout;
 import org.apache.log4j.WriterAppender;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
@@ -30,8 +31,11 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -182,6 +186,53 @@ public class Log4j_over_slf4jTest {
 
         MDC.clear();
         assertThat(MDC.get("user")).isNull();
+    }
+
+    @Test
+    void logLogEmitsInternalStatusMessagesAndHonorsFlags() {
+        PrintStream previousOut = System.out;
+        PrintStream previousErr = System.err;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ByteArrayOutputStream err = new ByteArrayOutputStream();
+
+        try (PrintStream capturedOut = new PrintStream(out, true, StandardCharsets.UTF_8);
+                PrintStream capturedErr = new PrintStream(err, true, StandardCharsets.UTF_8)) {
+            System.setOut(capturedOut);
+            System.setErr(capturedErr);
+            LogLog.setQuietMode(false);
+            LogLog.setInternalDebugging(false);
+
+            LogLog.debug("debug disabled");
+            LogLog.warn("warning");
+            LogLog.error("error");
+
+            assertThat(out.toString(StandardCharsets.UTF_8)).isEmpty();
+            assertThat(err.toString(StandardCharsets.UTF_8))
+                    .contains("log4j:WARN warning", "log4j:ERROR error");
+
+            out.reset();
+            err.reset();
+            LogLog.setInternalDebugging(true);
+            LogLog.debug("debug enabled");
+
+            assertThat(out.toString(StandardCharsets.UTF_8)).contains("log4j: debug enabled");
+            assertThat(err.toString(StandardCharsets.UTF_8)).isEmpty();
+
+            out.reset();
+            err.reset();
+            LogLog.setQuietMode(true);
+            LogLog.debug("quiet debug");
+            LogLog.warn(" quiet warn");
+            LogLog.error(" quiet error");
+
+            assertThat(out.toString(StandardCharsets.UTF_8)).isEmpty();
+            assertThat(err.toString(StandardCharsets.UTF_8)).isEmpty();
+        } finally {
+            LogLog.setQuietMode(false);
+            LogLog.setInternalDebugging(false);
+            System.setOut(previousOut);
+            System.setErr(previousErr);
+        }
     }
 
     @Test
