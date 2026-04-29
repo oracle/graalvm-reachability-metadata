@@ -8,50 +8,65 @@ package org_modelmapper.modelmapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.lang.reflect.Method;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
-import org.modelmapper.internal.bytebuddy.ByteBuddy;
-import org.modelmapper.internal.bytebuddy.dynamic.DynamicType;
 import org.modelmapper.internal.bytebuddy.dynamic.loading.ByteArrayClassLoader;
-import org.modelmapper.internal.bytebuddy.dynamic.scaffold.TypeValidation;
-import org.modelmapper.internal.bytebuddy.dynamic.scaffold.subclass.ConstructorStrategy;
 
 public class ByteArrayClassLoaderInnerSynchronizationStrategyInnerForJava7CapableVmTest {
 
     @Test
-    void definesGeneratedTypesThroughSynchronizedClassLoadingLocks() throws ClassNotFoundException {
-        String firstTypeName = "org_modelmapper.modelmapper.generated.SynchronizedLockFirstType";
-        String secondTypeName = "org_modelmapper.modelmapper.generated.SynchronizedLockSecondType";
-        Map<String, byte[]> typeDefinitions = new LinkedHashMap<>();
-        typeDefinitions.put(firstTypeName, makeUnloadedType(firstTypeName).getBytes());
-        typeDefinitions.put(secondTypeName, makeUnloadedType(secondTypeName).getBytes());
-        ByteArrayClassLoader classLoader = new ByteArrayClassLoader(
-            isolatedParent(),
-            false,
-            new LinkedHashMap<>());
+    void invokesClassLoaderLockMethodThroughJava7SynchronizationStrategy() throws Exception {
+        String typeName = "org_modelmapper.modelmapper.generated.SynchronizedLockType";
+        ExposedByteArrayClassLoader classLoader = new ExposedByteArrayClassLoader(isolatedParent());
+        ExposedByteArrayClassLoader.Java7SynchronizationStrategy strategy =
+            ExposedByteArrayClassLoader.java7SynchronizationStrategy(classLoadingLockMethod());
+        strategy.initializeStrategy();
 
-        Map<String, Class<?>> definedTypes = classLoader.defineClasses(typeDefinitions);
+        Object classLoadingLock = strategy.classLoadingLock(classLoader, typeName);
+        Object repeatedClassLoadingLock = strategy.classLoadingLock(classLoader, typeName);
 
-        assertThat(definedTypes.keySet()).containsExactly(firstTypeName, secondTypeName);
-        assertThat(definedTypes.get(firstTypeName).getClassLoader()).isSameAs(classLoader);
-        assertThat(definedTypes.get(secondTypeName).getClassLoader()).isSameAs(classLoader);
-        assertThat(classLoader.loadClass(firstTypeName)).isSameAs(definedTypes.get(firstTypeName));
-        assertThat(classLoader.loadClass(secondTypeName)).isSameAs(definedTypes.get(secondTypeName));
+        assertThat(classLoadingLock).isNotNull();
+        assertThat(repeatedClassLoadingLock).isSameAs(classLoadingLock);
     }
 
-    private static DynamicType.Unloaded<?> makeUnloadedType(String typeName) {
-        return new ByteBuddy()
-            .with(TypeValidation.DISABLED)
-            .subclass(Object.class, ConstructorStrategy.Default.NO_CONSTRUCTORS)
-            .name(typeName)
-            .make();
+    private static Method classLoadingLockMethod() throws NoSuchMethodException {
+        return ExposedByteArrayClassLoader.class.getMethod("getClassLoadingLock", String.class);
     }
 
     private static ClassLoader isolatedParent() {
         return new IsolatedParentClassLoader(
             ByteArrayClassLoaderInnerSynchronizationStrategyInnerForJava7CapableVmTest.class.getClassLoader());
+    }
+
+    public static final class ExposedByteArrayClassLoader extends ByteArrayClassLoader {
+        ExposedByteArrayClassLoader(ClassLoader parent) {
+            super(parent, false, Collections.emptyMap());
+        }
+
+        @Override
+        public Object getClassLoadingLock(String name) {
+            return super.getClassLoadingLock(name);
+        }
+
+        static Java7SynchronizationStrategy java7SynchronizationStrategy(Method method) {
+            return new Java7SynchronizationStrategy(method);
+        }
+
+        public static final class Java7SynchronizationStrategy extends SynchronizationStrategy.ForJava7CapableVm {
+            Java7SynchronizationStrategy(Method method) {
+                super(method);
+            }
+
+            void initializeStrategy() {
+                initialize();
+            }
+
+            Object classLoadingLock(ByteArrayClassLoader classLoader, String name) {
+                return getClassLoadingLock(classLoader, name);
+            }
+        }
     }
 
     private static final class IsolatedParentClassLoader extends ClassLoader {
