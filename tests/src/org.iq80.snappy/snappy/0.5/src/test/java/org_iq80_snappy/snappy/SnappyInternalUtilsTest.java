@@ -7,8 +7,8 @@
 package org_iq80_snappy.snappy;
 
 import org.iq80.snappy.Snappy;
-import org.iq80.snappy.SnappyInputStream;
-import org.iq80.snappy.SnappyOutputStream;
+import org.iq80.snappy.SnappyFramedInputStream;
+import org.iq80.snappy.SnappyFramedOutputStream;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -32,13 +32,12 @@ public class SnappyInternalUtilsTest {
         assertThat(decompressed).isEqualTo(payload);
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     void writesAndReadsSnappyStreamPayload() throws Exception {
         byte[] payload = createCompressiblePayload();
         ByteArrayOutputStream compressedOutput = new ByteArrayOutputStream();
 
-        try (SnappyOutputStream snappyOutput = new SnappyOutputStream(compressedOutput)) {
+        try (SnappyFramedOutputStream snappyOutput = new SnappyFramedOutputStream(compressedOutput)) {
             snappyOutput.write(payload, 0, 256);
             snappyOutput.write(payload, 256, payload.length - 256);
         }
@@ -51,7 +50,7 @@ public class SnappyInternalUtilsTest {
     }
 
     private static byte[] readSnappyStream(byte[] compressed) throws IOException {
-        try (SnappyInputStream snappyInput = new SnappyInputStream(new ByteArrayInputStream(compressed))) {
+        try (SnappyFramedInputStream snappyInput = new SnappyFramedInputStream(new ByteArrayInputStream(compressed))) {
             return snappyInput.readAllBytes();
         }
     }
