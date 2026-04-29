@@ -8,13 +8,25 @@ package io_micrometer.micrometer_commons;
 
 import io.micrometer.common.KeyValue;
 import io.micrometer.common.KeyValues;
+import io.micrometer.common.annotation.AnnotationHandler;
 import io.micrometer.common.annotation.NoOpValueResolver;
 import io.micrometer.common.annotation.ValueExpressionResolver;
 import io.micrometer.common.annotation.ValueResolver;
 import io.micrometer.common.docs.KeyName;
 import io.micrometer.common.util.StringUtils;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.aspectj.lang.reflect.SourceLocation;
+import org.aspectj.runtime.internal.AroundClosure;
+import org.aspectj.runtime.reflect.Factory;
 import org.junit.jupiter.api.Test;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -194,6 +206,34 @@ public class Micrometer_commonsTest {
         assertThat(new NoOpValueResolver().resolve("anything")).isNull();
     }
 
+    @Test
+    void annotationHandlerAddsKeyValuesFromAnnotatedImplementationAndInterfaceParameters() {
+        List<KeyValue> collectedKeyValues = new ArrayList<>();
+        AnnotatedService service = new AnnotatedServiceImpl();
+        MethodSignature interfaceMethod = new Factory("Micrometer_commonsTest.java", Micrometer_commonsTest.class)
+                .makeMethodSig(
+                        Modifier.PUBLIC | Modifier.ABSTRACT,
+                        "record",
+                        AnnotatedService.class,
+                        new Class<?>[]{String.class, String.class, String.class},
+                        new String[]{"method", "uri", "ignored"},
+                        new Class<?>[0],
+                        Void.TYPE);
+        ProceedingJoinPoint joinPoint = new TestProceedingJoinPoint(
+                service, interfaceMethod, "GET", "/orders", "ignored");
+        AnnotationHandler<List<KeyValue>> handler = new AnnotationHandler<>(
+                (keyValue, keyValueList) -> keyValueList.add(keyValue),
+                resolverClass -> argument -> String.valueOf(argument),
+                resolverClass -> (expression, argument) -> expression + argument,
+                ObservedParameter.class,
+                (annotation, argument) -> KeyValue.of(((ObservedParameter) annotation).value(), argument.toString()));
+
+        handler.addAnnotatedParameters(collectedKeyValues, joinPoint);
+
+        assertThat(collectedKeyValues)
+                .containsExactlyInAnyOrder(KeyValue.of("method", "GET"), KeyValue.of("uri", "/orders"));
+    }
+
     private static List<String> keys(KeyValues keyValues) {
         return keyValues.stream().map(KeyValue::getKey).collect(Collectors.toList());
     }
@@ -235,6 +275,93 @@ public class Micrometer_commonsTest {
         @Override
         public boolean isRequired() {
             return false;
+        }
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.PARAMETER)
+    private @interface ObservedParameter {
+        String value();
+    }
+
+    private interface AnnotatedService {
+        void record(@ObservedParameter("method") String method, String uri, String ignored);
+    }
+
+    private static final class AnnotatedServiceImpl implements AnnotatedService {
+        @Override
+        public void record(String method, @ObservedParameter("uri") String uri, String ignored) {
+        }
+    }
+
+    private static final class TestProceedingJoinPoint implements ProceedingJoinPoint {
+        private final Object target;
+        private final MethodSignature signature;
+        private final Object[] args;
+
+        private TestProceedingJoinPoint(Object target, MethodSignature signature, Object... args) {
+            this.target = target;
+            this.signature = signature;
+            this.args = args;
+        }
+
+        @Override
+        public void set$AroundClosure(AroundClosure arc) {
+        }
+
+        @Override
+        public Object proceed() {
+            throw new UnsupportedOperationException("Proceeding is not used in this test");
+        }
+
+        @Override
+        public Object proceed(Object[] args) {
+            throw new UnsupportedOperationException("Proceeding is not used in this test");
+        }
+
+        @Override
+        public String toShortString() {
+            return signature.toShortString();
+        }
+
+        @Override
+        public String toLongString() {
+            return signature.toLongString();
+        }
+
+        @Override
+        public Object getThis() {
+            return target;
+        }
+
+        @Override
+        public Object getTarget() {
+            return target;
+        }
+
+        @Override
+        public Object[] getArgs() {
+            return args.clone();
+        }
+
+        @Override
+        public Signature getSignature() {
+            return signature;
+        }
+
+        @Override
+        public SourceLocation getSourceLocation() {
+            return null;
+        }
+
+        @Override
+        public String getKind() {
+            return METHOD_EXECUTION;
+        }
+
+        @Override
+        public StaticPart getStaticPart() {
+            return null;
         }
     }
 
