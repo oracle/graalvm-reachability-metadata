@@ -18,6 +18,7 @@ dependencies {
 tasks.withType(Test).configureEach {
     jvmArgs += [
         "-Dorg.modelmapper.internal.bytebuddy.safe=false",
+        "-Dorg.modelmapper.internal.bytebuddy.experimental=true",
         "--add-opens=java.base/java.lang=ALL-UNNAMED",
         "--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED",
         "--add-opens=jdk.unsupported/sun.misc=ALL-UNNAMED"
@@ -36,9 +37,11 @@ graalvmNative {
     binaries {
         test {
             runtimeArgs("-Dorg.modelmapper.internal.bytebuddy.safe=false")
+            runtimeArgs("-Dorg.modelmapper.internal.bytebuddy.experimental=true")
         }
         all {
             buildArgs.addAll([
+                '-Dorg.modelmapper.internal.bytebuddy.experimental=true',
                 '--add-opens=java.base/java.lang=ALL-UNNAMED',
                 '--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED',
                 '--add-opens=jdk.unsupported/sun.misc=ALL-UNNAMED'
