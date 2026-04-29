@@ -45,6 +45,17 @@ public class Smallrye_common_cpuTest {
     }
 
     @Test
+    void cacheTypeValuesReturnsIndependentSnapshots() {
+        CacheType[] cacheTypes = CacheType.values();
+        CacheType firstCacheType = cacheTypes[0];
+
+        cacheTypes[0] = CacheType.UNIFIED;
+
+        assertThat(CacheType.values()[0]).isSameAs(firstCacheType);
+        assertThat(CacheType.values()).isNotSameAs(cacheTypes);
+    }
+
+    @Test
     void cacheTypeMembershipHelpersHandleEachOverload() {
         assertThat(CacheType.DATA.in(CacheType.DATA)).isTrue();
         assertThat(CacheType.DATA.in(CacheType.INSTRUCTION)).isFalse();
