@@ -328,6 +328,11 @@ public class JLineConsoleTests {
             printed.addAll(Arrays.asList(input.xargs()));
             return null;
         }
+
+        @Override
+        public boolean refresh() {
+            return true;
+        }
     }
 
     private static class FakeScriptEngine implements ScriptEngine {
