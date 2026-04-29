@@ -99,7 +99,7 @@ public class GCJSerializationInstantiatorTest {
 
         static final AtomicInteger constructorCalls = new AtomicInteger();
 
-        String childState;
+        transient String childState;
 
         public SerializableChild() {
             constructorCalls.incrementAndGet();
