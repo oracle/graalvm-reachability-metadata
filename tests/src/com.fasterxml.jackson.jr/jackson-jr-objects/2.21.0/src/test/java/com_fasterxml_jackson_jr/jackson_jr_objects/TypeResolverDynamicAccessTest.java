@@ -12,7 +12,9 @@ import com.fasterxml.jackson.jr.type.TypeResolver;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,6 +32,23 @@ public class TypeResolverDynamicAccessTest {
         assertThat(resolvedArrayType.isArray()).isTrue();
         assertThat(resolvedArrayType.erasedType().getComponentType()).isEqualTo(componentClass);
         assertThat(resolvedArrayType.elementType()).isEqualTo(componentType);
+    }
+
+    @Test
+    void resolvesSyntheticGenericArrayTypesWithParameterizedComponents() {
+        TypeResolver resolver = new TypeResolver();
+        Type componentType = new SyntheticParameterizedType(List.class, String.class);
+        GenericArrayType genericArrayType = new SyntheticGenericArrayType(componentType);
+
+        ResolvedType resolvedArrayType = resolver.resolve(TypeBindings.emptyBindings(), genericArrayType);
+
+        assertThat(resolvedArrayType.isArray()).isTrue();
+        assertThat(resolvedArrayType.erasedType()).isEqualTo(List[].class);
+        assertThat(resolvedArrayType.elementType().erasedType()).isEqualTo(List.class);
+        assertThat(resolvedArrayType.elementType().typeParams())
+                .singleElement()
+                .extracting(ResolvedType::erasedType)
+                .isEqualTo(String.class);
     }
 
     @Test
@@ -100,6 +119,31 @@ public class TypeResolverDynamicAccessTest {
         @Override
         public Type getGenericComponentType() {
             return componentType;
+        }
+    }
+
+    static final class SyntheticParameterizedType implements ParameterizedType {
+        private final Type rawType;
+        private final Type[] typeArguments;
+
+        SyntheticParameterizedType(Type rawType, Type... typeArguments) {
+            this.rawType = rawType;
+            this.typeArguments = typeArguments.clone();
+        }
+
+        @Override
+        public Type[] getActualTypeArguments() {
+            return typeArguments.clone();
+        }
+
+        @Override
+        public Type getRawType() {
+            return rawType;
+        }
+
+        @Override
+        public Type getOwnerType() {
+            return null;
         }
     }
 }
