@@ -50,6 +50,23 @@ public class MapBuilderDefaultDynamicAccessTest {
     }
 
     @Test
+    void createsEmptyMapWithConfiguredMapImplementation() throws Exception {
+        Map<String, Object> counts = configuredMapBuilder().emptyMap();
+
+        assertThat(counts).isInstanceOf(ConstructorTrackingMap.class).isEmpty();
+        assertThat(ConstructorTrackingMap.CONSTRUCTOR_CALLS).hasValue(1);
+    }
+
+    @Test
+    void createsSingletonMapWithConfiguredMapImplementation() throws Exception {
+        Map<String, Object> counts = configuredMapBuilder().singletonMap("only", 99);
+
+        assertThat(counts).isInstanceOf(ConstructorTrackingMap.class);
+        assertThat(counts).containsEntry("only", 99);
+        assertThat(ConstructorTrackingMap.CONSTRUCTOR_CALLS).hasValue(1);
+    }
+
+    @Test
     void retainsConfiguredMapImplementationWhenRestartingABusyBuilder() {
         MapBuilder builder = configuredMapBuilder();
 
