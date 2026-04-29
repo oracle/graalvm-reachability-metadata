@@ -234,6 +234,37 @@ public class Micrometer_commonsTest {
                 .containsExactlyInAnyOrder(KeyValue.of("method", "GET"), KeyValue.of("uri", "/orders"));
     }
 
+    @Test
+    void annotationHandlerKeepsFirstAnnotatedParameterForDuplicateKeys() {
+        List<KeyValue> collectedKeyValues = new ArrayList<>();
+        DuplicateKeyService service = new DuplicateKeyServiceImpl();
+        MethodSignature interfaceMethod = new Factory("Micrometer_commonsTest.java", Micrometer_commonsTest.class)
+                .makeMethodSig(
+                        Modifier.PUBLIC | Modifier.ABSTRACT,
+                        "record",
+                        DuplicateKeyService.class,
+                        new Class<?>[]{String.class, String.class},
+                        new String[]{"interfaceOperation", "implementationOperation"},
+                        new Class<?>[0],
+                        Void.TYPE);
+        ProceedingJoinPoint joinPoint = new TestProceedingJoinPoint(
+                service, interfaceMethod, "interface", "implementation");
+        AnnotationHandler<List<KeyValue>> handler = newAnnotationHandler();
+
+        handler.addAnnotatedParameters(collectedKeyValues, joinPoint);
+
+        assertThat(collectedKeyValues).containsExactly(KeyValue.of("operation", "implementation"));
+    }
+
+    private static AnnotationHandler<List<KeyValue>> newAnnotationHandler() {
+        return new AnnotationHandler<>(
+                (keyValue, keyValueList) -> keyValueList.add(keyValue),
+                resolverClass -> argument -> String.valueOf(argument),
+                resolverClass -> (expression, argument) -> expression + argument,
+                ObservedParameter.class,
+                (annotation, argument) -> KeyValue.of(((ObservedParameter) annotation).value(), argument.toString()));
+    }
+
     private static List<String> keys(KeyValues keyValues) {
         return keyValues.stream().map(KeyValue::getKey).collect(Collectors.toList());
     }
@@ -291,6 +322,16 @@ public class Micrometer_commonsTest {
     private static final class AnnotatedServiceImpl implements AnnotatedService {
         @Override
         public void record(String method, @ObservedParameter("uri") String uri, String ignored) {
+        }
+    }
+
+    private interface DuplicateKeyService {
+        void record(@ObservedParameter("operation") String interfaceOperation, String implementationOperation);
+    }
+
+    private static final class DuplicateKeyServiceImpl implements DuplicateKeyService {
+        @Override
+        public void record(String interfaceOperation, @ObservedParameter("operation") String implementationOperation) {
         }
     }
 
