@@ -20,25 +20,19 @@ public class LambdaErrorMessageGeneratorTest {
 
     @Test
     void describesTimedOutCallableLambdaCondition() {
+        Callable<Boolean> condition = () -> false;
         ConditionTimeoutException timeout = assertThrows(
                 ConditionTimeoutException.class,
                 () -> await()
                         .pollDelay(Duration.ZERO)
                         .pollInterval(Duration.ofMillis(1))
                         .atMost(Duration.ofMillis(20))
-                        .until(new Synthetic$$Lambda$Condition()));
+                        .until(condition));
 
         assertThat(timeout.getMessage())
                 .contains("Condition with")
-                .contains("Synthetic")
+                .contains("Lambda expression")
+                .contains("LambdaErrorMessageGeneratorTest")
                 .contains("was not fulfilled");
-    }
-
-    @SuppressWarnings("checkstyle:TypeName")
-    private static final class Synthetic$$Lambda$Condition implements Callable<Boolean> {
-        @Override
-        public Boolean call() {
-            return false;
-        }
     }
 }
