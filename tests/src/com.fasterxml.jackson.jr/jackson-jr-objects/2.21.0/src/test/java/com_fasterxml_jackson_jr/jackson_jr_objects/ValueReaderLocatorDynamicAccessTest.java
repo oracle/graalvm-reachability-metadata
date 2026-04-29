@@ -6,6 +6,7 @@
  */
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
 import com.fasterxml.jackson.jr.ob.JacksonJrExtension;
@@ -55,10 +56,23 @@ public class ValueReaderLocatorDynamicAccessTest {
         assertThat(reader.valueType()).isEqualTo(RecordBackedBean.class);
     }
 
+    @Test
+    void readsModifierProvidedRecordDefinitionsThroughDeclaredRecordFields() throws Exception {
+        RecordBackedBean bean = recordAwareJson().beanFrom(RecordBackedBean.class, "{\"id\":\"record-7\"}");
+
+        assertThat(bean.id()).isEqualTo("record-7");
+    }
+
     private static JSON enumAwareJson(JSON.Feature... features) {
         return JSON.builder()
                 .enable(features)
                 .register(new EnumDefinitionExtension())
+                .build();
+    }
+
+    private static JSON recordAwareJson() {
+        return JSON.builder()
+                .register(new RecordDefinitionExtension())
                 .build();
     }
 
@@ -74,6 +88,13 @@ public class ValueReaderLocatorDynamicAccessTest {
         @Override
         protected void register(ExtensionContext ctxt) {
             ctxt.insertModifier(new EnumDefinitionModifier());
+        }
+    }
+
+    public static class RecordDefinitionExtension extends JacksonJrExtension {
+        @Override
+        protected void register(ExtensionContext ctxt) {
+            ctxt.insertModifier(new RecordDefinitionModifier());
         }
     }
 
@@ -114,13 +135,21 @@ public class ValueReaderLocatorDynamicAccessTest {
                 return null;
             }
             return new POJODefinition(RecordBackedBean.class, recordProps(),
-                    new BeanConstructors(RecordBackedBean.class));
+                    new BeanConstructors(RecordBackedBean.class).addRecordConstructor(recordConstructor()));
         }
 
         private static POJODefinition.Prop[] recordProps() {
             return new POJODefinition.Prop[] {
                     new POJODefinition.Prop("id", "id", null, null, null, null, null)
             };
+        }
+
+        private static Constructor<?> recordConstructor() {
+            try {
+                return RecordBackedBean.class.getDeclaredConstructor(String.class);
+            } catch (NoSuchMethodException ex) {
+                throw new IllegalStateException(ex);
+            }
         }
     }
 }
