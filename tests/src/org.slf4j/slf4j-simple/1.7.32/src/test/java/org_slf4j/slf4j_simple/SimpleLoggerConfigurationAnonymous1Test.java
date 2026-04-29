@@ -10,10 +10,12 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.impl.SimpleLogger;
+import org.slf4j.impl.SimpleLoggerConfiguration;
 import org.slf4j.impl.SimpleLoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,14 +33,15 @@ public class SimpleLoggerConfigurationAnonymous1Test {
             System.clearProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY);
 
             resetSimpleLoggerInitialization();
-            Thread.currentThread().setContextClassLoader(new PropertiesClassLoader(originalContextClassLoader));
-            Logger configuredLogger = new SimpleLoggerFactory().getLogger("simple.logger.configuration.context");
-            assertThat(configuredLogger.isTraceEnabled()).isTrue();
-
-            resetSimpleLoggerInitialization();
             Thread.currentThread().setContextClassLoader(null);
             Logger defaultLogger = new SimpleLoggerFactory().getLogger("simple.logger.configuration.system");
             assertThat(defaultLogger.isInfoEnabled()).isTrue();
+            assertThat(defaultLogger.isTraceEnabled()).isFalse();
+
+            resetSimpleLoggerInitialization();
+            Thread.currentThread().setContextClassLoader(new PropertiesClassLoader(originalContextClassLoader));
+            Logger configuredLogger = new SimpleLoggerFactory().getLogger("simple.logger.configuration.context");
+            assertThat(configuredLogger.isTraceEnabled()).isTrue();
         } finally {
             Thread.currentThread().setContextClassLoader(originalContextClassLoader);
             restoreSystemProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, originalDefaultLevel);
@@ -51,9 +54,30 @@ public class SimpleLoggerConfigurationAnonymous1Test {
         initialized.setAccessible(true);
         initialized.setBoolean(null, false);
 
+        SimpleLoggerConfiguration configParams = getConfigParams();
+        clearConfigurationProperties(configParams);
+        resetDefaultLogLevel(configParams);
+    }
+
+    private static SimpleLoggerConfiguration getConfigParams() throws Exception {
         Field configParams = SimpleLogger.class.getDeclaredField("CONFIG_PARAMS");
         configParams.setAccessible(true);
-        configParams.set(null, null);
+        return (SimpleLoggerConfiguration) configParams.get(null);
+    }
+
+    private static void clearConfigurationProperties(SimpleLoggerConfiguration configParams) throws Exception {
+        Field properties = SimpleLoggerConfiguration.class.getDeclaredField("properties");
+        properties.setAccessible(true);
+        ((Properties) properties.get(configParams)).clear();
+    }
+
+    private static void resetDefaultLogLevel(SimpleLoggerConfiguration configParams) throws Exception {
+        Field defaultLogLevelDefault = SimpleLoggerConfiguration.class.getDeclaredField("DEFAULT_LOG_LEVEL_DEFAULT");
+        defaultLogLevelDefault.setAccessible(true);
+
+        Field defaultLogLevel = SimpleLoggerConfiguration.class.getDeclaredField("defaultLogLevel");
+        defaultLogLevel.setAccessible(true);
+        defaultLogLevel.setInt(configParams, defaultLogLevelDefault.getInt(null));
     }
 
     private static void restoreSystemProperty(String key, String value) {
