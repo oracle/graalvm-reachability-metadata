@@ -306,6 +306,19 @@ int versionsPerJobFor(String section) {
     value
 }
 
+int maxLibrariesFor(String section) {
+    def sec = matrixSectionFor(section)
+    Object maxLibraries = sec["max-libraries"]
+    if (maxLibraries == null) {
+        return Integer.MAX_VALUE
+    }
+    int value = Integer.parseInt(maxLibraries.toString())
+    if (value <= 0) {
+        throw new GradleException("'${section}.max-libraries' must be greater than zero")
+    }
+    value
+}
+
 List<Map<String, Object>> expandMatrixEntries(List<Map<String, Object>> entries, String section) {
     def defaults = matrixDefaultsFor(section)
     List<String> nativeImageModes = nativeImageModesForMatrix()
@@ -330,7 +343,8 @@ Map<String, Object> springAotMatrixConfig() {
 
 List<Map<String, Object>> expandNewLibraryVersionCompatibilityMatrix(List<Map<String, Object>> libraries) {
     int versionsPerJob = versionsPerJobFor("generateNewLibraryVersionCompatibilityMatrix")
-    expandMatrixEntries(libraries.collect { Map<String, Object> library ->
+    int maxLibraries = maxLibrariesFor("generateNewLibraryVersionCompatibilityMatrix")
+    expandMatrixEntries(libraries.take(maxLibraries).collect { Map<String, Object> library ->
         [
                 "name"    : library["name"],
                 "versions": (library["versions"] as List<?>)
