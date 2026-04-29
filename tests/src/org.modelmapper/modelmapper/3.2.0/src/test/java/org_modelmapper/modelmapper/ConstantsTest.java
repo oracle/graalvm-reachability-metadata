@@ -15,13 +15,13 @@ import org.modelmapper.internal.asm.Opcodes;
 public class ConstantsTest {
     @Test
     void experimentalApiChecksCallerBytecodeResource() {
-        assertThatThrownBy(ExperimentalClassVisitor::new)
+        assertThatThrownBy(ConstantsExperimentalClassVisitor::new)
             .isInstanceOf(IllegalStateException.class);
     }
+}
 
-    private static final class ExperimentalClassVisitor extends ClassVisitor {
-        private ExperimentalClassVisitor() {
-            super(Opcodes.ASM10_EXPERIMENTAL);
-        }
+final class ConstantsExperimentalClassVisitor extends ClassVisitor {
+    ConstantsExperimentalClassVisitor() {
+        super(Opcodes.ASM10_EXPERIMENTAL);
     }
 }
