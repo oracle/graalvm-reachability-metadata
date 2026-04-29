@@ -13,27 +13,26 @@ import java.lang.ref.WeakReference;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Test;
-import org.modelmapper.internal.bytebuddy.dynamic.NexusAccessor.Dispatcher;
+import org.modelmapper.internal.bytebuddy.dynamic.NexusAccessor;
 import org.modelmapper.internal.bytebuddy.implementation.LoadedTypeInitializer;
 
 public class NexusAccessorInnerDispatcherInnerCreationActionTest {
 
     @Test
     void createsNexusDispatcherAndUsesDiscoveredEntryPoints() {
-        Dispatcher dispatcher = Dispatcher.CreationAction.INSTANCE.run();
         ReferenceQueue<ClassLoader> referenceQueue = new ReferenceQueue<>();
+        NexusAccessor nexusAccessor = new NexusAccessor(referenceQueue);
         ClassLoader classLoader = new IsolatedClassLoader(getClass().getClassLoader());
         RecordingLoadedTypeInitializer initializer = new RecordingLoadedTypeInitializer();
 
-        assertThat(dispatcher.isAlive()).isTrue();
+        assertThat(NexusAccessor.isAlive()).isTrue();
 
-        dispatcher.register(
+        nexusAccessor.register(
             String.class.getName(),
             classLoader,
-            referenceQueue,
             System.identityHashCode(initializer),
             initializer);
-        dispatcher.clean(new WeakReference<>(classLoader, referenceQueue));
+        NexusAccessor.clean(new WeakReference<>(classLoader, referenceQueue));
 
         assertThat(initializer.loadedType()).isNull();
     }
