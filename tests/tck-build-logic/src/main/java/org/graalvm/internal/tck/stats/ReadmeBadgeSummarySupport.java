@@ -97,7 +97,7 @@ public final class ReadmeBadgeSummarySupport {
                 snapshotDate.toString(),
                 new BadgeValues(
                         formatInteger(metadataIndexMetrics.metadataIndexes()),
-                        formatPercent(statsMetrics.avgDynamicAccessCoveragePercent()),
+                        formatPercent(statsMetrics.dynamicAccessCallCoveragePercent()),
                         formatInteger(metadataIndexMetrics.testedVersions()),
                         formatInteger(statsMetrics.testedLinesOfCode())
                 ),
@@ -199,8 +199,8 @@ public final class ReadmeBadgeSummarySupport {
     private static StatsMetrics buildStatsMetrics(LibraryStatsModels.LibraryStats libraryStats) {
         int coverageStatsArtifacts = libraryStats.entries() == null ? 0 : libraryStats.entries().size();
 
-        BigDecimal dynamicAccessRatioSum = BigDecimal.ZERO;
-        long dynamicAccessRatioCount = 0;
+        long dynamicAccessCoveredCalls = 0;
+        long dynamicAccessTotalCalls = 0;
         int testedLinesOfCode = 0;
         if (libraryStats.entries() != null) {
             for (LibraryStatsModels.ArtifactStats artifactStats : libraryStats.entries().values()) {
@@ -216,8 +216,11 @@ public final class ReadmeBadgeSummarySupport {
                             continue;
                         }
                         if (versionStats.dynamicAccess() != null && versionStats.dynamicAccess().isAvailable()) {
-                            dynamicAccessRatioSum = dynamicAccessRatioSum.add(versionStats.dynamicAccess().coverageRatio());
-                            dynamicAccessRatioCount++;
+                            long totalCalls = versionStats.dynamicAccess().totalCalls();
+                            if (totalCalls > 0) {
+                                dynamicAccessCoveredCalls += versionStats.dynamicAccess().coveredCalls();
+                                dynamicAccessTotalCalls += totalCalls;
+                            }
                         }
                         if (versionStats.libraryCoverage() != null
                                 && versionStats.libraryCoverage().line() != null
@@ -229,15 +232,15 @@ public final class ReadmeBadgeSummarySupport {
             }
         }
 
-        BigDecimal avgDynamicAccessCoveragePercent = BigDecimal.ZERO.setScale(1, RoundingMode.HALF_UP);
-        if (dynamicAccessRatioCount > 0) {
-            avgDynamicAccessCoveragePercent = dynamicAccessRatioSum
-                    .divide(BigDecimal.valueOf(dynamicAccessRatioCount), AVERAGE_SCALE, RoundingMode.HALF_UP)
+        BigDecimal dynamicAccessCallCoveragePercent = BigDecimal.ZERO.setScale(1, RoundingMode.HALF_UP);
+        if (dynamicAccessTotalCalls > 0) {
+            dynamicAccessCallCoveragePercent = BigDecimal.valueOf(dynamicAccessCoveredCalls)
+                    .divide(BigDecimal.valueOf(dynamicAccessTotalCalls), AVERAGE_SCALE, RoundingMode.HALF_UP)
                     .multiply(HUNDRED)
                     .setScale(1, RoundingMode.HALF_UP);
         }
 
-        return new StatsMetrics(avgDynamicAccessCoveragePercent, coverageStatsArtifacts, testedLinesOfCode);
+        return new StatsMetrics(dynamicAccessCallCoveragePercent, coverageStatsArtifacts, testedLinesOfCode);
     }
 
     private static MetadataIndexMetrics buildMetadataIndexMetrics(Path metadataRoot) {
@@ -413,12 +416,12 @@ public final class ReadmeBadgeSummarySupport {
                 new PanelSpec(
                         "dynamic-access",
                         "Dynamic access coverage",
-                        "Average dynamic-access call coverage across repository metadata",
+                        "Dynamic-access call coverage across repository metadata",
                         true,
                         "percent",
                         "#1f9d55",
                         "#34d399",
-                        extractMetricPoints(history, entry -> entry.metrics().stats().avgDynamicAccessCoveragePercent())
+                        extractMetricPoints(history, entry -> entry.metrics().stats().dynamicAccessCallCoveragePercent())
                 ),
                 new PanelSpec(
                         "tested-lines-of-code",
@@ -988,7 +991,7 @@ public final class ReadmeBadgeSummarySupport {
     }
 
     public record StatsMetrics(
-            BigDecimal avgDynamicAccessCoveragePercent,
+            BigDecimal dynamicAccessCallCoveragePercent,
             int coverageStatsArtifacts,
             int testedLinesOfCode
     ) {
