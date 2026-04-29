@@ -1,0 +1,2758 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd710-0de5-7551-8dcf-1386fe5325e6
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.aspectj:aspectjrt:1.9.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.9.6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+- Set "coordinates" to "org.aspectj:aspectjrt:1.9.6".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact layout and exact version tags before editing the JSON, since these metadata fields need stable URLs rather than guesses.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json && sed -n '1,160p' build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+-rw-rw-r-- 1 vjovanov vjovanov 52 Apr 29 04:27 build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+{
+  "coordinates" : "org.aspectj:aspectjrt:1.9.6"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'org\\.aspectj:aspectjrt|aspectjrt' ." in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+ exited 1 in 0ms:
+web search: 
+web search: Maven Central org.aspectj aspectjrt 1.9.6 sources javadoc test-sources
+web search: 
+web search: https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/
+web search: 
+web search: https://github.com/eclipse-aspectj/aspectj/tags
+web search: 
+web search: https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6
+codex
+The Maven Central directory has exact `sources.jar` and `javadoc.jar` artifacts for `1.9.6`, but no published test artifact in that version directory. I’m checking the release tag now for the test suite path and repository identity.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6.pom' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-aspectj/aspectj/git/ref/tags/V1_9_6' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-aspectj/aspectj/contents/aspectjrt?ref=V1_9_6' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-aspectj/aspectj/contents/runtime?ref=V1_9_6' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+ succeeded in 130ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.aspectj</groupId>
+  <artifactId>aspectjrt</artifactId>
+  <packaging>jar</packaging>
+  <version>1.9.6</version>
+  <name>AspectJ runtime</name>
+  <description>The runtime needed to execute a program using AspectJ</description>
+  <url>https://www.eclipse.org/aspectj/</url>
+
+  <licenses>
+    <license>
+      <name>Eclipse Public License - v 1.0</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>aclement</id>
+      <name>Andy Clement</name>
+      <email>aclement@vmware.com</email>
+    </developer>
+  </developers>
+
+  <scm>
+    <url>https://github.com/eclipse/org.aspectj</url>
+  </scm>
+</project>
+
+ succeeded in 181ms:
+[
+  {
+    "name": "aspectjrt-assembly.xml",
+    "path": "aspectjrt/aspectjrt-assembly.xml",
+    "sha": "d4108da92d225dc29505f8e682378b234476a032",
+    "size": 569,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/aspectjrt/aspectjrt-assembly.xml?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/aspectjrt/aspectjrt-assembly.xml",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/d4108da92d225dc29505f8e682378b234476a032",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/aspectjrt/aspectjrt-assembly.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/aspectjrt/aspectjrt-assembly.xml?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/d4108da92d225dc29505f8e682378b234476a032",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/aspectjrt/aspectjrt-assembly.xml"
+    }
+  },
+  {
+    "name": "aspectjrt-sources-assembly.xml",
+    "path": "aspectjrt/aspectjrt-sources-assembly.xml",
+    "sha": "ec393398e57d011d7588eee35de01ac00cf7b546",
+    "size": 757,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/aspectjrt/aspectjrt-sources-assembly.xml?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/aspectjrt/aspectjrt-sources-assembly.xml",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/ec393398e57d011d7588eee35de01ac00cf7b546",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/aspectjrt/aspectjrt-sources-assembly.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/aspectjrt/aspectjrt-sources-assembly.xml?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/ec393398e57d011d7588eee35de01ac00cf7b546",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/aspectjrt/aspectjrt-sources-assembly.xml"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "aspectjrt/pom.xml",
+    "sha": "26e89c83aff486a2e58c99629be7cfb25819f485",
+    "size": 3177,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/aspectjrt/pom.xml?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/aspectjrt/pom.xml",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/26e89c83aff486a2e58c99629be7cfb25819f485",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/aspectjrt/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/aspectjrt/pom.xml?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/26e89c83aff486a2e58c99629be7cfb25819f485",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/aspectjrt/pom.xml"
+    }
+  }
+]
+
+ succeeded in 198ms:
+{
+  "ref": "refs/tags/V1_9_6",
+  "node_id": "MDM6UmVmMjgzODE3MjcwOnJlZnMvdGFncy9WMV85XzY=",
+  "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/refs/tags/V1_9_6",
+  "object": {
+    "sha": "3d7bc042885bb01697fbd5004fe36cf6c274cfea",
+    "type": "commit",
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/commits/3d7bc042885bb01697fbd5004fe36cf6c274cfea"
+  }
+}
+
+ succeeded in 159ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "runtime/pom.xml",
+    "sha": "d34c61d7c54665ca752cec68654f0cb9f40adef7",
+    "size": 1138,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/runtime/pom.xml?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/runtime/pom.xml",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/d34c61d7c54665ca752cec68654f0cb9f40adef7",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/runtime/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/runtime/pom.xml?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/d34c61d7c54665ca752cec68654f0cb9f40adef7",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/runtime/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "runtime/src",
+    "sha": "d39228f552bb4e9886ad4d91ad4d5514ca95b400",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/runtime/src?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/runtime/src",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/d39228f552bb4e9886ad4d91ad4d5514ca95b400",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/runtime/src?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/d39228f552bb4e9886ad4d91ad4d5514ca95b400",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/runtime/src"
+    }
+  }
+]
+
+web search: 
+web search: https://github.com/eclipse/org.aspectj/tree/V1_9_6
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/aspectj/aspectjrt/1.9.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/aspectj/aspectjrt/1.9.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="aspectjrt-1.9.6-javadoc.jar" title="aspectjrt-1.9.6-javadoc.jar">aspectjrt-1.9.6-javadoc.jar</a>                       2020-07-22 19:25    348502      
+<a href="aspectjrt-1.9.6-javadoc.jar.asc" title="aspectjrt-1.9.6-javadoc.jar.asc">aspectjrt-1.9.6-javadoc.jar.asc</a>                   2020-07-22 19:25       488      
+<a href="aspectjrt-1.9.6-javadoc.jar.asc.md5" title="aspectjrt-1.9.6-javadoc.jar.asc.md5">aspectjrt-1.9.6-javadoc.jar.asc.md5</a>               2020-07-22 19:25        32      
+<a href="aspectjrt-1.9.6-javadoc.jar.asc.sha1" title="aspectjrt-1.9.6-javadoc.jar.asc.sha1">aspectjrt-1.9.6-javadoc.jar.asc.sha1</a>              2020-07-22 19:25        40      
+<a href="aspectjrt-1.9.6-javadoc.jar.asc.sha256" title="aspectjrt-1.9.6-javadoc.jar.asc.sha256">aspectjrt-1.9.6-javadoc.jar.asc.sha256</a>            2020-07-22 19:25        64      
+<a href="aspectjrt-1.9.6-javadoc.jar.asc.sha512" title="aspectjrt-1.9.6-javadoc.jar.asc.sha512">aspectjrt-1.9.6-javadoc.jar.asc.sha512</a>            2020-07-22 19:25       128      
+<a href="aspectjrt-1.9.6-javadoc.jar.md5" title="aspectjrt-1.9.6-javadoc.jar.md5">aspectjrt-1.9.6-javadoc.jar.md5</a>                   2020-07-22 19:25        32      
+<a href="aspectjrt-1.9.6-javadoc.jar.sha1" title="aspectjrt-1.9.6-javadoc.jar.sha1">aspectjrt-1.9.6-javadoc.jar.sha1</a>                  2020-07-22 19:25        40      
+<a href="aspectjrt-1.9.6-javadoc.jar.sha256" title="aspectjrt-1.9.6-javadoc.jar.sha256">aspectjrt-1.9.6-javadoc.jar.sha256</a>                2020-07-22 19:25        64      
+<a href="aspectjrt-1.9.6-javadoc.jar.sha512" title="aspectjrt-1.9.6-javadoc.jar.sha512">aspectjrt-1.9.6-javadoc.jar.sha512</a>                2020-07-22 19:25       128      
+<a href="aspectjrt-1.9.6-sources.jar" title="aspectjrt-1.9.6-sources.jar">aspectjrt-1.9.6-sources.jar</a>                       2020-07-22 19:25    110058      
+<a href="aspectjrt-1.9.6-sources.jar.asc" title="aspectjrt-1.9.6-sources.jar.asc">aspectjrt-1.9.6-sources.jar.asc</a>                   2020-07-22 19:25       488      
+<a href="aspectjrt-1.9.6-sources.jar.asc.md5" title="aspectjrt-1.9.6-sources.jar.asc.md5">aspectjrt-1.9.6-sources.jar.asc.md5</a>               2020-07-22 19:25        32      
+<a href="aspectjrt-1.9.6-sources.jar.asc.sha1" title="aspectjrt-1.9.6-sources.jar.asc.sha1">aspectjrt-1.9.6-sources.jar.asc.sha1</a>              2020-07-22 19:25        40      
+<a href="aspectjrt-1.9.6-sources.jar.asc.sha256" title="aspectjrt-1.9.6-sources.jar.asc.sha256">aspectjrt-1.9.6-sources.jar.asc.sha256</a>            2020-07-22 19:25        64      
+<a href="aspectjrt-1.9.6-sources.jar.asc.sha512" title="aspectjrt-1.9.6-sources.jar.asc.sha512">aspectjrt-1.9.6-sources.jar.asc.sha512</a>            2020-07-22 19:25       128      
+<a href="aspectjrt-1.9.6-sources.jar.md5" title="aspectjrt-1.9.6-sources.jar.md5">aspectjrt-1.9.6-sources.jar.md5</a>                   2020-07-22 19:25        32      
+<a href="aspectjrt-1.9.6-sources.jar.sha1" title="aspectjrt-1.9.6-sources.jar.sha1">aspectjrt-1.9.6-sources.jar.sha1</a>                  2020-07-22 19:25        40      
+<a href="aspectjrt-1.9.6-sources.jar.sha256" title="aspectjrt-1.9.6-sources.jar.sha256">aspectjrt-1.9.6-sources.jar.sha256</a>                2020-07-22 19:25        64      
+<a href="aspectjrt-1.9.6-sources.jar.sha512" title="aspectjrt-1.9.6-sources.jar.sha512">aspectjrt-1.9.6-sources.jar.sha512</a>                2020-07-22 19:25       128      
+<a href="aspectjrt-1.9.6.jar" title="aspectjrt-1.9.6.jar">aspectjrt-1.9.6.jar</a>                               2020-07-22 19:25    121746      
+<a href="aspectjrt-1.9.6.jar.asc" title="aspectjrt-1.9.6.jar.asc">aspectjrt-1.9.6.jar.asc</a>                           2020-07-22 19:25       488      
+<a href="aspectjrt-1.9.6.jar.asc.md5" title="aspectjrt-1.9.6.jar.asc.md5">aspectjrt-1.9.6.jar.asc.md5</a>                       2020-07-22 19:25        32      
+<a href="aspectjrt-1.9.6.jar.asc.sha1" title="aspectjrt-1.9.6.jar.asc.sha1">aspectjrt-1.9.6.jar.asc.sha1</a>                      2020-07-22 19:25        40      
+<a href="aspectjrt-1.9.6.jar.asc.sha256" title="aspectjrt-1.9.6.jar.asc.sha256">aspectjrt-1.9.6.jar.asc.sha256</a>                    2020-07-22 19:25        64      
+<a href="aspectjrt-1.9.6.jar.asc.sha512" title="aspectjrt-1.9.6.jar.asc.sha512">aspectjrt-1.9.6.jar.asc.sha512</a>                    2020-07-22 19:25       128      
+<a href="aspectjrt-1.9.6.jar.md5" title="aspectjrt-1.9.6.jar.md5">aspectjrt-1.9.6.jar.md5</a>                           2020-07-22 19:25        32      
+<a href="aspectjrt-1.9.6.jar.sha1" title="aspectjrt-1.9.6.jar.sha1">aspectjrt-1.9.6.jar.sha1</a>                          2020-07-22 19:25        40      
+<a href="aspectjrt-1.9.6.jar.sha256" title="aspectjrt-1.9.6.jar.sha256">aspectjrt-1.9.6.jar.sha256</a>                        2020-07-22 19:25        64      
+<a href="aspectjrt-1.9.6.jar.sha512" title="aspectjrt-1.9.6.jar.sha512">aspectjrt-1.9.6.jar.sha512</a>                        2020-07-22 19:25       128      
+<a href="aspectjrt-1.9.6.pom" title="aspectjrt-1.9.6.pom">aspectjrt-1.9.6.pom</a>                               2020-07-22 19:25      1017      
+<a href="aspectjrt-1.9.6.pom.asc" title="aspectjrt-1.9.6.pom.asc">aspectjrt-1.9.6.pom.asc</a>                           2020-07-22 19:25       488      
+<a href="aspectjrt-1.9.6.pom.asc.md5" title="aspectjrt-1.9.6.pom.asc.md5">aspectjrt-1.9.6.pom.asc.md5</a>                       2020-07-22 19:25        32      
+<a href="aspectjrt-1.9.6.pom.asc.sha1" title="aspectjrt-1.9.6.pom.asc.sha1">aspectjrt-1.9.6.pom.asc.sha1</a>                      2020-07-22 19:25        40      
+<a href="aspectjrt-1.9.6.pom.asc.sha256" title="aspectjrt-1.9.6.pom.asc.sha256">aspectjrt-1.9.6.pom.asc.sha256</a>                    2020-07-22 19:25        64      
+<a href="aspectjrt-1.9.6.pom.asc.sha512" title="aspectjrt-1.9.6.pom.asc.sha512">aspectjrt-1.9.6.pom.asc.sha512</a>                    2020-07-22 19:25       128      
+<a href="aspectjrt-1.9.6.pom.md5" title="aspectjrt-1.9.6.pom.md5">aspectjrt-1.9.6.pom.md5</a>                           2020-07-22 19:25        32      
+<a href="aspectjrt-1.9.6.pom.sha1" title="aspectjrt-1.9.6.pom.sha1">aspectjrt-1.9.6.pom.sha1</a>                          2020-07-22 19:25        40      
+<a href="aspectjrt-1.9.6.pom.sha256" title="aspectjrt-1.9.6.pom.sha256">aspectjrt-1.9.6.pom.sha256</a>                        2020-07-22 19:25        64      
+<a href="aspectjrt-1.9.6.pom.sha512" title="aspectjrt-1.9.6.pom.sha512">aspectjrt-1.9.6.pom.sha512</a>                        2020-07-22 19:25       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests?ref=V1_9_6' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-aspectj/aspectj/contents/runtime/src?ref=V1_9_6' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/aspectjrt/pom.xml' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+ succeeded in 154ms:
+[
+  {
+    "name": "main",
+    "path": "runtime/src/main",
+    "sha": "43977d458f2bed26eb12e265b21c9152928ccc19",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/runtime/src/main?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/runtime/src/main",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/43977d458f2bed26eb12e265b21c9152928ccc19",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/runtime/src/main?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/43977d458f2bed26eb12e265b21c9152928ccc19",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/runtime/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "runtime/src/test",
+    "sha": "0a6e3faf07c1ff4fc89d29ffd6bf3e1dd7a2f162",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/runtime/src/test?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/runtime/src/test",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/0a6e3faf07c1ff4fc89d29ffd6bf3e1dd7a2f162",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/runtime/src/test?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/0a6e3faf07c1ff4fc89d29ffd6bf3e1dd7a2f162",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/runtime/src/test"
+    }
+  }
+]
+
+ succeeded in 167ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.aspectj</groupId>
+		<artifactId>aspectj-parent</artifactId>
+		<version>1.9.6</version>
+	</parent>
+
+	<artifactId>aspectjrt</artifactId>
+	<packaging>pom</packaging>
+	<name>AspectJ Runtime</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>runtime</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+
+			<!-- skip creation of test-jar in here -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>test-jar</id>
+						<phase></phase>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>aspectjrt-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>aspectjrt-${project.version}</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+							<archive>
+								<manifestEntries>
+									<Automatic-Module-Name>org.aspectj.runtime</Automatic-Module-Name>
+								</manifestEntries>
+
+								<manifestSections>
+									<manifestSection>
+										<name>org/aspectj/lang/</name>
+										<manifestEntries>
+
+											<Specification-Title>AspectJ Runtime Classes</Specification-Title>
+											<Specification-Version>${project.version}</Specification-Version>
+											<Specification-Vendor>https://www.eclipse.org/aspectj/</Specification-Vendor>
+
+											<Implementation-Title>org.aspectj.runtime</Implementation-Title>
+											<Implementation-Version>${project.version}</Implementation-Version>
+											<Implementation-Vendor>https://www.eclipse.org/aspectj/</Implementation-Vendor>
+
+											<Bundle-Name>AspectJ Runtime</Bundle-Name>
+											<Bundle-Version>${project.version}</Bundle-Version>
+											<Bundle-Copyright>(C) Copyright 1999-2001 Xerox Corporation,
+												2002 Palo Alto Research Center, Incorporated (PARC),
+												2003-2019 Contributors. All Rights Reserved</Bundle-Copyright>
+										</manifestEntries>
+									</manifestSection>
+								</manifestSections>
+							</archive>
+
+							<descriptors>
+								<descriptor>aspectjrt-assembly.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>aspectjrt-src-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<classifier>sources</classifier>
+							<finalName>aspectjrt-${project.version}</finalName>
+							<archive>
+							</archive>
+							<descriptors>
+								<descriptor>aspectjrt-sources-assembly.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>
+
+ succeeded in 219ms:
+[
+  {
+    "name": "ajcHarnessTests.xml",
+    "path": "tests/ajcHarnessTests.xml",
+    "sha": "4a031b6829382c4b7bf8106b0ae943f095e2485f",
+    "size": 22062,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajcHarnessTests.xml?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/ajcHarnessTests.xml",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/4a031b6829382c4b7bf8106b0ae943f095e2485f",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/ajcHarnessTests.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajcHarnessTests.xml?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/4a031b6829382c4b7bf8106b0ae943f095e2485f",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/ajcHarnessTests.xml"
+    }
+  },
+  {
+    "name": "ajcTestSuite.dtd",
+    "path": "tests/ajcTestSuite.dtd",
+    "sha": "fbfcd011a426112bc7ec9a42ea3572b0f1afac18",
+    "size": 3093,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajcTestSuite.dtd?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/ajcTestSuite.dtd",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/fbfcd011a426112bc7ec9a42ea3572b0f1afac18",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/ajcTestSuite.dtd",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajcTestSuite.dtd?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/fbfcd011a426112bc7ec9a42ea3572b0f1afac18",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/ajcTestSuite.dtd"
+    }
+  },
+  {
+    "name": "ajcTests.xml",
+    "path": "tests/ajcTests.xml",
+    "sha": "a898def3e936525acb734aeed4a3aae25ba30ffa",
+    "size": 3842,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajcTests.xml?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/ajcTests.xml",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/a898def3e936525acb734aeed4a3aae25ba30ffa",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/ajcTests.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajcTests.xml?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/a898def3e936525acb734aeed4a3aae25ba30ffa",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/ajcTests.xml"
+    }
+  },
+  {
+    "name": "ajcTests10.xml",
+    "path": "tests/ajcTests10.xml",
+    "sha": "8a493e4867d0bc98e744d8ee1a53366ebeb02a06",
+    "size": 9055,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajcTests10.xml?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/ajcTests10.xml",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/8a493e4867d0bc98e744d8ee1a53366ebeb02a06",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/ajcTests10.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajcTests10.xml?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/8a493e4867d0bc98e744d8ee1a53366ebeb02a06",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/ajcTests10.xml"
+    }
+  },
+  {
+    "name": "ajcTestsAttic.xml",
+    "path": "tests/ajcTestsAttic.xml",
+    "sha": "e6cbf3bae4ab7582d0c1e7101b9d02d4a3438d70",
+    "size": 13490,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajcTestsAttic.xml?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/ajcTestsAttic.xml",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/e6cbf3bae4ab7582d0c1e7101b9d02d4a3438d70",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/ajcTestsAttic.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajcTestsAttic.xml?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/e6cbf3bae4ab7582d0c1e7101b9d02d4a3438d70",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/ajcTestsAttic.xml"
+    }
+  },
+  {
+    "name": "ajcTestsBroken.xml",
+    "path": "tests/ajcTestsBroken.xml",
+    "sha": "d919e26e4b12dcb4d6007d609de444b675e411b6",
+    "size": 3140,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajcTestsBroken.xml?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/ajcTestsBroken.xml",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/d919e26e4b12dcb4d6007d609de444b675e411b6",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/ajcTestsBroken.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajcTestsBroken.xml?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/d919e26e4b12dcb4d6007d609de444b675e411b6",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/ajcTestsBroken.xml"
+    }
+  },
+  {
+    "name": "ajcTestsExamples.xml",
+    "path": "tests/ajcTestsExamples.xml",
+    "sha": "bacd407cf9a2b9d60b8d6bf6faa6cef895a92fdb",
+    "size": 3985,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajcTestsExamples.xml?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/ajcTestsExamples.xml",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/bacd407cf9a2b9d60b8d6bf6faa6cef895a92fdb",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/ajcTestsExamples.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajcTestsExamples.xml?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/bacd407cf9a2b9d60b8d6bf6faa6cef895a92fdb",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/ajcTestsExamples.xml"
+    }
+  },
+  {
+    "name": "ajcTestsFailing.xml",
+    "path": "tests/ajcTestsFailing.xml",
+    "sha": "6778764c6f654b9777a0d561c60814e0a2efed1a",
+    "size": 7999,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajcTestsFailing.xml?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/ajcTestsFailing.xml",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/6778764c6f654b9777a0d561c60814e0a2efed1a",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/ajcTestsFailing.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajcTestsFailing.xml?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/6778764c6f654b9777a0d561c60814e0a2efed1a",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/ajcTestsFailing.xml"
+    }
+  },
+  {
+    "name": "ajde",
+    "path": "tests/ajde",
+    "sha": "b75d34a7b046a861de8a5c55ba4ffd511cc1ad38",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajde?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/ajde",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/b75d34a7b046a861de8a5c55ba4ffd511cc1ad38",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajde?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/b75d34a7b046a861de8a5c55ba4ffd511cc1ad38",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/ajde"
+    }
+  },
+  {
+    "name": "ajdoc",
+    "path": "tests/ajdoc",
+    "sha": "a9c4c3bf2532b832c01816bc5f52637750c63beb",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajdoc?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/ajdoc",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/a9c4c3bf2532b832c01816bc5f52637750c63beb",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ajdoc?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/a9c4c3bf2532b832c01816bc5f52637750c63beb",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/ajdoc"
+    }
+  },
+  {
+    "name": "ant",
+    "path": "tests/ant",
+    "sha": "658b58a729761141aac64817c3ba1523d23ed380",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ant?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/ant",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/658b58a729761141aac64817c3ba1523d23ed380",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ant?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/658b58a729761141aac64817c3ba1523d23ed380",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/ant"
+    }
+  },
+  {
+    "name": "apt",
+    "path": "tests/apt",
+    "sha": "81c20df867f75b0cf1ef8b5afd7bae37e2e25e73",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/apt?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/apt",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/81c20df867f75b0cf1ef8b5afd7bae37e2e25e73",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/apt?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/81c20df867f75b0cf1ef8b5afd7bae37e2e25e73",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/apt"
+    }
+  },
+  {
+    "name": "base",
+    "path": "tests/base",
+    "sha": "5b8ee1e5fbac938160c3eb934d3c6dfc26a01f42",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/base?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/base",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/5b8ee1e5fbac938160c3eb934d3c6dfc26a01f42",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/base?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/5b8ee1e5fbac938160c3eb934d3c6dfc26a01f42",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/base"
+    }
+  },
+  {
+    "name": "binding",
+    "path": "tests/binding",
+    "sha": "20ba573024bdce0ba88ffc91e15f4ee686acabe8",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/binding?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/binding",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/20ba573024bdce0ba88ffc91e15f4ee686acabe8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/binding?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/20ba573024bdce0ba88ffc91e15f4ee686acabe8",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/binding"
+    }
+  },
+  {
+    "name": "bringup",
+    "path": "tests/bringup",
+    "sha": "e49bb0d5d2da86fb2736c487f773f49cbb935ea9",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bringup?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bringup",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/e49bb0d5d2da86fb2736c487f773f49cbb935ea9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bringup?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/e49bb0d5d2da86fb2736c487f773f49cbb935ea9",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bringup"
+    }
+  },
+  {
+    "name": "bugs",
+    "path": "tests/bugs",
+    "sha": "e019d409cc84805ed1fe7e19d14d7f176481e2fa",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/e019d409cc84805ed1fe7e19d14d7f176481e2fa",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/e019d409cc84805ed1fe7e19d14d7f176481e2fa",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs"
+    }
+  },
+  {
+    "name": "bugs150",
+    "path": "tests/bugs150",
+    "sha": "a6b54569cdd5cdbd4f1a6f6367760c8cac8c4f85",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs150?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs150",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/a6b54569cdd5cdbd4f1a6f6367760c8cac8c4f85",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs150?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/a6b54569cdd5cdbd4f1a6f6367760c8cac8c4f85",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs150"
+    }
+  },
+  {
+    "name": "bugs151",
+    "path": "tests/bugs151",
+    "sha": "a5850ee67f58f31567182a5d5357dc47f5808021",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs151?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs151",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/a5850ee67f58f31567182a5d5357dc47f5808021",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs151?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/a5850ee67f58f31567182a5d5357dc47f5808021",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs151"
+    }
+  },
+  {
+    "name": "bugs152",
+    "path": "tests/bugs152",
+    "sha": "5287317ead25539633e2ed3cf81e69d31349face",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs152?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs152",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/5287317ead25539633e2ed3cf81e69d31349face",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs152?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/5287317ead25539633e2ed3cf81e69d31349face",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs152"
+    }
+  },
+  {
+    "name": "bugs153",
+    "path": "tests/bugs153",
+    "sha": "b5395787f5ab96fc5efbf0701379f2b7fb9721f9",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs153?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs153",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/b5395787f5ab96fc5efbf0701379f2b7fb9721f9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs153?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/b5395787f5ab96fc5efbf0701379f2b7fb9721f9",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs153"
+    }
+  },
+  {
+    "name": "bugs154",
+    "path": "tests/bugs154",
+    "sha": "4555a27cf44a2135cee1032a7443675ce567b00a",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs154?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs154",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/4555a27cf44a2135cee1032a7443675ce567b00a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs154?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/4555a27cf44a2135cee1032a7443675ce567b00a",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs154"
+    }
+  },
+  {
+    "name": "bugs160",
+    "path": "tests/bugs160",
+    "sha": "d38565d9c798c8df3e13e6c6320757a0ea45c8be",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs160?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs160",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/d38565d9c798c8df3e13e6c6320757a0ea45c8be",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs160?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/d38565d9c798c8df3e13e6c6320757a0ea45c8be",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs160"
+    }
+  },
+  {
+    "name": "bugs161",
+    "path": "tests/bugs161",
+    "sha": "c532a684de5d7b4767a087e39f1373a25b748351",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs161?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs161",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/c532a684de5d7b4767a087e39f1373a25b748351",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs161?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/c532a684de5d7b4767a087e39f1373a25b748351",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs161"
+    }
+  },
+  {
+    "name": "bugs1610",
+    "path": "tests/bugs1610",
+    "sha": "ab720d25e56395989447f9b1ba164c412b0f1d1e",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs1610?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs1610",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/ab720d25e56395989447f9b1ba164c412b0f1d1e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs1610?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/ab720d25e56395989447f9b1ba164c412b0f1d1e",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs1610"
+    }
+  },
+  {
+    "name": "bugs1611",
+    "path": "tests/bugs1611",
+    "sha": "58d674a78565369d5d06d0064f4758ab19c22c00",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs1611?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs1611",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/58d674a78565369d5d06d0064f4758ab19c22c00",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs1611?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/58d674a78565369d5d06d0064f4758ab19c22c00",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs1611"
+    }
+  },
+  {
+    "name": "bugs1612",
+    "path": "tests/bugs1612",
+    "sha": "253b60869e403c4c1b93ff9cb90e2f316a6bfe3e",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs1612?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs1612",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/253b60869e403c4c1b93ff9cb90e2f316a6bfe3e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs1612?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/253b60869e403c4c1b93ff9cb90e2f316a6bfe3e",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs1612"
+    }
+  },
+  {
+    "name": "bugs162",
+    "path": "tests/bugs162",
+    "sha": "7935cd4f0906be1caf5b16f60baec0b5f0e79256",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs162?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs162",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/7935cd4f0906be1caf5b16f60baec0b5f0e79256",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs162?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/7935cd4f0906be1caf5b16f60baec0b5f0e79256",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs162"
+    }
+  },
+  {
+    "name": "bugs163",
+    "path": "tests/bugs163",
+    "sha": "b41dfd24c639a46cb8f65eb7930aff266af8a8b7",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs163?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs163",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/b41dfd24c639a46cb8f65eb7930aff266af8a8b7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs163?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/b41dfd24c639a46cb8f65eb7930aff266af8a8b7",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs163"
+    }
+  },
+  {
+    "name": "bugs164",
+    "path": "tests/bugs164",
+    "sha": "f47f5e3dd269e2a15db27d3997fabf14845001c7",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs164?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs164",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/f47f5e3dd269e2a15db27d3997fabf14845001c7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs164?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/f47f5e3dd269e2a15db27d3997fabf14845001c7",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs164"
+    }
+  },
+  {
+    "name": "bugs165",
+    "path": "tests/bugs165",
+    "sha": "7c8834fb96c36ec164e2e832d727128874488205",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs165?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs165",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/7c8834fb96c36ec164e2e832d727128874488205",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs165?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/7c8834fb96c36ec164e2e832d727128874488205",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs165"
+    }
+  },
+  {
+    "name": "bugs166",
+    "path": "tests/bugs166",
+    "sha": "22418d3be452cb2bc5618b6c83d38f9c2bdbd3d2",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs166?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs166",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/22418d3be452cb2bc5618b6c83d38f9c2bdbd3d2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs166?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/22418d3be452cb2bc5618b6c83d38f9c2bdbd3d2",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs166"
+    }
+  },
+  {
+    "name": "bugs167",
+    "path": "tests/bugs167",
+    "sha": "13726431b57ebdad4bd2fe48cbbbad6250859d7c",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs167?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs167",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/13726431b57ebdad4bd2fe48cbbbad6250859d7c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs167?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/13726431b57ebdad4bd2fe48cbbbad6250859d7c",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs167"
+    }
+  },
+  {
+    "name": "bugs169",
+    "path": "tests/bugs169",
+    "sha": "f25b8ee4d08c649d7d9366131fce07bad978b831",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs169?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs169",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/f25b8ee4d08c649d7d9366131fce07bad978b831",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs169?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/f25b8ee4d08c649d7d9366131fce07bad978b831",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs169"
+    }
+  },
+  {
+    "name": "bugs170",
+    "path": "tests/bugs170",
+    "sha": "846be330fbcaf79fa3a8e835645a61cf72815e85",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs170?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs170",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/846be330fbcaf79fa3a8e835645a61cf72815e85",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs170?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/846be330fbcaf79fa3a8e835645a61cf72815e85",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs170"
+    }
+  },
+  {
+    "name": "bugs171",
+    "path": "tests/bugs171",
+    "sha": "bfe74c6a7637b99e156d21d9ab5aea3c697b47e9",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs171?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs171",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/bfe74c6a7637b99e156d21d9ab5aea3c697b47e9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs171?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/bfe74c6a7637b99e156d21d9ab5aea3c697b47e9",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs171"
+    }
+  },
+  {
+    "name": "bugs172",
+    "path": "tests/bugs172",
+    "sha": "d3e0eab295d9109de80e8dee3733e1b39294f912",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs172?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs172",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/d3e0eab295d9109de80e8dee3733e1b39294f912",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs172?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/d3e0eab295d9109de80e8dee3733e1b39294f912",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs172"
+    }
+  },
+  {
+    "name": "bugs173",
+    "path": "tests/bugs173",
+    "sha": "2bed1adc8a89ca99bcdc923575d63015fcac0e78",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs173?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs173",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/2bed1adc8a89ca99bcdc923575d63015fcac0e78",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs173?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/2bed1adc8a89ca99bcdc923575d63015fcac0e78",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs173"
+    }
+  },
+  {
+    "name": "bugs174",
+    "path": "tests/bugs174",
+    "sha": "61da872285bd08af585bb1bb37d9cc46fe658fca",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs174?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs174",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/61da872285bd08af585bb1bb37d9cc46fe658fca",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs174?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/61da872285bd08af585bb1bb37d9cc46fe658fca",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs174"
+    }
+  },
+  {
+    "name": "bugs175",
+    "path": "tests/bugs175",
+    "sha": "e3786c8112447b45436c441475b5ee94086db659",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs175?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs175",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/e3786c8112447b45436c441475b5ee94086db659",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs175?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/e3786c8112447b45436c441475b5ee94086db659",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs175"
+    }
+  },
+  {
+    "name": "bugs180",
+    "path": "tests/bugs180",
+    "sha": "91a2dcb7b9e6a7ea3493e21e3c5b7ce7d7e57285",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs180?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs180",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/91a2dcb7b9e6a7ea3493e21e3c5b7ce7d7e57285",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs180?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/91a2dcb7b9e6a7ea3493e21e3c5b7ce7d7e57285",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs180"
+    }
+  },
+  {
+    "name": "bugs181",
+    "path": "tests/bugs181",
+    "sha": "9f1dfada02a8602231e993c4ad1ff6b35bac44cb",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs181?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs181",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/9f1dfada02a8602231e993c4ad1ff6b35bac44cb",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs181?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/9f1dfada02a8602231e993c4ad1ff6b35bac44cb",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs181"
+    }
+  },
+  {
+    "name": "bugs1810",
+    "path": "tests/bugs1810",
+    "sha": "9e225d13419c11553c26e0eb36c1848156939b83",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs1810?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs1810",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/9e225d13419c11553c26e0eb36c1848156939b83",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs1810?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/9e225d13419c11553c26e0eb36c1848156939b83",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs1810"
+    }
+  },
+  {
+    "name": "bugs1811",
+    "path": "tests/bugs1811",
+    "sha": "d3780f8cbd39799cc37188db0939aa18a3959710",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs1811?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs1811",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/d3780f8cbd39799cc37188db0939aa18a3959710",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs1811?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/d3780f8cbd39799cc37188db0939aa18a3959710",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs1811"
+    }
+  },
+  {
+    "name": "bugs1813",
+    "path": "tests/bugs1813",
+    "sha": "6290d77240b8e573b08808a123b2ba07f35e3441",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs1813?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs1813",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/6290d77240b8e573b08808a123b2ba07f35e3441",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs1813?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/6290d77240b8e573b08808a123b2ba07f35e3441",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs1813"
+    }
+  },
+  {
+    "name": "bugs182",
+    "path": "tests/bugs182",
+    "sha": "04752c1aa83cc98cbfccfa96d9c5c2f729434ad0",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs182?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs182",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/04752c1aa83cc98cbfccfa96d9c5c2f729434ad0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs182?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/04752c1aa83cc98cbfccfa96d9c5c2f729434ad0",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs182"
+    }
+  },
+  {
+    "name": "bugs183",
+    "path": "tests/bugs183",
+    "sha": "b6a167e83331bfcd3c0b9874ae80ed2191d1c0ba",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs183?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs183",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/b6a167e83331bfcd3c0b9874ae80ed2191d1c0ba",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs183?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/b6a167e83331bfcd3c0b9874ae80ed2191d1c0ba",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs183"
+    }
+  },
+  {
+    "name": "bugs184",
+    "path": "tests/bugs184",
+    "sha": "3aea29895dac684ddf4f71a7acd37fb730bc0dd1",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs184?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs184",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/3aea29895dac684ddf4f71a7acd37fb730bc0dd1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs184?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/3aea29895dac684ddf4f71a7acd37fb730bc0dd1",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs184"
+    }
+  },
+  {
+    "name": "bugs185",
+    "path": "tests/bugs185",
+    "sha": "392b2d2a0e0099d02e1d130c06fbc0e23eb6dbd6",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs185?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs185",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/392b2d2a0e0099d02e1d130c06fbc0e23eb6dbd6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs185?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/392b2d2a0e0099d02e1d130c06fbc0e23eb6dbd6",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs185"
+    }
+  },
+  {
+    "name": "bugs186",
+    "path": "tests/bugs186",
+    "sha": "0006e0110bfce4b17217c586f59b84b5c699ff7a",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs186?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs186",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/0006e0110bfce4b17217c586f59b84b5c699ff7a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs186?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/0006e0110bfce4b17217c586f59b84b5c699ff7a",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs186"
+    }
+  },
+  {
+    "name": "bugs187",
+    "path": "tests/bugs187",
+    "sha": "863e892967a19ffd152c183d1e971fab994a0451",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs187?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs187",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/863e892967a19ffd152c183d1e971fab994a0451",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs187?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/863e892967a19ffd152c183d1e971fab994a0451",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs187"
+    }
+  },
+  {
+    "name": "bugs188",
+    "path": "tests/bugs188",
+    "sha": "5fe762eeedb15a8f438180fc86bf2252d0a8f681",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs188?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs188",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/5fe762eeedb15a8f438180fc86bf2252d0a8f681",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs188?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/5fe762eeedb15a8f438180fc86bf2252d0a8f681",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs188"
+    }
+  },
+  {
+    "name": "bugs189",
+    "path": "tests/bugs189",
+    "sha": "b80c04b2a2f0cad36fb53552b74597da3299a5a5",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs189?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs189",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/b80c04b2a2f0cad36fb53552b74597da3299a5a5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs189?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/b80c04b2a2f0cad36fb53552b74597da3299a5a5",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs189"
+    }
+  },
+  {
+    "name": "bugs190",
+    "path": "tests/bugs190",
+    "sha": "c617bb7c022adb1caf10059835337a75f1b4503e",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs190?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs190",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/c617bb7c022adb1caf10059835337a75f1b4503e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs190?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/c617bb7c022adb1caf10059835337a75f1b4503e",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs190"
+    }
+  },
+  {
+    "name": "bugs191",
+    "path": "tests/bugs191",
+    "sha": "8192f7d1e2f9e863b9c630a60929e2367fbde521",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs191?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs191",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/8192f7d1e2f9e863b9c630a60929e2367fbde521",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs191?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/8192f7d1e2f9e863b9c630a60929e2367fbde521",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs191"
+    }
+  },
+  {
+    "name": "bugs192",
+    "path": "tests/bugs192",
+    "sha": "5112a541906180fd1bc77f0e006799ab3957c821",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs192?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs192",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/5112a541906180fd1bc77f0e006799ab3957c821",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs192?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/5112a541906180fd1bc77f0e006799ab3957c821",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs192"
+    }
+  },
+  {
+    "name": "bugs193",
+    "path": "tests/bugs193",
+    "sha": "706ddb2782da6959ece6573c48d9bccfc11a3937",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs193?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs193",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/706ddb2782da6959ece6573c48d9bccfc11a3937",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs193?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/706ddb2782da6959ece6573c48d9bccfc11a3937",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs193"
+    }
+  },
+  {
+    "name": "bugs195",
+    "path": "tests/bugs195",
+    "sha": "97c72245be754fefd20d284c86e70ccedea0975d",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs195?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs195",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/97c72245be754fefd20d284c86e70ccedea0975d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs195?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/97c72245be754fefd20d284c86e70ccedea0975d",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs195"
+    }
+  },
+  {
+    "name": "bugs196",
+    "path": "tests/bugs196",
+    "sha": "8384c10fa606d744967a3ba7f760ab1a339a1cf6",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs196?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs196",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/8384c10fa606d744967a3ba7f760ab1a339a1cf6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/bugs196?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/8384c10fa606d744967a3ba7f760ab1a339a1cf6",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/bugs196"
+    }
+  },
+  {
+    "name": "cflow",
+    "path": "tests/cflow",
+    "sha": "d6adff5aadea34db037c82ee9129fbdb51fa9e79",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/cflow?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/cflow",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/d6adff5aadea34db037c82ee9129fbdb51fa9e79",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/cflow?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/d6adff5aadea34db037c82ee9129fbdb51fa9e79",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/cflow"
+    }
+  },
+  {
+    "name": "compatibility",
+    "path": "tests/compatibility",
+    "sha": "40ea411cf8a7616c67b9001f73f0f528e64d58a8",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/compatibility?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/compatibility",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/40ea411cf8a7616c67b9001f73f0f528e64d58a8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/compatibility?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/40ea411cf8a7616c67b9001f73f0f528e64d58a8",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/compatibility"
+    }
+  },
+  {
+    "name": "debugger",
+    "path": "tests/debugger",
+    "sha": "171e0fe6e6c23d50eb83cdbb70f491d3245cc478",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/debugger?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/debugger",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/171e0fe6e6c23d50eb83cdbb70f491d3245cc478",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/debugger?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/171e0fe6e6c23d50eb83cdbb70f491d3245cc478",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/debugger"
+    }
+  },
+  {
+    "name": "decp",
+    "path": "tests/decp",
+    "sha": "f350edd6cb22d1a4ccb23b328fe8b95c6a797125",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/decp?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/decp",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/f350edd6cb22d1a4ccb23b328fe8b95c6a797125",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/decp?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/f350edd6cb22d1a4ccb23b328fe8b95c6a797125",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/decp"
+    }
+  },
+  {
+    "name": "decs",
+    "path": "tests/decs",
+    "sha": "fd961714bdadc767c8c96098e59c08f4ffb28f8c",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/decs?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/decs",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/fd961714bdadc767c8c96098e59c08f4ffb28f8c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/decs?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/fd961714bdadc767c8c96098e59c08f4ffb28f8c",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/decs"
+    }
+  },
+  {
+    "name": "design",
+    "path": "tests/design",
+    "sha": "e715ab2a24f960179e7eee46161307d366c56af1",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/design?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/design",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/e715ab2a24f960179e7eee46161307d366c56af1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/design?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/e715ab2a24f960179e7eee46161307d366c56af1",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/design"
+    }
+  },
+  {
+    "name": "doc",
+    "path": "tests/doc",
+    "sha": "0cca2790053fa160a949cf8c0bd65e0deb6f63b2",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/doc?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/doc",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/0cca2790053fa160a949cf8c0bd65e0deb6f63b2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/doc?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/0cca2790053fa160a949cf8c0bd65e0deb6f63b2",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/doc"
+    }
+  },
+  {
+    "name": "eajc",
+    "path": "tests/eajc",
+    "sha": "7450d0027a164dab5cadf5f206aab038ac68f6f1",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/eajc?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/eajc",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/7450d0027a164dab5cadf5f206aab038ac68f6f1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/eajc?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/7450d0027a164dab5cadf5f206aab038ac68f6f1",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/eajc"
+    }
+  },
+  {
+    "name": "ehTests.xml",
+    "path": "tests/ehTests.xml",
+    "sha": "da5ae284ef5556f9b3ec82ef754a7c5768f8942e",
+    "size": 296,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ehTests.xml?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/ehTests.xml",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/da5ae284ef5556f9b3ec82ef754a7c5768f8942e",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/ehTests.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ehTests.xml?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/da5ae284ef5556f9b3ec82ef754a7c5768f8942e",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/ehTests.xml"
+    }
+  },
+  {
+    "name": "errors",
+    "path": "tests/errors",
+    "sha": "05f2f691d3586d793ac204e1c05e01612a5d0438",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/errors?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/errors",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/05f2f691d3586d793ac204e1c05e01612a5d0438",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/errors?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/05f2f691d3586d793ac204e1c05e01612a5d0438",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/errors"
+    }
+  },
+  {
+    "name": "features151",
+    "path": "tests/features151",
+    "sha": "6c3d4d8f9686a397474edc791e58cf4f81b72063",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features151?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features151",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/6c3d4d8f9686a397474edc791e58cf4f81b72063",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features151?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/6c3d4d8f9686a397474edc791e58cf4f81b72063",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features151"
+    }
+  },
+  {
+    "name": "features152",
+    "path": "tests/features152",
+    "sha": "4fb7ec1cd44a9f27c30a7a3d1ade47df653cf25c",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features152?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features152",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/4fb7ec1cd44a9f27c30a7a3d1ade47df653cf25c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features152?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/4fb7ec1cd44a9f27c30a7a3d1ade47df653cf25c",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features152"
+    }
+  },
+  {
+    "name": "features153",
+    "path": "tests/features153",
+    "sha": "7a14d0ae65517b1ec4b40c635e0dc5e795dae9f7",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features153?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features153",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/7a14d0ae65517b1ec4b40c635e0dc5e795dae9f7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features153?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/7a14d0ae65517b1ec4b40c635e0dc5e795dae9f7",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features153"
+    }
+  },
+  {
+    "name": "features160",
+    "path": "tests/features160",
+    "sha": "b6de62bd9d374927c158be9525332e4523ca1284",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features160?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features160",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/b6de62bd9d374927c158be9525332e4523ca1284",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features160?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/b6de62bd9d374927c158be9525332e4523ca1284",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features160"
+    }
+  },
+  {
+    "name": "features161",
+    "path": "tests/features161",
+    "sha": "981c23fffc3db1fd486bc8687e76596c338620dc",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features161?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features161",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/981c23fffc3db1fd486bc8687e76596c338620dc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features161?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/981c23fffc3db1fd486bc8687e76596c338620dc",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features161"
+    }
+  },
+  {
+    "name": "features1610",
+    "path": "tests/features1610",
+    "sha": "d37ff3eae73ceb4a267e32fc708bfd730ee81af6",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features1610?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features1610",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/d37ff3eae73ceb4a267e32fc708bfd730ee81af6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features1610?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/d37ff3eae73ceb4a267e32fc708bfd730ee81af6",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features1610"
+    }
+  },
+  {
+    "name": "features1611",
+    "path": "tests/features1611",
+    "sha": "e57d6343db4f26c2f1887ad5104e37b24941e6dd",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features1611?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features1611",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/e57d6343db4f26c2f1887ad5104e37b24941e6dd",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features1611?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/e57d6343db4f26c2f1887ad5104e37b24941e6dd",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features1611"
+    }
+  },
+  {
+    "name": "features164",
+    "path": "tests/features164",
+    "sha": "2115b0e2e31a219ecce3b42b0628dfdd9021ae2c",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features164?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features164",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/2115b0e2e31a219ecce3b42b0628dfdd9021ae2c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features164?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/2115b0e2e31a219ecce3b42b0628dfdd9021ae2c",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features164"
+    }
+  },
+  {
+    "name": "features167",
+    "path": "tests/features167",
+    "sha": "060c5541a8b4176056d54eaba3733e25c1383cec",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features167?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features167",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/060c5541a8b4176056d54eaba3733e25c1383cec",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features167?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/060c5541a8b4176056d54eaba3733e25c1383cec",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features167"
+    }
+  },
+  {
+    "name": "features169",
+    "path": "tests/features169",
+    "sha": "ffe12b4b2ee14c75054fbd395fca8266effd09b3",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features169?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features169",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/ffe12b4b2ee14c75054fbd395fca8266effd09b3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features169?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/ffe12b4b2ee14c75054fbd395fca8266effd09b3",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features169"
+    }
+  },
+  {
+    "name": "features171",
+    "path": "tests/features171",
+    "sha": "e1d828dee5522b5a989dd9041cbeb69d2b594191",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features171?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features171",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/e1d828dee5522b5a989dd9041cbeb69d2b594191",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features171?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/e1d828dee5522b5a989dd9041cbeb69d2b594191",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features171"
+    }
+  },
+  {
+    "name": "features190",
+    "path": "tests/features190",
+    "sha": "2de33b327c03c8e6ecfdbdc20a055763660bc926",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features190?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features190",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/2de33b327c03c8e6ecfdbdc20a055763660bc926",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features190?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/2de33b327c03c8e6ecfdbdc20a055763660bc926",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features190"
+    }
+  },
+  {
+    "name": "features193",
+    "path": "tests/features193",
+    "sha": "5287ec2edbbc6f56fdd01f73334fdfbd5ad8993d",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features193?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features193",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/5287ec2edbbc6f56fdd01f73334fdfbd5ad8993d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features193?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/5287ec2edbbc6f56fdd01f73334fdfbd5ad8993d",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features193"
+    }
+  },
+  {
+    "name": "features195",
+    "path": "tests/features195",
+    "sha": "173d32e08953c9d3f6919c35a73bdf67c1e208e9",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features195?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features195",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/173d32e08953c9d3f6919c35a73bdf67c1e208e9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/features195?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/173d32e08953c9d3f6919c35a73bdf67c1e208e9",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/features195"
+    }
+  },
+  {
+    "name": "generated",
+    "path": "tests/generated",
+    "sha": "3c3c412adffee78f2872e246e21fd6c66076ee4b",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/generated?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/generated",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/3c3c412adffee78f2872e246e21fd6c66076ee4b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/generated?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/3c3c412adffee78f2872e246e21fd6c66076ee4b",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/generated"
+    }
+  },
+  {
+    "name": "harness",
+    "path": "tests/harness",
+    "sha": "efe8905c817071c40bc284d492709647014e15f1",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/harness?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/harness",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/efe8905c817071c40bc284d492709647014e15f1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/harness?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/efe8905c817071c40bc284d492709647014e15f1",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/harness"
+    }
+  },
+  {
+    "name": "harnessErrors.txt",
+    "path": "tests/harnessErrors.txt",
+    "sha": "9621547453a25e65d1a3a80513a5c6554a4a50c1",
+    "size": 1299,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/harnessErrors.txt?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/harnessErrors.txt",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/9621547453a25e65d1a3a80513a5c6554a4a50c1",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/harnessErrors.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/harnessErrors.txt?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/9621547453a25e65d1a3a80513a5c6554a4a50c1",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/harnessErrors.txt"
+    }
+  },
+  {
+    "name": "harnessFails.txt",
+    "path": "tests/harnessFails.txt",
+    "sha": "166b46ea76012607b3b72eaaa54746454f58a265",
+    "size": 240,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/harnessFails.txt?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/harnessFails.txt",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/166b46ea76012607b3b72eaaa54746454f58a265",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/harnessFails.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/harnessFails.txt?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/166b46ea76012607b3b72eaaa54746454f58a265",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/harnessFails.txt"
+    }
+  },
+  {
+    "name": "harnessPasses.txt",
+    "path": "tests/harnessPasses.txt",
+    "sha": "3a7171edb13affc7c204adf222dc36ba099c991a",
+    "size": 1557,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/harnessPasses.txt?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/harnessPasses.txt",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/3a7171edb13affc7c204adf222dc36ba099c991a",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/harnessPasses.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/harnessPasses.txt?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/3a7171edb13affc7c204adf222dc36ba099c991a",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/harnessPasses.txt"
+    }
+  },
+  {
+    "name": "hasmember",
+    "path": "tests/hasmember",
+    "sha": "8c70c22c24988bfbeba99c3ae4e165109b34aa0a",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/hasmember?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/hasmember",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/8c70c22c24988bfbeba99c3ae4e165109b34aa0a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/hasmember?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/8c70c22c24988bfbeba99c3ae4e165109b34aa0a",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/hasmember"
+    }
+  },
+  {
+    "name": "incModelTests.xml",
+    "path": "tests/incModelTests.xml",
+    "sha": "e8104794e490f15a6d3584ae5050253667bb4ea9",
+    "size": 6215,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/incModelTests.xml?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/incModelTests.xml",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/e8104794e490f15a6d3584ae5050253667bb4ea9",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/incModelTests.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/incModelTests.xml?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/e8104794e490f15a6d3584ae5050253667bb4ea9",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/incModelTests.xml"
+    }
+  },
+  {
+    "name": "incr",
+    "path": "tests/incr",
+    "sha": "96deeea2df9271a80ca891007e87fb1ff29f59e6",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/incr?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/incr",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/96deeea2df9271a80ca891007e87fb1ff29f59e6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/incr?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/96deeea2df9271a80ca891007e87fb1ff29f59e6",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/incr"
+    }
+  },
+  {
+    "name": "incremental",
+    "path": "tests/incremental",
+    "sha": "eaa0cebb75291307672a011e812c4fbd504df6a3",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/incremental?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/incremental",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/eaa0cebb75291307672a011e812c4fbd504df6a3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/incremental?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/eaa0cebb75291307672a011e812c4fbd504df6a3",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/incremental"
+    }
+  },
+  {
+    "name": "incrementalPerformance",
+    "path": "tests/incrementalPerformance",
+    "sha": "68b0dea4c9b7c96d886ca1326560707efb770293",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/incrementalPerformance?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/incrementalPerformance",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/68b0dea4c9b7c96d886ca1326560707efb770293",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/incrementalPerformance?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/68b0dea4c9b7c96d886ca1326560707efb770293",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/incrementalPerformance"
+    }
+  },
+  {
+    "name": "incrementalju",
+    "path": "tests/incrementalju",
+    "sha": "55e0c67bd8cd7883e02e6e15acf40696fedfcbed",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/incrementalju?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/incrementalju",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/55e0c67bd8cd7883e02e6e15acf40696fedfcbed",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/incrementalju?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/55e0c67bd8cd7883e02e6e15acf40696fedfcbed",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/incrementalju"
+    }
+  },
+  {
+    "name": "indy",
+    "path": "tests/indy",
+    "sha": "39be0008d7cf75f3b9249e99fb1f3daa71a3bb08",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/indy?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/indy",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/39be0008d7cf75f3b9249e99fb1f3daa71a3bb08",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/indy?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/39be0008d7cf75f3b9249e99fb1f3daa71a3bb08",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/indy"
+    }
+  },
+  {
+    "name": "java5",
+    "path": "tests/java5",
+    "sha": "3d8beaaa0791c1f34b4e41f7c10f94e799c7e9d1",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/java5?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/java5",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/3d8beaaa0791c1f34b4e41f7c10f94e799c7e9d1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/java5?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/3d8beaaa0791c1f34b4e41f7c10f94e799c7e9d1",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/java5"
+    }
+  },
+  {
+    "name": "jsrc",
+    "path": "tests/jsrc",
+    "sha": "d567f23729c99b2fb7679fc20d2a9230cc59a238",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/jsrc?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/jsrc",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/d567f23729c99b2fb7679fc20d2a9230cc59a238",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/jsrc?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/d567f23729c99b2fb7679fc20d2a9230cc59a238",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/jsrc"
+    }
+  },
+  {
+    "name": "knownLimitations",
+    "path": "tests/knownLimitations",
+    "sha": "80b2148222bdf0416e974ae19560e3ba5cabd31d",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/knownLimitations?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/knownLimitations",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/80b2148222bdf0416e974ae19560e3ba5cabd31d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/knownLimitations?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/80b2148222bdf0416e974ae19560e3ba5cabd31d",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/knownLimitations"
+    }
+  },
+  {
+    "name": "ltw",
+    "path": "tests/ltw",
+    "sha": "748ed04ca509cc3741bd5f14b1cd59d7b1b83a9d",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ltw?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/ltw",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/748ed04ca509cc3741bd5f14b1cd59d7b1b83a9d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/ltw?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/748ed04ca509cc3741bd5f14b1cd59d7b1b83a9d",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/ltw"
+    }
+  },
+  {
+    "name": "migration",
+    "path": "tests/migration",
+    "sha": "2acf0875f9f03f3c2495856c2c925642b23d760b",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/migration?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/migration",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/2acf0875f9f03f3c2495856c2c925642b23d760b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/migration?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/2acf0875f9f03f3c2495856c2c925642b23d760b",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/migration"
+    }
+  },
+  {
+    "name": "mikTests.xml",
+    "path": "tests/mikTests.xml",
+    "sha": "ead6fe7a83650bd98d811fd72b3b422374926838",
+    "size": 334,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/mikTests.xml?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/mikTests.xml",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/ead6fe7a83650bd98d811fd72b3b422374926838",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/mikTests.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/mikTests.xml?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/ead6fe7a83650bd98d811fd72b3b422374926838",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/mikTests.xml"
+    }
+  },
+  {
+    "name": "model",
+    "path": "tests/model",
+    "sha": "776134af682268bfade5d0852b6fc7b52b6ea64b",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/model?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/model",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/776134af682268bfade5d0852b6fc7b52b6ea64b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/model?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/776134af682268bfade5d0852b6fc7b52b6ea64b",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/model"
+    }
+  },
+  {
+    "name": "multiIncremental",
+    "path": "tests/multiIncremental",
+    "sha": "f781dde712ac57c369b13aa3cdb2674a8735f4f8",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/multiIncremental?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/multiIncremental",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/f781dde712ac57c369b13aa3cdb2674a8735f4f8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/multiIncremental?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/f781dde712ac57c369b13aa3cdb2674a8735f4f8",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/multiIncremental"
+    }
+  },
+  {
+    "name": "new",
+    "path": "tests/new",
+    "sha": "2a2b8280425619a4a4bd081774632a79f960edcc",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/new?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/new",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/2a2b8280425619a4a4bd081774632a79f960edcc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/new?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/2a2b8280425619a4a4bd081774632a79f960edcc",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/new"
+    }
+  },
+  {
+    "name": "options",
+    "path": "tests/options",
+    "sha": "92919510c7b71cc7a6ca9c1f90939d387116da6d",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/options?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/options",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/92919510c7b71cc7a6ca9c1f90939d387116da6d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/options?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/92919510c7b71cc7a6ca9c1f90939d387116da6d",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/options"
+    }
+  },
+  {
+    "name": "other-systems",
+    "path": "tests/other-systems",
+    "sha": "6ad9d39f411806eab152aa51f2ef4710713d6eb1",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/other-systems?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/other-systems",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/6ad9d39f411806eab152aa51f2ef4710713d6eb1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/other-systems?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/6ad9d39f411806eab152aa51f2ef4710713d6eb1",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/other-systems"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "tests/pom.xml",
+    "sha": "30841303bc305590420b9777bcab33fa894da9e4",
+    "size": 4341,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/pom.xml?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/pom.xml",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/30841303bc305590420b9777bcab33fa894da9e4",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/pom.xml?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/30841303bc305590420b9777bcab33fa894da9e4",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/pom.xml"
+    }
+  },
+  {
+    "name": "pr108826.aj",
+    "path": "tests/pr108826.aj",
+    "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/pr108826.aj?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/pr108826.aj",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/pr108826.aj",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/pr108826.aj?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/pr108826.aj"
+    }
+  },
+  {
+    "name": "product",
+    "path": "tests/product",
+    "sha": "9639cdde09d93b8fae3a654e93c842cb1c3bdc45",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/product?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/product",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/9639cdde09d93b8fae3a654e93c842cb1c3bdc45",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/product?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/9639cdde09d93b8fae3a654e93c842cb1c3bdc45",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/product"
+    }
+  },
+  {
+    "name": "profiling",
+    "path": "tests/profiling",
+    "sha": "b9a6b9d857d75998dbb798ffe7654f7a22616898",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/profiling?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/profiling",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/b9a6b9d857d75998dbb798ffe7654f7a22616898",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/profiling?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/b9a6b9d857d75998dbb798ffe7654f7a22616898",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/profiling"
+    }
+  },
+  {
+    "name": "pureJava",
+    "path": "tests/pureJava",
+    "sha": "aa7a3fc7f63d282f2fce8bc9c493baee989be9d4",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/pureJava?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/pureJava",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/aa7a3fc7f63d282f2fce8bc9c493baee989be9d4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/pureJava?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/aa7a3fc7f63d282f2fce8bc9c493baee989be9d4",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/pureJava"
+    }
+  },
+  {
+    "name": "readme-release-tests.html",
+    "path": "tests/readme-release-tests.html",
+    "sha": "59a7d892a58b3ed60fdad38dd47583be7cce5902",
+    "size": 5054,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/readme-release-tests.html?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/readme-release-tests.html",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/59a7d892a58b3ed60fdad38dd47583be7cce5902",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/readme-release-tests.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/readme-release-tests.html?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/59a7d892a58b3ed60fdad38dd47583be7cce5902",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/readme-release-tests.html"
+    }
+  },
+  {
+    "name": "readme-tests-module.html",
+    "path": "tests/readme-tests-module.html",
+    "sha": "bb47df1170dc540b07c4a7567f5199feffb8a6d4",
+    "size": 7088,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/readme-tests-module.html?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/readme-tests-module.html",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/bb47df1170dc540b07c4a7567f5199feffb8a6d4",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/readme-tests-module.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/readme-tests-module.html?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/bb47df1170dc540b07c4a7567f5199feffb8a6d4",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/readme-tests-module.html"
+    }
+  },
+  {
+    "name": "readme-writing-compiler-tests.html",
+    "path": "tests/readme-writing-compiler-tests.html",
+    "sha": "fd2986991d8dd02520daf887a90128da7c3da9bd",
+    "size": 23883,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/readme-writing-compiler-tests.html?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/readme-writing-compiler-tests.html",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/fd2986991d8dd02520daf887a90128da7c3da9bd",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/readme-writing-compiler-tests.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/readme-writing-compiler-tests.html?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/fd2986991d8dd02520daf887a90128da7c3da9bd",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/readme-writing-compiler-tests.html"
+    }
+  },
+  {
+    "name": "runjacks",
+    "path": "tests/runjacks",
+    "sha": "b4a8b5fb0bf747cbd7d72d487e9d90f39c6e39a8",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/runjacks?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/runjacks",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/b4a8b5fb0bf747cbd7d72d487e9d90f39c6e39a8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/runjacks?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/b4a8b5fb0bf747cbd7d72d487e9d90f39c6e39a8",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/runjacks"
+    }
+  },
+  {
+    "name": "scripts",
+    "path": "tests/scripts",
+    "sha": "c6cc86dc9cfc39c4fb357d0d1febe2d4fafc4d69",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/scripts?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/scripts",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/c6cc86dc9cfc39c4fb357d0d1febe2d4fafc4d69",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/scripts?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/c6cc86dc9cfc39c4fb357d0d1febe2d4fafc4d69",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/scripts"
+    }
+  },
+  {
+    "name": "sourceinfo",
+    "path": "tests/sourceinfo",
+    "sha": "cf04d78478fd5a7b52dd067c87c80dc90fdc94d7",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/sourceinfo?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/sourceinfo",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/cf04d78478fd5a7b52dd067c87c80dc90fdc94d7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/sourceinfo?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/cf04d78478fd5a7b52dd067c87c80dc90fdc94d7",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/sourceinfo"
+    }
+  },
+  {
+    "name": "src",
+    "path": "tests/src",
+    "sha": "a61ade4833cb21fe3f9093428df0218a17082661",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/src?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/src",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/a61ade4833cb21fe3f9093428df0218a17082661",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/src?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/a61ade4833cb21fe3f9093428df0218a17082661",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/src"
+    }
+  },
+  {
+    "name": "symbols",
+    "path": "tests/symbols",
+    "sha": "64925f1f74625b6e6726bc11711f5e71d6fd8bc4",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/symbols?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/symbols",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/64925f1f74625b6e6726bc11711f5e71d6fd8bc4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/symbols?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/64925f1f74625b6e6726bc11711f5e71d6fd8bc4",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/symbols"
+    }
+  },
+  {
+    "name": "test-other-systems.xml",
+    "path": "tests/test-other-systems.xml",
+    "sha": "224825a01b542dfcf694088f5faccf6412ba8c62",
+    "size": 42336,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/test-other-systems.xml?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/test-other-systems.xml",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/224825a01b542dfcf694088f5faccf6412ba8c62",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/tests/test-other-systems.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/test-other-systems.xml?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/224825a01b542dfcf694088f5faccf6412ba8c62",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/tests/test-other-systems.xml"
+    }
+  },
+  {
+    "name": "tracing",
+    "path": "tests/tracing",
+    "sha": "221599ab20b9c6a469bf60be142489bcd00d0f08",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/tracing?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/tracing",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/221599ab20b9c6a469bf60be142489bcd00d0f08",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/tracing?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/221599ab20b9c6a469bf60be142489bcd00d0f08",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/tracing"
+    }
+  },
+  {
+    "name": "warnings",
+    "path": "tests/warnings",
+    "sha": "0e06bb26d98998b81332e5637667cc655039d99f",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/warnings?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/warnings",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/0e06bb26d98998b81332e5637667cc655039d99f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/tests/warnings?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/0e06bb26d98998b81332e5637667cc655039d99f",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests/warnings"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-aspectj/aspectj/contents/runtime/src/test?ref=V1_9_6' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+exec
+/usr/bin/bash -lc "curl -fsSL -I https://github.com/eclipse/org.aspectj | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/pom.xml | sed -n '1,180p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/runtime/pom.xml' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+ succeeded in 167ms:
+[
+  {
+    "name": "java",
+    "path": "runtime/src/test/java",
+    "sha": "762bcea555f73e68accb5a90fa5ca352f0386c81",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/runtime/src/test/java?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/runtime/src/test/java",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/762bcea555f73e68accb5a90fa5ca352f0386c81",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/runtime/src/test/java?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/762bcea555f73e68accb5a90fa5ca352f0386c81",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/runtime/src/test/java"
+    }
+  }
+]
+
+ succeeded in 169ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<properties>
+		<revision>1.9.6</revision>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<groupId>org.aspectj</groupId>
+	<artifactId>aspectj-parent</artifactId>
+	<packaging>pom</packaging>
+	<version>1.9.6</version>
+	<name>AspectJ Parent Project</name>
+
+	<modules>
+		<module>util</module>
+		<module>bridge</module>
+		<module>testing-util</module>
+		<module>org.aspectj.matcher</module>
+		<module>asm</module>
+		<module>testing-client</module>
+		<module>ajbrowser</module>
+		<module>runtime</module>
+		<module>bcel-builder</module>
+		<module>weaver</module>
+		<module>loadtime</module>
+		<module>org.eclipse.jdt.core</module>
+		<module>org.aspectj.ajdt.core</module>
+		<module>ajde.core</module>
+		<module>ajde</module>
+		<module>ajdoc</module>
+		<module>taskdefs</module>
+		<module>testing</module>
+		<module>testing-drivers</module>
+		<module>tests</module>
+		<module>build</module>
+		<module>run-all-junit-tests</module>
+		<module>docs</module>
+
+		<!-- create the important artifacts we care about -->
+		<module>aspectjrt</module>
+		<module>aspectjweaver</module>
+		<module>aspectjtools</module>
+		<module>aspectjmatcher</module>
+
+		<!-- build the java -jar'able installer -->
+		<module>installer</module>
+	</modules>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<configuration>
+<!--
+						<testFailureIgnore>true</testFailureIgnore>
+-->
+						<excludes>
+							<exclude>**/*ModuleTests.java</exclude>
+						</excludes>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.1.2</version>
+				<configuration>
+					<archive>
+						<addMavenDescriptor>false</addMavenDescriptor>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+<id>test-jar</id>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- <plugin> <artifactId>maven-assembly-plugin</artifactId> <version>3.1.1</version> 
+				<configuration> <descriptors> <descriptor>assembly.xml</descriptor> </descriptors> 
+				</configuration> </plugin> -->
+
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>.</directory>
+							<includes>
+<include>**/ajcore.*.txt</include> 
+
+								</includes> 
+<!--
+<excludes> <exclude>**/important.log</exclude> <exclude>**/another-important.log</exclude> 
+								</excludes> -->
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+						<fileset>
+							<directory>aj-build</directory>
+							<!-- <includes> <include>**/*.tmp</include> <include>**/*.log</include> 
+								</includes> <excludes> <exclude>**/important.log</exclude> <exclude>**/another-important.log</exclude> 
+								</excludes> -->
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+</project>
+
+ succeeded in 176ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.aspectj</groupId>
+		<artifactId>aspectj-parent</artifactId>
+		<version>1.9.6</version>
+		<relativePath>..</relativePath>
+	</parent>
+
+	<artifactId>runtime</artifactId>
+	<packaging>jar</packaging>
+	<name>runtime</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>testing-util</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.0.1</version>
+				<configuration>
+				</configuration>
+				<executions>
+					<execution>
+						<id>javadoc</id>
+						<phase>package</phase>
+						<goals>
+							<goal>javadoc</goal>
+						</goals>
+						<configuration>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+
+ succeeded in 810ms:
+HTTP/2 301 
+date: Wed, 29 Apr 2026 02:28:07 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/eclipse-aspectj/aspectj
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=8fBLXuAfWYuNJOpIPuIvF3vGlErZbpYrS%2FiuX3SruwZ7MG8Bli%2FIknol1D%2BaSw3krc6SNYFNLlTgwfhYiiCI1rm3SpVVdeRYxvzTiCCB3W0OVZhbI41HSpB2L9od4xIQtoqZ3ohf06itNNVHMQ5Ut6H06PyIS2Bc08fu3uEZvNqSwhGT%2FQ1SmsO89DyK3ZmMINWu4ME5Oqf0CYXvwSNiVxbyCtwNrs1rm4sdgxIF8gB1QoSgkLe21Hv1PYnQ%2FhASmRZblkc%2Fs6Ns5flf6P5qNA%3D%3D--ZmVPr%2BtbX%2BwH%2F6m%2F--FkdntBUk92QJGGfbt9iiSg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.677917044.1777429687; expires=Thu, 29 Apr 2027 02:28:07 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 29 Apr 2027 02:28:07 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5104:242E08:52C4FA4:3F87B13:69F16CB7
+
+HTTP/2 200 
+
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -type f | head -20' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+
+exec
+/usr/bin/bash -lc "rg -n 'javadoc\\.jar|repo1\\.maven\\.org|javadoc\\.io|test-code-url' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+ succeeded in 0ms:
+codex
+I found the canonical GitHub repository via the POM SCM URL redirect and confirmed the `V1_9_6` tag exists. I’m going to use Maven Central for the exact source and Javadoc artifacts, and the tagged runtime test directory for the test suite because no test artifact is published for `aspectjrt` 1.9.6.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+diff --git a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+index 45789cae1d8f526530ddc080041fdcc27fb7e525..57b7039474c7dfcd93a8d01a57741b89ced8a618
+--- a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
++++ b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.aspectj:aspectjrt:1.9.6"
++  "coordinates" : "org.aspectj:aspectjrt:1.9.6",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-sources.jar",
++  "repository-url" : "https://github.com/eclipse-aspectj/aspectj",
++  "test-code-url" : "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/runtime/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-javadoc.jar",
++  "description" : "AspectJ Runtime provides the runtime classes needed to execute programs compiled or woven with AspectJ. It supplies APIs and support types for AspectJ's join point, advice, aspect, and reflection features at run time."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+index 45789cae1d8f526530ddc080041fdcc27fb7e525..57b7039474c7dfcd93a8d01a57741b89ced8a618
+--- a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
++++ b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.aspectj:aspectjrt:1.9.6"
++  "coordinates" : "org.aspectj:aspectjrt:1.9.6",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-sources.jar",
++  "repository-url" : "https://github.com/eclipse-aspectj/aspectj",
++  "test-code-url" : "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/runtime/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-javadoc.jar",
++  "description" : "AspectJ Runtime provides the runtime classes needed to execute programs compiled or woven with AspectJ. It supplies APIs and support types for AspectJ's join point, advice, aspect, and reflection features at run time."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+ succeeded in 0ms:
+{
+  "coordinates": "org.aspectj:aspectjrt:1.9.6",
+  "source-code-url": "https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-sources.jar",
+  "repository-url": "https://github.com/eclipse-aspectj/aspectj",
+  "test-code-url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/runtime/src/test/java",
+  "documentation-url": "https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-javadoc.jar",
+  "description": "AspectJ Runtime provides the runtime classes needed to execute programs compiled or woven with AspectJ. It supplies APIs and support types for AspectJ's join point, advice, aspect, and reflection features at run time."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+index 45789cae1d8f526530ddc080041fdcc27fb7e525..57b7039474c7dfcd93a8d01a57741b89ced8a618
+--- a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
++++ b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.aspectj:aspectjrt:1.9.6"
++  "coordinates" : "org.aspectj:aspectjrt:1.9.6",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-sources.jar",
++  "repository-url" : "https://github.com/eclipse-aspectj/aspectj",
++  "test-code-url" : "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/runtime/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-javadoc.jar",
++  "description" : "AspectJ Runtime provides the runtime classes needed to execute programs compiled or woven with AspectJ. It supplies APIs and support types for AspectJ's join point, advice, aspect, and reflection features at run time."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json && git ls-files --stage build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+index 45789cae1d8f526530ddc080041fdcc27fb7e525..57b7039474c7dfcd93a8d01a57741b89ced8a618
+--- a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
++++ b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.aspectj:aspectjrt:1.9.6"
++  "coordinates" : "org.aspectj:aspectjrt:1.9.6",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-sources.jar",
++  "repository-url" : "https://github.com/eclipse-aspectj/aspectj",
++  "test-code-url" : "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/runtime/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-javadoc.jar",
++  "description" : "AspectJ Runtime provides the runtime classes needed to execute programs compiled or woven with AspectJ. It supplies APIs and support types for AspectJ's join point, advice, aspect, and reflection features at run time."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/
+web search: 
+web search: https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/aspectjrt/pom.xml
+codex
+Updated [org.aspectj-aspectjrt-1.9.6.json](/home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json) with the discovered metadata.
+
+I used Maven Central for the exact `1.9.6` sources and Javadoc artifacts, and the `V1_9_6` GitHub tag for the runtime test suite path. No `language` field was added because this is not a Kotlin, Groovy, or Scala-specific library. ([repo1.maven.org](https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/))
+
+Validation: `jq` parsed the JSON successfully.
+diff --git a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+index 45789cae1d8f526530ddc080041fdcc27fb7e525..57b7039474c7dfcd93a8d01a57741b89ced8a618
+--- a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
++++ b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.aspectj:aspectjrt:1.9.6"
++  "coordinates" : "org.aspectj:aspectjrt:1.9.6",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-sources.jar",
++  "repository-url" : "https://github.com/eclipse-aspectj/aspectj",
++  "test-code-url" : "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/runtime/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-javadoc.jar",
++  "description" : "AspectJ Runtime provides the runtime classes needed to execute programs compiled or woven with AspectJ. It supplies APIs and support types for AspectJ's join point, advice, aspect, and reflection features at run time."
+ }
+
+2026-04-29T02:28:47.484172Z ERROR codex_core::session: failed to record rollout items: thread 019dd710-0de5-7551-8dcf-1386fe5325e6 not found
+tokens used
+84,787
+Updated [org.aspectj-aspectjrt-1.9.6.json](/home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json) with the discovered metadata.
+
+I used Maven Central for the exact `1.9.6` sources and Javadoc artifacts, and the `V1_9_6` GitHub tag for the runtime test suite path. No `language` field was added because this is not a Kotlin, Groovy, or Scala-specific library. ([repo1.maven.org](https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/))
+
+Validation: `jq` parsed the JSON successfully.
+Ran agent for org.aspectj:aspectjrt:1.9.6 (exit 0). Log: /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf/build/agent-artifact-discovery-logs/org.aspectj-aspectjrt-1.9.6.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2623-05ba13cf/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 21s
+9 actionable tasks: 4 executed, 5 from cache
