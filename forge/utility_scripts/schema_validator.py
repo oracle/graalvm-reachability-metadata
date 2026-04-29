@@ -1,3 +1,8 @@
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
 """
 Helper module for validating Metadata Forge metric output, strategy and benchmark configuration files.
 Validates a file against the JSON Schema at `schemas/`.
@@ -26,6 +31,8 @@ def _get_schema_path(schema_name: str) -> str:
 
     repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     schema_file = SCHEMA_NAME_MAP[schema_name]
+    if schema_name == "run_metrics_output":
+        return os.path.abspath(os.path.join(repo_root, os.pardir, "stats", "schemas", schema_file))
     return os.path.join(repo_root, "schemas", schema_file)
 
 
@@ -53,7 +60,7 @@ def validate_json_file(file_path: str, schema_name: str):
 
 
 def validate_run_metrics(file_path: str):
-    """Validate against `schemas/run_metrics_output_schema.json`."""
+    """Validate against `stats/schemas/run_metrics_output_schema.json`."""
     validate_json_file(file_path, "run_metrics_output")
 
 

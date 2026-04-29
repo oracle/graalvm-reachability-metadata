@@ -1,7 +1,7 @@
-"""
-Copyright (c) 2026, 2026, Oracle and/or its affiliates. All rights reserved.
-ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
-"""
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 """Shared orchestration for javac and java-run fix workflows."""
 
@@ -279,10 +279,16 @@ def init_agent(
 def write_fix_metrics(config: JavaFailWorkflowConfig, run_metrics, metrics_repo_dir, metrics_repo_root=None):
     """Append fix metrics to JSON, write pending metrics, and validate schema."""
     metrics_json = os.path.join(metrics_repo_dir, config.metrics_filename)
-    metrics_writer.append_run_metrics(run_metrics, metrics_json)
+    in_repo_root = metrics_writer.in_metadata_repo_metrics_root(metrics_repo_root)
+    if in_repo_root:
+        task_type = os.path.splitext(config.metrics_filename)[0]
+        metrics_writer.append_execution_metrics(in_repo_root, run_metrics, task_type)
+    else:
+        metrics_writer.append_run_metrics(run_metrics, metrics_json)
     if metrics_repo_root:
         metrics_writer.write_pending_metrics(metrics_repo_root, run_metrics)
-    validate_run_metrics(metrics_json)
+    if not in_repo_root:
+        validate_run_metrics(metrics_json)
 
 
 def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):

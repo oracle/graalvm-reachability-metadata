@@ -1,3 +1,8 @@
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
 import subprocess
 import sys
 import os
@@ -28,7 +33,6 @@ from utility_scripts.source_context import resolve_test_source_layout
 from utility_scripts.test_quality_checks import cleanup_scaffold_placeholder_tests, format_placeholder_occurrence
 from utility_scripts.repo_path_resolver import (
     add_in_metadata_repo_argument,
-    metrics_json_repo_relative_path,
     resolve_repo_roots,
 )
 
@@ -107,14 +111,7 @@ def stage_and_commit(
         str(os.path.join("metadata", group, artifact, library_version)),
         str(os.path.relpath(stats_artifact_dir(repo_path, group, artifact), repo_path)),
     ]
-    if include_in_repo_metrics and metrics_repo_path:
-        candidate_paths.append(
-            metrics_json_repo_relative_path(
-                repo_path,
-                metrics_repo_path,
-                os.path.join(SCRIPT_RUN_METRICS_DIR, "add_new_library_support.json"),
-            )
-        )
+    del metrics_repo_path, include_in_repo_metrics
     candidate_paths = [path for path in candidate_paths if os.path.exists(os.path.join(repo_path, path))]
 
     commit_message = f"Add support for {coordinates}"

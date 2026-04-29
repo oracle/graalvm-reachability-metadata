@@ -1,0 +1,137 @@
+{
+  "add_new_library_support:2026-04-17": {
+    "timestamp": "2026-04-17T04:36:39.905888Z",
+    "library": "org.codehaus.woodstox:stax2-api:4.2.2",
+    "starting_commit": "280d0ab909bdceca34c1d53f42e5aea292b69a06",
+    "ending_commit": "d0b205686f5d70b9c9fa53d21ffaf30d4358bce6",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.4",
+    "agent": "pi",
+    "model": "oca/gpt-5.4",
+    "status": "success_with_intervention",
+    "stats": {
+      "version": "4.2.2",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 5,
+        "totalCalls": 5
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 168,
+          "missed": 19462,
+          "ratio": 0.008558,
+          "total": 19630
+        },
+        "line": {
+          "covered": 45,
+          "missed": 4796,
+          "ratio": 0.009296,
+          "total": 4841
+        },
+        "method": {
+          "covered": 5,
+          "missed": 1199,
+          "ratio": 0.004153,
+          "total": 1204
+        }
+      }
+    },
+    "post_generation_intervention": {
+      "stage": "metadata_fix_failed",
+      "intervention_file": "post-gen-interventions/org.codehaus.woodstox_stax2-api_4.2.2.md",
+      "analysis_markdown": "# Post-generation intervention report\n\nLibrary: org.codehaus.woodstox:stax2-api:4.2.2\nStage: `metadata_fix_failed`\n\n## Summary\n\nBoth failing native tests had the same root cause: this was a metadata-related failure, not a bad test and not a native-image platform limitation. `XMLValidationSchemaFactory.newInstance(...)` looks up a custom service definition resource at `META-INF/services/org.codehaus.stax2.validation.XMLValidationSchemaFactory.dtd`. In the failing native image, that resource was not registered, so runtime lookup returned no provider and both tests failed with `FactoryConfigurationError`.\n\n## Failure breakdown\n\n### `loadsFactoryFromSystemResourcesWhenNoClassLoaderIsProvided()`\n- **Root cause:** missing native-image resource metadata for `META-INF/services/org.codehaus.stax2.validation.XMLValidationSchemaFactory.dtd`\n- **Why it failed:** the null-classloader path falls back to system resource lookup, but the service file was not embedded in the native image, so no `XMLValidationSchemaFactory` implementation could be found.\n\n### `loadsFactoryFromExplicitClassLoaderResources()`\n- **Root cause:** same missing native-image resource metadata\n- **Why it failed:** even with the explicit test class loader, the same service file was absent from the native image, so provider discovery failed in the same way.\n\n## Codex log findings\n\nThe Codex log shows this was already identified correctly as a metadata gap. Codex added a resource entry for:\n\n- `META-INF/services/org.codehaus.stax2.validation.XMLValidationSchemaFactory.dtd`\n\nwith condition:\n\n- `org.codehaus.stax2.validation.XMLValidationSchemaFactory`\n\nAfter that change, Codex reran `./gradlew test -Pcoordinates=org.codehaus.woodstox:stax2-api:4.2.2 --stacktrace` and both native tests passed.\n\n## Remaining missing metadata\n\nNone. The log indicates the metadata issue was resolved by registering the service resource. There is no evidence of a remaining reflection or JNI gap behind this failure.\n\n## Intervention decision\n\n- **Did not remove any generated tests.**\n- **Did not modify metadata files in this intervention.**\n\n## Why the remaining generated support should be preserved\n\nThe generated support is still valuable because it covers a real native-image compatibility requirement in `stax2-api`: runtime discovery of `XMLValidationSchemaFactory` implementations through a custom `META-INF/services/...dtd` resource. The generated test and its service file validate both lookup variants exercised by the API:\n\n- system-resource lookup when no class loader is provided\n- explicit class-loader resource lookup\n\nRemoving that generated support would discard legitimate coverage for a real metadata requirement that Codex already fixed."
+    },
+    "metrics": {
+      "input_tokens_used": 31973,
+      "cached_input_tokens_used": 504448,
+      "output_tokens_used": 9224,
+      "iterations": 1,
+      "cost_usd": 0.2645,
+      "generated_loc": 111,
+      "tested_library_loc": 225,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.93
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.codehaus.woodstox/stax2-api/4.2.2/src/test/java/org_codehaus_woodstox/stax2_api/XMLValidationSchemaFactoryTest.java",
+      "metadata_file": "metadata/org.codehaus.woodstox/stax2-api/4.2.2/reachability-metadata.json"
+    }
+  },
+  "add_new_library_support:2026-04-22": {
+    "timestamp": "2026-04-22T04:28:45.655179Z",
+    "library": "org.codehaus.woodstox:stax2-api:4.2.2",
+    "starting_commit": "a0939efe722438024ba7181862b76101d8e14e59",
+    "ending_commit": "6f9d4c39c2d56ad8b2bb60c2b4ae6ed1c2e5b130",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.4",
+    "agent": "pi",
+    "model": "oca/gpt-5.4",
+    "status": "success",
+    "stats": {
+      "version": "4.2.2",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 5,
+        "totalCalls": 5
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 168,
+          "missed": 19462,
+          "ratio": 0.008558,
+          "total": 19630
+        },
+        "line": {
+          "covered": 45,
+          "missed": 4796,
+          "ratio": 0.009296,
+          "total": 4841
+        },
+        "method": {
+          "covered": 5,
+          "missed": 1199,
+          "ratio": 0.004153,
+          "total": 1204
+        }
+      }
+    },
+    "metrics": {
+      "input_tokens_used": 42152,
+      "cached_input_tokens_used": 487552,
+      "output_tokens_used": 8133,
+      "iterations": 1,
+      "cost_usd": 0.2439,
+      "generated_loc": 112,
+      "tested_library_loc": 45,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.93
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.codehaus.woodstox/stax2-api/4.2.2/src/test/java/org_codehaus_woodstox/stax2_api/XMLValidationSchemaFactoryTest.java",
+      "metadata_file": "metadata/org.codehaus.woodstox/stax2-api/4.2.2/reachability-metadata.json"
+    }
+  }
+}

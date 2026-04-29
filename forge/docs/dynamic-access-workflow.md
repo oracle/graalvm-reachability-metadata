@@ -2,7 +2,7 @@
 
 > **See also:** [Project overview](overview.md) ·
 > [Native metadata exploration phase](native-metadata-exploration.md) ·
-> [Java fail-fix workflow](../spec/fix-java-run-fail.md)
+> [Java fail-fix workflow](fix-java-run-fail.md)
 
 ## 1. Purpose
 

@@ -1,3 +1,8 @@
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
 import os
 import subprocess
 import sys
@@ -6,10 +11,8 @@ from utility_scripts.pi_logs import build_pi_log_path
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import display_log_path
 
-PI_MODEL_NAME = "oca/gpt-5.4"
-PI_TIMEOUT_SECONDS = 600
-MAX_CODEX_LOG_CHARS = 24000
-MAX_TEST_OUTPUT_CHARS = 12000
+DEFAULT_PI_TIMEOUT_SECONDS = 600
+DEFAULT_MAX_TEST_OUTPUT_CHARS = 12000
 POST_GENERATION_STAGE_METADATA_FIX_FAILED = "metadata_fix_failed"
 
 
@@ -18,6 +21,7 @@ def _trim_text(text: str, limit: int) -> str:
     if len(text) <= limit:
         return text
     return text[-limit:]
+
 
 def _build_intervention_path(reachability_metadata_path: str, coordinates: str) -> str:
     """Build the intervention markdown path for a library."""
@@ -30,7 +34,13 @@ def _repo_relative_path(path: str, repo_path: str) -> str:
     return os.path.relpath(os.path.abspath(path), os.path.abspath(repo_path))
 
 
-def _build_prompt(coordinates: str, codex_log_path: str, test_output: str, intervention_path: str) -> str:
+def _build_prompt(
+        coordinates: str,
+        codex_log_path: str,
+        test_output: str,
+        intervention_path: str,
+        max_test_output_chars: int,
+) -> str:
     """Build the Pi post-generation intervention prompt."""
     return "\n".join(
         [
@@ -66,7 +76,7 @@ def _build_prompt(coordinates: str, codex_log_path: str, test_output: str, inter
             "",
             "Gradle failure output excerpt:",
             "```text",
-            _trim_text(test_output, MAX_TEST_OUTPUT_CHARS),
+            _trim_text(test_output, max_test_output_chars),
             "```",
         ]
     )
@@ -78,12 +88,14 @@ def _write_pi_post_generation_log(log_path: str, output: str) -> None:
         log_file.write(output or "")
 
 
-
 def run_pi_post_generation_fix(
         reachability_metadata_path: str,
         coordinates: str,
         codex_log_path: str,
         test_output: str,
+        model_name: str,
+        timeout_seconds: int = DEFAULT_PI_TIMEOUT_SECONDS,
+        max_test_output_chars: int = DEFAULT_MAX_TEST_OUTPUT_CHARS,
 ) -> tuple[int, str, bool]:
     """Run Pi to perform post-generation intervention and write the markdown artifact."""
     log_stage("post-generation-fix", f"Running Pi post-generation fix for {coordinates}")
@@ -101,8 +113,9 @@ def run_pi_post_generation_fix(
         codex_log_path=display_log_path(codex_log_path),
         test_output=test_output,
         intervention_path=intervention_path_display,
+        max_test_output_chars=max_test_output_chars,
     )
-    command = ["pi", "-p", "--no-session", "--model", PI_MODEL_NAME, prompt]
+    command = ["pi", "-p", "--no-session", "--model", model_name, prompt]
     try:
         result = subprocess.run(
             command,
@@ -110,7 +123,7 @@ def run_pi_post_generation_fix(
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
-            timeout=PI_TIMEOUT_SECONDS,
+            timeout=timeout_seconds,
             check=False,
         )
     except subprocess.TimeoutExpired as exc:

@@ -1,7 +1,7 @@
-"""
-Copyright (c) 2026, 2026, Oracle and/or its affiliates. All rights reserved.
-ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
-"""
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 from dataclasses import dataclass
 import os

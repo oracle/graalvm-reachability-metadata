@@ -8,7 +8,7 @@ Purpose: ensure safe, focused, and reviewable changes.
 - Read README.md and DEVELOPING.md before acting.
 - Before adding code, search the repository to see whether the behavior already exists or belongs in an existing module. Prefer `rg` for code and file discovery.
 - Use the module map below to decide where code belongs before editing.
-- When testing AI workflows, follow `spec/ai-workflow-testing.md` and treat real workflow runs as the source of truth instead of mock-only tests.
+- When testing AI workflows, follow `docs/ai-workflow-testing.md` and treat real workflow runs as the source of truth instead of mock-only tests.
 - Follow project style.
 - When making AI-powered scripts, ensure prompts are clear and concise for the LLM.
 - Ask for clarification when requirements are ambiguous.
@@ -37,7 +37,7 @@ Purpose: ensure safe, focused, and reviewable changes.
 - `prompt_templates/`: prompt text only. Put instruction wording here when behavior does not require Python changes.
 - `strategies/predefined_strategies.json`: declarative workflow configuration such as strategy names, prompt files, parameters, model, and agent selection.
 - `schemas/`: JSON schemas for persisted outputs and configuration files. Update these when changing output contracts.
-- `spec/`: project specifications and testing specifications.
+- `docs/`: project documentation, specifications, and testing specifications.
 
 ## Style
 - In Markdown files always use backticks to format code and commands.

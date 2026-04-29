@@ -1,3 +1,8 @@
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
 """
 Usage:
   python3 ai_workflows/add_new_library_support.py \
@@ -310,12 +315,19 @@ def write_add_new_library_support_metrics(run_metrics, metrics_json, is_benchmar
             json.dump(data, f, indent=2, ensure_ascii=False)
             f.write("\n")
     else:
-        metrics_writer.append_run_metrics(run_metrics, metrics_json)
+        in_repo_root = metrics_writer.in_metadata_repo_metrics_root(metrics_repo_root)
+        if in_repo_root:
+            metrics_writer.append_execution_metrics(in_repo_root, run_metrics, "add_new_library_support")
+        else:
+            metrics_writer.append_run_metrics(run_metrics, metrics_json)
         if metrics_repo_root:
             metrics_writer.write_pending_metrics(metrics_repo_root, run_metrics)
 
     log_stage("schema-validation", "Validating schema")
-    validate_run_metrics(metrics_json) if not is_benchmark_mode else validate_benchmark_run_metrics(metrics_json)
+    if not is_benchmark_mode and not metrics_writer.in_metadata_repo_metrics_root(metrics_repo_root):
+        validate_run_metrics(metrics_json)
+    elif is_benchmark_mode:
+        validate_benchmark_run_metrics(metrics_json)
     log_stage("schema-validation", "Schema validated")
 
 

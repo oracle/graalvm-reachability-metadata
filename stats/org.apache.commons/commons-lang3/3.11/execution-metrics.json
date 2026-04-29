@@ -1,0 +1,127 @@
+{
+  "add_new_library_support:2026-04-16": {
+    "timestamp": "2026-04-16T14:48:46.771503Z",
+    "library": "org.apache.commons:commons-lang3:3.11",
+    "starting_commit": "5243305082ef3fbcadf5fa8c49981039446b41d4",
+    "ending_commit": "9666657308de39353c25054aca18d3877ce3ae66",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.4",
+    "agent": "pi",
+    "model": "oca/gpt-5.4",
+    "status": "success",
+    "stats": {
+      "version": "3.11",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.986842,
+            "coveredCalls": 75,
+            "totalCalls": 76
+          }
+        },
+        "coverageRatio": 0.986842,
+        "coveredCalls": 75,
+        "totalCalls": 76
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5762,
+          "missed": 67567,
+          "ratio": 0.078577,
+          "total": 73329
+        },
+        "line": {
+          "covered": 1439,
+          "missed": 14452,
+          "ratio": 0.090554,
+          "total": 15891
+        },
+        "method": {
+          "covered": 307,
+          "missed": 3419,
+          "ratio": 0.082394,
+          "total": 3726
+        }
+      }
+    },
+    "metrics": {
+      "input_tokens_used": 574678,
+      "cached_input_tokens_used": 6205184,
+      "output_tokens_used": 94109,
+      "iterations": 23,
+      "cost_usd": 2.9629,
+      "generated_loc": 1186,
+      "tested_library_loc": 7198,
+      "metadata_entries": 44,
+      "code_coverage_percent": 9.04
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.apache.commons/commons-lang3/3.11/src/test/java/org_apache_commons/commons_lang3/ClassUtilsTest.java",
+      "metadata_file": "metadata/org.apache.commons/commons-lang3/3.11/reachability-metadata.json"
+    }
+  },
+  "add_new_library_support:2026-04-21": {
+    "timestamp": "2026-04-21T22:00:35.153802Z",
+    "library": "org.apache.commons:commons-lang3:3.11",
+    "starting_commit": "d38cd53ef025927941ae1c6709714d8c4d6489fa",
+    "ending_commit": "59a1b304ab1226256d6749c6b494a90bd5d6e51a",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.4",
+    "agent": "pi",
+    "model": "oca/gpt-5.4",
+    "status": "success_with_intervention",
+    "stats": {
+      "version": "3.11",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.947368,
+            "coveredCalls": 72,
+            "totalCalls": 76
+          }
+        },
+        "coverageRatio": 0.947368,
+        "coveredCalls": 72,
+        "totalCalls": 76
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5525,
+          "missed": 67804,
+          "ratio": 0.075345,
+          "total": 73329
+        },
+        "line": {
+          "covered": 1387,
+          "missed": 14504,
+          "ratio": 0.087282,
+          "total": 15891
+        },
+        "method": {
+          "covered": 300,
+          "missed": 3426,
+          "ratio": 0.080515,
+          "total": 3726
+        }
+      }
+    },
+    "post_generation_intervention": {
+      "stage": "metadata_fix_failed",
+      "intervention_file": "post-gen-interventions/org.apache.commons_commons-lang3_3.11.md",
+      "analysis_markdown": "# Post-generation intervention report\n\nLibrary: org.apache.commons:commons-lang3:3.11\nStage: metadata_fix_failed\n\n## Summary\n\nThe generated support failed in native test execution because `EventListenerSupportTest.serializationRoundTripDropsNonSerializableListenersAndRecreatesTransientFields()` hit a GraalVM native-image serialization/reflection limitation during `ObjectInputStream` deserialization.\n\n## Failure analysis\n\n### Failing test\n\n- `tests/src/org.apache.commons/commons-lang3/3.11/src/test/java/org_apache_commons/commons_lang3/EventListenerSupportTest.java`\n\n### Root cause\n\nThis failure is **not a normal metadata gap** in the generated library support.\n\nThe Gradle failure shows `MissingReflectionRegistrationError` for `java.lang.Object.<init>()` from:\n\n- `java.io.ObjectStreamClass.newInstance(...)`\n- `java.io.ObjectInputStream.readOrdinaryObject(...)`\n\nThe Codex metadata-fix log shows that it already tried the obvious metadata-based remedies:\n\n- adding reflection metadata for `java.lang.Object` default construction,\n- marking the serialized test class for unsafe allocation,\n- adding equivalent test-local metadata under `src/test/resources/META-INF/native-image`.\n\nDespite that, the runtime still failed with the exact same `java.lang.Object()` error. That means this test is exercising a native-image/JDK deserialization path that is not resolved by the suggested metadata entry, rather than exposing unfinished commons-lang3 metadata.\n\n## Intervention\n\nRemoved the unsupported generated test:\n\n- `tests/src/org.apache.commons/commons-lang3/3.11/src/test/java/org_apache_commons/commons_lang3/EventListenerSupportTest.java`\n\nNo metadata files were modified as part of this intervention.\n\n## Why the remaining generated support should be preserved\n\nThe failure was isolated to one serialization round-trip scenario. The native test report shows the rest of the generated commons-lang3 support working: 52 other tests passed, including coverage for reflection-heavy APIs such as:\n\n- `AnnotationUtils`\n- `ClassUtils`\n- `ConstructorUtils`\n- `EqualsBuilder`\n- `FieldUtils`\n- `HashCodeBuilder`\n- `MethodUtils`\n- `ReflectionToStringBuilder`\n- `SerializationUtils`\n- `TypeUtils`\n\nThat passing coverage indicates the generated metadata and tests still provide meaningful support for `org.apache.commons:commons-lang3:3.11`. Only the `EventListenerSupport` serialization test should be dropped because it depends on a native-image deserialization behavior that Codex could not fix through metadata registration."
+    },
+    "metrics": {
+      "input_tokens_used": 748513,
+      "cached_input_tokens_used": 6979968,
+      "output_tokens_used": 91410,
+      "iterations": 24,
+      "cost_usd": 3.1162,
+      "generated_loc": 1029,
+      "tested_library_loc": 1387,
+      "metadata_entries": 41,
+      "code_coverage_percent": 8.73
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.apache.commons/commons-lang3/3.11/src/test/java/org_apache_commons/commons_lang3/CompareToBuilderTest.java",
+      "metadata_file": "metadata/org.apache.commons/commons-lang3/3.11/reachability-metadata.json"
+    }
+  }
+}

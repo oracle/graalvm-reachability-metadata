@@ -121,8 +121,8 @@ sequenceDiagram
 - `--reachability-metadata-path` — overrides default reachability-repo clone.
 - `--metrics-repo-path` — overrides default metrics-repo clone.
 - `--in-metadata-repo` — run from `graalvm-reachability-metadata/metadata-forge`;
-  defaults the target repository to the parent checkout and stores metrics under
-  `metadata-forge/{script_run_metrics,benchmark_run_metrics}`.
+  defaults the target repository to the parent checkout and stores successful
+  run metrics under `stats/<group>/<artifact>/<version>/execution-metrics.json`.
 - `--strategy-name <name>` — selects an entry from `predefined_strategies.json`.
 - `--docs-path` — additional read-only files for agent context.
 - `-v` / `--verbose` — verbose agent output.
@@ -156,8 +156,8 @@ Each entry in `strategies/predefined_strategies.json` must provide:
 
 - **Per-run metrics record** appended to
   `<metrics_repo>/{script_run_metrics,benchmark_run_metrics}/<workflow>.json`,
-  schema-validated. With `--in-metadata-repo`, `<metrics_repo>` is the
-  worktree's `metadata-forge/` directory.
+  schema-validated. With `--in-metadata-repo`, successful run metrics are
+  written under `stats/<group>/<artifact>/<version>/execution-metrics.json`.
 - **Generated tests + metadata + index.json** committed on the feature branch
   `ai/add-lib-support-<group>-<artifact>-<version>` in the reachability repo.
 - **Pull request** (only when invoked through `complete_pipelines/` or
@@ -184,7 +184,7 @@ The exit code is `0` for the first two and `1` for failure.
   and writes its results to a caller-supplied output directory. Used by the
   dynamic-access workflow after every iteration and by the native-run
   failure fix workflow.
-- [Java compilation / runtime failure fix workflow](../spec/fix-java-run-fail.md)
+- [Java compilation / runtime failure fix workflow](fix-java-run-fail.md)
   — version-bump fix workflow shared by `fix_javac_fail` and
   `fix_java_run_fail`. Integrates with the metadata exploration phase when
   the failure surfaces under `nativeTest`.

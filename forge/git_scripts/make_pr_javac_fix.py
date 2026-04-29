@@ -1,3 +1,8 @@
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
 import argparse
 import os
 import shutil
@@ -24,7 +29,6 @@ from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.metrics_writer import commit_run_metrics_with_retry, read_pending_metrics
 from utility_scripts.repo_path_resolver import (
     add_in_metadata_repo_argument,
-    metrics_json_repo_relative_path,
     resolve_repo_roots,
 )
 
@@ -64,14 +68,7 @@ def stage_and_commit(
         str(os.path.join("metadata", group, artifact, library_version)),
         str(os.path.relpath(stats_artifact_dir(repo_path, group, artifact), repo_path)),
     ]
-    if include_in_repo_metrics and metrics_repo_path:
-        candidate_paths.append(
-            metrics_json_repo_relative_path(
-                repo_path,
-                metrics_repo_path,
-                os.path.join(SCRIPT_RUN_METRICS_DIR, FIX_JAVAC_METRICS_FILE),
-            )
-        )
+    del metrics_repo_path, include_in_repo_metrics
     candidate_paths = [path for path in candidate_paths if os.path.exists(os.path.join(repo_path, path))]
 
     commit_message = f"Fixed test for {coordinates}"

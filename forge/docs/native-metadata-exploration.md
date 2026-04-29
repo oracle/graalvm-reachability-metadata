@@ -32,7 +32,7 @@ At a glance:
 
 > **See also:** [Project overview](overview.md) ·
 > [Dynamic-access workflow](dynamic-access-workflow.md) ·
-> [Java fail-fix workflow](../spec/fix-java-run-fail.md)
+> [Java fail-fix workflow](fix-java-run-fail.md)
 
 ## 1. Purpose
 
@@ -375,7 +375,7 @@ status; this list is informational only.
 | Caller | Where the integration is specified |
 | --- | --- |
 | Dynamic-access workflow — after every per-class iteration, and as a precondition for codex fixup inside finalization | [dynamic-access-workflow.md §6.4 and §6.6](dynamic-access-workflow.md) |
-| Native-run failure fix workflow — first corrective action when `nativeTest` fails | [../spec/fix-java-run-fail.md](../spec/fix-java-run-fail.md) |
+| Native-run failure fix workflow — first corrective action when `nativeTest` fails | [fix-java-run-fail.md](fix-java-run-fail.md) |
 
 ## 9. Failure Handoff to Codex Fixup
 

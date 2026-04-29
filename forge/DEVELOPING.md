@@ -14,7 +14,7 @@ Repo layout:
 
 ### Merged repository mode
 
-When `metadata-forge` is located inside `graalvm-reachability-metadata/metadata-forge`, pass `--in-metadata-repo`. The flag makes the parent checkout the default reachability repository and stores run metrics in that checkout under `metadata-forge/script_run_metrics/` or `metadata-forge/benchmark_run_metrics/`. Top-level automation still creates one detached metadata-repo worktree per issue run; in this mode the run's metrics root is the same worktree's `metadata-forge/` directory.
+When `metadata-forge` is located inside `graalvm-reachability-metadata/metadata-forge`, pass `--in-metadata-repo`. The flag makes the parent checkout the default reachability repository and writes successful run metrics under `stats/<group>/<artifact>/<version>/execution-metrics.json`. Top-level automation still creates one detached metadata-repo worktree per issue run; in this mode the run's pending metrics root is the same worktree's `metadata-forge/` directory.
 
 ### Prerequisites
 
@@ -78,7 +78,7 @@ Options:
 
 Notes:
 - Runs Gradle tasks inside the reachability-metadata repo (`./gradlew ...`).
-- On success, writes metrics into `<metrics_repo_path>/script_run_metrics/fix_javac_fail.json`.
+- On success, writes metrics into `<metrics_repo_path>/script_run_metrics/fix_javac_fail.json`, or into `stats/<group>/<artifact>/<version>/execution-metrics.json` when `--in-metadata-repo` is used.
 
 ### Add support for a new library
 
@@ -307,7 +307,7 @@ Workflow-local logs are grouped by library first as `logs/<group>:<artifact>:<ve
   ```bash
     python3 utility_scripts/schema_validator.py <schema_name> <file_path>`)
   ```
-  - `run_metrics_output` validates run metrics output files using `schemas/run_metrics_output_schema.json`:
+  - `run_metrics_output` validates run metrics output files using `../stats/schemas/run_metrics_output_schema.json`:
     ```bash
     python3 utility_scripts/schema_validator.py run_metrics_output output/results.json
     ```
@@ -465,7 +465,7 @@ python3 complete_pipelines/add_new_library_support_create_pr.py \
   [-v]
 ```
 
-For the detailed function-level notes and sequence diagram, see `spec/dynamic-access-strategy.md`.
+For the detailed function-level notes and sequence diagram, see `docs/dynamic-access-strategy.md`.
 
 ### Quick reference
 

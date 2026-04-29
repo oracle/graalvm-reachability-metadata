@@ -93,6 +93,18 @@ spotless {
                      '(?s)\\A(?!#!)(?!# Copyright and related rights waived via CC0\\n)',
                      shHeader + "\n")
     }
+    format('python') {
+        target('**/*.py')
+        targetExclude(*noHeaderDirs)
+        // Ensure header appears after shebang if present, else at the very top.
+        def pyHeader = file("$rootDir/gradle/header.sh").text
+        replaceRegex('insert-license-after-shebang',
+                     '(?s)\\A(#![^\\n]*\\n)(?:[ \\t]*\\n)*(?!# Copyright and related rights waived via CC0\\n)',
+                     '$1' + pyHeader + "\n")
+        replaceRegex('insert-license-at-start',
+                     '(?s)\\A(?!#!)(?!# Copyright and related rights waived via CC0\\n)',
+                     pyHeader + "\n")
+    }
 }
 
 // gradle package

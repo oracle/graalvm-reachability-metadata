@@ -1,0 +1,165 @@
+{
+  "add_new_library_support:2026-04-09": {
+    "timestamp": "2026-04-09T13:28:06Z",
+    "library": "org.jboss.logmanager:jboss-logmanager:1.2.0.GA",
+    "starting_commit": "d35966a6d3ccb468dce6722e8b8667c2f8e13af0",
+    "ending_commit": "de19aac39b3dbcad8fb38f7772ea1ec69490c618",
+    "strategy_name": "dynamic_access_main_sources pi",
+    "status": "success",
+    "metrics": {
+      "input_tokens_used": 415689,
+      "cached_input_tokens_used": 4915456,
+      "output_tokens_used": 90418,
+      "iterations": 14,
+      "cost_usd": 2.5852,
+      "generated_loc": 652,
+      "tested_library_loc": 4336,
+      "metadata_entries": 60,
+      "code_coverage_percent": 24.87
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.jboss.logmanager/jboss-logmanager/1.2.0.GA/src/test/java/org/jboss/logmanager/AtomicArrayTest.java",
+      "metadata_file": "metadata/org.jboss.logmanager/jboss-logmanager/1.2.0.GA/reachability-metadata.json"
+    }
+  },
+  "add_new_library_support:2026-04-17": {
+    "timestamp": "2026-04-17T06:24:10.078496Z",
+    "library": "org.jboss.logmanager:jboss-logmanager:1.2.0.GA",
+    "starting_commit": "293ee67ac2fb1bb4df7e01fd214f85c4d6dc3aa5",
+    "ending_commit": "ffc6c450ac6a78162835c049937a65ca34300d44",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.4",
+    "agent": "pi",
+    "model": "oca/gpt-5.4",
+    "status": "success_with_intervention",
+    "stats": {
+      "version": "1.2.0.GA",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.9375,
+            "coveredCalls": 30,
+            "totalCalls": 32
+          },
+          "resources": {
+            "coverageRatio": 0.666667,
+            "coveredCalls": 2,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 0.914286,
+        "coveredCalls": 32,
+        "totalCalls": 35
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3649,
+          "missed": 10535,
+          "ratio": 0.257262,
+          "total": 14184
+        },
+        "line": {
+          "covered": 909,
+          "missed": 2559,
+          "ratio": 0.262111,
+          "total": 3468
+        },
+        "method": {
+          "covered": 174,
+          "missed": 612,
+          "ratio": 0.221374,
+          "total": 786
+        }
+      }
+    },
+    "post_generation_intervention": {
+      "stage": "metadata_fix_failed",
+      "intervention_file": "post-gen-interventions/org.jboss.logmanager_jboss-logmanager_1.2.0.GA.md",
+      "analysis_markdown": "# Post-generation intervention report\n\nLibrary: org.jboss.logmanager:jboss-logmanager:1.2.0.GA\nStage: `metadata_fix_failed`\n\n## Summary\n\nThe native image built successfully, and the remaining failures were two native-runtime behavioral assertions rather than missing reachability metadata. There was no `Missing*RegistrationError` in the Gradle failure output. The generated support should therefore be kept, but the two unsupported native-only tests were removed.\n\nI also confirmed that the generated test suite passes on the JVM and that `./gradlew test -Pcoordinates=org.jboss.logmanager:jboss-logmanager:1.2.0.GA --stacktrace` passes after removing the two failing native-only tests.\n\n## Failure analysis\n\n### 1. `org.jboss.logmanager.LogManagerTest > readConfigurationFallsBackToLogManagerClassLoaderWhenContextClassLoaderRejectsConfigurator()`\n\n- **Root cause:** not metadata-related.\n- **Why:** `LogManager.construct(...)` uses `Class.forName(name, true, contextClassLoader)` first and then falls back to the `LogManager` class loader. In the native image, the assertion `rejectingClassLoader.rejectedClassLoadAttempted` stayed `false`, even though the configurator was still instantiated successfully.\n- **Interpretation:** this test depends on observing a custom `ClassLoader.loadClass(...)` rejection path for an image-contained class. That is a native-image class-loading behavior difference, not missing metadata. If metadata were missing, the failure would have been a registration error or reflective instantiation failure, not a plain `assertThat(...).isTrue()` failure.\n- **Action taken:** removed that test method and its test-only helpers from `tests/src/org.jboss.logmanager/jboss-logmanager/1.2.0.GA/src/test/java/org/jboss/logmanager/LogManagerTest.java`.\n\n### 2. `org.jboss.logmanager.formatters.Formatters12Test > extendedExceptionFormattingUsesClassLoadingFallbacksAndClassResourceLookup()`\n\n- **Root cause:** not metadata-related.\n- **Why:** the native failure was again a boolean assertion (`loadedFromBytes`, `rejectedSystemTargetAttempted`, or `classResourceRequested`) staying `false`, not a missing registration error. This test tries to verify that `%E` formatting forces a custom context class loader to byte-define a target class and then performs `.class` resource lookup through that loader.\n- **Interpretation:** the formatter output path is preserved, but the test relies on runtime-observable custom class loading and resource lookup behavior that native image does not preserve in the same way for image-contained classes. The native image already built successfully, so this is not evidence of missing metadata.\n- **Action taken:** removed that test method and the test-only helper loader/classes that existed solely for it from `tests/src/org.jboss.logmanager/jboss-logmanager/1.2.0.GA/src/test/java/org/jboss/logmanager/formatters/Formatters12Test.java`.\n\n## Why the remaining generated support should be preserved\n\nThe remaining generated support still exercises meaningful `jboss-logmanager` behavior that is relevant to reachability metadata:\n\n- context-class-loader-based configurator and locator instantiation still has coverage\n- bootstrap fallback for exception formatting still has coverage\n- privileged exception class resource lookup still has coverage\n- property-based handler/filter/formatter/error-manager configuration still has coverage\n- serialization-related coverage for the map implementations still has coverage\n- default configuration lookup and typed array handling still have coverage\n\nIn short, only the two tests that depended on native-image-incompatible custom class-loading observability were removed. The rest of the generated suite still validates real library behavior and should be preserved."
+    },
+    "metrics": {
+      "input_tokens_used": 316687,
+      "cached_input_tokens_used": 3697536,
+      "output_tokens_used": 68274,
+      "iterations": 10,
+      "cost_usd": 1.9485,
+      "generated_loc": 718,
+      "tested_library_loc": 4561,
+      "metadata_entries": 25,
+      "code_coverage_percent": 26.16
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.jboss.logmanager/jboss-logmanager/1.2.0.GA/src/test/java/org/jboss/logmanager/AtomicArrayTest.java",
+      "metadata_file": "metadata/org.jboss.logmanager/jboss-logmanager/1.2.0.GA/reachability-metadata.json"
+    }
+  },
+  "add_new_library_support:2026-04-20": {
+    "timestamp": "2026-04-20T21:51:32.219175Z",
+    "library": "org.jboss.logmanager:jboss-logmanager:1.2.0.GA",
+    "starting_commit": "32b6870b543dba3cc7fb066d84d4ef79a9dc234b",
+    "ending_commit": "384c39a55040405c319e88c0081c77f8848d7526",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.4",
+    "agent": "pi",
+    "model": "oca/gpt-5.4",
+    "status": "success_with_intervention",
+    "stats": {
+      "version": "1.2.0.GA",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.9375,
+            "coveredCalls": 30,
+            "totalCalls": 32
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 0.942857,
+        "coveredCalls": 33,
+        "totalCalls": 35
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3653,
+          "missed": 10531,
+          "ratio": 0.257544,
+          "total": 14184
+        },
+        "line": {
+          "covered": 903,
+          "missed": 2565,
+          "ratio": 0.260381,
+          "total": 3468
+        },
+        "method": {
+          "covered": 185,
+          "missed": 601,
+          "ratio": 0.235369,
+          "total": 786
+        }
+      }
+    },
+    "post_generation_intervention": {
+      "stage": "metadata_fix_failed",
+      "intervention_file": "post-gen-interventions/org.jboss.logmanager_jboss-logmanager_1.2.0.GA.md",
+      "analysis_markdown": "# Post-generation intervention report\n\nLibrary: org.jboss.logmanager:jboss-logmanager:1.2.0.GA\nStage: `metadata_fix_failed`\n\n## Summary\n\nThe post-generation failures had two different causes:\n\n1. `ConcurrentReferenceHashMapTest.serializationRoundTripPreservesEntries()` in the Codex metadata-fix log was **metadata-related**.\n2. `Formatters12Test.extendedExceptionFormattingFallsBackToCallerLoaderWhenTcclRejectsTheStackFrameClass()` in the final Gradle failure was **not metadata-related**; it depended on JVM class-loader fallback behavior that does not hold under Native Image.\n\nI removed the generated `Formatters12Test.extendedExceptionFormattingFallsBackToCallerLoaderWhenTcclRejectsTheStackFrameClass()` test and kept the rest of the generated support.\n\n## Failure analysis\n\n### 1. Codex log failure: metadata-related\n\nThe Codex log shows a `MissingReflectionRegistrationError` from:\n\n- `ConcurrentReferenceHashMapTest.serializationRoundTripPreservesEntries()`\n\nMissing entry reported by Native Image:\n\n- `java.util.concurrent.locks.ReentrantLock$Sync.readObject(java.io.ObjectInputStream)`\n\nThat failure came from Java deserialization of `ConcurrentReferenceHashMap`, so it was a real reachability-metadata gap rather than a bad test. This support should be preserved because it covers an actual native-image requirement for the library's serialization path.\n\n### 2. Remaining Gradle failure: not metadata-related\n\nThe remaining failing test was:\n\n- `Formatters12Test.extendedExceptionFormattingFallsBackToCallerLoaderWhenTcclRejectsTheStackFrameClass()`\n\nThis failed on:\n\n- `assertThat(rejectingClassLoader.wasRejected()).isTrue()`\n\nRoot cause:\n\n- The test assumes the formatter will first try to resolve the stack-frame class through the thread context class loader, observe a `ClassNotFoundException`, and only then fall back to the caller loader.\n- In Native Image, class resolution for already-linked image classes does not preserve that JVM class-loading interaction in the same way. The formatted stack trace is still produced, but the custom rejecting loader is never asked to load the class, so `wasRejected()` stays `false`.\n- No `Missing*RegistrationError` was reported for this failure, so this was not a metadata problem.\n\nThis is therefore a Native Image class-loading/runtime-semantics issue in the generated test, and removing that generated test was the correct intervention.\n\n## Why the remaining generated support should be preserved\n\nThe rest of the generated support still exercises real library behavior and should remain in place:\n\n- serialization coverage for `ConcurrentReferenceHashMap` and `FastCopyHashMap`\n- resource lookup coverage for `DefaultConfigurationLocator`\n- formatter/resource coverage in `Formatters12Test`\n- configuration loading and component instantiation coverage in `LogManagerTest` and `PropertyConfiguratorTest`\n\nAfter removing only the non-metadata-related formatter fallback test, the coordinate passed again with:\n\n- `./gradlew test -Pcoordinates=org.jboss.logmanager:jboss-logmanager:1.2.0.GA`\n- `GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all ./gradlew test -Pcoordinates=org.jboss.logmanager:jboss-logmanager:1.2.0.GA`\n\nSo the generated metadata-backed support is still valuable and should be kept; only the unsupported caller-loader fallback assertion needed to be dropped."
+    },
+    "metrics": {
+      "input_tokens_used": 453851,
+      "cached_input_tokens_used": 5017472,
+      "output_tokens_used": 76101,
+      "iterations": 16,
+      "cost_usd": 2.3959,
+      "generated_loc": 704,
+      "tested_library_loc": 903,
+      "metadata_entries": 16,
+      "code_coverage_percent": 26.04
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.jboss.logmanager/jboss-logmanager/1.2.0.GA/src/test/java/org_jboss_logmanager/jboss_logmanager/LogManagerTest.java",
+      "metadata_file": "metadata/org.jboss.logmanager/jboss-logmanager/1.2.0.GA/reachability-metadata.json"
+    }
+  }
+}

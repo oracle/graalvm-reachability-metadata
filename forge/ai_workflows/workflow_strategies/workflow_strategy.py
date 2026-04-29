@@ -1,3 +1,8 @@
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
 import json
 import os
 from abc import ABC, abstractmethod
@@ -7,6 +12,8 @@ import sys
 
 from ai_workflows.fix_metadata_codex import run_codex_metadata_fix
 from ai_workflows.fix_post_generation_pi import (
+    DEFAULT_MAX_TEST_OUTPUT_CHARS,
+    DEFAULT_PI_TIMEOUT_SECONDS,
     POST_GENERATION_STAGE_METADATA_FIX_FAILED,
     run_pi_post_generation_fix,
 )
@@ -81,6 +88,8 @@ class WorkflowStrategy(ABC):
         self.strategy_obj = strategy_obj or {}
         self.context = context
         self.model_name = self.strategy_obj.get("model")
+        if not isinstance(self.model_name, str) or not self.model_name:
+            raise ValueError("Strategy is missing required field: model")
         self.prompts = self.strategy_obj.get("prompts", {})
         self.parameters = self.strategy_obj.get("parameters", {})
         self.post_generation_intervention: dict | None = None
@@ -96,6 +105,13 @@ class WorkflowStrategy(ABC):
         missing = [key for key in self.REQUIRED_PARAMS if key not in self.parameters]
         if missing:
             raise ValueError(f"Strategy is missing required parameters: {', '.join(missing)}")
+
+    def _parameter_int(self, name: str, default: int) -> int:
+        """Return a non-negative integer strategy parameter."""
+        value = self.parameters.get(name, default)
+        if not isinstance(value, int) or value < 0:
+            raise ValueError(f"Strategy parameter '{name}' must be a non-negative integer")
+        return value
 
     def _load_prompt(self, key: str) -> str:
         """Load and render a prompt template by key, substituting context values."""
@@ -147,6 +163,12 @@ class WorkflowStrategy(ABC):
             coordinates=library,
             codex_log_path=codex_log_path,
             test_output=recovery_test_output,
+            model_name=self.model_name,
+            timeout_seconds=self._parameter_int("post-generation-timeout-seconds", DEFAULT_PI_TIMEOUT_SECONDS),
+            max_test_output_chars=self._parameter_int(
+                "post-generation-test-output-chars",
+                DEFAULT_MAX_TEST_OUTPUT_CHARS,
+            ),
         )
         if pi_timed_out or pi_rc != 0:
             return RUN_STATUS_FAILURE
@@ -307,6 +329,7 @@ class WorkflowStrategy(ABC):
             group=self.group,
             artifact=self.artifact,
             library_version=self.version,
+            model_name=self.model_name,
         ):
             return RUN_STATUS_FAILURE, None
         log_stage("commit-iteration", f"Running commit iteration for {self.library}")

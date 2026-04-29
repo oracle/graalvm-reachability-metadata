@@ -1,0 +1,334 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Run Metrics Output Schema",
+  "description": "Schema for run metrics arrays and per-library stats execution metrics keyed by <task-type>:<date>.",
+  "oneOf": [
+    {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/runMetrics"
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[A-Za-z0-9_-]+:[0-9]{4}-[0-9]{2}-[0-9]{2}$": {
+          "$ref": "#/definitions/runMetrics"
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "dynamicAccessEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coveredCalls",
+        "totalCalls",
+        "coverageRatio"
+      ],
+      "properties": {
+        "coveredCalls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "totalCalls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "coverageRatio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "libraryCoverageEntry": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "covered",
+            "total",
+            "ratio"
+          ],
+          "properties": {
+            "covered": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "missed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "ratio": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        },
+        {
+          "type": "string",
+          "const": "N/A"
+        }
+      ]
+    },
+    "statsSnapshot": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "version"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dynamicAccess": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "coveredCalls",
+            "totalCalls",
+            "coverageRatio",
+            "breakdown"
+          ],
+          "properties": {
+            "coveredCalls": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "totalCalls": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "coverageRatio": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "breakdown": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/definitions/dynamicAccessEntry"
+              }
+            }
+          }
+        },
+        "libraryCoverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "instruction": {
+              "$ref": "#/definitions/libraryCoverageEntry"
+            },
+            "line": {
+              "$ref": "#/definitions/libraryCoverageEntry"
+            },
+            "method": {
+              "$ref": "#/definitions/libraryCoverageEntry"
+            }
+          }
+        }
+      }
+    },
+    "runMetrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "timestamp",
+        "library",
+        "strategy_name",
+        "status",
+        "metrics",
+        "artifacts"
+      ],
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO-8601 timestamp marking when the evaluation completed."
+        },
+        "library": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[^:]+$",
+          "description": "Dependency coordinate in the form group:artifact:version."
+        },
+        "starting_commit": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Git commit hash at the start of the generation workflow."
+        },
+        "ending_commit": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Git commit hash at the end of the generation workflow."
+        },
+        "previous_library": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[^:]+$",
+          "description": "Previous dependency coordinate for version-upgrade workflows."
+        },
+        "strategy_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of the strategy used to generate tests/metadata."
+        },
+        "agent": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Configured agent implementation used for the run."
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Configured model used for the run."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "failure",
+            "success_with_intervention"
+          ],
+          "description": "Overall outcome of the run."
+        },
+        "post_generation_intervention": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "stage",
+            "intervention_file",
+            "analysis_markdown"
+          ],
+          "properties": {
+            "stage": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Workflow stage where the post-generation failure happened."
+            },
+            "intervention_file": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Relative path to the intervention markdown written by the Pi workflow."
+            },
+            "analysis_markdown": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Markdown explanation generated for the post-generation failure."
+            }
+          }
+        },
+        "stats": {
+          "$ref": "#/definitions/statsSnapshot",
+          "description": "Coverage snapshot copied from `stats/<groupId>/<artifactId>/<metadata-version>/stats.json` for the generated library version."
+        },
+        "previous_library_stats": {
+          "$ref": "#/definitions/statsSnapshot",
+          "description": "Coverage snapshot copied from `stats/<groupId>/<artifactId>/<metadata-version>/stats.json` for the previous library version when applicable."
+        },
+        "metrics": {
+          "type": "object",
+          "description": "Collected run metrics.",
+          "additionalProperties": false,
+          "required": [
+            "input_tokens_used",
+            "output_tokens_used",
+            "iterations",
+            "cost_usd",
+            "tested_library_loc",
+            "code_coverage_percent",
+            "metadata_entries"
+          ],
+          "properties": {
+            "input_tokens_used": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Total LLM input tokens consumed."
+            },
+            "cached_input_tokens_used": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Subset of input tokens served from cache when reported by the agent."
+            },
+            "output_tokens_used": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Total LLM output tokens consumed."
+            },
+            "iterations": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of iterations performed by the strategy."
+            },
+            "cost_usd": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Estimated cost in USD."
+            },
+            "generated_loc": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Lines of code generated by the agent."
+            },
+            "tested_library_loc": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Lines of code covered within the target library."
+            },
+            "code_coverage_percent": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100,
+              "description": "Code coverage percentage (0\u2013100)."
+            },
+            "metadata_entries": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of metadata entries produced."
+            },
+            "previous_library_metadata_entries": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Metadata entry count for the previous library version."
+            },
+            "previous_library_coverage_percent": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100,
+              "description": "Code coverage percent for the previous library version."
+            }
+          }
+        },
+        "artifacts": {
+          "type": "object",
+          "description": "Paths to generated output artifacts.",
+          "additionalProperties": false,
+          "required": [
+            "test_file",
+            "metadata_file"
+          ],
+          "properties": {
+            "test_file": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Path to the generated test file."
+            },
+            "metadata_file": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Path to the generated metadata file."
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,3 +1,8 @@
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
 """
 Helper module for collecting AI generated metrics, creating JSON objects and appending them to output.
 """
@@ -643,6 +648,68 @@ def _run_metrics_entry_sort_key(entry: dict) -> str:
 
     library = entry.get("library")
     return library if isinstance(library, str) else ""
+
+
+def _run_metrics_key(task_type: str, timestamp: str) -> str:
+    """Build the stable execution-metrics key for a run."""
+    date = timestamp.split("T", 1)[0]
+    return f"{task_type}:{date}"
+
+
+def _execution_metrics_path(repo_path: str, run_metrics: dict) -> str:
+    """Return the per-library execution metrics path for a run metrics entry."""
+    library = run_metrics.get("library")
+    if not isinstance(library, str):
+        raise TypeError("ERROR: run_metrics library must be a string")
+
+    parts = library.split(":")
+    if len(parts) != 3 or any(not part for part in parts):
+        raise ValueError(f"ERROR: run_metrics library must be group:artifact:version: {library}")
+
+    group, artifact, version = parts
+    return os.path.join(repo_path, "stats", group, artifact, version, "execution-metrics.json")
+
+
+def _load_execution_metrics_entries(path: str) -> dict:
+    """Load an execution-metrics object from disk."""
+    if not os.path.isfile(path):
+        return {}
+
+    with open(path, "r", encoding="utf-8") as metrics_file:
+        data = json.load(metrics_file)
+
+    if not isinstance(data, dict):
+        raise TypeError(f"ERROR: Expected execution metrics object in {path}")
+    return data
+
+
+def append_execution_metrics(repo_path: str, run_metrics: dict, task_type: str) -> str:
+    """Append one run metrics entry under stats/<group>/<artifact>/<version>/execution-metrics.json."""
+    timestamp = run_metrics.get("timestamp")
+    if not isinstance(timestamp, str) or not timestamp:
+        raise TypeError("ERROR: run_metrics timestamp must be a string")
+
+    metrics_path = _execution_metrics_path(repo_path, run_metrics)
+    entries = _load_execution_metrics_entries(metrics_path)
+    entries[_run_metrics_key(task_type, timestamp)] = run_metrics
+
+    os.makedirs(os.path.dirname(metrics_path), exist_ok=True)
+    with open(metrics_path, "w", encoding="utf-8") as metrics_file:
+        json.dump(dict(sorted(entries.items())), metrics_file, indent=2, ensure_ascii=False)
+        metrics_file.write("\n")
+
+    return metrics_path
+
+
+def in_metadata_repo_metrics_root(metrics_repo_root: str | None) -> str | None:
+    """Return the parent reachability repo root when metrics root is the in-repo metadata-forge directory."""
+    if not metrics_repo_root:
+        return None
+
+    repo_path = os.path.dirname(os.path.abspath(metrics_repo_root))
+    if os.path.isdir(os.path.join(repo_path, "metadata")) and os.path.isdir(os.path.join(repo_path, "stats")):
+        return repo_path
+    return None
 
 
 

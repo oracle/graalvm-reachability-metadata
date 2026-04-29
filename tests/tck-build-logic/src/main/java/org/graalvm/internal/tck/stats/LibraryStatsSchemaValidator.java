@@ -69,8 +69,10 @@ public final class LibraryStatsSchemaValidator {
 
     public static void validateRepositoryStatsOrThrow(Path metadataRoot, Path statsRoot, Path schemaFile) {
         JsonSchema schema;
+        JsonSchema runMetricsSchema;
         try {
             schema = JSON_SCHEMA_FACTORY.getSchema(schemaFile.toUri());
+            runMetricsSchema = JSON_SCHEMA_FACTORY.getSchema(statsRoot.resolve("schemas").resolve("run_metrics_output_schema.json").toUri());
         } catch (Exception e) {
             throw new GradleException("Failed to load library stats schema from " + schemaFile, e);
         }
@@ -84,7 +86,7 @@ public final class LibraryStatsSchemaValidator {
                 files.filter(Files::isRegularFile)
                         .sorted(Comparator.comparing(path -> path.toAbsolutePath().toString()))
                         .forEach(file -> {
-                            StatsLocation location = validateStatsPath(file, statsRoot, failures);
+                            StatsLocation location = validateStatsPath(file, statsRoot, runMetricsSchema, failures);
                             if (location == null) {
                                 return;
                             }
@@ -147,6 +149,7 @@ public final class LibraryStatsSchemaValidator {
     private static StatsLocation validateStatsPath(
             Path file,
             Path statsRoot,
+            JsonSchema runMetricsSchema,
             List<String> failures
     ) {
         Path relative = statsRoot.relativize(file);
@@ -159,6 +162,7 @@ public final class LibraryStatsSchemaValidator {
         }
 
         if (isExecutionMetricsFile(relative)) {
+            validateExecutionMetricsFile(file, relative, runMetricsSchema, failures);
             return null;
         }
 
@@ -172,7 +176,7 @@ public final class LibraryStatsSchemaValidator {
 
         failures.add("Unexpected JSON file under stats root: " + file
                 + " (expected stats/<groupId>/<artifactId>/<metadataVersion>/stats.json, "
-                + "stats/<groupId>/<artifactId>/execution-metrics.json, or stats/schemas/*.json)");
+                + "stats/<groupId>/<artifactId>/<metadataVersion>/execution-metrics.json, or stats/schemas/*.json)");
         return null;
     }
 
@@ -181,8 +185,35 @@ public final class LibraryStatsSchemaValidator {
     }
 
     private static boolean isExecutionMetricsFile(Path relativePath) {
-        return relativePath.getNameCount() == 3
-                && "execution-metrics.json".equals(relativePath.getName(2).toString());
+        return relativePath.getNameCount() == 4
+                && "execution-metrics.json".equals(relativePath.getName(3).toString());
+    }
+
+    private static void validateExecutionMetricsFile(
+            Path file,
+            Path relativePath,
+            JsonSchema runMetricsSchema,
+            List<String> failures
+    ) {
+        validateAgainstSchema(file, runMetricsSchema, failures);
+        try {
+            JsonNode json = OBJECT_MAPPER.readTree(file.toFile());
+            if (!json.isObject()) {
+                failures.add("Execution metrics file must be an object keyed by <task-type>:<date>: " + file);
+                return;
+            }
+
+            String expectedLibrary = relativePath.getName(0) + ":" + relativePath.getName(1) + ":" + relativePath.getName(2);
+            json.fields().forEachRemaining(entry -> {
+                JsonNode libraryNode = entry.getValue().get("library");
+                if (libraryNode == null || !expectedLibrary.equals(libraryNode.asText())) {
+                    failures.add("Execution metrics library mismatch in " + file + " at key " + entry.getKey()
+                            + ": expected " + expectedLibrary);
+                }
+            });
+        } catch (IOException e) {
+            failures.add("Failed to parse execution metrics JSON file " + file + ": " + e.getMessage());
+        }
     }
 
     private static Map<StatsLocation, Path> collectExpectedStatsFiles(Path metadataRoot, Path statsRoot) {

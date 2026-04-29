@@ -1,11 +1,16 @@
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
 import subprocess
 import sys
 
 from utility_scripts.pi_logs import build_pi_log_path
 from utility_scripts.task_logs import display_log_path
 
-PI_MODEL_NAME = "oca/gpt-5.4"
-PI_TIMEOUT_SECONDS = 600
+DEFAULT_PI_MODEL_NAME = "oca/gpt-5.4"
+DEFAULT_PI_TIMEOUT_SECONDS = 600
 MAX_CHECKSTYLE_OUTPUT_CHARS = 12000
 MAX_TEST_OUTPUT_CHARS = 12000
 MAX_PI_CHECKSTYLE_ATTEMPTS = 3
@@ -75,7 +80,14 @@ def _append_pi_output(log_path: str, section_name: str, attempt: int, output: st
             log_file.write("<no output>\n")
 
 
-def _run_pi_checkstyle_fix(repo_path: str, checkstyle_output: str, log_path: str, attempt: int) -> bool:
+def _run_pi_checkstyle_fix(
+        repo_path: str,
+        checkstyle_output: str,
+        log_path: str,
+        attempt: int,
+        model_name: str,
+        timeout_seconds: int,
+) -> bool:
     """Invoke Pi to fix checkstyle errors shown in the output."""
     trimmed = _trim_output(checkstyle_output, MAX_CHECKSTYLE_OUTPUT_CHARS)
     prompt = "\n".join([
@@ -87,7 +99,7 @@ def _run_pi_checkstyle_fix(repo_path: str, checkstyle_output: str, log_path: str
         trimmed,
         "```",
     ])
-    command = ["pi", "-p", "--no-session", "--model", PI_MODEL_NAME, prompt]
+    command = ["pi", "-p", "--no-session", "--model", model_name, prompt]
     try:
         result = subprocess.run(
             command,
@@ -95,7 +107,7 @@ def _run_pi_checkstyle_fix(repo_path: str, checkstyle_output: str, log_path: str
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
-            timeout=PI_TIMEOUT_SECONDS,
+            timeout=timeout_seconds,
             check=False,
         )
     except subprocess.TimeoutExpired as exc:
@@ -121,6 +133,8 @@ def _run_pi_test_fix_after_checkstyle(
         test_output: str,
         log_path: str,
         attempt: int,
+        model_name: str,
+        timeout_seconds: int,
 ) -> bool:
     """Invoke Pi to fix a test failure introduced while fixing checkstyle."""
     prompt = "\n".join([
@@ -137,7 +151,7 @@ def _run_pi_test_fix_after_checkstyle(
         _trim_output(checkstyle_output, MAX_CHECKSTYLE_OUTPUT_CHARS),
         "```",
     ])
-    command = ["pi", "-p", "--no-session", "--model", PI_MODEL_NAME, prompt]
+    command = ["pi", "-p", "--no-session", "--model", model_name, prompt]
     try:
         result = subprocess.run(
             command,
@@ -145,7 +159,7 @@ def _run_pi_test_fix_after_checkstyle(
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
-            timeout=PI_TIMEOUT_SECONDS,
+            timeout=timeout_seconds,
             check=False,
         )
     except subprocess.TimeoutExpired as exc:
@@ -165,9 +179,15 @@ def _run_pi_test_fix_after_checkstyle(
     return True
 
 
-def run_style_fix_and_checks(repo_path: str, coordinates: str) -> bool:
+def run_style_fix_and_checks(
+        repo_path: str,
+        coordinates: str,
+        model_name: str | None = None,
+        timeout_seconds: int = DEFAULT_PI_TIMEOUT_SECONDS,
+) -> bool:
     """Apply style fixes and run style checks for the provided library coordinates."""
     coordinate_arg = f"-Pcoordinates={coordinates}"
+    pi_model_name = model_name or DEFAULT_PI_MODEL_NAME
 
     if not _run_gradle_task(repo_path, ["./gradlew", "spotlessApply", coordinate_arg]):
         return False
@@ -184,7 +204,14 @@ def run_style_fix_and_checks(repo_path: str, coordinates: str) -> bool:
 
     for attempt in range(1, MAX_PI_CHECKSTYLE_ATTEMPTS + 1):
         print(f"[checkstyle] Attempting Pi checkstyle fix ({attempt}/{MAX_PI_CHECKSTYLE_ATTEMPTS})...")
-        if not _run_pi_checkstyle_fix(repo_path, checkstyle_result.stdout, log_path, attempt):
+        if not _run_pi_checkstyle_fix(
+            repo_path,
+            checkstyle_result.stdout,
+            log_path,
+            attempt,
+            pi_model_name,
+            timeout_seconds,
+        ):
             continue
 
         checkstyle_result = _run_checkstyle(repo_path, coordinate_arg)
@@ -206,6 +233,8 @@ def run_style_fix_and_checks(repo_path: str, coordinates: str) -> bool:
             test_output=test_result.stdout,
             log_path=log_path,
             attempt=attempt,
+            model_name=pi_model_name,
+            timeout_seconds=timeout_seconds,
         ):
             return False
 

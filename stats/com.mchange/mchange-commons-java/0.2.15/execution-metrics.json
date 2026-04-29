@@ -1,0 +1,142 @@
+{
+  "add_new_library_support:2026-04-16": {
+    "timestamp": "2026-04-16T22:51:34.636399Z",
+    "library": "com.mchange:mchange-commons-java:0.2.15",
+    "starting_commit": "1e72a00310edbbc36b5acd889169e282ad818563",
+    "ending_commit": "8bb2522fe4ca8cd98344080458d61a9fc90e4d96",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.4",
+    "agent": "pi",
+    "model": "oca/gpt-5.4",
+    "status": "success_with_intervention",
+    "stats": {
+      "version": "0.2.15",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.952381,
+            "coveredCalls": 80,
+            "totalCalls": 84
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 6,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 0.955556,
+        "coveredCalls": 86,
+        "totalCalls": 90
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 8403,
+          "missed": 48348,
+          "ratio": 0.148068,
+          "total": 56751
+        },
+        "line": {
+          "covered": 1911,
+          "missed": 10953,
+          "ratio": 0.148554,
+          "total": 12864
+        },
+        "method": {
+          "covered": 382,
+          "missed": 4056,
+          "ratio": 0.086075,
+          "total": 4438
+        }
+      }
+    },
+    "post_generation_intervention": {
+      "stage": "metadata_fix_failed",
+      "intervention_file": "post-gen-interventions/com.mchange_mchange-commons-java_0.2.15.md",
+      "analysis_markdown": "# Post-generation intervention report\n\nLibrary: com.mchange:mchange-commons-java:0.2.15\nStage: `metadata_fix_failed`\n\n## Summary\n\nThe generated native test suite failed only in `PropertyComponentBindingUtilityTest`:\n\n- `propertyBoundTextFieldSyncsFromTheBean()`\n- `propertyBoundTextFieldWritesUserChangesBackToTheBean()`\n\nBoth failures came from Swing/AWT X11 toolkit initialization inside the native image, not from missing `com.mchange` library metadata.\n\n## Root cause by failing test\n\n### `propertyBoundTextFieldSyncsFromTheBean()`\nThis failed with `java.lang.NoClassDefFoundError: sun/awt/X11/XErrorHandlerUtil` while `java.desktop` was initializing `sun.awt.X11GraphicsEnvironment` and `sun.awt.X11.XToolkit`.\n\nRoot cause: the generated test constructs `PropertyBoundTextField` and uses `SwingUtilities`, which forces native-image execution down the Linux X11 AWT/Swing path. That path depends on JDK-internal `sun.awt.X11.*` classes and platform GUI initialization. This is a native-image/X11 platform issue, not missing reachability metadata for `com.mchange:mchange-commons-java`.\n\n### `propertyBoundTextFieldWritesUserChangesBackToTheBean()`\nThis failed with `java.lang.NoClassDefFoundError: Could not initialize class sun.awt.X11.XToolkit` when checking or entering the EDT.\n\nRoot cause: same as above. The first X11 toolkit initialization failure poisoned subsequent Swing access, so the second test failed immediately when `SwingUtilities` touched the toolkit.\n\n## Codex log assessment\n\nThe Codex metadata-fix log shows it kept chasing JDK Swing/AWT internals for this GUI path, adding metadata for classes such as `java.awt.GraphicsEnvironment` and `sun.awt.SunToolkit`, but the final Gradle failure still ended in X11 toolkit initialization errors (`sun.awt.X11.XErrorHandlerUtil` / `sun.awt.X11.XToolkit`).\n\nThat indicates the remaining problem is not unresolved library metadata for `com.mchange`; it is an unsupported or unsuitable native Swing/X11 execution path for this generated test.\n\n## Intervention applied\n\nRemoved the generated test file:\n\n- `tests/src/com.mchange/mchange-commons-java/0.2.15/src/test/java/com_mchange/mchange_commons_java/PropertyComponentBindingUtilityTest.java`\n\nNo metadata files were modified.\n\n## Why the remaining generated support should be preserved\n\nThe rest of the generated suite still exercises real, non-GUI library behaviors and passed after removing only this Swing/X11-specific test. Preserving the remaining generated tests and support keeps coverage for the metadata-relevant code paths that do work in native image, while dropping only the platform-dependent GUI scenario that is not a reliable metadata signal for this library.\n\n## Verification\n\nAfter removing `PropertyComponentBindingUtilityTest.java`, the coordinate passed with:\n\n- `./gradlew test -Pcoordinates=com.mchange:mchange-commons-java:0.2.15 --stacktrace`"
+    },
+    "metrics": {
+      "input_tokens_used": 749120,
+      "cached_input_tokens_used": 8543488,
+      "output_tokens_used": 137369,
+      "iterations": 30,
+      "cost_usd": 4.1964,
+      "generated_loc": 2008,
+      "tested_library_loc": 9558,
+      "metadata_entries": 220,
+      "code_coverage_percent": 14.85
+    },
+    "artifacts": {
+      "test_file": "tests/src/com.mchange/mchange-commons-java/0.2.15/src/test/java/com/mchange/sc/v1/decode/ScalaMapDecoderFinder.java",
+      "metadata_file": "metadata/com.mchange/mchange-commons-java/0.2.15/reachability-metadata.json"
+    }
+  },
+  "add_new_library_support:2026-04-22": {
+    "timestamp": "2026-04-22T04:05:19.644239Z",
+    "library": "com.mchange:mchange-commons-java:0.2.15",
+    "starting_commit": "e61a055dbca467f65ee520663beb77372d61e84b",
+    "ending_commit": "920d247b0f2b57291efb9d382fc1bc4073a3f05a",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.4",
+    "agent": "pi",
+    "model": "oca/gpt-5.4",
+    "status": "success_with_intervention",
+    "stats": {
+      "version": "0.2.15",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.952381,
+            "coveredCalls": 80,
+            "totalCalls": 84
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 6,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 0.955556,
+        "coveredCalls": 86,
+        "totalCalls": 90
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 7688,
+          "missed": 49063,
+          "ratio": 0.135469,
+          "total": 56751
+        },
+        "line": {
+          "covered": 1753,
+          "missed": 11111,
+          "ratio": 0.136272,
+          "total": 12864
+        },
+        "method": {
+          "covered": 340,
+          "missed": 4098,
+          "ratio": 0.076611,
+          "total": 4438
+        }
+      }
+    },
+    "post_generation_intervention": {
+      "stage": "metadata_fix_failed",
+      "intervention_file": "post-gen-interventions/com.mchange_mchange-commons-java_0.2.15.md",
+      "analysis_markdown": "# Post-generation intervention report\n\nLibrary: com.mchange:mchange-commons-java:0.2.15\nStage: `metadata_fix_failed`\n\n## Summary\n\nThe generated support failed only in the native test run, and the failures came from the generated Swing-based test `PropertyComponentBindingUtilityTest`, not from unresolved `com.mchange` library metadata.\n\nBoth failing test methods instantiate `com.mchange.v2.beans.swing.PropertyBoundTextField`. In the native image run, that triggers JDK AWT/Swing native initialization and fails inside `java.awt.Component.initIDs()` with `java.lang.NoSuchFieldError: java.awt.Component.isPacked`. The second failure is then just a follow-on `NoClassDefFoundError` because `PropertyBoundTextField` could not finish class initialization.\n\n## Root cause by failing test\n\n### `propertyBoundTextFieldSyncsInitialAndUpdatedBeanValue()`\n\n- Failure: `java.lang.NoSuchFieldError: java.awt.Component.isPacked`\n- Root cause: non-metadata-related native-image desktop/JNI initialization issue in JDK AWT/Swing.\n- Why this is not library metadata: the failure occurs in `java.desktop` while initializing `java.awt.Component`, before any missing `com.mchange` reachability entry is reported. This is a JDK desktop support problem, not missing library metadata for `mchange-commons-java`.\n\n### `propertyBoundTextFieldAppliesUserChangesBackToBean()`\n\n- Failure: `java.lang.NoClassDefFoundError: Could not initialize class com.mchange.v2.beans.swing.PropertyBoundTextField`\n- Root cause: same underlying AWT/Swing initialization failure as above.\n- Why this is not library metadata: this is only the cascading error after the first test already failed class initialization.\n\n## Intervention\n\nRemoved the generated test file:\n\n- `tests/src/com.mchange/mchange-commons-java/0.2.15/src/test/java/com_mchange/mchange_commons_java/PropertyComponentBindingUtilityTest.java`\n\nNo metadata files were modified.\n\n## Why the remaining generated support should be preserved\n\nThe rest of the generated coverage is still valuable and passed after removing the Swing-only test. It continues to validate native-image behavior for the library's reflection, proxies, serialization, naming, logging, thread-pool, collection, JDBC, XML, and codegen utilities.\n\nRemoving the single Swing/AWT-native test avoids chasing JDK desktop internals in library metadata while preserving the broader generated support that does exercise `mchange-commons-java` functionality successfully.\n\n## Verification\n\nAfter removing `PropertyComponentBindingUtilityTest.java`, the targeted run succeeded:\n\n- `./gradlew test -Pcoordinates=com.mchange:mchange-commons-java:0.2.15 --stacktrace`"
+    },
+    "metrics": {
+      "input_tokens_used": 938479,
+      "cached_input_tokens_used": 10428928,
+      "output_tokens_used": 156415,
+      "iterations": 30,
+      "cost_usd": 4.9534,
+      "generated_loc": 1682,
+      "tested_library_loc": 1753,
+      "metadata_entries": 451,
+      "code_coverage_percent": 13.63
+    },
+    "artifacts": {
+      "test_file": "tests/src/com.mchange/mchange-commons-java/0.2.15/src/test/java/com/mchange/sc/v1/decode/ScalaMapDecoderFinder.java",
+      "metadata_file": "metadata/com.mchange/mchange-commons-java/0.2.15/reachability-metadata.json"
+    }
+  }
+}

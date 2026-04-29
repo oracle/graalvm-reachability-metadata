@@ -1,3 +1,8 @@
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
 import json
 import os
 import re
@@ -169,6 +174,7 @@ def run_library_finalization(
         artifact: str,
         library_version: str,
         log_prefix: str | None = None,
+        model_name: str | None = None,
 ) -> bool:
     """Run the shared end-of-workflow finalization steps for one library."""
     del log_prefix
@@ -185,7 +191,7 @@ def run_library_finalization(
     ):
         return False
     log_stage("style-checks", f"Running style checks for {library}")
-    if not run_style_fix_and_checks(repo_path, library):
+    if not run_style_fix_and_checks(repo_path, library, model_name=model_name):
         return False
     log_stage("generate-library-stats", f"Running generateLibraryStats for {library}")
     if not _run_gradle_command(repo_path, ["./gradlew", "generateLibraryStats", f"-Pcoordinates={library}"]):
