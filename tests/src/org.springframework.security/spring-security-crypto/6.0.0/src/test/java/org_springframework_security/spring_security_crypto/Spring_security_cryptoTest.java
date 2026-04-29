@@ -71,8 +71,8 @@ public class Spring_security_cryptoTest {
 
     @Test
     void pbkdf2PasswordEncoderSupportsHexAndBase64EncodedHashes() {
-        Pbkdf2PasswordEncoder hexEncoder = new Pbkdf2PasswordEncoder("application-wide-secret", 8, 64, 1_000);
-        hexEncoder.setAlgorithm(SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
+        Pbkdf2PasswordEncoder hexEncoder = new Pbkdf2PasswordEncoder("application-wide-secret", 8, 1_000,
+                SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
 
         String hexEncoded = hexEncoder.encode(PASSWORD);
 
@@ -80,8 +80,8 @@ public class Spring_security_cryptoTest {
         assertThat(hexEncoder.matches(PASSWORD, hexEncoded)).isTrue();
         assertThat(hexEncoder.matches(WRONG_PASSWORD, hexEncoded)).isFalse();
 
-        Pbkdf2PasswordEncoder base64Encoder = new Pbkdf2PasswordEncoder("application-wide-secret", 8, 64, 1_000);
-        base64Encoder.setAlgorithm(SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA512);
+        Pbkdf2PasswordEncoder base64Encoder = new Pbkdf2PasswordEncoder("application-wide-secret", 8, 1_000,
+                SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA512);
         base64Encoder.setEncodeHashAsBase64(true);
 
         String base64Encoded = base64Encoder.encode(PASSWORD);
@@ -93,8 +93,8 @@ public class Spring_security_cryptoTest {
 
     @Test
     void delegatingPasswordEncoderUsesCurrentIdAndVerifiesExplicitLegacyId() {
-        Pbkdf2PasswordEncoder pbkdf2 = new Pbkdf2PasswordEncoder("delegating-secret", 8, 64, 1_000);
-        pbkdf2.setAlgorithm(SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
+        Pbkdf2PasswordEncoder pbkdf2 = new Pbkdf2PasswordEncoder("delegating-secret", 8, 1_000,
+                SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
         Map<String, PasswordEncoder> encoders = new HashMap<>();
         encoders.put("bcrypt", new BCryptPasswordEncoder(4));
         encoders.put("pbkdf2", pbkdf2);
@@ -177,21 +177,19 @@ public class Spring_security_cryptoTest {
     }
 
     @Test
-    void queryableTextEncryptorProducesStableCiphertextForLookupValues() {
-        TextEncryptor firstEncryptor = Encryptors.queryableText("lookup-password", SALT);
-        TextEncryptor secondEncryptor = Encryptors.queryableText("lookup-password", SALT);
+    void noOpTextEncryptorRoundTripsPlainTextValues() {
+        TextEncryptor encryptor = Encryptors.noOpText();
         String lookupValue = "customer-12345";
+        String differentLookupValue = "customer-67890";
 
-        String firstCiphertext = firstEncryptor.encrypt(lookupValue);
-        String repeatedCiphertext = firstEncryptor.encrypt(lookupValue);
-        String secondEncryptorCiphertext = secondEncryptor.encrypt(lookupValue);
-        String differentCiphertext = firstEncryptor.encrypt("customer-67890");
+        String ciphertext = encryptor.encrypt(lookupValue);
+        String repeatedCiphertext = encryptor.encrypt(lookupValue);
+        String differentCiphertext = encryptor.encrypt(differentLookupValue);
 
-        assertThat(firstCiphertext).isNotEqualTo(lookupValue).matches("[0-9a-f]+");
-        assertThat(repeatedCiphertext).isEqualTo(firstCiphertext);
-        assertThat(secondEncryptorCiphertext).isEqualTo(firstCiphertext);
-        assertThat(differentCiphertext).isNotEqualTo(firstCiphertext);
-        assertThat(secondEncryptor.decrypt(firstCiphertext)).isEqualTo(lookupValue);
+        assertThat(ciphertext).isEqualTo(lookupValue);
+        assertThat(repeatedCiphertext).isEqualTo(ciphertext);
+        assertThat(differentCiphertext).isEqualTo(differentLookupValue);
+        assertThat(encryptor.decrypt(ciphertext)).isEqualTo(lookupValue);
     }
 
     @Test
