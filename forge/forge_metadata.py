@@ -118,6 +118,7 @@ LABEL_NI_RUN_FAIL = "fails-native-image-run"
 LABEL_PR_JAVAC_FIX = "fixes-javac-fail"
 LABEL_PR_JAVA_RUN_FIX = "fixes-java-run-fail"
 LABEL_PR_NI_RUN_FIX = "fixes-native-image-run-fail"
+LABEL_PR_LIBRARY_BULK_UPDATE = "library-bulk-update"
 LABEL_PRIORITY = "priority"
 LABEL_HUMAN_INTERVENTION = "human-intervention"
 
@@ -2432,6 +2433,11 @@ def get_review_queue_configs_from_environment() -> list[ReviewQueueConfig]:
         ReviewQueueConfig(
             label=LABEL_PR_NI_RUN_FIX,
             limit=get_env_non_negative_int("FORGE_NI_RUN_REVIEW_LIMIT", review_limit),
+            model=review_model,
+        ),
+        ReviewQueueConfig(
+            label=LABEL_PR_LIBRARY_BULK_UPDATE,
+            limit=get_env_non_negative_int("FORGE_BULK_UPDATE_REVIEW_LIMIT", review_limit),
             model=review_model,
         ),
     ]

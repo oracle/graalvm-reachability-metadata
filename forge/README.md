@@ -38,8 +38,8 @@ FORGE_REVIEW_LABEL=library-new-request ./do-work.sh --review-limit 2
 
 The same limits can be controlled with environment variables such as
 `FORGE_WORK_LIMIT`, `FORGE_JAVAC_WORK_LIMIT`, `FORGE_JAVA_RUN_WORK_LIMIT`,
-`FORGE_NI_RUN_WORK_LIMIT`, `FORGE_REVIEW_LIMIT`, and
-`DO_WORK_SLEEP_SECONDS`.
+`FORGE_NI_RUN_WORK_LIMIT`, `FORGE_REVIEW_LIMIT`,
+`FORGE_BULK_UPDATE_REVIEW_LIMIT`, and `DO_WORK_SLEEP_SECONDS`.
 
 ## Setup
 

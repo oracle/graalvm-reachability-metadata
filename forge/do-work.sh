@@ -63,8 +63,8 @@ Options:
   --review-limit N
       Process up to N review tasks per PR label per run; 0 disables review queues.
       Defaults to FORGE_REVIEW_LIMIT, then 1. Without FORGE_REVIEW_LABEL, reviews
-      library-new-request, fixes-javac-fail, fixes-java-run-fail, and
-      fixes-native-image-run-fail PRs each cycle.
+      library-new-request, fixes-javac-fail, fixes-java-run-fail,
+      fixes-native-image-run-fail, and library-bulk-update PRs each cycle.
   --in-metadata-repo
       Deprecated compatibility no-op; in-repo mode is always used.
 
@@ -88,7 +88,7 @@ Environment:
       Deprecated compatibility switch. Defaults to 1 because Forge now always
       runs inside the reachability metadata repo.
   FORGE_LIBRARY_REVIEW_LIMIT, FORGE_JAVAC_REVIEW_LIMIT, FORGE_JAVA_RUN_REVIEW_LIMIT,
-  FORGE_NI_RUN_REVIEW_LIMIT
+  FORGE_NI_RUN_REVIEW_LIMIT, FORGE_BULK_UPDATE_REVIEW_LIMIT
       Override FORGE_REVIEW_LIMIT for one default review queue.
 
 Examples:

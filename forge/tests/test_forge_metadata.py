@@ -515,6 +515,46 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             ],
         )
 
+    def test_default_review_queue_configs_include_bulk_update_reviews(self) -> None:
+        env = {
+            "FORGE_REVIEW_LIMIT": "2",
+            "FORGE_LIBRARY_REVIEW_LIMIT": "0",
+            "FORGE_BULK_UPDATE_REVIEW_LIMIT": "4",
+            "FORGE_REVIEW_MODEL": "review-model",
+        }
+
+        with patch.dict(os.environ, env, clear=True):
+            configs = forge_metadata.get_review_queue_configs_from_environment()
+
+        self.assertEqual(
+            [(config.label, config.limit, config.model) for config in configs],
+            [
+                (forge_metadata.LABEL_LIBRARY_NEW, 0, "review-model"),
+                (forge_metadata.LABEL_PR_JAVAC_FIX, 2, "review-model"),
+                (forge_metadata.LABEL_PR_JAVA_RUN_FIX, 2, "review-model"),
+                (forge_metadata.LABEL_PR_NI_RUN_FIX, 2, "review-model"),
+                (forge_metadata.LABEL_PR_LIBRARY_BULK_UPDATE, 4, "review-model"),
+            ],
+        )
+
+    def test_review_label_environment_overrides_default_review_queues(self) -> None:
+        env = {
+            "FORGE_REVIEW_LABEL": forge_metadata.LABEL_PR_LIBRARY_BULK_UPDATE,
+            "FORGE_REVIEW_LIMIT": "3",
+            "FORGE_BULK_UPDATE_REVIEW_LIMIT": "0",
+            "FORGE_REVIEW_MODEL": "review-model",
+        }
+
+        with patch.dict(os.environ, env, clear=True):
+            configs = forge_metadata.get_review_queue_configs_from_environment()
+
+        self.assertEqual(
+            [(config.label, config.limit, config.model) for config in configs],
+            [
+                (forge_metadata.LABEL_PR_LIBRARY_BULK_UPDATE, 3, "review-model"),
+            ],
+        )
+
     def test_process_work_queues_skips_zero_limit_queues(self) -> None:
         env = {
             "FORGE_JAVAC_WORK_LIMIT": "0",
