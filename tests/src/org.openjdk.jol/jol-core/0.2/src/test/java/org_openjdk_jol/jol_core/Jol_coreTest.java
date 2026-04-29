@@ -8,7 +8,7 @@ package org_openjdk_jol.jol_core;
 
 import org.junit.jupiter.api.Test;
 
-class Jol_coreTest {
+public class Jol_coreTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
