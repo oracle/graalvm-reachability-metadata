@@ -8,7 +8,7 @@ package com_thoughtworks_paranamer.paranamer;
 
 import org.junit.jupiter.api.Test;
 
-class ParanamerTest {
+public class ParanamerTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
