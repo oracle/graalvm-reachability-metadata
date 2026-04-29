@@ -16,6 +16,19 @@ import org.junit.jupiter.api.Test;
 
 public class EnumUtilsTest {
     @Test
+    void callResolvesExactMethodSignature() {
+        MethodCallExpression call = EnumUtils.call(
+                null,
+                MethodHost.class,
+                "constant",
+                Collections.emptyList());
+
+        assertThat(call.targetExpression).isNull();
+        assertThat(call.getType()).isEqualTo(String.class);
+        assertThat(call.expressions).isEmpty();
+    }
+
+    @Test
     void callResolvesMethodWhenArgumentTypeIsAssignableToParameterType() {
         MethodCallExpression call = EnumUtils.call(
                 null,
@@ -30,6 +43,10 @@ public class EnumUtilsTest {
     }
 
     public static class MethodHost {
+        public static String constant() {
+            return "calcite";
+        }
+
         public static String format(CharSequence value) {
             return "[" + value + "]";
         }
