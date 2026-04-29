@@ -11,6 +11,7 @@ import org.ccil.cowan.tagsoup.AutoDetector;
 import org.ccil.cowan.tagsoup.Element;
 import org.ccil.cowan.tagsoup.ElementType;
 import org.ccil.cowan.tagsoup.HTMLSchema;
+import org.ccil.cowan.tagsoup.PYXScanner;
 import org.ccil.cowan.tagsoup.PYXWriter;
 import org.ccil.cowan.tagsoup.Parser;
 import org.ccil.cowan.tagsoup.Schema;
@@ -245,6 +246,37 @@ public class TagsoupTest {
                 "-\\t\\\\two",
                 "?target data",
                 ")root");
+    }
+
+    @Test
+    void pyxScannerCanDriveParserFromPyxEventStreams() throws Exception {
+        Parser parser = new Parser();
+        PYXScanner scanner = new PYXScanner();
+        parser.setProperty(Parser.scannerProperty, scanner);
+        RecordingHandler handler = new RecordingHandler();
+        parser.setContentHandler(handler);
+
+        String pyx = String.join("\n",
+                "(html",
+                "(body",
+                "(p",
+                "Aid pyx-intro",
+                "-Hello from PYX",
+                "-\\n",
+                "-scanner",
+                ")p",
+                ")body",
+                ")html") + "\n";
+        parser.parse(inputSource(pyx));
+
+        assertThat(parser.getProperty(Parser.scannerProperty)).isSameAs(scanner);
+        assertThat(handler.startNames()).containsExactly("html", "body", "p");
+        assertThat(handler.endNames()).containsExactly("p", "body", "html");
+
+        StartElement paragraph = handler.firstStart("p");
+        assertThat(paragraph.uri).isEqualTo(XHTML_NAMESPACE);
+        assertThat(paragraph.attributes.getValue("id")).isEqualTo("pyx-intro");
+        assertThat(handler.fullText()).isEqualTo("Hello from PYX\nscanner");
     }
 
     @Test
