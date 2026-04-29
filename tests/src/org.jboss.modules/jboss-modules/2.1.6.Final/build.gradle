@@ -16,6 +16,13 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('-H:+UnlockExperimentalVMOptions')
+            buildArgs.add('-H:ServiceLoaderFeatureExcludeServiceProviders=org.jboss.modules.ModuleLoggerFinder')
+            buildArgs.add('--initialize-at-build-time=org.jboss.modules.ModuleLoggerFinder,org.jboss.modules.ModuleLoggerFinder$1,org.jboss.modules.ModuleLoggerFinder$2,org.jboss.modules.ModuleLoggerFinder$DelegatingSystemLogger,org.jboss.modules.ModuleLoggerFinder$QueueingSystemLogger,org.jboss.modules.ModuleLoggerFinder$SystemLogRecord')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
