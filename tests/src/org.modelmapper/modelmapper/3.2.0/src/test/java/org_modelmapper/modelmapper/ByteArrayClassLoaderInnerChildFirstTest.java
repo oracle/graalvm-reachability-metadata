@@ -73,6 +73,22 @@ public class ByteArrayClassLoaderInnerChildFirstTest {
         assertThat(loadedType.getClassLoader()).isSameAs(classLoader);
     }
 
+    @Test
+    void treatsLoadedManifestClassWithoutDefinitionAsShadowed() throws ClassNotFoundException {
+        String typeName = "org_modelmapper.modelmapper.generated.ChildFirstShadowedType";
+        String resourceName = typeName.replace('.', '/') + ".class";
+        ManifestChildFirstClassLoader classLoader = new ManifestChildFirstClassLoader(
+            isolatedParent(),
+            Collections.singletonMap(typeName, makeUnloadedType(typeName).getBytes()));
+
+        Class<?> loadedType = classLoader.loadClass(typeName);
+        classLoader.removeTypeDefinition(typeName);
+        URL shadowedResource = classLoader.getResource(resourceName);
+
+        assertThat(loadedType.getClassLoader()).isSameAs(classLoader);
+        assertThat(shadowedResource).isNull();
+    }
+
     private static ChildFirst manifestClassLoader(String typeName) {
         return new ChildFirst(
             isolatedParent(),
@@ -96,6 +112,16 @@ public class ByteArrayClassLoaderInnerChildFirstTest {
     private static final class IsolatedParentClassLoader extends ClassLoader {
         IsolatedParentClassLoader(ClassLoader parent) {
             super(parent);
+        }
+    }
+
+    private static final class ManifestChildFirstClassLoader extends ChildFirst {
+        ManifestChildFirstClassLoader(ClassLoader parent, Map<String, byte[]> typeDefinitions) {
+            super(parent, typeDefinitions, ByteArrayClassLoader.PersistenceHandler.MANIFEST);
+        }
+
+        void removeTypeDefinition(String typeName) {
+            typeDefinitions.remove(typeName);
         }
     }
 }
