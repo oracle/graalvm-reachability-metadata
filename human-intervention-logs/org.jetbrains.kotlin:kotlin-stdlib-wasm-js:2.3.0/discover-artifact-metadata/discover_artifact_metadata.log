@@ -1,0 +1,1406 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd704-f5d8-7ce0-9681-19109e9d8c7d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.3.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+- Set "coordinates" to "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven/repository sources first, then update the JSON in place with only fields we can support confidently.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json && sed -n '1,200p' build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+-rw-rw-r-- 1 vjovanov vjovanov 73 Apr 29 04:15 build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+{
+  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "kotlin-stdlib-wasm-js|org.jetbrains.kotlin:kotlin-stdlib" build/discovered-artifact-metadata metadata tests || true' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json:2:  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0"
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/build.gradle:44:    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-script-runtime/2.3.20/build.gradle:15:    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.7.10/build.gradle:15:    implementation "org.jetbrains.kotlin:kotlin-stdlib:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/build.gradle:14:    testImplementation "org.jetbrains.kotlin:kotlin-stdlib-common:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/build.gradle:15:    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/src/test/java/org_jetbrains_kotlin/kotlin_stdlib_common/Kotlin_stdlib_commonTest.java:77:        String paddedCoordinate = "  org.jetbrains.kotlin:kotlin-stdlib-common:1.5.31  ";
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/src/test/java/org_jetbrains_kotlin/kotlin_stdlib_common/Kotlin_stdlib_commonTest.java:80:        assertThat(coordinate).isEqualTo("org.jetbrains.kotlin:kotlin-stdlib-common:1.5.31");
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/gradle.properties:4:library.coordinates = org.jetbrains.kotlin:kotlin-stdlib-common:1.5.31
+
+web search: 
+web search: Maven org.jetbrains.kotlin kotlin-stdlib-wasm-js 2.3.0
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/
+codex
+Maven Central’s directory listing for this Wasm artifact stops before `2.3.0`, so I’m cross-checking Maven search and JetBrains/Kotlin repository tags rather than assuming the usual Central URLs exist.
+exec
+/usr/bin/bash -lc "curl -I -L 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-sources.jar'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0  837k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0  837k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+date: Wed, 29 Apr 2026 02:15:39 GMT
+content-type: application/java-archive
+content-length: 857897
+cf-ray: 9f3accd4487f3b51-GVA
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1175304
+etag: "e92c5bf78039c23118ec393b425dcb63"
+last-modified: Tue, 16 Dec 2025 08:13:38 GMT
+x-checksum-md5: e92c5bf78039c23118ec393b425dcb63
+x-checksum-sha1: 074407b27c279f76155f03913e049717b5e1ab29
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22org.jetbrains.kotlin%22+AND+a:%22kotlin-stdlib-wasm-js%22+AND+v:%222.3.0%22&rows=20&wt=json'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 0ms:
+{"responseHeader":{"status":0,"QTime":2,"params":{"q":"g:\"org.jetbrains.kotlin\" AND a:\"kotlin-stdlib-wasm-js\" AND v:\"2.3.0\"","core":"","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":0,"start":0,"docs":[]}}
+exec
+/usr/bin/bash -lc "curl -I -L 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0.pom'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 200 
+date: Wed, 29 Apr 2026 02:15:39 GMT
+content-type: text/xml
+content-length: 1567
+cf-ray: 9f3accd4cf913b5e-GVA
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 903628
+etag: "489598a803155165c04bc309e088dd5d"
+last-modified: Tue, 16 Dec 2025 08:13:33 GMT
+x-checksum-md5: 489598a803155165c04bc309e088dd5d
+x-checksum-sha1: 8c28e013c48a2fcc0c8cd7803406f215f736b087
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0  1567    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+exec
+/usr/bin/bash -lc "curl -I -L 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-tests.jar'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 257ms:
+HTTP/2 404 
+date: Wed, 29 Apr 2026 02:15:39 GMT
+content-type: text/html
+cf-ray: 9f3accd4cd513b5d-GVA
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0.pom'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jetbrains.kotlin</groupId>
+  <artifactId>kotlin-stdlib-wasm-js</artifactId>
+  <version>2.3.0</version>
+  <packaging>klib</packaging>
+  <name>Kotlin Stdlib Wasm Js</name>
+  <description>Kotlin Standard Library for experimental WebAssembly JS platform</description>
+  <url>https://kotlinlang.org/</url>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Kotlin Team</name>
+      <organization>JetBrains</organization>
+      <organizationUrl>https://www.jetbrains.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/JetBrains/kotlin.git</connection>
+    <developerConnection>scm:git:https://github.com/JetBrains/kotlin.git</developerConnection>
+    <url>https://github.com/JetBrains/kotlin</url>
+  </scm>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/' | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 178ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="kotlin-stdlib-wasm-js-2.3.0-sources.jar" title="kotlin-stdlib-wasm-js-2.3.0-sources.jar">kotlin-stdlib-wasm-js-2.3.0-sources.jar</a>           2025-12-16 08:13    857897      
+<a href="kotlin-stdlib-wasm-js-2.3.0-sources.jar.asc" title="kotlin-stdlib-wasm-js-2.3.0-sources.jar.asc">kotlin-stdlib-wasm-js-2.3.0-sources.jar.asc</a>       2025-12-16 08:13       689      
+<a href="kotlin-stdlib-wasm-js-2.3.0-sources.jar.md5" title="kotlin-stdlib-wasm-js-2.3.0-sources.jar.md5">kotlin-stdlib-wasm-js-2.3.0-sources.jar.md5</a>       2025-12-16 08:13        32      
+<a href="kotlin-stdlib-wasm-js-2.3.0-sources.jar.sha1" title="kotlin-stdlib-wasm-js-2.3.0-sources.jar.sha1">kotlin-stdlib-wasm-js-2.3.0-sources.jar.sha1</a>      2025-12-16 08:13        40      
+<a href="kotlin-stdlib-wasm-js-2.3.0.klib" title="kotlin-stdlib-wasm-js-2.3.0.klib">kotlin-stdlib-wasm-js-2.3.0.klib</a>                  2025-12-16 08:13   4725307      
+<a href="kotlin-stdlib-wasm-js-2.3.0.klib.asc" title="kotlin-stdlib-wasm-js-2.3.0.klib.asc">kotlin-stdlib-wasm-js-2.3.0.klib.asc</a>              2025-12-16 08:13       689      
+<a href="kotlin-stdlib-wasm-js-2.3.0.klib.md5" title="kotlin-stdlib-wasm-js-2.3.0.klib.md5">kotlin-stdlib-wasm-js-2.3.0.klib.md5</a>              2025-12-16 08:13        32      
+<a href="kotlin-stdlib-wasm-js-2.3.0.klib.sha1" title="kotlin-stdlib-wasm-js-2.3.0.klib.sha1">kotlin-stdlib-wasm-js-2.3.0.klib.sha1</a>             2025-12-16 08:13        40      
+<a href="kotlin-stdlib-wasm-js-2.3.0.module" title="kotlin-stdlib-wasm-js-2.3.0.module">kotlin-stdlib-wasm-js-2.3.0.module</a>                2025-12-16 08:13      3150      
+<a href="kotlin-stdlib-wasm-js-2.3.0.module.asc" title="kotlin-stdlib-wasm-js-2.3.0.module.asc">kotlin-stdlib-wasm-js-2.3.0.module.asc</a>            2025-12-16 08:13       689      
+<a href="kotlin-stdlib-wasm-js-2.3.0.module.md5" title="kotlin-stdlib-wasm-js-2.3.0.module.md5">kotlin-stdlib-wasm-js-2.3.0.module.md5</a>            2025-12-16 08:13        32      
+<a href="kotlin-stdlib-wasm-js-2.3.0.module.sha1" title="kotlin-stdlib-wasm-js-2.3.0.module.sha1">kotlin-stdlib-wasm-js-2.3.0.module.sha1</a>           2025-12-16 08:13        40      
+<a href="kotlin-stdlib-wasm-js-2.3.0.pom" title="kotlin-stdlib-wasm-js-2.3.0.pom">kotlin-stdlib-wasm-js-2.3.0.pom</a>                   2025-12-16 08:13      1567      
+<a href="kotlin-stdlib-wasm-js-2.3.0.pom.asc" title="kotlin-stdlib-wasm-js-2.3.0.pom.asc">kotlin-stdlib-wasm-js-2.3.0.pom.asc</a>               2025-12-16 08:13       689      
+<a href="kotlin-stdlib-wasm-js-2.3.0.pom.md5" title="kotlin-stdlib-wasm-js-2.3.0.pom.md5">kotlin-stdlib-wasm-js-2.3.0.pom.md5</a>               2025-12-16 08:13        32      
+<a href="kotlin-stdlib-wasm-js-2.3.0.pom.sha1" title="kotlin-stdlib-wasm-js-2.3.0.pom.sha1">kotlin-stdlib-wasm-js-2.3.0.pom.sha1</a>              2025-12-16 08:13        40      
+<a href="kotlin-stdlib-wasm-js-2.3.0.spdx.json" title="kotlin-stdlib-wasm-js-2.3.0.spdx.json">kotlin-stdlib-wasm-js-2.3.0.spdx.json</a>             2025-12-16 08:13      1069      
+<a href="kotlin-stdlib-wasm-js-2.3.0.spdx.json.asc" title="kotlin-stdlib-wasm-js-2.3.0.spdx.json.asc">kotlin-stdlib-wasm-js-2.3.0.spdx.json.asc</a>         2025-12-16 08:13       689      
+<a href="kotlin-stdlib-wasm-js-2.3.0.spdx.json.md5" title="kotlin-stdlib-wasm-js-2.3.0.spdx.json.md5">kotlin-stdlib-wasm-js-2.3.0.spdx.json.md5</a>         2025-12-16 08:13        32      
+<a href="kotlin-stdlib-wasm-js-2.3.0.spdx.json.sha1" title="kotlin-stdlib-wasm-js-2.3.0.spdx.json.sha1">kotlin-stdlib-wasm-js-2.3.0.spdx.json.sha1</a>        2025-12-16 08:13        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/maven-metadata.xml'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 191ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.jetbrains.kotlin</groupId>
+  <artifactId>kotlin-stdlib-wasm-js</artifactId>
+  <versioning>
+    <latest>2.4.0-Beta2</latest>
+    <release>2.4.0-Beta2</release>
+    <versions>
+      <version>1.9.20-Beta</version>
+      <version>1.9.20-Beta2</version>
+      <version>1.9.20-RC</version>
+      <version>1.9.20-RC2</version>
+      <version>1.9.20</version>
+      <version>1.9.21</version>
+      <version>1.9.22</version>
+      <version>1.9.23</version>
+      <version>1.9.24</version>
+      <version>1.9.25</version>
+      <version>2.0.0-Beta1</version>
+      <version>2.0.0-Beta2</version>
+      <version>2.0.0-Beta3</version>
+      <version>2.0.0-Beta4</version>
+      <version>2.0.0-Beta5</version>
+      <version>2.0.0-RC1</version>
+      <version>2.0.0-RC2</version>
+      <version>2.0.0-RC3</version>
+      <version>2.0.0</version>
+      <version>2.0.10-RC</version>
+      <version>2.0.10-RC2</version>
+      <version>2.0.10</version>
+      <version>2.0.20-Beta1</version>
+      <version>2.0.20-Beta2</version>
+      <version>2.0.20-RC</version>
+      <version>2.0.20-RC2</version>
+      <version>2.0.20</version>
+      <version>2.0.21-RC</version>
+      <version>2.0.21</version>
+      <version>2.1.0-Beta1</version>
+      <version>2.1.0-Beta2</version>
+      <version>2.1.0-RC</version>
+      <version>2.1.0-RC2</version>
+      <version>2.1.0</version>
+      <version>2.1.10-RC</version>
+      <version>2.1.10-RC2</version>
+      <version>2.1.10</version>
+      <version>2.1.20-Beta1</version>
+      <version>2.1.20-Beta2</version>
+      <version>2.1.20-RC</version>
+      <version>2.1.20-RC2</version>
+      <version>2.1.20-RC3</version>
+      <version>2.1.20</version>
+      <version>2.1.21-RC</version>
+      <version>2.1.21-RC2</version>
+      <version>2.1.21</version>
+      <version>2.2.0-Beta1</version>
+      <version>2.2.0-Beta2</version>
+      <version>2.2.0-RC</version>
+      <version>2.2.0-RC2</version>
+      <version>2.2.0-RC3</version>
+      <version>2.2.0</version>
+      <version>2.2.10-RC</version>
+      <version>2.2.10-RC2</version>
+      <version>2.2.10</version>
+      <version>2.2.20-Beta1</version>
+      <version>2.2.20-Beta2</version>
+      <version>2.2.20-RC</version>
+      <version>2.2.20-RC2</version>
+      <version>2.2.20</version>
+      <version>2.2.21-RC</version>
+      <version>2.2.21-RC2</version>
+      <version>2.2.21</version>
+      <version>2.3.0-Beta1</version>
+      <version>2.3.0-Beta2</version>
+      <version>2.3.0-RC</version>
+      <version>2.3.0-RC2</version>
+      <version>2.3.0-RC3</version>
+      <version>2.3.0</version>
+      <version>2.3.10-RC</version>
+      <version>2.3.10-RC2</version>
+      <version>2.3.10</version>
+      <version>2.3.20-Beta1</version>
+      <version>2.3.20-Beta2</version>
+      <version>2.3.20-RC</version>
+      <version>2.3.20-RC2</version>
+      <version>2.3.20-RC3</version>
+      <version>2.3.20</version>
+      <version>2.3.21-RC</version>
+      <version>2.3.21-RC2</version>
+      <version>2.3.21</version>
+      <version>2.4.0-Beta1</version>
+      <version>2.4.0-Beta2</version>
+    </versions>
+    <lastUpdated>20260423081415</lastUpdated>
+  </versioning>
+</metadata>
+
+exec
+/usr/bin/bash -lc "curl -I -L 'https://github.com/JetBrains/kotlin/tree/v2.3.0' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/sources.jar" '"'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-sources.jar'; jar tf \""'$tmp/sources.jar" | sed -n '"'1,160p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+exec
+/usr/bin/bash -lc "curl -I -L 'https://github.com/JetBrains/kotlin/tree/2.3.0' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+exec
+/usr/bin/bash -lc "curl -I -L 'https://github.com/JetBrains/kotlin/releases/tag/v2.3.0' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 126ms:
+META-INF/
+META-INF/MANIFEST.MF
+wasmJsMain/
+wasmJsMain/kotlin/
+wasmJsMain/kotlin/Throwable.kt
+wasmJsMain/ExceptionHelpers.kt
+wasmJsMain/ExternalWrapper.kt
+wasmJsMain/JsObjectsCache.kt
+wasmJsMain/WasmInstructions.kt
+wasmJsMain/kotlin/Dynamic.kt
+wasmJsMain/kotlin/io.kt
+wasmJsMain/kotlin/js/
+wasmJsMain/kotlin/js/JsAny.kt
+wasmJsMain/kotlin/js/JsArray.kt
+wasmJsMain/kotlin/js/JsBigInt.kt
+wasmJsMain/kotlin/js/JsBoolean.kt
+wasmJsMain/kotlin/js/JsException.kt
+wasmJsMain/kotlin/js/JsNumber.kt
+wasmJsMain/kotlin/js/JsPromiseError.kt
+wasmJsMain/kotlin/js/JsReference.kt
+wasmJsMain/kotlin/js/JsString.kt
+wasmJsMain/kotlin/js/Promise.kt
+wasmJsMain/kotlin/js/annotations.kt
+wasmJsMain/kotlin/js/core.kt
+wasmJsMain/kotlin/random/
+wasmJsMain/kotlin/random/PlatformRandom.kt
+wasmJsMain/kotlin/reflect/
+wasmJsMain/kotlin/reflect/KExternalClassImpl.kt
+wasmJsMain/kotlin/reflect/reflection.kt
+wasmJsMain/kotlin/time/
+wasmJsMain/kotlin/time/Duration.kt
+wasmJsMain/kotlin/time/InstantWasmJs.kt
+wasmJsMain/kotlin/time/TimeSources.kt
+wasmJsMain/kotlin/uuid/
+wasmJsMain/kotlin/uuid/UuidWasmJs.kt
+wasmJsMain/kotlin/wasm/
+wasmJsMain/kotlin/wasm/js/
+wasmJsMain/kotlin/wasm/js/Js.kt
+webMain/
+webMain/kotlin/
+webMain/kotlin/JsInterop.kt
+webMain/kotlin/js/
+webMain/kotlin/js/ExperimentalWasmJsInterop.kt
+webMain/kotlin/js/JsAny.kt
+webMain/kotlin/js/JsArray.kt
+webMain/kotlin/js/JsBigInt.kt
+webMain/kotlin/js/JsBoolean.kt
+webMain/kotlin/js/JsException.kt
+webMain/kotlin/js/JsNumber.kt
+webMain/kotlin/js/JsPromiseError.kt
+webMain/kotlin/js/JsReference.kt
+webMain/kotlin/js/JsString.kt
+webMain/kotlin/js/Promise.kt
+webMain/kotlin/js/annotations.kt
+webMain/kotlin/js/core.kt
+commonMain/
+commonMain/generated/
+commonMain/generated/_Arrays.kt
+commonMain/generated/_Collections.kt
+commonMain/generated/_Comparisons.kt
+commonMain/generated/_Maps.kt
+commonMain/generated/_OneToManyTitlecaseMappings.kt
+commonMain/generated/_Ranges.kt
+commonMain/generated/_Sequences.kt
+commonMain/generated/_Sets.kt
+commonMain/generated/_Strings.kt
+commonMain/generated/_UArrays.kt
+commonMain/generated/_UCollections.kt
+commonMain/generated/_UComparisons.kt
+commonMain/generated/_URanges.kt
+commonMain/generated/_USequences.kt
+commonMain/kotlin/
+commonMain/kotlin/Comparator.kt
+commonMain/kotlin/ExceptionsH.kt
+commonMain/kotlin/JsAnnotationsH.kt
+commonMain/kotlin/JvmAnnotationsH.kt
+commonMain/kotlin/KotlinH.kt
+commonMain/kotlin/MathH.kt
+commonMain/kotlin/SequencesH.kt
+commonMain/kotlin/TextH.kt
+commonMain/kotlin/ioH.kt
+commonMain/kotlin/collections/
+commonMain/kotlin/collections/AbstractMutableCollection.kt
+commonMain/kotlin/collections/AbstractMutableList.kt
+commonMain/kotlin/collections/AbstractMutableMap.kt
+commonMain/kotlin/collections/AbstractMutableSet.kt
+commonMain/kotlin/collections/ArrayList.kt
+commonMain/kotlin/collections/CollectionsH.kt
+commonMain/kotlin/collections/HashMap.kt
+commonMain/kotlin/collections/HashSet.kt
+commonMain/kotlin/collections/LinkedHashMap.kt
+commonMain/kotlin/collections/LinkedHashSet.kt
+commonMain/Module.md
+commonMain/kotlin/Annotation.kt
+commonMain/kotlin/Annotations.kt
+commonMain/kotlin/Any.kt
+commonMain/kotlin/Array.kt
+commonMain/kotlin/ArrayIntrinsics.kt
+commonMain/kotlin/Arrays.kt
+commonMain/kotlin/AutoCloseable.kt
+commonMain/kotlin/Boolean.kt
+commonMain/kotlin/Char.kt
+commonMain/kotlin/CharCode.kt
+commonMain/kotlin/CharSequence.kt
+commonMain/kotlin/Collections.kt
+commonMain/kotlin/Comparable.kt
+commonMain/kotlin/Enum.kt
+commonMain/kotlin/Function.kt
+commonMain/kotlin/Iterator.kt
+commonMain/kotlin/Library.kt
+commonMain/kotlin/Nothing.kt
+commonMain/kotlin/Number.kt
+commonMain/kotlin/Primitives.kt
+commonMain/kotlin/String.kt
+commonMain/kotlin/Throwable.kt
+commonMain/kotlin/Unit.kt
+commonMain/kotlin/annotation/
+commonMain/kotlin/annotation/Annotations.kt
+commonMain/kotlin/annotations/
+commonMain/kotlin/annotations/ConsistentCopyVisibility.kt
+commonMain/kotlin/annotations/ExperimentalStdlibApi.kt
+commonMain/kotlin/annotations/Inference.kt
+commonMain/kotlin/annotations/Multiplatform.kt
+commonMain/kotlin/annotations/NativeAnnotations.kt
+commonMain/kotlin/annotations/NativeConcurrentAnnotations.kt
+commonMain/kotlin/annotations/OptIn.kt
+commonMain/kotlin/annotations/ReturnValue.kt
+commonMain/kotlin/annotations/Throws.kt
+commonMain/kotlin/annotations/WasExperimental.kt
+commonMain/kotlin/collections/AbstractCollection.kt
+commonMain/kotlin/collections/AbstractIterator.kt
+commonMain/kotlin/collections/AbstractList.kt
+commonMain/kotlin/collections/AbstractMap.kt
+commonMain/kotlin/collections/AbstractSet.kt
+commonMain/kotlin/collections/ArrayDeque.kt
+commonMain/kotlin/collections/Arrays.kt
+commonMain/kotlin/collections/Collections.kt
+commonMain/kotlin/collections/Grouping.kt
+commonMain/kotlin/collections/IndexedValue.kt
+commonMain/kotlin/collections/Iterables.kt
+commonMain/kotlin/collections/Iterators.kt
+commonMain/kotlin/collections/MapAccessors.kt
+commonMain/kotlin/collections/MapWithDefault.kt
+commonMain/kotlin/collections/Maps.kt
+commonMain/kotlin/collections/MutableCollections.kt
+commonMain/kotlin/collections/PrimitiveIterators.kt
+commonMain/kotlin/collections/ReversedViews.kt
+commonMain/kotlin/collections/Sequence.kt
+commonMain/kotlin/collections/SequenceBuilder.kt
+commonMain/kotlin/collections/Sequences.kt
+commonMain/kotlin/collections/Sets.kt
+commonMain/kotlin/collections/SlidingWindow.kt
+commonMain/kotlin/collections/UArraySorting.kt
+commonMain/kotlin/comparisons/
+commonMain/kotlin/comparisons/Comparisons.kt
+commonMain/kotlin/comparisons/compareTo.kt
+commonMain/kotlin/concurrent/
+commonMain/kotlin/concurrent/Volatile.kt
+commonMain/kotlin/concurrent/atomics/
+commonMain/kotlin/concurrent/atomics/AtomicArrays.common.kt
+
+ succeeded in 715ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+date: Wed, 29 Apr 2026 02:15:51 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"5e5c129bc30f04cdb5c542a63ff497b1"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=RZn8yYAJP1mST%2BtBidJFOb3tOnskQ1ulNI3ZyEH8n5MBj6C1BkSUdacYmQPbBwiUDkPilGQH12pZ6GJu2J7X4PrluLa7n6uHem71sT3x2Om1vwAZ1BctReYFRz9MzOQpJS14j%2FpkVm8YlV0Lh26M17jI5WQg38Gd%2BAx7B%2FMRcLWW6nANTk57Yne1cIow%2B3Y3PAkaqHwoMmm5XZ9sxkWWFVGr4E2IMwLEiXxLiJxmdGZEllNFo4a3kO7nWfJOjD%2ByAv1DKXc01Puuke5s0wAalA%3D%3D--vgUGq9u0QA6L23uZ--qU3fUR2VJniT1%2FWL2NVDAg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1948828903.1777428951; expires=Thu, 29 Apr 2027 02:15:51 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 29 Apr 2027 02:15:51 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5109:A9BEE:4FE1965:3D1F663:69F169D6
+
+
+ succeeded in 959ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+date: Wed, 29 Apr 2026 02:15:51 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"cc391fabd3dff1cdde273f320921bf7f"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=y8YXrYR4ivv9l18YMyE0Lo9Nd7o5bbELpzl3JhMQPVmUK8LUcoDEKsNyrboAawTB0JIdB7NK98RaVWkmbcGtNGOZZ0wEkyNN4b0yy2HYxWVjXwTJIkLOlsqWpso3RMq45PJWuJDGdC8vw0KDllHrOAbQWJZSWMO4Y9WpUII82Ym3NTfEhz32gJvuySlv1FDgtd%2B8SKHneFhFuU3VrVWrxFrGLogz6mf150x3Euhbj%2FyEDQm36hpOQyG5GccUb7ueWaSTFoGMRbRR9sgSkMu2XQ%3D%3D--GgnBe0o%2BbKp4EsYR--sGpFz9W4HGlWIYvVien%2FhA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1619489274.1777428950; expires=Thu, 29 Apr 2027 02:15:50 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 29 Apr 2027 02:15:50 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5107:B452F:4FF0713:3D5E2B8:69F169D6
+
+
+ succeeded in 1057ms:
+
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+HTTP/2 200 
+date: Wed, 29 Apr 2026 02:15:51 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"e69750699098f1b660c070e695d1f99a"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=kVDGFmtq7rOVswvbvTr%2B8YNF6TATj%2F95bagVp64WGayaZYu3utL%2FjgbFGvYGzwXpBt8wJgYiO8TTovG66Ge3HDxfFkL%2Fkuc%2FWjhvZhjTSkOJZJuRPGmxZZfyv5u4zLvyYoUd9ulZMZ08fLrE21tc6s7UG2At6czdmunFu4to%2FUzYB%2FKB7YUIKR%2B6ntB%2BwEiu06AsREIuE2BG71rra7QPuxOpbJ2ONuBnWFHFcMgj1oOx4Xnz0j9m57EJwvnz47l%2B7Rux15yH5GCPMTqQbhvvXQ%3D%3D--0I5hUrDVxvGvVIfu--SKwM7zyFFPzWm9dmfo0LhQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.471800072.1777428950; expires=Thu, 29 Apr 2027 02:15:50 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 29 Apr 2027 02:15:50 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5108:31FF85:51B481B:3EB3AA0:69F169D6
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/JetBrains/kotlin/git/ref/tags/v2.3.0' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/JetBrains/kotlin/git/ref/tags/2.3.0' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib?ref=v2.3.0' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib?ref=2.3.0' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 177ms:
+{
+  "ref": "refs/tags/v2.3.0",
+  "node_id": "MDM6UmVmMzQzMjI2NjpyZWZzL3RhZ3MvdjIuMy4w",
+  "url": "https://api.github.com/repos/JetBrains/kotlin/git/refs/tags/v2.3.0",
+  "object": {
+    "sha": "f95cb2f7693a15966fd8fd9b1d78d440545e7b66",
+    "type": "commit",
+    "url": "https://api.github.com/repos/JetBrains/kotlin/git/commits/f95cb2f7693a15966fd8fd9b1d78d440545e7b66"
+  }
+}
+
+ succeeded in 173ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 169ms:
+[
+  {
+    "name": "ReadMe.md",
+    "path": "libraries/stdlib/ReadMe.md",
+    "sha": "f74aebe81b781647450ad925e9eeda8ceb30b62d",
+    "size": 832,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/ReadMe.md?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/ReadMe.md",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/f74aebe81b781647450ad925e9eeda8ceb30b62d",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/ReadMe.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/ReadMe.md?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/f74aebe81b781647450ad925e9eeda8ceb30b62d",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/ReadMe.md"
+    }
+  },
+  {
+    "name": "build.gradle.kts",
+    "path": "libraries/stdlib/build.gradle.kts",
+    "sha": "69e1148d3ec95653afe4c727fd221d3ce069a0eb",
+    "size": 37985,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/build.gradle.kts?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/build.gradle.kts",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/69e1148d3ec95653afe4c727fd221d3ce069a0eb",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/build.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/build.gradle.kts?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/69e1148d3ec95653afe4c727fd221d3ce069a0eb",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/build.gradle.kts"
+    }
+  },
+  {
+    "name": "common-js-wasmjs",
+    "path": "libraries/stdlib/common-js-wasmjs",
+    "sha": "b92e9b2026810849693a54730c623e8eee82aff9",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common-js-wasmjs?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/common-js-wasmjs",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/b92e9b2026810849693a54730c623e8eee82aff9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common-js-wasmjs?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/b92e9b2026810849693a54730c623e8eee82aff9",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/common-js-wasmjs"
+    }
+  },
+  {
+    "name": "common-non-jvm",
+    "path": "libraries/stdlib/common-non-jvm",
+    "sha": "d16edead67c191e2ada7521bb01845b0ae515078",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common-non-jvm?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/common-non-jvm",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/d16edead67c191e2ada7521bb01845b0ae515078",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common-non-jvm?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/d16edead67c191e2ada7521bb01845b0ae515078",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/common-non-jvm"
+    }
+  },
+  {
+    "name": "common",
+    "path": "libraries/stdlib/common",
+    "sha": "c586a511f2c5c985130b6c6954954704d5b62117",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/common",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/c586a511f2c5c985130b6c6954954704d5b62117",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/c586a511f2c5c985130b6c6954954704d5b62117",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/common"
+    }
+  },
+  {
+    "name": "gradle.properties",
+    "path": "libraries/stdlib/gradle.properties",
+    "sha": "5e68d59aec0979223cf6e1eddee0b062181a55c1",
+    "size": 163,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/gradle.properties?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/gradle.properties",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/5e68d59aec0979223cf6e1eddee0b062181a55c1",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/gradle.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/gradle.properties?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/5e68d59aec0979223cf6e1eddee0b062181a55c1",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/gradle.properties"
+    }
+  },
+  {
+    "name": "jdk7",
+    "path": "libraries/stdlib/jdk7",
+    "sha": "18b4a684166396d914607d7e84ccb3f14cc7affe",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/jdk7?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/jdk7",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/18b4a684166396d914607d7e84ccb3f14cc7affe",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/jdk7?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/18b4a684166396d914607d7e84ccb3f14cc7affe",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/jdk7"
+    }
+  },
+  {
+    "name": "jdk8",
+    "path": "libraries/stdlib/jdk8",
+    "sha": "5afd8fff5756637f9ab6ad7e670dae7dfa21c7a6",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/jdk8?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/jdk8",
+
+ succeeded in 184ms:
+[
+  {
+    "name": "ReadMe.md",
+    "path": "libraries/stdlib/ReadMe.md",
+    "sha": "f74aebe81b781647450ad925e9eeda8ceb30b62d",
+    "size": 832,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/ReadMe.md?ref=2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/2.3.0/libraries/stdlib/ReadMe.md",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/f74aebe81b781647450ad925e9eeda8ceb30b62d",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/2.3.0/libraries/stdlib/ReadMe.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/ReadMe.md?ref=2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/f74aebe81b781647450ad925e9eeda8ceb30b62d",
+      "html": "https://github.com/JetBrains/kotlin/blob/2.3.0/libraries/stdlib/ReadMe.md"
+    }
+  },
+  {
+    "name": "build.gradle.kts",
+    "path": "libraries/stdlib/build.gradle.kts",
+    "sha": "69e1148d3ec95653afe4c727fd221d3ce069a0eb",
+    "size": 37985,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/build.gradle.kts?ref=2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/2.3.0/libraries/stdlib/build.gradle.kts",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/69e1148d3ec95653afe4c727fd221d3ce069a0eb",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/2.3.0/libraries/stdlib/build.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/build.gradle.kts?ref=2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/69e1148d3ec95653afe4c727fd221d3ce069a0eb",
+      "html": "https://github.com/JetBrains/kotlin/blob/2.3.0/libraries/stdlib/build.gradle.kts"
+    }
+  },
+  {
+    "name": "common-js-wasmjs",
+    "path": "libraries/stdlib/common-js-wasmjs",
+    "sha": "b92e9b2026810849693a54730c623e8eee82aff9",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common-js-wasmjs?ref=2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/2.3.0/libraries/stdlib/common-js-wasmjs",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/b92e9b2026810849693a54730c623e8eee82aff9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common-js-wasmjs?ref=2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/b92e9b2026810849693a54730c623e8eee82aff9",
+      "html": "https://github.com/JetBrains/kotlin/tree/2.3.0/libraries/stdlib/common-js-wasmjs"
+    }
+  },
+  {
+    "name": "common-non-jvm",
+    "path": "libraries/stdlib/common-non-jvm",
+    "sha": "d16edead67c191e2ada7521bb01845b0ae515078",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common-non-jvm?ref=2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/2.3.0/libraries/stdlib/common-non-jvm",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/d16edead67c191e2ada7521bb01845b0ae515078",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common-non-jvm?ref=2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/d16edead67c191e2ada7521bb01845b0ae515078",
+      "html": "https://github.com/JetBrains/kotlin/tree/2.3.0/libraries/stdlib/common-non-jvm"
+    }
+  },
+  {
+    "name": "common",
+    "path": "libraries/stdlib/common",
+    "sha": "c586a511f2c5c985130b6c6954954704d5b62117",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common?ref=2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/2.3.0/libraries/stdlib/common",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/c586a511f2c5c985130b6c6954954704d5b62117",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common?ref=2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/c586a511f2c5c985130b6c6954954704d5b62117",
+      "html": "https://github.com/JetBrains/kotlin/tree/2.3.0/libraries/stdlib/common"
+    }
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib?ref=v2.3.0' | jq -r '.[].name + \" \" + .type + \" \" + .html_url'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ exited 5 in 0ms:
+jq: error (at <stdin>:322): Cannot index array with string "html_url"
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/JetBrains/kotlin/git/trees/v2.3.0?recursive=1' | jq -r '.tree[].path' | rg '"'^libraries/stdlib/.*/test|''^libraries/stdlib/test|''^libraries/stdlib/wasm|''^libraries/stdlib/js|''^libraries/stdlib/common-js-wasmjs|''^libraries/stdlib/(common|webMain|wasmJsMain)'"' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 3747ms:
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib?ref=v2.3.0' | jq -r '.[] | [.name, .type, .html_url] | @tsv' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 0ms:
+ReadMe.md	file	https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/ReadMe.md
+build.gradle.kts	file	https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/build.gradle.kts
+common-js-wasmjs	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/common-js-wasmjs
+common-non-jvm	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/common-non-jvm
+common	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/common
+gradle.properties	file	https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/gradle.properties
+jdk7	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/jdk7
+jdk8	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/jdk8
+js-ir-minimal-for-test	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/js-ir-minimal-for-test
+js	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/js
+jvm-minimal-for-test	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/jvm-minimal-for-test
+jvm	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/jvm
+kotlin-project-structure-metadata.beforePatch.json	file	https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/kotlin-project-structure-metadata.beforePatch.json
+kotlin-project-structure-metadata.json	file	https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/kotlin-project-structure-metadata.json
+native-wasm	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/native-wasm
+samples	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/samples
+src	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/src
+test	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test
+unsigned	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/unsigned
+wasm	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/JetBrains/kotlin/git/trees/f95cb2f7693a15966fd8fd9b1d78d440545e7b66?recursive=1' | jq -r 'keys, (.tree | length), .truncated' | sed -n '1,40p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/JetBrains/kotlin/git/trees/f95cb2f7693a15966fd8fd9b1d78d440545e7b66?recursive=1' | jq -r '.tree[]?.path' | rg '"'^libraries/stdlib'"' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 2492ms:
+[
+  "sha",
+  "tree",
+  "truncated",
+  "url"
+]
+45954
+true
+
+ succeeded in 3012ms:
+codex
+The exact release tag is `v2.3.0`; Maven has the source artifact but no tests artifact. I’m checking the stdlib tree now to choose a version-pinned test-suite and documentation URL rather than using unversioned Kotlin web docs.
+exec
+/usr/bin/bash -lc "for url in \\
+'https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/common/src/kotlin/Module.md' \\
+'https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/wasm/src/kotlin/wasmJsMain/kotlin/wasm/js/Js.kt' \\
+'https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/wasm/src/kotlin/kotlin/wasm/js/Js.kt' \\
+'https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/common-js-wasmjs/src/kotlin/js/core.kt' \\
+'https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/wasm/src/kotlin/js/core.kt'; do echo \""'$url"; curl -I -fsSL "$url" | sed -n '"'1,3p' || true; done" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/wasm?ref=v2.3.0' | jq -r '.[] | [.name, .type, .html_url] | @tsv' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test?ref=v2.3.0' | jq -r '.[] | [.name, .type, .html_url] | @tsv' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common-js-wasmjs?ref=v2.3.0' | jq -r '.[] | [.name, .type, .html_url] | @tsv' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 167ms:
+autoCloseable	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/autoCloseable
+collections	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/collections
+comparisons	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/comparisons
+concurrent	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/concurrent
+coroutines	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/coroutines
+enums	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/enums
+exceptions	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/exceptions
+generated	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/generated
+io.encoding	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/io.encoding
+js	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/js
+numbers	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/numbers
+properties	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/properties
+random	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/random
+ranges	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/ranges
+reflection	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/reflection
+testUtils.kt	file	https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/test/testUtils.kt
+text	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/text
+time	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/time
+unsigned	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/unsigned
+utils	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/utils
+uuid	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/uuid
+
+ succeeded in 171ms:
+builtins	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/builtins
+internal	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/internal
+js	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/js
+src	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/src
+stubs	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/stubs
+test	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/test
+wasi	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/wasi
+
+ succeeded in 165ms:
+src	dir	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/common-js-wasmjs/src
+
+ succeeded in 906ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
+strict-transport-security: max-age=31536000
+https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/wasm/src/kotlin/wasmJsMain/kotlin/wasm/js/Js.kt
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
+strict-transport-security: max-age=31536000
+https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/wasm/src/kotlin/kotlin/wasm/js/Js.kt
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
+strict-transport-security: max-age=31536000
+https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/common-js-wasmjs/src/kotlin/js/core.kt
+HTTP/2 200 
+cache-control: max-age=300
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
+https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/wasm/src/kotlin/js/core.kt
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
+strict-transport-security: max-age=31536000
+
+web search: 
+web search: Kotlin API documentation version 2.3.0 kotlin-stdlib wasm js
+web search: 
+web search: https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/test
+web search: 
+web search: repo.maven.apache.org org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0 kotlin-stdlib-wasm-js-2.3.0-sources.jar
+exec
+/usr/bin/bash -lc "git rev-parse --show-toplevel && git remote -v | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+origin	git@github.com:oracle/graalvm-reachability-metadata.git (fetch)
+origin	git@github.com:oracle/graalvm-reachability-metadata.git (push)
+
+exec
+/usr/bin/bash -lc "for path in \\
+'libraries/stdlib/common/src/Module.md' \\
+'libraries/stdlib/common/src/kotlin/Module.md' \\
+'libraries/stdlib/src/Module.md' \\
+'libraries/stdlib/src/kotlin/Module.md' \\
+'libraries/stdlib/wasm/src/Module.md' \\
+'libraries/stdlib/wasm/src/kotlin/Module.md' \\
+'libraries/stdlib/common-js-wasmjs/src/Module.md' \\
+'libraries/stdlib/common-js-wasmjs/src/kotlin/Module.md'; do url=\"https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/"'$path"; code=$(curl -o /dev/null -s -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$path"; done' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/search/code?q=repo:JetBrains/kotlin+filename:Module.md+path:libraries/stdlib+ref:v2.3.0' | jq -r '.items[]? | .html_url' | sed -n '1,40p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 105ms:
+curl: (22) The requested URL returned error: 401
+
+ succeeded in 1305ms:
+404 libraries/stdlib/common/src/Module.md
+404 libraries/stdlib/common/src/kotlin/Module.md
+200 libraries/stdlib/src/Module.md
+404 libraries/stdlib/src/kotlin/Module.md
+404 libraries/stdlib/wasm/src/Module.md
+404 libraries/stdlib/wasm/src/kotlin/Module.md
+404 libraries/stdlib/common-js-wasmjs/src/Module.md
+404 libraries/stdlib/common-js-wasmjs/src/kotlin/Module.md
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/src/Module.md' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 0ms:
+# Module kotlin-stdlib
+
+## Kotlin Standard Library
+
+The Kotlin Standard Library provides living essentials for everyday work with Kotlin.
+These include:
+  - Higher-order functions implementing idiomatic patterns ([let][kotlin.let], [apply][kotlin.apply], [use][kotlin.io.use], [synchronized][kotlin.synchronized], etc).
+  - Extension functions providing querying operations for collections (eager) and sequences (lazy).
+  - Various utilities for working with strings and char sequences.
+  - Extensions for JDK classes making it convenient to work with files, IO, and threading.
+
+# Package kotlin
+
+Core functions and types, available on all supported platforms.
+
+# Package kotlin.annotation
+
+Library support for the Kotlin annotation facility.
+
+# Package kotlin.collections
+
+Collection types, such as [Iterable][kotlin.collections.Iterable], [Collection][kotlin.collections.Collection],
+[List][kotlin.collections.List], [Set][kotlin.collections.Set], [Map][kotlin.collections.Map] and related top-level and extension functions.
+
+# Package kotlin.comparisons
+
+Helper functions for creating [Comparator][kotlin.Comparator] instances.
+
+# Package kotlin.concurrent
+
+Low-level building blocks and utility functions for concurrent programming.
+
+# Package kotlin.concurrent.atomics
+
+Atomic scalar and array types and utilities for working with them.
+
+# Package kotlin.contracts
+
+Experimental DSL for declaring custom function contracts.
+
+# Package kotlin.coroutines
+
+Basic primitives for creating and suspending coroutines: [Continuation][kotlin.coroutines.Continuation], 
+[CoroutineContext][kotlin.coroutines.CoroutineContext] interfaces, coroutine creation and suspension top-level functions.
+
+# Package kotlin.coroutines.intrinsics
+
+Low-level building blocks for libraries that provide coroutine-based APIs.
+
+# Package kotlin.coroutines.cancellation
+
+Provides exceptions arising on suspended coroutine cancellation. 
+
+# Package kotlin.enums
+
+Utilities for working with Kotlin enum classes.
+
+# Package kotlin.experimental
+
+Experimental APIs, subject to change in future versions of Kotlin.
+
+# Package kotlin.io
+
+IO API for working with files and streams.
+
+# Package kotlin.io.path
+
+Convenient extensions for working with file system using [java.nio.file.Path][java.nio.file.Path].
+
+# Package kotlin.io.encoding
+
+API for encoding and decoding data using various encoding schemes, such as [Base64][kotlin.io.encoding.Base64].
+
+# Package kotlin.js
+
+Functions and other APIs specific to the JavaScript platform.
+
+# Package kotlin.js.collections
+
+JavaScript-specific collection types, such as [JsArray][kotlin.js.collections.JsArray] and [JsReadonlyMap][kotlin.js.collections.JsReadonlyMap].
+
+# Package kotlin.jvm
+
+Functions and annotations specific to the Java platform.
+
+# Package kotlin.jvm.optionals
+
+Convenience extension functions for `java.util.Optional` to simplify Kotlin-Java interop.
+
+# Package kotlin.math
+
+Mathematical functions and constants. 
+
+The functions include trigonometric, hyperbolic, exponentiation and power, logarithmic, rounding, sign and absolute value.
+
+# Package kotlin.native
+
+Provides functions and types specific to Kotlin/Native, as well as means for interoperability with an underlying platform
+and other languages.
+
+# Package kotlin.native.concurrent
+
+Kotlin/Native-specific concurrency primitives and utility functions for concurrent programming.
+
+# Package kotlin.native.ref
+
+API for object life-cycle and references management.
+
+# Package kotlin.native.runtime
+
+Allows to query information from and interact with the Kotlin/Native runtime. 
+
+# Package kotlin.properties
+
+Standard implementations of delegates for [delegated properties](https://kotlinlang.org/docs/delegated-properties.html)
+and helper functions for implementing custom delegates.
+
+# Package kotlin.random
+
+Provides the default generator of pseudo-random values, the repeatable generator, and a base class for other RNG implementations.
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0.module' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 0ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "url": "../../kotlin-stdlib/2.3.0/kotlin-stdlib-2.3.0.module",
+    "group": "org.jetbrains.kotlin",
+    "module": "kotlin-stdlib",
+    "version": "2.3.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.14"
+    }
+  },
+  "variants": [
+    {
+      "name": "wasmJsApiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.klib.packaging": "packed",
+        "org.jetbrains.kotlin.platform.type": "wasm",
+        "org.jetbrains.kotlin.wasm.target": "js"
+      },
+      "files": [
+        {
+          "name": "kotlin-stdlib-wasm-js-2.3.0.klib",
+          "url": "kotlin-stdlib-wasm-js-2.3.0.klib",
+          "size": 4725307,
+          "sha512": "ed23aee77f5ee086932fa9ae47cf7e1dd38157cd7341e1beb40d906d71ecf14ea933362ec1bed4db5b07384322f530c25a687c764bab1ef4d57f0332fefbdced",
+          "sha256": "e267fe680014437a169c00d12020859abd321207b58ff12e884515341eac9833",
+          "sha1": "cf45fb936f28b7de68dff1cdae1c75f0881e36f0",
+          "md5": "1144916414068f3380d28bb1e11e0c73"
+        }
+      ]
+    },
+    {
+      "name": "wasmJsRuntimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-runtime",
+        "org.jetbrains.kotlin.klib.packaging": "packed",
+        "org.jetbrains.kotlin.platform.type": "wasm",
+        "org.jetbrains.kotlin.wasm.target": "js"
+      },
+      "files": [
+        {
+          "name": "kotlin-stdlib-wasm-js-2.3.0.klib",
+          "url": "kotlin-stdlib-wasm-js-2.3.0.klib",
+          "size": 4725307,
+          "sha512": "ed23aee77f5ee086932fa9ae47cf7e1dd38157cd7341e1beb40d906d71ecf14ea933362ec1bed4db5b07384322f530c25a687c764bab1ef4d57f0332fefbdced",
+          "sha256": "e267fe680014437a169c00d12020859abd321207b58ff12e884515341eac9833",
+          "sha1": "cf45fb936f28b7de68dff1cdae1c75f0881e36f0",
+          "md5": "1144916414068f3380d28bb1e11e0c73"
+        }
+      ]
+    },
+    {
+      "name": "wasmJsSourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-runtime",
+        "org.jetbrains.kotlin.platform.type": "wasm",
+        "org.jetbrains.kotlin.wasm.target": "js"
+      },
+      "files": [
+        {
+          "name": "kotlin-stdlib-wasm-js-2.3.0-sources.jar",
+          "url": "kotlin-stdlib-wasm-js-2.3.0-sources.jar",
+          "size": 857897,
+          "sha512": "44d5a9e35d041538cea08226eed11e5202b5b4af248ba790520692ae0dd72cf3b0a3fbdc9793eee14c3d40b4244ed3a4361ba3bf3773ba30ddf73e8f8c43bd74",
+          "sha256": "2c950c1886874b8077e4f32d659a76e30d277760f5faac8621ddaed5e5d800f0",
+          "sha1": "074407b27c279f76155f03913e049717b5e1ab29",
+          "md5": "e92c5bf78039c23118ec393b425dcb63"
+        }
+      ]
+    }
+  ]
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+'https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/test' \\
+'https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test' \\
+'https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/src/Module.md' \\
+'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-sources.jar'; do printf '%s ' \""'$url"; curl -o /dev/null -s -L -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 2371ms:
+200
+https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test 200
+https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/src/Module.md 200
+https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-sources.jar 200
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"\\s*:' build/discovered-artifact-metadata | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"language\"\\s*:' build/discovered-artifact-metadata metadata | sed -n '1,40p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 0ms:
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:56:      "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:186:        "language": {
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/org.jetbrains.kotlin/kotlin-test/index.json" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.21",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/2.0.21/kotlin-test-2.0.21-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.0.21/libraries/kotlin.test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/2.0.21/kotlin-test-2.0.21-javadoc.jar",
+    "description" : "kotlin-test is Kotlin's multiplatform testing library, providing common assertion functions and test annotations for Kotlin code. It integrates the shared kotlin.test API with platform test runners such as JUnit, JUnit 5, TestNG, JavaScript frameworks, and WebAssembly targets.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.0"
+    },
+    "tested-versions" : [
+      "2.0.21"
+    ],
+    "allowed-packages" : [
+      "kotlin.test"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg --files build/discovered-artifact-metadata | sed -n '1,20p' | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0"
+}
+
+codex
+I found a Maven sources jar and confirmed there is no Maven tests jar for `2.3.0`, so I’m using the version-tagged Kotlin repository path for the Wasm stdlib tests and the version-tagged stdlib module documentation.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+index c70a8ecacbe87517bb8be84fd90e914d810bbd12..45be32d214bcf19cf80a81a904c879915a8afb9f
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/src/Module.md",
++  "description" : "Kotlin Standard Library for Wasm JS provides the Kotlin core APIs and platform-specific JavaScript and WebAssembly interop needed by Kotlin code compiled to the WebAssembly JavaScript target. It packages the common standard library with Wasm JS implementations for collections, primitives, time, random, limited reflection support, and kotlin.js/kotlin.wasm.js APIs.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+index c70a8ecacbe87517bb8be84fd90e914d810bbd12..45be32d214bcf19cf80a81a904c879915a8afb9f
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/src/Module.md",
++  "description" : "Kotlin Standard Library for Wasm JS provides the Kotlin core APIs and platform-specific JavaScript and WebAssembly interop needed by Kotlin code compiled to the WebAssembly JavaScript target. It packages the common standard library with Wasm JS implementations for collections, primitives, time, random, limited reflection support, and kotlin.js/kotlin.wasm.js APIs.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 0ms:
+{
+  "coordinates": "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-sources.jar",
+  "repository-url": "https://github.com/JetBrains/kotlin",
+  "test-code-url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/test",
+  "documentation-url": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/src/Module.md",
+  "description": "Kotlin Standard Library for Wasm JS provides the Kotlin core APIs and platform-specific JavaScript and WebAssembly interop needed by Kotlin code compiled to the WebAssembly JavaScript target. It packages the common standard library with Wasm JS implementations for collections, primitives, time, random, limited reflection support, and kotlin.js/kotlin.wasm.js APIs.",
+  "language": {
+    "name": "kotlin",
+    "version": "2.3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'for url in $(jq -r '"'.[\"source-code-url\"], .[\"repository-url\"], .[\"test-code-url\"], .[\"documentation-url\"]' build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json); do printf '%s ' \""'$url"; curl -o /dev/null -s -L -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+index c70a8ecacbe87517bb8be84fd90e914d810bbd12..45be32d214bcf19cf80a81a904c879915a8afb9f
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/src/Module.md",
++  "description" : "Kotlin Standard Library for Wasm JS provides the Kotlin core APIs and platform-specific JavaScript and WebAssembly interop needed by Kotlin code compiled to the WebAssembly JavaScript target. It packages the common standard library with Wasm JS implementations for collections, primitives, time, random, limited reflection support, and kotlin.js/kotlin.wasm.js APIs.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+ succeeded in 1170ms:
+https://github.com/JetBrains/kotlin 200
+https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/test 200
+https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/src/Module.md 200
+
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+index c70a8ecacbe87517bb8be84fd90e914d810bbd12..45be32d214bcf19cf80a81a904c879915a8afb9f
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/src/Module.md",
++  "description" : "Kotlin Standard Library for Wasm JS provides the Kotlin core APIs and platform-specific JavaScript and WebAssembly interop needed by Kotlin code compiled to the WebAssembly JavaScript target. It packages the common standard library with Wasm JS implementations for collections, primitives, time, random, limited reflection support, and kotlin.js/kotlin.wasm.js APIs.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+web search: 
+web search: https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/test
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+index c70a8ecacbe87517bb8be84fd90e914d810bbd12..45be32d214bcf19cf80a81a904c879915a8afb9f
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/src/Module.md",
++  "description" : "Kotlin Standard Library for Wasm JS provides the Kotlin core APIs and platform-specific JavaScript and WebAssembly interop needed by Kotlin code compiled to the WebAssembly JavaScript target. It packages the common standard library with Wasm JS implementations for collections, primitives, time, random, limited reflection support, and kotlin.js/kotlin.wasm.js APIs.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+codex
+Updated [org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json](/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json) with the discovered URLs, two-sentence description, and Kotlin language metadata `{ "name": "kotlin", "version": "2.3" }`.
+
+Verified the JSON parses with `jq`, and all four URLs return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+index c70a8ecacbe87517bb8be84fd90e914d810bbd12..45be32d214bcf19cf80a81a904c879915a8afb9f
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/src/Module.md",
++  "description" : "Kotlin Standard Library for Wasm JS provides the Kotlin core APIs and platform-specific JavaScript and WebAssembly interop needed by Kotlin code compiled to the WebAssembly JavaScript target. It packages the common standard library with Wasm JS implementations for collections, primitives, time, random, limited reflection support, and kotlin.js/kotlin.wasm.js APIs.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+2026-04-29T02:17:41.177030Z ERROR codex_core::session: failed to record rollout items: thread 019dd704-f5d8-7ce0-9681-19109e9d8c7d not found
+tokens used
+94,686
+Updated [org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json](/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json) with the discovered URLs, two-sentence description, and Kotlin language metadata `{ "name": "kotlin", "version": "2.3" }`.
+
+Verified the JSON parses with `jq`, and all four URLs return HTTP 200.
+Ran agent for org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5/build/agent-artifact-discovery-logs/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2628-221dacf5/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 22s
+9 actionable tasks: 4 executed, 5 from cache
