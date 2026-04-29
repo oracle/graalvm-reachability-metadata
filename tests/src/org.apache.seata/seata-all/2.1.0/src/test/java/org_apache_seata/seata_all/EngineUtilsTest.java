@@ -20,6 +20,23 @@ import org.junit.jupiter.api.Test;
 
 public class EngineUtilsTest {
     @Test
+    void handleExceptionLoadsCatchClassesWithHandlerClassLoader() {
+        String nextState = "handlePrimaryException";
+        ServiceTaskStateImpl state = new ServiceTaskStateImpl();
+        ExceptionMatchImpl exceptionMatch = new ExceptionMatchImpl();
+        exceptionMatch.setExceptions(Collections.singletonList(PrimaryLoadedException.class.getName()));
+        exceptionMatch.setNext(nextState);
+        state.setCatches(Collections.<TaskState.ExceptionMatch>singletonList(exceptionMatch));
+        ProcessContextImpl context = new ProcessContextImpl();
+
+        EngineUtils.handleException(context, state, new PrimaryLoadedException("handled by handler loader"));
+
+        assertThat(context.getVariableLocally(DomainConstants.VAR_NAME_CURRENT_EXCEPTION_ROUTE)).isEqualTo(nextState);
+        assertThat(context.hasVariableLocal(DomainConstants.VAR_NAME_IS_EXCEPTION_NOT_CATCH)).isFalse();
+        assertThat(exceptionMatch.getExceptionClasses()).containsExactly(PrimaryLoadedException.class);
+    }
+
+    @Test
     void handleExceptionUsesContextClassLoaderFallbackForCatchClasses() {
         String fallbackOnlyExceptionName = "context.only.EngineUtilsFallbackOnlyException";
         String nextState = "handleFallbackException";
@@ -62,6 +79,12 @@ public class EngineUtilsTest {
                 return FallbackOnlyException.class;
             }
             return super.loadClass(name);
+        }
+    }
+
+    public static class PrimaryLoadedException extends Exception {
+        public PrimaryLoadedException(String message) {
+            super(message);
         }
     }
 
