@@ -4,18 +4,73 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import org.gradle.jvm.tasks.Jar
+
 plugins {
     id "org.graalvm.internal.tck"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String janinoVersion = "3.1.9"
+
+TaskProvider<Jar> unsignedJaninoJar = tasks.register("unsignedJaninoJar", Jar) {
+    archiveFileName = "janino-${janinoVersion}-unsigned.jar"
+    destinationDirectory = layout.buildDirectory.dir("unsigned-deps").get().asFile
+    from(zipTree(configurations.detachedConfiguration(
+        dependencies.create("org.codehaus.janino:janino:${janinoVersion}") {
+            transitive = false
+        }
+    ).singleFile)) {
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+        exclude "META-INF/*.SF"
+    }
+}
+
+TaskProvider<Jar> unsignedCommonsCompilerJar = tasks.register("unsignedCommonsCompilerJar", Jar) {
+    archiveFileName = "commons-compiler-${janinoVersion}-unsigned.jar"
+    destinationDirectory = layout.buildDirectory.dir("unsigned-deps").get().asFile
+    from(zipTree(configurations.detachedConfiguration(
+        dependencies.create("org.codehaus.janino:commons-compiler:${janinoVersion}") {
+            transitive = false
+        }
+    ).singleFile)) {
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+        exclude "META-INF/*.SF"
+    }
+}
 
 dependencies {
-    testImplementation "org.apache.calcite:calcite-core:$libraryVersion"
+    testImplementation("org.apache.calcite:calcite-core:$libraryVersion") {
+        exclude group: "org.codehaus.janino", module: "commons-compiler"
+        exclude group: "org.codehaus.janino", module: "janino"
+    }
     testImplementation 'org.assertj:assertj-core:3.22.0'
+    testRuntimeOnly files(
+        layout.buildDirectory.file("unsigned-deps/commons-compiler-${janinoVersion}-unsigned.jar"),
+        layout.buildDirectory.file("unsigned-deps/janino-${janinoVersion}-unsigned.jar")
+    )
+}
+
+tasks.named("test") {
+    dependsOn unsignedCommonsCompilerJar, unsignedJaninoJar
+}
+
+tasks.named("nativeTestCompile") {
+    dependsOn unsignedCommonsCompilerJar, unsignedJaninoJar
+}
+
+tasks.named("nativeTest") {
+    dependsOn unsignedCommonsCompilerJar, unsignedJaninoJar
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("-H:+RuntimeClassLoading")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {

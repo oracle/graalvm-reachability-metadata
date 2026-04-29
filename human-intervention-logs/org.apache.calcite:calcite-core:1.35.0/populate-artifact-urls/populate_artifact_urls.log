@@ -1,0 +1,154 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/446-c3191f92
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd747-2bc4-75f3-b539-5f5cd567e6f0
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.calcite:calcite-core:1.35.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.35.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/446-c3191f92/metadata/org.apache.calcite/calcite-core/index.json
+- Entry selector: "metadata-version" = "1.35.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.35.0".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/apache/calcite/calcite-core/1.35.0/calcite-core-1.35.0-sources.jar
+- repository-url: https://github.com/apache/calcite
+- test-code-url: https://github.com/apache/calcite/tree/calcite-1.35.0/core/src/test
+- documentation-url: https://repo1.maven.org/maven2/org/apache/calcite/calcite-core/1.35.0/calcite-core-1.35.0-javadoc.jar
+- description: Apache Calcite Core provides the central APIs, SQL parser and validator, relational algebra, and query planning engine for building data management systems. It lets applications define schemas, optimize SQL queries, and integrate multiple storage engines without providing its own persistent data store.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.35.0
+- Entry test-version: 1.35.0
+codex
+I’ll verify the artifact URLs first, then only fill fields in the matching `1.35.0` entry that are actually missing.
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/calcite/calcite-core/1.35.0/
+codex
+Maven Central has the `1.35.0` sources and Javadoc artifacts for `calcite-core`, but no `test-sources` artifact in that directory, so the tagged GitHub test path is the better test-suite URL.
+exec
+/usr/bin/zsh -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"1\\.35\\.0\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.apache.calcite/calcite-core/index.json" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/446-c3191f92
+ succeeded in 0ms:
+/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/446-c3191f92
+4:    "metadata-version" : "1.35.0",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/calcite/calcite-core/1.35.0/calcite-core-1.35.0-sources.jar",
+6:    "repository-url" : "https://github.com/apache/calcite",
+7:    "test-code-url" : "https://github.com/apache/calcite/tree/calcite-1.35.0/core/src/test",
+8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/calcite/calcite-core/1.35.0/calcite-core-1.35.0-javadoc.jar",
+9:    "description" : "Apache Calcite Core provides the central APIs, SQL parser and validator, relational algebra, and query planning engine for building data management systems. It lets applications define schemas, optimize SQL queries, and integrate multiple storage engines without providing its own persistent data store.",
+
+exec
+/usr/bin/zsh -lc 'git status --short -- metadata/org.apache.calcite/calcite-core/index.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/446-c3191f92
+ succeeded in 0ms:
+?? metadata/org.apache.calcite/calcite-core/index.json
+
+codex
+The matching entry already has non-blank values for every requested URL and the two-sentence description. `language` is absent, which is correct because `calcite-core` is not a Kotlin, Groovy, or Scala-specific artifact.
+exec
+/usr/bin/zsh -lc 'jq empty metadata/org.apache.calcite/calcite-core/index.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/446-c3191f92
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc "sed -n '1,80p' metadata/org.apache.calcite/calcite-core/index.json" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/446-c3191f92
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.35.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/calcite/calcite-core/1.35.0/calcite-core-1.35.0-sources.jar",
+    "repository-url" : "https://github.com/apache/calcite",
+    "test-code-url" : "https://github.com/apache/calcite/tree/calcite-1.35.0/core/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/calcite/calcite-core/1.35.0/calcite-core-1.35.0-javadoc.jar",
+    "description" : "Apache Calcite Core provides the central APIs, SQL parser and validator, relational algebra, and query planning engine for building data management systems. It lets applications define schemas, optimize SQL queries, and integrate multiple storage engines without providing its own persistent data store.",
+    "tested-versions" : [
+      "1.35.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.calcite"
+    ]
+  }
+]
+
+web search: 
+web search: https://github.com/apache/calcite/tree/calcite-1.35.0/core/src/test
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/calcite/calcite-core/1.35.0/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: Apache Calcite framework for building databases query optimization SQL parser validator relational algebra
+codex
+No file change was needed. In [index.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/446-c3191f92/metadata/org.apache.calcite/calcite-core/index.json:4), the `1.35.0` entry already has non-blank source, repository, test, documentation, and exactly two-sentence description fields.
+
+I left `language` absent because `org.apache.calcite:calcite-core` is not Kotlin, Groovy, or Scala-specific. Maven Central confirms the exact `1.35.0` sources and Javadoc artifacts, and the tagged GitHub test path exists for `calcite-1.35.0`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/calcite/calcite-core/1.35.0/))
+2026-04-29T03:28:25.612588Z ERROR codex_core::session: failed to record rollout items: thread 019dd747-2bc4-75f3-b539-5f5cd567e6f0 not found
+tokens used
+26,858
+No file change was needed. In [index.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/446-c3191f92/metadata/org.apache.calcite/calcite-core/index.json:4), the `1.35.0` entry already has non-blank source, repository, test, documentation, and exactly two-sentence description fields.
+
+I left `language` absent because `org.apache.calcite:calcite-core` is not Kotlin, Groovy, or Scala-specific. Maven Central confirms the exact `1.35.0` sources and Javadoc artifacts, and the tagged GitHub test path exists for `calcite-1.35.0`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/calcite/calcite-core/1.35.0/))
+Ran agent for org.apache.calcite:calcite-core:1.35.0 (exit 0). Log: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/446-c3191f92/build/agent-url-discovery-logs/org.apache.calcite-calcite-core-1.35.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/446-c3191f92/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 48s
+9 actionable tasks: 1 executed, 8 up-to-date
