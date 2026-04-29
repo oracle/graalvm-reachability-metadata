@@ -9,44 +9,58 @@ package com_esotericsoftware.kryo_shaded;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Registration;
 import com.esotericsoftware.kryo.util.Util;
 import org.junit.jupiter.api.Test;
 import org.objenesis.instantiator.ObjectInstantiator;
-import org.objenesis.strategy.InstantiatorStrategy;
 
 public class KryoInnerDefaultInstantiatorStrategyTest {
     @Test
-    void usesFallbackAfterReflectionCannotConstructLibraryType() {
-        Object expected = new Object();
-        RecordingFallbackStrategy fallbackStrategy = new RecordingFallbackStrategy(expected);
-        Kryo.DefaultInstantiatorStrategy strategy = new Kryo.DefaultInstantiatorStrategy(fallbackStrategy);
+    void createsInstantiatorFromPublicNoArgConstructor() {
+        Kryo.DefaultInstantiatorStrategy strategy = new Kryo.DefaultInstantiatorStrategy();
         boolean originalIsAndroid = Util.isAndroid;
 
         try {
             Util.isAndroid = true;
-            ObjectInstantiator instantiator = strategy.newInstantiatorOf(Registration.class);
+            ObjectInstantiator instantiator = strategy.newInstantiatorOf(PublicNoArgSubject.class);
             Object created = instantiator.newInstance();
 
-            assertThat(fallbackStrategy.requestedType).isSameAs(Registration.class);
-            assertThat(created).isSameAs(expected);
+            assertThat(created).isInstanceOf(PublicNoArgSubject.class);
+            assertThat(((PublicNoArgSubject) created).value).isEqualTo("public-constructor");
         } finally {
             Util.isAndroid = originalIsAndroid;
         }
     }
 
-    private static class RecordingFallbackStrategy implements InstantiatorStrategy {
-        private final Object instance;
-        private Class<?> requestedType;
+    @Test
+    void createsInstantiatorFromDeclaredNoArgConstructor() {
+        Kryo.DefaultInstantiatorStrategy strategy = new Kryo.DefaultInstantiatorStrategy();
+        boolean originalIsAndroid = Util.isAndroid;
 
-        RecordingFallbackStrategy(Object instance) {
-            this.instance = instance;
+        try {
+            Util.isAndroid = true;
+            ObjectInstantiator instantiator = strategy.newInstantiatorOf(PrivateNoArgSubject.class);
+            Object created = instantiator.newInstance();
+
+            assertThat(created).isInstanceOf(PrivateNoArgSubject.class);
+            assertThat(((PrivateNoArgSubject) created).value).isEqualTo("declared-constructor");
+        } finally {
+            Util.isAndroid = originalIsAndroid;
         }
+    }
 
-        @Override
-        public ObjectInstantiator newInstantiatorOf(Class type) {
-            requestedType = type;
-            return () -> instance;
+    public static class PublicNoArgSubject {
+        final String value;
+
+        public PublicNoArgSubject() {
+            this.value = "public-constructor";
+        }
+    }
+
+    private static class PrivateNoArgSubject {
+        final String value;
+
+        private PrivateNoArgSubject() {
+            this.value = "declared-constructor";
         }
     }
 }
