@@ -9,6 +9,7 @@ package jakarta_xml_bind.jakarta_xml_bind_api;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.Permission;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
@@ -56,6 +57,29 @@ public class ServiceLoaderUtilTest {
     }
 
     @Test
+    @SuppressWarnings("removal")
+    public void fallsBackToClassForNameWhenDefaultImplementationPackageAccessIsDenied() throws Exception {
+        SecurityManager previousSecurityManager = System.getSecurityManager();
+        PackageAccessDenyingSecurityManager securityManager =
+                new PackageAccessDenyingSecurityManager(FactoryBackedContextFactory.class.getPackage().getName());
+        boolean securityManagerInstalled = installSecurityManagerIfSupported(securityManager);
+
+        try {
+            Class<?> providerClass = ServiceLoaderUtilInvoker.loadFactoryBackedContextFactory(
+                    getClass().getClassLoader());
+
+            assertThat(providerClass).isEqualTo(FactoryBackedContextFactory.class);
+            if (securityManagerInstalled) {
+                assertThat(securityManager.wasCheckPackageAccessCalled()).isTrue();
+            }
+        } finally {
+            if (securityManagerInstalled) {
+                System.setSecurityManager(previousSecurityManager);
+            }
+        }
+    }
+
+    @Test
     public void loadsContextPathProviderFromOsgiLocatorWhenServiceResourceIsAbsent() throws Exception {
         ClassLoader classLoader = new ServiceResourceHidingClassLoader(getClass().getClassLoader());
 
@@ -79,6 +103,16 @@ public class ServiceLoaderUtilTest {
         assertThat(((StubJaxbContext) context).getSource()).isEqualTo("factory-backed-classes-factory");
     }
 
+    @SuppressWarnings("removal")
+    private static boolean installSecurityManagerIfSupported(SecurityManager securityManager) {
+        try {
+            System.setSecurityManager(securityManager);
+            return System.getSecurityManager() == securityManager;
+        } catch (UnsupportedOperationException unsupportedOperationException) {
+            return false;
+        }
+    }
+
     private static <T> T withContextClassLoader(
             ClassLoader classLoader,
             ThrowingSupplier<T> supplier) throws Exception {
@@ -95,6 +129,32 @@ public class ServiceLoaderUtilTest {
     @FunctionalInterface
     private interface ThrowingSupplier<T> {
         T get() throws Exception;
+    }
+
+    @SuppressWarnings("removal")
+    private static final class PackageAccessDenyingSecurityManager extends SecurityManager {
+        private final String deniedPackageName;
+        private boolean checkPackageAccessCalled;
+
+        private PackageAccessDenyingSecurityManager(String deniedPackageName) {
+            this.deniedPackageName = deniedPackageName;
+        }
+
+        @Override
+        public void checkPermission(Permission permission) {
+        }
+
+        @Override
+        public void checkPackageAccess(String packageName) {
+            if (deniedPackageName.equals(packageName)) {
+                checkPackageAccessCalled = true;
+                throw new SecurityException(packageName);
+            }
+        }
+
+        private boolean wasCheckPackageAccessCalled() {
+            return checkPackageAccessCalled;
+        }
     }
 
     private static final class ServiceResourceHidingClassLoader extends ClassLoader {

@@ -26,4 +26,11 @@ public final class ServiceLoaderUtilInvoker {
                 FactoryBackedContextFactory.class.getName(),
                 EXCEPTION_HANDLER);
     }
+
+    public static Class<?> loadFactoryBackedContextFactory(ClassLoader classLoader) throws ClassNotFoundException {
+        return ServiceLoaderUtil.safeLoadClass(
+                FactoryBackedContextFactory.class.getName(),
+                FactoryBackedContextFactory.class.getName(),
+                classLoader);
+    }
 }
