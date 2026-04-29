@@ -207,6 +207,28 @@ public class Smallrye_common_functionTest {
     }
 
     @Test
+    void primitiveResultFunctionsChainToGeneralFunctions() throws TestException {
+        List<String> calls = new ArrayList<>();
+        ExceptionIntFunction<String, TestException> classifyInt = value -> {
+            calls.add("int:" + value);
+            return value % 2 == 0 ? "even" : "odd";
+        };
+        ExceptionLongFunction<String, TestException> classifyLong = value -> {
+            calls.add("long:" + value);
+            return value > 100L ? "large" : "small";
+        };
+        ExceptionFunction<String, String, TestException> decorate = value -> {
+            calls.add("decorate:" + value);
+            return "[" + value + "]";
+        };
+
+        assertThat(classifyInt.andThen(decorate).apply(8)).isEqualTo("[even]");
+        assertThat(classifyLong.andThen(decorate).apply(42L)).isEqualTo("[small]");
+
+        assertThat(calls).containsExactly("int:8", "decorate:even", "long:42", "decorate:small");
+    }
+
+    @Test
     void objectPrimitiveConsumersComposeWithMatchingAndWidenedLongConsumers() throws TestException {
         StringBuilder first = new StringBuilder();
         StringBuilder second = new StringBuilder();
