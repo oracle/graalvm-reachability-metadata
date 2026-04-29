@@ -37,6 +37,23 @@ public class KryoInnerDefaultInstantiatorStrategyTest {
     }
 
     @Test
+    void createsPrivateNoArgTypeUsingDeclaredConstructorWhenReflectAsmIsBypassed() {
+        boolean previousAndroidFlag = Util.isAndroid;
+        Util.isAndroid = true;
+        try {
+            Kryo.DefaultInstantiatorStrategy strategy = new Kryo.DefaultInstantiatorStrategy(new DirectFallbackStrategy());
+
+            @SuppressWarnings("unchecked")
+            ObjectInstantiator<PrivateNoArgType> instantiator = strategy.newInstantiatorOf(PrivateNoArgType.class);
+            PrivateNoArgType instance = instantiator.newInstance();
+
+            assertThat(instance.value).isEqualTo("created");
+        } finally {
+            Util.isAndroid = previousAndroidFlag;
+        }
+    }
+
+    @Test
     void delegatesToFallbackAfterReflectionFindsNoNoArgConstructor() {
         boolean previousAndroidFlag = Util.isAndroid;
         Util.isAndroid = true;
@@ -48,6 +65,26 @@ public class KryoInnerDefaultInstantiatorStrategyTest {
             assertThat(instantiator.newInstance()).isNull();
         } finally {
             Util.isAndroid = previousAndroidFlag;
+        }
+    }
+
+    private static final class PrivateNoArgType {
+        final String value;
+
+        private PrivateNoArgType() {
+            this.value = "created";
+        }
+    }
+
+    private static final class DirectFallbackStrategy implements InstantiatorStrategy {
+        @Override
+        public <T> ObjectInstantiator<T> newInstantiatorOf(Class<T> type) {
+            return new ObjectInstantiator<T>() {
+                @Override
+                public T newInstance() {
+                    return type.cast(new PrivateNoArgType());
+                }
+            };
         }
     }
 
