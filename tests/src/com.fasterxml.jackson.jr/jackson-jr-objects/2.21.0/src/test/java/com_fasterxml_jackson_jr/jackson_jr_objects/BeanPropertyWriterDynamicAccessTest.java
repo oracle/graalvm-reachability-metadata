@@ -6,7 +6,11 @@
  */
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 import com.fasterxml.jackson.jr.ob.JSON;
+import com.fasterxml.jackson.jr.ob.impl.BeanPropertyWriter;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,15 +39,44 @@ public class BeanPropertyWriterDynamicAccessTest {
         assertThat(bean.getterCalls).isEqualTo(1);
     }
 
-    static final class FieldBackedWriterBean {
-        public int id = 3;
+    @Test
+    void readsFieldAccessorValuesThroughBeanPropertyWriter() throws Exception {
+        Field field = FieldBackedWriterBean.class.getField("id");
+        BeanPropertyWriter writer = new BeanPropertyWriter(0, "id", field, null);
+
+        Object value = writer.getValueFor(new FieldBackedWriterBean(13));
+
+        assertThat(value).isEqualTo(13);
     }
 
-    static final class GetterBackedWriterBean {
+    @Test
+    void invokesGetterAccessorValuesThroughBeanPropertyWriter() throws Exception {
+        Method getter = GetterBackedWriterBean.class.getMethod("getName");
+        BeanPropertyWriter writer = new BeanPropertyWriter(0, "name", null, getter);
+        GetterBackedWriterBean bean = new GetterBackedWriterBean("Grace");
+
+        Object value = writer.getValueFor(bean);
+
+        assertThat(value).isEqualTo("Grace");
+        assertThat(bean.getterCalls).isEqualTo(1);
+    }
+
+    public static final class FieldBackedWriterBean {
+        public int id = 3;
+
+        public FieldBackedWriterBean() {
+        }
+
+        public FieldBackedWriterBean(int id) {
+            this.id = id;
+        }
+    }
+
+    public static final class GetterBackedWriterBean {
         private int getterCalls;
         private final String name;
 
-        GetterBackedWriterBean(String name) {
+        public GetterBackedWriterBean(String name) {
             this.name = name;
         }
 
