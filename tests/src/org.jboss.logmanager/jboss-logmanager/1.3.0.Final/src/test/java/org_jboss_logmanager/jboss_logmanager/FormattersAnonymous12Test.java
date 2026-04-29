@@ -25,6 +25,15 @@ public class FormattersAnonymous12Test {
         assertThat(formatted).contains("\tat " + className + ".invoke");
     }
 
+    @Test
+    void extendedExceptionFormattingFallsBackThroughClassLookupStrategiesForUnknownFrameClass() {
+        String className = "org.jboss.logmanager.coverage.DoesNotExist";
+
+        String formatted = formatWithTccl(FormattersAnonymous12Test.class.getClassLoader(), newFailure(className));
+
+        assertThat(formatted).contains("\tat " + className + ".invoke");
+    }
+
     private static String formatWithTccl(final ClassLoader contextClassLoader, final Throwable thrown) {
         ClassLoader originalTccl = Thread.currentThread().getContextClassLoader();
         try {
