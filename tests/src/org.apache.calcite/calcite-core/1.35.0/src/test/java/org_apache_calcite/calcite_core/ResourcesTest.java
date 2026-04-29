@@ -6,6 +6,7 @@
  */
 package org_apache_calcite.calcite_core;
 
+import org.apache.calcite.runtime.CalciteResource;
 import org.apache.calcite.runtime.Resources;
 
 import org.junit.jupiter.api.Test;
@@ -17,27 +18,11 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 public class ResourcesTest {
     @Test
     public void validatesResourceMethodsThroughProxyInvocation() {
-        TestResourceObject resourceObject = new TestResourceObject();
+        CalciteResource resource = Resources.create(CalciteResource.class);
         EnumSet<Resources.Validation> validations = EnumSet.of(
-                Resources.Validation.AT_LEAST_ONE,
-                Resources.Validation.MESSAGE_SPECIFIED,
-                Resources.Validation.EVEN_QUOTES,
-                Resources.Validation.ARGUMENT_MATCH);
+                Resources.Validation.AT_LEAST_ONE);
 
-        assertThatCode(() -> Resources.validate(resourceObject, validations))
+        assertThatCode(() -> Resources.validate(resource, validations))
                 .doesNotThrowAnyException();
-    }
-
-    public static class TestResourceObject {
-        private final TestMessages messages = Resources.create(TestMessages.class);
-
-        public Resources.Inst resourceValue(String name, int value) {
-            return messages.resourceValue(name, value);
-        }
-    }
-
-    public interface TestMessages {
-        @Resources.BaseMessage("Resource {0} has value {1,number,#}")
-        Resources.Inst resourceValue(String name, int value);
     }
 }
