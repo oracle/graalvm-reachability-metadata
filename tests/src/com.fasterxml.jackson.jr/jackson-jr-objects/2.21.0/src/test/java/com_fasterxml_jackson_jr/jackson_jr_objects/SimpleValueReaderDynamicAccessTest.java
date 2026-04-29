@@ -6,14 +6,21 @@
  */
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.jr.ob.JSON;
+import com.fasterxml.jackson.jr.ob.JSONObjectException;
 import com.fasterxml.jackson.jr.ob.ValueIterator;
+import com.fasterxml.jackson.jr.ob.impl.SimpleValueReader;
+import com.fasterxml.jackson.jr.ob.impl.ValueLocatorBase;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class SimpleValueReaderDynamicAccessTest {
     @Test
@@ -68,6 +75,37 @@ public class SimpleValueReaderDynamicAccessTest {
             assertThat(classes.next()).isEqualTo(Integer.class);
             assertThat(classes.hasNext()).isFalse();
         }
+    }
+
+    @Test
+    void directReaderResolvesRuntimeClassNamesFromParserValues() throws Exception {
+        Object resolved = readClassValue('"' + runtimeClassName(String.class) + '"');
+
+        assertThat(resolved).isEqualTo(String.class);
+    }
+
+    @Test
+    void directReaderReportsClassLoadingFailuresFromParserValues() {
+        assertThatThrownBy(() -> readClassValue('"' + missingClassName() + '"'))
+                .isInstanceOf(JSONObjectException.class)
+                .hasMessageContaining("Failed to bind `java.lang.Class`");
+    }
+
+    private static Object readClassValue(String json) throws IOException {
+        try (JsonParser parser = new JsonFactory().createParser(json)) {
+            parser.nextToken();
+            return new SimpleValueReader(Class.class, ValueLocatorBase.SER_CLASS).read(null, parser);
+        }
+    }
+
+    private static String runtimeClassName(Class<?> type) {
+        String propertyName = "simple.value.reader.direct.class." + System.nanoTime();
+        System.setProperty(propertyName, type.getName());
+        return System.getProperty(propertyName);
+    }
+
+    private static String missingClassName() {
+        return "missing.simple.value.reader.Type" + System.nanoTime();
     }
 
     private static String loadableClassName() {
