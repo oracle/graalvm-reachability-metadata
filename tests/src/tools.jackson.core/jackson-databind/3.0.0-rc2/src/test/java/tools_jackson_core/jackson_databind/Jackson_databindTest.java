@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.junit.jupiter.api.Test;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.DeserializationFeature;
@@ -225,6 +226,45 @@ public class Jackson_databindTest {
     }
 
     @Test
+    void jsonViewsConstrainSerializationAndDeserializationByActiveView() throws Exception {
+        ObjectMapper mapper = JsonMapper.builder()
+                .disable(MapperFeature.DEFAULT_VIEW_INCLUSION)
+                .disable(DeserializationFeature.FAIL_ON_UNEXPECTED_VIEW_PROPERTIES)
+                .build();
+        AccountProfile profile = new AccountProfile(
+                "acct-1",
+                "Ada Lovelace",
+                "ada@example.test",
+                "reset-token");
+
+        JsonNode publicTree = mapper.readTree(mapper.writerWithView(PublicView.class).writeValueAsString(profile));
+        JsonNode supportTree = mapper.readTree(mapper.writerWithView(SupportView.class).writeValueAsString(profile));
+
+        assertThat(publicTree.get("accountId").stringValue()).isEqualTo("acct-1");
+        assertThat(publicTree.get("displayName").stringValue()).isEqualTo("Ada Lovelace");
+        assertThat(publicTree.has("emailAddress")).isFalse();
+        assertThat(publicTree.has("recoveryToken")).isFalse();
+        assertThat(supportTree.get("emailAddress").stringValue()).isEqualTo("ada@example.test");
+        assertThat(supportTree.has("recoveryToken")).isFalse();
+
+        AccountProfile restored = mapper.readerFor(AccountProfile.class)
+                .withView(SupportView.class)
+                .readValue("""
+                        {
+                          "accountId": "acct-2",
+                          "displayName": "Grace Hopper",
+                          "emailAddress": "grace@example.test",
+                          "recoveryToken": "ignored-by-support-view"
+                        }
+                        """);
+
+        assertThat(restored.accountId).isEqualTo("acct-2");
+        assertThat(restored.displayName).isEqualTo("Grace Hopper");
+        assertThat(restored.emailAddress).isEqualTo("grace@example.test");
+        assertThat(restored.recoveryToken).isNull();
+    }
+
+    @Test
     void recordsOptionalsAndPrettyPrintingUseBuiltInSerializers() throws Exception {
         Receipt receipt = new Receipt(
                 "R-1",
@@ -338,6 +378,39 @@ public class Jackson_databindTest {
         public GiftCard(String code, BigDecimal balance) {
             this.code = code;
             this.balance = balance;
+        }
+    }
+
+    public interface PublicView {
+    }
+
+    public interface SupportView extends PublicView {
+    }
+
+    public interface InternalView extends SupportView {
+    }
+
+    public static class AccountProfile {
+        @JsonView(PublicView.class)
+        public String accountId;
+
+        @JsonView(PublicView.class)
+        public String displayName;
+
+        @JsonView(SupportView.class)
+        public String emailAddress;
+
+        @JsonView(InternalView.class)
+        public String recoveryToken;
+
+        public AccountProfile() {
+        }
+
+        public AccountProfile(String accountId, String displayName, String emailAddress, String recoveryToken) {
+            this.accountId = accountId;
+            this.displayName = displayName;
+            this.emailAddress = emailAddress;
+            this.recoveryToken = recoveryToken;
         }
     }
 
