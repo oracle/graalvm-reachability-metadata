@@ -70,6 +70,17 @@ public class Smallrye_common_osTest {
     }
 
     @Test
+    void allProcessesReportsCommandFromJdkProcessHandleInfo() {
+        ProcessHandle currentHandle = ProcessHandle.current();
+        ProcessInfo currentProcessFromList = Process.getAllProcesses().stream()
+                .filter(process -> process.getId() == currentHandle.pid())
+                .findFirst()
+                .orElseThrow();
+
+        assertThat(currentProcessFromList.getCommand()).isEqualTo(currentHandle.info().command().orElse(null));
+    }
+
+    @Test
     void processInfoConstructorStoresIdAndCommandUnchanged() {
         ProcessInfo processInfo = new ProcessInfo(1234L, "command with arguments");
 
