@@ -15,6 +15,12 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    jvmArgs += [
+        "--add-exports=java.base/sun.nio.ch=ALL-UNNAMED"
+    ]
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
@@ -22,6 +28,13 @@ graalvmNative {
             conditional {
                 userCodeFilterPath = "user-code-filter.json"
             }
+        }
+    }
+    binaries {
+        all {
+            buildArgs.addAll([
+                '--add-exports=java.base/sun.nio.ch=ALL-UNNAMED'
+            ])
         }
     }
 }
