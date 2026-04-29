@@ -49,6 +49,21 @@ public class TypeResolverDynamicAccessTest {
         assertThat(resolvedArrayType.elementType().erasedType()).isEqualTo(String.class);
     }
 
+    @Test
+    void resolvesUnboundGenericArrayMethodReturnTypesToObjectArrays() throws Exception {
+        TypeResolver resolver = new TypeResolver();
+        Type genericArrayType = TypeResolverDynamicAccessTest.class
+                .getMethod("genericArrayMethodReturn")
+                .getGenericReturnType();
+
+        ResolvedType resolvedArrayType = resolver.resolve(TypeBindings.emptyBindings(), genericArrayType);
+
+        assertThat(genericArrayType).isInstanceOf(GenericArrayType.class);
+        assertThat(resolvedArrayType.isArray()).isTrue();
+        assertThat(resolvedArrayType.erasedType()).isEqualTo(Object[].class);
+        assertThat(resolvedArrayType.elementType().erasedType()).isEqualTo(Object.class);
+    }
+
     static class GenericArrayContainer<T> {
         private T[] values;
 
@@ -69,6 +84,10 @@ public class TypeResolverDynamicAccessTest {
             return Integer.valueOf(7);
         }
         return Thread.currentThread().getName();
+    }
+
+    public static <T> T[] genericArrayMethodReturn() {
+        return null;
     }
 
     static final class SyntheticGenericArrayType implements GenericArrayType {
