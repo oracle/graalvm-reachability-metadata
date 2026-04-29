@@ -1,0 +1,488 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2705-80ca29af
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd69d-c77c-7d73-b543-4dae382b7a4b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.glassfish.jersey.bundles.repackaged:jersey-guava:2.23.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.23.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2705-80ca29af/metadata/org.glassfish.jersey.bundles.repackaged/jersey-guava/index.json
+- Entry selector: "metadata-version" = "2.23.2"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "2.23.2".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/glassfish/jersey/bundles/repackaged/jersey-guava/2.23.2/jersey-guava-2.23.2-sources.jar
+- repository-url: https://github.com/javaee/jersey
+- test-code-url: https://github.com/javaee/jersey/tree/2.23.2/tests/e2e
+- documentation-url: https://eclipse-ee4j.github.io/jersey.github.io/documentation/2.23.2/migration.html#mig-2.6-repackaged
+- description: Jersey Guava repackages Google Guava classes under the jersey.repackaged namespace for use inside Jersey. It lets Jersey depend on Guava utilities without forcing applications to use Jersey's bundled Guava version.
+- language: <missing>
+
+Context:
+- Coordinate version: 2.23.2
+- Entry test-version: 2.23.2
+codex
+I’ll inspect the target entry first so I only touch fields that are actually missing, then verify whether `jersey-guava` is language-specific before editing.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.glassfish.jersey.bundles.repackaged/jersey-guava/index.json" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2705-80ca29af
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.23.2",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/jersey/bundles/repackaged/jersey-guava/2.23.2/jersey-guava-2.23.2-sources.jar",
+    "repository-url" : "https://github.com/javaee/jersey",
+    "test-code-url" : "https://github.com/javaee/jersey/tree/2.23.2/tests/e2e",
+    "documentation-url" : "https://eclipse-ee4j.github.io/jersey.github.io/documentation/2.23.2/migration.html#mig-2.6-repackaged",
+    "description" : "Jersey Guava repackages Google Guava classes under the jersey.repackaged namespace for use inside Jersey. It lets Jersey depend on Guava utilities without forcing applications to use Jersey's bundled Guava version.",
+    "tested-versions" : [
+      "2.23.2"
+    ],
+    "allowed-packages" : [
+      "jersey.repackaged.com.google.common"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"2\\.23\\.2\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.glassfish.jersey.bundles.repackaged/jersey-guava/index.json" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2705-80ca29af
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2705-80ca29af
+4:    "metadata-version" : "2.23.2",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/jersey/bundles/repackaged/jersey-guava/2.23.2/jersey-guava-2.23.2-sources.jar",
+6:    "repository-url" : "https://github.com/javaee/jersey",
+7:    "test-code-url" : "https://github.com/javaee/jersey/tree/2.23.2/tests/e2e",
+8:    "documentation-url" : "https://eclipse-ee4j.github.io/jersey.github.io/documentation/2.23.2/migration.html#mig-2.6-repackaged",
+9:    "description" : "Jersey Guava repackages Google Guava classes under the jersey.repackaged namespace for use inside Jersey. It lets Jersey depend on Guava utilities without forcing applications to use Jersey's bundled Guava version.",
+
+web search: 
+web search: Maven Central org.glassfish.jersey.bundles.repackaged jersey-guava 2.23.2 sources jar pom scm
+web search: 
+web search: https://central.sonatype.com/artifact/org.glassfish.jersey.bundles.repackaged/jersey-guava
+web search: 
+web search: 
+web search: 
+web search: https://github.com/javaee/jersey/tree/2.23.2/tests/e2e
+web search: 
+web search: https://eclipse-ee4j.github.io/jersey.github.io/documentation/2.23.2/migration.html
+web search: 
+web search: 'Guava and ASM have been embedded' in https://eclipse-ee4j.github.io/jersey.github.io/documentation/2.23.2/migration.html
+codex
+The target entry already has non-blank source, repository, test, docs, and description values. The only absent field is `language`; I’m checking the artifact/source layout to confirm whether it should stay absent.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/glassfish/jersey/bundles/repackaged/jersey-guava/2.23.2/jersey-guava-2.23.2.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2705-80ca29af
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+    Copyright (c) 2014-2016 Oracle and/or its affiliates. All rights reserved.
+
+    The contents of this file are subject to the terms of either the GNU
+    General Public License Version 2 only ("GPL") or the Common Development
+    and Distribution License("CDDL") (collectively, the "License").  You
+    may not use this file except in compliance with the License.  You can
+    obtain a copy of the License at
+    http://glassfish.java.net/public/CDDL+GPL_1_1.html
+    or packager/legal/LICENSE.txt.  See the License for the specific
+    language governing permissions and limitations under the License.
+
+    When distributing the software, include this License Header Notice in each
+    file and include the License file at packager/legal/LICENSE.txt.
+
+    GPL Classpath Exception:
+    Oracle designates this particular file as subject to the "Classpath"
+    exception as provided by Oracle in the GPL Version 2 section of the License
+    file that accompanied this code.
+
+    Modifications:
+    If applicable, add the following below the License Header, with the fields
+    enclosed by brackets [] replaced by your own identifying information:
+    "Portions Copyright [year] [name of copyright owner]"
+
+    Contributor(s):
+    If you wish your version of this file to be governed by only the CDDL or
+    only the GPL Version 2, indicate your decision by adding "[Contributor]
+    elects to include this software in this distribution under the [CDDL or GPL
+    Version 2] license."  If you don't indicate a single choice of license, a
+    recipient has the option to distribute your version of this file under
+    either the CDDL, the GPL Version 2 or to extend the choice of license to
+    its licensees as provided above.  However, if you add GPL Version 2 code
+    and therefore, elected the GPL Version 2 license, then the option applies
+    only if the new code is made subject to such option by the copyright
+    holder.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
+        <artifactId>project</artifactId>
+        <version>2.23.2</version>
+    </parent>
+
+    <artifactId>jersey-guava</artifactId>
+    <packaging>bundle</packaging>
+    <name>jersey-repackaged-guava</name>
+
+    <description>Jersey Guava Repackaged</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <inherited>true</inherited>
+                <configuration>
+                    <minimizeJar>false</minimizeJar>
+                    <createSourcesJar>true</createSourcesJar>
+                    <shadeSourcesContent>true</shadeSourcesContent>
+                    <artifactSet>
+                        <includes>
+                            <include>com.google.guava:guava:*</include>
+                        </includes>
+                    </artifactSet>
+                    <relocations>
+                        <relocation>
+                            <pattern>com.google.common</pattern>
+                            <shadedPattern>${shade.package}</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.google.thirdparty</pattern>
+                            <shadedPattern>${shade.package.thirdparty}</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <inherited>true</inherited>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>osgi-bundle</id>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <instructions>
+                        <Import-Package>
+                            !${jersey.repackaged.prefix}.com.google.common.*,
+                            !${jersey.repackaged.prefix}.com.google.thirdparty.*,
+                            javax.annotation;resolution:=optional;version="[1.2,2)",
+                            javax.inject;resolution:=optional;version="[1.0,2)",
+                            sun.misc.*;resolution:=optional,
+                            *
+                        </Import-Package>
+                        <Export-Package>
+                            !${jersey.repackaged.prefix}.com.google.common.base.internal,
+                            ${jersey.repackaged.prefix}.com.google.common.*,
+                            ${jersey.repackaged.prefix}.com.google.thirdparty.*
+                        </Export-Package>
+                        <_include>src/main/resources/META-INF/MANIFEST.MF</_include>
+                    </instructions>
+                    <unpackBundle>true</unpackBundle>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>com.google.code.findbugs</groupId>
+                                            <artifactId>jsr305</artifactId>
+                                            <version>2.0.1</version>
+                                            <destFileName>jsr305.jar</destFileName>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.glassfish.hk2.external</groupId>
+                                            <artifactId>javax.inject</artifactId>
+                                            <destFileName>javax.inject.jar</destFileName>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+                                    <overWriteReleases>false</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.fortasoft</groupId>
+                        <artifactId>gradle-maven-plugin</artifactId>
+                        <configuration>
+                            <gradleInstallationDir>${gradleHome}</gradleInstallationDir>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>proguard</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>invoke</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks>
+                                        <task>deleteClasses</task>
+                                        <task>generateProGuardConfig</task>
+                                    </tasks>
+                                    <args>
+                                        <arg>-q</arg>
+                                        <arg>-PabsolutePath=${project.parent.parent.parent.basedir}</arg>
+                                        <arg>-PbuildDir=${project.build.directory}</arg>
+                                        <arg>-PconfFile=${project.build.directory}/proguard.conf</arg>
+                                        <arg>-PshadedPackage=${shade.package}</arg>
+                                    </args>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>renameShaddedJar</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>invoke</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks>
+                                        <task>deleteClasses</task>
+                                        <task>renameShadedJar</task>
+                                    </tasks>
+                                    <args>
+                                        <arg>-q</arg>
+                                        <arg>-PbuildDir=${project.build.directory}</arg>
+                                        <arg>-PjerseyVersion=${jersey.version}</arg>
+                                        <arg>-PshadedPackage=${shade.package}</arg>
+                                    </args>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <inherited>true</inherited>
+                        <configuration>
+                            <outputFile>${project.build.directory}/${project.build.finalName}-shade.jar</outputFile>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.github.wvengen</groupId>
+                        <artifactId>proguard-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+
+exec
+/usr/bin/bash -lc "git status --short -- metadata/org.glassfish.jersey.bundles.repackaged/jersey-guava/index.json && jq '.[] | select(.\"metadata-version\" == \"2.23.2\")' metadata/org.glassfish.jersey.bundles.repackaged/jersey-guava/index.json" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2705-80ca29af
+ succeeded in 0ms:
+?? metadata/org.glassfish.jersey.bundles.repackaged/jersey-guava/index.json
+{
+  "latest": true,
+  "metadata-version": "2.23.2",
+  "source-code-url": "https://repo1.maven.org/maven2/org/glassfish/jersey/bundles/repackaged/jersey-guava/2.23.2/jersey-guava-2.23.2-sources.jar",
+  "repository-url": "https://github.com/javaee/jersey",
+  "test-code-url": "https://github.com/javaee/jersey/tree/2.23.2/tests/e2e",
+  "documentation-url": "https://eclipse-ee4j.github.io/jersey.github.io/documentation/2.23.2/migration.html#mig-2.6-repackaged",
+  "description": "Jersey Guava repackages Google Guava classes under the jersey.repackaged namespace for use inside Jersey. It lets Jersey depend on Guava utilities without forcing applications to use Jersey's bundled Guava version.",
+  "tested-versions": [
+    "2.23.2"
+  ],
+  "allowed-packages": [
+    "jersey.repackaged.com.google.common"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); curl -fsSL -o "$tmpdir/jersey-guava-2.23.2-sources.jar" https://repo1.maven.org/maven2/org/glassfish/jersey/bundles/repackaged/jersey-guava/2.23.2/jersey-guava-2.23.2-sources.jar; jar tf "$tmpdir/jersey-guava-2.23.2-sources.jar" | sed -n '"'1,80p'; rm -rf \""'$tmpdir"' in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2705-80ca29af
+ succeeded in 244ms:
+META-INF/
+META-INF/MANIFEST.MF
+jersey/
+jersey/repackaged/
+jersey/repackaged/com/
+jersey/repackaged/com/google/
+jersey/repackaged/com/google/thirdparty/
+jersey/repackaged/com/google/thirdparty/publicsuffix/
+jersey/repackaged/com/google/thirdparty/publicsuffix/PublicSuffixPatterns.java
+jersey/repackaged/com/google/thirdparty/publicsuffix/TrieParser.java
+jersey/repackaged/com/google/thirdparty/publicsuffix/PublicSuffixType.java
+jersey/repackaged/com/google/common/
+jersey/repackaged/com/google/common/reflect/
+jersey/repackaged/com/google/common/reflect/TypeVisitor.java
+jersey/repackaged/com/google/common/reflect/Types.java
+jersey/repackaged/com/google/common/reflect/TypeToInstanceMap.java
+jersey/repackaged/com/google/common/reflect/AbstractInvocationHandler.java
+jersey/repackaged/com/google/common/reflect/TypeResolver.java
+jersey/repackaged/com/google/common/reflect/Element.java
+jersey/repackaged/com/google/common/reflect/Invokable.java
+jersey/repackaged/com/google/common/reflect/TypeToken.java
+jersey/repackaged/com/google/common/reflect/TypeCapture.java
+jersey/repackaged/com/google/common/reflect/package-info.java
+jersey/repackaged/com/google/common/reflect/Reflection.java
+jersey/repackaged/com/google/common/reflect/MutableTypeToInstanceMap.java
+jersey/repackaged/com/google/common/reflect/Parameter.java
+jersey/repackaged/com/google/common/reflect/TypeParameter.java
+jersey/repackaged/com/google/common/reflect/ImmutableTypeToInstanceMap.java
+jersey/repackaged/com/google/common/reflect/ClassPath.java
+jersey/repackaged/com/google/common/primitives/
+jersey/repackaged/com/google/common/primitives/UnsignedLongs.java
+jersey/repackaged/com/google/common/primitives/Bytes.java
+jersey/repackaged/com/google/common/primitives/UnsignedInteger.java
+jersey/repackaged/com/google/common/primitives/UnsignedBytes.java
+jersey/repackaged/com/google/common/primitives/UnsignedLong.java
+jersey/repackaged/com/google/common/primitives/Booleans.java
+jersey/repackaged/com/google/common/primitives/Chars.java
+jersey/repackaged/com/google/common/primitives/Shorts.java
+jersey/repackaged/com/google/common/primitives/Ints.java
+jersey/repackaged/com/google/common/primitives/UnsignedInts.java
+jersey/repackaged/com/google/common/primitives/SignedBytes.java
+jersey/repackaged/com/google/common/primitives/Longs.java
+jersey/repackaged/com/google/common/primitives/package-info.java
+jersey/repackaged/com/google/common/primitives/Floats.java
+jersey/repackaged/com/google/common/primitives/Doubles.java
+jersey/repackaged/com/google/common/primitives/ParseRequest.java
+jersey/repackaged/com/google/common/primitives/Primitives.java
+jersey/repackaged/com/google/common/net/
+jersey/repackaged/com/google/common/net/MediaType.java
+jersey/repackaged/com/google/common/net/HostAndPort.java
+jersey/repackaged/com/google/common/net/InternetDomainName.java
+jersey/repackaged/com/google/common/net/InetAddresses.java
+jersey/repackaged/com/google/common/net/PercentEscaper.java
+jersey/repackaged/com/google/common/net/UrlEscapers.java
+jersey/repackaged/com/google/common/net/HostSpecifier.java
+jersey/repackaged/com/google/common/net/package-info.java
+jersey/repackaged/com/google/common/net/HttpHeaders.java
+jersey/repackaged/com/google/common/html/
+jersey/repackaged/com/google/common/html/HtmlEscapers.java
+jersey/repackaged/com/google/common/html/package-info.java
+jersey/repackaged/com/google/common/io/
+jersey/repackaged/com/google/common/io/LittleEndianDataOutputStream.java
+jersey/repackaged/com/google/common/io/Files.java
+jersey/repackaged/com/google/common/io/BaseEncoding.java
+jersey/repackaged/com/google/common/io/LineProcessor.java
+jersey/repackaged/com/google/common/io/CharStreams.java
+jersey/repackaged/com/google/common/io/ByteProcessor.java
+jersey/repackaged/com/google/common/io/CountingOutputStream.java
+jersey/repackaged/com/google/common/io/CountingInputStream.java
+jersey/repackaged/com/google/common/io/ByteArrayDataOutput.java
+jersey/repackaged/com/google/common/io/CharSource.java
+jersey/repackaged/com/google/common/io/Resources.java
+jersey/repackaged/com/google/common/io/GwtWorkarounds.java
+jersey/repackaged/com/google/common/io/MultiInputStream.java
+jersey/repackaged/com/google/common/io/ByteSource.java
+jersey/repackaged/com/google/common/io/ByteArrayDataInput.java
+jersey/repackaged/com/google/common/io/CharSink.java
+jersey/repackaged/com/google/common/io/ByteSink.java
+jersey/repackaged/com/google/common/io/Flushables.java
+jersey/repackaged/com/google/common/io/FileBackedOutputStream.java
+
+web search: 
+web search: repo1.maven.org jersey-guava 2.23.2 sources jar Maven
+web search: 
+web search: https://repo1.maven.org/maven2/org/glassfish/jersey/bundles/repackaged/jersey-guava/2.23.2/
+web search: 
+web search: https://eclipse-ee4j.github.io/jersey.github.io/documentation/2.23.2/migration.html
+web search: 
+web search: 'New bundle has been created for Guava' in https://eclipse-ee4j.github.io/jersey.github.io/documentation/2.23.2/migration.html
+web search: 
+web search: https://github.com/javaee/jersey/tree/2.23.2
+web search: 
+web search: 
+codex
+No file edit was needed in [index.json](/home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2705-80ca29af/metadata/org.glassfish.jersey.bundles.repackaged/jersey-guava/index.json:1). The `2.23.2` entry already has non-blank `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description`; `language` remains absent because this is not Kotlin, Groovy, or Scala-specific.
+
+Selected values were confirmed against Maven Central, GitHub tag `2.23.2`, and Jersey 2.23.2 docs: Maven Central publishes the `2.23.2` sources jar, GitHub has the tagged `tests/e2e` suite, and the versioned docs identify `jersey-guava` as the repackaged Guava bundle. ([repo1.maven.org](https://repo1.maven.org/maven2/org/glassfish/jersey/bundles/repackaged/jersey-guava/2.23.2/))
+
+Validation: `jq` parsed the target JSON successfully.
+2026-04-29T00:23:39.903025Z ERROR codex_core::session: failed to record rollout items: thread 019dd69d-c77c-7d73-b543-4dae382b7a4b not found
+tokens used
+68,309
+No file edit was needed in [index.json](/home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2705-80ca29af/metadata/org.glassfish.jersey.bundles.repackaged/jersey-guava/index.json:1). The `2.23.2` entry already has non-blank `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description`; `language` remains absent because this is not Kotlin, Groovy, or Scala-specific.
+
+Selected values were confirmed against Maven Central, GitHub tag `2.23.2`, and Jersey 2.23.2 docs: Maven Central publishes the `2.23.2` sources jar, GitHub has the tagged `tests/e2e` suite, and the versioned docs identify `jersey-guava` as the repackaged Guava bundle. ([repo1.maven.org](https://repo1.maven.org/maven2/org/glassfish/jersey/bundles/repackaged/jersey-guava/2.23.2/))
+
+Validation: `jq` parsed the target JSON successfully.
+Ran agent for org.glassfish.jersey.bundles.repackaged:jersey-guava:2.23.2 (exit 0). Log: /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2705-80ca29af/build/agent-url-discovery-logs/org.glassfish.jersey.bundles.repackaged-jersey-guava-2.23.2.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2705-80ca29af/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 2s
+9 actionable tasks: 1 executed, 8 up-to-date
