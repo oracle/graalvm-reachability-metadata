@@ -165,6 +165,35 @@ public class Geronimo_osgi_locatorTest {
         }
     }
 
+    @Test
+    void jrePropertyFileLookupSupportsStandardPropertiesSyntax() throws Exception {
+        String originalJavaHome = System.getProperty("java.home");
+        System.setProperty("java.home", tempDir.toString());
+        try {
+            Path configurationDirectory = Files.createDirectories(tempDir.resolve("conf"));
+            Files.writeString(configurationDirectory.resolve("advanced-providers.properties"),
+                    "# comments are ignored\n"
+                            + "provider = " + AlphaProvider.class.getName() + "\n"
+                            + "escaped\\ key: " + BetaProvider.class.getName() + "\n"
+                            + "continued = " + GammaProvider.class.getName() + "\\\n"
+                            + "  $Nested\n",
+                    StandardCharsets.UTF_8);
+
+            assertThat(ProviderLocator.lookupByJREPropertyFile("conf/advanced-providers.properties", "provider"))
+                    .isEqualTo(AlphaProvider.class.getName());
+            assertThat(ProviderLocator.lookupByJREPropertyFile("conf/advanced-providers.properties", "escaped key"))
+                    .isEqualTo(BetaProvider.class.getName());
+            assertThat(ProviderLocator.lookupByJREPropertyFile("conf/advanced-providers.properties", "continued"))
+                    .isEqualTo(GammaProvider.class.getName() + "$Nested");
+        } finally {
+            if (originalJavaHome == null) {
+                System.clearProperty("java.home");
+            } else {
+                System.setProperty("java.home", originalJavaHome);
+            }
+        }
+    }
+
     private static void writeServiceDefinition(Path root, Class<?> serviceType, String contents) throws Exception {
         Path servicesDirectory = Files.createDirectories(root.resolve("META-INF").resolve("services"));
         Files.writeString(servicesDirectory.resolve(serviceType.getName()), contents, StandardCharsets.UTF_8);
