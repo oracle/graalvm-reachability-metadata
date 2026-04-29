@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
@@ -131,6 +132,42 @@ public class Opentelemetry_sdk_commonTest {
         assertThat(combined.isSuccess()).isTrue();
         assertThat(CompletableResultCode.ofAll(Collections.emptyList()).isDone()).isTrue();
         assertThat(CompletableResultCode.ofAll(Collections.emptyList()).isSuccess()).isTrue();
+    }
+
+    @Test
+    void completableResultCodeJoinWaitsForAsyncCompletionAndLeavesPendingCodeIncompleteOnTimeout()
+            throws InterruptedException {
+        CompletableResultCode pending = new CompletableResultCode();
+
+        CompletableResultCode returnedFromTimedOutJoin = pending.join(1, TimeUnit.MILLISECONDS);
+
+        assertThat(returnedFromTimedOutJoin).isSameAs(pending);
+        assertThat(pending.isDone()).isFalse();
+        assertThat(pending.isSuccess()).isFalse();
+
+        CompletableResultCode asyncResult = new CompletableResultCode();
+        CountDownLatch completerStarted = new CountDownLatch(1);
+        Thread completer = new Thread(() -> {
+            completerStarted.countDown();
+            try {
+                Thread.sleep(50L);
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
+                asyncResult.fail();
+                return;
+            }
+            asyncResult.succeed();
+        });
+        completer.start();
+        assertThat(completerStarted.await(1, TimeUnit.SECONDS)).isTrue();
+
+        CompletableResultCode returnedFromCompletedJoin = asyncResult.join(5, TimeUnit.SECONDS);
+        completer.join(1_000L);
+
+        assertThat(returnedFromCompletedJoin).isSameAs(asyncResult);
+        assertThat(asyncResult.isDone()).isTrue();
+        assertThat(asyncResult.isSuccess()).isTrue();
+        assertThat(completer.isAlive()).isFalse();
     }
 
     @Test
