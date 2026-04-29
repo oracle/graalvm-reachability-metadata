@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -50,6 +51,7 @@ import org.wildfly.common.net.Inet;
 import org.wildfly.common.net.URIs;
 import org.wildfly.common.ref.Reference;
 import org.wildfly.common.ref.References;
+import org.wildfly.common.string.CompositeCharSequence;
 
 public class Wildfly_commonTest {
     @Test
@@ -333,6 +335,28 @@ public class Wildfly_commonTest {
         assertThat(HashMath.multiplyWrap(0xffff, 0xffff)).isEqualTo((int) ((0xffffL * 0xffffL) ^ ((0xffffL * 0xffffL) >>> 32)));
         assertThat(HashMath.multiHashOrdered(1, 31, 2)).isEqualTo(33);
         assertThat(HashMath.multiHashUnordered(1, 31, 2)).isEqualTo(63);
+    }
+
+    @Test
+    void compositeCharSequencesBehaveAsSingleCharSequence() {
+        CompositeCharSequence sequence = new CompositeCharSequence("Wild", "Fly", " ", new StringBuilder("Common"));
+
+        assertThat(sequence.length()).isEqualTo("WildFly Common".length());
+        assertThat(sequence.charAt(0)).isEqualTo('W');
+        assertThat(sequence.charAt(4)).isEqualTo('F');
+        assertThat(sequence.charAt(8)).isEqualTo('C');
+        assertThat(sequence.toString()).isEqualTo("WildFly Common");
+        assertThat(sequence.subSequence(0, 4).toString()).isEqualTo("Wild");
+        assertThat(sequence.subSequence(4, 8).toString()).isEqualTo("Fly ");
+        assertThat(sequence.subSequence(6, 11).toString()).isEqualTo("y Com");
+        assertThat(sequence.subSequence(3, 3)).isEqualTo("");
+        assertThat(sequence.equals(new StringBuilder("WildFly Common"))).isTrue();
+        assertThat(sequence.hashCode()).isEqualTo("WildFly Common".hashCode());
+
+        CompositeCharSequence fromList = new CompositeCharSequence(Arrays.asList("WildFly", " Common"));
+        assertThat(fromList).isEqualTo(sequence);
+        assertThatThrownBy(() -> sequence.charAt(sequence.length())).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> sequence.subSequence(-1, 2)).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
