@@ -28,12 +28,17 @@ public class ConstantsTest {
 
     @Test
     void experimentalApiChecksCallerBytecodeThroughClassLoaderResource() throws ClassNotFoundException {
+        org.junit.jupiter.api.Assumptions.assumeFalse(isNativeImageRuntime());
         try {
             new GeneratedVisitorLoader().loadAndInitializeVisitor();
         } catch (UnsupportedOperationException | LinkageError classDefinitionUnavailable) {
             assertThatClassDefinitionIsUnavailable(classDefinitionUnavailable);
             assertThatThrownBy(ExperimentalClassVisitor::new).isInstanceOf(IllegalStateException.class);
         }
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static void assertThatClassDefinitionIsUnavailable(Throwable throwable) {
