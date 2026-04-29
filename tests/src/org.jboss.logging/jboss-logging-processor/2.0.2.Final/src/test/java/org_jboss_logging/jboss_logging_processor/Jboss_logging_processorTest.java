@@ -26,12 +26,15 @@ import org.jboss.logging.annotations.Transform;
 import org.jboss.logging.annotations.ValidIdRange;
 import org.jboss.logging.annotations.ValidIdRanges;
 import org.jboss.logging.processor.apt.LoggingToolsProcessor;
+import org.jboss.logging.processor.model.MessageObject;
 import org.jboss.logging.processor.util.Objects;
 import org.jboss.logging.processor.util.Strings;
 import org.jboss.logging.processor.util.VersionComparator;
 import org.jboss.logging.processor.validation.FormatValidator;
 import org.jboss.logging.processor.validation.FormatValidatorFactory;
 import org.jboss.logging.processor.validation.StringFormatValidator;
+import org.jboss.logging.processor.validation.ValidationMessage;
+import org.jboss.logging.processor.validation.ValidationMessageFactory;
 import org.junit.jupiter.api.Test;
 
 public class Jboss_logging_processorTest {
@@ -148,6 +151,22 @@ public class Jboss_logging_processorTest {
     }
 
     @Test
+    void validationMessageFactoryCreatesTypedMessagesForMessageObjects() {
+        MessageObject messageObject = new TestMessageObject("bundleMethod", "bundleReference");
+
+        ValidationMessage error = ValidationMessageFactory.createError(messageObject, "Invalid id %d", 42);
+        ValidationMessage warning = ValidationMessageFactory.createWarning(messageObject, "Range may overlap");
+
+        assertThat(error.type()).isEqualTo(ValidationMessage.Type.ERROR);
+        assertThat(error.getMessageObject()).isSameAs(messageObject);
+        assertThat(error.getMessage()).isEqualTo("Invalid id 42");
+
+        assertThat(warning.type()).isEqualTo(ValidationMessage.Type.WARN);
+        assertThat(warning.getMessageObject()).isSameAs(messageObject);
+        assertThat(warning.getMessage()).isEqualTo("Range may overlap");
+    }
+
+    @Test
     void objectsUtilityPerformsNullChecksAndPrimitiveEquality() {
         String value = "message";
 
@@ -170,5 +189,8 @@ public class Jboss_logging_processorTest {
         assertThat(VersionComparator.compareVersion("2.0.2", "2.0.10")).isLessThan(0);
         assertThat(VersionComparator.compareVersion("2.0.2", "2.0.2")).isZero();
         assertThat(VersionComparator.compareVersion("3.0", "2.99")).isGreaterThan(0);
+    }
+
+    private record TestMessageObject(String name, Object reference) implements MessageObject {
     }
 }
