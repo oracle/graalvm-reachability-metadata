@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.james.mime4j.MimeException;
 import org.apache.james.mime4j.codec.Base64InputStream;
@@ -33,6 +34,7 @@ import org.apache.james.mime4j.stream.RawFieldParser;
 import org.apache.james.mime4j.stream.RecursionMode;
 import org.apache.james.mime4j.util.ByteSequence;
 import org.apache.james.mime4j.util.ContentUtil;
+import org.apache.james.mime4j.util.MimeParameterMapping;
 import org.apache.james.mime4j.util.MimeUtil;
 import org.junit.jupiter.api.Test;
 
@@ -187,6 +189,26 @@ public class Apache_mime4j_coreTest {
                         tuple("charset", "UTF-8"),
                         tuple("format", "flowed"),
                         tuple("name", "report; Q1.txt"));
+    }
+
+    @Test
+    void mimeParameterMappingDecodesExtendedAndContinuedParameters() {
+        MimeParameterMapping parameters = new MimeParameterMapping();
+
+        parameters.addParameter("filename", "fallback.txt");
+        parameters.addParameter("filename*", "UTF-8''caf%C3%A9%20menu.txt");
+        parameters.addParameter("title*0*", "UTF-8''Quarterly%20");
+        parameters.addParameter("title*1*", "caf%C3%A9%20report");
+        parameters.addParameter("Content-Language", "en-US");
+        Map<String, String> resolvedParameters = parameters.getParameters();
+
+        assertThat(parameters.get("filename")).isEqualTo("café menu.txt");
+        assertThat(parameters.get("title")).isEqualTo("Quarterly café report");
+        assertThat(parameters.get("content-language")).isEqualTo("en-US");
+        assertThat(resolvedParameters)
+                .containsEntry("filename", "café menu.txt")
+                .containsEntry("title", "Quarterly café report")
+                .containsEntry("content-language", "en-US");
     }
 
     @Test
