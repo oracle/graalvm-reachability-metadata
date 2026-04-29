@@ -146,6 +146,24 @@ public class Javax_injectTest {
     }
 
     @Test
+    void providerBackedFactoryCreatesIndependentUnscopedInstancesOnDemand() {
+        AtomicInteger issuedCartIds = new AtomicInteger();
+        Provider<ShoppingCart> cartProvider = () -> new ShoppingCart("cart-" + issuedCartIds.incrementAndGet());
+        CheckoutFlow checkoutFlow = new CheckoutFlow(cartProvider);
+
+        Receipt firstReceipt = checkoutFlow.checkout(List.of("book", "pen"));
+        Receipt secondReceipt = checkoutFlow.checkout(List.of("notebook"));
+
+        assertThat(firstReceipt.cartId()).isEqualTo("cart-1");
+        assertThat(firstReceipt.summary()).isEqualTo("book,pen");
+        assertThat(firstReceipt.itemCount()).isEqualTo(2);
+        assertThat(secondReceipt.cartId()).isEqualTo("cart-2");
+        assertThat(secondReceipt.summary()).isEqualTo("notebook");
+        assertThat(secondReceipt.itemCount()).isEqualTo(1);
+        assertThat(issuedCartIds).hasValue(2);
+    }
+
+    @Test
     void singletonScopedProviderSharesOneLazyInstanceAcrossConsumers() {
         AtomicInteger createdInstances = new AtomicInteger();
         Provider<SharedCounter> counterProvider = new SharedCounterProvider(createdInstances);
@@ -431,6 +449,56 @@ public class Javax_injectTest {
         private String describe(String orderId) {
             return "invoice for " + orderServiceProvider.get().status(orderId) + " " + orderId;
         }
+    }
+
+    private static final class CheckoutFlow {
+        private final Provider<ShoppingCart> cartProvider;
+
+        @Inject
+        private CheckoutFlow(Provider<ShoppingCart> cartProvider) {
+            this.cartProvider = cartProvider;
+        }
+
+        private Receipt checkout(List<String> items) {
+            ShoppingCart cart = cartProvider.get();
+            for (String item : items) {
+                cart.add(item);
+            }
+            return new Receipt(cart.id(), cart.itemCount(), cart.summary());
+        }
+    }
+
+    private static final class ShoppingCart {
+        private final String id;
+        private final StringBuilder summary = new StringBuilder();
+        private int itemCount;
+
+        private ShoppingCart(String id) {
+            this.id = id;
+        }
+
+        private void add(String item) {
+            if (summary.length() > 0) {
+                summary.append(',');
+            }
+            summary.append(item);
+            itemCount++;
+        }
+
+        private String id() {
+            return id;
+        }
+
+        private int itemCount() {
+            return itemCount;
+        }
+
+        private String summary() {
+            return summary.toString();
+        }
+    }
+
+    private record Receipt(String cartId, int itemCount, String summary) {
     }
 
     @Singleton
