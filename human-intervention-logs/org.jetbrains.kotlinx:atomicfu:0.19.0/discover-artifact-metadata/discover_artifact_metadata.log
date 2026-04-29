@@ -1,0 +1,2167 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd6f0-0491-7180-b0b6-af04e990afda
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jetbrains.kotlinx:atomicfu:0.19.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "0.19.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json
+- Set "coordinates" to "org.jetbrains.kotlinx:atomicfu:0.19.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream tag, then update the JSON in place with exact-version URLs where they exist.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json && sed -n '1,160p' build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+-rw-rw-r-- 1 vjovanov vjovanov 62 Apr 29 03:52 build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json
+{
+  "coordinates" : "org.jetbrains.kotlinx:atomicfu:0.19.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"org.jetbrains.kotlinx:atomicfu|atomicfu\" build/discovered-artifact-metadata metadata tests -g '*.json' -g '*.java' -g '*.md'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json:2:  "coordinates" : "org.jetbrains.kotlinx:atomicfu:0.19.0"
+
+codex
+The local metadata file only has coordinates, and there are no nearby entries for atomicfu to copy from. I’m checking Maven first because the request prefers Maven-hosted source or test artifacts when available, then I’ll use the upstream release tag for anything Maven does not publish.
+web search: 
+web search: Maven Central org.jetbrains.kotlinx atomicfu 0.19.0 sources javadoc tests
+web search: 
+web search: https://central.sonatype.com/artifact/org.jetbrains.kotlinx/atomicfu/0.19.0
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu-jvm/0.19.0/' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jetbrains/kotlinx/atomicfu-jvm/0.19.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jetbrains/kotlinx/atomicfu-jvm/0.19.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="atomicfu-jvm-0.19.0-javadoc.jar" title="atomicfu-jvm-0.19.0-javadoc.jar">atomicfu-jvm-0.19.0-javadoc.jar</a>                   2023-01-03 09:42       261      
+<a href="atomicfu-jvm-0.19.0-javadoc.jar.asc" title="atomicfu-jvm-0.19.0-javadoc.jar.asc">atomicfu-jvm-0.19.0-javadoc.jar.asc</a>               2023-01-03 09:42       650      
+<a href="atomicfu-jvm-0.19.0-javadoc.jar.asc.md5" title="atomicfu-jvm-0.19.0-javadoc.jar.asc.md5">atomicfu-jvm-0.19.0-javadoc.jar.asc.md5</a>           2023-01-03 09:42        32      
+<a href="atomicfu-jvm-0.19.0-javadoc.jar.asc.sha1" title="atomicfu-jvm-0.19.0-javadoc.jar.asc.sha1">atomicfu-jvm-0.19.0-javadoc.jar.asc.sha1</a>          2023-01-03 09:42        40      
+<a href="atomicfu-jvm-0.19.0-javadoc.jar.md5" title="atomicfu-jvm-0.19.0-javadoc.jar.md5">atomicfu-jvm-0.19.0-javadoc.jar.md5</a>               2023-01-03 09:42        32      
+<a href="atomicfu-jvm-0.19.0-javadoc.jar.sha1" title="atomicfu-jvm-0.19.0-javadoc.jar.sha1">atomicfu-jvm-0.19.0-javadoc.jar.sha1</a>              2023-01-03 09:42        40      
+<a href="atomicfu-jvm-0.19.0-sources.jar" title="atomicfu-jvm-0.19.0-sources.jar">atomicfu-jvm-0.19.0-sources.jar</a>                   2023-01-03 09:42     10131      
+<a href="atomicfu-jvm-0.19.0-sources.jar.asc" title="atomicfu-jvm-0.19.0-sources.jar.asc">atomicfu-jvm-0.19.0-sources.jar.asc</a>               2023-01-03 09:42       650      
+<a href="atomicfu-jvm-0.19.0-sources.jar.asc.md5" title="atomicfu-jvm-0.19.0-sources.jar.asc.md5">atomicfu-jvm-0.19.0-sources.jar.asc.md5</a>           2023-01-03 09:42        32      
+<a href="atomicfu-jvm-0.19.0-sources.jar.asc.sha1" title="atomicfu-jvm-0.19.0-sources.jar.asc.sha1">atomicfu-jvm-0.19.0-sources.jar.asc.sha1</a>          2023-01-03 09:42        40      
+<a href="atomicfu-jvm-0.19.0-sources.jar.md5" title="atomicfu-jvm-0.19.0-sources.jar.md5">atomicfu-jvm-0.19.0-sources.jar.md5</a>               2023-01-03 09:42        32      
+<a href="atomicfu-jvm-0.19.0-sources.jar.sha1" title="atomicfu-jvm-0.19.0-sources.jar.sha1">atomicfu-jvm-0.19.0-sources.jar.sha1</a>              2023-01-03 09:42        40      
+<a href="atomicfu-jvm-0.19.0.jar" title="atomicfu-jvm-0.19.0.jar">atomicfu-jvm-0.19.0.jar</a>                           2023-01-03 09:42     36127      
+<a href="atomicfu-jvm-0.19.0.jar.asc" title="atomicfu-jvm-0.19.0.jar.asc">atomicfu-jvm-0.19.0.jar.asc</a>                       2023-01-03 09:42       650      
+<a href="atomicfu-jvm-0.19.0.jar.asc.md5" title="atomicfu-jvm-0.19.0.jar.asc.md5">atomicfu-jvm-0.19.0.jar.asc.md5</a>                   2023-01-03 09:42        32      
+<a href="atomicfu-jvm-0.19.0.jar.asc.sha1" title="atomicfu-jvm-0.19.0.jar.asc.sha1">atomicfu-jvm-0.19.0.jar.asc.sha1</a>                  2023-01-03 09:42        40      
+<a href="atomicfu-jvm-0.19.0.jar.md5" title="atomicfu-jvm-0.19.0.jar.md5">atomicfu-jvm-0.19.0.jar.md5</a>                       2023-01-03 09:42        32      
+<a href="atomicfu-jvm-0.19.0.jar.sha1" title="atomicfu-jvm-0.19.0.jar.sha1">atomicfu-jvm-0.19.0.jar.sha1</a>                      2023-01-03 09:42        40      
+<a href="atomicfu-jvm-0.19.0.module" title="atomicfu-jvm-0.19.0.module">atomicfu-jvm-0.19.0.module</a>                        2023-01-03 09:42      2337      
+<a href="atomicfu-jvm-0.19.0.module.asc" title="atomicfu-jvm-0.19.0.module.asc">atomicfu-jvm-0.19.0.module.asc</a>                    2023-01-03 09:42       650      
+<a href="atomicfu-jvm-0.19.0.module.asc.md5" title="atomicfu-jvm-0.19.0.module.asc.md5">atomicfu-jvm-0.19.0.module.asc.md5</a>                2023-01-03 09:42        32      
+<a href="atomicfu-jvm-0.19.0.module.asc.sha1" title="atomicfu-jvm-0.19.0.module.asc.sha1">atomicfu-jvm-0.19.0.module.asc.sha1</a>               2023-01-03 09:42        40      
+<a href="atomicfu-jvm-0.19.0.module.md5" title="atomicfu-jvm-0.19.0.module.md5">atomicfu-jvm-0.19.0.module.md5</a>                    2023-01-03 09:42        32      
+<a href="atomicfu-jvm-0.19.0.module.sha1" title="atomicfu-jvm-0.19.0.module.sha1">atomicfu-jvm-0.19.0.module.sha1</a>                   2023-01-03 09:42        40      
+<a href="atomicfu-jvm-0.19.0.pom" title="atomicfu-jvm-0.19.0.pom">atomicfu-jvm-0.19.0.pom</a>                           2023-01-03 09:42      1833      
+<a href="atomicfu-jvm-0.19.0.pom.asc" title="atomicfu-jvm-0.19.0.pom.asc">atomicfu-jvm-0.19.0.pom.asc</a>                       2023-01-03 09:42       650      
+<a href="atomicfu-jvm-0.19.0.pom.asc.md5" title="atomicfu-jvm-0.19.0.pom.asc.md5">atomicfu-jvm-0.19.0.pom.asc.md5</a>                   2023-01-03 09:42        32      
+<a href="atomicfu-jvm-0.19.0.pom.asc.sha1" title="atomicfu-jvm-0.19.0.pom.asc.sha1">atomicfu-jvm-0.19.0.pom.asc.sha1</a>                  2023-01-03 09:42        40      
+<a href="atomicfu-jvm-0.19.0.pom.md5" title="atomicfu-jvm-0.19.0.pom.md5">atomicfu-jvm-0.19.0.pom.md5</a>                       2023-01-03 09:42        32      
+<a href="atomicfu-jvm-0.19.0.pom.sha1" title="atomicfu-jvm-0.19.0.pom.sha1">atomicfu-jvm-0.19.0.pom.sha1</a>                      2023-01-03 09:42        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/Kotlin/kotlinx-atomicfu/0.19.0/gradle.properties && curl -fsSL https://raw.githubusercontent.com/Kotlin/kotlinx-atomicfu/0.19.0/build.gradle | sed -n '1,140p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 219ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jetbrains/kotlinx/atomicfu/0.19.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jetbrains/kotlinx/atomicfu/0.19.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="atomicfu-0.19.0-all.jar" title="atomicfu-0.19.0-all.jar">atomicfu-0.19.0-all.jar</a>                           2023-01-03 09:42     15986      
+<a href="atomicfu-0.19.0-all.jar.asc" title="atomicfu-0.19.0-all.jar.asc">atomicfu-0.19.0-all.jar.asc</a>                       2023-01-03 09:42       650      
+<a href="atomicfu-0.19.0-all.jar.asc.md5" title="atomicfu-0.19.0-all.jar.asc.md5">atomicfu-0.19.0-all.jar.asc.md5</a>                   2023-01-03 09:42        32      
+<a href="atomicfu-0.19.0-all.jar.asc.sha1" title="atomicfu-0.19.0-all.jar.asc.sha1">atomicfu-0.19.0-all.jar.asc.sha1</a>                  2023-01-03 09:42        40      
+<a href="atomicfu-0.19.0-all.jar.md5" title="atomicfu-0.19.0-all.jar.md5">atomicfu-0.19.0-all.jar.md5</a>                       2023-01-03 09:42        32      
+<a href="atomicfu-0.19.0-all.jar.sha1" title="atomicfu-0.19.0-all.jar.sha1">atomicfu-0.19.0-all.jar.sha1</a>                      2023-01-03 09:42        40      
+<a href="atomicfu-0.19.0-kotlin-tooling-metadata.json" title="atomicfu-0.19.0-kotlin-tooling-metadata.json">atomicfu-0.19.0-kotlin-tooling-metadata.json</a>      2023-01-03 09:42      5803      
+<a href="atomicfu-0.19.0-kotlin-tooling-metadata.json.asc" title="atomicfu-0.19.0-kotlin-tooling-metadata.json.asc">atomicfu-0.19.0-kotlin-tooling-metadata.json....</a>  2023-01-03 09:42       650      
+<a href="atomicfu-0.19.0-kotlin-tooling-metadata.json.asc.md5" title="atomicfu-0.19.0-kotlin-tooling-metadata.json.asc.md5">atomicfu-0.19.0-kotlin-tooling-metadata.json....</a>  2023-01-03 09:42        32      
+<a href="atomicfu-0.19.0-kotlin-tooling-metadata.json.asc.sha1" title="atomicfu-0.19.0-kotlin-tooling-metadata.json.asc.sha1">atomicfu-0.19.0-kotlin-tooling-metadata.json....</a>  2023-01-03 09:42        40      
+<a href="atomicfu-0.19.0-kotlin-tooling-metadata.json.md5" title="atomicfu-0.19.0-kotlin-tooling-metadata.json.md5">atomicfu-0.19.0-kotlin-tooling-metadata.json....</a>  2023-01-03 09:42        32      
+<a href="atomicfu-0.19.0-kotlin-tooling-metadata.json.sha1" title="atomicfu-0.19.0-kotlin-tooling-metadata.json.sha1">atomicfu-0.19.0-kotlin-tooling-metadata.json....</a>  2023-01-03 09:42        40      
+<a href="atomicfu-0.19.0-sources.jar" title="atomicfu-0.19.0-sources.jar">atomicfu-0.19.0-sources.jar</a>                       2023-01-03 09:42     46021      
+<a href="atomicfu-0.19.0-sources.jar.asc" title="atomicfu-0.19.0-sources.jar.asc">atomicfu-0.19.0-sources.jar.asc</a>                   2023-01-03 09:42       650      
+<a href="atomicfu-0.19.0-sources.jar.asc.md5" title="atomicfu-0.19.0-sources.jar.asc.md5">atomicfu-0.19.0-sources.jar.asc.md5</a>               2023-01-03 09:42        32      
+<a href="atomicfu-0.19.0-sources.jar.asc.sha1" title="atomicfu-0.19.0-sources.jar.asc.sha1">atomicfu-0.19.0-sources.jar.asc.sha1</a>              2023-01-03 09:42        40      
+<a href="atomicfu-0.19.0-sources.jar.md5" title="atomicfu-0.19.0-sources.jar.md5">atomicfu-0.19.0-sources.jar.md5</a>                   2023-01-03 09:42        32      
+<a href="atomicfu-0.19.0-sources.jar.sha1" title="atomicfu-0.19.0-sources.jar.sha1">atomicfu-0.19.0-sources.jar.sha1</a>                  2023-01-03 09:42        40      
+<a href="atomicfu-0.19.0.jar" title="atomicfu-0.19.0.jar">atomicfu-0.19.0.jar</a>                               2023-01-03 09:42      9299      
+<a href="atomicfu-0.19.0.jar.asc" title="atomicfu-0.19.0.jar.asc">atomicfu-0.19.0.jar.asc</a>                           2023-01-03 09:42       650      
+<a href="atomicfu-0.19.0.jar.asc.md5" title="atomicfu-0.19.0.jar.asc.md5">atomicfu-0.19.0.jar.asc.md5</a>                       2023-01-03 09:42        32      
+<a href="atomicfu-0.19.0.jar.asc.sha1" title="atomicfu-0.19.0.jar.asc.sha1">atomicfu-0.19.0.jar.asc.sha1</a>                      2023-01-03 09:42        40      
+<a href="atomicfu-0.19.0.jar.md5" title="atomicfu-0.19.0.jar.md5">atomicfu-0.19.0.jar.md5</a>                           2023-01-03 09:42        32      
+<a href="atomicfu-0.19.0.jar.sha1" title="atomicfu-0.19.0.jar.sha1">atomicfu-0.19.0.jar.sha1</a>                          2023-01-03 09:42        40      
+<a href="atomicfu-0.19.0.module" title="atomicfu-0.19.0.module">atomicfu-0.19.0.module</a>                            2023-01-03 09:42     20934      
+<a href="atomicfu-0.19.0.module.asc" title="atomicfu-0.19.0.module.asc">atomicfu-0.19.0.module.asc</a>                        2023-01-03 09:42       650      
+<a href="atomicfu-0.19.0.module.asc.md5" title="atomicfu-0.19.0.module.asc.md5">atomicfu-0.19.0.module.asc.md5</a>                    2023-01-03 09:42        32      
+<a href="atomicfu-0.19.0.module.asc.sha1" title="atomicfu-0.19.0.module.asc.sha1">atomicfu-0.19.0.module.asc.sha1</a>                   2023-01-03 09:42        40      
+<a href="atomicfu-0.19.0.module.md5" title="atomicfu-0.19.0.module.md5">atomicfu-0.19.0.module.md5</a>                        2023-01-03 09:42        32      
+<a href="atomicfu-0.19.0.module.sha1" title="atomicfu-0.19.0.module.sha1">atomicfu-0.19.0.module.sha1</a>                       2023-01-03 09:42        40      
+<a href="atomicfu-0.19.0.pom" title="atomicfu-0.19.0.pom">atomicfu-0.19.0.pom</a>                               2023-01-03 09:42      1666      
+<a href="atomicfu-0.19.0.pom.asc" title="atomicfu-0.19.0.pom.asc">atomicfu-0.19.0.pom.asc</a>                           2023-01-03 09:42       650      
+<a href="atomicfu-0.19.0.pom.asc.md5" title="atomicfu-0.19.0.pom.asc.md5">atomicfu-0.19.0.pom.asc.md5</a>                       2023-01-03 09:42        32      
+<a href="atomicfu-0.19.0.pom.asc.sha1" title="atomicfu-0.19.0.pom.asc.sha1">atomicfu-0.19.0.pom.asc.sha1</a>                      2023-01-03 09:42        40      
+<a href="atomicfu-0.19.0.pom.md5" title="atomicfu-0.19.0.pom.md5">atomicfu-0.19.0.pom.md5</a>                           2023-01-03 09:42        32      
+<a href="atomicfu-0.19.0.pom.sha1" title="atomicfu-0.19.0.pom.sha1">atomicfu-0.19.0.pom.sha1</a>                          2023-01-03 09:42        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 358ms:
+#
+# Copyright 2016-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+#
+
+version=0.19.0-SNAPSHOT
+group=org.jetbrains.kotlinx
+
+kotlin_version=1.8.0
+
+asm_version=9.3
+slf4j_version=1.8.0-alpha2
+junit_version=4.12
+kotlinx_metadata_version=0.5.0
+
+maven_version=3.5.3
+
+gradle_node_version=1.2.0
+node_version=8.11.1
+npm_version=5.7.1
+mocha_version=4.1.0
+mocha_headless_chrome_version=1.8.2
+mocha_teamcity_reporter_version=2.2.2
+source_map_support_version=0.5.3
+
+kotlin.incremental.multiplatform=true
+kotlin.native.ignoreDisabledTargets=true
+
+kotlin.js.compiler=both
+
+kotlin.mpp.enableGranularSourceSetsMetadata=true
+kotlin.mpp.enableCompatibilityMetadataVariant=true
+
+# Workaround for Bintray treating .sha512 files as artifacts
+# https://github.com/gradle/gradle/issues/11412
+systemProp.org.gradle.internal.publish.checksums.insecure=true
+/*
+ * Copyright 2016-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
+import org.jetbrains.kotlin.konan.target.HostManager
+
+buildscript {
+
+
+    /*
+     * These property group is used to build kotlinx.atomicfu against Kotlin compiler snapshot.
+     * How does it work:
+     * When build_snapshot_train is set to true, kotlin_version property is overridden with kotlin_snapshot_version,
+     * Additionally, mavenLocal and Sonatype snapshots are added to repository list (the former is required for AFU and public
+     * the latter is required for compiler snapshots).
+     * DO NOT change the name of these properties without adapting kotlinx.train build chain.
+     */
+    def prop = rootProject.properties['build_snapshot_train']
+    ext.build_snapshot_train = prop != null && prop != ""
+    if (build_snapshot_train) {
+        ext.kotlin_version = rootProject.properties['kotlin_snapshot_version']
+        if (kotlin_version == null) {
+            throw new IllegalArgumentException("'kotlin_snapshot_version' should be defined when building with snapshot compiler")
+        }
+        repositories {
+            mavenLocal()
+            maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        }
+    }
+    // These two flags are enabled in train builds for JVM IR compiler testing
+    ext.jvm_ir_enabled = rootProject.properties['enable_jvm_ir'] != null
+    ext.native_targets_enabled = rootProject.properties['disable_native_targets'] == null
+
+
+    repositories {
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+        KotlinAggregateBuild.addDevRepositoryIfEnabled(delegate, project)
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.moowork.gradle:gradle-node-plugin:$gradle_node_version"
+    }
+}
+
+allprojects {
+    // the only place where HostManager could be instantiated
+    project.ext.hostManager = new HostManager()
+    if (build_snapshot_train) {
+        kotlin_version = rootProject.properties['kotlin_snapshot_version']
+        repositories {
+            mavenLocal()
+            maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        }
+    }
+
+    logger.info("Using Kotlin compiler $kotlin_version for $it")
+
+    repositories {
+        mavenCentral()
+        KotlinAggregateBuild.addDevRepositoryIfEnabled(delegate, project)
+    }
+
+    def deployVersion = properties['DeployVersion']
+    if (deployVersion != null) version = deployVersion
+
+    // 'atomicfu-native' check is a kludge so that existing YouTrack config works, todo: remove
+    if (project != rootProject && project.name != 'atomicfu-native') {
+        apply from: rootProject.file("gradle/publishing.gradle")
+    }
+
+    // This fixes "org.gradle.jvm.version" in Gradle metadata
+    plugins.withType(JavaPlugin) {
+        java {
+            sourceCompatibility = JavaVersion.VERSION_1_8
+            targetCompatibility = JavaVersion.VERSION_1_8
+        }
+    }
+}
+
+logger.info("Using Kotlin compiler version: $org.jetbrains.kotlin.config.KotlinCompilerVersion.VERSION")
+if (build_snapshot_train) {
+    afterEvaluate {
+        println "Manifest of kotlin-compiler-embeddable.jar for atomicfu"
+        configure(subprojects.findAll { it.name == "atomicfu" }) {
+            configurations.matching { it.name == "kotlinCompilerClasspath" }.all {
+                resolvedConfiguration.getFiles().findAll { it.name.contains("kotlin-compiler-embeddable") }.each {
+                    def manifest = zipTree(it).matching {
+                        include 'META-INF/MANIFEST.MF'
+                    }.getFiles().first()
+
+                    manifest.readLines().each {
+                        println it
+                    }
+                }
+            }
+        }
+    }
+}
+
+// main deployment task
+task deploy(dependsOn: getTasksByName("publish", true) + getTasksByName("publishNpm", true))
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0.module | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 0ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "org.jetbrains.kotlinx",
+    "module": "atomicfu",
+    "version": "0.19.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "6.8.3",
+      "buildId": "72gvl2qv5bhrnojfjqz5bvz7zq"
+    }
+  },
+  "variants": [
+    {
+      "name": "metadataApiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "kotlin-metadata",
+        "org.jetbrains.kotlin.platform.type": "common"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-common",
+          "version": {
+            "requires": "1.8.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "atomicfu-metadata-0.19.0-all.jar",
+          "url": "atomicfu-0.19.0-all.jar",
+          "size": 15986,
+          "sha512": "f7578f9702ff4b2682ec7f8948f8eb7d236ebb66bd6369d4fbdf87af1973b127ba9dfbfa8a2125db96e55919f10a3cc727e603f950713480cc8f627fca475fac",
+          "sha256": "3a0c2743b59f575affaf47e35c73ee22a2caecb6594a8948356ecd3e88564cc3",
+          "sha1": "b32ab640b88c2a92dde0b86daa3419d6a54cf15b",
+          "md5": "c886b838e9b3eb675429ec9c9096abcd"
+        }
+      ]
+    },
+    {
+      "name": "commonMainMetadataElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.platform.type": "common"
+      },
+      "files": [
+        {
+          "name": "atomicfu-0.19.0.jar",
+          "url": "atomicfu-0.19.0.jar",
+          "size": 9299,
+          "sha512": "1674ba501e155e1a3d8956fd3d5626a7702d17614a5ca09b7b234ca05d27e46b097f33e3c642c6eb1e7d2dfabc9d29720a0e0dafe01429acbb04a2907b45db70",
+          "sha256": "04026ac77cef64475efde9c2385553f3045cd98a0c9934babbcc17dbddedf577",
+          "sha1": "e5f5ffea9545f86afb00356a6caf5b1e7ad6be58",
+          "md5": "bb65574ab9b603647393b19649c03781"
+        }
+      ]
+    },
+    {
+      "name": "iosArm32ApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.native.target": "ios_arm32",
+        "org.jetbrains.kotlin.platform.type": "native"
+      },
+      "available-at": {
+        "url": "../../atomicfu-iosarm32/0.19.0/atomicfu-iosarm32-0.19.0.module",
+        "group": "org.jetbrains.kotlinx",
+        "module": "atomicfu-iosarm32",
+        "version": "0.19.0"
+      }
+    },
+    {
+      "name": "iosArm32MetadataElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "kotlin-metadata",
+        "org.jetbrains.kotlin.native.target": "ios_arm32",
+        "org.jetbrains.kotlin.platform.type": "native"
+      },
+      "available-at": {
+        "url": "../../atomicfu-iosarm32/0.19.0/atomicfu-iosarm32-0.19.0.module",
+        "group": "org.jetbrains.kotlinx",
+        "module": "atomicfu-iosarm32",
+        "version": "0.19.0"
+      }
+    },
+    {
+      "name": "iosArm64ApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.native.target": "ios_arm64",
+        "org.jetbrains.kotlin.platform.type": "native"
+      },
+      "available-at": {
+        "url": "../../atomicfu-iosarm64/0.19.0/atomicfu-iosarm64-0.19.0.module",
+        "group": "org.jetbrains.kotlinx",
+        "module": "atomicfu-iosarm64",
+        "version": "0.19.0"
+      }
+    },
+    {
+      "name": "iosArm64MetadataElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "kotlin-metadata",
+        "org.jetbrains.kotlin.native.target": "ios_arm64",
+        "org.jetbrains.kotlin.platform.type": "native"
+      },
+      "available-at": {
+        "url": "../../atomicfu-iosarm64/0.19.0/atomicfu-iosarm64-0.19.0.module",
+        "group": "org.jetbrains.kotlinx",
+        "module": "atomicfu-iosarm64",
+        "version": "0.19.0"
+      }
+    },
+    {
+      "name": "iosSimulatorArm64ApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.native.target": "ios_simulator_arm64",
+        "org.jetbrains.kotlin.platform.type": "native"
+      },
+      "available-at": {
+        "url": "../../atomicfu-iossimulatorarm64/0.19.0/atomicfu-iossimulatorarm64-0.19.0.module",
+        "group": "org.jetbrains.kotlinx",
+        "module": "atomicfu-iossimulatorarm64",
+        "version": "0.19.0"
+      }
+    },
+    {
+      "name": "iosSimulatorArm64MetadataElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "kotlin-metadata",
+        "org.jetbrains.kotlin.native.target": "ios_simulator_arm64",
+        "org.jetbrains.kotlin.platform.type": "native"
+      },
+      "available-at": {
+        "url": "../../atomicfu-iossimulatorarm64/0.19.0/atomicfu-iossimulatorarm64-0.19.0.module",
+        "group": "org.jetbrains.kotlinx",
+        "module": "atomicfu-iossimulatorarm64",
+        "version": "0.19.0"
+      }
+    },
+    {
+      "name": "iosX64ApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.native.target": "ios_x64",
+        "org.jetbrains.kotlin.platform.type": "native"
+      },
+      "available-at": {
+        "url": "../../atomicfu-iosx64/0.19.0/atomicfu-iosx64-0.19.0.module",
+        "group": "org.jetbrains.kotlinx",
+        "module": "atomicfu-iosx64",
+        "version": "0.19.0"
+      }
+    },
+    {
+      "name": "iosX64MetadataElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "kotlin-metadata",
+        "org.jetbrains.kotlin.native.target": "ios_x64",
+        "org.jetbrains.kotlin.platform.type": "native"
+      },
+      "available-at": {
+        "url": "../../atomicfu-iosx64/0.19.0/atomicfu-iosx64-0.19.0.module",
+        "group": "org.jetbrains.kotlinx",
+        "module": "atomicfu-iosx64",
+        "version": "0.19.0"
+      }
+    },
+    {
+      "name": "jsLegacyApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.js.compiler": "legacy",
+        "org.jetbrains.kotlin.platform.type": "js"
+      },
+      "available-at": {
+        "url": "../../atomicfu-js/0.19.0/atomicfu-js-0.19.0.module",
+        "group": "org.jetbrains.kotlinx",
+        "module": "atomicfu-js",
+        "version": "0.19.0"
+      }
+    },
+    {
+      "name": "jsLegacyRuntimeElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "kotlin-runtime",
+        "org.jetbrains.kotlin.js.compiler": "legacy",
+        "org.jetbrains.kotlin.platform.type": "js"
+      },
+      "available-at": {
+        "url": "../../atomicfu-js/0.19.0/atomicfu-js-0.19.0.module",
+        "group": "org.jetbrains.kotlinx",
+        "module": "atomicfu-js",
+        "version": "0.19.0"
+      }
+    },
+    {
+      "name": "jsIrApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.js.compiler": "ir",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0.pom' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jetbrains.kotlinx</groupId>
+  <artifactId>atomicfu</artifactId>
+  <version>0.19.0</version>
+  <name>atomicfu</name>
+  <description>AtomicFU utilities</description>
+  <url>https://github.com/Kotlin/kotlinx.atomicfu</url>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>JetBrains</id>
+      <name>JetBrains Team</name>
+      <organization>JetBrains</organization>
+      <organizationUrl>https://www.jetbrains.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <url>https://github.com/Kotlin/kotlinx.atomicfu</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>atomicfu-jvm</artifactId>
+      <version>0.19.0</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+  <packaging>pom</packaging>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/Kotlin/kotlinx-atomicfu/0.19.0/README.md | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents?ref=0.19.0' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 167ms:
+# AtomicFU 
+
+[![Kotlin Beta](https://kotl.in/badges/beta.svg)](https://kotlinlang.org/docs/components-stability.html)
+[![JetBrains official project](https://jb.gg/badges/official.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
+[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.kotlinx/atomicfu)](https://search.maven.org/artifact/org.jetbrains.kotlinx/atomicfu/0.19.0/pom)
+
+>Note on Beta status: the plugin is in its active development phase and changes from release to release.
+>We do provide a compatibility of atomicfu-transformed artifacts between releases, but we do not provide 
+>strict compatibility guarantees on plugin API and its general stability between Kotlin versions.
+
+**Atomicfu** is a multiplatform library that provides the idiomatic and effective way of using atomic operations in Kotlin.
+
+## Table of contents
+- [Features](#features)
+- [Example](#example)
+- [Quickstart](#quickstart)
+  - [Apply plugin to a project](#apply-plugin)
+    - [Gradle configuration](#gradle-configuration)
+    - [Maven configuration](#maven-configuration)
+- [Usage constraints](#usage-constraints)  
+- [Transformation modes](#transformation-modes)
+  - [Atomicfu compiler plugin](#atomicfu-compiler-plugin)
+- [Options for post-compilation transformation](#options-for-post-compilation-transformation) 
+  - [JVM options](#jvm-options)
+  - [JS options](#js-options)
+- [More features](#more-features)
+  - [Arrays of atomic values](#arrays-of-atomic-values)
+  - [User-defined extensions on atomics](#user-defined-extensions-on-atomics)
+  - [Locks](#locks)
+  - [Tracing operations](#tracing-operations)
+- [Kotlin/Native support](#kotlin-native-support)
+
+
+## Features
+
+* Code it like a boxed value `atomic(0)`, but run it in production efficiently:
+  * as `java.util.concurrent.atomic.AtomicXxxFieldUpdater` on Kotlin/JVM 
+  * as a plain unboxed value on Kotlin/JS
+* Multiplatform: write common Kotlin code with atomics that compiles for Kotlin JVM, JS, and Native backends:
+    * Compile-only dependency for JVM and JS (no runtime dependencies)
+    * Compile and runtime dependency for Kotlin/Native 
+* Use Kotlin-specific extensions (e.g. inline `loop`, `update`, `updateAndGet` functions).
+* Use atomic arrays, user-defined extensions on atomics and locks (see [more features](#more-features)).
+* [Tracing operations](#tracing-operations) for debugging.
+  
+## Example
+
+Let us declare a `top` variable for a lock-free stack implementation:
+
+```kotlin
+import kotlinx.atomicfu.* // import top-level functions from kotlinx.atomicfu
+
+private val top = atomic<Node?>(null) 
+```
+
+Use `top.value` to perform volatile reads and writes:
+
+```kotlin
+fun isEmpty() = top.value == null  // volatile read
+fun clear() { top.value = null }   // volatile write
+``` 
+
+Use `compareAndSet` function directly:
+
+```kotlin
+if (top.compareAndSet(expect, update)) ... 
+```
+
+Use higher-level looping primitives (inline extensions), for example:
+
+```kotlin
+top.loop { cur ->   // while(true) loop that volatile-reads current value 
+   ...
+}
+```
+
+Use high-level `update`, `updateAndGet`, and `getAndUpdate`, 
+when possible, for idiomatic lock-free code, for example:
+
+```kotlin
+fun push(v: Value) = top.update { cur -> Node(v, cur) }
+fun pop(): Value? = top.getAndUpdate { cur -> cur?.next } ?.value
+```
+
+Declare atomic integers and longs using type inference:
+
+```kotlin
+val myInt = atomic(0)    // note: integer initial value
+val myLong = atomic(0L)  // note: long initial value   
+```
+
+Integer and long atomics provide all the usual `getAndIncrement`, `incrementAndGet`, `getAndAdd`, `addAndGet`, and etc
+operations. They can be also atomically modified via `+=` and `-=` operators.
+
+## Quickstart
+### Apply plugin
+#### Gradle configuration
+
+Gradle configuration is supported for all platforms, minimal version is Gradle 6.8.
+
+In top-level build file:
+
+<details open>
+<summary>Kotlin</summary>
+
+```kotlin
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+      classpath("org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.19.0")
+    }
+}
+
+apply(plugin = "kotlinx-atomicfu")
+```
+</details>
+
+<details>
+<summary>Groovy</summary>
+
+```groovy
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.19.0'
+    }
+}
+  
+apply plugin: 'kotlinx-atomicfu'
+```
+</details>
+
+#### Maven configuration
+
+Maven configuration is supported for JVM projects.
+
+
+<details open>
+<summary>Declare atomicfu version</summary>
+
+```xml
+<properties>
+     <atomicfu.version>0.19.0</atomicfu.version>
+</properties> 
+```
+
+</details>
+
+<details>
+<summary>Declare provided dependency on the AtomicFU library</summary>
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.jetbrains.kotlinx</groupId>
+        <artifactId>atomicfu</artifactId>
+        <version>${atomicfu.version}</version>
+        <scope>provided</scope>
+    </dependency>
+</dependencies>
+```
+
+</details>
+
+Configure build steps so that Kotlin compiler puts classes into a different `classes-pre-atomicfu` directory,
+which is then transformed to a regular `classes` directory to be used later by tests and delivery.
+
+<details>
+<summary>Build steps</summary>
+
+```xml
+<build>
+  <plugins>
+    <!-- compile Kotlin files to staging directory -->
+    <plugin>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-maven-plugin</artifactId>
+      <version>${kotlin.version}</version>
+      <executions>
+        <execution>
+          <id>compile</id>
+          <phase>compile</phase>
+          <goals>
+            <goal>compile</goal>
+          </goals>
+          <configuration>
+            <output>${project.build.directory}/classes-pre-atomicfu</output>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
+    <!-- transform classes with AtomicFU plugin -->
+    <plugin>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>atomicfu-maven-plugin</artifactId>
+      <version>${atomicfu.version}</version>
+      <executions>
+        <execution>
+          <goals>
+            <goal>transform</goal>
+          </goals>
+          <configuration>
+            <input>${project.build.directory}/classes-pre-atomicfu</input>
+            <!-- "VH" to use Java 9 VarHandle, "BOTH" to produce multi-version code -->
+            <variant>FU</variant>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
+  </plugins>
+</build>
+```
+
+</details>
+
+ succeeded in 189ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "c4b47e74e2df4a0ec2f94770dbd7352e895e2a41",
+    "size": 36,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/.gitignore?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/.gitignore",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/c4b47e74e2df4a0ec2f94770dbd7352e895e2a41",
+    "download_url": "https://raw.githubusercontent.com/Kotlin/kotlinx-atomicfu/0.19.0/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/.gitignore?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/c4b47e74e2df4a0ec2f94770dbd7352e895e2a41",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/.gitignore"
+    }
+  },
+  {
+    "name": "CHANGES.md",
+    "path": "CHANGES.md",
+    "sha": "ae1e8b98608b47af546951130df8f3039a2db22e",
+    "size": 8827,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/CHANGES.md?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/CHANGES.md",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/ae1e8b98608b47af546951130df8f3039a2db22e",
+    "download_url": "https://raw.githubusercontent.com/Kotlin/kotlinx-atomicfu/0.19.0/CHANGES.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/CHANGES.md?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/ae1e8b98608b47af546951130df8f3039a2db22e",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/CHANGES.md"
+    }
+  },
+  {
+    "name": "CODE_OF_CONDUCT.md",
+    "path": "CODE_OF_CONDUCT.md",
+    "sha": "85ed20dba49a91a803ff69dcec57e44d8053be91",
+    "size": 269,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/CODE_OF_CONDUCT.md?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/CODE_OF_CONDUCT.md",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/85ed20dba49a91a803ff69dcec57e44d8053be91",
+    "download_url": "https://raw.githubusercontent.com/Kotlin/kotlinx-atomicfu/0.19.0/CODE_OF_CONDUCT.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/CODE_OF_CONDUCT.md?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/85ed20dba49a91a803ff69dcec57e44d8053be91",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/CODE_OF_CONDUCT.md"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "aa039979f4b88edc864ee4f71a3209bb4449756a",
+    "size": 15408,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/README.md?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/README.md",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/aa039979f4b88edc864ee4f71a3209bb4449756a",
+    "download_url": "https://raw.githubusercontent.com/Kotlin/kotlinx-atomicfu/0.19.0/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/README.md?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/aa039979f4b88edc864ee4f71a3209bb4449756a",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/README.md"
+    }
+  },
+  {
+    "name": "RELEASE.md",
+    "path": "RELEASE.md",
+    "sha": "d603b5d744a2779ba85b8dac2e546efae30438d5",
+    "size": 2335,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/RELEASE.md?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/RELEASE.md",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/d603b5d744a2779ba85b8dac2e546efae30438d5",
+    "download_url": "https://raw.githubusercontent.com/Kotlin/kotlinx-atomicfu/0.19.0/RELEASE.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/RELEASE.md?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/d603b5d744a2779ba85b8dac2e546efae30438d5",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/RELEASE.md"
+    }
+  },
+  {
+    "name": "atomicfu-gradle-plugin",
+    "path": "atomicfu-gradle-plugin",
+    "sha": "61cd33b6518f29bf4ad692b33d3f0a08867e29d5",
+    "size": 0,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu-gradle-plugin?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu-gradle-plugin",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/61cd33b6518f29bf4ad692b33d3f0a08867e29d5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu-gradle-plugin?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/61cd33b6518f29bf4ad692b33d3f0a08867e29d5",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu-gradle-plugin"
+    }
+  },
+  {
+    "name": "atomicfu-maven-plugin",
+    "path": "atomicfu-maven-plugin",
+    "sha": "a6a8c34659a6318010a3b1b63c3b1b3683fe9e19",
+    "size": 0,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu-maven-plugin?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu-maven-plugin",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/a6a8c34659a6318010a3b1b63c3b1b3683fe9e19",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu-maven-plugin?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/a6a8c34659a6318010a3b1b63c3b1b3683fe9e19",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu-maven-plugin"
+    }
+  },
+  {
+    "name": "atomicfu-native",
+    "path": "atomicfu-native",
+    "sha": "e53bdf2c717ca776a42f827c0b3192561f744994",
+    "size": 0,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu-native?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu-native",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/e53bdf2c717ca776a42f827c0b3192561f744994",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu-native?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/e53bdf2c717ca776a42f827c0b3192561f744994",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu-native"
+    }
+  },
+  {
+    "name": "atomicfu-transformer",
+    "path": "atomicfu-transformer",
+    "sha": "428b6f38fe08dc45d8672a6880c922a719bae175",
+    "size": 0,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu-transformer?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu-transformer",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/428b6f38fe08dc45d8672a6880c922a719bae175",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu-transformer?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/428b6f38fe08dc45d8672a6880c922a719bae175",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu-transformer"
+    }
+  },
+  {
+    "name": "atomicfu",
+    "path": "atomicfu",
+    "sha": "9e2a65b0c57bf2d2ebd541837d55cbade0bcd0b5",
+    "size": 0,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/9e2a65b0c57bf2d2ebd541837d55cbade0bcd0b5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/9e2a65b0c57bf2d2ebd541837d55cbade0bcd0b5",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu"
+    }
+  },
+  {
+    "name": "build.gradle",
+    "path": "build.gradle",
+    "sha": "f9090c2dcb288cf1274850c8cefdb29533467544",
+    "size": 3958,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/build.gradle?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/build.gradle",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/f9090c2dcb288cf1274850c8cefdb29533467544",
+    "download_url": "https://raw.githubusercontent.com/Kotlin/kotlinx-atomicfu/0.19.0/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/build.gradle?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/f9090c2dcb288cf1274850c8cefdb29533467544",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/build.gradle"
+    }
+  },
+  {
+    "name": "buildSrc",
+    "path": "buildSrc",
+    "sha": "16ad3ed6c9e8d5d475e695a1df4d2fa7d92db238",
+    "size": 0,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/buildSrc?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/buildSrc",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/16ad3ed6c9e8d5d475e695a1df4d2fa7d92db238",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/buildSrc?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/16ad3ed6c9e8d5d475e695a1df4d2fa7d92db238",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/buildSrc"
+    }
+  },
+  {
+    "name": "bump-version.sh",
+    "path": "bump-version.sh",
+    "sha": "c6d1770fe066ee68b81352df81f5d1091fb1ed93",
+    "size": 762,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/bump-version.sh?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/bump-version.sh",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/c6d1770fe066ee68b81352df81f5d1091fb1ed93",
+    "download_url": "https://raw.githubusercontent.com/Kotlin/kotlinx-atomicfu/0.19.0/bump-version.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/bump-version.sh?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/c6d1770fe066ee68b81352df81f5d1091fb1ed93",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/bump-version.sh"
+    }
+  },
+  {
+    "name": "gradle.properties",
+    "path": "gradle.properties",
+    "sha": "761800dcb682c26f1d24e22dcb6052592fd85370",
+    "size": 867,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/gradle.properties?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/gradle.properties",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/761800dcb682c26f1d24e22dcb6052592fd85370",
+    "download_url": "https://raw.githubusercontent.com/Kotlin/kotlinx-atomicfu/0.19.0/gradle.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/gradle.properties?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/761800dcb682c26f1d24e22dcb6052592fd85370",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/gradle.properties"
+    }
+  },
+  {
+    "name": "gradle",
+    "path": "gradle",
+    "sha": "5678215fc35b99c2f3ae26ac46e90388252de108",
+    "size": 0,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/gradle?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/gradle",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/5678215fc35b99c2f3ae26ac46e90388252de108",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/gradle?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/5678215fc35b99c2f3ae26ac46e90388252de108",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/gradle"
+    }
+  },
+  {
+    "name": "gradlew",
+    "path": "gradlew",
+    "sha": "cccdd3d517fc5249beaefa600691cf150f2fa3e6",
+    "size": 5296,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/gradlew?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/gradlew",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/cccdd3d517fc5249beaefa600691cf150f2fa3e6",
+    "download_url": "https://raw.githubusercontent.com/Kotlin/kotlinx-atomicfu/0.19.0/gradlew",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/gradlew?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/cccdd3d517fc5249beaefa600691cf150f2fa3e6",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/gradlew"
+    }
+  },
+  {
+    "name": "gradlew.bat",
+    "path": "gradlew.bat",
+    "sha": "f9553162f122c71b34635112e717c3e733b5b212",
+    "size": 2176,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/gradlew.bat?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/gradlew.bat",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/f9553162f122c71b34635112e717c3e733b5b212",
+    "download_url": "https://raw.githubusercontent.com/Kotlin/kotlinx-atomicfu/0.19.0/gradlew.bat",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/gradlew.bat?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/f9553162f122c71b34635112e717c3e733b5b212",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/gradlew.bat"
+    }
+  },
+  {
+    "name": "license",
+    "path": "license",
+    "sha": "e3c8f4735d8c688faed696aa2ba9f9ddb4dc76c9",
+    "size": 0,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/license?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/license",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/e3c8f4735d8c688faed696aa2ba9f9ddb4dc76c9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/license?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/e3c8f4735d8c688faed696aa2ba9f9ddb4dc76c9",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/license"
+    }
+  },
+  {
+    "name": "settings.gradle",
+    "path": "settings.gradle",
+    "sha": "ab0e0a912aa881e045fa793fdf80cef0d9da0cb8",
+    "size": 255,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/settings.gradle?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/settings.gradle",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/ab0e0a912aa881e045fa793fdf80cef0d9da0cb8",
+    "download_url": "https://raw.githubusercontent.com/Kotlin/kotlinx-atomicfu/0.19.0/settings.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/settings.gradle?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/blobs/ab0e0a912aa881e045fa793fdf80cef0d9da0cb8",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/settings.gradle"
+    }
+  }
+]
+
+web search: 
+web search: https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0
+web search: 
+web search: repo.maven.apache.org org/jetbrains/kotlinx/atomicfu/0.19.0 atomicfu-0.19.0-sources.jar
+web search: 
+web search: https://central.sonatype.com/artifact/org.jetbrains.kotlinx/atomicfu/0.19.0
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu/src?ref=0.19.0' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-test-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-tests.jar \\
+  https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-javadoc.jar \\
+  https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu-jvm/0.19.0/atomicfu-jvm-0.19.0-test-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu-jvm/0.19.0/atomicfu-jvm-0.19.0-tests.jar \\
+  https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu-jvm/0.19.0/atomicfu-jvm-0.19.0-javadoc.jar; do
+  code="'$(curl -o /dev/null -s -w "%{http_code}" "$u")
+  printf '"'%s %s\\n' \""'$code" "$u"
+done' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tags?per_page=100 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 147ms:
+[
+  {
+    "name": "commonMain",
+    "path": "atomicfu/src/commonMain",
+    "sha": "245de202be2d37dbabeb7717c588781f4a1eaa4f",
+    "size": 0,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu/src/commonMain?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/commonMain",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/245de202be2d37dbabeb7717c588781f4a1eaa4f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu/src/commonMain?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/245de202be2d37dbabeb7717c588781f4a1eaa4f",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/commonMain"
+    }
+  },
+  {
+    "name": "commonTest",
+    "path": "atomicfu/src/commonTest",
+    "sha": "b733d7b8625541745d786c025307563826bf26e2",
+    "size": 0,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu/src/commonTest?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/commonTest",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/b733d7b8625541745d786c025307563826bf26e2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu/src/commonTest?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/b733d7b8625541745d786c025307563826bf26e2",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/commonTest"
+    }
+  },
+  {
+    "name": "jsMain",
+    "path": "atomicfu/src/jsMain",
+    "sha": "2c5028bbca50e1782da5d56db364f2b3d41b3e26",
+    "size": 0,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu/src/jsMain?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/jsMain",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/2c5028bbca50e1782da5d56db364f2b3d41b3e26",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu/src/jsMain?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/2c5028bbca50e1782da5d56db364f2b3d41b3e26",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/jsMain"
+    }
+  },
+  {
+    "name": "jvmMain",
+    "path": "atomicfu/src/jvmMain",
+    "sha": "9ba1220516397ca38a4df794639620f9dcb60079",
+    "size": 0,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu/src/jvmMain?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/jvmMain",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/9ba1220516397ca38a4df794639620f9dcb60079",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu/src/jvmMain?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/9ba1220516397ca38a4df794639620f9dcb60079",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/jvmMain"
+    }
+  },
+  {
+    "name": "jvmTest",
+    "path": "atomicfu/src/jvmTest",
+    "sha": "5595714acd49e446e1b4e22a0b44ac2d2e352050",
+    "size": 0,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu/src/jvmTest?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/jvmTest",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/5595714acd49e446e1b4e22a0b44ac2d2e352050",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu/src/jvmTest?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/5595714acd49e446e1b4e22a0b44ac2d2e352050",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/jvmTest"
+    }
+  },
+  {
+    "name": "nativeInterop",
+    "path": "atomicfu/src/nativeInterop",
+    "sha": "287c4d1c8394fd6b0e55a8d8a950a6bf736ddc59",
+    "size": 0,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu/src/nativeInterop?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/nativeInterop",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/287c4d1c8394fd6b0e55a8d8a950a6bf736ddc59",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu/src/nativeInterop?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/287c4d1c8394fd6b0e55a8d8a950a6bf736ddc59",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/nativeInterop"
+    }
+  },
+  {
+    "name": "nativeMain",
+    "path": "atomicfu/src/nativeMain",
+    "sha": "593ca52c87b5d1ac6bfd8d67798753c63cfe6bd8",
+    "size": 0,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu/src/nativeMain?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/nativeMain",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/593ca52c87b5d1ac6bfd8d67798753c63cfe6bd8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu/src/nativeMain?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/593ca52c87b5d1ac6bfd8d67798753c63cfe6bd8",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/nativeMain"
+    }
+  },
+  {
+    "name": "nativeTest",
+    "path": "atomicfu/src/nativeTest",
+    "sha": "6b46a4ffe41433cdfebf438f70eb6f58efafe1ca",
+    "size": 0,
+    "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu/src/nativeTest?ref=0.19.0",
+    "html_url": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/nativeTest",
+    "git_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/6b46a4ffe41433cdfebf438f70eb6f58efafe1ca",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/contents/atomicfu/src/nativeTest?ref=0.19.0",
+      "git": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/6b46a4ffe41433cdfebf438f70eb6f58efafe1ca",
+      "html": "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/nativeTest"
+    }
+  }
+]
+
+ succeeded in 227ms:
+[
+  {
+    "name": "0.32.1",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.32.1",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.32.1",
+    "commit": {
+      "sha": "1d625ed1f6e88173f2737c48afe86544e8738232",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/1d625ed1f6e88173f2737c48afe86544e8738232"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMzIuMQ=="
+  },
+  {
+    "name": "0.32.0",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.32.0",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.32.0",
+    "commit": {
+      "sha": "06cb5bc19629141f3da748d668c1cf2d9ef7d8ec",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/06cb5bc19629141f3da748d668c1cf2d9ef7d8ec"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMzIuMA=="
+  },
+  {
+    "name": "0.31.0",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.31.0",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.31.0",
+    "commit": {
+      "sha": "4e607600049d32d7239fa38c8a0ad663ef64e052",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/4e607600049d32d7239fa38c8a0ad663ef64e052"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMzEuMA=="
+  },
+  {
+    "name": "0.30.0",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.30.0",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.30.0",
+    "commit": {
+      "sha": "3c656dbd0682b93b7f62c33863556095bb7b08af",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/3c656dbd0682b93b7f62c33863556095bb7b08af"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMzAuMA=="
+  },
+  {
+    "name": "0.30.0-beta",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.30.0-beta",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.30.0-beta",
+    "commit": {
+      "sha": "749a599c4c7a0c8a78df3cdcca04313f1b8bc0bd",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/749a599c4c7a0c8a78df3cdcca04313f1b8bc0bd"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMzAuMC1iZXRh"
+  },
+  {
+    "name": "0.29.0",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.29.0",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.29.0",
+    "commit": {
+      "sha": "3eaebe6ad975f01d82d2850801dc0b1638e93da5",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/3eaebe6ad975f01d82d2850801dc0b1638e93da5"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMjkuMA=="
+  },
+  {
+    "name": "0.28.0",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.28.0",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.28.0",
+    "commit": {
+      "sha": "f206f5b4052efbe97c696559c673a35350598ffa",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/f206f5b4052efbe97c696559c673a35350598ffa"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMjguMA=="
+  },
+  {
+    "name": "0.28.0-beta",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.28.0-beta",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.28.0-beta",
+    "commit": {
+      "sha": "992f4614bd01f2eb3689c16b4e5f96dc88033610",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/992f4614bd01f2eb3689c16b4e5f96dc88033610"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMjguMC1iZXRh"
+  },
+  {
+    "name": "0.27.0",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.27.0",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.27.0",
+    "commit": {
+      "sha": "b5db8fc8c9f6a85d2ccee8cdf58c68d8a368f7d4",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/b5db8fc8c9f6a85d2ccee8cdf58c68d8a368f7d4"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMjcuMA=="
+  },
+  {
+    "name": "0.26.1",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.26.1",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.26.1",
+    "commit": {
+      "sha": "07070f1a3a0b8b9f9334a327f9a60d393b2501bc",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/07070f1a3a0b8b9f9334a327f9a60d393b2501bc"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMjYuMQ=="
+  },
+  {
+    "name": "0.26.0",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.26.0",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.26.0",
+    "commit": {
+      "sha": "b94c6bd887ec48a5b172cacc0a1dac3f76c4fdbb",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/b94c6bd887ec48a5b172cacc0a1dac3f76c4fdbb"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMjYuMA=="
+  },
+  {
+    "name": "0.25.0",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.25.0",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.25.0",
+    "commit": {
+      "sha": "92ff33b4319970b8ab164c61c8ebfb6a69702955",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/92ff33b4319970b8ab164c61c8ebfb6a69702955"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMjUuMA=="
+  },
+  {
+    "name": "0.24.0",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.24.0",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.24.0",
+    "commit": {
+      "sha": "5fe9b3d77a5a302881af0b3eeab2c545313fcb6b",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/5fe9b3d77a5a302881af0b3eeab2c545313fcb6b"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMjQuMA=="
+  },
+  {
+    "name": "0.23.2",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.23.2",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.23.2",
+    "commit": {
+      "sha": "7e640bab1db140a398f735be97e3f07f97019ac0",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/7e640bab1db140a398f735be97e3f07f97019ac0"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMjMuMg=="
+  },
+  {
+    "name": "0.23.1",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.23.1",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.23.1",
+    "commit": {
+      "sha": "31c3c499a75bbf13eeed63024a74fba918c47798",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/31c3c499a75bbf13eeed63024a74fba918c47798"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMjMuMQ=="
+  },
+  {
+    "name": "0.23.0",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.23.0",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.23.0",
+    "commit": {
+      "sha": "f83c00d1492c83cfd90bbb3c1607412f92244078",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/f83c00d1492c83cfd90bbb3c1607412f92244078"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMjMuMA=="
+  },
+  {
+    "name": "0.22.0",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.22.0",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.22.0",
+    "commit": {
+      "sha": "2151dcc771b9bfed15550c0389da3f250bf2d185",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/2151dcc771b9bfed15550c0389da3f250bf2d185"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMjIuMA=="
+  },
+  {
+    "name": "0.21.0",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.21.0",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.21.0",
+    "commit": {
+      "sha": "4c1208335b5a4a40a5f7c6e908f59bd5efd11622",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/4c1208335b5a4a40a5f7c6e908f59bd5efd11622"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMjEuMA=="
+  },
+  {
+    "name": "0.20.2",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.20.2",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.20.2",
+    "commit": {
+      "sha": "d235d6e1f835434106d52e527a503f938eee1a82",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/d235d6e1f835434106d52e527a503f938eee1a82"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMjAuMg=="
+  },
+  {
+    "name": "0.20.1",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.20.1",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.20.1",
+    "commit": {
+      "sha": "bfdd8a711254cbedaf76c80cc34136b2940ca6de",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/bfdd8a711254cbedaf76c80cc34136b2940ca6de"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMjAuMQ=="
+  },
+  {
+    "name": "0.20.0",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.20.0",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.20.0",
+    "commit": {
+      "sha": "f1d04012a828bae264a992c260deb2975cd00451",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/f1d04012a828bae264a992c260deb2975cd00451"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMjAuMA=="
+  },
+  {
+    "name": "0.19.0",
+    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/zipball/refs/tags/0.19.0",
+    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/tarball/refs/tags/0.19.0",
+    "commit": {
+      "sha": "38fef8063a8b4fe845fe23db686a602bfb1408b5",
+      "url": "https://api.github.com/repos/Kotlin/kotlinx-atomicfu/commits/38fef8063a8b4fe845fe23db686a602bfb1408b5"
+    },
+    "node_id": "MDM6UmVmOTk1NzY4MjA6cmVmcy90YWdzLzAuMTkuMA=="
+
+ succeeded in 1424ms:
+404 https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-test-sources.jar
+404 https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-tests.jar
+404 https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-javadoc.jar
+404 https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu-jvm/0.19.0/atomicfu-jvm-0.19.0-test-sources.jar
+404 https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu-jvm/0.19.0/atomicfu-jvm-0.19.0-tests.jar
+200 https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu-jvm/0.19.0/atomicfu-jvm-0.19.0-javadoc.jar
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -name '*kotlinx*json' -maxdepth 1 -print | head -50" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\"' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"language\"' build/discovered-artifact-metadata | head -50" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\"|\"source-code-url\"|\"documentation-url\"|\"language\"' -g '*.json' . | head -120" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 0ms:
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:9:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-test.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-test.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:34:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-javadoc.jar",
+./metadata/org.example/library/index.json:9:    "source-code-url": "N/A",
+./metadata/org.example/library/index.json:11:    "test-code-url": "N/A",
+./metadata/org.example/library/index.json:12:    "documentation-url": "N/A",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/1.5.0/jackrabbit-jcr-commons-1.5.0-sources.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/1.5.0/jackrabbit-jcr-commons/src/test/java",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/1.5.0/jackrabbit-jcr-commons/README.txt",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:34:    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.15.2/src/test",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:21:    "test-code-url" : "N/A",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-2.15.2/toml/src/test",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/5.12.0/amqp-client-5.12.0-sources.jar",
+./metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v5.12.0/src/test",
+./metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/5.12.0/amqp-client-5.12.0-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-core/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-2.6.0/src/test",
+./metadata/com.fasterxml.jackson.core/jackson-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-core/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-core/index.json:21:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-2.1.3/src/test",
+./metadata/com.fasterxml.jackson.core/jackson-core/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-javadoc.jar",
+./metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/5.3.31/spring-instrument-5.3.31-sources.jar",
+./metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/5.3.31/spring-instrument-5.3.31-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+./metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.20/compiler/daemon/daemon-tests/test",
+./metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-javadoc.jar",
+./metadata/jakarta.servlet/jakarta.servlet-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/4.0.4/jakarta.servlet-api-4.0.4-sources.jar",
+./metadata/jakarta.servlet/jakarta.servlet-api/index.json:6:    "test-code-url" : "N/A",
+./metadata/jakarta.servlet/jakarta.servlet-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/4.0.4/jakarta.servlet-api-4.0.4-javadoc.jar",
+./metadata/jakarta.servlet/jakarta.servlet-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/5.0.0/jakarta.servlet-api-5.0.0-sources.jar",
+./metadata/jakarta.servlet/jakarta.servlet-api/index.json:21:    "test-code-url" : "N/A",
+./metadata/jakarta.servlet/jakarta.servlet-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/5.0.0/jakarta.servlet-api-5.0.0-javadoc.jar",
+./metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-sources.jar",
+./metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-tests.jar",
+./metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/org.rocksdb/rocksdbjni/index.json:8:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/10.4.2/rocksdbjni-10.4.2-sources.jar",
+./metadata/org.rocksdb/rocksdbjni/index.json:10:    "test-code-url" : "https://github.com/facebook/rocksdb/tree/v10.4.2/java/src/test",
+./metadata/org.rocksdb/rocksdbjni/index.json:11:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/10.4.2/rocksdbjni-10.4.2-javadoc.jar",
+./metadata/org.rocksdb/rocksdbjni/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/7.1.2/rocksdbjni-7.1.2-sources.jar",
+./metadata/org.rocksdb/rocksdbjni/index.json:21:    "test-code-url" : "https://github.com/facebook/rocksdb/tree/v7.1.2/java/src/test",
+./metadata/org.rocksdb/rocksdbjni/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/7.1.2/rocksdbjni-7.1.2-javadoc.jar",
+./metadata/org.rocksdb/rocksdbjni/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/7.9.2/rocksdbjni-7.9.2-sources.jar",
+./metadata/org.rocksdb/rocksdbjni/index.json:35:    "test-code-url" : "https://github.com/facebook/rocksdb/tree/v7.9.2/java/src/test",
+./metadata/org.rocksdb/rocksdbjni/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/7.9.2/rocksdbjni-7.9.2-javadoc.jar",
+./metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-sources.jar",
+./metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalatest-test/src/test",
+./metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-javadoc.jar",
+./metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/2.7.18/spring-boot-configuration-processor-2.7.18-sources.jar",
+./metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v2.7.18/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/test",
+./metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/2.7.18/spring-boot-configuration-processor-2.7.18-javadoc.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.9/jetty-core/jetty-util/src/test",
+./metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-javadoc.jar",
+./metadata/org.scala-js/scalajs-javalib-intf/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-js/scalajs-javalib-intf/1.16.0/scalajs-javalib-intf-1.16.0-sources.jar",
+./metadata/org.scala-js/scalajs-javalib-intf/index.json:7:    "test-code-url" : "https://github.com/scala-js/scala-js/tree/v1.16.0/test-suite",
+./metadata/org.scala-js/scalajs-javalib-intf/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-js/scalajs-javalib-intf/1.16.0/scalajs-javalib-intf-1.16.0-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/2.0.0.CR1/jboss-interceptor-spi-2.0.0.CR1-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:8:    "documentation-url" : "N/A",
+./metadata/org.apache.kerby/kerby-asn1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-asn1/1.0.1/kerby-asn1-1.0.1-sources.jar",
+./metadata/org.apache.kerby/kerby-asn1/index.json:7:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-asn1/src/test",
+./metadata/org.apache.kerby/kerby-asn1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-asn1/1.0.1/kerby-asn1-1.0.1-javadoc.jar",
+./metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/2.3.20/kotlin-script-runtime-2.3.20-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.20/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+./metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:8:    "documentation-url" : "https://github.com/JetBrains/kotlin/releases/tag/v2.3.20",
+./metadata/org.apache.kerby/kerby-config/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-config/1.0.1/kerby-config-1.0.1-sources.jar",
+./metadata/org.apache.kerby/kerby-config/index.json:7:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-config/src/test/java",
+./metadata/org.apache.kerby/kerby-config/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-config/1.0.1/kerby-config-1.0.1-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+./metadata/joda-time/joda-time/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/joda-time/joda-time/2.9.9/joda-time-2.9.9-sources.jar",
+./metadata/joda-time/joda-time/index.json:7:    "test-code-url" : "https://github.com/JodaOrg/joda-time/tree/v2.9.9/src/test/java",
+./metadata/joda-time/joda-time/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/joda-time/joda-time/2.9.9/joda-time-2.9.9-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:8:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.1.5/jetty-core/jetty-client/src/test",
+./metadata/org.eclipse.jetty/jetty-client/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:25:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.0/jetty-core/jetty-client/src/test",
+./metadata/org.eclipse.jetty/jetty-client/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:62:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:64:    "test-code-url" : "https://github.com/eclipse/jetty.project/tree/jetty-11.0.12/jetty-client/src/test",
+./metadata/org.eclipse.jetty/jetty-client/index.json:65:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-javadoc.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/2.0.1/mail/src/test",
+./metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+./metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.7.10/libraries/stdlib/test",
+./metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-javadoc.jar",
+./metadata/ch.qos.logback/logback-core/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.1.3/logback-core-1.1.3-sources.jar",
+./metadata/ch.qos.logback/logback-core/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.1.3/logback-core-1.1.3-test-sources.jar",
+./metadata/ch.qos.logback/logback-core/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.1.3/logback-core-1.1.3-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "find . -path '*artifact-metadata*' -type f -name '*.json' | head -80" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 0ms:
+./build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"\\s*:' metadata build -g '*.json' | head -80" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 0ms:
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:56:      "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:186:        "language": {
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.9.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-core-jvm/1.9.0/kotlinx-serialization-core-jvm-1.9.0-sources.jar",
+    "repository-url" : "https://github.com/Kotlin/kotlinx.serialization",
+    "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/core/jvmTest",
+    "documentation-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/docs",
+    "description" : "kotlinx-serialization-core-jvm is the JVM runtime core for Kotlin serialization, providing serializers, descriptors, encoding and decoding abstractions, and module support used by format implementations. It supports Kotlin multiplatform serialization on the JVM and is used together with format modules such as JSON, CBOR, ProtoBuf, and Properties.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.2"
+    },
+    "tested-versions" : [
+      "1.9.0",
+      "1.10.0",
+      "1.11.0"
+    ],
+    "allowed-packages" : [
+      "kotlinx.serialization"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '40,90p' metadata/schemas/metadata-library-index-schema-v2.0.1.json && sed -n '175,210p' metadata/schemas/metadata-library-index-schema-v2.0.1.json" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 0ms:
+      },
+      "repository-url": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Optional URL pointing to the canonical project repository for this entry."
+      },
+      "documentation-url": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Optional URL pointing to the project documentation for this entry."
+      },
+      "description": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Optional two-sentence explanation of what the library does."
+      },
+      "language": {
+        "$ref": "#/$defs/libraryLanguage"
+      },
+      "test-code-url": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Optional URL pointing to the test source code for this entry."
+      },
+      "latest": {
+        "type": "boolean",
+        "description": "Marks this entry as the latest/default metadata for currently supported versions."
+      },
+      "default-for": {
+        "type": "string",
+        "description": "Java regular expression describing the version range for which this entry should be used by default (e.g. '7\\\\.1\\\\..*')."
+      },
+      "override": {
+        "type": "boolean",
+        "description": "When true, expresses the intent to exclude outdated built-in metadata shipped with Native Image for the matched versions."
+      },
+      "allowed-packages": {
+        "type": "array",
+        "description": "Packages expected to contain metadata entries for this library. Used by CI checks.",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "skipped-versions": {
+        "type": "array",
+        "description": "Versions explicitly excluded from support, each with a reason.",
+        "minItems": 1,
+        "items": {
+    [
+      {
+        "metadata-version": "0.0.1",
+        "tested-versions": [ "0.0.1", "0.0.2" ],
+        "default-for": "0\\.0\\..*",
+        "test-version": "0.0.1",
+        "source-code-url": "https://github.com/example/project/tree/main/metadata/org.example/library/0.0.1",
+        "repository-url": "https://github.com/example/project",
+        "test-code-url": "https://github.com/example/project/tree/main/tests/src/org.example/library/0.0.1",
+        "documentation-url": "https://github.com/example/project/tree/main/README.md",
+        "description": "Example Library provides the core APIs for the example project. It focuses on simple integration points used by downstream applications.",
+        "language": {
+          "name": "kotlin",
+          "version": "2.0"
+        },
+        "allowed-packages": [ "org.example.library" ]
+      },
+      {
+        "latest": true,
+        "metadata-version": "1.0.0",
+        "tested-versions": [ "1.0.0", "1.1.0" , "1.2.0"],
+        "allowed-packages": [ "org.example.library" ]
+      },
+      {
+        "metadata-version": "1.19.0",
+        "tested-versions": [ "1.19.0" ],
+        "override": true,
+        "allowed-packages": [ "io.opentelemetry" ],
+        "skipped-versions": [
+          { "version": "1.34.0", "reason": "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse." }
+        ]
+      }
+    ]
+  ]
+}
+
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0 atomicfu-0.19.0-sources.jar atomicfu-0.19.0.pom
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/
+web search: 
+web search: 'atomicfu/' in https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/
+exec
+/usr/bin/bash -lc "curl -I -Ls -o /dev/null -w '%{url_effective}\\n%{http_code}\\n' https://github.com/Kotlin/kotlinx.atomicfu" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+exec
+/usr/bin/bash -lc "curl -I -Ls -o /dev/null -w '%{url_effective}\\n%{http_code}\\n' https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/commonTest" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+exec
+/usr/bin/bash -lc "curl -I -Ls -o /dev/null -w '%{url_effective}\\n%{http_code}\\n' https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-sources.jar" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 0ms:
+https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-sources.jar
+200
+
+exec
+/usr/bin/bash -lc "curl -I -Ls -o /dev/null -w '%{url_effective}\\n%{http_code}\\n' https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/README.md" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 493ms:
+https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/commonTest
+200
+
+ succeeded in 564ms:
+https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/README.md
+200
+
+ succeeded in 662ms:
+https://github.com/Kotlin/kotlinx-atomicfu
+200
+
+codex
+Maven publishes the `0.19.0` sources JAR but no root artifact test JAR or test-sources JAR, so the test URL needs to come from the tagged GitHub tree. The artifact is Kotlin-specific; its `0.19.0` build metadata points at Kotlin `1.8.0`, so I’ll record language `kotlin` version `1.8`.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/Kotlin/kotlinx-atomicfu/git/trees/38fef8063a8b4fe845fe23db686a602bfb1408b5?recursive=1 | rg '\"path\": \"atomicfu/src/.+Test' | head -80" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-sources.jar -o /tmp/atomicfu-0.19.0-sources.jar && jar tf /tmp/atomicfu-0.19.0-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+commonMain/
+commonMain/kotlinx/
+commonMain/kotlinx/atomicfu/
+commonMain/kotlinx/atomicfu/AtomicFU.common.kt
+commonMain/kotlinx/atomicfu/MangledJsNames.kt
+commonMain/kotlinx/atomicfu/Trace.common.kt
+commonMain/kotlinx/atomicfu/TraceFormat.kt
+commonMain/kotlinx/atomicfu/locks/
+commonMain/kotlinx/atomicfu/locks/Synchronized.common.kt
+commonTest/
+commonTest/bytecode_test/
+commonTest/bytecode_test/AtomicFieldTest.kt
+commonTest/bytecode_test/NoAccessPrivateTopLevelReflectionTest.kt
+commonTest/bytecode_test/PackagePrivateTopLevelReflectionTest.kt
+commonTest/bytecode_test/PrivateFieldAccessFromInnerClassReflectonTest.kt
+commonTest/bytecode_test/PrivateTopLevelReflectionTest.kt
+commonTest/bytecode_test/PublicTopLevelReflectionTest.kt
+commonTest/bytecode_test/ReentrantLockTest.kt
+commonTest/bytecode_test/SynchronizedObjectTest.kt
+commonTest/bytecode_test/TraceUseTest.kt
+commonTest/internal_test1/
+commonTest/internal_test1/B.kt
+commonTest/internal_test2/
+commonTest/internal_test2/InternalTrace.kt
+commonTest/internal_test2/С.kt
+commonTest/kotlinx/
+commonTest/kotlinx/atomicfu/
+commonTest/kotlinx/atomicfu/test/
+commonTest/kotlinx/atomicfu/test/ArithmeticTest.kt
+commonTest/kotlinx/atomicfu/test/ArrayElementInlineFuncTest.kt
+commonTest/kotlinx/atomicfu/test/AtomicArrayTest.kt
+commonTest/kotlinx/atomicfu/test/GetArrayElementTest.kt
+commonTest/kotlinx/atomicfu/test/InlineCASTest.kt
+commonTest/kotlinx/atomicfu/test/InternalTest.kt
+commonTest/kotlinx/atomicfu/test/JSScopesTest.kt
+commonTest/kotlinx/atomicfu/test/LockFreeIntBitsTest.kt
+commonTest/kotlinx/atomicfu/test/LockFreeLongCounterTest.kt
+commonTest/kotlinx/atomicfu/test/LockFreeQueueTest.kt
+commonTest/kotlinx/atomicfu/test/LockFreeStackTest.kt
+commonTest/kotlinx/atomicfu/test/LockTest.kt
+commonTest/kotlinx/atomicfu/test/MultiInitTest.kt
+commonTest/kotlinx/atomicfu/test/NestedAtomicFieldLoads.kt
+commonTest/kotlinx/atomicfu/test/NestedInlineFunctionsTest.kt
+commonTest/kotlinx/atomicfu/test/ReentrantLockFieldTest.kt
+commonTest/kotlinx/atomicfu/test/SetArrayElementTest.kt
+commonTest/kotlinx/atomicfu/test/SimpleLockTest.kt
+commonTest/kotlinx/atomicfu/test/TopLevelStoredToLocalVariableTest.kt
+commonTest/kotlinx/atomicfu/test/TopLevelTest.kt
+commonTest/kotlinx/atomicfu/test/TraceTestCommon.kt
+commonTest/kotlinx/atomicfu/test/UncheckedCastTest.kt
+commonTest/kotlinx/atomicfu/test/VolatileOnlyTest.kt
+jsMain/
+jsMain/kotlinx/
+jsMain/kotlinx/atomicfu/
+jsMain/kotlinx/atomicfu/AtomicFU.kt
+jsMain/kotlinx/atomicfu/Trace.kt
+jsMain/kotlinx/atomicfu/locks/
+jsMain/kotlinx/atomicfu/locks/Synchronized.kt
+jvmMain/
+jvmMain/kotlinx/
+jvmMain/kotlinx/atomicfu/
+jvmMain/kotlinx/atomicfu/AtomicFU.kt
+jvmMain/kotlinx/atomicfu/Trace.kt
+jvmMain/kotlinx/atomicfu/locks/
+jvmMain/kotlinx/atomicfu/locks/Synchronized.kt
+jvmTest/
+jvmTest/kotlinx/
+jvmTest/kotlinx/atomicfu/
+jvmTest/kotlinx/atomicfu/test/
+jvmTest/kotlinx/atomicfu/test/AtomicfuBytecodeTest.kt
+jvmTest/kotlinx/atomicfu/test/AtomicfuReferenceJsTest.kt
+jvmTest/kotlinx/atomicfu/test/ByteUtil.kt
+jvmTest/kotlinx/atomicfu/test/MetadataReflectionTest.kt
+jvmTest/kotlinx/atomicfu/test/ReflectionTestBase.kt
+jvmTest/kotlinx/atomicfu/test/SyntheticFUFieldsTest.kt
+jvmTest/kotlinx/atomicfu/test/TopLevelGeneratedDeclarationsReflectionTest.kt
+jvmTest/kotlinx/atomicfu/test/TraceToStringTest.kt
+jvmTest/kotlinx/atomicfu/test/VolatileOnlyBytecodeTest.kt
+nativeMain/
+nativeMain/kotlinx/
+nativeMain/kotlinx/atomicfu/
+nativeMain/kotlinx/atomicfu/AtomicFU.kt
+nativeMain/kotlinx/atomicfu/Trace.kt
+nativeMain/kotlinx/atomicfu/locks/
+nativeMain/kotlinx/atomicfu/locks/Synchronized.kt
+nativeTest/
+nativeTest/kotlinx/
+nativeTest/kotlinx/atomicfu/
+nativeTest/kotlinx/atomicfu/locks/
+nativeTest/kotlinx/atomicfu/locks/SynchronizedTest.kt
+
+ succeeded in 305ms:
+      "path": "atomicfu/src/commonTest",
+      "path": "atomicfu/src/commonTest/kotlin",
+      "path": "atomicfu/src/commonTest/kotlin/bytecode_test",
+      "path": "atomicfu/src/commonTest/kotlin/bytecode_test/AtomicFieldTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/bytecode_test/NoAccessPrivateTopLevelReflectionTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/bytecode_test/PackagePrivateTopLevelReflectionTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/bytecode_test/PrivateFieldAccessFromInnerClassReflectonTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/bytecode_test/PrivateTopLevelReflectionTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/bytecode_test/PublicTopLevelReflectionTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/bytecode_test/ReentrantLockTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/bytecode_test/SynchronizedObjectTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/bytecode_test/TraceUseTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/internal_test1",
+      "path": "atomicfu/src/commonTest/kotlin/internal_test1/B.kt",
+      "path": "atomicfu/src/commonTest/kotlin/internal_test2",
+      "path": "atomicfu/src/commonTest/kotlin/internal_test2/InternalTrace.kt",
+      "path": "atomicfu/src/commonTest/kotlin/internal_test2/С.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/ArithmeticTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/ArrayElementInlineFuncTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/AtomicArrayTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/GetArrayElementTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/InlineCASTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/InternalTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/JSScopesTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/LockFreeIntBitsTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/LockFreeLongCounterTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/LockFreeQueueTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/LockFreeStackTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/LockTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/MultiInitTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/NestedAtomicFieldLoads.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/NestedInlineFunctionsTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/ReentrantLockFieldTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/SetArrayElementTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/SimpleLockTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/TopLevelStoredToLocalVariableTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/TopLevelTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/TraceTestCommon.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/UncheckedCastTest.kt",
+      "path": "atomicfu/src/commonTest/kotlin/kotlinx/atomicfu/test/VolatileOnlyTest.kt",
+      "path": "atomicfu/src/jvmTest",
+      "path": "atomicfu/src/jvmTest/kotlin",
+      "path": "atomicfu/src/jvmTest/kotlin/kotlinx",
+      "path": "atomicfu/src/jvmTest/kotlin/kotlinx/atomicfu",
+      "path": "atomicfu/src/jvmTest/kotlin/kotlinx/atomicfu/test",
+      "path": "atomicfu/src/jvmTest/kotlin/kotlinx/atomicfu/test/AtomicfuBytecodeTest.kt",
+      "path": "atomicfu/src/jvmTest/kotlin/kotlinx/atomicfu/test/AtomicfuReferenceJsTest.kt",
+      "path": "atomicfu/src/jvmTest/kotlin/kotlinx/atomicfu/test/ByteUtil.kt",
+      "path": "atomicfu/src/jvmTest/kotlin/kotlinx/atomicfu/test/MetadataReflectionTest.kt",
+      "path": "atomicfu/src/jvmTest/kotlin/kotlinx/atomicfu/test/ReflectionTestBase.kt",
+      "path": "atomicfu/src/jvmTest/kotlin/kotlinx/atomicfu/test/SyntheticFUFieldsTest.kt",
+      "path": "atomicfu/src/jvmTest/kotlin/kotlinx/atomicfu/test/TopLevelGeneratedDeclarationsReflectionTest.kt",
+      "path": "atomicfu/src/jvmTest/kotlin/kotlinx/atomicfu/test/TraceToStringTest.kt",
+      "path": "atomicfu/src/jvmTest/kotlin/kotlinx/atomicfu/test/VolatileOnlyBytecodeTest.kt",
+      "path": "atomicfu/src/nativeTest",
+      "path": "atomicfu/src/nativeTest/kotlin",
+      "path": "atomicfu/src/nativeTest/kotlin/kotlinx",
+      "path": "atomicfu/src/nativeTest/kotlin/kotlinx/atomicfu",
+      "path": "atomicfu/src/nativeTest/kotlin/kotlinx/atomicfu/locks",
+      "path": "atomicfu/src/nativeTest/kotlin/kotlinx/atomicfu/locks/SynchronizedTest.kt",
+
+codex
+I found that the published sources JAR itself contains the main source sets and the test source sets, so I’m using that Maven URL for both source and test metadata instead of falling back to GitHub tests. Documentation will point to the tagged README because the root artifact does not publish a root javadoc JAR.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json
+index 93242627f0709c8f45d1fe07c4194a8b099c816b..4b99ef6ceca15bd04a01d058f4102e3c1b731e82
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlinx:atomicfu:0.19.0"
++  "coordinates" : "org.jetbrains.kotlinx:atomicfu:0.19.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-sources.jar",
++  "repository-url" : "https://github.com/Kotlin/kotlinx-atomicfu",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-sources.jar",
++  "documentation-url" : "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/README.md",
++  "description" : "AtomicFU is a Kotlin multiplatform library for writing idiomatic atomic operations that compile to efficient platform-specific implementations on JVM, JS, and Native. It also provides compiler, Gradle, and Maven transformation tooling plus utilities such as atomic arrays, locks, and tracing for concurrent Kotlin code.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "1.8"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json
+index 93242627f0709c8f45d1fe07c4194a8b099c816b..4b99ef6ceca15bd04a01d058f4102e3c1b731e82
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlinx:atomicfu:0.19.0"
++  "coordinates" : "org.jetbrains.kotlinx:atomicfu:0.19.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-sources.jar",
++  "repository-url" : "https://github.com/Kotlin/kotlinx-atomicfu",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-sources.jar",
++  "documentation-url" : "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/README.md",
++  "description" : "AtomicFU is a Kotlin multiplatform library for writing idiomatic atomic operations that compile to efficient platform-specific implementations on JVM, JS, and Native. It also provides compiler, Gradle, and Maven transformation tooling plus utilities such as atomic arrays, locks, and tracing for concurrent Kotlin code.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "1.8"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 0ms:
+{
+  "coordinates": "org.jetbrains.kotlinx:atomicfu:0.19.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-sources.jar",
+  "repository-url": "https://github.com/Kotlin/kotlinx-atomicfu",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-sources.jar",
+  "documentation-url": "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/README.md",
+  "description": "AtomicFU is a Kotlin multiplatform library for writing idiomatic atomic operations that compile to efficient platform-specific implementations on JVM, JS, and Native. It also provides compiler, Gradle, and Maven transformation tooling plus utilities such as atomic arrays, locks, and tracing for concurrent Kotlin code.",
+  "language": {
+    "name": "kotlin",
+    "version": "1.8"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -I -fsSL -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-sources.jar https://github.com/Kotlin/kotlinx-atomicfu https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/README.md" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6
+ succeeded in 0ms:
+200 https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-sources.jar
+HTTP/2 200 
+date: Wed, 29 Apr 2026 01:53:50 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b324e161f9af8339fc4e30953aac30e8"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=eoWtXYD%2BW00msMu2WTQ1EQ%2BgB4%2BEOf%2BAm6g3a5PqrMJd6J0S6AeaXtmWnTytR2tsNxIpnm%2Ba75OX6TwzSUFCGMBVwznSlxF0J053Rg4CF3PTDre1OTBO9JJcxQvwXeE9jTAtAJm%2BElIQcFb00Gp0AyGKVymZDL2xkJxc75aZAt7xQydhTQZS7WP0JgySdCzAyfFj1XsZ8%2BezaC%2BxmxmeaHR1kxTQ%2B9fcXlDyklR8qsWnorO0hhQdLbP70XrQEHrd1fjuliRojtE04JwHwYDbkg%3D%3D--ddJ3Hz%2BQzpLla3pG--mBhamez3mz4IVsGdXEnJNA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.222727121.1777427653; expires=Thu, 29 Apr 2027 01:54:13 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 29 Apr 2027 01:54:13 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FF:A828:4D96F91:3B6AB07:69F164C5
+
+200 https://github.com/Kotlin/kotlinx-atomicfu
+HTTP/2 200 
+date: Wed, 29 Apr 2026 01:53:50 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+x-repository-download: git clone https://github.com/Kotlin/kotlinx-atomicfu.git
+x-raw-download: https://raw.githubusercontent.com/Kotlin/kotlinx-atomicfu/0.19.0/README.md
+etag: W/"7d8a6ae6421a9cbce356435ecb5eb005"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=GhdAZrDaT2S6Ap3E9Peaj%2Fe7s8N09k6p%2FQGOF9Ekx2jAgvLVelwWennHabPI2whtTsqnnBoN09cd%2BIQhXW6TDlD5BTnGPTNBajZEBxtjiGa5%2F2a%2BHkgHL6TsaEMn2Hy5jrq8AYxNLSD6fjCWxXFkETuDmP%2BBNRbu43kPOu4Y%2FeseKOeAH9zgVg7%2FCtOFPbTbyVcfDKcGVmCzGbIfdYEA4jwsVbl8NBOjxvo7otQgebf50Tfa1fA%2FBFB3LrMsJ%2B1dvj8fq%2BQYhOEnGKz9H%2B2qMw%3D%3D--r7xspvVN8Uj0ho7R--phFhNTyk1FT91yeNo5wL2A%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.983581889.1777427653; expires=Thu, 29 Apr 2027 01:54:13 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 29 Apr 2027 01:54:13 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FF:A828:4D96FB8:3B6AB1D:69F164C5
+
+200 https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/README.md
+
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json
+index 93242627f0709c8f45d1fe07c4194a8b099c816b..4b99ef6ceca15bd04a01d058f4102e3c1b731e82
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlinx:atomicfu:0.19.0"
++  "coordinates" : "org.jetbrains.kotlinx:atomicfu:0.19.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-sources.jar",
++  "repository-url" : "https://github.com/Kotlin/kotlinx-atomicfu",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-sources.jar",
++  "documentation-url" : "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/README.md",
++  "description" : "AtomicFU is a Kotlin multiplatform library for writing idiomatic atomic operations that compile to efficient platform-specific implementations on JVM, JS, and Native. It also provides compiler, Gradle, and Maven transformation tooling plus utilities such as atomic arrays, locks, and tracing for concurrent Kotlin code.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "1.8"
++  }
+ }
+
+web search: 
+web search: org.jetbrains.kotlinx atomicfu 0.19.0 Maven Central atomicfu-0.19.0-sources.jar
+web search: 
+web search: https://github.com/Kotlin/kotlinx-atomicfu
+web search: 
+web search: https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/README.md
+web search: 
+web search: https://central.sonatype.com/artifact/org.jetbrains.kotlinx/atomicfu/0.19.0
+web search: 
+web search: "atomicfu-0.19.0-sources.jar" "repo.maven.apache.org"
+codex
+Updated [org.jetbrains.kotlinx-atomicfu-0.19.0.json](/home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json) with the discovered metadata, including Kotlin language version `1.8`. Maven Central confirms the `0.19.0` artifact/POM, and the tagged README documents AtomicFU as a Kotlin multiplatform atomic operations library. ([central.sonatype.com](https://central.sonatype.com/artifact/org.jetbrains.kotlinx/atomicfu/0.19.0))
+
+Validation done: `jq .` passed, and the selected Maven/GitHub URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json
+index 93242627f0709c8f45d1fe07c4194a8b099c816b..4b99ef6ceca15bd04a01d058f4102e3c1b731e82
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlinx:atomicfu:0.19.0"
++  "coordinates" : "org.jetbrains.kotlinx:atomicfu:0.19.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-sources.jar",
++  "repository-url" : "https://github.com/Kotlin/kotlinx-atomicfu",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu/0.19.0/atomicfu-0.19.0-sources.jar",
++  "documentation-url" : "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/README.md",
++  "description" : "AtomicFU is a Kotlin multiplatform library for writing idiomatic atomic operations that compile to efficient platform-specific implementations on JVM, JS, and Native. It also provides compiler, Gradle, and Maven transformation tooling plus utilities such as atomic arrays, locks, and tracing for concurrent Kotlin code.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "1.8"
++  }
+ }
+
+2026-04-29T01:54:42.977135Z ERROR codex_core::session: failed to record rollout items: thread 019dd6f0-0491-7180-b0b6-af04e990afda not found
+tokens used
+175,121
+Updated [org.jetbrains.kotlinx-atomicfu-0.19.0.json](/home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6/build/discovered-artifact-metadata/org.jetbrains.kotlinx-atomicfu-0.19.0.json) with the discovered metadata, including Kotlin language version `1.8`. Maven Central confirms the `0.19.0` artifact/POM, and the tagged README documents AtomicFU as a Kotlin multiplatform atomic operations library. ([central.sonatype.com](https://central.sonatype.com/artifact/org.jetbrains.kotlinx/atomicfu/0.19.0))
+
+Validation done: `jq .` passed, and the selected Maven/GitHub URLs returned HTTP 200.
+Ran agent for org.jetbrains.kotlinx:atomicfu:0.19.0 (exit 0). Log: /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6/build/agent-artifact-discovery-logs/org.jetbrains.kotlinx-atomicfu-0.19.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2659-399694b6/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 19s
+9 actionable tasks: 4 executed, 5 from cache
