@@ -9,6 +9,7 @@ package org_hibernate_models.hibernate_models;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.AnnotatedElement;
 
 import org.hibernate.models.internal.BasicModelsContextImpl;
 import org.hibernate.models.internal.OrmAnnotationDescriptor;
@@ -21,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OrmAnnotationDescriptorInnerJdkCreatorTest {
     @Test
     public void createsMutableAnnotationUsageFromJdkAnnotation() {
-        final JdkLabel jdkAnnotation = AnnotatedEntity.class.getAnnotation(JdkLabel.class);
+        final JdkLabel jdkAnnotation = AnnotationAccess.getAnnotation(AnnotatedEntity.class, JdkLabel.class);
         final ModelsContext context = newModelsContext();
         final OrmAnnotationDescriptor<JdkLabel, JdkLabelUsage> descriptor = new OrmAnnotationDescriptor<>(
                 JdkLabel.class,
@@ -51,6 +52,20 @@ public class OrmAnnotationDescriptorInnerJdkCreatorTest {
         String value();
 
         int priority() default 0;
+    }
+
+    private static final class AnnotationAccess {
+        private AnnotationAccess() {
+        }
+
+        private static <A extends Annotation> A getAnnotation(AnnotatedElement element, Class<A> annotationType) {
+            try {
+                return annotationType.cast(AnnotatedElement.class.getMethod("getAnnotation", Class.class)
+                        .invoke(element, annotationType));
+            } catch (ReflectiveOperationException ex) {
+                throw new AssertionError(ex);
+            }
+        }
     }
 
     public static final class JdkLabelUsage implements JdkLabel {

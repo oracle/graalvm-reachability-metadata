@@ -28,7 +28,7 @@ public class AnnotationProxyTest {
         final Map<String, Object> attributeValues = new HashMap<>();
         attributeValues.put("value", "hibernate-model");
         attributeValues.put("priority", 42);
-        attributeValues.put("tags", new String[] { "metadata", "native-image" });
+        attributeValues.put("tags", new String[]{"metadata", "native-image"});
 
         final ProxyLabel usage = descriptor.createUsage(attributeValues, context);
 
