@@ -1,0 +1,2441 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ddb31-30cd-73b1-a4f9-86177f5082c3
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.slf4j:slf4j-ext:1.5.10
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.5.10".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json
+- Set "coordinates" to "org.slf4j:slf4j-ext:1.5.10".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates and URL conventions before editing the JSON, then I’ll update only the requested file.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+{
+  "coordinates" : "org.slf4j:slf4j-ext:1.5.10"
+}
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"' -n build/discovered-artifact-metadata | head -20" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -40' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json
+
+web search: 
+web search: org.slf4j slf4j-ext 1.5.10 maven sources javadoc tests
+codex
+The target file only contains the coordinates right now. I’m checking Maven Central first because the request prefers source and test artifacts there when available, then I’ll fall back to the release tag for anything not published as an artifact.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/slf4j/slf4j-ext/1.5.10/slf4j-ext-1.5.10.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-parent</artifactId>
+    <version>1.5.10</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.slf4j</groupId>
+  <artifactId>slf4j-ext</artifactId>
+  <packaging>jar</packaging>
+  <name>SLF4J Extensions Module</name>
+
+  <url>http://www.slf4j.org</url>
+  <description>Extensions to the SLF4J API</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${parent.version}</version>
+      <scope>test</scope>
+    </dependency>		
+    <dependency>
+      <groupId>ch.qos.cal10n</groupId>
+      <artifactId>cal10n-api</artifactId>
+    </dependency>		
+    <dependency>
+      <groupId>javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>3.4.GA</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.4</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+  <build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+         <configuration>
+		  <!-- http://maven.apache.org/plugins/maven-surefire-plugin/test-mojo.html -->
+         <printSummary>false</printSummary>
+          <forkMode>once</forkMode>
+          <reportFormat>plain</reportFormat>
+          <trimStackTrace>false</trimStackTrace>
+          <excludes>
+            <exclude>**/AllTest.java</exclude>
+            <exclude>**/PackageTest.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Bundle-Version>${parsedVersion.osgiVersion}</Bundle-Version>
+              <Bundle-Description>${project.description}</Bundle-Description>
+              <Implementation-Version>${project.version}</Implementation-Version>
+              <Premain-Class>org.slf4j.agent.AgentPremain</Premain-Class>
+              <!-- what is the proper way to specify the maven full name? /ravn -->
+              <Boot-Class-Path>../../../../javassist/javassist/3.4.GA/javassist-3.4.GA.jar javassist-3.4.GA.jar javassist.jar</Boot-Class-Path>
+            </manifestEntries>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>			
+      </plugin>      
+    </plugins>
+
+  </build>
+
+  <reporting>
+    <plugins>
+    
+    </plugins>
+  </reporting>
+
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/slf4j/slf4j-ext/1.5.10/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/slf4j/slf4j-ext/1.5.10</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/slf4j/slf4j-ext/1.5.10</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="slf4j-ext-1.5.10-sources.jar" title="slf4j-ext-1.5.10-sources.jar">slf4j-ext-1.5.10-sources.jar</a>                      2009-12-02 23:38     35091      
+<a href="slf4j-ext-1.5.10-sources.jar.md5" title="slf4j-ext-1.5.10-sources.jar.md5">slf4j-ext-1.5.10-sources.jar.md5</a>                  2009-12-02 23:38        32      
+<a href="slf4j-ext-1.5.10-sources.jar.sha1" title="slf4j-ext-1.5.10-sources.jar.sha1">slf4j-ext-1.5.10-sources.jar.sha1</a>                 2009-12-02 23:38        40      
+<a href="slf4j-ext-1.5.10.jar" title="slf4j-ext-1.5.10.jar">slf4j-ext-1.5.10.jar</a>                              2009-12-02 23:38     41626      
+<a href="slf4j-ext-1.5.10.jar.md5" title="slf4j-ext-1.5.10.jar.md5">slf4j-ext-1.5.10.jar.md5</a>                          2009-12-02 23:38        32      
+<a href="slf4j-ext-1.5.10.jar.sha1" title="slf4j-ext-1.5.10.jar.sha1">slf4j-ext-1.5.10.jar.sha1</a>                         2009-12-02 23:38        40      
+<a href="slf4j-ext-1.5.10.pom" title="slf4j-ext-1.5.10.pom">slf4j-ext-1.5.10.pom</a>                              2009-12-02 23:38      3366      
+<a href="slf4j-ext-1.5.10.pom.md5" title="slf4j-ext-1.5.10.pom.md5">slf4j-ext-1.5.10.pom.md5</a>                          2009-12-02 23:38        32      
+<a href="slf4j-ext-1.5.10.pom.sha1" title="slf4j-ext-1.5.10.pom.sha1">slf4j-ext-1.5.10.pom.sha1</a>                         2009-12-02 23:38        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+web search: 
+web search: 
+web search: 
+web search: site:github.com/qos-ch/slf4j v_1.5.10 slf4j
+web search: 
+web search: GitHub qos-ch slf4j tags 1.5.10
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/qos-ch/slf4j/tree/v1.5.10 | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/qos-ch/slf4j/git/matching-refs/tags/v1.5.10' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/qos-ch/slf4j/tree/v_1.5.10 | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 168ms:
+[
+  {
+    "ref": "refs/tags/v1.5.10",
+    "node_id": "MDM6UmVmMjgzMTg3OnJlZnMvdGFncy92MS41LjEw",
+    "url": "https://api.github.com/repos/qos-ch/slf4j/git/refs/tags/v1.5.10",
+    "object": {
+      "sha": "70d3d276cb14f4792714c99d9660f1e69b4c3a93",
+      "type": "commit",
+      "url": "https://api.github.com/repos/qos-ch/slf4j/git/commits/70d3d276cb14f4792714c99d9660f1e69b4c3a93"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/qos-ch/slf4j/git/matching-refs/tags/v_1.5.10' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 331ms:
+HTTP/2 404 
+date: Wed, 29 Apr 2026 21:42:34 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=WAnMHDLKl%2Bk6ZoteIUzGb0OgPKZNdY7EKjzj8oRxvYlVdiSq1uTmG8ysehiV21ixS5zw28E679Yx9OIl3TrO5CFbnqX1DzbUEpm5gkRAYsMTIWH%2BcmpcL6UgmCLOVmfFTEvXOy4fXIHvO2hotvonqmFbZbuxCgfYY2ui0ss8ZVKjPtwNusDMbA3tvNNVji9I10YbGTnrlBO%2Fq02yHNZ4mc0gwq770Bj8KuZvsD1MnamdUA4%2B1kgTOPemkF8aCxBs5Q0vL4Z8jtX1kLX8XrkC5g%3D%3D--xuTIBEIACJt0hcg3--kiYgfjpCaI%2BcMlWrK50gAQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.278589209.1777498954; expires=Thu, 29 Apr 2027 21:42:34 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 29 Apr 2027 21:42:34 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5101:2C62BE:182B740:1200AAE:69F27B4A
+
+
+ succeeded in 160ms:
+[
+
+]
+
+ succeeded in 734ms:
+HTTP/2 200 
+date: Wed, 29 Apr 2026 21:42:35 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"29ff35203deb6233b8da9d4f7adf873a"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=1DnSgi74EK075r6UARgCGC1mBBvPnS7G8DFkuB8ZQGwM5XPozK0A4ci7WaawpeEln0NbD1Lpq4XM0AjYWrBn1JZLXTd5Ro8Gd%2Fbd3gWdtJqHouu4JkRpd0fYsIHHdxSocJyLonggqyX3IkomcerLKgL05CUqga5K1PP2m2rlxP%2FErLhviJgwjjyvvetDSh22HH4FC3nFqH%2FdklRClz6sIN9IUNn6uzCuxOO8fKN%2B%2BS8LuEs3bbq49aBfU9k%2FJrNQ3055SLInmR8kZi63AMMxGQ%3D%3D--wCpstCCc65%2BbzeVi--OFwfeYZvUE1OocPCRds7fQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2095641558.1777498954; expires=Thu, 29 Apr 2027 21:42:34 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 29 Apr 2027 21:42:34 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5102:3AC20D:185486A:121C92D:69F27B4A
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-ext?ref=v1.5.10' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-ext/src/main?ref=v1.5.10' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-ext/src/test?ref=v1.5.10' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/qos-ch/slf4j/contents?ref=v1.5.10' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 157ms:
+[
+  {
+    "name": "java",
+    "path": "slf4j-ext/src/test/java",
+    "sha": "e073025a43ce445b940ac0ce502288490488873f",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-ext/src/test/java?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-ext/src/test/java",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/e073025a43ce445b940ac0ce502288490488873f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-ext/src/test/java?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/e073025a43ce445b940ac0ce502288490488873f",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-ext/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "slf4j-ext/src/test/resources",
+    "sha": "7b129731a56736240e2d0f877ca5a8191538b3b9",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-ext/src/test/resources?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-ext/src/test/resources",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/7b129731a56736240e2d0f877ca5a8191538b3b9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-ext/src/test/resources?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/7b129731a56736240e2d0f877ca5a8191538b3b9",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-ext/src/test/resources"
+    }
+  }
+]
+
+ succeeded in 160ms:
+[
+  {
+    "name": "java",
+    "path": "slf4j-ext/src/main/java",
+    "sha": "fd0a4dcfeb0e1e420058555002f0079a06e4bb76",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-ext/src/main/java?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-ext/src/main/java",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/fd0a4dcfeb0e1e420058555002f0079a06e4bb76",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-ext/src/main/java?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/fd0a4dcfeb0e1e420058555002f0079a06e4bb76",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-ext/src/main/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "slf4j-ext/src/main/resources",
+    "sha": "43bd641dfd65ebb261b652d4179d818fc4b7edb6",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-ext/src/main/resources?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-ext/src/main/resources",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/43bd641dfd65ebb261b652d4179d818fc4b7edb6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-ext/src/main/resources?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/43bd641dfd65ebb261b652d4179d818fc4b7edb6",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-ext/src/main/resources"
+    }
+  }
+]
+
+ succeeded in 169ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "slf4j-ext/pom.xml",
+    "sha": "3448f30b82f59c7848f56008b11edfb060d3b6e6",
+    "size": 3366,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-ext/pom.xml?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-ext/pom.xml",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/3448f30b82f59c7848f56008b11edfb060d3b6e6",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-ext/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-ext/pom.xml?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/3448f30b82f59c7848f56008b11edfb060d3b6e6",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-ext/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "slf4j-ext/src",
+    "sha": "584562504e758661b27943b7f8ed0baa59fcfb25",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-ext/src?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-ext/src",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/584562504e758661b27943b7f8ed0baa59fcfb25",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-ext/src?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/584562504e758661b27943b7f8ed0baa59fcfb25",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-ext/src"
+    }
+  }
+]
+
+ succeeded in 173ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "ebc44e14166d527487a12cdffcb3a73eafa288fe",
+    "size": 90,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/.gitignore?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/.gitignore",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/ebc44e14166d527487a12cdffcb3a73eafa288fe",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/.gitignore?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/ebc44e14166d527487a12cdffcb3a73eafa288fe",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/.gitignore"
+    }
+  },
+  {
+    "name": "LICENSE.txt",
+    "path": "LICENSE.txt",
+    "sha": "f1c9e37074a3faf45d9d13c4b49edb7f3d2c12e2",
+    "size": 1159,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/LICENSE.txt?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/LICENSE.txt",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/f1c9e37074a3faf45d9d13c4b49edb7f3d2c12e2",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/LICENSE.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/LICENSE.txt?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/f1c9e37074a3faf45d9d13c4b49edb7f3d2c12e2",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/LICENSE.txt"
+    }
+  },
+  {
+    "name": "binderVersion.pl",
+    "path": "binderVersion.pl",
+    "sha": "688d4ae464ab6db0782a3826415d68b86af32776",
+    "size": 782,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/binderVersion.pl?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/binderVersion.pl",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/688d4ae464ab6db0782a3826415d68b86af32776",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/binderVersion.pl",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/binderVersion.pl?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/688d4ae464ab6db0782a3826415d68b86af32776",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/binderVersion.pl"
+    }
+  },
+  {
+    "name": "codeStyle.xml",
+    "path": "codeStyle.xml",
+    "sha": "21b42b61cfe5ebbf6530d49dcc1f79c5ea8204ed",
+    "size": 27212,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/codeStyle.xml?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/codeStyle.xml",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/21b42b61cfe5ebbf6530d49dcc1f79c5ea8204ed",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/codeStyle.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/codeStyle.xml?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/21b42b61cfe5ebbf6530d49dcc1f79c5ea8204ed",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/codeStyle.xml"
+    }
+  },
+  {
+    "name": "goVersion.sh",
+    "path": "goVersion.sh",
+    "sha": "77105f8b2d1f01f4d5e6729f83377c8d79c75436",
+    "size": 226,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/goVersion.sh?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/goVersion.sh",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/77105f8b2d1f01f4d5e6729f83377c8d79c75436",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/goVersion.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/goVersion.sh?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/77105f8b2d1f01f4d5e6729f83377c8d79c75436",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/goVersion.sh"
+    }
+  },
+  {
+    "name": "integration",
+    "path": "integration",
+    "sha": "2da014784c4be1f7e2f3e39f563499d634392a1a",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/integration?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/integration",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/2da014784c4be1f7e2f3e39f563499d634392a1a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/integration?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/2da014784c4be1f7e2f3e39f563499d634392a1a",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/integration"
+    }
+  },
+  {
+    "name": "jcl-over-slf4j",
+    "path": "jcl-over-slf4j",
+    "sha": "ca0e14337150ca2fb88a66c022ccd5591545debc",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/jcl-over-slf4j?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/jcl-over-slf4j",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/ca0e14337150ca2fb88a66c022ccd5591545debc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/jcl-over-slf4j?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/ca0e14337150ca2fb88a66c022ccd5591545debc",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/jcl-over-slf4j"
+    }
+  },
+  {
+    "name": "jcl104-over-slf4j",
+    "path": "jcl104-over-slf4j",
+    "sha": "3fcf50344fb99ed5c38f0d18483dbf57f15152bd",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/jcl104-over-slf4j?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/jcl104-over-slf4j",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/3fcf50344fb99ed5c38f0d18483dbf57f15152bd",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/jcl104-over-slf4j?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/3fcf50344fb99ed5c38f0d18483dbf57f15152bd",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/jcl104-over-slf4j"
+    }
+  },
+  {
+    "name": "jul-to-slf4j",
+    "path": "jul-to-slf4j",
+    "sha": "51cb36e0a99a301b4383e5d40deaeb09545d376c",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/jul-to-slf4j?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/jul-to-slf4j",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/51cb36e0a99a301b4383e5d40deaeb09545d376c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/jul-to-slf4j?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/51cb36e0a99a301b4383e5d40deaeb09545d376c",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/jul-to-slf4j"
+    }
+  },
+  {
+    "name": "log4j-over-slf4j",
+    "path": "log4j-over-slf4j",
+    "sha": "dc0c318e57041bbf3fbfef461eccfe881600aafa",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/log4j-over-slf4j?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/log4j-over-slf4j",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/dc0c318e57041bbf3fbfef461eccfe881600aafa",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/log4j-over-slf4j?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/dc0c318e57041bbf3fbfef461eccfe881600aafa",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/log4j-over-slf4j"
+    }
+  },
+  {
+    "name": "osgi-over-slf4j",
+    "path": "osgi-over-slf4j",
+    "sha": "da36d354519d4a32106607ffeb9440c297fe470a",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/osgi-over-slf4j?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/osgi-over-slf4j",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/da36d354519d4a32106607ffeb9440c297fe470a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/osgi-over-slf4j?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/da36d354519d4a32106607ffeb9440c297fe470a",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/osgi-over-slf4j"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "b0514fb6d5e99a85c5de49645fd31a63a20f0f00",
+    "size": 8806,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/pom.xml?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/pom.xml",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/b0514fb6d5e99a85c5de49645fd31a63a20f0f00",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/pom.xml?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/b0514fb6d5e99a85c5de49645fd31a63a20f0f00",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/pom.xml"
+    }
+  },
+  {
+    "name": "slf4j-api",
+    "path": "slf4j-api",
+    "sha": "0e5a89cbac34b32b0c633d158a946da5f5ad53af",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-api?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-api",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/0e5a89cbac34b32b0c633d158a946da5f5ad53af",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-api?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/0e5a89cbac34b32b0c633d158a946da5f5ad53af",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-api"
+    }
+  },
+  {
+    "name": "slf4j-ext",
+    "path": "slf4j-ext",
+    "sha": "931156d92feea0e3a66e4946afa52112c494d86a",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-ext?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-ext",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/931156d92feea0e3a66e4946afa52112c494d86a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-ext?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/931156d92feea0e3a66e4946afa52112c494d86a",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-ext"
+    }
+  },
+  {
+    "name": "slf4j-jcl",
+    "path": "slf4j-jcl",
+    "sha": "1c6b19fe1388dab13b32a26693145e5ff756502b",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-jcl?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-jcl",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/1c6b19fe1388dab13b32a26693145e5ff756502b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-jcl?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/1c6b19fe1388dab13b32a26693145e5ff756502b",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-jcl"
+    }
+  },
+  {
+    "name": "slf4j-jdk14",
+    "path": "slf4j-jdk14",
+    "sha": "5a7ba930fb87aac4d7f601f1a27fb8ecc74dcf11",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-jdk14?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-jdk14",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/5a7ba930fb87aac4d7f601f1a27fb8ecc74dcf11",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-jdk14?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/5a7ba930fb87aac4d7f601f1a27fb8ecc74dcf11",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-jdk14"
+    }
+  },
+  {
+    "name": "slf4j-log4j12",
+    "path": "slf4j-log4j12",
+    "sha": "da921185f7a09f89f4dba44eff92c19b5ce355b0",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-log4j12?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-log4j12",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/da921185f7a09f89f4dba44eff92c19b5ce355b0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-log4j12?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/da921185f7a09f89f4dba44eff92c19b5ce355b0",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-log4j12"
+    }
+  },
+  {
+    "name": "slf4j-migrator",
+    "path": "slf4j-migrator",
+    "sha": "84e7e82ce0627ea940fa142acbd48fbe5f1c3c64",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-migrator?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-migrator",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/84e7e82ce0627ea940fa142acbd48fbe5f1c3c64",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-migrator?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/84e7e82ce0627ea940fa142acbd48fbe5f1c3c64",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-migrator"
+    }
+  },
+  {
+    "name": "slf4j-nop",
+    "path": "slf4j-nop",
+    "sha": "94904445f3212542f8a3843eb33d2155d702bddd",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-nop?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-nop",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/94904445f3212542f8a3843eb33d2155d702bddd",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-nop?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/94904445f3212542f8a3843eb33d2155d702bddd",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-nop"
+    }
+  },
+  {
+    "name": "slf4j-osgi-integration-test",
+    "path": "slf4j-osgi-integration-test",
+    "sha": "9cd31fc36bf81c9b37a7540a7d32e81ce9ea9d49",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-osgi-integration-test?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-osgi-integration-test",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/9cd31fc36bf81c9b37a7540a7d32e81ce9ea9d49",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-osgi-integration-test?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/9cd31fc36bf81c9b37a7540a7d32e81ce9ea9d49",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-osgi-integration-test"
+    }
+  },
+  {
+    "name": "slf4j-osgi-test-bundle",
+    "path": "slf4j-osgi-test-bundle",
+    "sha": "5d09aa1cebdf613e68bd8c16b53bdbb2679d65a9",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-osgi-test-bundle?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-osgi-test-bundle",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/5d09aa1cebdf613e68bd8c16b53bdbb2679d65a9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-osgi-test-bundle?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/5d09aa1cebdf613e68bd8c16b53bdbb2679d65a9",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-osgi-test-bundle"
+    }
+  },
+  {
+    "name": "slf4j-simple",
+    "path": "slf4j-simple",
+    "sha": "1dfc0e2bd484bdec930afd40bfd214b8c7486f33",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-simple?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-simple",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/1dfc0e2bd484bdec930afd40bfd214b8c7486f33",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-simple?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/1dfc0e2bd484bdec930afd40bfd214b8c7486f33",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-simple"
+    }
+  },
+  {
+    "name": "slf4j-site",
+    "path": "slf4j-site",
+    "sha": "4d31b17af16be2768fd52c471aee4d7751fe9d1b",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-site",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/4d31b17af16be2768fd52c471aee4d7751fe9d1b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/4d31b17af16be2768fd52c471aee4d7751fe9d1b",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-site"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "0f1335d0c4d68aea7859289190bc918eddd133f5",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/src?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/src",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/0f1335d0c4d68aea7859289190bc918eddd133f5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/src?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/0f1335d0c4d68aea7859289190bc918eddd133f5",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/src"
+    }
+  },
+  {
+    "name": "test",
+    "path": "test",
+    "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/test?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/test",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/test",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/test?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/test"
+    }
+  },
+  {
+    "name": "version.pl",
+    "path": "version.pl",
+    "sha": "f8d8f555100a4000fb65541348bc997e80af4087",
+    "size": 815,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/version.pl?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/version.pl",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/f8d8f555100a4000fb65541348bc997e80af4087",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/version.pl",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/version.pl?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/f8d8f555100a4000fb65541348bc997e80af4087",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/version.pl"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages?ref=v1.5.10' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site?ref=v1.5.10' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/search/code?q=repo:qos-ch/slf4j+extension+path:slf4j-site+ref:v1.5.10' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ exited 22 in 0ms:
+curl: (22) The requested URL returned error: 401
+
+ succeeded in 154ms:
+[
+  {
+    "name": "images.src",
+    "path": "slf4j-site/src/site/images.src",
+    "sha": "73d1bf322b83f3db88ec8e3f639ef6d751e75884",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/images.src?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-site/src/site/images.src",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/73d1bf322b83f3db88ec8e3f639ef6d751e75884",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/images.src?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/73d1bf322b83f3db88ec8e3f639ef6d751e75884",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-site/src/site/images.src"
+    }
+  },
+  {
+    "name": "pages",
+    "path": "slf4j-site/src/site/pages",
+    "sha": "793a37c58b5ca9cefa67d2d04d4f20c1864856b9",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-site/src/site/pages",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/793a37c58b5ca9cefa67d2d04d4f20c1864856b9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/793a37c58b5ca9cefa67d2d04d4f20c1864856b9",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-site/src/site/pages"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "slf4j-site/src/site/resources",
+    "sha": "ebdaaa3c2677112baf285144c6721cea343654ea",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/resources?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-site/src/site/resources",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/ebdaaa3c2677112baf285144c6721cea343654ea",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/resources?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/ebdaaa3c2677112baf285144c6721cea343654ea",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-site/src/site/resources"
+    }
+  }
+]
+
+ succeeded in 177ms:
+[
+  {
+    "name": ".htaccess",
+    "path": "slf4j-site/src/site/pages/.htaccess",
+    "sha": "eb903bf01a8ba0dbbedcb286ca68b78e4f31bbd0",
+    "size": 91,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/.htaccess?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/.htaccess",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/eb903bf01a8ba0dbbedcb286ca68b78e4f31bbd0",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-site/src/site/pages/.htaccess",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/.htaccess?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/eb903bf01a8ba0dbbedcb286ca68b78e4f31bbd0",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/.htaccess"
+    }
+  },
+  {
+    "name": "bug-reporting.html",
+    "path": "slf4j-site/src/site/pages/bug-reporting.html",
+    "sha": "1f14692c774dd7ca79c56a2167d67cd19025b8de",
+    "size": 3172,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/bug-reporting.html?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/bug-reporting.html",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/1f14692c774dd7ca79c56a2167d67cd19025b8de",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-site/src/site/pages/bug-reporting.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/bug-reporting.html?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/1f14692c774dd7ca79c56a2167d67cd19025b8de",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/bug-reporting.html"
+    }
+  },
+  {
+    "name": "changes",
+    "path": "slf4j-site/src/site/pages/changes",
+    "sha": "3387b6dbd4ff0d36bef2d55a9039dc6074e229fd",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/changes?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-site/src/site/pages/changes",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/3387b6dbd4ff0d36bef2d55a9039dc6074e229fd",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/changes?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/3387b6dbd4ff0d36bef2d55a9039dc6074e229fd",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-site/src/site/pages/changes"
+    }
+  },
+  {
+    "name": "codes.html",
+    "path": "slf4j-site/src/site/pages/codes.html",
+    "sha": "e84ba22093b08f49676d7ca1f26eed28fa36f419",
+    "size": 11067,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/codes.html?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/codes.html",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/e84ba22093b08f49676d7ca1f26eed28fa36f419",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-site/src/site/pages/codes.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/codes.html?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/e84ba22093b08f49676d7ca1f26eed28fa36f419",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/codes.html"
+    }
+  },
+  {
+    "name": "compatibility.html",
+    "path": "slf4j-site/src/site/pages/compatibility.html",
+    "sha": "cc3f6b5420d8d3b9db1e761f6d02dff8f5d76049",
+    "size": 8669,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/compatibility.html?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/compatibility.html",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/cc3f6b5420d8d3b9db1e761f6d02dff8f5d76049",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-site/src/site/pages/compatibility.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/compatibility.html?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/cc3f6b5420d8d3b9db1e761f6d02dff8f5d76049",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/compatibility.html"
+    }
+  },
+  {
+    "name": "css",
+    "path": "slf4j-site/src/site/pages/css",
+    "sha": "51100c6f973590590e11ff069328e126c40587f7",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/css?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-site/src/site/pages/css",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/51100c6f973590590e11ff069328e126c40587f7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/css?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/51100c6f973590590e11ff069328e126c40587f7",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-site/src/site/pages/css"
+    }
+  },
+  {
+    "name": "docs.html",
+    "path": "slf4j-site/src/site/pages/docs.html",
+    "sha": "c7d4eb96a7adae7594b4cbcc93c49838280bd014",
+    "size": 4133,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/docs.html?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/docs.html",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/c7d4eb96a7adae7594b4cbcc93c49838280bd014",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-site/src/site/pages/docs.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/docs.html?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/c7d4eb96a7adae7594b4cbcc93c49838280bd014",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/docs.html"
+    }
+  },
+  {
+    "name": "download.html",
+    "path": "slf4j-site/src/site/pages/download.html",
+    "sha": "f9f8b482c57c6b044b6ad62695e9749e4f4b0615",
+    "size": 2267,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/download.html?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/download.html",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/f9f8b482c57c6b044b6ad62695e9749e4f4b0615",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-site/src/site/pages/download.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/download.html?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/f9f8b482c57c6b044b6ad62695e9749e4f4b0615",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/download.html"
+    }
+  },
+  {
+    "name": "extensions.html",
+    "path": "slf4j-site/src/site/pages/extensions.html",
+    "sha": "fea45ac081ca84659097649ef09924d337b42234",
+    "size": 35737,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/extensions.html?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/extensions.html",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/fea45ac081ca84659097649ef09924d337b42234",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-site/src/site/pages/extensions.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/extensions.html?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/fea45ac081ca84659097649ef09924d337b42234",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/extensions.html"
+    }
+  },
+  {
+    "name": "faq.html",
+    "path": "slf4j-site/src/site/pages/faq.html",
+    "sha": "55cf6da0f339248302f6492f422837b35d2ffb7d",
+    "size": 50464,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/faq.html?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/faq.html",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/55cf6da0f339248302f6492f422837b35d2ffb7d",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-site/src/site/pages/faq.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/faq.html?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/55cf6da0f339248302f6492f422837b35d2ffb7d",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/faq.html"
+    }
+  },
+  {
+    "name": "inde_base.html",
+    "path": "slf4j-site/src/site/pages/inde_base.html",
+    "sha": "83bbef9fb7ba800255690dba35337ca29eddcfc2",
+    "size": 667,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/inde_base.html?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/inde_base.html",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/83bbef9fb7ba800255690dba35337ca29eddcfc2",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-site/src/site/pages/inde_base.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/inde_base.html?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/83bbef9fb7ba800255690dba35337ca29eddcfc2",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/inde_base.html"
+    }
+  },
+  {
+    "name": "index.html",
+    "path": "slf4j-site/src/site/pages/index.html",
+    "sha": "764e18f35b22da71abb1c675ecb7229a9bc69f37",
+    "size": 1866,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/index.html?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/index.html",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/764e18f35b22da71abb1c675ecb7229a9bc69f37",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-site/src/site/pages/index.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/index.html?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/764e18f35b22da71abb1c675ecb7229a9bc69f37",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/index.html"
+    }
+  },
+  {
+    "name": "js",
+    "path": "slf4j-site/src/site/pages/js",
+    "sha": "7dd92cef2c33f68e88deb586e9d96583504bad40",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/js?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-site/src/site/pages/js",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/7dd92cef2c33f68e88deb586e9d96583504bad40",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/js?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/7dd92cef2c33f68e88deb586e9d96583504bad40",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-site/src/site/pages/js"
+    }
+  },
+  {
+    "name": "legacy.html",
+    "path": "slf4j-site/src/site/pages/legacy.html",
+    "sha": "598b4942a9b834a094e4a5c649864af8be2afba9",
+    "size": 10755,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/legacy.html?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/legacy.html",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/598b4942a9b834a094e4a5c649864af8be2afba9",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-site/src/site/pages/legacy.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/legacy.html?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/598b4942a9b834a094e4a5c649864af8be2afba9",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/legacy.html"
+    }
+  },
+  {
+    "name": "license.html",
+    "path": "slf4j-site/src/site/pages/license.html",
+    "sha": "d482300478af0e4315c8c1b06e2eb3de5698655b",
+    "size": 2833,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/license.html?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/license.html",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/d482300478af0e4315c8c1b06e2eb3de5698655b",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-site/src/site/pages/license.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/license.html?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/d482300478af0e4315c8c1b06e2eb3de5698655b",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/license.html"
+    }
+  },
+  {
+    "name": "localization.html",
+    "path": "slf4j-site/src/site/pages/localization.html",
+    "sha": "56b6c0bc935010686812ccbffb6d6be87f6480b6",
+    "size": 5560,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/localization.html?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/localization.html",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/56b6c0bc935010686812ccbffb6d6be87f6480b6",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-site/src/site/pages/localization.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/localization.html?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/56b6c0bc935010686812ccbffb6d6be87f6480b6",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/localization.html"
+    }
+  },
+  {
+    "name": "mailing-lists.html",
+    "path": "slf4j-site/src/site/pages/mailing-lists.html",
+    "sha": "84b262b6ccbc405aaebf8957192973e55682bd93",
+    "size": 4769,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/mailing-lists.html?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/mailing-lists.html",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/84b262b6ccbc405aaebf8957192973e55682bd93",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-site/src/site/pages/mailing-lists.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/mailing-lists.html?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/84b262b6ccbc405aaebf8957192973e55682bd93",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/mailing-lists.html"
+    }
+  },
+  {
+    "name": "manual.html",
+    "path": "slf4j-site/src/site/pages/manual.html",
+    "sha": "8b9b58e2a055b54159e58fdf5344961beaf7548a",
+    "size": 13021,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/manual.html?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/manual.html",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/8b9b58e2a055b54159e58fdf5344961beaf7548a",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-site/src/site/pages/manual.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/manual.html?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/8b9b58e2a055b54159e58fdf5344961beaf7548a",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/manual.html"
+    }
+  },
+  {
+    "name": "migrator.html",
+    "path": "slf4j-site/src/site/pages/migrator.html",
+    "sha": "d1dc58d53afed4aef1dee9ed8842e4f40abe14a9",
+    "size": 6443,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/migrator.html?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/migrator.html",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/d1dc58d53afed4aef1dee9ed8842e4f40abe14a9",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-site/src/site/pages/migrator.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/migrator.html?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/d1dc58d53afed4aef1dee9ed8842e4f40abe14a9",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/migrator.html"
+    }
+  },
+  {
+    "name": "news.html",
+    "path": "slf4j-site/src/site/pages/news.html",
+    "sha": "0af1d80267212e21780a57a74282b61b5e5128ca",
+    "size": 43519,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/news.html?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/news.html",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/0af1d80267212e21780a57a74282b61b5e5128ca",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-site/src/site/pages/news.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/news.html?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/0af1d80267212e21780a57a74282b61b5e5128ca",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/news.html"
+    }
+  },
+  {
+    "name": "repos.html",
+    "path": "slf4j-site/src/site/pages/repos.html",
+    "sha": "e2682aa0486f511fc42daaa1bf094dd25b653ef6",
+    "size": 2941,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/repos.html?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/repos.html",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/e2682aa0486f511fc42daaa1bf094dd25b653ef6",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-site/src/site/pages/repos.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/repos.html?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/e2682aa0486f511fc42daaa1bf094dd25b653ef6",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/repos.html"
+    }
+  },
+  {
+    "name": "support.html",
+    "path": "slf4j-site/src/site/pages/support.html",
+    "sha": "ceac6b74451003ba81b51d35e87ab36f3f429723",
+    "size": 1105,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/support.html?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/support.html",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/ceac6b74451003ba81b51d35e87ab36f3f429723",
+    "download_url": "https://raw.githubusercontent.com/qos-ch/slf4j/v1.5.10/slf4j-site/src/site/pages/support.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/support.html?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/blobs/ceac6b74451003ba81b51d35e87ab36f3f429723",
+      "html": "https://github.com/qos-ch/slf4j/blob/v1.5.10/slf4j-site/src/site/pages/support.html"
+    }
+  },
+  {
+    "name": "templates",
+    "path": "slf4j-site/src/site/pages/templates",
+    "sha": "3cf978e353b1a136e92d7ada9515d1fb909a64f7",
+    "size": 0,
+    "url": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/templates?ref=v1.5.10",
+    "html_url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-site/src/site/pages/templates",
+    "git_url": "https://api.github.com/repos/qos-ch/slf4j/git/trees/3cf978e353b1a136e92d7ada9515d1fb909a64f7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/qos-ch/slf4j/contents/slf4j-site/src/site/pages/templates?ref=v1.5.10",
+      "git": "https://api.github.com/repos/qos-ch/slf4j/git/trees/3cf978e353b1a136e92d7ada9515d1fb909a64f7",
+      "html": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-site/src/site/pages/templates"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/slf4j/slf4j-parent/1.5.10/slf4j-parent-1.5.10.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.slf4j</groupId>
+	<artifactId>slf4j-parent</artifactId>
+	<version>1.5.10</version>
+
+	<packaging>pom</packaging>
+	<name>SLF4J</name>
+
+	<url>http://www.slf4j.org</url>
+
+	<organization>
+		<name>QOS.ch</name>
+		<url>http://www.qos.ch</url>
+	</organization>
+	<inceptionYear>2005</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>http://www.opensource.org/licenses/mit-license.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <properties>
+    <slf4j.api.minimum.compatible.version>1.5.5</slf4j.api.minimum.compatible.version>
+    <cal10n.version>0.7.2</cal10n.version>
+  </properties>
+
+
+	<modules>
+		<module>slf4j-api</module>
+    <module>slf4j-simple</module>  
+    <module>slf4j-nop</module>
+		<module>slf4j-jdk14</module>
+    <module>slf4j-log4j12</module>
+    <module>slf4j-jcl</module>
+    <module>slf4j-ext</module>  
+    <module>jcl-over-slf4j</module>
+    <module>jcl104-over-slf4j</module>
+    <module>log4j-over-slf4j</module>
+    <module>jul-to-slf4j</module>
+    <module>integration</module>
+    <module>slf4j-site</module>
+    <module>slf4j-migrator</module>
+  </modules>
+
+	<dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+		</dependency>
+	</dependencies>
+
+ 
+ <dependencyManagement>
+    <dependencies>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-jdk14</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.14</version>
+      </dependency>
+
+    <dependency>
+      <groupId>ch.qos.cal10n</groupId>
+      <artifactId>cal10n-api</artifactId>
+      <version>${cal10n.version}</version>
+    </dependency>		
+
+   </dependencies>
+ </dependencyManagement>
+
+
+	<build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.3</source>
+					<target>1.3</target>
+				</configuration>
+			</plugin>
+ 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<forkMode>once</forkMode>
+					<reportFormat>plain</reportFormat>
+					<trimStackTrace>false</trimStackTrace>
+					<excludes>
+						<exclude>**/AllTest.java</exclude>
+						<exclude>**/PackageTest.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>		
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>        
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>              
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+        	<aggregate>true</aggregate>
+          <excludePackageNames>org.slf4j.migrator:org.slf4j.migrator.*</excludePackageNames>
+					<links>
+						<link>
+							http://java.sun.com/j2se/1.5.0/docs/api
+						</link>
+					</links>
+          <groups>
+            <group>
+              <title>SLF4J packages</title>
+              <packages>org.slf4j:org.slf4j.*</packages>
+            </group>
+
+            <group>
+              <title>SLF4J extensions</title>
+              <packages>org.slf4j.profiler:org.slf4j.ext:org.slf4j.instrumentation:org.slf4j.agent</packages>
+            </group>
+
+            <group>
+              <title>Jakarta Commons Logging packages</title>
+              <packages>org.apache.commons.*</packages>
+            </group>
+
+            <group>
+              <title>Apache log4j</title>
+              <packages>org.apache.log4j</packages>
+            </group>
+
+            <group>
+              <title>java.util.logging (JUL) to SLF4J bridge</title>
+              <packages>org.slf4j.bridge</packages>
+            </group>
+
+          </groups>
+        </configuration>
+      </plugin>
+
+
+      <!-- as suggested in http://bugzilla.slf4j.org/show_bug.cgi?id=152 -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>parse-version</id>
+            <goals>
+              <goal>parse-version</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+	</build>
+
+  <profiles>
+    <profile>
+      <id>skipTests</id>     
+      <properties>
+        <maven.test.skip>true</maven.test.skip>
+      </properties>
+    </profile>
+     <profile>
+      <id>osgi</id>
+      <modules>
+         <module>osgi-over-slf4j</module>
+         <module>slf4j-osgi-test-bundle</module>
+         <module>slf4j-osgi-integration-test</module>
+      </modules>
+
+      <repositories>
+        <repository>
+          <id>m2apache.snapshots</id>
+          <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+
+        <repository>
+          <id>springframework.org</id>
+          <name>Springframework Maven SNAPSHOT Repository</name>
+          <url>http://static.springframework.org/maven2-snapshots/</url>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+
+      </repositories>
+
+      <pluginRepositories>
+        <pluginRepository>
+          <id>apache.snapshots</id>
+          <name>Apache Snapshot Plugin Repository</name>
+          <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled> 
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+
+    </profile>
+  </profiles>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>apache.snapshots</id>
+      <name>Apache Snapshot Plugin Repository</name>
+      <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled> 
+     </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+  
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<reportSets>
+					<reportSet><reports/></reportSet>
+				</reportSets>
+			</plugin>	    
+      
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <descriptors>
+            <descriptor>
+              src/main/assembly/source.xml
+            </descriptor>
+          </descriptors>
+					<finalName>slf4j-${project.version}</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
+					<outputDirectory>target/site/dist/</outputDirectory>
+				</configuration>
+			</plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <configuration>
+          <aggregate>true</aggregate>
+          <javadocDir>target/site/apidocs/</javadocDir>
+          <linkJavadoc>true</linkJavadoc>
+        </configuration>
+      </plugin>
+
+
+    </plugins>
+
+	</reporting>
+	
+	  
+  <scm>
+		<connection>scm:svn:http://svn.slf4j.org/repos/slf4j/trunk</connection>
+		<developerConnection>scm:svn:https://svn.slf4j.org/repos/slf4j/trunk</developerConnection>
+		<url>http://svn.slf4j.org/viewvc/slf4j/trunk/</url>
+	</scm>
+	
+	<distributionManagement>
+		<site>
+			<id>pixie</id>
+			<url>scp://pixie.qos.ch/var/www/www.slf4j.org/htdocs/</url>
+		</site>
+
+    <repository>
+      <id>pixie</id>
+      <url>scp://pixie.qos.ch/var/mvnrepo/</url>
+    </repository>
+
+	</distributionManagement>
+  
+</project>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/slf4j/slf4j-ext/1.5.10/slf4j-ext-1.5.10-sources.jar -o /tmp/slf4j-ext-1.5.10-sources.jar && jar tf /tmp/slf4j-ext-1.5.10-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo1.maven.org/maven2/org/slf4j/slf4j-ext/1.5.10/slf4j-ext-1.5.10-test-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo1.maven.org/maven2/org/slf4j/slf4j-ext/1.5.10/slf4j-ext-1.5.10-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 204ms:
+HTTP/2 404 
+date: Wed, 29 Apr 2026 21:42:53 GMT
+content-type: text/html
+cf-ray: 9f417aa6cf1ba032-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/slf4j/slf4j-ext/1.5.10/slf4j-ext-1.5.10-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 348ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/slf4j/
+org/slf4j/agent/
+org/slf4j/cal10n/
+org/slf4j/ext/
+org/slf4j/instrumentation/
+org/slf4j/profiler/
+org/slf4j/agent/AgentOptions.java
+org/slf4j/agent/AgentPremain.java
+org/slf4j/agent/package.html
+org/slf4j/cal10n/LocLogger.java
+org/slf4j/cal10n/LocLoggerFactory.java
+org/slf4j/ext/EventData.java
+org/slf4j/ext/EventException.java
+org/slf4j/ext/EventLogger.java
+org/slf4j/ext/LoggerWrapper.java
+org/slf4j/ext/MDCStrLookup.java
+org/slf4j/ext/package.html
+org/slf4j/ext/XLogger.java
+org/slf4j/ext/XLoggerFactory.java
+org/slf4j/instrumentation/JavassistHelper.java
+org/slf4j/instrumentation/LogTransformer.java
+org/slf4j/instrumentation/package.html
+org/slf4j/instrumentation/ToStringHelper.java
+org/slf4j/NDC.java
+org/slf4j/profiler/DurationUnit.java
+org/slf4j/profiler/package.html
+org/slf4j/profiler/Profiler.java
+org/slf4j/profiler/ProfilerRegistry.java
+org/slf4j/profiler/SpacePadder.java
+org/slf4j/profiler/StopWatch.java
+org/slf4j/profiler/TimeInstrument.java
+org/slf4j/profiler/TimeInstrumentStatus.java
+org/slf4j/profiler/Util.java
+
+ succeeded in 2985ms:
+HTTP/2 404 
+date: Wed, 29 Apr 2026 21:42:56 GMT
+content-type: text/html
+cf-ray: 9f417aa70d4fc126-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/slf4j/slf4j-ext/1.5.10/slf4j-ext-1.5.10-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "rg 'documentation-url' -n . | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+./skills/review-library-bulk-update/SKILL.md:3:description: Review automated pull requests with the `library-bulk-update` label in graalvm-reachability-metadata. Use when asked to review or triage a PR that bumps tested versions for existing libraries, including approve vs close decisions, CI checks, diff-scope validation, and verification of `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` changes.
+./skills/review-library-bulk-update/SKILL.md:57:   - Review `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` with the same rules used by `PopulateArtifactURLs`.
+./skills/review-library-bulk-update/SKILL.md:69:- `source-code-url`, `test-code-url`, and `documentation-url` must point to the exact library version in the changed entry.
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:181:                .containsEntry("documentation-url", "https://example.com/docs")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:227:                .containsEntry("documentation-url", "https://example.com/docs")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:58:                .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", \"description\", and \"language\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:61:                .contains("Set missing \"documentation-url\" to the selected project documentation URL for version \"1.4.1\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:223:                    "documentation-url": "https://example.com/docs-a",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/org.apache.commons/commons-compress/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-javadoc.jar",
+./metadata/org.apache.commons/commons-compress/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-javadoc.jar",
+./metadata/org.apache.commons/commons-dbcp2/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-javadoc.jar",
+./metadata/org.apache.commons/commons-text/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-javadoc.jar",
+./metadata/org.apache.commons/commons-pool2/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-javadoc.jar",
+./metadata/org.apache.commons/commons-lang3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-javadoc.jar",
+./metadata/org.apache.commons/commons-collections4/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-javadoc.jar",
+./metadata/org.example/library/index.json:12:    "documentation-url": "N/A",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:40:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-core/index.json:82:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-javadoc.jar",
+./metadata/org.jetbrains.kotlin/kotlin-test/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/2.0.21/kotlin-test-2.0.21-javadoc.jar",
+./metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-javadoc.jar",
+./metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:8:    "documentation-url" : "https://github.com/JetBrains/kotlin/releases/tag/v2.3.20",
+./metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-javadoc.jar",
+./metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.7.10/kotlin-reflect-1.7.10-javadoc.jar",
+./metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:8:    "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v1.5.31/libraries/stdlib/ReadMe.md",
+./metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-javadoc.jar",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-javadoc.jar",
+./metadata/oro/oro/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/jakarta/oro/tags/oro-2.0.8/docs/index.html",
+./metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-javadoc.jar",
+./metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-javadoc.jar",
+./metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-javadoc.jar",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:169:                - Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+./metadata/org.jboss.resteasy/resteasy-client/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/resteasy/resteasy-client/6.2.12.Final/resteasy-client-6.2.12.Final-javadoc.jar",
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:194:    task.setDescription("Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:302:                null, // documentation-url
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-javadoc.jar",
+./metadata/org.jooq/jooq/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.20.0/jooq-3.20.0-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"' -n . | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:28:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:18:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:353:                    - Set "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:354:                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:362:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:366:                - Set missing "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:367:                - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:169:                - Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:179:                .containsEntry("repository-url", "https://example.com/repository")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:225:                .containsEntry("repository-url", "https://example.com/repository")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:221:                    "repository-url": "https://example.com/repository-a",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+./metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+./forge/utility_scripts/source_context.py:216:        repository_url=normalize_url_value(index_entry.get("repository-url")),
+./docs/CONTRIBUTING.md:141:     "repository-url": "https://github.com/example/repo",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:6:    "repository-url" : "https://github.com/jbossinterceptors/jbossinterceptors",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+./metadata/com.sun.mail/jakarta.mail/index.json:10:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:6:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:6:    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+./metadata/org.postgresql/postgresql/index.json:6:    "repository-url" : "https://github.com/pgjdbc/pgjdbc",
+./metadata/org.postgresql/postgresql/index.json:28:    "repository-url" : "https://github.com/pgjdbc/pgjdbc",
+./metadata/javax.servlet/javax.servlet-api/index.json:6:    "repository-url" : "https://github.com/javaee/servlet-spec",
+./metadata/org.eclipse.aether/aether-util/index.json:6:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git",
+./metadata/org.eclipse.aether/aether-api/index.json:6:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git/tree/",
+./metadata/org.eclipse.aether/aether-spi/index.json:6:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git/tree/",
+./metadata/org.eclipse.aether/aether-impl/index.json:6:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:7:    "repository-url": "https://github.com/spotbugs/spotbugs",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:6:    "repository-url" : "https://github.com/FasterXML/stax2-api",
+./metadata/org.dom4j/dom4j/index.json:6:    "repository-url" : "https://github.com/dom4j/dom4j",
+./metadata/org.latencyutils/LatencyUtils/index.json:6:    "repository-url" : "https://github.com/LatencyUtils/LatencyUtils",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:7:    "repository-url": "https://github.com/fusesource/hawtbuf",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/validation",
+./metadata/org.xmlunit/xmlunit-core/index.json:6:    "repository-url" : "https://github.com/xmlunit/xmlunit",
+./metadata/aopalliance/aopalliance/index.json:6:    "repository-url" : "https://sourceforge.net/p/aopalliance/code/",
+./metadata/javax.annotation/jsr250-api/index.json:7:    "repository-url": "N/A",
+./metadata/javax.annotation/javax.annotation-api/index.json:6:    "repository-url" : "https://github.com/javaee/javax.annotation",
+
+exec
+/usr/bin/bash -lc "find . -path '*artifact-metadata*' -type f | head -50" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+./build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.apache.commons/commons-compress/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+[
+  {
+    "metadata-version" : "1.21",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-sources.jar",
+    "repository-url" : "https://github.com/apache/commons-compress",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-test-sources.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-javadoc.jar",
+    "description" : "Apache Commons Compress provides APIs for reading and writing common archive and compression formats. It supports formats such as ZIP, TAR, 7z, AR, CPIO, GZIP, BZIP2, XZ, LZ4, Brotli, and Zstandard.",
+    "tested-versions" : [
+      "1.21"
+    ],
+    "allowed-packages" : [
+      "org.apache.commons.compress"
+    ]
+  },
+  {
+    "latest" : true,
+    "metadata-version" : "1.23.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-sources.jar",
+    "repository-url" : "https://github.com/apache/commons-compress",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-test-sources.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-javadoc.jar",
+    "description" : "Apache Commons Compress provides APIs for reading and writing common archive and compression formats. It supports formats such as ZIP, TAR, 7z, AR, CPIO, GZIP, BZIP2, XZ, LZ4, Brotli, and Zstandard.",
+    "tested-versions" : [
+      "1.23.0",
+      "1.24.0",
+      "1.25.0",
+      "1.26.0",
+      "1.26.1",
+      "1.26.2",
+      "1.27.0",
+      "1.27.1",
+      "1.28.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.commons"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '320,390p' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+exec
+/usr/bin/bash -lc "sed -n '150,190p' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+                indexFile,
+                metadataVersion,
+                urlUpdateInstructions,
+                currentValue(target.entry.sourceCodeUrl()),
+                currentValue(target.entry.repositoryUrl()),
+                currentValue(target.entry.testCodeUrl()),
+                currentValue(target.entry.documentationUrl()),
+                currentValue(target.entry.description()),
+                currentLanguageValue(target.entry),
+                target.version,
+                testVersion
+        ).strip();
+    }
+
+    private static String sourceArtifactVerificationInstructions(boolean verifyArtifactSources, String version) {
+        if (!verifyArtifactSources) {
+            return "";
+        }
+        return """
+                Source Artifact Verification (required):
+                - Verify candidate source URLs for version "%s", including Maven and non-Maven candidates.
+                - If you use Maven source artifacts, confirm `-sources.jar` contains real source files (`.java`, `.kt`, `.scala`, `.groovy`), not only metadata/license files.
+                - If you use Maven test-source artifacts, confirm `-test-sources.jar` contains real test source files.
+                - For non-Maven source/test URLs (for example repository tree pages or downloadable archives), verify that the selected URL resolves to real source/test files for the exact version.
+                - If a candidate source/test URL fails this verification, do not use it. Prefer a verified repository tag URL instead.
+                """.formatted(version).strip();
+    }
+
+    private static String urlUpdateInstructions(boolean overwriteExisting, String version) {
+        if (overwriteExisting) {
+            return """
+                    - Overwrite existing URL values.
+                    - Set "source-code-url" to the selected source URL.
+                    - Set "repository-url" to the selected repository URL.
+                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+                    - Set "test-code-url" to the selected test suite URL.
+                    - Set "documentation-url" to the selected project documentation URL for version "%s".
+                    - Set "description" to a concise explanation of the library in exactly two sentences.
+                    - Set "language" to the structured language object when the library is language-specific; otherwise leave the field absent.
+                    """.formatted(version).strip();
+        }
+        return """
+                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+                - A field is missing only when absent, null, or blank.
+                - Do not modify fields that already contain a non-blank value.
+                - Set missing "source-code-url" to the selected source URL.
+                - Set missing "repository-url" to the selected repository URL.
+                - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+                - Set missing "test-code-url" to the selected test suite URL.
+                - Set missing "documentation-url" to the selected project documentation URL for version "%s".
+                - Set missing "description" to a concise explanation of the library in exactly two sentences.
+                - Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+                """.formatted(version).strip();
+    }
+
+    private static String currentValue(String value) {
+        return hasText(value) ? value : "<missing>";
+    }
+
+    private static String currentLanguageValue(MetadataVersionsIndexEntry entry) {
+        if (entry.language() == null) {
+            return "<missing>";
+        }
+        return "{\"name\": \"%s\", \"version\": \"%s\"}".formatted(entry.language().name(), entry.language().version());
+    }
+
+    private List<String> buildInvocation(List<String> commandTokens, String prompt) {
+        List<String> invocation = new ArrayList<>(commandTokens.size() + 1);
+        boolean replaced = false;
+        for (String token : commandTokens) {
+            if (token.contains(PROMPT_PLACEHOLDER)) {
+
+ succeeded in 0ms:
+
+    private String buildPrompt(Coordinates parsedCoordinates, Path discoveryFile) {
+        return """
+                Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: %s
+                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+                - { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+                - { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+                - { "name": "scala", "version": "2" } for Scala 2 libraries
+                - { "name": "scala", "version": "3" } for Scala 3 libraries
+                If the library is not language-specific, leave the "language" field absent.
+                The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "%s".
+                The source, test suite, and documentation URLs should point to the right tag of the library.
+                If we have these source of these artifacts on maven, that should be prefered.
+                If there are tests on maven that should also be prefered.
+                The "description" field must explain what the library does in exactly two sentences.
+
+                Update this file directly:
+                - File: %s
+                - Set "coordinates" to "%s".
+                - Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+                - Set "description" to the selected two-sentence explanation.
+                - If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+                - Keep the JSON valid and consistently formatted.
+                """.formatted(
+                parsedCoordinates.toString(),
+                parsedCoordinates.version(),
+                discoveryFile.toString().replace('\\', '/'),
+                parsedCoordinates.toString()
+        ).strip();
+    }
+
+    private List<String> buildInvocation(List<String> commandTokens, String prompt) {
+        List<String> invocation = new ArrayList<>(commandTokens.size() + 1);
+        boolean replaced = false;
+        for (String token : commandTokens) {
+            if (token.contains(PROMPT_PLACEHOLDER)) {
+                invocation.add(token.replace(PROMPT_PLACEHOLDER, prompt));
+                replaced = true;
+            } else {
+                invocation.add(token);
+            }
+
+exec
+/usr/bin/bash -lc "rg '\"documentation-url\" : \"https://github.com/.*/blob/' metadata | head -20" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+metadata/org.apache.ant/ant-antlr/index.json:    "documentation-url" : "https://github.com/apache/ant/blob/rel/1.10.15/manual/Tasks/antlr.html",
+metadata/org.flywaydb/flyway-sqlserver/index.json:    "documentation-url" : "https://github.com/flyway/flyway/blob/flyway-10.19.0/documentation/Flyway%20CLI%20and%20API/Supported%20Databases/SQL%20Server%20Database.md",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/1.5.0/jackrabbit-jcr-commons/README.txt",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:    "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v1.5.31/libraries/stdlib/ReadMe.md",
+metadata/org.apache.tomcat/tomcat-juli/index.json:    "documentation-url" : "https://github.com/apache/tomcat/blob/10.1.7/webapps/docs/logging.xml",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v1.19.0/sdk/metrics/README.md",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/0.12.0/README.md",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/0.11.5/README.md",
+metadata/io.jsonwebtoken/jjwt-api/index.json:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/0.11.5/README.md",
+metadata/io.jsonwebtoken/jjwt-api/index.json:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/0.12.3/README.md",
+metadata/org.slf4j/slf4j-nop/index.json:    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html",
+metadata/org.slf4j/slf4j-nop/index.json:    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.3/slf4j-site/src/site/pages/manual.html",
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:    "documentation-url" : "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/README.md",
+metadata/org.thymeleaf/thymeleaf/index.json:    "documentation-url" : "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.1.0.RELEASE/README.txt",
+metadata/org.thymeleaf/thymeleaf/index.json:    "documentation-url" : "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.1.0.M2/README.txt",
+metadata/io.opentelemetry/opentelemetry-sdk-trace/index.json:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v1.19.0/sdk/trace/README.md",
+metadata/org.slf4j/slf4j-jdk14/index.json:    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html",
+metadata/org.glassfish/javax.transaction/index.json:    "documentation-url" : "https://github.com/javaee/glassfish/blob/3.1/transaction/javax.transaction/src/main/java/javax/transaction/package.html",
+metadata/commons-logging/commons-logging-api/index.json:    "documentation-url" : "https://github.com/apache/commons-logging/blob/LOGGING_1_1_0/xdocs/guide.xml",
+metadata/org.jboss/jandex/index.json:    "documentation-url" : "https://github.com/smallrye/jandex/blob/2.4.2.Final/README.md",
+
+exec
+/usr/bin/bash -lc "find metadata/org.slf4j -maxdepth 2 -name index.json -print -exec sed -n '1,80p' {} \\;" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+metadata/org.slf4j/log4j-over-slf4j/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.7.25",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/log4j-over-slf4j/1.7.25/log4j-over-slf4j-1.7.25-sources.jar",
+    "repository-url" : "https://github.com/qos-ch/slf4j",
+    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_1.7.25/log4j-over-slf4j/src/test/java",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/log4j-over-slf4j/1.7.25/log4j-over-slf4j-1.7.25-javadoc.jar",
+    "description" : "log4j-over-slf4j provides replacement classes for the Log4j version 1 API that route logging calls to SLF4J. It lets applications and dependencies written against Log4j use the SLF4J binding selected by the application without keeping a Log4j version 1 runtime implementation on the classpath.",
+    "tested-versions" : [
+      "1.7.25",
+      "1.7.26",
+      "1.7.27",
+      "1.7.28",
+      "1.7.29",
+      "1.7.30",
+      "1.7.31",
+      "1.7.32",
+      "1.7.33",
+      "1.7.34",
+      "1.7.35",
+      "1.7.36",
+      "1.8.0-alpha0",
+      "1.8.0-alpha1",
+      "1.8.0-alpha2",
+      "1.8.0-beta0",
+      "1.8.0-beta1",
+      "1.8.0-beta2",
+      "1.8.0-beta4",
+      "2.0.0",
+      "2.0.1",
+      "2.0.2",
+      "2.0.3",
+      "2.0.4",
+      "2.0.5",
+      "2.0.6",
+      "2.0.7",
+      "2.0.8",
+      "2.0.9",
+      "2.0.10",
+      "2.0.11",
+      "2.0.12",
+      "2.0.13",
+      "2.0.14",
+      "2.0.15",
+      "2.0.16",
+      "2.0.17",
+      "2.1.0-alpha0",
+      "2.1.0-alpha1"
+    ],
+    "allowed-packages" : [
+      "org.apache.log4j"
+    ]
+  }
+]
+metadata/org.slf4j/slf4j-jdk14/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.5.6",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-jdk14/1.5.6/slf4j-jdk14-1.5.6-sources.jar",
+    "repository-url" : "https://github.com/qos-ch/slf4j",
+    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-jdk14/src/test",
+    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html",
+    "description" : "SLF4J JDK14 binding routes SLF4J API logging calls to Java's built-in java.util.logging framework. It provides the runtime provider needed for applications using SLF4J 1.5.6 to emit logs through the JDK 1.4 logging system.",
+    "tested-versions" : [
+      "1.5.6"
+    ],
+    "allowed-packages" : [
+      "org.slf4j.impl"
+    ]
+  }
+]
+metadata/org.slf4j/slf4j-nop/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.5.6",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
+    "repository-url" : "https://github.com/qos-ch/slf4j",
+    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
+    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html",
+    "description" : "SLF4J NOP is a no-operation binding implementation for the SLF4J logging facade. It fulfills the required SLF4J backend dependency while intentionally discarding all log output.",
+    "tested-versions" : [
+      "1.5.6"
+    ],
+    "allowed-packages" : [
+      "org.slf4j.impl"
+    ]
+  },
+  {
+    "metadata-version" : "1.5.3",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.3/slf4j-nop-1.5.3-sources.jar",
+    "repository-url" : "https://github.com/qos-ch/slf4j",
+    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.3/slf4j-nop/src/test/java",
+    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.3/slf4j-site/src/site/pages/manual.html",
+    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+    "tested-versions" : [
+      "1.5.3",
+      "1.5.4",
+      "1.5.5"
+    ],
+    "allowed-packages" : [
+      "org.slf4j.impl"
+    ]
+  }
+]
+metadata/org.slf4j/slf4j-simple/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.7.25",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/1.7.25/slf4j-simple-1.7.25-sources.jar",
+    "repository-url" : "https://github.com/qos-ch/slf4j",
+    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_1.7.25/slf4j-simple/src/test/java",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/1.7.25/slf4j-simple-1.7.25-javadoc.jar",
+    "description" : "SLF4J Simple is a lightweight SLF4J binding that routes SLF4J logging calls to a simple logger implementation. It writes log output to System.err by default and is intended as a basic logging backend for applications or tests that do not need a full logging framework.",
+    "tested-versions" : [
+      "1.7.25",
+      "1.7.26",
+      "1.7.27",
+      "1.7.28",
+      "1.7.29",
+      "1.7.30",
+      "1.7.31"
+    ],
+    "allowed-packages" : [
+      "org.slf4j.impl"
+    ]
+  }
+]
+metadata/org.slf4j/slf4j-api/index.json
+[
+  {
+    "metadata-version" : "1.5.3",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3-sources.jar",
+    "repository-url" : "https://github.com/qos-ch/slf4j",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3-tests.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.3/slf4j-site-1.5.3-sources.jar",
+    "description" : "SLF4J defines a common logging API for Java applications and libraries. It lets code route log messages to different logging implementations without changing application code.",
+    "tested-versions" : [
+      "1.5.3"
+    ],
+    "allowed-packages" : [
+      "org.slf4j"
+    ]
+  },
+  {
+    "latest" : true,
+    "metadata-version" : "1.7.36",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-sources.jar",
+    "repository-url" : "https://github.com/qos-ch/slf4j",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-tests.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-javadoc.jar",
+    "description" : "SLF4J defines a common logging API for Java applications and libraries. It lets code route log messages to different logging implementations without changing application code.",
+    "tested-versions" : [
+      "1.7.36",
+      "1.8.0-alpha0",
+      "1.8.0-alpha1",
+      "1.8.0-alpha2",
+      "1.8.0-beta0",
+      "1.8.0-beta1",
+      "1.8.0-beta2",
+      "1.8.0-beta4",
+      "2.0.0",
+      "2.0.1",
+      "2.0.2",
+      "2.0.3",
+      "2.0.4",
+      "2.0.5",
+      "2.0.6",
+      "2.0.7",
+      "2.0.8",
+      "2.0.9",
+      "2.0.10",
+      "2.0.11",
+      "2.0.12",
+      "2.0.13",
+      "2.0.14",
+      "2.0.15",
+      "2.0.16",
+      "2.0.17",
+      "2.1.0-alpha0",
+      "2.1.0-alpha1"
+    ],
+    "allowed-packages" : [
+      "org.slf4j"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/qos-ch/slf4j/git/matching-refs/tags/SLF4J_1.5.10' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 168ms:
+[
+
+]
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo.maven.apache.org/maven2/org/slf4j/slf4j-ext/1.5.10/slf4j-ext-1.5.10-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 29 Apr 2026 21:43:28 GMT
+content-type: application/java-archive
+content-length: 35091
+cf-ray: 9f417b7ffd35039b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 94667
+etag: "02370fcc980b5bb3cadfa7c06113fb19"
+last-modified: Wed, 02 Dec 2009 23:38:10 GMT
+x-checksum-md5: 02370fcc980b5bb3cadfa7c06113fb19
+x-checksum-sha1: 2b20760db992a79e85e90ea1c79b81fe037c1e5c
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.10/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/slf4j/slf4j-site/1.5.10</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/slf4j/slf4j-site/1.5.10</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="slf4j-site-1.5.10-sources.jar" title="slf4j-site-1.5.10-sources.jar">slf4j-site-1.5.10-sources.jar</a>                     2009-12-02 23:38     79940      
+<a href="slf4j-site-1.5.10-sources.jar.md5" title="slf4j-site-1.5.10-sources.jar.md5">slf4j-site-1.5.10-sources.jar.md5</a>                 2009-12-02 23:38        32      
+<a href="slf4j-site-1.5.10-sources.jar.sha1" title="slf4j-site-1.5.10-sources.jar.sha1">slf4j-site-1.5.10-sources.jar.sha1</a>                2009-12-02 23:38        40      
+<a href="slf4j-site-1.5.10.jar" title="slf4j-site-1.5.10.jar">slf4j-site-1.5.10.jar</a>                             2009-12-02 23:38      1750      
+<a href="slf4j-site-1.5.10.jar.md5" title="slf4j-site-1.5.10.jar.md5">slf4j-site-1.5.10.jar.md5</a>                         2009-12-02 23:38        32      
+<a href="slf4j-site-1.5.10.jar.sha1" title="slf4j-site-1.5.10.jar.sha1">slf4j-site-1.5.10.jar.sha1</a>                        2009-12-02 23:38        40      
+<a href="slf4j-site-1.5.10.pom" title="slf4j-site-1.5.10.pom">slf4j-site-1.5.10.pom</a>                             2009-12-02 23:38      1511      
+<a href="slf4j-site-1.5.10.pom.md5" title="slf4j-site-1.5.10.pom.md5">slf4j-site-1.5.10.pom.md5</a>                         2009-12-02 23:38        32      
+<a href="slf4j-site-1.5.10.pom.sha1" title="slf4j-site-1.5.10.pom.sha1">slf4j-site-1.5.10.pom.sha1</a>                        2009-12-02 23:38        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo1.maven.org/maven2/org/slf4j/slf4j-ext/1.5.10/slf4j-ext-1.5.10-tests.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 233ms:
+HTTP/2 404 
+date: Wed, 29 Apr 2026 21:43:28 GMT
+content-type: text/html
+cf-ray: 9f417b7ff95b03b5-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/slf4j/slf4j-ext/1.5.10/slf4j-ext-1.5.10-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.10/slf4j-site-1.5.10-sources.jar -o /tmp/slf4j-site-1.5.10-sources.jar && jar tf /tmp/slf4j-site-1.5.10-sources.jar | rg 'extensions|manual|docs'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 246ms:
+../../../target/site/docs.html
+../../../target/site/extensions.html
+../../../target/site/manual.html
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo.maven.apache.org/maven2/org/slf4j/slf4j-site/1.5.10/slf4j-site-1.5.10-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 159ms:
+HTTP/2 200 
+date: Wed, 29 Apr 2026 21:43:39 GMT
+content-type: application/java-archive
+content-length: 79940
+cf-ray: 9f417bc7eb22df5e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "64b16e260a44ad6319481d0ddc63953f"
+last-modified: Wed, 02 Dec 2009 23:38:53 GMT
+x-checksum-md5: 64b16e260a44ad6319481d0ddc63953f
+x-checksum-sha1: 9f49442b225e4f9f0c7a98801ec4a6f4ca7507b1
+server: cloudflare
+
+2026-04-29T21:43:47.868376Z ERROR codex_core::tools::router: error=exec_command failed for `/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.10/slf4j-site-1.5.10-sources.jar -o /tmp/slf4j-site-1.5.10-sources.jar && jar xf /tmp/slf4j-site-1.5.10-sources.jar ../../../target/site/extensions.html && sed -n '1,80p' ../../../target/site/extensions.html"`: CreateProcess { message: "Rejected(\"Failed to create unified exec process: No such file or directory (os error 2)\")" }
+exec
+/usr/bin/bash -lc "curl -I -L -s https://www.slf4j.org/api/org/slf4j/ext/package-summary.html | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+HTTP/1.1 200 OK
+Date: Wed, 29 Apr 2026 21:43:47 GMT
+Server: Apache/2.4.66 (Debian)
+Last-Modified: Tue, 25 Feb 2025 17:50:37 GMT
+ETag: "1af3-62efb182a5d93"
+Accept-Ranges: bytes
+Content-Length: 6899
+Vary: Accept-Encoding
+MirrodID: exo1.qos.ch
+Content-Type: text/html
+
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://www.slf4j.org/api-1.5.10/ | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+HTTP/1.1 404 Not Found
+Date: Wed, 29 Apr 2026 21:43:47 GMT
+Server: Apache/2.4.66 (Debian)
+Content-Type: text/html; charset=iso-8859-1
+
+
+exec
+/usr/bin/bash -lc "mkdir -p /tmp/slf4j-doc-extract && cd /tmp/slf4j-doc-extract && jar xf /tmp/slf4j-site-1.5.10-sources.jar ../../../target/site/extensions.html && sed -n '1,120p' ../../../target/site/extensions.html" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ exited 2 in 0ms:
+sed: can't read ../../../target/site/extensions.html: No such file or directory
+
+exec
+/usr/bin/bash -lc 'cd /tmp/slf4j-doc-extract && find . -maxdepth 5 -type f | head -40' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "jar tf /tmp/slf4j-site-1.5.10-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+../
+../../
+../../../
+../../../target/
+../../../target/site/
+../../../target/site/changes/
+../../../target/site/css/
+../../../target/site/js/
+../../../target/site/templates/
+../../../target/site/.htaccess
+../../../target/site/bug-reporting.html
+../../../target/site/changes/changes-1.3.txt
+../../../target/site/codes.html
+../../../target/site/compatibility.html
+../../../target/site/css/prettify.css
+../../../target/site/css/site.css
+../../../target/site/docs.html
+../../../target/site/download.html
+../../../target/site/extensions.html
+../../../target/site/faq.html
+../../../target/site/index.html
+../../../target/site/inde_base.html
+../../../target/site/js/prettify.js
+../../../target/site/legacy.html
+../../../target/site/license.html
+../../../target/site/localization.html
+../../../target/site/mailing-lists.html
+../../../target/site/manual.html
+../../../target/site/migrator.html
+../../../target/site/news.html
+../../../target/site/repos.html
+../../../target/site/support.html
+../../../target/site/templates/footer.js
+../../../target/site/templates/header.js
+../../../target/site/templates/left.js
+../../../target/site/templates/right.js
+
+codex
+Maven Central has a real `slf4j-ext-1.5.10-sources.jar`, but no `tests.jar`, `test-sources.jar`, or module javadoc jar for this artifact. The release tag has the module tests, and the versioned site source artifact exists for the documentation, so I’m using Maven where it is available and the tag for the tests.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json
+diff --git a/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json b/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json
+index 700256f72777b0bb41f33017c27bbf45ffbe95ba..779642302846e35221b6b518d9116700ecf48740
+--- a/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json
++++ b/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.slf4j:slf4j-ext:1.5.10"
++  "coordinates" : "org.slf4j:slf4j-ext:1.5.10",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-ext/1.5.10/slf4j-ext-1.5.10-sources.jar",
++  "repository-url" : "https://github.com/qos-ch/slf4j",
++  "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-ext/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-site/1.5.10/slf4j-site-1.5.10-sources.jar",
++  "description" : "SLF4J Extensions adds optional helper APIs on top of the SLF4J logging facade, including extended loggers, event logging, profiling utilities, mapped diagnostic context support, and instrumentation helpers. It lets Java applications use higher-level logging conveniences while still routing output through the SLF4J backend selected by the application."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json b/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json
+index 700256f72777b0bb41f33017c27bbf45ffbe95ba..779642302846e35221b6b518d9116700ecf48740
+--- a/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json
++++ b/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.slf4j:slf4j-ext:1.5.10"
++  "coordinates" : "org.slf4j:slf4j-ext:1.5.10",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-ext/1.5.10/slf4j-ext-1.5.10-sources.jar",
++  "repository-url" : "https://github.com/qos-ch/slf4j",
++  "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-ext/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-site/1.5.10/slf4j-site-1.5.10-sources.jar",
++  "description" : "SLF4J Extensions adds optional helper APIs on top of the SLF4J logging facade, including extended loggers, event logging, profiling utilities, mapped diagnostic context support, and instrumentation helpers. It lets Java applications use higher-level logging conveniences while still routing output through the SLF4J backend selected by the application."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+{
+  "coordinates": "org.slf4j:slf4j-ext:1.5.10",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-ext/1.5.10/slf4j-ext-1.5.10-sources.jar",
+  "repository-url": "https://github.com/qos-ch/slf4j",
+  "test-code-url": "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-ext/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-site/1.5.10/slf4j-site-1.5.10-sources.jar",
+  "description": "SLF4J Extensions adds optional helper APIs on top of the SLF4J logging facade, including extended loggers, event logging, profiling utilities, mapped diagnostic context support, and instrumentation helpers. It lets Java applications use higher-level logging conveniences while still routing output through the SLF4J backend selected by the application."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json b/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json
+index 700256f72777b0bb41f33017c27bbf45ffbe95ba..779642302846e35221b6b518d9116700ecf48740
+--- a/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json
++++ b/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.slf4j:slf4j-ext:1.5.10"
++  "coordinates" : "org.slf4j:slf4j-ext:1.5.10",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-ext/1.5.10/slf4j-ext-1.5.10-sources.jar",
++  "repository-url" : "https://github.com/qos-ch/slf4j",
++  "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-ext/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-site/1.5.10/slf4j-site-1.5.10-sources.jar",
++  "description" : "SLF4J Extensions adds optional helper APIs on top of the SLF4J logging facade, including extended loggers, event logging, profiling utilities, mapped diagnostic context support, and instrumentation helpers. It lets Java applications use higher-level logging conveniences while still routing output through the SLF4J backend selected by the application."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json && git ls-files --error-unmatch build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json >/dev/null 2>&1; echo tracked=$?' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052
+ succeeded in 0ms:
+tracked=1
+
+diff --git a/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json b/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json
+index 700256f72777b0bb41f33017c27bbf45ffbe95ba..779642302846e35221b6b518d9116700ecf48740
+--- a/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json
++++ b/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.slf4j:slf4j-ext:1.5.10"
++  "coordinates" : "org.slf4j:slf4j-ext:1.5.10",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-ext/1.5.10/slf4j-ext-1.5.10-sources.jar",
++  "repository-url" : "https://github.com/qos-ch/slf4j",
++  "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-ext/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-site/1.5.10/slf4j-site-1.5.10-sources.jar",
++  "description" : "SLF4J Extensions adds optional helper APIs on top of the SLF4J logging facade, including extended loggers, event logging, profiling utilities, mapped diagnostic context support, and instrumentation helpers. It lets Java applications use higher-level logging conveniences while still routing output through the SLF4J backend selected by the application."
+ }
+
+codex
+Updated [org.slf4j-slf4j-ext-1.5.10.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json) with the discovered source, repository, test, documentation URLs, and a two-sentence description.
+
+I left `language` absent because `org.slf4j:slf4j-ext` is not Kotlin, Groovy, or Scala-specific. Validation: `jq .` parsed the JSON successfully.
+diff --git a/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json b/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json
+index 700256f72777b0bb41f33017c27bbf45ffbe95ba..779642302846e35221b6b518d9116700ecf48740
+--- a/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json
++++ b/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.slf4j:slf4j-ext:1.5.10"
++  "coordinates" : "org.slf4j:slf4j-ext:1.5.10",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-ext/1.5.10/slf4j-ext-1.5.10-sources.jar",
++  "repository-url" : "https://github.com/qos-ch/slf4j",
++  "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v1.5.10/slf4j-ext/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-site/1.5.10/slf4j-site-1.5.10-sources.jar",
++  "description" : "SLF4J Extensions adds optional helper APIs on top of the SLF4J logging facade, including extended loggers, event logging, profiling utilities, mapped diagnostic context support, and instrumentation helpers. It lets Java applications use higher-level logging conveniences while still routing output through the SLF4J backend selected by the application."
+ }
+
+2026-04-29T21:44:18.981432Z ERROR codex_core::session: failed to record rollout items: thread 019ddb31-30cd-73b1-a4f9-86177f5082c3 not found
+tokens used
+80,397
+Updated [org.slf4j-slf4j-ext-1.5.10.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052/build/discovered-artifact-metadata/org.slf4j-slf4j-ext-1.5.10.json) with the discovered source, repository, test, documentation URLs, and a two-sentence description.
+
+I left `language` absent because `org.slf4j:slf4j-ext` is not Kotlin, Groovy, or Scala-specific. Validation: `jq .` parsed the JSON successfully.
+Ran agent for org.slf4j:slf4j-ext:1.5.10 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052/build/agent-artifact-discovery-logs/org.slf4j-slf4j-ext-1.5.10.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2877-300fe052/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 12s
+9 actionable tasks: 4 executed, 5 from cache
