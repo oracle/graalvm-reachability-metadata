@@ -16,13 +16,6 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs += [
-        "--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED",
-        "--add-exports=java.base/jdk.internal.reflect=ALL-UNNAMED"
-    ]
-}
-
 tasks.withType(Test).configureEach {
     jvmArgs += [
         "-Dorg.modelmapper.internal.bytebuddy.safe=false",
