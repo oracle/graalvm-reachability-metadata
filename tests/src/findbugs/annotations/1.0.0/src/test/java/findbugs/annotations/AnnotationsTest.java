@@ -180,6 +180,15 @@ public class AnnotationsTest {
         assertThat(concreteFactory.issuedPlans()).isEqualTo(2);
     }
 
+    @Test
+    void overrideMustInvokeFirstSupportsBaseInitializationBeforeSubclassWork() {
+        SpecializedStartup startup = new SpecializedStartup("  Native Image  ");
+
+        assertThat(startup.start("  Metadata  ")).isEqualTo("native image:metadata:base:specialized");
+        assertThat(startup.trace()).isEqualTo("base->specialized");
+        assertThat(startup.isStarted()).isTrue();
+    }
+
     private static CheckForNull checkForNull() {
         return new CheckForNull() {
             @Override
@@ -607,6 +616,51 @@ public class AnnotationsTest {
 
         private String coordinate() {
             return group + ":" + taskName + ":" + sequence;
+        }
+    }
+
+    private static class StartupBase {
+        private final String name;
+        private final StringBuilder trace = new StringBuilder();
+        private boolean started;
+
+        private StartupBase(String name) {
+            this.name = normalize(name);
+        }
+
+        @OverrideMustInvoke(When.FIRST)
+        String start(String detail) {
+            started = true;
+            appendTrace("base");
+            return name + ":" + normalize(detail) + ":base";
+        }
+
+        final void appendTrace(String step) {
+            if (trace.length() > 0) {
+                trace.append("->");
+            }
+            trace.append(step);
+        }
+
+        final String trace() {
+            return trace.toString();
+        }
+
+        final boolean isStarted() {
+            return started;
+        }
+    }
+
+    private static final class SpecializedStartup extends StartupBase {
+        private SpecializedStartup(String name) {
+            super(name);
+        }
+
+        @Override
+        String start(String detail) {
+            String initialized = super.start(detail);
+            appendTrace("specialized");
+            return initialized + ":specialized";
         }
     }
 
