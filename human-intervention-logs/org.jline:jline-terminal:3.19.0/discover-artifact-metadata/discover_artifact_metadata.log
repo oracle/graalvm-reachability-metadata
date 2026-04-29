@@ -1,0 +1,1364 @@
+Starting a Gradle Daemon, 5 busy and 16 incompatible and 119 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd6e8-b041-7862-b76a-b997adb0277a
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jline:jline-terminal:3.19.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.19.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json
+- Set "coordinates" to "org.jline:jline-terminal:3.19.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates against Maven and the upstream tag, then update the JSON in place with exact-version URLs where they can be established confidently.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jline:jline-terminal:3.19.0"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.jline-jline-terminal-3\\.19\\.0\\.json|org\\.jline'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json
+
+web search: 
+web search: Maven Central org.jline jline-terminal 3.19.0 sources jar
+codex
+The metadata file currently only has coordinates. I’m checking repository conventions too, because these generated JSON files often prefer Maven artifact URLs for sources/tests when classifiers are available.
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "find . -path '*org.jline*' -o -path '*jline*' | head -80" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+./stats/org.jline
+./stats/org.jline/jline
+./stats/org.jline/jline/3.21.0
+./stats/org.jline/jline/3.21.0/stats.json
+./stats/org.jline/jline-terminal-jna
+./stats/org.jline/jline-terminal-jna/3.20.0
+./stats/org.jline/jline-terminal-jna/3.20.0/stats.json
+./stats/jline
+./stats/jline/jline
+./stats/jline/jline/2.14.6
+./stats/jline/jline/2.14.6/stats.json
+./metadata/org.jline
+./metadata/org.jline/jline-terminal
+./metadata/org.jline/jline-terminal/index.json
+./metadata/org.jline/jline
+./metadata/org.jline/jline/index.json
+./metadata/org.jline/jline/3.21.0
+./metadata/org.jline/jline/3.21.0/reachability-metadata.json
+./metadata/org.jline/jline-console
+./metadata/org.jline/jline-console/index.json
+./metadata/org.jline/jline-terminal-jna
+./metadata/org.jline/jline-terminal-jna/index.json
+./metadata/org.jline/jline-terminal-jna/3.20.0
+./metadata/org.jline/jline-terminal-jna/3.20.0/reachability-metadata.json
+./metadata/jline
+./metadata/jline/jline
+./metadata/jline/jline/index.json
+./metadata/jline/jline/2.14.6
+./metadata/jline/jline/2.14.6/reachability-metadata.json
+./build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json
+./build/agent-artifact-discovery-logs/org.jline-jline-terminal-3.19.0.log
+./tests/src/org.jline
+./tests/src/org.jline/jline
+./tests/src/org.jline/jline/3.21.0
+./tests/src/org.jline/jline/3.21.0/gradle.properties
+./tests/src/org.jline/jline/3.21.0/src
+./tests/src/org.jline/jline/3.21.0/src/test
+./tests/src/org.jline/jline/3.21.0/src/test/java
+./tests/src/org.jline/jline/3.21.0/src/test/java/org
+./tests/src/org.jline/jline/3.21.0/src/test/java/org/graalvm
+./tests/src/org.jline/jline/3.21.0/src/test/java/org/graalvm/jline
+./tests/src/org.jline/jline/3.21.0/src/test/java/org/graalvm/jline/BasicTerminalTests.java
+./tests/src/org.jline/jline/3.21.0/settings.gradle
+./tests/src/org.jline/jline/3.21.0/build.gradle
+./tests/src/org.jline/jline-terminal-jna
+./tests/src/org.jline/jline-terminal-jna/3.20.0
+./tests/src/org.jline/jline-terminal-jna/3.20.0/user-code-filter.json
+./tests/src/org.jline/jline-terminal-jna/3.20.0/gradle.properties
+./tests/src/org.jline/jline-terminal-jna/3.20.0/.gitignore
+./tests/src/org.jline/jline-terminal-jna/3.20.0/src
+./tests/src/org.jline/jline-terminal-jna/3.20.0/src/test
+./tests/src/org.jline/jline-terminal-jna/3.20.0/src/test/java
+./tests/src/org.jline/jline-terminal-jna/3.20.0/src/test/java/org
+./tests/src/org.jline/jline-terminal-jna/3.20.0/src/test/java/org/graalvm
+./tests/src/org.jline/jline-terminal-jna/3.20.0/src/test/java/org/graalvm/jline
+./tests/src/org.jline/jline-terminal-jna/3.20.0/src/test/java/org/graalvm/jline/JnaNativePtyTest.java
+./tests/src/org.jline/jline-terminal-jna/3.20.0/settings.gradle
+./tests/src/org.jline/jline-terminal-jna/3.20.0/build.gradle
+./tests/src/jline
+./tests/src/jline/jline
+./tests/src/jline/jline/2.14.6
+./tests/src/jline/jline/2.14.6/user-code-filter.json
+./tests/src/jline/jline/2.14.6/gradle.properties
+./tests/src/jline/jline/2.14.6/.gitignore
+./tests/src/jline/jline/2.14.6/src
+./tests/src/jline/jline/2.14.6/src/test
+./tests/src/jline/jline/2.14.6/src/test/java
+./tests/src/jline/jline/2.14.6/src/test/java/com
+./tests/src/jline/jline/2.14.6/src/test/java/com/cloudius
+./tests/src/jline/jline/2.14.6/src/test/java/com/cloudius/util
+./tests/src/jline/jline/2.14.6/src/test/java/com/cloudius/util/Stty.java
+./tests/src/jline/jline/2.14.6/src/test/java/org
+./tests/src/jline/jline/2.14.6/src/test/java/org/graalvm
+./tests/src/jline/jline/2.14.6/src/test/java/org/graalvm/jline
+./tests/src/jline/jline/2.14.6/src/test/java/org/graalvm/jline/ConsoleReaderTest.java
+./tests/src/jline/jline/2.14.6/src/test/java/org/graalvm/jline/OSvTerminalTest.java
+./tests/src/jline/jline/2.14.6/src/test/java/org/graalvm/jline/HawtjniRuntimeLibraryTest.java
+./tests/src/jline/jline/2.14.6/src/test/java/org/graalvm/jline/CandidateListCompletionHandlerMessagesTest.java
+./tests/src/jline/jline/2.14.6/src/test/java/org/graalvm/jline/ConsoleRunnerTest.java
+./tests/src/jline/jline/2.14.6/src/test/java/org/graalvm/jline/TerminalFactoryTest.java
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 162ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jline/jline-terminal/3.19.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jline/jline-terminal/3.19.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jline-terminal-3.19.0-javadoc.jar" title="jline-terminal-3.19.0-javadoc.jar">jline-terminal-3.19.0-javadoc.jar</a>                 2021-01-19 09:16    918362      
+<a href="jline-terminal-3.19.0-javadoc.jar.asc" title="jline-terminal-3.19.0-javadoc.jar.asc">jline-terminal-3.19.0-javadoc.jar.asc</a>             2021-01-19 09:16       833      
+<a href="jline-terminal-3.19.0-javadoc.jar.md5" title="jline-terminal-3.19.0-javadoc.jar.md5">jline-terminal-3.19.0-javadoc.jar.md5</a>             2021-01-19 09:16        32      
+<a href="jline-terminal-3.19.0-javadoc.jar.sha1" title="jline-terminal-3.19.0-javadoc.jar.sha1">jline-terminal-3.19.0-javadoc.jar.sha1</a>            2021-01-19 09:16        40      
+<a href="jline-terminal-3.19.0-sources.jar" title="jline-terminal-3.19.0-sources.jar">jline-terminal-3.19.0-sources.jar</a>                 2021-01-19 09:16    139815      
+<a href="jline-terminal-3.19.0-sources.jar.asc" title="jline-terminal-3.19.0-sources.jar.asc">jline-terminal-3.19.0-sources.jar.asc</a>             2021-01-19 09:16       833      
+<a href="jline-terminal-3.19.0-sources.jar.md5" title="jline-terminal-3.19.0-sources.jar.md5">jline-terminal-3.19.0-sources.jar.md5</a>             2021-01-19 09:16        32      
+<a href="jline-terminal-3.19.0-sources.jar.sha1" title="jline-terminal-3.19.0-sources.jar.sha1">jline-terminal-3.19.0-sources.jar.sha1</a>            2021-01-19 09:16        40      
+<a href="jline-terminal-3.19.0.jar" title="jline-terminal-3.19.0.jar">jline-terminal-3.19.0.jar</a>                         2021-01-19 09:16    228495      
+<a href="jline-terminal-3.19.0.jar.asc" title="jline-terminal-3.19.0.jar.asc">jline-terminal-3.19.0.jar.asc</a>                     2021-01-19 09:16       833      
+<a href="jline-terminal-3.19.0.jar.md5" title="jline-terminal-3.19.0.jar.md5">jline-terminal-3.19.0.jar.md5</a>                     2021-01-19 09:16        32      
+<a href="jline-terminal-3.19.0.jar.sha1" title="jline-terminal-3.19.0.jar.sha1">jline-terminal-3.19.0.jar.sha1</a>                    2021-01-19 09:16        40      
+<a href="jline-terminal-3.19.0.pom" title="jline-terminal-3.19.0.pom">jline-terminal-3.19.0.pom</a>                         2021-01-19 09:16      1254      
+<a href="jline-terminal-3.19.0.pom.asc" title="jline-terminal-3.19.0.pom.asc">jline-terminal-3.19.0.pom.asc</a>                     2021-01-19 09:16       833      
+<a href="jline-terminal-3.19.0.pom.md5" title="jline-terminal-3.19.0.pom.md5">jline-terminal-3.19.0.pom.md5</a>                     2021-01-19 09:16        32      
+<a href="jline-terminal-3.19.0.pom.sha1" title="jline-terminal-3.19.0.pom.sha1">jline-terminal-3.19.0.pom.sha1</a>                    2021-01-19 09:16        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0.pom' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2002-2020, the original author or authors.
+
+    This software is distributable under the BSD license. See the terms of the
+    BSD license in the documentation provided with this software.
+
+    https://opensource.org/licenses/BSD-3-Clause
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jline</groupId>
+        <artifactId>jline-parent</artifactId>
+        <version>3.19.0</version>
+    </parent>
+
+    <artifactId>jline-terminal</artifactId>
+    <name>JLine Terminal</name>
+
+    <properties>
+        <automatic.module.name>org.jline.terminal</automatic.module.name>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
+
+exec
+/usr/bin/bash -lc "rg 'source-code-url' -g '*.json' . | head -80" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+./metadata/com.google.guava/listenablefuture/index.json:    "source-code-url": "https://github.com/google/guava/tree/v27.0/futures/listenablefuture9999",
+./metadata/com.google.guava/failureaccess/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-sources.jar",
+./metadata/com.google.android/annotations/index.json:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.jctools/jctools-core/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+./metadata/org.apache.commons/commons-compress/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-sources.jar",
+./metadata/org.apache.commons/commons-compress/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-sources.jar",
+./metadata/org.apache.commons/commons-dbcp2/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/org.apache.commons/commons-text/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-sources.jar",
+./metadata/javax.activation/activation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/org.apache.commons/commons-pool2/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-sources.jar",
+./metadata/org.apache.commons/commons-lang3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+./metadata/io.opencensus/opencensus-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/0.31.1/opencensus-api-0.31.1-sources.jar",
+./metadata/org.apache.commons/commons-collections4/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/2.0.0.CR1/jboss-interceptor-spi-2.0.0.CR1-sources.jar",
+./metadata/org.example/library/index.json:    "source-code-url": "N/A",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-sources.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/1.5.0/jackrabbit-jcr-commons-1.5.0-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-sources.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-sources.jar",
+./metadata/com.itextpdf/kernel/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-sources.jar",
+./metadata/log4j/log4j/index.json:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.70/bcpkix-jdk15on-1.70-sources.jar",
+./metadata/com.rabbitmq/amqp-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/5.12.0/amqp-client-5.12.0-sources.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-sources.jar",
+./metadata/com.itextpdf/forms/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-sources.jar",
+./metadata/org.openjfx/javafx-base/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.5.31/kotlin-stdlib-common-1.5.31-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/2.3.20/kotlin-script-runtime-2.3.20-sources.jar",
+./metadata/org.springframework/spring-instrument/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/5.3.31/spring-instrument-5.3.31-sources.jar",
+./metadata/com.itextpdf/layout/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-sources.jar",
+./metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-sources.jar",
+./metadata/com.itextpdf/svg/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/8.0.3/svg-8.0.3-sources.jar",
+./metadata/org.awaitility/awaitility/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.7.10/kotlin-reflect-1.7.10-sources.jar",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-sources.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+./metadata/com.itextpdf/io/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/8.0.3/io-8.0.3-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.36.0/artemis-jms-client-2.36.0-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.32.0/artemis-jms-client-2.32.0-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.29.0/artemis-jms-client-2.29.0-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.28.0/artemis-jms-client-2.28.0-sources.jar",
+./metadata/org.scalatest/scalatest-compatible/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-sources.jar",
+./metadata/org.yaml/snakeyaml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.32/snakeyaml-1.32-sources.jar",
+./metadata/oro/oro/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/2.0.8/oro-2.0.8-sources.jar",
+./metadata/org.jboss.logmanager/jboss-logmanager/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-sources.jar",
+./metadata/org.jboss.logmanager/jboss-logmanager/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.0.GA/jboss-logmanager-1.2.0.GA-sources.jar",
+./metadata/org.eclipse.aether/aether-util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-sources.jar",
+./metadata/org.eclipse.aether/aether-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-sources.jar",
+./metadata/org.mortbay.jetty/servlet-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/2.5-20081211/servlet-api-2.5-20081211-sources.jar",
+./metadata/commons-cli/commons-cli/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/1.5.0/commons-cli-1.5.0-sources.jar",
+./metadata/com.googlecode.javaewah/JavaEWAH/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/googlecode/javaewah/JavaEWAH/1.1.13/JavaEWAH-1.1.13-sources.jar",
+./metadata/org.apache.activemq/activemq-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/6.0.0/activemq-client-6.0.0-sources.jar",
+./metadata/org.apache.activemq/activemq-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/5.18.1/activemq-client-5.18.1-sources.jar",
+./metadata/org.eclipse.aether/aether-spi/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-spi/1.0.2.v20150114/aether-spi-1.0.2.v20150114-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-sources.jar",
+./metadata/io.r2dbc/r2dbc-spi/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/0.9.1.RELEASE/r2dbc-spi-0.9.1.RELEASE-sources.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/3.2.0/java-dataloader-3.2.0-sources.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jline/jline-parent/3.19.0/jline-parent-3.19.0.pom' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2002-2020, the original author or authors.
+
+    This software is distributable under the BSD license. See the terms of the
+    BSD license in the documentation provided with this software.
+
+    https://opensource.org/licenses/BSD-3-Clause
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>9</version>
+    </parent>
+
+    <groupId>org.jline</groupId>
+    <artifactId>jline-parent</artifactId>
+    <name>JLine Parent</name>
+    <description>JLine</description>
+    <version>3.19.0</version>
+    <packaging>pom</packaging>
+
+    <licenses>
+        <license>
+            <name>The BSD License</name>
+            <url>https://opensource.org/licenses/BSD-3-Clause</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/jline/jline3.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/jline/jline3.git</developerConnection>
+        <url>http://github.com/jline/jline3</url>
+    <tag>jline-parent-3.19.0</tag>
+  </scm>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/jline/jline3/issues</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>travis</system>
+        <url>https://travis-ci.org/jline/jline3</url>
+    </ciManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>jline-users</name>
+            <post>mailto:jline-users@googlegroups.com</post>
+            <unsubscribe>mailto:jline-users+unsubscribe@googlegroups.com</unsubscribe>
+            <subscribe>https://groups.google.com/group/jline-users</subscribe>
+            <archive>https://groups.google.com/group/jline-users</archive>
+        </mailingList>
+    </mailingLists>
+
+    <developers>
+        <developer>
+            <id>gnodet</id>
+            <name>Guillaume Nodet</name>
+            <email>gnodet@gmail.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <native.image.skip>true</native.image.skip>
+        <automatic.module.name />
+
+        <jna.version>5.3.1</jna.version>
+        <jansi.version>2.1.0</jansi.version>
+        <juniversalchardet.version>1.0.3</juniversalchardet.version>
+        <sshd.version>2.1.0</sshd.version>
+        <easymock.version>3.3.1</easymock.version>
+        <junit.version>4.13.1</junit.version>
+        <gogo.runtime.version>1.1.2</gogo.runtime.version>
+        <gogo.jline.version>1.1.4</gogo.jline.version>
+        <slf4j.version>1.7.21</slf4j.version>
+        <findbugs.version>3.0.2</findbugs.version>
+        <groovy.version>3.0.7</groovy.version>
+        <ivy.version>2.5.0</ivy.version>
+        <graal.version>19.3.1</graal.version>
+
+        <surefire.argLine />
+    </properties>
+
+    <prerequisites>
+        <maven>3.5.0</maven>
+    </prerequisites>
+
+    <repositories>
+        <repository>
+            <id>apache-snapshots</id>
+            <name>Apache Snapshots</name>
+            <url>https://repository.apache.org/content/groups/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-terminal</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-terminal-jansi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-terminal-jna</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-reader</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-builtins</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-remote-ssh</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-remote-telnet</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-style</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-groovy</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-console</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.fusesource.jansi</groupId>
+                <artifactId>jansi</artifactId>
+                <version>${jansi.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna</artifactId>
+                <version>${jna.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.googlecode.juniversalchardet</groupId>
+                <artifactId>juniversalchardet</artifactId>
+                <version>${juniversalchardet.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.sshd</groupId>
+                <artifactId>sshd-common</artifactId>
+                <version>${sshd.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.sshd</groupId>
+                <artifactId>sshd-core</artifactId>
+                <version>${sshd.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.sshd</groupId>
+                <artifactId>sshd-scp</artifactId>
+                <version>${sshd.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.sshd</groupId>
+                <artifactId>sshd-sftp</artifactId>
+                <version>${sshd.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.gogo.runtime</artifactId>
+                <version>${gogo.runtime.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.gogo.jline</artifactId>
+                <version>${gogo.jline.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>${groovy.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-json</artifactId>
+                <version>${groovy.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-console</artifactId>
+                <version>${groovy.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.graalvm.sdk</groupId>
+                <artifactId>graal-sdk</artifactId>
+                <version>${graal.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.ivy</groupId>
+                <artifactId>ivy</artifactId>
+                 <version>${ivy.version}</version>
+            </dependency>        
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-jdk14</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>${easymock.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>${findbugs.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <defaultGoal>install</defaultGoal>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                        <showWarnings>true</showWarnings>
+                        <compilerArgs>
+                            <arg>-Xlint:all,-options</arg>
+                            <arg>-Werror</arg>
+                            <arg>-profile</arg>
+                            <arg>compact1</arg>
+                        </compilerArgs>
+                        <fork>true</fork>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>3.0.0-M1</version>
+                    <configuration>
+                        <deployAtEnd>true</deployAtEnd>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>com.mycila</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>3.0</version>
+                    <configuration>
+                        <encoding>UTF-8</encoding>
+                        <strictCheck>true</strictCheck>
+                        <useDefaultExcludes>false</useDefaultExcludes>
+                        <header>${project.basedir}/header.txt</header>
+                        <aggregate>true</aggregate>
+                        <includes>
+                            <include>**/pom.xml</include>
+                            <include>**/*.xml</include>
+                            <include>**/*.xsd</include>
+                            <include>**/*.xjb</include>
+                            <include>**/*.properties</include>
+                            <include>**/*.ini</include>
+                            <include>**/*.java</include>
+                            <include>**/*.groovy</include>
+                            <include>**/*.scala</include>
+                            <include>**/*.aj</include>
+                            <include>**/*.js</include>
+                            <include>**/*.css</include>
+                            <include>**/*.help</include>
+                            <include>**/*.proto</include>
+                            <include>**/*.sm</include>
+                            <include>**/*.bat</include>
+                            <include>**/*.xsl</include>
+                            <include>**/*.html</include>
+                            <include>**/*.vm</include>
+                            <include>**/*.md</include>
+                            <include>**/*.sh</include>
+                            <include>**/*.bash</include>
+                            <include>**/*.rb</include>
+                        </includes>
+                        <excludes>
+                            <exclude>**/target/**</exclude>
+                            <exclude>**/.*/**</exclude>
+                            <exclude>**/dependency-reduced-pom.xml</exclude>
+                            <exclude>**/nbactions*.xml</exclude>
+                            <exclude>**/nb-configuration.xml</exclude>
+                            <exclude>**/atlassian-ide-plugin.xml</exclude>
+                            <exclude>**/release.properties</exclude>
+                            <exclude>**/META-INF/services/**</exclude>
+                        </excludes>
+                        <mapping>
+                            <aj>JAVADOC_STYLE</aj>
+                            <groovy>SLASHSTAR_STYLE</groovy>
+                            <help>SCRIPT_STYLE</help>
+                            <ini>SCRIPT_STYLE</ini>
+                            <java>SLASHSTAR_STYLE</java>
+                            <md>XML_STYLE</md>
+                            <proto>DOUBLESLASH_STYLE</proto>
+                            <scala>SLASHSTAR_STYLE</scala>
+                            <sm>DOUBLESLASH_STYLE</sm>
+                            <vm>VELOCITY_STYLE</vm>
+                            <xjb>XML_STYLE</xjb>
+                        </mapping>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>1.6</version>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                            <configuration>
+                                <executable>gpg</executable>
+                                <gpgArguments>
+                                    <arg>--pinentry-mode</arg>
+                                    <arg>loopback</arg>
+                                </gpgArguments>
+                                <passphrase>${gpg.passphrase}</passphrase>
+                                <useAgent>true</useAgent>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>3.5.0</version>
+                <configuration>
+                    <instructions>
+                        <Export-Package>*;-noimport:=true</Export-Package>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <version>1.8.1</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                        <manifestEntries>
+                            <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <configuration>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <argLine>${surefire.argLine}</argLine>
+                    <failIfNoTests>false</failIfNoTests>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Bundle-Name>JLine Sources Bundle</Bundle-Name>
+                            <Bundle-SymbolicName>${project.groupId}.source</Bundle-SymbolicName>
+                            <Bundle-Version>${project.version}</Bundle-Version>
+                            <Eclipse-SourceBundle>${project.groupId};version="${project.version}"</Eclipse-SourceBundle>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.graalvm.nativeimage</groupId>
+                <artifactId>native-image-maven-plugin</artifactId>
+                <version>${graal.version}</version>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>bundle</id>
+            <activation>
+                <property>
+                    <name>!nobundle</name>
+                </property>
+            </activation>
+            <modules>
+                <module>jline</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>javadoc</id>
+            <activation>
+                <property>
+                    <name>!nojavadoc</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <configuration>
+                            <doclint>none</doclint>
+                            <notimestamp>true</notimestamp>
+                            <additionalOptions>${javadocOptions}</additionalOptions>
+                            <failOnError>false</failOnError>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>javadoc</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.commons</groupId>
+                                <artifactId>commons-lang3</artifactId>
+                                <version>3.7</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>java9</id>
+            <properties>
+                <surefire.argLine>--add-opens java.base/java.io=ALL-UNNAMED</surefire.argLine>
+            </properties>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.6.0</version>
+                        <configuration>
+                            <release>8</release>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>license-check</id>
+            <build>
+                <defaultGoal>com.mycila:license-maven-plugin:check</defaultGoal>
+            </build>
+        </profile>
+
+        <profile>
+            <id>license-format</id>
+            <build>
+                <defaultGoal>com.mycila:license-maven-plugin:format</defaultGoal>
+            </build>
+        </profile>
+
+        <profile>
+            <id>native-image</id>
+            <properties>
+                <native.image.skip>false</native.image.skip>
+            </properties>
+        </profile>
+    </profiles>
+
+    <modules>
+        <module>terminal</module>
+        <module>terminal-jna</module>
+        <module>terminal-jansi</module>
+        <module>reader</module>
+        <module>builtins</module>
+        <module>console</module>
+        <module>groovy</module>
+        <module>remote-ssh</module>
+        <module>remote-telnet</module>
+        <module>style</module>
+        <module>demo</module>
+        <module>graal</module>
+    </modules>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-test-sources.jar; curl -fsSL -I https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-tests.jar' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/jline/jline3/git/refs/tags/jline-parent-3.19.0' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 178ms:
+{
+  "ref": "refs/tags/jline-parent-3.19.0",
+  "node_id": "MDM6UmVmNjAxMTE2MjY6cmVmcy90YWdzL2psaW5lLXBhcmVudC0zLjE5LjA=",
+  "url": "https://api.github.com/repos/jline/jline3/git/refs/tags/jline-parent-3.19.0",
+  "object": {
+    "sha": "976a8f70fe0f51bf8db43662260724d17dba29ea",
+    "type": "tag",
+    "url": "https://api.github.com/repos/jline/jline3/git/tags/976a8f70fe0f51bf8db43662260724d17dba29ea"
+  }
+}
+
+ exited 22 in 542ms:
+curl: (22) The requested URL returned error: 404HTTP/2 404 
+date: Wed, 29 Apr 2026 01:44:53 GMT
+content-type: text/html
+cf-ray: 9f3a9fc43c13039c-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+HTTP/2 404 
+date: Wed, 29 Apr 2026 01:44:53 GMT
+content-type: text/html
+cf-ray: 9f3a9fc62cffbab6-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "rg 'documentation-url' metadata -g 'index.json' | head -80" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/javax.activation/activation/index.json:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:    "documentation-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:    "documentation-url" : "N/A",
+metadata/com.sun.mail/jakarta.mail/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/3.0.7/istack-commons-runtime-3.0.7-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/4.0.0/istack-commons-runtime-4.0.0-javadoc.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+metadata/org.eclipse.aether/aether-util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114-javadoc.jar",
+metadata/com.google.guava/listenablefuture/index.json:    "documentation-url": "N/A",
+metadata/org.jvnet.staxex/stax-ex/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8.2/stax-ex-1.8.2-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8/stax-ex-1.8-javadoc.jar",
+metadata/com.google.guava/failureaccess/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-javadoc.jar",
+metadata/org.eclipse.aether/aether-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-javadoc.jar",
+metadata/org.eclipse.aether/aether-spi/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-spi/1.0.2.v20150114/aether-spi-1.0.2.v20150114-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-3.10.8-jakarta-javadoc.jar",
+metadata/org.freemarker/freemarker/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/freemarker/freemarker/2.3.31/freemarker-2.3.31-javadoc.jar",
+metadata/com.google.android/annotations/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-javadoc.jar",
+metadata/org.eclipse.aether/aether-impl/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-impl/1.0.2.v20150114/aether-impl-1.0.2.v20150114-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-jackson/0.1.5/logback-jackson-0.1.5-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/0.31.1/opencensus-api-0.31.1-javadoc.jar",
+metadata/org.attoparser/attoparser/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/2.0.5.RELEASE/attoparser-2.0.5.RELEASE-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-classic/0.1.5/logback-json-classic-0.1.5-javadoc.jar",
+metadata/com.squareup.okio/okio/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-javadoc.jar",
+metadata/com.github.spotbugs/spotbugs-annotations/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-javadoc.jar",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:    "documentation-url" : "N/A",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:    "documentation-url" : "N/A",
+metadata/org.lz4/lz4-java/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-javadoc.jar",
+metadata/org.hamcrest/hamcrest-library/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3-javadoc.jar",
+metadata/commons-io/commons-io/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.17.0/commons-io-2.17.0-javadoc.jar",
+metadata/commons-io/commons-io/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.11.0/commons-io-2.11.0-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-json-core/index.json:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-core/0.1.5/logback-json-core-0.1.5-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-javadoc.jar",
+metadata/org.hamcrest/hamcrest-core/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3-javadoc.jar",
+metadata/commons-cli/commons-cli/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/1.5.0/commons-cli-1.5.0-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-javadoc.jar",
+metadata/commons-codec/commons-codec/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10-javadoc.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/7.4.0.202509020913-r/org.eclipse.jgit-7.4.0.202509020913-r-javadoc.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/6.5.0.202303070854-r/org.eclipse.jgit-6.5.0.202303070854-r-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-javadoc.jar",
+metadata/org.codehaus.woodstox/stax2-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-javadoc.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:    "documentation-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/docs",
+metadata/org.hamcrest/hamcrest/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/hamcrest/hamcrest/2.2/hamcrest-2.2-javadoc.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77-javadoc.jar",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/googlecode/javaewah/JavaEWAH/1.1.13/JavaEWAH-1.1.13-javadoc.jar",
+metadata/org.apache.commons/commons-text/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:    "documentation-url" : "https://zookeeper.apache.org/doc/r3.8.1/index.html",
+metadata/com.mchange/mchange-commons-java/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/mchange-commons-java/0.2.15/mchange-commons-java-0.2.15-javadoc.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/0.9.1.RELEASE/r2dbc-spi-0.9.1.RELEASE-javadoc.jar",
+metadata/org.antlr/antlr4-runtime/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/2.7.18/spring-boot-configuration-processor-2.7.18-javadoc.jar",
+metadata/org.latencyutils/LatencyUtils/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/latencyutils/LatencyUtils/2.0.3/LatencyUtils-2.0.3-javadoc.jar",
+metadata/org.apache.commons/commons-pool2/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.70/bcpkix-jdk15on-1.70-javadoc.jar",
+metadata/org.apache.kerby/kerby-asn1/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-asn1/1.0.1/kerby-asn1-1.0.1-javadoc.jar",
+metadata/com.microsoft.sqlserver/mssql-jdbc/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/12.2.0.jre11/mssql-jdbc-12.2.0.jre11-javadoc.jar",
+metadata/org.apache.commons/commons-lang3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-javadoc.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23-javadoc.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-javadoc.jar",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-javadoc.jar",
+metadata/org.apache.commons/commons-collections4/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-javadoc.jar",
+metadata/org.apache.kerby/kerby-config/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-config/1.0.1/kerby-config-1.0.1-javadoc.jar",
+metadata/org.jetbrains/annotations-java5/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/annotations-java5/23.0.0/annotations-java5-23.0.0-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.10/httpcore-4.4.10-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.9/httpcore-4.4.9-javadoc.jar",
+metadata/org.jetbrains/annotations/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/jetbrains/annotations/13.0/annotations-13.0-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-sources.jar; curl -fsSL -I https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-javadoc.jar; curl -fsSL -I https://javadoc.io/doc/org.jline/jline-terminal/3.19.0/' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/jline/jline3/contents/terminal?ref=jline-parent-3.19.0' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/jline/jline3/contents/terminal/src/test?ref=jline-parent-3.19.0' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 150ms:
+[
+  {
+    "name": "java",
+    "path": "terminal/src/test/java",
+    "sha": "30c7a7704590acdb4e6fec64f1584de4cc732756",
+    "size": 0,
+    "url": "https://api.github.com/repos/jline/jline3/contents/terminal/src/test/java?ref=jline-parent-3.19.0",
+    "html_url": "https://github.com/jline/jline3/tree/jline-parent-3.19.0/terminal/src/test/java",
+    "git_url": "https://api.github.com/repos/jline/jline3/git/trees/30c7a7704590acdb4e6fec64f1584de4cc732756",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jline/jline3/contents/terminal/src/test/java?ref=jline-parent-3.19.0",
+      "git": "https://api.github.com/repos/jline/jline3/git/trees/30c7a7704590acdb4e6fec64f1584de4cc732756",
+      "html": "https://github.com/jline/jline3/tree/jline-parent-3.19.0/terminal/src/test/java"
+    }
+  }
+]
+
+ succeeded in 164ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "terminal/pom.xml",
+    "sha": "b4a35a061a19b6155fffb3d73209553e5ff71cf7",
+    "size": 1254,
+    "url": "https://api.github.com/repos/jline/jline3/contents/terminal/pom.xml?ref=jline-parent-3.19.0",
+    "html_url": "https://github.com/jline/jline3/blob/jline-parent-3.19.0/terminal/pom.xml",
+    "git_url": "https://api.github.com/repos/jline/jline3/git/blobs/b4a35a061a19b6155fffb3d73209553e5ff71cf7",
+    "download_url": "https://raw.githubusercontent.com/jline/jline3/jline-parent-3.19.0/terminal/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jline/jline3/contents/terminal/pom.xml?ref=jline-parent-3.19.0",
+      "git": "https://api.github.com/repos/jline/jline3/git/blobs/b4a35a061a19b6155fffb3d73209553e5ff71cf7",
+      "html": "https://github.com/jline/jline3/blob/jline-parent-3.19.0/terminal/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "terminal/src",
+    "sha": "f74f3a57d37144da311fe2f869965651f55ebd21",
+    "size": 0,
+    "url": "https://api.github.com/repos/jline/jline3/contents/terminal/src?ref=jline-parent-3.19.0",
+    "html_url": "https://github.com/jline/jline3/tree/jline-parent-3.19.0/terminal/src",
+    "git_url": "https://api.github.com/repos/jline/jline3/git/trees/f74f3a57d37144da311fe2f869965651f55ebd21",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jline/jline3/contents/terminal/src?ref=jline-parent-3.19.0",
+      "git": "https://api.github.com/repos/jline/jline3/git/trees/f74f3a57d37144da311fe2f869965651f55ebd21",
+      "html": "https://github.com/jline/jline3/tree/jline-parent-3.19.0/terminal/src"
+    }
+  }
+]
+
+ succeeded in 443ms:
+HTTP/2 301 
+date: Wed, 29 Apr 2026 01:45:00 GMT
+content-length: 0
+location: /doc/org.jline/jline-terminal/3.19.0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=F5LXVZktXxXIxScWkzVRrkQq4kaDpzHdG5xQj9aEBZ7CxXokZ99VANGsWaXA3MQP3ONd8TjTYFq%2Brd2wvVf%2FF6OJZGYXYkKxky3exsc2yiCwwX1rRsFieU8y2hRK1ARHCRLzfkr5Amkm"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f3a9ff199243b52-GVA
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 303 
+date: Wed, 29 Apr 2026 01:45:00 GMT
+content-length: 0
+location: /doc/org.jline/jline-terminal/3.19.0/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=C4WthW%2Fsc8DckygDuS%2BaEWrsp%2Fb%2BabTBfaJpT8orAq3gQhJv3nWscTEZudg2ckHuBwctMFv3ARfSrqpXkH8P9Wafyh6YyyCy5j4YqBHUP6hSvqa%2FDawEDi2RFX1VGOe%2BopwyLeZ6uFNo"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f3a9ff249983b52-GVA
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Wed, 29 Apr 2026 01:45:00 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/org.jline/jline-terminal/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=0SYaOk8ERf2sb6ON6CECsyrzL4tV%2BsmKbKkRfDbUNcZccz%2ByTMj76ofG6oG%2Ftxv1eBVuxKCFzoEaFPiN4spiPcSQYxPkhFo440KSLVG0DNKggVo2%2BXX%2F89Czoaba14ofxV8LTgZlHqA2"}]}
+server: cloudflare
+cf-ray: 9f3a9ff2ea093b52-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+Maven Central publishes both the exact `3.19.0` sources and Javadoc jars, while no Maven test-sources/tests classifier exists for this artifact. The test URL will therefore use the upstream `jline-parent-3.19.0` tag for the `terminal` module tests.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json
+diff --git a/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json b/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json
+index 79a973bcc7a77d8471af7967c0bb2348aae4e4b7..81ec25d96d4751382cfe31859871493d5595cfa9
+--- a/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json
++++ b/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jline:jline-terminal:3.19.0"
++  "coordinates" : "org.jline:jline-terminal:3.19.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-sources.jar",
++  "repository-url" : "https://github.com/jline/jline3",
++  "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.19.0/terminal/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-javadoc.jar",
++  "description" : "JLine Terminal provides the terminal abstraction layer used by JLine to create and manage terminal instances, streams, attributes, capabilities, and signal handling. It lets Java command-line applications interact with Unix and Windows terminals in a consistent way while leaving native backends to companion modules such as jline-terminal-jna and jline-terminal-jansi."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json b/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json
+index 79a973bcc7a77d8471af7967c0bb2348aae4e4b7..81ec25d96d4751382cfe31859871493d5595cfa9
+--- a/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json
++++ b/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jline:jline-terminal:3.19.0"
++  "coordinates" : "org.jline:jline-terminal:3.19.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-sources.jar",
++  "repository-url" : "https://github.com/jline/jline3",
++  "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.19.0/terminal/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-javadoc.jar",
++  "description" : "JLine Terminal provides the terminal abstraction layer used by JLine to create and manage terminal instances, streams, attributes, capabilities, and signal handling. It lets Java command-line applications interact with Unix and Windows terminals in a consistent way while leaving native backends to companion modules such as jline-terminal-jna and jline-terminal-jansi."
+ }
+
+codex
+The JSON is updated. I’m doing a quick parse check and reviewing the diff so the final file is valid and only contains the requested fields.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+{
+  "coordinates": "org.jline:jline-terminal:3.19.0",
+  "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-sources.jar",
+  "repository-url": "https://github.com/jline/jline3",
+  "test-code-url": "https://github.com/jline/jline3/tree/jline-parent-3.19.0/terminal/src/test/java",
+  "documentation-url": "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-javadoc.jar",
+  "description": "JLine Terminal provides the terminal abstraction layer used by JLine to create and manage terminal instances, streams, attributes, capabilities, and signal handling. It lets Java command-line applications interact with Unix and Windows terminals in a consistent way while leaving native backends to companion modules such as jline-terminal-jna and jline-terminal-jansi."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json b/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json
+index 79a973bcc7a77d8471af7967c0bb2348aae4e4b7..81ec25d96d4751382cfe31859871493d5595cfa9
+--- a/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json
++++ b/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jline:jline-terminal:3.19.0"
++  "coordinates" : "org.jline:jline-terminal:3.19.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-sources.jar",
++  "repository-url" : "https://github.com/jline/jline3",
++  "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.19.0/terminal/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-javadoc.jar",
++  "description" : "JLine Terminal provides the terminal abstraction layer used by JLine to create and manage terminal instances, streams, attributes, capabilities, and signal handling. It lets Java command-line applications interact with Unix and Windows terminals in a consistent way while leaving native backends to companion modules such as jline-terminal-jna and jline-terminal-jansi."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jline:jline-terminal:3.19.0",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-sources.jar",
+  "repository-url" : "https://github.com/jline/jline3",
+  "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.19.0/terminal/src/test/java",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-javadoc.jar",
+  "description" : "JLine Terminal provides the terminal abstraction layer used by JLine to create and manage terminal instances, streams, attributes, capabilities, and signal handling. It lets Java command-line applications interact with Unix and Windows terminals in a consistent way while leaving native backends to companion modules such as jline-terminal-jna and jline-terminal-jansi."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json b/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json
+index 79a973bcc7a77d8471af7967c0bb2348aae4e4b7..81ec25d96d4751382cfe31859871493d5595cfa9
+--- a/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json
++++ b/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jline:jline-terminal:3.19.0"
++  "coordinates" : "org.jline:jline-terminal:3.19.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-sources.jar",
++  "repository-url" : "https://github.com/jline/jline3",
++  "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.19.0/terminal/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-javadoc.jar",
++  "description" : "JLine Terminal provides the terminal abstraction layer used by JLine to create and manage terminal instances, streams, attributes, capabilities, and signal handling. It lets Java command-line applications interact with Unix and Windows terminals in a consistent way while leaving native backends to companion modules such as jline-terminal-jna and jline-terminal-jansi."
+ }
+
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0 jline-terminal-3.19.0-sources.jar javadoc.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/
+web search: 
+web search: https://mvnrepository.com/artifact/org.jline/jline-terminal/3.19.0
+web search: 
+web search: site:github.com/jline/jline3/tree/jline-parent-3.19.0/terminal/src/test/java jline terminal tests 3.19.0
+web search: 
+web search: https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/
+web search: 
+web search: 
+web search: 
+web search: "jline-parent-3.19.0" "github.com/jline/jline3"
+codex
+Updated [org.jline-jline-terminal-3.19.0.json](/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json).
+
+I set Maven Central URLs for the exact `3.19.0` sources and Javadoc artifacts, and used the tagged upstream test directory because the Maven Central listing has no tests/test-sources classifier for this artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/)) I left `language` absent because `jline-terminal` is the Java core terminal module, not a Kotlin, Groovy, or Scala-specific artifact. ([mvnrepository.com](https://mvnrepository.com/artifact/org.jline/jline-terminal/3.19.0))
+
+Validation: `jq . build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json` passed.
+diff --git a/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json b/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json
+index 79a973bcc7a77d8471af7967c0bb2348aae4e4b7..81ec25d96d4751382cfe31859871493d5595cfa9
+--- a/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json
++++ b/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jline:jline-terminal:3.19.0"
++  "coordinates" : "org.jline:jline-terminal:3.19.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-sources.jar",
++  "repository-url" : "https://github.com/jline/jline3",
++  "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.19.0/terminal/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-javadoc.jar",
++  "description" : "JLine Terminal provides the terminal abstraction layer used by JLine to create and manage terminal instances, streams, attributes, capabilities, and signal handling. It lets Java command-line applications interact with Unix and Windows terminals in a consistent way while leaving native backends to companion modules such as jline-terminal-jna and jline-terminal-jansi."
+ }
+
+2026-04-29T01:45:57.936413Z ERROR codex_core::session: failed to record rollout items: thread 019dd6e8-b041-7862-b76a-b997adb0277a not found
+tokens used
+91,181
+Updated [org.jline-jline-terminal-3.19.0.json](/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a/build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json).
+
+I set Maven Central URLs for the exact `3.19.0` sources and Javadoc artifacts, and used the tagged upstream test directory because the Maven Central listing has no tests/test-sources classifier for this artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/)) I left `language` absent because `jline-terminal` is the Java core terminal module, not a Kotlin, Groovy, or Scala-specific artifact. ([mvnrepository.com](https://mvnrepository.com/artifact/org.jline/jline-terminal/3.19.0))
+
+Validation: `jq . build/discovered-artifact-metadata/org.jline-jline-terminal-3.19.0.json` passed.
+Ran agent for org.jline:jline-terminal:3.19.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a/build/agent-artifact-discovery-logs/org.jline-jline-terminal-3.19.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 37s
+9 actionable tasks: 4 executed, 5 from cache

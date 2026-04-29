@@ -1,0 +1,574 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd6ea-4a6d-79a3-9b2a-01808c11426b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jline:jline-terminal:3.19.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.19.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a/metadata/org.jline/jline-terminal/index.json
+- Entry selector: "metadata-version" = "3.19.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "3.19.0".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-sources.jar
+- repository-url: https://github.com/jline/jline3
+- test-code-url: https://github.com/jline/jline3/tree/jline-parent-3.19.0/terminal/src/test/java
+- documentation-url: https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-javadoc.jar
+- description: JLine Terminal provides the terminal abstraction layer used by JLine to create and manage terminal instances, streams, attributes, capabilities, and signal handling. It lets Java command-line applications interact with Unix and Windows terminals in a consistent way while leaving native backends to companion modules such as jline-terminal-jna and jline-terminal-jansi.
+- language: <missing>
+
+Context:
+- Coordinate version: 3.19.0
+- Entry test-version: 3.19.0
+codex
+I’ll verify the exact-version artifacts and tag targets, then update only blank or absent fields in the selected JSON entry. After that I’ll validate the resulting JSON formatting.
+web search: 
+web search: org.jline jline-terminal 3.19.0 Maven sources javadoc
+codex
+The Maven entry confirms the 3.19.0 artifact exists, and the known project root is `jline/jline3`. I’m checking whether versioned sources, javadocs, and tests are published on Maven Central before falling back to the tag paths.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"3\\.19\\.0\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.jline/jline-terminal/index.json" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+3:    "metadata-version" : "3.19.0",
+4:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-sources.jar",
+5:    "repository-url" : "https://github.com/jline/jline3",
+6:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.19.0/terminal/src/test/java",
+7:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-javadoc.jar",
+8:    "description" : "JLine Terminal provides the terminal abstraction layer used by JLine to create and manage terminal instances, streams, attributes, capabilities, and signal handling. It lets Java command-line applications interact with Unix and Windows terminals in a consistent way while leaving native backends to companion modules such as jline-terminal-jna and jline-terminal-jansi.",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jline/jline-terminal/3.19.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jline/jline-terminal/3.19.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jline-terminal-3.19.0-javadoc.jar" title="jline-terminal-3.19.0-javadoc.jar">jline-terminal-3.19.0-javadoc.jar</a>                 2021-01-19 09:16    918362      
+<a href="jline-terminal-3.19.0-javadoc.jar.asc" title="jline-terminal-3.19.0-javadoc.jar.asc">jline-terminal-3.19.0-javadoc.jar.asc</a>             2021-01-19 09:16       833      
+<a href="jline-terminal-3.19.0-javadoc.jar.md5" title="jline-terminal-3.19.0-javadoc.jar.md5">jline-terminal-3.19.0-javadoc.jar.md5</a>             2021-01-19 09:16        32      
+<a href="jline-terminal-3.19.0-javadoc.jar.sha1" title="jline-terminal-3.19.0-javadoc.jar.sha1">jline-terminal-3.19.0-javadoc.jar.sha1</a>            2021-01-19 09:16        40      
+<a href="jline-terminal-3.19.0-sources.jar" title="jline-terminal-3.19.0-sources.jar">jline-terminal-3.19.0-sources.jar</a>                 2021-01-19 09:16    139815      
+<a href="jline-terminal-3.19.0-sources.jar.asc" title="jline-terminal-3.19.0-sources.jar.asc">jline-terminal-3.19.0-sources.jar.asc</a>             2021-01-19 09:16       833      
+<a href="jline-terminal-3.19.0-sources.jar.md5" title="jline-terminal-3.19.0-sources.jar.md5">jline-terminal-3.19.0-sources.jar.md5</a>             2021-01-19 09:16        32      
+<a href="jline-terminal-3.19.0-sources.jar.sha1" title="jline-terminal-3.19.0-sources.jar.sha1">jline-terminal-3.19.0-sources.jar.sha1</a>            2021-01-19 09:16        40      
+<a href="jline-terminal-3.19.0.jar" title="jline-terminal-3.19.0.jar">jline-terminal-3.19.0.jar</a>                         2021-01-19 09:16    228495      
+<a href="jline-terminal-3.19.0.jar.asc" title="jline-terminal-3.19.0.jar.asc">jline-terminal-3.19.0.jar.asc</a>                     2021-01-19 09:16       833      
+<a href="jline-terminal-3.19.0.jar.md5" title="jline-terminal-3.19.0.jar.md5">jline-terminal-3.19.0.jar.md5</a>                     2021-01-19 09:16        32      
+<a href="jline-terminal-3.19.0.jar.sha1" title="jline-terminal-3.19.0.jar.sha1">jline-terminal-3.19.0.jar.sha1</a>                    2021-01-19 09:16        40      
+<a href="jline-terminal-3.19.0.pom" title="jline-terminal-3.19.0.pom">jline-terminal-3.19.0.pom</a>                         2021-01-19 09:16      1254      
+<a href="jline-terminal-3.19.0.pom.asc" title="jline-terminal-3.19.0.pom.asc">jline-terminal-3.19.0.pom.asc</a>                     2021-01-19 09:16       833      
+<a href="jline-terminal-3.19.0.pom.md5" title="jline-terminal-3.19.0.pom.md5">jline-terminal-3.19.0.pom.md5</a>                     2021-01-19 09:16        32      
+<a href="jline-terminal-3.19.0.pom.sha1" title="jline-terminal-3.19.0.pom.sha1">jline-terminal-3.19.0.pom.sha1</a>                    2021-01-19 09:16        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/jline/jline3/jline-parent-3.19.0/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 183ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2002-2020, the original author or authors.
+
+    This software is distributable under the BSD license. See the terms of the
+    BSD license in the documentation provided with this software.
+
+    https://opensource.org/licenses/BSD-3-Clause
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>9</version>
+    </parent>
+
+    <groupId>org.jline</groupId>
+    <artifactId>jline-parent</artifactId>
+    <name>JLine Parent</name>
+    <description>JLine</description>
+    <version>3.19.0</version>
+    <packaging>pom</packaging>
+
+    <licenses>
+        <license>
+            <name>The BSD License</name>
+            <url>https://opensource.org/licenses/BSD-3-Clause</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/jline/jline3.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/jline/jline3.git</developerConnection>
+        <url>http://github.com/jline/jline3</url>
+    <tag>jline-parent-3.19.0</tag>
+  </scm>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/jline/jline3/issues</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>travis</system>
+        <url>https://travis-ci.org/jline/jline3</url>
+    </ciManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>jline-users</name>
+            <post>mailto:jline-users@googlegroups.com</post>
+            <unsubscribe>mailto:jline-users+unsubscribe@googlegroups.com</unsubscribe>
+            <subscribe>https://groups.google.com/group/jline-users</subscribe>
+            <archive>https://groups.google.com/group/jline-users</archive>
+        </mailingList>
+    </mailingLists>
+
+    <developers>
+        <developer>
+            <id>gnodet</id>
+            <name>Guillaume Nodet</name>
+            <email>gnodet@gmail.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <native.image.skip>true</native.image.skip>
+        <automatic.module.name />
+
+        <jna.version>5.3.1</jna.version>
+        <jansi.version>2.1.0</jansi.version>
+        <juniversalchardet.version>1.0.3</juniversalchardet.version>
+        <sshd.version>2.1.0</sshd.version>
+        <easymock.version>3.3.1</easymock.version>
+        <junit.version>4.13.1</junit.version>
+        <gogo.runtime.version>1.1.2</gogo.runtime.version>
+        <gogo.jline.version>1.1.4</gogo.jline.version>
+        <slf4j.version>1.7.21</slf4j.version>
+        <findbugs.version>3.0.2</findbugs.version>
+        <groovy.version>3.0.7</groovy.version>
+        <ivy.version>2.5.0</ivy.version>
+        <graal.version>19.3.1</graal.version>
+
+        <surefire.argLine />
+    </properties>
+
+    <prerequisites>
+        <maven>3.5.0</maven>
+    </prerequisites>
+
+    <repositories>
+        <repository>
+            <id>apache-snapshots</id>
+            <name>Apache Snapshots</name>
+            <url>https://repository.apache.org/content/groups/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-terminal</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-terminal-jansi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-terminal-jna</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-reader</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-builtins</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-remote-ssh</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-remote-telnet</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-style</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-groovy</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-console</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.fusesource.jansi</groupId>
+                <artifactId>jansi</artifactId>
+                <version>${jansi.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna</artifactId>
+                <version>${jna.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.googlecode.juniversalchardet</groupId>
+                <artifactId>juniversalchardet</artifactId>
+                <version>${juniversalchardet.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.sshd</groupId>
+                <artifactId>sshd-common</artifactId>
+                <version>${sshd.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.sshd</groupId>
+                <artifactId>sshd-core</artifactId>
+                <version>${sshd.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.sshd</groupId>
+                <artifactId>sshd-scp</artifactId>
+                <version>${sshd.version}</version>
+
+codex
+The Maven directory has versioned `sources.jar` and `javadoc.jar`, but no test artifact, so the version tag’s `terminal/src/test/java` path is the right fallback for tests. The entry already has non-blank values for the URL and description fields; I’m now validating whether there is anything to add for `language`.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\"==\"3.19.0\")' metadata/org.jline/jline-terminal/index.json" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+{
+  "metadata-version": "3.19.0",
+  "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-sources.jar",
+  "repository-url": "https://github.com/jline/jline3",
+  "test-code-url": "https://github.com/jline/jline3/tree/jline-parent-3.19.0/terminal/src/test/java",
+  "documentation-url": "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-javadoc.jar",
+  "description": "JLine Terminal provides the terminal abstraction layer used by JLine to create and manage terminal instances, streams, attributes, capabilities, and signal handling. It lets Java command-line applications interact with Unix and Windows terminals in a consistent way while leaving native backends to companion modules such as jline-terminal-jna and jline-terminal-jansi.",
+  "tested-versions": [
+    "3.19.0"
+  ],
+  "allowed-packages": [
+    "org.jline"
+  ]
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0.pom | sed -n '1,180p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2002-2020, the original author or authors.
+
+    This software is distributable under the BSD license. See the terms of the
+    BSD license in the documentation provided with this software.
+
+    https://opensource.org/licenses/BSD-3-Clause
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jline</groupId>
+        <artifactId>jline-parent</artifactId>
+        <version>3.19.0</version>
+    </parent>
+
+    <artifactId>jline-terminal</artifactId>
+    <name>JLine Terminal</name>
+
+    <properties>
+        <automatic.module.name>org.jline.terminal</automatic.module.name>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-sources.jar | sed -n '1,30p' && curl -fsSI https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-javadoc.jar | sed -n '1,30p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 29 Apr 2026 01:46:31 GMT
+content-type: application/java-archive
+content-length: 139815
+cf-ray: 9f3aa22b494d0d25-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2365940
+etag: "f46b545894bc6698c98a6e9f84e6196a"
+last-modified: Tue, 19 Jan 2021 09:16:45 GMT
+x-checksum-md5: f46b545894bc6698c98a6e9f84e6196a
+x-checksum-sha1: c23b3db5eef39bb6df37eaba98297f74ba3433c5
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Wed, 29 Apr 2026 01:46:31 GMT
+content-type: application/java-archive
+content-length: 918362
+cf-ray: 9f3aa22b9fd5273b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1276880
+etag: "dba8c8136107865fc6c68a444b2e119a"
+last-modified: Tue, 19 Jan 2021 09:16:47 GMT
+x-checksum-md5: dba8c8136107865fc6c68a444b2e119a
+x-checksum-sha1: 3d2b47bf927f76d843faf2146e26e07eba156c42
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/jline/jline3/tree/jline-parent-3.19.0/terminal/src/test/java | sed -n '1,40p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 666ms:
+HTTP/2 200 
+date: Wed, 29 Apr 2026 01:46:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"aefc2ada24e93d650d7123b5380ca25f"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=kLezsxjfLt3C3mwuI5VqCOOzfEfVqBoGFI29wEgxR6Lh0xsVMgYTFA8xsN1FcjXGYvYtjgrJczmFcZciL8aW%2BKfs8GE9YFiIWd8EV9oaFRVKUsTU1WuMJcugXCXaEu%2FGzwlmqPvcIIBiyHnnn6RmwOOA0H3xGLLcfGUjj23PGCCFTRG8ywdYlj7IVISLp9Q5NY7SKGL5d0Fmy1kkL7yr2bvgVpQcCYMyT%2F5K89S04TaXR%2BboWwFJmVO5%2FIs5A2SRZYuc%2FXNDZwWESzSDUdvhdg%3D%3D--S786ldQ6tyHFoZxk--yCQVMyWO0VEZysY4t6uVEw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1340456322.1777427191; expires=Thu, 29 Apr 2027 01:46:31 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 29 Apr 2027 01:46:31 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5107:B452F:4D2A213:3B180E7:69F162F7
+
+
+web search: 
+web search: 
+web search: 
+web search: site:mvnrepository.com org.jline jline-terminal 3.19.0
+web search: 
+web search: https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.jline/jline-terminal/index.json' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.jline/jline-terminal/index.json' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+diff --git i/metadata/org.jline/jline-terminal/index.json w/metadata/org.jline/jline-terminal/index.json
+index bf29e2433d..047ee21b1e 100644
+--- i/metadata/org.jline/jline-terminal/index.json
++++ w/metadata/org.jline/jline-terminal/index.json
+@@ -1,15 +1,29 @@
+ [
+   {
+-    "latest": true,
+-    "allowed-packages": [
+-      "org.jline",
+-      "org.fusesource"
++    "metadata-version" : "3.19.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-sources.jar",
++    "repository-url" : "https://github.com/jline/jline3",
++    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.19.0/terminal/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/jline-terminal-3.19.0-javadoc.jar",
++    "description" : "JLine Terminal provides the terminal abstraction layer used by JLine to create and manage terminal instances, streams, attributes, capabilities, and signal handling. It lets Java command-line applications interact with Unix and Windows terminals in a consistent way while leaving native backends to companion modules such as jline-terminal-jna and jline-terminal-jansi.",
++    "tested-versions" : [
++      "3.19.0"
+     ],
+-    "metadata-version": "3.21.0",
+-    "tested-versions": [
++    "allowed-packages" : [
++      "org.jline"
++    ]
++  },
++  {
++    "latest" : true,
++    "metadata-version" : "3.21.0",
++    "tested-versions" : [
+       "3.21.0"
+     ],
+-    "requires": [
++    "allowed-packages" : [
++      "org.jline",
++      "org.fusesource"
++    ],
++    "requires" : [
+       "org.jline:jline"
+     ]
+   }
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.jline/jline-terminal/index.json' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a
+ succeeded in 0ms:
+ M metadata/org.jline/jline-terminal/index.json
+
+codex
+The selected entry is already populated for all requested non-language fields, and the only absent field is `language`. `org.jline:jline-terminal` is a Java terminal abstraction artifact, not a Kotlin, Groovy, Scala 2, or Scala 3 language-specific artifact under the provided schema, so the correct repository state is to leave `language` absent.
+web search: 
+web search: org.jline jline-terminal 3.19.0 Maven Central
+web search: 
+web search: https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/
+web search: 
+web search: 
+codex
+Verified [index.json](/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a/metadata/org.jline/jline-terminal/index.json) for `metadata-version` `3.19.0`. The requested source and javadoc artifacts exist on Maven Central, and no Maven test artifact is published there; the tag-specific GitHub test path exists under `jline-parent-3.19.0/terminal/src/test/java`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/))
+
+No additional edit was needed: all requested non-language fields were already non-blank, and `language` should remain absent because `jline-terminal` is not Kotlin, Groovy, Scala 2, or Scala 3 specific. JSON validation passed with `jq empty`.
+2026-04-29T01:47:09.579168Z ERROR codex_core::session: failed to record rollout items: thread 019dd6ea-4a6d-79a3-9b2a-01808c11426b not found
+tokens used
+54,959
+Verified [index.json](/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a/metadata/org.jline/jline-terminal/index.json) for `metadata-version` `3.19.0`. The requested source and javadoc artifacts exist on Maven Central, and no Maven test artifact is published there; the tag-specific GitHub test path exists under `jline-parent-3.19.0/terminal/src/test/java`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/jline/jline-terminal/3.19.0/))
+
+No additional edit was needed: all requested non-language fields were already non-blank, and `language` should remain absent because `jline-terminal` is not Kotlin, Groovy, Scala 2, or Scala 3 specific. JSON validation passed with `jq empty`.
+Ran agent for org.jline:jline-terminal:3.19.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a/build/agent-url-discovery-logs/org.jline-jline-terminal-3.19.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/859-6142092a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 58s
+9 actionable tasks: 1 executed, 8 up-to-date
