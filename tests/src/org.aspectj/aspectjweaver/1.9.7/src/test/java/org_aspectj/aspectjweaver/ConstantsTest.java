@@ -13,17 +13,20 @@ import aj.org.objectweb.asm.Opcodes;
 import org.junit.jupiter.api.Test;
 
 public class ConstantsTest extends ClassVisitor {
-    public ConstantsTest() {
-        super(Opcodes.ASM9);
-    }
+    private static boolean useExperimentalApi;
 
-    private ConstantsTest(int api) {
-        super(api);
+    public ConstantsTest() {
+        super(useExperimentalApi ? Opcodes.ASM10_EXPERIMENTAL : Opcodes.ASM9);
     }
 
     @Test
     void experimentalApiChecksTestClassBytecodeResourceBeforeRejectingNonPreviewClass() {
-        assertThatThrownBy(() -> new ConstantsTest(Opcodes.ASM10_EXPERIMENTAL))
-                .isInstanceOf(IllegalStateException.class);
+        useExperimentalApi = true;
+        try {
+            assertThatThrownBy(ConstantsTest::new)
+                    .isInstanceOf(IllegalStateException.class);
+        } finally {
+            useExperimentalApi = false;
+        }
     }
 }
