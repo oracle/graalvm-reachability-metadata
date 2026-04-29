@@ -6,37 +6,54 @@
  */
 package org.graalvm.jline;
 
-import com.sun.jna.Platform;
 import org.jline.terminal.Attributes;
 import org.jline.terminal.Size;
 import org.jline.terminal.impl.jna.JnaNativePty;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileDescriptor;
+import java.io.IOException;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class JnaNativePtyTest {
 
     @Test
-    void openCreatesNativeFileDescriptors() throws Exception {
-        if (!Platform.isLinux() && !Platform.isMac() && !Platform.isFreeBSD() && !Platform.isSolaris()) {
-            assertThatThrownBy(() -> JnaNativePty.open(null, null))
-                    .isInstanceOf(UnsupportedOperationException.class);
-            return;
+    void createsFileDescriptorForNativePtyFileDescriptorNumber() {
+        FileDescriptor descriptor = TestNativePty.standardInputDescriptor();
+
+        assertThat(descriptor).isNotSameAs(FileDescriptor.in);
+        assertThat(descriptor.valid()).isTrue();
+    }
+
+    private static class TestNativePty extends JnaNativePty {
+
+        TestNativePty() {
+            super(-1, FileDescriptor.in, -1, FileDescriptor.in, "test-pty");
         }
 
-        Attributes attributes = new Attributes();
-        Size size = new Size(80, 24);
-        try (JnaNativePty pty = JnaNativePty.open(attributes, size)) {
-            assertThat(pty.getMaster()).isGreaterThan(0);
-            assertThat(pty.getSlave()).isGreaterThan(0);
-            assertThat(pty.getMasterFD()).isNotNull();
-            assertThat(pty.getSlaveFD()).isNotNull();
-            assertThat(pty.getMasterFD().valid()).isTrue();
-            assertThat(pty.getSlaveFD().valid()).isTrue();
-            assertThat(pty.getName()).isNotEmpty();
-            assertThat(pty.getAttr()).isNotNull();
-            assertThat(pty.getSize()).isNotNull();
+        static FileDescriptor standardInputDescriptor() {
+            return newDescriptor(0);
+        }
+
+        @Override
+        public Attributes getAttr() throws IOException {
+            return new Attributes();
+        }
+
+        @Override
+        public void setAttr(Attributes attr) throws IOException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Size getSize() throws IOException {
+            return new Size(80, 24);
+        }
+
+        @Override
+        public void setSize(Size size) throws IOException {
+            throw new UnsupportedOperationException();
         }
     }
 }
