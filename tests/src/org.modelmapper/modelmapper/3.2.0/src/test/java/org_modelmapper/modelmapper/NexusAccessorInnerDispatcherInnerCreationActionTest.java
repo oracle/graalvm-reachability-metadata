@@ -14,39 +14,52 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Test;
 import org.modelmapper.internal.bytebuddy.dynamic.NexusAccessor;
+import org.modelmapper.internal.bytebuddy.dynamic.loading.UnsafeOverrideDispatcherAccess;
 import org.modelmapper.internal.bytebuddy.implementation.LoadedTypeInitializer;
 
 public class NexusAccessorInnerDispatcherInnerCreationActionTest {
 
     @Test
-    void createsNexusDispatcherAndUsesDiscoveredEntryPoints() {
-        String previousSafeMode = System.setProperty("org.modelmapper.internal.bytebuddy.safe", "true");
-        try {
-            ReferenceQueue<ClassLoader> referenceQueue = new ReferenceQueue<>();
-            NexusAccessor nexusAccessor = new NexusAccessor(referenceQueue);
-            ClassLoader classLoader = new IsolatedClassLoader(getClass().getClassLoader());
-            RecordingLoadedTypeInitializer initializer = new RecordingLoadedTypeInitializer();
+    void createsNexusDispatcherAndUsesDiscoveredEntryPoints() throws Exception {
+        ReferenceQueue<ClassLoader> referenceQueue = new ReferenceQueue<>();
+        NexusAccessor nexusAccessor = new NexusAccessor(referenceQueue);
+        ClassLoader classLoader = new IsolatedClassLoader(getClass().getClassLoader());
+        RecordingLoadedTypeInitializer initializer = new RecordingLoadedTypeInitializer();
 
-            assertThat(NexusAccessor.isAlive()).isTrue();
+        assertThat(NexusAccessor.isAlive()).isTrue();
 
-            nexusAccessor.register(
+        nexusAccessor.register(
+            String.class.getName(),
+            classLoader,
+            System.identityHashCode(initializer),
+            initializer);
+        NexusAccessor.clean(new WeakReference<>(classLoader, referenceQueue));
+
+        try (UnsafeOverrideDispatcherAccess.Reset ignored =
+                UnsafeOverrideDispatcherAccess.forceReflectionDispatcherUnavailable()) {
+            ExposedNexusAccessor.createFallbackDispatcherAndUse(
                 String.class.getName(),
                 classLoader,
+                referenceQueue,
                 System.identityHashCode(initializer),
                 initializer);
-            NexusAccessor.clean(new WeakReference<>(classLoader, referenceQueue));
-
-            assertThat(initializer.loadedType()).isNull();
-        } finally {
-            restoreSafeMode(previousSafeMode);
         }
+
+        assertThat(initializer.loadedType()).isNull();
     }
 
-    private static void restoreSafeMode(String previousSafeMode) {
-        if (previousSafeMode == null) {
-            System.clearProperty("org.modelmapper.internal.bytebuddy.safe");
-        } else {
-            System.setProperty("org.modelmapper.internal.bytebuddy.safe", previousSafeMode);
+    private static final class ExposedNexusAccessor extends NexusAccessor {
+        static void createFallbackDispatcherAndUse(
+            String name,
+            ClassLoader classLoader,
+            ReferenceQueue<? super ClassLoader> referenceQueue,
+            int identification,
+            LoadedTypeInitializer initializer) {
+            Dispatcher dispatcher = Dispatcher.CreationAction.INSTANCE.run();
+            assertThat(dispatcher.isAlive()).isTrue();
+
+            dispatcher.register(name, classLoader, referenceQueue, identification, initializer);
+            dispatcher.clean(new WeakReference<>(classLoader, referenceQueue));
         }
     }
 

@@ -47,10 +47,42 @@ public final class UnsafeOverrideDispatcherAccess {
         }
     }
 
+    public static Reset forceReflectionDispatcherUnavailable() throws Exception {
+        Field dispatcher = ClassInjector.UsingReflection.class.getDeclaredField("DISPATCHER");
+        Unsafe unsafe = unsafe();
+        Object fieldBase = unsafe.staticFieldBase(dispatcher);
+        long fieldOffset = unsafe.staticFieldOffset(dispatcher);
+        Object original = unsafe.getObject(fieldBase, fieldOffset);
+        unsafe.putObject(
+            fieldBase,
+            fieldOffset,
+            new Dispatcher.Initializable.Unavailable("Forced unavailable dispatcher"));
+        return new Reset(unsafe, fieldBase, fieldOffset, original);
+    }
+
     private static Unsafe unsafe() throws Exception {
         Field unsafe = Unsafe.class.getDeclaredField("theUnsafe");
         unsafe.setAccessible(true);
         return (Unsafe) unsafe.get(null);
+    }
+
+    public static final class Reset implements AutoCloseable {
+        private final Unsafe unsafe;
+        private final Object fieldBase;
+        private final long fieldOffset;
+        private final Object original;
+
+        private Reset(Unsafe unsafe, Object fieldBase, long fieldOffset, Object original) {
+            this.unsafe = unsafe;
+            this.fieldBase = fieldBase;
+            this.fieldOffset = fieldOffset;
+            this.original = original;
+        }
+
+        @Override
+        public void close() {
+            unsafe.putObject(fieldBase, fieldOffset, original);
+        }
     }
 
     public static final class Operations {
