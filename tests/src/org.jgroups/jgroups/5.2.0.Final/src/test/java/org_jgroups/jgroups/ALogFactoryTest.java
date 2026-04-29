@@ -46,7 +46,7 @@ public class ALogFactoryTest {
     void probesAvailableLoggerImplementationsInFreshJvm() throws Exception {
         List<String> command = new ArrayList<>();
         command.add(javaExecutable().toString());
-        jacocoAgentArgument().ifPresent(command::add);
+        childJacocoAgentArgument().ifPresent(command::add);
         command.add("-cp");
         command.add(System.getProperty("java.class.path"));
         command.add(LogFactoryAvailabilityExercise.class.getName());
@@ -62,11 +62,22 @@ public class ALogFactoryTest {
         return Path.of(System.getProperty("java.home"), "bin", JAVA_EXECUTABLE_NAME);
     }
 
-    private static Optional<String> jacocoAgentArgument() {
+    private static Optional<String> childJacocoAgentArgument() {
         return ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
             .filter(argument -> argument.startsWith("-javaagent:"))
             .filter(argument -> argument.contains("jacoco"))
-            .findFirst();
+            .findFirst()
+            .map(ALogFactoryTest::toChildJacocoAgentArgument);
+    }
+
+    private static String toChildJacocoAgentArgument(String parentAgentArgument) {
+        String javaAgentPrefix = "-javaagent:";
+        String agentPathAndOptions = parentAgentArgument.substring(javaAgentPrefix.length());
+        int optionsStart = agentPathAndOptions.indexOf('=');
+        String agentPath = optionsStart >= 0 ? agentPathAndOptions.substring(0, optionsStart) : agentPathAndOptions;
+        Path destinationFile = Path.of("build", "jacoco", "logfactory-availability.exec");
+        String agentOptions = "=destfile=" + destinationFile + ",append=true";
+        return javaAgentPrefix + agentPath + agentOptions;
     }
 }
 

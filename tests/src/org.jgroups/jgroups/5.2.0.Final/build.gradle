@@ -15,6 +15,12 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(org.gradle.testing.jacoco.tasks.JacocoReport).configureEach {
+    executionData.from(fileTree(layout.buildDirectory.dir("jacoco").get().asFile) {
+        include "*.exec"
+    })
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
