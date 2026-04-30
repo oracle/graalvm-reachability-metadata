@@ -26,4 +26,11 @@ class GeneratedMessageLiteTest {
 
     assertTrue(text.contains("active_name: \"pekko\""))
   }
+
+  @Test
+  def resolvesPublicMessageMethodsThroughLiteRuntimeLookup(): Unit = {
+    val methodName: String = GeneratedMessageLiteMethodLookup.lookupDefaultInstanceMethodName()
+
+    assertEquals("getDefaultInstance", methodName)
+  }
 }
