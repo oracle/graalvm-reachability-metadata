@@ -149,6 +149,20 @@ public class Opentelemetry_api_logsTest {
     }
 
     @Test
+    void setAllAttributesLeavesExistingAttributesUntouchedWhenInputIsNullOrEmpty() {
+        RecordingLogger logger = new RecordingLogger(new RecordingLoggerConfiguration("inventory"));
+
+        LogRecordBuilder builder = logger.logRecordBuilder().setAttribute(COMPONENT_KEY, "inventory");
+        assertThat(builder.setAllAttributes(null)).isSameAs(builder);
+        assertThat(builder.setAllAttributes(Attributes.empty())).isSameAs(builder);
+        builder.emit();
+
+        assertThat(logger.records).hasSize(1);
+        RecordingLogRecord record = logger.records.get(0);
+        assertThat(record.attributes).hasSize(1).containsEntry(COMPONENT_KEY, "inventory");
+    }
+
+    @Test
     void globalLoggerProviderCanBeInstalledUsedAndReset() {
         RecordingLoggerProvider provider = new RecordingLoggerProvider();
 
