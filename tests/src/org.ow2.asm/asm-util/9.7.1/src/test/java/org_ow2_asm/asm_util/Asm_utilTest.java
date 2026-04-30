@@ -43,16 +43,19 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.ModuleVisitor;
+import org.objectweb.asm.RecordComponentVisitor;
 import org.objectweb.asm.TypeReference;
 import org.objectweb.asm.signature.SignatureReader;
 import org.objectweb.asm.util.ASMifier;
 import org.objectweb.asm.util.CheckAnnotationAdapter;
 import org.objectweb.asm.util.CheckClassAdapter;
+import org.objectweb.asm.util.CheckRecordComponentAdapter;
 import org.objectweb.asm.util.CheckSignatureAdapter;
 import org.objectweb.asm.util.Printer;
 import org.objectweb.asm.util.Textifier;
 import org.objectweb.asm.util.TraceAnnotationVisitor;
 import org.objectweb.asm.util.TraceClassVisitor;
+import org.objectweb.asm.util.TraceRecordComponentVisitor;
 import org.objectweb.asm.util.TraceSignatureVisitor;
 
 public class Asm_utilTest {
@@ -168,6 +171,37 @@ public class Asm_utilTest {
 
         assertThatThrownBy(() -> annotationVisitor.visit("tooLate", "value"))
                 .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void recordComponentUtilitiesTraceAnnotationsAndValidateTypeAnnotationTargets() {
+        Printer printer = new Textifier();
+        RecordComponentVisitor recordComponentVisitor =
+                new CheckRecordComponentAdapter(new TraceRecordComponentVisitor(printer));
+
+        AnnotationVisitor annotation = recordComponentVisitor.visitAnnotation("Ljava/lang/Deprecated;", true);
+        annotation.visit("since", "record-component");
+        annotation.visitEnd();
+        AnnotationVisitor typeAnnotation = recordComponentVisitor.visitTypeAnnotation(
+                TypeReference.newTypeReference(TypeReference.FIELD).getValue(),
+                null,
+                "Ljavax/annotation/Nonnull;",
+                true);
+        typeAnnotation.visitEnd();
+        recordComponentVisitor.visitEnd();
+
+        StringWriter output = new StringWriter();
+        printer.print(new PrintWriter(output));
+        assertThat(output.toString())
+                .contains("Ljava/lang/Deprecated;")
+                .contains("since=\"record-component\"")
+                .contains("Ljavax/annotation/Nonnull;")
+                .contains("FIELD");
+
+        CheckRecordComponentAdapter invalidTargetChecker = new CheckRecordComponentAdapter(null);
+        assertThatThrownBy(() -> invalidTargetChecker.visitTypeAnnotation(
+                        TypeReference.newSuperTypeReference(-1).getValue(), null, "Ljava/lang/Deprecated;", true))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
