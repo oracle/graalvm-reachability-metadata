@@ -103,6 +103,46 @@ public class Jakarta_interceptor_apiTest {
         assertThat(timeoutMethod.getAnnotation(AroundTimeout.class)).isNotNull();
     }
 
+    @SuppressWarnings("checkstyle:annotationAccess")
+    @Test
+    void interceptorBindingAnnotationsRetainMemberValuesForComponentsMethodsAndInterceptors() throws Exception {
+        Method approve = declaredMethod(BindingAwareService.class, "approve", String.class);
+        Method summarize = declaredMethod(BindingAwareService.class, "summarize", String.class);
+
+        Secured serviceSecurity = BindingAwareService.class.getAnnotation(Secured.class);
+        Traced serviceTracing = BindingAwareService.class.getAnnotation(Traced.class);
+        Secured approvalSecurity = approve.getAnnotation(Secured.class);
+        Traced approvalTracing = approve.getAnnotation(Traced.class);
+        Secured defaultedSecurity = summarize.getAnnotation(Secured.class);
+        Traced defaultedTracing = summarize.getAnnotation(Traced.class);
+        Secured interceptorSecurity = BindingAwareInterceptor.class.getAnnotation(Secured.class);
+        Traced interceptorTracing = BindingAwareInterceptor.class.getAnnotation(Traced.class);
+
+        assertThat(Secured.class.getAnnotation(InterceptorBinding.class)).isNotNull();
+        assertThat(Traced.class.getAnnotation(InterceptorBinding.class)).isNotNull();
+        assertThat(BindingAwareInterceptor.class.getAnnotation(Interceptor.class)).isNotNull();
+
+        assertThat(serviceSecurity.role()).isEqualTo("reader");
+        assertThat(serviceSecurity.permissions()).isEmpty();
+        assertThat(serviceTracing.channel()).isEqualTo("orders");
+        assertThat(serviceTracing.sampled()).isFalse();
+
+        assertThat(approvalSecurity.role()).isEqualTo("operator");
+        assertThat(approvalSecurity.permissions()).containsExactly("orders:approve");
+        assertThat(approvalTracing.channel()).isEqualTo("orders.approval");
+        assertThat(approvalTracing.sampled()).isTrue();
+
+        assertThat(defaultedSecurity.role()).isEqualTo("reader");
+        assertThat(defaultedSecurity.permissions()).isEmpty();
+        assertThat(defaultedTracing.channel()).isEqualTo("orders.summary");
+        assertThat(defaultedTracing.sampled()).isTrue();
+
+        assertThat(interceptorSecurity.role()).isEqualTo("administrator");
+        assertThat(interceptorSecurity.permissions()).containsExactly("accounts:read", "accounts:write");
+        assertThat(interceptorTracing.channel()).isEqualTo("admin");
+        assertThat(interceptorTracing.sampled()).isTrue();
+    }
+
     @Test
     void methodInvocationContextSupportsParameterMutationContextDataTimerAndProceed() throws Exception {
         InterceptedComponent target = new InterceptedComponent("native");
@@ -285,6 +325,46 @@ public class Jakarta_interceptor_apiTest {
     @Retention(RetentionPolicy.RUNTIME)
     @Target({TYPE, METHOD, CONSTRUCTOR})
     private @interface Audited {
+    }
+
+    @InterceptorBinding
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({TYPE, METHOD})
+    private @interface Secured {
+        String role() default "reader";
+
+        String[] permissions() default {};
+    }
+
+    @InterceptorBinding
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({TYPE, METHOD})
+    private @interface Traced {
+        String channel();
+
+        boolean sampled() default true;
+    }
+
+    @Interceptor
+    @Secured(role = "administrator", permissions = {"accounts:read", "accounts:write"})
+    @Traced(channel = "admin")
+    private static final class BindingAwareInterceptor {
+    }
+
+    @Secured
+    @Traced(channel = "orders", sampled = false)
+    private static final class BindingAwareService {
+        @Secured(role = "operator", permissions = "orders:approve")
+        @Traced(channel = "orders.approval")
+        private String approve(String orderId) {
+            return orderId;
+        }
+
+        @Secured
+        @Traced(channel = "orders.summary")
+        private String summarize(String orderId) {
+            return orderId;
+        }
     }
 
     @Audited
