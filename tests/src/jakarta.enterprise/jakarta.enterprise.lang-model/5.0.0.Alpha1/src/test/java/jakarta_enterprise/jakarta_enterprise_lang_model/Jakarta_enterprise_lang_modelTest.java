@@ -210,6 +210,8 @@ public class Jakarta_enterprise_lang_modelTest {
         assertThat(owner.isRecord()).isFalse();
         assertThat(owner.isAbstract()).isFalse();
         assertThat(owner.isFinal()).isTrue();
+        assertThat(owner.isSealed()).isFalse();
+        assertThat(owner.permittedSubclasses()).isEmpty();
         assertThat(owner.modifiers()).isEqualTo(PUBLIC_MODIFIER);
         assertThat(owner.fields()).containsExactly(field);
         assertThat(owner.methods()).containsExactly(method);
@@ -267,11 +269,14 @@ public class Jakarta_enterprise_lang_modelTest {
                 new FakeClassType(comparableDeclaration), List.of(new FakeClassType(modelDeclaration)));
         FakeClassType serializableType = new FakeClassType(serializableDeclaration);
         FakeClassInfo derivedDeclaration = new FakeClassInfo("example.Derived", "Derived");
+        FakeClassInfo permittedSubclass = new FakeClassInfo("example.PermittedModel", "PermittedModel");
         derivedDeclaration.typeParameters = List.of(valueParameter);
         derivedDeclaration.superClass = numberType;
         derivedDeclaration.superClassDeclaration = numberDeclaration;
         derivedDeclaration.superInterfaces = List.of(comparableOfModel, serializableType);
         derivedDeclaration.superInterfacesDeclarations = List.of(comparableDeclaration, serializableDeclaration);
+        derivedDeclaration.sealedClass = true;
+        derivedDeclaration.permittedSubclasses = List.of(permittedSubclass);
 
         assertThat(derivedDeclaration.typeParameters()).containsExactly(valueParameter);
         assertThat(derivedDeclaration.superClass()).isSameAs(numberType);
@@ -279,6 +284,8 @@ public class Jakarta_enterprise_lang_modelTest {
         assertThat(derivedDeclaration.superInterfaces()).containsExactly(comparableOfModel, serializableType);
         assertThat(derivedDeclaration.superInterfacesDeclarations())
                 .containsExactly(comparableDeclaration, serializableDeclaration);
+        assertThat(derivedDeclaration.isSealed()).isTrue();
+        assertThat(derivedDeclaration.permittedSubclasses()).containsExactly(permittedSubclass);
     }
 
     @Test
@@ -652,6 +659,8 @@ public class Jakarta_enterprise_lang_modelTest {
         private boolean recordClass;
         private boolean abstractClass;
         private boolean finalClass;
+        private boolean sealedClass;
+        private Collection<ClassInfo> permittedSubclasses = List.of();
         private int modifiers;
         private Collection<MethodInfo> constructors = List.of();
         private Collection<MethodInfo> methods = List.of();
@@ -704,6 +713,11 @@ public class Jakarta_enterprise_lang_modelTest {
         }
 
         @Override
+        public Collection<ClassInfo> permittedSubclasses() {
+            return permittedSubclasses;
+        }
+
+        @Override
         public boolean isPlainClass() {
             return plainClass;
         }
@@ -736,6 +750,11 @@ public class Jakarta_enterprise_lang_modelTest {
         @Override
         public boolean isFinal() {
             return finalClass;
+        }
+
+        @Override
+        public boolean isSealed() {
+            return sealedClass;
         }
 
         @Override
