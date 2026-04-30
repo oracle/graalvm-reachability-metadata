@@ -27,7 +27,9 @@ import jakarta.enterprise.lang.model.types.TypeVariable;
 import jakarta.enterprise.lang.model.types.VoidType;
 import jakarta.enterprise.lang.model.types.WildcardType;
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -371,6 +373,32 @@ public class Jakarta_enterprise_lang_modelTest {
     }
 
     @Test
+    void typeUseAnnotationsAreScopedToParameterizedTypesAndTypeArguments() {
+        FakeClassInfo markerDeclaration = new FakeClassInfo(TypeUseMarker.class.getName(), "TypeUseMarker");
+        FakeAnnotationInfo containerAnnotation = new FakeAnnotationInfo(
+                markerDeclaration,
+                Map.of(AnnotationMember.VALUE, new FakeAnnotationMember(AnnotationMember.Kind.STRING, "container")));
+        FakeAnnotationInfo elementAnnotation = new FakeAnnotationInfo(
+                markerDeclaration,
+                Map.of(AnnotationMember.VALUE, new FakeAnnotationMember(AnnotationMember.Kind.STRING, "element")));
+        FakeClassType rawList = new FakeClassType(new FakeClassInfo(List.class.getName(), "List"));
+        FakeClassType stringElement = new FakeClassType(new FakeClassInfo(String.class.getName(), "String"));
+        FakeParameterizedType annotatedList = new FakeParameterizedType(rawList, List.of(stringElement));
+        annotatedList.addAnnotation(containerAnnotation);
+        stringElement.addAnnotation(elementAnnotation);
+
+        assertThat(annotatedList.annotation(TypeUseMarker.class)).isSameAs(containerAnnotation);
+        assertThat(annotatedList.annotation(TypeUseMarker.class).value().asString()).isEqualTo("container");
+        assertThat(rawList.hasAnnotation(TypeUseMarker.class)).isFalse();
+        assertThat(annotatedList.typeArguments()).singleElement().satisfies(typeArgument -> {
+            assertThat(typeArgument.annotation(TypeUseMarker.class)).isSameAs(elementAnnotation);
+            assertThat(typeArgument.annotation(TypeUseMarker.class).value().asString()).isEqualTo("element");
+        });
+        assertThat(annotatedList.annotations(annotation -> annotation.value().asString().startsWith("contain")))
+                .containsExactly(containerAnnotation);
+    }
+
+    @Test
     void annotationTargetQueriesAnnotationsByTypeAndPredicate() {
         FakeClassInfo target = new FakeClassInfo("example.Target", "Target");
         FakeAnnotationInfo marker = new FakeAnnotationInfo(
@@ -400,6 +428,11 @@ public class Jakarta_enterprise_lang_modelTest {
     }
 
     private @interface Marker {}
+
+    @Target(ElementType.TYPE_USE)
+    private @interface TypeUseMarker {
+        String value();
+    }
 
     @Repeatable(RepeatedContainer.class)
     private @interface Repeated {
