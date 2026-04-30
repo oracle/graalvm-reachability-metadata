@@ -133,6 +133,13 @@ public class Apiguardian_apiTest {
     }
 
     @Test
+    void apiAnnotationCanDocumentInterfaceContracts() {
+        DocumentedContract contract = new DocumentedContractImplementation("api");
+
+        assertThat(contract.describe("guardian")).isEqualTo("api-guardian");
+    }
+
+    @Test
     void annotationInstancesHaveStandardEqualityHashCodeAndStringSemantics() throws NoSuchMethodException {
         Method firstMethod = AnnotatedFixture.class.getMethod("deprecatedOperation");
         Method secondMethod = AnotherAnnotatedFixture.class.getMethod("deprecatedOperation");
@@ -172,6 +179,25 @@ public class Apiguardian_apiTest {
         @API(status = API.Status.DEPRECATED)
         public String deprecatedOperation() {
             return internalState;
+        }
+    }
+
+    @API(status = API.Status.STABLE, since = "1.0", consumers = "contract-users")
+    private interface DocumentedContract {
+        @API(status = API.Status.MAINTAINED, since = "1.0", consumers = "callers")
+        String describe(String suffix);
+    }
+
+    private static final class DocumentedContractImplementation implements DocumentedContract {
+        private final String prefix;
+
+        private DocumentedContractImplementation(String prefix) {
+            this.prefix = prefix;
+        }
+
+        @Override
+        public String describe(String suffix) {
+            return prefix + "-" + suffix;
         }
     }
 
