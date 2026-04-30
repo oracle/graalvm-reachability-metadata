@@ -82,7 +82,7 @@ public class ReflectionUtilsTest {
     }
 
     @Test
-    void resolvesPublicImplementationMethodToInterfaceMethod() {
+    void resolvesPublicImplementationMethodToInterfaceMethod() throws Exception {
         Method implementationMethod = ReflectionUtils.tryToGetMethod(InterfaceImplementationSubject.class,
                 "implementedContractMethod", String.class).get();
 
