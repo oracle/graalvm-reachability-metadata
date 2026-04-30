@@ -7,6 +7,7 @@
 package io_opentelemetry.opentelemetry_api_logs;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
@@ -164,6 +165,22 @@ public class Opentelemetry_api_logsTest {
 
         GlobalLoggerProvider.resetForTest();
         assertThat(GlobalLoggerProvider.get()).isNotSameAs(provider);
+    }
+
+    @Test
+    void globalLoggerProviderRejectsSecondProviderUntilReset() {
+        RecordingLoggerProvider firstProvider = new RecordingLoggerProvider();
+        RecordingLoggerProvider secondProvider = new RecordingLoggerProvider();
+
+        GlobalLoggerProvider.set(firstProvider);
+
+        assertThatThrownBy(() -> GlobalLoggerProvider.set(secondProvider)).isInstanceOf(IllegalStateException.class);
+        assertThat(GlobalLoggerProvider.get()).isSameAs(firstProvider);
+
+        GlobalLoggerProvider.resetForTest();
+        GlobalLoggerProvider.set(secondProvider);
+
+        assertThat(GlobalLoggerProvider.get()).isSameAs(secondProvider);
     }
 
     @Test
