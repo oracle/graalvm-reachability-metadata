@@ -52,6 +52,16 @@ public class AntlrBuildToolTest {
         assertThat(tool.errorCause).isInstanceOf(ClassNotFoundException.class);
     }
 
+    @Test
+    void attemptsToResolveShortBuildApplicationNameBeforeReturning() {
+        RecordingTool tool = new RecordingTool();
+
+        tool.perform("ANTLR", "build");
+
+        assertThat(tool.errorMessage).isEqualTo("no such application ANTLR");
+        assertThat(tool.errorCause).isInstanceOf(ClassNotFoundException.class);
+    }
+
     private static final class RecordingTool extends Tool {
         private String errorMessage;
         private Exception errorCause;
