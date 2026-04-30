@@ -22,7 +22,6 @@ import org.dataloader.BatchLoaderWithContext;
 import org.dataloader.CacheKey;
 import org.dataloader.CacheMap;
 import org.dataloader.DataLoader;
-import org.dataloader.DataLoaderFactory;
 import org.dataloader.DataLoaderOptions;
 import org.dataloader.DataLoaderRegistry;
 import org.dataloader.DispatchResult;
@@ -50,7 +49,7 @@ class Java_dataloaderTest {
         DataLoaderOptions options = DataLoaderOptions.newOptions()
             .setMaxBatchSize(2)
             .setStatisticsCollector(SimpleStatisticsCollector::new);
-        DataLoader<Integer, String> dataLoader = DataLoaderFactory.newDataLoader(batchLoader, options);
+        DataLoader<Integer, String> dataLoader = DataLoader.newDataLoader(batchLoader, options);
 
         dataLoader.prime(99, "primed-value");
         CompletableFuture<String> primed = dataLoader.load(99);
@@ -105,7 +104,7 @@ class Java_dataloaderTest {
 
         DataLoaderOptions options = DataLoaderOptions.newOptions()
             .setCacheKeyFunction((CacheKey<String>) key -> key.toLowerCase(Locale.ROOT));
-        DataLoader<String, String> dataLoader = DataLoaderFactory.newDataLoader(batchLoader, options);
+        DataLoader<String, String> dataLoader = DataLoader.newDataLoader(batchLoader, options);
 
         CompletableFuture<String> mixedCase = dataLoader.load("Alpha");
         CompletableFuture<String> upperCase = dataLoader.load("ALPHA");
@@ -141,7 +140,7 @@ class Java_dataloaderTest {
 
         DataLoaderOptions options = DataLoaderOptions.newOptions()
             .setBatchLoaderContextProvider(() -> "tenant-a");
-        DataLoader<String, String> dataLoader = DataLoaderFactory.newDataLoader(batchLoader, options);
+        DataLoader<String, String> dataLoader = DataLoader.newDataLoader(batchLoader, options);
 
         CompletableFuture<String> alpha = dataLoader.load("alpha", "ctx-1");
         CompletableFuture<String> beta = dataLoader.load("beta", "ctx-2");
@@ -170,7 +169,7 @@ class Java_dataloaderTest {
             return CompletableFuture.completedFuture(lengths);
         };
 
-        DataLoader<String, Integer> dataLoader = DataLoaderFactory.newMappedDataLoader(mappedBatchLoader);
+        DataLoader<String, Integer> dataLoader = DataLoader.newMappedDataLoader(mappedBatchLoader);
 
         CompletableFuture<List<Integer>> many = dataLoader.loadMany(List.of("lion", "missing", "ox"));
 
@@ -187,7 +186,7 @@ class Java_dataloaderTest {
                 : Try.succeeded(key.toUpperCase()))
             .toList());
 
-        DataLoader<String, String> dataLoader = DataLoaderFactory.newDataLoaderWithTry(batchLoader);
+        DataLoader<String, String> dataLoader = DataLoader.newDataLoaderWithTry(batchLoader);
 
         CompletableFuture<String> ok = dataLoader.load("ok");
         CompletableFuture<String> bad = dataLoader.load("bad");
@@ -217,7 +216,7 @@ class Java_dataloaderTest {
         DataLoaderOptions options = DataLoaderOptions.newOptions()
             .setCacheMap(cacheMap);
 
-        DataLoader<String, String> firstLoader = DataLoaderFactory.newDataLoader(batchLoader, options);
+        DataLoader<String, String> firstLoader = DataLoader.newDataLoader(batchLoader, options);
         CompletableFuture<String> alpha = firstLoader.load("alpha");
 
         assertThat(firstLoader.dispatchAndJoin()).containsExactly("value-alpha");
@@ -226,7 +225,7 @@ class Java_dataloaderTest {
         assertThat(cacheMap.getRequests).isEmpty();
         assertThat(cacheMap.setRequests).containsExactly("alpha");
 
-        DataLoader<String, String> secondLoader = DataLoaderFactory.newDataLoader(batchLoader, options);
+        DataLoader<String, String> secondLoader = DataLoader.newDataLoader(batchLoader, options);
         CompletableFuture<List<String>> many = secondLoader.loadMany(List.of("alpha", "beta"));
 
         assertThat(secondLoader.dispatchAndJoin()).containsExactly("value-beta");
@@ -243,10 +242,10 @@ class Java_dataloaderTest {
     void registryDispatchesAllLoadersAndAggregatesStatistics() {
         DataLoaderOptions options = DataLoaderOptions.newOptions()
             .setStatisticsCollector(SimpleStatisticsCollector::new);
-        DataLoader<Integer, String> numbers = DataLoaderFactory.newDataLoader(keys -> CompletableFuture.completedFuture(keys.stream()
+        DataLoader<Integer, String> numbers = DataLoader.newDataLoader(keys -> CompletableFuture.completedFuture(keys.stream()
             .map(key -> "n" + key)
             .toList()), options);
-        DataLoader<String, String> letters = DataLoaderFactory.newDataLoader(keys -> CompletableFuture.completedFuture(keys.stream()
+        DataLoader<String, String> letters = DataLoader.newDataLoader(keys -> CompletableFuture.completedFuture(keys.stream()
             .map(String::toUpperCase)
             .toList()), options);
 
