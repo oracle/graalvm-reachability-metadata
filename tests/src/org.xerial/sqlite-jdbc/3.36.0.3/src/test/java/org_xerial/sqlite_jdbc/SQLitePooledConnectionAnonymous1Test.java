@@ -37,8 +37,7 @@ public class SQLitePooledConnectionAnonymous1Test {
                     assertThat(resultSet.next()).isFalse();
                 }
             }
-        }
-        finally {
+        } finally {
             connection.close();
             pooledConnection.close();
         }

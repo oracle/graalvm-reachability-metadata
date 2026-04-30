@@ -27,8 +27,7 @@ public class SQLiteJDBCLoaderTest {
         try {
             assertThat(SQLiteJDBCLoader.initialize()).isTrue();
             assertThat(SQLiteJDBCLoader.isNativeMode()).isTrue();
-        }
-        finally {
+        } finally {
             restoreProperty("org.sqlite.tmpdir", previousTempDir);
             restoreProperty("org.sqlite.lib.path", previousLibPath);
             restoreProperty("org.sqlite.lib.name", previousLibName);
@@ -38,8 +37,7 @@ public class SQLiteJDBCLoaderTest {
     private static void restoreProperty(String name, String value) {
         if (value == null) {
             System.clearProperty(name);
-        }
-        else {
+        } else {
             System.setProperty(name, value);
         }
     }
