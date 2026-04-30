@@ -20,6 +20,8 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.SlidingWindowReservoir;
 import com.codahale.metrics.Timer;
+import com.codahale.metrics.health.HealthCheck;
+import com.codahale.metrics.json.HealthCheckModule;
 import com.codahale.metrics.json.MetricsModule;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -153,7 +155,46 @@ public class Metrics_jsonTest {
         assertThat(timerJson.get("duration_units").asText()).isEqualTo("nanoseconds");
     }
 
+    @Test
+    void healthCheckModuleSerializesResultStatusDetailsAndNestedErrors() throws Exception {
+        HealthCheckModule module = new HealthCheckModule();
+        ObjectMapper mapper = mapperWith(module);
+        IllegalStateException cause = new IllegalStateException("connection refused");
+        IllegalArgumentException error = new IllegalArgumentException("database unavailable", cause);
+        HealthCheck.Result result = HealthCheck.Result.builder()
+                .unhealthy(error)
+                .withMessage("readiness check failed")
+                .withDetail("service", "orders")
+                .withDetail("attempt", 3)
+                .build();
+
+        JsonNode json = toJson(mapper, result);
+
+        assertThat(module.getModuleName()).isEqualTo("healthchecks");
+        assertThat(module.version().getGroupId()).isEqualTo("io.dropwizard.metrics");
+        assertThat(module.version().getArtifactId()).isEqualTo("metrics-json");
+
+        assertThat(json.get("healthy").asBoolean()).isFalse();
+        assertThat(json.get("message").asText()).isEqualTo("readiness check failed");
+        assertThat(json.get("service").asText()).isEqualTo("orders");
+        assertThat(json.get("attempt").asInt()).isEqualTo(3);
+        assertThat(json.get("duration").asLong()).isGreaterThanOrEqualTo(0L);
+        assertThat(json.get("timestamp").asText()).isNotBlank();
+        assertThat(json.at("/error/type").asText()).isEqualTo("java.lang.IllegalArgumentException");
+        assertThat(json.at("/error/message").asText()).isEqualTo("database unavailable");
+        assertThat(json.at("/error/stack").isArray()).isTrue();
+        assertThat(json.at("/error/stack").size()).isGreaterThan(0);
+        assertThat(json.at("/error/cause/type").asText()).isEqualTo("java.lang.IllegalStateException");
+        assertThat(json.at("/error/cause/message").asText()).isEqualTo("connection refused");
+    }
+
     private static ObjectMapper mapperWith(MetricsModule module) {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(module);
+        return mapper;
+    }
+
+    private static ObjectMapper mapperWith(HealthCheckModule module) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(module);
         return mapper;
