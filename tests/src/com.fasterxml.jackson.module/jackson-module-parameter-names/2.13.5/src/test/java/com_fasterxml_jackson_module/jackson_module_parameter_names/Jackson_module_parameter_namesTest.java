@@ -102,6 +102,17 @@ public class Jackson_module_parameter_namesTest {
     }
 
     @Test
+    void explicitCreatorModeTakesPrecedenceOverModuleCreatorBinding() throws Exception {
+        ObjectMapper mapper = JsonMapper.builder()
+                .addModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES))
+                .build();
+
+        ExplicitDelegatingCode trackingCode = mapper.readValue("\"PKG-44\"", ExplicitDelegatingCode.class);
+
+        assertThat(trackingCode.code()).isEqualTo("PKG-44");
+    }
+
+    @Test
     void moduleEqualityIsIdentityBasedAndVersionMatchesLibrary() {
         ParameterNamesModule firstModule = new ParameterNamesModule();
         ParameterNamesModule secondModule = new ParameterNamesModule();
@@ -154,6 +165,12 @@ public class Jackson_module_parameter_namesTest {
 
         public boolean matches(String candidatePassword) {
             return password.equals(candidatePassword);
+        }
+    }
+
+    public record ExplicitDelegatingCode(String code) {
+        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+        public ExplicitDelegatingCode {
         }
     }
 }
