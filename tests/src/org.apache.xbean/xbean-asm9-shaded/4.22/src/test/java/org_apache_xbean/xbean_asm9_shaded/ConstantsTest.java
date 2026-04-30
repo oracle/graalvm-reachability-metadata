@@ -6,21 +6,23 @@
  */
 package org_apache_xbean.xbean_asm9_shaded;
 
+import org.apache.xbean.asm9.ClassVisitor;
 import org.apache.xbean.asm9.Opcodes;
-import org.apache.xbean.asm9.tree.ClassNode;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 public class ConstantsTest {
     @Test
-    void experimentalApiChecksTheCallerClassBytecodeResource() {
+    void experimentalApiChecksExternalVisitorBytecodeResource() {
         assertThatIllegalStateException()
-                .isThrownBy(() -> createExperimentalClassNode());
+                .isThrownBy(ExperimentalClassVisitor::new);
     }
 
-    @SuppressWarnings("deprecation")
-    private static ClassNode createExperimentalClassNode() {
-        return new ClassNode(Opcodes.ASM10_EXPERIMENTAL);
+    private static final class ExperimentalClassVisitor extends ClassVisitor {
+        @SuppressWarnings("deprecation")
+        private ExperimentalClassVisitor() {
+            super(Opcodes.ASM10_EXPERIMENTAL);
+        }
     }
 }
