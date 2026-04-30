@@ -6,51 +6,50 @@
  */
 package org_immutables.value;
 
-import java.io.Closeable;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.immutables.value.internal.$guava$.io.$Closer;
+import org.immutables.value.internal.$guava$.io.$CharStreams;
+import org.immutables.value.internal.$guava$.io.$LineProcessor;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowableOfType;
 
-class CloserSuppressingSuppressorTest {
+class CharStreamsLineProcessorTest {
 
     @Test
-    void closeAddsLaterCloseFailuresAsSuppressedExceptions() {
-        List<String> closedResources = new ArrayList<>();
-        $Closer closer = $Closer.create();
+    void readLinesStopsWhenProcessorReturnsFalse() throws IOException {
+        CapturingLineProcessor processor = new CapturingLineProcessor(2);
 
-        closer.register(new FailingCloseable("secondary", closedResources));
-        closer.register(new FailingCloseable("primary", closedResources));
+        List<String> processedLines = $CharStreams.readLines(new StringReader("alpha\nbeta\ngamma\n"), processor);
 
-        IOException thrown = catchThrowableOfType(closer::close, IOException.class);
-
-        assertThat(closedResources).containsExactly("primary", "secondary");
-        assertThat(thrown)
-                .isNotNull()
-                .hasMessage("primary");
-        assertThat(thrown.getSuppressed())
-                .singleElement()
-                .isInstanceOfSatisfying(IOException.class, suppressed -> assertThat(suppressed).hasMessage("secondary"));
+        assertThat(processedLines).containsExactly("alpha", "beta");
+        assertThat(processor.seenLines()).containsExactly("alpha", "beta");
     }
 
-    private static final class FailingCloseable implements Closeable {
-        private final String name;
-        private final List<String> closedResources;
+    private static final class CapturingLineProcessor implements $LineProcessor<List<String>> {
+        private final int maximumLines;
+        private final List<String> seenLines = new ArrayList<>();
 
-        private FailingCloseable(String name, List<String> closedResources) {
-            this.name = name;
-            this.closedResources = closedResources;
+        private CapturingLineProcessor(int maximumLines) {
+            this.maximumLines = maximumLines;
         }
 
         @Override
-        public void close() throws IOException {
-            closedResources.add(name);
-            throw new IOException(name);
+        public boolean processLine(String line) {
+            seenLines.add(line);
+            return seenLines.size() < maximumLines;
+        }
+
+        @Override
+        public List<String> getResult() {
+            return List.copyOf(seenLines);
+        }
+
+        private List<String> seenLines() {
+            return List.copyOf(seenLines);
         }
     }
 }
