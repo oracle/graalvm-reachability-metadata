@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 
 import javax.validation.BootstrapConfiguration;
+import javax.validation.ClockProvider;
 import javax.validation.Configuration;
 import javax.validation.ConstraintValidatorFactory;
 import javax.validation.MessageInterpolator;
@@ -31,6 +32,7 @@ import javax.validation.ValidatorFactory;
 import javax.validation.spi.BootstrapState;
 import javax.validation.spi.ConfigurationState;
 import javax.validation.spi.ValidationProvider;
+import javax.validation.valueextraction.ValueExtractor;
 import org.junit.jupiter.api.Test;
 
 public class ValidationInnerDefaultValidationProviderResolverTest {
@@ -226,6 +228,16 @@ public class ValidationInnerDefaultValidationProviderResolverTest {
         }
 
         @Override
+        public TestValidationConfiguration clockProvider(ClockProvider clockProvider) {
+            return this;
+        }
+
+        @Override
+        public TestValidationConfiguration addValueExtractor(ValueExtractor<?> extractor) {
+            return this;
+        }
+
+        @Override
         public TestValidationConfiguration addMapping(InputStream stream) {
             return this;
         }
@@ -252,6 +264,11 @@ public class ValidationInnerDefaultValidationProviderResolverTest {
 
         @Override
         public ParameterNameProvider getDefaultParameterNameProvider() {
+            return null;
+        }
+
+        @Override
+        public ClockProvider getDefaultClockProvider() {
             return null;
         }
 
@@ -295,6 +312,11 @@ public class ValidationInnerDefaultValidationProviderResolverTest {
 
         @Override
         public ParameterNameProvider getParameterNameProvider() {
+            return null;
+        }
+
+        @Override
+        public ClockProvider getClockProvider() {
             return null;
         }
 
