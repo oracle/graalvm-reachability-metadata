@@ -15,8 +15,11 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,6 +38,7 @@ public class Weld_build_configTest {
     private static final String POM_PROPERTIES_RESOURCE =
             "META-INF/maven/org.jboss.weld/weld-build-config/pom.properties";
     private static final String POM_RESOURCE = "META-INF/maven/org.jboss.weld/weld-build-config/pom.xml";
+    private static final String MANIFEST_RESOURCE = "META-INF/MANIFEST.MF";
     private static final String MAVEN_NAMESPACE = "http://maven.apache.org/POM/4.0.0";
 
     @Test
@@ -123,6 +127,32 @@ public class Weld_build_configTest {
         assertThat(directChildText(extension, "artifactId")).isEqualTo("wagon-webdav-jackrabbit");
     }
 
+    @Test
+    void manifestPublishesSpecificationAndBuildMetadata() throws Exception {
+        Properties properties = new Properties();
+        try (InputStream inputStream = resourceStream(POM_PROPERTIES_RESOURCE)) {
+            properties.load(inputStream);
+        }
+        Element project = parseXml(readResource(POM_RESOURCE), true).getDocumentElement();
+        String projectName = directChildText(project, "name");
+
+        Manifest manifest = manifestWithSpecificationTitle(projectName);
+        Attributes mainAttributes = manifest.getMainAttributes();
+        Attributes buildInformation = manifest.getAttributes("Build-Information");
+
+        assertThat(mainAttributes.getValue("Specification-Title")).isEqualTo(projectName);
+        assertThat(mainAttributes.getValue("Specification-Version")).isEqualTo(properties.getProperty("version"));
+        assertThat(mainAttributes.getValue("Specification-Vendor")).isEqualTo("Seam Framework");
+        assertThat(mainAttributes.getValue("Implementation-Title")).isEqualTo(projectName);
+        assertThat(mainAttributes.getValue("Implementation-URL"))
+                .startsWith("http://")
+                .contains(properties.getProperty("artifactId"));
+        assertThat(buildInformation).isNotNull();
+        assertThat(buildInformation.getValue("Maven-Version")).isNotBlank();
+        assertThat(buildInformation.getValue("Build-Time")).isEqualTo(mainAttributes.getValue("Implementation-Version"));
+        assertThat(buildInformation.getValue("SCM")).isNotBlank();
+    }
+
     private static String readResource(String resourceName) throws IOException {
         try (InputStream inputStream = resourceStream(resourceName)) {
             return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
@@ -142,6 +172,20 @@ public class Weld_build_configTest {
         DocumentBuilder builder = factory.newDocumentBuilder();
         builder.setEntityResolver((publicId, systemId) -> new InputSource(new StringReader("")));
         return builder.parse(new InputSource(new StringReader(xml)));
+    }
+
+    private static Manifest manifestWithSpecificationTitle(String specificationTitle) throws IOException {
+        Enumeration<URL> resources = Weld_build_configTest.class.getClassLoader().getResources(MANIFEST_RESOURCE);
+        while (resources.hasMoreElements()) {
+            URL resource = resources.nextElement();
+            try (InputStream inputStream = resource.openStream()) {
+                Manifest manifest = new Manifest(inputStream);
+                if (specificationTitle.equals(manifest.getMainAttributes().getValue("Specification-Title"))) {
+                    return manifest;
+                }
+            }
+        }
+        throw new AssertionError("No manifest with specification title " + specificationTitle);
     }
 
     private static Element moduleNamed(Element parent, String name) {
