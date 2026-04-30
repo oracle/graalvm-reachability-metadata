@@ -1,0 +1,15 @@
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Completed.
+
+- Removed generated tests whose failures were not metadata-related runtime class-definition/native-image limitations.
+- Preserved the remaining metadata-related failing test.
+- Did not modify metadata files.
+- Wrote the intervention report to:
+
+`post-gen-interventions/com.esotericsoftware_kryo-shaded_3.0.3.md`
+
+Validation run after intervention:
+
+`./gradlew clean test -Pcoordinates=com.esotericsoftware:kryo-shaded:3.0.3 --stacktrace`
+
+Result: remaining failure is the preserved metadata-related `java.lang.Object()` reflection registration failure; 47 native tests pass.

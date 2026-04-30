@@ -1,0 +1,1005 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019ddb31-787c-72f2-82ec-d934018c1288
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.esotericsoftware:kryo-shaded:3.0.3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.0.3".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+- Set "coordinates" to "com.esotericsoftware:kryo-shaded:3.0.3".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and upstream tags, then update the JSON in place with the exact-version URLs where they can be confirmed.
+exec
+/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+ succeeded in 0ms:
+{
+  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3"
+}
+
+exec
+/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'com\\.esotericsoftware-kryo-shaded-3\\.0\\.3\\.json"'$'"'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+
+web search: 
+web search: Maven com.esotericsoftware kryo-shaded 3.0.3 sources jar
+web search: 
+web search: https://github.com/EsotericSoftware/kryo
+codex
+The current file only has coordinates. Maven Central is reachable enough to confirm the artifact exists, but I’m checking the POM and upstream tags directly because the exact source/test/doc URLs need to be version-pinned.
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3.pom' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>kryo-parent</artifactId>
+    <groupId>com.esotericsoftware</groupId>
+    <version>3.0.3</version>
+    <relativePath>pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>kryo-shaded</artifactId>
+  <packaging>bundle</packaging>
+  <name>Kryo Shaded</name>
+  <description>Fast, efficient Java serialization. This contains the shaded reflectasm jar to prevent conflicts with other versions of asm.</description>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.17</version>
+        <configuration>
+          <skipTests>true</skipTests>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <minimizeJar>true</minimizeJar>
+          <shadedArtifactAttached>false</shadedArtifactAttached>
+          <artifactSet>
+            <includes>
+              <include>com.esotericsoftware:reflectasm:shaded</include>
+            </includes>
+          </artifactSet>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.4.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Import-Package>COM.jrockit*;resolution:=optional,
+						COM.newmonics*;resolution:=optional,
+						jrockit*;resolution:=optional,
+						sun.reflect;resolution:=optional,
+						sun.misc;resolution:=optional,
+						sun.nio.ch;resolution:=optional,
+						*</Import-Package>
+            <Export-Package>com.esotericsoftware.kryo*,com.esotericsoftware.reflectasm*</Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>com.esotericsoftware</groupId>
+      <artifactId>minlog</artifactId>
+      <version>1.3.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.objenesis</groupId>
+      <artifactId>objenesis</artifactId>
+      <version>2.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.8.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+
+exec
+/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-sources.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 29 Apr 2026 21:42:39 GMT
+content-type: application/java-archive
+content-length: 191107
+cf-ray: 9f417a500f861778-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 279292
+etag: "3389f76d215ca5b1b43349c91d9c89f3"
+last-modified: Sun, 26 Jul 2015 21:47:11 GMT
+x-checksum-md5: 3389f76d215ca5b1b43349c91d9c89f3
+x-checksum-sha1: f80bc703911d3ad8e64a91969c63f74891c8c8bc
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/bin/bash -lc "git ls-remote --tags https://github.com/EsotericSoftware/kryo.git | rg '3\\.0\\.3|v3|kryo'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+ succeeded in 400ms:
+84996ffec7e191d6c6147f00bb3323f5a42250ec	refs/tags/kryo-1.02
+ac984810a600d45c3a5bb259d67f3c983e88b4d4	refs/tags/kryo-1.02^{}
+1d60cb8a341383f97f3b7e9f3f0a9444ef8b01b9	refs/tags/kryo-1.03
+5b331da9813aab12b879aa9403fa2ea2f76e9ded	refs/tags/kryo-1.03^{}
+fe3a54fc8771953d0b6aad2d3e821adbeaddf4bc	refs/tags/kryo-1.04
+40c906d3acbc91beca55d0ccd3a58d42cb6da884	refs/tags/kryo-1.04^{}
+9b18c409a31585f4903c09fc261fa3d357968361	refs/tags/kryo-1.05
+48400b6621f487fd10f8fe3d2c2b5e80900c1758	refs/tags/kryo-1.05^{}
+a19b5b234a614d173546bd1d9130914b5f73db0e	refs/tags/kryo-2.02
+7a32f6e2508c5e54f94390dd5e81ab9585bda66b	refs/tags/kryo-2.02^{}
+4cd57f99f57710a72e84a8c1905e321d41afc08e	refs/tags/kryo-2.04
+cc8458487374f766db7daa191bc5474a9f2ce000	refs/tags/kryo-2.04^{}
+08c9ed2f5478251f0222a3e4d45c5ef73aef2570	refs/tags/kryo-2.05
+0dbc12ae562904a258292032fa10911574bae94d	refs/tags/kryo-2.05^{}
+52fa78588f1903552546e620d162bdb5aa1366a8	refs/tags/kryo-2.07
+f15c8780b15a0f57137025b6d656a0365ffc3917	refs/tags/kryo-2.07^{}
+d95c6e5c8ed39a4a85fbf22651fc9b088c2da602	refs/tags/kryo-2.08
+f2d66a5953250eaabb683513fca68b56eac900be	refs/tags/kryo-2.08^{}
+5759dbe19ac51d7893609c9a70b44c0e667c2d30	refs/tags/kryo-2.09
+3fad9e2ef859d42e8067786d7d50c12158d72cd5	refs/tags/kryo-2.09^{}
+46a1ccd638e2424375a7728762b30ef65fa5009f	refs/tags/kryo-2.11
+60b7839f5754f1e5d86237fb2f74da7301c5c018	refs/tags/kryo-2.11^{}
+80610d922a892610b0dac9d5a746d20c1783167a	refs/tags/kryo-2.14
+75dc9ab7c38eb29f64f16b1214586a74131a4dc1	refs/tags/kryo-2.14^{}
+e1220fba9fde76ed21a3939bcc8d6a1419f19c64	refs/tags/kryo-2.15
+4df89e33ebca7894833673b1befb0b34efb6566f	refs/tags/kryo-2.15^{}
+bd9c0e3be80d08e8fb0082c5fe6146cdd1349373	refs/tags/kryo-2.16
+528a953415fa4ec3e0b16023ac94bd733fe0d62c	refs/tags/kryo-2.16^{}
+005a55d2051b93e5e7fd94457b97099495065e65	refs/tags/kryo-2.18
+86a5375f69f536aa3f0c8c462fc10060188d5cb8	refs/tags/kryo-2.18^{}
+23f5e8111a8f2ecd15532a63356f03baa50ec063	refs/tags/kryo-2.20
+3ec3913243e1dde292e65e4abd58881dbeac57f0	refs/tags/kryo-2.20^{}
+5329db888f885cdf2ffd1e253bb842a63b4631ba	refs/tags/kryo-2.21
+241af2f7d9d77771dbaca919bd155057bad7c626	refs/tags/kryo-2.21^{}
+27418a0b2cc6f5e25a828176a6e8d25779774549	refs/tags/kryo-2.21.1
+d184d34849dc0df2944ad55cee6c04f027406be3	refs/tags/kryo-2.21.1^{}
+5d5c1f20abf73006503e5e0f268079b4f0d41493	refs/tags/kryo-2.22
+cd7a3516e50f1736a9edc3133284291a73f87354	refs/tags/kryo-2.22^{}
+6b5cd6649e909be067dc3822a4b0ab9c745911eb	refs/tags/kryo-2.23.0
+71e19cfacc295ad70e3f7e9bf6115b3d3df92957	refs/tags/kryo-2.23.0^{}
+118e940966452e8fd2b649e0975a9ddc37f4b910	refs/tags/kryo-2.24.0
+3a2eb7b3f3f04652e2dc40764c963f2bc99a92f5	refs/tags/kryo-2.24.0^{}
+fcd4913d21e668ed400383ccd502d67f93188af3	refs/tags/kryo-parent-3.0.0
+6720cca3b9172ef138ceb8245e2243211afb160b	refs/tags/kryo-parent-3.0.0^{}
+5d4edc0652f49052a4d48b1db80ebebb68a6d829	refs/tags/kryo-parent-3.0.1
+24436230a2fc2fe2a3409e8a09d867f073c0889b	refs/tags/kryo-parent-3.0.1^{}
+6764e0780aeb1621e2ceda6f4caeb553f056d3a9	refs/tags/kryo-parent-3.0.2
+513b33c4ccac9d7f88a0c5adfff3473545f0fa2b	refs/tags/kryo-parent-3.0.2^{}
+607f3157eb51c0b69b2d39f66735d5abbeb8366c	refs/tags/kryo-parent-3.0.3
+9422c847db584dcddfa614303cd41d57eb76220f	refs/tags/kryo-parent-3.0.3^{}
+8c90af9d8d785aaebb9f601917ff13fbaabc0bc1	refs/tags/kryo-parent-4.0.0
+4bb9735c6c066dbd77288a73fc533dc6f4d80bad	refs/tags/kryo-parent-4.0.0^{}
+96e7cb772474b99b3e6fbd8613cc60014f22b210	refs/tags/kryo-parent-4.0.1
+513f23630f7bdcc313677f1f1b89271bc723a330	refs/tags/kryo-parent-4.0.1^{}
+0b8f4fedf1689618bc5c15f03600c2cba93aa31e	refs/tags/kryo-parent-4.0.2
+d390da94e1558f8e8808c69257ab4f47a37b04c5	refs/tags/kryo-parent-4.0.2^{}
+920a8601f321a2967b42255ccf5916b97ed1351b	refs/tags/kryo-parent-4.0.3
+362202885aceb64a1766abcd5836fed0ff7974e6	refs/tags/kryo-parent-4.0.3^{}
+893bb504533cf569af2333acb666b9893abcd940	refs/tags/kryo-parent-5.0.0
+2248bd69084d3b4361f16fe3acca1d43ab48ca12	refs/tags/kryo-parent-5.0.0^{}
+2f3999a64aa4207f3abcf051e1848071cc869e94	refs/tags/kryo-parent-5.0.0-RC1
+e68e0f3ff97441843028ced673b599238f90356d	refs/tags/kryo-parent-5.0.0-RC1^{}
+ff12d23eb10c6ebb5e421bf8e09121f49a4c12bc	refs/tags/kryo-parent-5.0.0-RC2
+dda96dc4a5938a98a0fb2f409cdd3997febf71f7	refs/tags/kryo-parent-5.0.0-RC2^{}
+e4c7f909871ce020b9973bc0436cf276f107538e	refs/tags/kryo-parent-5.0.0-RC3
+54b25280b7156e91552d64ae210e00bb49baa826	refs/tags/kryo-parent-5.0.0-RC3^{}
+c12dd2eb7313ac2bf065ec232d46d73e885cbbeb	refs/tags/kryo-parent-5.0.0-RC4
+d729517080d5a6037e6fd4bb953936106228ab43	refs/tags/kryo-parent-5.0.0-RC4^{}
+e7a97cd9da8708f8ee84e5327bba6436f3078396	refs/tags/kryo-parent-5.0.0-RC5
+afd80b3f2ae9790fe3f11ea44f08a03fde9c1960	refs/tags/kryo-parent-5.0.0-RC5^{}
+117e613ac57ab4067d26271159d65e254c9eb95c	refs/tags/kryo-parent-5.0.0-RC6
+175b7a1f44c39b89ac3f7fb8ab91321010b1673c	refs/tags/kryo-parent-5.0.0-RC6^{}
+116a0dcc9c93b00c1ff7401ea5d974524fc7b2a6	refs/tags/kryo-parent-5.0.0-RC7
+a5ebd819eea050b29a4581d6fb41fdd27873b0e2	refs/tags/kryo-parent-5.0.0-RC7^{}
+0aee62a3c5a0c6f14d9235e3fd1ddc959a7aed12	refs/tags/kryo-parent-5.0.0-RC8
+0c223e6bd00353f3a2505c614656c845ed928e06	refs/tags/kryo-parent-5.0.0-RC8^{}
+329a33f136dbe0fac92fdb8c56e1f7aeaada8b6d	refs/tags/kryo-parent-5.0.0-RC9
+7d9fc80317bb94cd23264297ea34732db44abbcb	refs/tags/kryo-parent-5.0.0-RC9^{}
+c3d0fc0496fe47495fba376d095f91b96890169f	refs/tags/kryo-parent-5.0.1
+4f212fc818ef6ee588ed1cbdf0322b32ff02e541	refs/tags/kryo-parent-5.0.1^{}
+ea2ba32efcac2275a18789a741a4e38a520b4825	refs/tags/kryo-parent-5.0.2
+ef9d586a5d39e8a39b25af95c4a85fb64cb330a1	refs/tags/kryo-parent-5.0.2^{}
+b9e54a664773b08732a045ff0fba1e8d2d6a2c4b	refs/tags/kryo-parent-5.0.3
+2ddd586b7a7eba5374a6aa945c7ce4b39ce896f2	refs/tags/kryo-parent-5.0.3^{}
+99c5d510713a0c4aa9476855760c0e9e5190fb62	refs/tags/kryo-parent-5.0.4
+bbccb824a090d20bf94ac706a488792ff0dfb9e3	refs/tags/kryo-parent-5.0.4^{}
+21e1d082bd31330155bf7b090720c0da9a106bdd	refs/tags/kryo-parent-5.1.0
+9196268c2e21b7590d1b81e4afae79ae9ef76f69	refs/tags/kryo-parent-5.1.0^{}
+fc5a9bf4306e74e787f192346e8e6f91ef4f4653	refs/tags/kryo-parent-5.1.1
+285596427082407a3a9f9ecd2656767b3033f23a	refs/tags/kryo-parent-5.1.1^{}
+1e51e173f9ca073dd04f2c5394edec4f04ea8d4f	refs/tags/kryo-parent-5.2.0
+13064873d4b84242f4c308cd400ace4536f51f65	refs/tags/kryo-parent-5.2.0^{}
+5e5181219f6deb523f16020128b94e56e91d0d83	refs/tags/kryo-parent-5.2.1
+37facf0d01bd3395b075036403b6c2256c10d12c	refs/tags/kryo-parent-5.2.1^{}
+a453226af01e2d4325f35311fdb86cc184938f8c	refs/tags/kryo-parent-5.3.0
+c91d75e681c96fda197757f0c01e76a6faf46122	refs/tags/kryo-parent-5.3.0^{}
+ac3b1511859435b8189af5a6d80bc95b50525f6a	refs/tags/kryo-parent-5.4.0
+db14bbcf7e9bb79c030cee2b7258f42ac42fd927	refs/tags/kryo-parent-5.4.0^{}
+0a40ec5534d3364bda30c014e8d89da667a63cd7	refs/tags/kryo-parent-5.5.0
+a823c3ed60c44457510352c4008e00834a8c33be	refs/tags/kryo-parent-5.5.0^{}
+a4d42bfef3c9bfea663718f5eb9311c3c54a53d6	refs/tags/kryo-parent-5.6.0
+8c112ccd1e1f3a4399251f56b6d557a09959b6c9	refs/tags/kryo-parent-5.6.0^{}
+f6f22979c02b5eff60c603108b496919a2081da3	refs/tags/kryo-parent-5.6.1
+799343664b777e3ddd365177e739830d63631408	refs/tags/kryo-parent-5.6.1^{}
+3f87b32f0f6f16a9281e537c29d4f9cce0787ecc	refs/tags/kryo-parent-5.6.2
+fee63879ddcec23fbd09ac7785bc04a3de758483	refs/tags/kryo-parent-5.6.2^{}
+
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/esotericsoftware/kryo-parent/3.0.3/kryo-parent-3.0.3.pom' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+	<groupId>com.esotericsoftware</groupId>
+	<artifactId>kryo-parent</artifactId>
+	<version>3.0.3</version>
+	<packaging>pom</packaging>
+	<name>Kryo Parent</name>
+	<description>Fast, efficient Java serialization. This is the parent pom that assembles the main kryo and shaded kryo artifacts.</description>
+	<url>https://github.com/EsotericSoftware/kryo</url>
+
+	<licenses>
+		<license>
+			<name>New BSD License</name>
+			<url>http://www.opensource.org/licenses/bsd-license.php</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>https://github.com/EsotericSoftware/kryo</url>
+		<connection>scm:git:git@github.com:EsotericSoftware/kryo.git</connection>
+		<developerConnection>scm:git:git@github.com:EsotericSoftware/kryo.git</developerConnection>
+	</scm>
+
+	<developers>
+		<developer>
+			<id>nathan.sweet</id>
+			<name>Nathan Sweet</name>
+			<email>nathan.sweet@gmail.com</email>
+		</developer>
+	</developers>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<versions.reflectasm>1.10.1</versions.reflectasm>
+	</properties>
+	
+	<modules>
+		<module>pom-main.xml</module>
+		<module>pom-shaded.xml</module>
+	</modules>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.esotericsoftware</groupId>
+				<artifactId>reflectasm</artifactId>
+				<version>${versions.reflectasm}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.esotericsoftware</groupId>
+				<artifactId>reflectasm</artifactId>
+				<classifier>shaded</classifier>
+				<version>${versions.reflectasm}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.esotericsoftware</groupId>
+			<artifactId>minlog</artifactId>
+			<version>1.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.objenesis</groupId>
+			<artifactId>objenesis</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<!-- Set nonstandard source and test source dirs -->
+		<sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>test</testSourceDirectory>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<inherited>true</inherited>
+					<configuration>
+						<source>1.5</source>
+						<target>1.5</target>
+						<encoding>utf-8</encoding>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<!-- Disable resources (project has none) -->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.5</version>
+				<executions>
+					<execution>
+						<id>default-resources</id>
+						<phase>none</phase>
+					</execution>
+					<execution>
+						<id>default-testResources</id>
+						<phase>none</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<excludes>
+						<exclude>**/.svn/*</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.3</version>
+				<configuration>
+					<!-- required for java8, so that javadoc errors don't fail the build -->
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>requireSnapshot</id>
+			<!-- This profile is activated by the "-P requireSnapshot" switch to
+				be able to deploy SNAPSHOTs only (which is not allowed for releases) -->
+			<build>
+				<plugins>
+					<!-- Jenkins should only build -SNAPSHOTs -->
+					<plugin>
+						<artifactId>maven-enforcer-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>enforce</goal>
+								</goals>
+								<configuration>
+									<rules>
+										<evaluateBeanshell>
+											<condition>"${project.version}".endsWith("-SNAPSHOT")</condition>
+											<message>Jenkins should only build -SNAPSHOT versions</message>
+										</evaluateBeanshell>
+									</rules>
+									<fail>true</fail>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<repositories>
+		<repository>
+			<id>sonatype-releases</id>
+			<name>sonatype releases repo</name>
+			<url>https://oss.sonatype.org/content/repositories/releases</url>
+		</repository>
+	</repositories>
+</project>
+
+exec
+/bin/bash -lc 'for u in https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-test-sources.jar https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-tests.jar https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-javadoc.jar; do echo "$u"; curl -I -fsSL "$u" | sed -n '"'1,12p' || true; done" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+exec
+/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/ | sed -n '1,200p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+ succeeded in 121ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/esotericsoftware/kryo-shaded/3.0.3</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/esotericsoftware/kryo-shaded/3.0.3</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="kryo-shaded-3.0.3-javadoc.jar" title="kryo-shaded-3.0.3-javadoc.jar">kryo-shaded-3.0.3-javadoc.jar</a>                     2015-07-26 21:47    814842      
+<a href="kryo-shaded-3.0.3-javadoc.jar.asc" title="kryo-shaded-3.0.3-javadoc.jar.asc">kryo-shaded-3.0.3-javadoc.jar.asc</a>                 2015-07-26 21:47       181      
+<a href="kryo-shaded-3.0.3-javadoc.jar.md5" title="kryo-shaded-3.0.3-javadoc.jar.md5">kryo-shaded-3.0.3-javadoc.jar.md5</a>                 2015-07-26 21:47        32      
+<a href="kryo-shaded-3.0.3-javadoc.jar.sha1" title="kryo-shaded-3.0.3-javadoc.jar.sha1">kryo-shaded-3.0.3-javadoc.jar.sha1</a>                2015-07-26 21:47        40      
+<a href="kryo-shaded-3.0.3-sources.jar" title="kryo-shaded-3.0.3-sources.jar">kryo-shaded-3.0.3-sources.jar</a>                     2015-07-26 21:47    191107      
+<a href="kryo-shaded-3.0.3-sources.jar.asc" title="kryo-shaded-3.0.3-sources.jar.asc">kryo-shaded-3.0.3-sources.jar.asc</a>                 2015-07-26 21:47       181      
+<a href="kryo-shaded-3.0.3-sources.jar.md5" title="kryo-shaded-3.0.3-sources.jar.md5">kryo-shaded-3.0.3-sources.jar.md5</a>                 2015-07-26 21:47        32      
+<a href="kryo-shaded-3.0.3-sources.jar.sha1" title="kryo-shaded-3.0.3-sources.jar.sha1">kryo-shaded-3.0.3-sources.jar.sha1</a>                2015-07-26 21:47        40      
+<a href="kryo-shaded-3.0.3.jar" title="kryo-shaded-3.0.3.jar">kryo-shaded-3.0.3.jar</a>                             2015-07-26 21:47    358390      
+<a href="kryo-shaded-3.0.3.jar.asc" title="kryo-shaded-3.0.3.jar.asc">kryo-shaded-3.0.3.jar.asc</a>                         2015-07-26 21:47       181      
+<a href="kryo-shaded-3.0.3.jar.md5" title="kryo-shaded-3.0.3.jar.md5">kryo-shaded-3.0.3.jar.md5</a>                         2015-07-26 21:47        32      
+<a href="kryo-shaded-3.0.3.jar.sha1" title="kryo-shaded-3.0.3.jar.sha1">kryo-shaded-3.0.3.jar.sha1</a>                        2015-07-26 21:47        40      
+<a href="kryo-shaded-3.0.3.pom" title="kryo-shaded-3.0.3.pom">kryo-shaded-3.0.3.pom</a>                             2015-07-26 21:47      3128      
+<a href="kryo-shaded-3.0.3.pom.asc" title="kryo-shaded-3.0.3.pom.asc">kryo-shaded-3.0.3.pom.asc</a>                         2015-07-26 21:47       181      
+<a href="kryo-shaded-3.0.3.pom.md5" title="kryo-shaded-3.0.3.pom.md5">kryo-shaded-3.0.3.pom.md5</a>                         2015-07-26 21:47        32      
+<a href="kryo-shaded-3.0.3.pom.sha1" title="kryo-shaded-3.0.3.pom.sha1">kryo-shaded-3.0.3.pom.sha1</a>                        2015-07-26 21:47        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 832ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 29 Apr 2026 21:42:45 GMT
+content-type: text/html
+cf-ray: 9f417a771cd7b01e-BEG
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-tests.jar
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 29 Apr 2026 21:42:46 GMT
+content-type: text/html
+cf-ray: 9f417a7928b41778-BEG
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-javadoc.jar
+HTTP/2 200 
+date: Wed, 29 Apr 2026 21:42:46 GMT
+content-type: application/java-archive
+content-length: 814842
+cf-ray: 9f417a7bc81f126d-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 174194
+etag: "be20248f799c90a3f17dd51c211100a1"
+last-modified: Sun, 26 Jul 2015 21:47:13 GMT
+x-checksum-md5: be20248f799c90a3f17dd51c211100a1
+x-checksum-sha1: ec82744293af8679b65ae9ac1d69f4a02ece7a4d
+
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/EsotericSoftware/kryo/contents?ref=kryo-parent-3.0.3 | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+exec
+/bin/bash -lc 'for u in https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/test https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/src https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3; do echo "$u"; curl -I -fsSL "$u" | sed -n '"'1,8p' || true; done" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/EsotericSoftware/kryo/contents/test?ref=kryo-parent-3.0.3 | sed -n '1,160p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+ succeeded in 234ms:
+[
+  {
+    "name": "com",
+    "path": "test/com",
+    "sha": "68c76db6a02a72e1dc3f98410d9b0ea11c5d4050",
+    "size": 0,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/test/com?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/test/com",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/68c76db6a02a72e1dc3f98410d9b0ea11c5d4050",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/test/com?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/68c76db6a02a72e1dc3f98410d9b0ea11c5d4050",
+      "html": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/test/com"
+    }
+  }
+]
+
+ succeeded in 263ms:
+[
+  {
+    "name": ".classpath",
+    "path": ".classpath",
+    "sha": "b3c03e7c6eecb9489f47b89fad62a8b5f1bb2de6",
+    "size": 599,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/.classpath?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/.classpath",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/b3c03e7c6eecb9489f47b89fad62a8b5f1bb2de6",
+    "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/.classpath",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/.classpath?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/b3c03e7c6eecb9489f47b89fad62a8b5f1bb2de6",
+      "html": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/.classpath"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "421eed574553db0d2dd531447d0195409bd42423",
+    "size": 64,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/.gitignore?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/.gitignore",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/421eed574553db0d2dd531447d0195409bd42423",
+    "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/.gitignore?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/421eed574553db0d2dd531447d0195409bd42423",
+      "html": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/.gitignore"
+    }
+  },
+  {
+    "name": ".project",
+    "path": ".project",
+    "sha": "f9ad9f27a9086e99cd135ac8e47f29bed1a7e0d8",
+    "size": 380,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/.project?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/.project",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/f9ad9f27a9086e99cd135ac8e47f29bed1a7e0d8",
+    "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/.project",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/.project?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/f9ad9f27a9086e99cd135ac8e47f29bed1a7e0d8",
+      "html": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/.project"
+    }
+  },
+  {
+    "name": ".settings",
+    "path": ".settings",
+    "sha": "c71ed10e0923a31ded034850581a115bc9894125",
+    "size": 0,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/.settings?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/.settings",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/c71ed10e0923a31ded034850581a115bc9894125",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/.settings?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/c71ed10e0923a31ded034850581a115bc9894125",
+      "html": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/.settings"
+    }
+  },
+  {
+    "name": "CHANGES.md",
+    "path": "CHANGES.md",
+    "sha": "e0ec1a476e2546e4658d71c3e908d57dbc93db21",
+    "size": 17744,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/CHANGES.md?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/CHANGES.md",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/e0ec1a476e2546e4658d71c3e908d57dbc93db21",
+    "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/CHANGES.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/CHANGES.md?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/e0ec1a476e2546e4658d71c3e908d57dbc93db21",
+      "html": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/CHANGES.md"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "sha": "54121493756530cb7d5e3fd722ca9e7b40a596fc",
+    "size": 405,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/CONTRIBUTING.md?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/CONTRIBUTING.md",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/54121493756530cb7d5e3fd722ca9e7b40a596fc",
+    "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/CONTRIBUTING.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/CONTRIBUTING.md?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/54121493756530cb7d5e3fd722ca9e7b40a596fc",
+      "html": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/CONTRIBUTING.md"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "24ce7274309f84b6ec0539da2a3003ccc4665bf6",
+    "size": 38674,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/README.md?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/README.md",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/24ce7274309f84b6ec0539da2a3003ccc4665bf6",
+    "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/README.md?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/24ce7274309f84b6ec0539da2a3003ccc4665bf6",
+      "html": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/README.md"
+    }
+  },
+  {
+    "name": "a.ser",
+    "path": "a.ser",
+    "sha": "864adf4ca19a98a21c0c061a1b5cf4f682eff23b",
+    "size": 11,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/a.ser?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/a.ser",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/864adf4ca19a98a21c0c061a1b5cf4f682eff23b",
+    "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/a.ser",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/a.ser?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/864adf4ca19a98a21c0c061a1b5cf4f682eff23b",
+      "html": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/a.ser"
+    }
+  },
+  {
+    "name": "build",
+    "path": "build",
+    "sha": "a74962b9827130089934cc0d66cf93ee9fd304bf",
+    "size": 0,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/build?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/build",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/a74962b9827130089934cc0d66cf93ee9fd304bf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/build?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/a74962b9827130089934cc0d66cf93ee9fd304bf",
+      "html": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/build"
+    }
+  },
+  {
+    "name": "compat_reports",
+    "path": "compat_reports",
+    "sha": "3c9330670e120da161015c3ae74ae63b69bf7431",
+    "size": 0,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/compat_reports?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/compat_reports",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/3c9330670e120da161015c3ae74ae63b69bf7431",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/compat_reports?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/3c9330670e120da161015c3ae74ae63b69bf7431",
+      "html": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/compat_reports"
+    }
+  },
+  {
+    "name": "etc",
+    "path": "etc",
+    "sha": "336454babd0dc284f62ab41b6927eece615b3f67",
+    "size": 0,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/etc?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/etc",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/336454babd0dc284f62ab41b6927eece615b3f67",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/etc?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/336454babd0dc284f62ab41b6927eece615b3f67",
+      "html": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/etc"
+    }
+  },
+  {
+    "name": "kryo.dat",
+    "path": "kryo.dat",
+    "sha": "d924744ad887382b3a8734e9d98b9060373bd241",
+    "size": 35,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/kryo.dat?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/kryo.dat",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/d924744ad887382b3a8734e9d98b9060373bd241",
+    "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/kryo.dat",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/kryo.dat?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/d924744ad887382b3a8734e9d98b9060373bd241",
+      "html": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/kryo.dat"
+    }
+  },
+  {
+    "name": "lib",
+    "path": "lib",
+    "sha": "ad1f60614d640426bd49c1bab9563f98f497a288",
+    "size": 0,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/lib?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/lib",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/ad1f60614d640426bd49c1bab9563f98f497a288",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/lib?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/ad1f60614d640426bd49c1bab9563f98f497a288",
+      "html": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/lib"
+    }
+  },
+  {
+    "name": "license.txt",
+    "path": "license.txt",
+    "sha": "5a57ac7a1f7a5c5e81b7c39a744a123b7be18d4e",
+    "size": 1497,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/license.txt?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/license.txt",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/5a57ac7a1f7a5c5e81b7c39a744a123b7be18d4e",
+    "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/license.txt",
+    "type": "file",
+    "_links": {
+
+ succeeded in 1954ms:
+HTTP/2 200 
+date: Wed, 29 Apr 2026 21:42:55 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b41dada820278a844bae17ccbe4fbfda"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/src
+HTTP/2 200 
+date: Wed, 29 Apr 2026 21:42:55 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"3384f12fa957582d542251cf62858922"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3
+HTTP/2 200 
+date: Wed, 29 Apr 2026 21:42:56 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"60a3409c45f0538a66d1e5d840d5cae8"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+
+exec
+/bin/bash -lc "rg '\"source-code-url\"' build/discovered-artifact-metadata | head -20" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+ succeeded in 0ms:
+exec
+/bin/bash -lc "rg '\"language\"' build/discovered-artifact-metadata | head -20" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+ succeeded in 0ms:
+exec
+/bin/bash -lc "rg 'repo1.maven.org/maven2/.+-sources.jar' build/discovered-artifact-metadata | head -20" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+ succeeded in 0ms:
+exec
+/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20 | xargs -r sed -n '1,80p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+ succeeded in 0ms:
+{
+  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3"
+}
+
+codex
+I found the released `-sources.jar` and `-javadoc.jar` on Maven Central for `3.0.3`, plus the upstream `kryo-parent-3.0.3` Git tag. There is no Maven test artifact for this release, so I’ll point the test URL at the tagged `test` directory.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+diff --git a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+index 6058562d0a74d0cb0a3175f02a0dd0d522f15ee9..a212411df5d45a2c53b5e75e378e2bb18e56c518
+--- a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
++++ b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3"
++  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-sources.jar",
++  "repository-url" : "https://github.com/EsotericSoftware/kryo",
++  "test-code-url" : "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-javadoc.jar",
++  "description" : "Kryo is a fast Java serialization framework for converting object graphs to compact binary data and reading them back efficiently. The kryo-shaded artifact packages Kryo with a shaded ReflectASM dependency to reduce classpath conflicts with other ASM versions."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+index 6058562d0a74d0cb0a3175f02a0dd0d522f15ee9..a212411df5d45a2c53b5e75e378e2bb18e56c518
+--- a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
++++ b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3"
++  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-sources.jar",
++  "repository-url" : "https://github.com/EsotericSoftware/kryo",
++  "test-code-url" : "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-javadoc.jar",
++  "description" : "Kryo is a fast Java serialization framework for converting object graphs to compact binary data and reading them back efficiently. The kryo-shaded artifact packages Kryo with a shaded ReflectASM dependency to reduce classpath conflicts with other ASM versions."
+ }
+
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+ succeeded in 0ms:
+{
+  "coordinates": "com.esotericsoftware:kryo-shaded:3.0.3",
+  "source-code-url": "https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-sources.jar",
+  "repository-url": "https://github.com/EsotericSoftware/kryo",
+  "test-code-url": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/test",
+  "documentation-url": "https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-javadoc.jar",
+  "description": "Kryo is a fast Java serialization framework for converting object graphs to compact binary data and reading them back efficiently. The kryo-shaded artifact packages Kryo with a shaded ReflectASM dependency to reduce classpath conflicts with other ASM versions."
+}
+
+exec
+/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-sources.jar https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-javadoc.jar https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/test' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+diff --git a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+index 6058562d0a74d0cb0a3175f02a0dd0d522f15ee9..a212411df5d45a2c53b5e75e378e2bb18e56c518
+--- a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
++++ b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3"
++  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-sources.jar",
++  "repository-url" : "https://github.com/EsotericSoftware/kryo",
++  "test-code-url" : "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-javadoc.jar",
++  "description" : "Kryo is a fast Java serialization framework for converting object graphs to compact binary data and reading them back efficiently. The kryo-shaded artifact packages Kryo with a shaded ReflectASM dependency to reduce classpath conflicts with other ASM versions."
+ }
+
+ succeeded in 170ms:
+HTTP/2 200 
+date: Wed, 29 Apr 2026 21:42:55 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b41dada820278a844bae17ccbe4fbfda"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=b0w2lYnKCpuEmjg2Efxu2O30sSc629w5X56nGtry4dE88aBDs71jzHMUU2CNWyA%2BPaWaiOBGpwhE9mSEn2MSb0OkuGz2avHT38%2FDWAAMKdZVKPD4M5Al%2Fd5oLVv39BcAWefg%2Fck9gfwHrF3dUu8J8apivT17WYRfhm%2FtQ3hsL0tLC5NS93XBwirl44mT8pbGVph3U9%2BTpyzds1cyEFHlXo0TpRABIGplhFDcw1XGG9TBpjL5%2BrXFdymjAc9F12NSIrO1tboSmhszeFcUZpvWng%3D%3D--VHGPoJDIkML6Kz6I--mJ5K4l%2FJF2Fb8TCh9Jn%2BRQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1034197650.1777499004; expires=Thu, 29 Apr 2027 21:43:24 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 29 Apr 2027 21:43:24 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 8528:B112C:179019A:118A315:69F27B7C
+
+
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+index 6058562d0a74d0cb0a3175f02a0dd0d522f15ee9..a212411df5d45a2c53b5e75e378e2bb18e56c518
+--- a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
++++ b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3"
++  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-sources.jar",
++  "repository-url" : "https://github.com/EsotericSoftware/kryo",
++  "test-code-url" : "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-javadoc.jar",
++  "description" : "Kryo is a fast Java serialization framework for converting object graphs to compact binary data and reading them back efficiently. The kryo-shaded artifact packages Kryo with a shaded ReflectASM dependency to reduce classpath conflicts with other ASM versions."
+ }
+
+web search: 
+web search: https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/test
+web search: 
+web search: repo1.maven.org com.esotericsoftware kryo-shaded 3.0.3 javadoc sources
+web search: 
+web search: https://mvnrepository.com/artifact/com.esotericsoftware/kryo-shaded/3.0.3
+codex
+Updated [com.esotericsoftware-kryo-shaded-3.0.3.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json) with the Maven Central source/Javadoc artifacts, GitHub repository, and tagged test directory. The library is not Kotlin/Groovy/Scala-specific, so I left `language` absent.
+
+Validated the JSON with `jq`; the selected artifact and description match Maven/Sonatype metadata, and the test URL resolves to the `kryo-parent-3.0.3` tag. ([central.sonatype.com](https://central.sonatype.com/artifact/com.esotericsoftware/kryo-shaded/3.0.3))
+diff --git a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+index 6058562d0a74d0cb0a3175f02a0dd0d522f15ee9..a212411df5d45a2c53b5e75e378e2bb18e56c518
+--- a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
++++ b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3"
++  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-sources.jar",
++  "repository-url" : "https://github.com/EsotericSoftware/kryo",
++  "test-code-url" : "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-javadoc.jar",
++  "description" : "Kryo is a fast Java serialization framework for converting object graphs to compact binary data and reading them back efficiently. The kryo-shaded artifact packages Kryo with a shaded ReflectASM dependency to reduce classpath conflicts with other ASM versions."
+ }
+
+2026-04-29T21:43:50.054786Z ERROR codex_core::session: failed to record rollout items: thread 019ddb31-787c-72f2-82ec-d934018c1288 not found
+tokens used
+53,459
+Updated [com.esotericsoftware-kryo-shaded-3.0.3.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json) with the Maven Central source/Javadoc artifacts, GitHub repository, and tagged test directory. The library is not Kotlin/Groovy/Scala-specific, so I left `language` absent.
+
+Validated the JSON with `jq`; the selected artifact and description match Maven/Sonatype metadata, and the test URL resolves to the `kryo-parent-3.0.3` tag. ([central.sonatype.com](https://central.sonatype.com/artifact/com.esotericsoftware/kryo-shaded/3.0.3))
+Ran agent for com.esotericsoftware:kryo-shaded:3.0.3 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97/build/agent-artifact-discovery-logs/com.esotericsoftware-kryo-shaded-3.0.3.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-b38ecf97/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 30s
+9 actionable tasks: 4 executed, 5 from cache

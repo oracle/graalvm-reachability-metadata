@@ -22,23 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExternalizableSerializerTest {
     @Test
-    void writesAndReadsUsingTheExternalizableContract() {
-        ExternalizableSerializer serializer = new ExternalizableSerializer();
-        SampleExternalizable original = new SampleExternalizable("external-value", 41);
-        Output output = new Output(128, -1);
-
-        serializer.write(new Kryo(), output, original);
-
-        Object restored = serializer.read(new Kryo(), new Input(output.toBytes()), SampleExternalizable.class);
-
-        assertThat(restored).isInstanceOf(SampleExternalizable.class);
-        SampleExternalizable sample = (SampleExternalizable) restored;
-        assertThat(sample.name).isEqualTo("external-value");
-        assertThat(sample.count).isEqualTo(41);
-        assertThat(sample.wasReadExternally).isTrue();
-    }
-
-    @Test
     void usesJavaSerializationWhenAnInheritedWriteReplaceMethodIsPresent() {
         ExternalizableSerializer serializer = new ExternalizableSerializer();
         ReplaceableExternalizable original = new ReplaceableExternalizable("replacement-value", 73);
@@ -52,33 +35,6 @@ public class ExternalizableSerializerTest {
         ReplacementPayload payload = (ReplacementPayload) restored;
         assertThat(payload.name).isEqualTo("replacement-value");
         assertThat(payload.count).isEqualTo(73);
-    }
-
-    public static class SampleExternalizable implements Externalizable {
-        public String name;
-        public int count;
-        public boolean wasReadExternally;
-
-        public SampleExternalizable() {
-        }
-
-        SampleExternalizable(String name, int count) {
-            this.name = name;
-            this.count = count;
-        }
-
-        @Override
-        public void writeExternal(ObjectOutput output) throws IOException {
-            output.writeUTF(name);
-            output.writeInt(count);
-        }
-
-        @Override
-        public void readExternal(ObjectInput input) throws IOException {
-            name = input.readUTF();
-            count = input.readInt();
-            wasReadExternally = true;
-        }
     }
 
     public abstract static class ExternalizableWithInheritedReplacement implements Externalizable {
