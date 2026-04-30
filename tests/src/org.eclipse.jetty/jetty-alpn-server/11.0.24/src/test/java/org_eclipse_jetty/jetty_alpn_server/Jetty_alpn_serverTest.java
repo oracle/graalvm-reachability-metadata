@@ -121,6 +121,21 @@ public class Jetty_alpn_serverTest {
     }
 
     @Test
+    void selectedProtocolWithoutConnectionFactoryClosesEndpoint() {
+        TestConnectionFactory http11Factory = new TestConnectionFactory(HTTP_1_1);
+        TestFixture fixture = new TestFixture(http11Factory);
+        ALPNServerConnection connection = fixture.newAlpnConnection(List.of(HTTP_2), HTTP_1_1);
+        fixture.endPoint.setConnection(connection);
+
+        connection.select(List.of(HTTP_2));
+        connection.onFillable();
+
+        assertThat(connection.getProtocol()).isEqualTo(HTTP_2);
+        assertThat(fixture.endPoint.isOpen()).isFalse();
+        assertThat(http11Factory.createdConnections).isEmpty();
+    }
+
+    @Test
     void serverConnectionFactoryReportsUnavailableProcessorWhenNoProviderIsPresent() {
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> new ALPNServerConnectionFactory(" h2, http/1.1 "))
