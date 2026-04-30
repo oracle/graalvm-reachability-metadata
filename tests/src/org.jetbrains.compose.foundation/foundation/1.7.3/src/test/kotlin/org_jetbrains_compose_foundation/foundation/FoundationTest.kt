@@ -6,12 +6,16 @@
  */
 package org_jetbrains_compose_foundation.foundation
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.interaction.FocusInteraction
 import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.unit.dp
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -19,6 +23,16 @@ public class FoundationTest {
     @Test
     fun test() {
         println("This is just a placeholder, implement your test")
+    }
+
+    @Test
+    fun colorBorderStrokeCreatesSolidColorBrushWithRequestedWidth() {
+        val color = Color(0xFF336699)
+        val stroke = BorderStroke(2.dp, color)
+
+        assertThat(stroke.width).isEqualTo(2.dp)
+        assertThat(stroke.brush).isInstanceOf(SolidColor::class.java)
+        assertThat((stroke.brush as SolidColor).value).isEqualTo(color)
     }
 
     @Test
