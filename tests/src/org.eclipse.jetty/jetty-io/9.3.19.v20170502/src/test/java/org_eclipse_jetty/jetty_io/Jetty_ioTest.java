@@ -17,7 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +35,7 @@ import javax.net.ssl.SSLEngine;
 import org.eclipse.jetty.io.ArrayByteBufferPool;
 import org.eclipse.jetty.io.ByteArrayEndPoint;
 import org.eclipse.jetty.io.ByteBufferPool;
+import org.eclipse.jetty.io.ChannelEndPoint;
 import org.eclipse.jetty.io.Connection;
 import org.eclipse.jetty.io.ConnectionStatistics;
 import org.eclipse.jetty.io.EndPoint;
@@ -44,6 +49,7 @@ import org.eclipse.jetty.io.ssl.SslHandshakeListener;
 import org.eclipse.jetty.util.BufferUtil;
 import org.eclipse.jetty.util.Callback;
 import org.eclipse.jetty.util.FutureCallback;
+import org.eclipse.jetty.util.thread.TimerScheduler;
 import org.junit.jupiter.api.Test;
 
 public class Jetty_ioTest {
@@ -191,6 +197,42 @@ public class Jetty_ioTest {
         endPoint.close();
         assertThrows(EofException.class, () -> endPoint.fill(BufferUtil.allocate(1)));
         assertThrows(IOException.class, () -> endPoint.flush(BufferUtil.toBuffer("closed")));
+    }
+
+    @Test
+    void channelEndPointTransfersDataOverSocketChannel() throws Exception {
+        TimerScheduler scheduler = new TimerScheduler();
+        scheduler.start();
+        try (ServerSocketChannel server = ServerSocketChannel.open()) {
+            server.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), 0));
+
+            try (SocketChannel client = SocketChannel.open((InetSocketAddress) server.getLocalAddress());
+                    SocketChannel accepted = server.accept()) {
+                ChannelEndPoint endPoint = new ChannelEndPoint(scheduler, accepted);
+
+                assertTrue(client.write(BufferUtil.toBuffer("ping")) > 0);
+                ByteBuffer input = BufferUtil.allocate(8);
+                assertEquals(4, endPoint.fill(input));
+                assertEquals("ping", BufferUtil.toString(input, StandardCharsets.UTF_8));
+
+                assertTrue(endPoint.flush(BufferUtil.toBuffer("pong")));
+                ByteBuffer reply = ByteBuffer.allocate(4);
+                assertEquals(4, client.read(reply));
+                reply.flip();
+                assertEquals("pong", StandardCharsets.UTF_8.decode(reply).toString());
+
+                client.shutdownOutput();
+                assertEquals(-1, endPoint.fill(BufferUtil.allocate(1)));
+                assertTrue(endPoint.isInputShutdown());
+
+                endPoint.shutdownOutput();
+                assertTrue(endPoint.isOutputShutdown());
+                endPoint.close();
+                assertFalse(endPoint.isOpen());
+            }
+        } finally {
+            scheduler.stop();
+        }
     }
 
     @Test
