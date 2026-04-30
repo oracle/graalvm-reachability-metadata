@@ -8,44 +8,38 @@ package redis_clients.jedis;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import redis.clients.jedis.BuilderFactory;
 import redis.clients.jedis.StreamEntryID;
-import redis.clients.jedis.StreamPendingEntry;
+import redis.clients.jedis.resps.StreamPendingEntry;
 
 public class StreamPendingEntryTest {
     @Test
-    void serializesAndDeserializesPendingEntryState() throws Exception {
+    void buildsPendingEntryStateFromRedisResponse() {
         StreamEntryID entryId = new StreamEntryID(1_628_784_000_000L, 9L);
-        StreamPendingEntry original = new StreamPendingEntry(entryId, "consumer-a", 125L, 3L);
+        StreamPendingEntry directEntry = new StreamPendingEntry(entryId, "consumer-a", 125L, 3L);
 
-        StreamPendingEntry restored = deserialize(serialize(original));
+        List<StreamPendingEntry> builtEntries = BuilderFactory.STREAM_PENDING_ENTRY_LIST.build(Arrays.asList(
+                Arrays.asList(bytes("1628784000000-9"), bytes("consumer-a"), 125L, 3L)));
 
-        assertThat(restored).isNotSameAs(original);
-        assertThat(restored.getID()).isEqualTo(entryId);
-        assertThat(restored.getConsumerName()).isEqualTo("consumer-a");
-        assertThat(restored.getIdleTime()).isEqualTo(125L);
-        assertThat(restored.getDeliveredTimes()).isEqualTo(3L);
-        assertThat(restored.toString()).isEqualTo("1628784000000-9 consumer-a idle:125 times:3");
+        assertThat(directEntry.getID()).isEqualTo(entryId);
+        assertThat(directEntry.getConsumerName()).isEqualTo("consumer-a");
+        assertThat(directEntry.getIdleTime()).isEqualTo(125L);
+        assertThat(directEntry.getDeliveredTimes()).isEqualTo(3L);
+        assertThat(directEntry.toString()).isEqualTo("1628784000000-9 consumer-a idle:125 times:3");
+        assertThat(builtEntries).hasSize(1);
+        assertThat(builtEntries.get(0).getID()).isEqualTo(entryId);
+        assertThat(builtEntries.get(0).getConsumerName()).isEqualTo("consumer-a");
+        assertThat(builtEntries.get(0).getIdleTime()).isEqualTo(125L);
+        assertThat(builtEntries.get(0).getDeliveredTimes()).isEqualTo(3L);
     }
 
-    private static byte[] serialize(Serializable value) throws Exception {
-        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        try (ObjectOutputStream objectStream = new ObjectOutputStream(byteStream)) {
-            objectStream.writeObject(value);
-        }
-        return byteStream.toByteArray();
-    }
-
-    private static StreamPendingEntry deserialize(byte[] value) throws Exception {
-        try (ObjectInputStream objectStream = new ObjectInputStream(new ByteArrayInputStream(value))) {
-            return (StreamPendingEntry) objectStream.readObject();
-        }
+    private static byte[] bytes(String value) {
+        return value.getBytes(StandardCharsets.UTF_8);
     }
 }

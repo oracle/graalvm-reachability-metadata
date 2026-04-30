@@ -16,6 +16,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -27,34 +28,34 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
-import redis.clients.jedis.BitPosParams;
 import redis.clients.jedis.BuilderFactory;
+import redis.clients.jedis.CommandArguments;
+import redis.clients.jedis.DefaultJedisClientConfig;
 import redis.clients.jedis.GeoCoordinate;
-import redis.clients.jedis.GeoRadiusResponse;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisShardInfo;
 import redis.clients.jedis.Protocol;
-import redis.clients.jedis.ScanParams;
-import redis.clients.jedis.SortingParams;
-import redis.clients.jedis.Tuple;
-import redis.clients.jedis.ZParams;
+import redis.clients.jedis.args.Rawable;
 import redis.clients.jedis.exceptions.JedisAskDataException;
 import redis.clients.jedis.exceptions.JedisBusyException;
 import redis.clients.jedis.exceptions.JedisClusterException;
 import redis.clients.jedis.exceptions.JedisMovedDataException;
 import redis.clients.jedis.exceptions.JedisNoScriptException;
+import redis.clients.jedis.params.BitPosParams;
 import redis.clients.jedis.params.GeoRadiusParam;
+import redis.clients.jedis.params.IParams;
+import redis.clients.jedis.params.ScanParams;
+import redis.clients.jedis.params.SortingParams;
 import redis.clients.jedis.params.ZAddParams;
 import redis.clients.jedis.params.ZIncrByParams;
-import redis.clients.jedis.util.Hashing;
+import redis.clients.jedis.params.ZParams;
+import redis.clients.jedis.resps.GeoRadiusResponse;
+import redis.clients.jedis.resps.Slowlog;
+import redis.clients.jedis.resps.Tuple;
 import redis.clients.jedis.util.JedisClusterCRC16;
-import redis.clients.jedis.util.JedisClusterHashTagUtil;
+import redis.clients.jedis.util.JedisClusterHashTag;
 import redis.clients.jedis.util.RedisInputStream;
 import redis.clients.jedis.util.RedisOutputStream;
-import redis.clients.jedis.util.ShardInfo;
-import redis.clients.jedis.util.Sharded;
-import redis.clients.jedis.util.Slowlog;
 
 public class JedisTest {
     @Test
@@ -62,7 +63,7 @@ public class JedisTest {
         ByteArrayOutputStream commandBytes = new ByteArrayOutputStream();
         RedisOutputStream outputStream = new RedisOutputStream(commandBytes);
 
-        Protocol.sendCommand(outputStream, Protocol.Command.SET, bytes("client:key"), bytes("value"));
+        Protocol.sendCommand(outputStream, new CommandArguments(Protocol.Command.SET).key(bytes("client:key")).add(bytes("value")));
         outputStream.flush();
 
         assertThat(asString(commandBytes.toByteArray()))
@@ -115,37 +116,50 @@ public class JedisTest {
                 .desc()
                 .alpha();
         assertThat(strings(sortingParams.getParams()))
-                .containsExactly("by", "weight_*", "limit", "2", "5", "get", "object_*", "get", "#", "desc", "alpha");
+                .containsExactly("BY", "weight_*", "LIMIT", "2", "5", "GET", "object_*", "GET", "#", "DESC", "ALPHA");
 
         ScanParams scanParams = new ScanParams().match("user:*").count(25);
-        assertThat(strings(scanParams.getParams())).containsExactly("match", "user:*", "count", "25");
+        assertThat(commandArguments(Protocol.Command.SCAN, scanParams))
+                .containsExactly("SCAN", "MATCH", "user:*", "COUNT", "25");
         assertThat(asString(ScanParams.SCAN_POINTER_START_BINARY)).isEqualTo("0");
 
         ZParams zParams = new ZParams().weights(1.5D, 2D, 0.25D).aggregate(ZParams.Aggregate.MAX);
-        assertThat(strings(zParams.getParams())).containsExactly("weights", "1.5", "2.0", "0.25", "aggregate", "MAX");
+        assertThat(commandArguments(Protocol.Command.ZUNIONSTORE, zParams))
+                .containsExactly("ZUNIONSTORE", "WEIGHTS", "1.5", "2.0", "0.25", "AGGREGATE", "MAX");
 
         BitPosParams bitPosParams = new BitPosParams(3L, 14L);
-        assertThat(strings(bitPosParams.getParams())).containsExactly("3", "14");
+        assertThat(commandArguments(Protocol.Command.BITPOS, bitPosParams)).containsExactly("BITPOS", "3", "14");
     }
 
     @Test
     void buildsSortedSetAndGeoParameterObjects() {
-        byte[][] zaddParams = ZAddParams.zAddParams().nx().ch()
-                .getByteParams(bytes("leaders"), bytes("9.5"), bytes("alice"));
-        assertThat(strings(zaddParams)).containsExactly("leaders", "nx", "ch", "9.5", "alice");
+        CommandArguments zaddParams = new CommandArguments(Protocol.Command.ZADD)
+                .key("leaders")
+                .addParams(ZAddParams.zAddParams().nx().ch())
+                .add(9.5D)
+                .add("alice");
+        assertThat(strings(zaddParams)).containsExactly("ZADD", "leaders", "nx", "ch", "9.5", "alice");
 
-        byte[][] zincrByParams = ZIncrByParams.zIncrByParams().xx()
-                .getByteParams(bytes("leaders"), bytes("2.0"), bytes("bob"));
-        assertThat(strings(zincrByParams)).containsExactly("leaders", "xx", "incr", "2.0", "bob");
+        CommandArguments zincrByParams = new CommandArguments(Protocol.Command.ZADD)
+                .key("leaders")
+                .addParams(ZIncrByParams.zIncrByParams().xx())
+                .add(2.0D)
+                .add("bob");
+        assertThat(strings(zincrByParams)).containsExactly("ZADD", "leaders", "xx", "incr", "2.0", "bob");
 
-        byte[][] geoRadiusParams = GeoRadiusParam.geoRadiusParam()
-                .withCoord()
-                .withDist()
-                .count(3)
-                .sortDescending()
-                .getByteParams(bytes("Sicily"), bytes("15"), bytes("37"), bytes("200"), bytes("km"));
+        CommandArguments geoRadiusParams = new CommandArguments(Protocol.Command.GEORADIUS)
+                .key("Sicily")
+                .add(15)
+                .add(37)
+                .add(200)
+                .add("km")
+                .addParams(GeoRadiusParam.geoRadiusParam()
+                        .withCoord()
+                        .withDist()
+                        .count(3)
+                        .sortDescending());
         assertThat(strings(geoRadiusParams))
-                .containsExactly("Sicily", "15", "37", "200", "km", "withcoord", "withdist", "count", "3", "desc");
+                .containsExactly("GEORADIUS", "Sicily", "15", "37", "200", "km", "WITHCOORD", "WITHDIST", "COUNT", "3", "DESC");
     }
 
     @Test
@@ -169,9 +183,9 @@ public class JedisTest {
                 .extracting(Tuple::getScore)
                 .containsExactly(8.5D, 9.25D);
 
-        Object evalResult = BuilderFactory.EVAL_RESULT.build(Arrays.asList(
+        Object encodedResult = BuilderFactory.ENCODED_OBJECT.build(Arrays.asList(
                 bytes("root"), Arrays.asList(bytes("nested"), 5L)));
-        assertThat(evalResult).isEqualTo(Arrays.asList("root", Arrays.asList("nested", 5L)));
+        assertThat(encodedResult).isEqualTo(Arrays.asList("root", Arrays.asList("nested", 5L)));
     }
 
     @Test
@@ -233,124 +247,52 @@ public class JedisTest {
     }
 
     @Test
-    void parsesShardInfoUriAndCreatesConnectedJedisResource() throws Exception {
-        JedisShardInfo redisUri = new JedisShardInfo(URI.create("redis://:secret@cache.example.test:6380/3"));
-        assertThat(redisUri.getHost()).isEqualTo("cache.example.test");
-        assertThat(redisUri.getPort()).isEqualTo(6380);
-        assertThat(redisUri.getPassword()).isEqualTo("secret");
-        assertThat(redisUri.getDb()).isEqualTo(3);
-        assertThat(redisUri.getSsl()).isFalse();
-
-        JedisShardInfo redissUri = new JedisShardInfo("rediss://:tls-secret@secure.example.test:6381/4");
-        assertThat(redissUri.getHost()).isEqualTo("secure.example.test");
-        assertThat(redissUri.getPort()).isEqualTo(6381);
-        assertThat(redissUri.getPassword()).isEqualTo("tls-secret");
-        assertThat(redissUri.getDb()).isEqualTo(4);
-        assertThat(redissUri.getSsl()).isTrue();
-
-        JedisShardInfo shardInfo = new JedisShardInfo("localhost", 6382, 500, "primary", true);
-        shardInfo.setConnectionTimeout(700);
-        shardInfo.setSoTimeout(900);
-        shardInfo.setPassword("changed");
-        assertThat(shardInfo.getName()).isEqualTo("primary");
-        assertThat(shardInfo.getConnectionTimeout()).isEqualTo(700);
-        assertThat(shardInfo.getSoTimeout()).isEqualTo(900);
-        assertThat(shardInfo.getPassword()).isEqualTo("changed");
-        assertThat(shardInfo.toString()).contains("localhost").contains("6382");
+    void createsJedisFromUriAndClientConfiguration() throws Exception {
+        DefaultJedisClientConfig config = DefaultJedisClientConfig.builder()
+                .connectionTimeoutMillis(700)
+                .socketTimeoutMillis(900)
+                .password("changed")
+                .database(3)
+                .clientName("primary")
+                .ssl(true)
+                .build();
+        assertThat(config.getConnectionTimeoutMillis()).isEqualTo(700);
+        assertThat(config.getSocketTimeoutMillis()).isEqualTo(900);
+        assertThat(config.getPassword()).isEqualTo("changed");
+        assertThat(config.getDatabase()).isEqualTo(3);
+        assertThat(config.getClientName()).isEqualTo("primary");
+        assertThat(config.isSsl()).isTrue();
 
         try (ServerSocket serverSocket = new ServerSocket(0)) {
             CompletableFuture<Void> acceptedConnection = acceptSingleConnection(serverSocket);
-            JedisShardInfo localShardInfo = new JedisShardInfo(
-                    "localhost", serverSocket.getLocalPort(), 500, "local-primary", false);
+            URI redisUri = URI.create("redis://localhost:" + serverSocket.getLocalPort() + "/0");
 
-            try (Jedis jedis = localShardInfo.createResource()) {
-                assertThat(jedis).isNotNull();
+            try (Jedis jedis = new Jedis(redisUri, 500)) {
                 assertThat(jedis.isConnected()).isTrue();
+                assertThat(jedis.toString()).contains("localhost").contains(String.valueOf(serverSocket.getLocalPort()));
             }
             acceptedConnection.get(5, TimeUnit.SECONDS);
         }
     }
 
     @Test
-    void routesKeysAcrossClientSideShardsUsingConsistentHashRing() {
-        TestShardInfo primary = new TestShardInfo("primary", "primary-resource");
-        TestShardInfo secondary = new TestShardInfo("secondary", "secondary-resource");
-        Sharded<String, TestShardInfo> sharded = new Sharded<>(
-                Arrays.asList(primary, secondary), new PredictableHashing());
-
-        assertThat(sharded.getAllShards()).containsExactly("primary-resource", "secondary-resource");
-        assertThat(sharded.getShard("before-primary")).isEqualTo("primary-resource");
-        assertThat(sharded.getShard("between-shards")).isEqualTo("secondary-resource");
-        assertThat(sharded.getShard("after-secondary")).isEqualTo("primary-resource");
-        assertThat(sharded.getShardInfo("between-shards")).isSameAs(secondary);
-    }
-
-    @Test
     void handlesHostAndPortParsingAndClusterHashSlots() {
-        HostAndPort parsed = HostAndPort.parseString("redis.example.test:7001");
+        HostAndPort parsed = HostAndPort.from("redis.example.test:7001");
         assertThat(parsed.getHost()).isEqualTo("redis.example.test");
         assertThat(parsed.getPort()).isEqualTo(7001);
         assertThat(parsed.toString()).isEqualTo("redis.example.test:7001");
-        assertThat(HostAndPort.extractParts("2001:db8::10:7002"))
-                .containsExactly("2001:db8::10", "7002");
-        assertThat(new HostAndPort("127.0.0.1", 6379)).isEqualTo(new HostAndPort("localhost", 6379));
+        HostAndPort ipv6 = HostAndPort.from("2001:db8::10:7002");
+        assertThat(ipv6.getHost()).isEqualTo("2001:db8::10");
+        assertThat(ipv6.getPort()).isEqualTo(7002);
+        assertThat(new HostAndPort("127.0.0.1", 6379)).isEqualTo(new HostAndPort("127.0.0.1", 6379));
 
         String taggedKey = "cart:{user-42}:items";
-        assertThat(JedisClusterHashTagUtil.getHashTag(taggedKey)).isEqualTo("user-42");
+        assertThat(JedisClusterHashTag.getHashTag(taggedKey)).isEqualTo("user-42");
         assertThat(JedisClusterCRC16.getSlot(taggedKey)).isEqualTo(JedisClusterCRC16.getSlot("profile:{user-42}"));
-        assertThat(JedisClusterHashTagUtil.isClusterCompliantMatchPattern("cart:{user-42}:*")).isTrue();
-        assertThat(JedisClusterHashTagUtil.isClusterCompliantMatchPattern("cart:user-*"))
+        assertThat(JedisClusterHashTag.isClusterCompliantMatchPattern("cart:{user-42}:*")).isTrue();
+        assertThat(JedisClusterHashTag.isClusterCompliantMatchPattern("cart:user-*"))
                 .isFalse();
         assertThat(JedisClusterCRC16.getCRC16("123456789")).isEqualTo(12739);
-    }
-
-    private static final class TestShardInfo extends ShardInfo<String> {
-        private final String name;
-        private final String resource;
-
-        private TestShardInfo(String name, String resource) {
-            super(Sharded.DEFAULT_WEIGHT);
-            this.name = name;
-            this.resource = resource;
-        }
-
-        @Override
-        protected String createResource() {
-            return resource;
-        }
-
-        @Override
-        public String getName() {
-            return name;
-        }
-    }
-
-    private static final class PredictableHashing implements Hashing {
-        @Override
-        public long hash(String key) {
-            if (key.startsWith("primary*")) {
-                return 100L;
-            }
-            if (key.startsWith("secondary*")) {
-                return 200L;
-            }
-            throw new IllegalArgumentException(key);
-        }
-
-        @Override
-        public long hash(byte[] key) {
-            String keyText = asString(key);
-            switch (keyText) {
-                case "before-primary":
-                    return 50L;
-                case "between-shards":
-                    return 150L;
-                case "after-secondary":
-                    return 250L;
-                default:
-                    throw new IllegalArgumentException(keyText);
-            }
-        }
     }
 
     private static CompletableFuture<Void> acceptSingleConnection(ServerSocket serverSocket) {
@@ -388,7 +330,17 @@ public class JedisTest {
         return values.stream().map(JedisTest::asString).collect(Collectors.toList());
     }
 
-    private static List<String> strings(byte[][] values) {
-        return Arrays.stream(values).map(JedisTest::asString).collect(Collectors.toList());
+    private static List<String> strings(CommandArguments arguments) {
+        List<String> values = new ArrayList<>();
+        for (Rawable argument : arguments) {
+            values.add(asString(argument.getRaw()));
+        }
+        return values;
+    }
+
+    private static List<String> commandArguments(Protocol.Command command, IParams params) {
+        CommandArguments arguments = new CommandArguments(command);
+        params.addParams(arguments);
+        return strings(arguments);
     }
 }
