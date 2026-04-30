@@ -192,7 +192,7 @@ public class Micrometer_commonsTest {
         ValueExpressionResolver expressionResolver = (expression, context) -> expression + ":"
                 + Objects.toString(context);
 
-        assertThat(noOpResolver.resolve("ignored")).isNull();
+        assertThat(noOpResolver.resolve("ignored")).isEmpty();
         assertThat(upperCaseResolver.resolve("timer")).isEqualTo("TIMER");
         assertThat(upperCaseResolver.resolve(null)).isEqualTo("missing");
         assertThat(expressionResolver.resolve("name", "jvm.memory.used")).isEqualTo("name:jvm.memory.used");
