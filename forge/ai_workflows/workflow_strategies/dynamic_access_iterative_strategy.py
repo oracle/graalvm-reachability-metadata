@@ -8,11 +8,17 @@ import subprocess
 
 from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
 from utility_scripts.dynamic_access_report import compute_class_delta, format_call_sites, load_dynamic_access_coverage_report
+from utility_scripts.native_test_verification import (
+    STATUS_FAILED as NATIVE_TEST_GATE_FAILED,
+    per_class_output_dir,
+    verify_native_test_passes,
+)
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.strategy_loader import load_strategy_by_name
 
 
 FALLBACK_STRATEGY_NAME = "basic_iterative_pi_gpt-5.4"
+DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS = 100
 
 
 @WorkflowStrategy.register("dynamic_access_iterative")
@@ -37,6 +43,10 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         self.package = self.group
         self.max_class_iterations = self.parameters["max-iterations"]
         self.max_class_test_iterations = self.parameters["max-class-test-iterations"]
+        self.max_native_test_verification_iterations = self._parameter_int(
+            "max-native-test-verification-iterations",
+            DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS,
+        )
         self.dynamic_access_report_path = os.path.join(
             self.reachability_repo_path,
             "tests",
@@ -142,6 +152,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             class_attempts = 0
             class_failed = False
             class_committed = False
+            gate_failed = False
             while class_attempts < self.max_class_iterations:
                 self._print_dynamic_access_detail(
                     "attempt {attempt}/{max_attempts}".format(
@@ -240,6 +251,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                             f"({current_report.covered_calls}/{current_report.total_calls})"
                         )
                         successful_classes += 1
+                        if not self._run_native_test_verification_gate(class_name):
+                            gate_failed = True
+                            exhausted_classes.add(class_name)
+                            break
+                        current_report = self._refresh_report_after_gate(class_name) or current_report
                     else:
                         self._print_dynamic_access_detail(
                             "result: class disappeared without coverage gain, skipping",
@@ -255,6 +271,10 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     )
                     successful_classes += 1
                     exhausted_classes.add(class_name)
+                    if not self._run_native_test_verification_gate(class_name):
+                        gate_failed = True
+                        break
+                    current_report = self._refresh_report_after_gate(class_name) or current_report
                     break
                 if updated_class.covered_calls > active_class.covered_calls:
                     # Coverage improved but class is not fully resolved yet.
@@ -275,6 +295,13 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     class_checkpoint = subprocess.check_output(
                         ["git", "rev-parse", "HEAD"], text=True,
                     ).strip()
+                    if not self._run_native_test_verification_gate(class_name):
+                        gate_failed = True
+                        break
+                    refreshed = self._refresh_report_after_gate(class_name)
+                    if refreshed is not None:
+                        current_report = refreshed
+                        updated_class = current_report.get_class(class_name) or updated_class
                 else:
                     self._print_dynamic_access_detail(
                         "result: no new coverage, {remaining} {call_label} still uncovered".format(
@@ -287,6 +314,14 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
 
             # Clear context between classes to keep the agent window focused.
             agent.clear_context()
+            if gate_failed:
+                self._print_failure_analysis(
+                    "native_test_verification_gate_failed",
+                    issue="nativeTest_did_not_pass_within_verification_budget",
+                    indent_level=1,
+                    class_name=class_name,
+                )
+                return False, prompt_iterations
             if class_failed:
                 self._print_dynamic_access_detail(
                     "final: failed before reaching native test",
@@ -333,6 +368,46 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 self._class_completion_total(initial_class_count, current_report, exhausted_classes),
                 current_report,
             )
+
+    def _run_native_test_verification_gate(self, class_name: str) -> bool:
+        """Run the per-class native-test verification gate; return True if PASSED."""
+        output_dir = per_class_output_dir(
+            self.reachability_repo_path, self.group, self.artifact, self.version, class_name,
+        )
+        self._print_dynamic_access_detail(
+            f"native-test gate: starting class={class_name} output_dir={output_dir} "
+            f"budget={self.max_native_test_verification_iterations}",
+            indent_level=2,
+        )
+        result = verify_native_test_passes(
+            reachability_repo_path=self.reachability_repo_path,
+            coordinate=self.library,
+            output_dir=output_dir,
+            max_iterations=self.max_native_test_verification_iterations,
+            model_name=self.model_name,
+        )
+        if result.status == NATIVE_TEST_GATE_FAILED:
+            log_path = result.last_native_test_log_path or "(none)"
+            self._print_dynamic_access_message(
+                f"native-test gate FAILED for {class_name} after {result.iterations_used} cycles "
+                f"(last log: {log_path})"
+            )
+            return False
+        self._print_dynamic_access_detail(
+            f"native-test gate {result.status} for {class_name} after {result.iterations_used} cycles",
+            indent_level=2,
+        )
+        return True
+
+    def _refresh_report_after_gate(self, class_name: str):
+        """Regenerate the dynamic-access report after the gate to reflect new coverage."""
+        refreshed = self._generate_dynamic_access_report(indent_level=2)
+        if refreshed is None:
+            self._print_dynamic_access_detail(
+                f"native-test gate: post-gate report refresh failed for {class_name}",
+                indent_level=2,
+            )
+        return refreshed
 
     @staticmethod
     def _resolve_class_progress(
