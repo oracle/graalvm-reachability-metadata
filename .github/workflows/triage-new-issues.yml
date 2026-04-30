@@ -11,17 +11,68 @@ permissions:
 jobs:
   verify-new-issue:
     name: "🔎 Verify new issue"
-    if: ${{ github.event.issue.pull_request == null && contains(github.event.issue.labels.*.name, 'library-new-request')}}
+    if: ${{ github.event.issue.pull_request == null }}
     runs-on: ubuntu-latest
     outputs:
       coords: ${{ steps.extract.outputs.coords }}
       should_expand: ${{ steps.expand.outputs.should_expand }}
 
     steps:
+      - name: "Ensure unlabeled library request has triage labels"
+        id: classify
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = context.issue.number;
+            const issue = context.payload.issue;
+            const labelNames = (issue.labels || []).map((label) =>
+              typeof label === "string" ? label : label?.name
+            ).filter(Boolean);
+            const hasLibraryNewRequestLabel = labelNames.includes("library-new-request");
+
+            function extractCoordinatesFromBody(body) {
+              const lines = String(body || "").replace(/\r/g, "").split("\n");
+              let foundHeader = false;
+              for (const line of lines) {
+                if (foundHeader) {
+                  if (line.trim() === "") {
+                    continue;
+                  }
+                  return line.trim();
+                }
+                if (/^###[ \t]+Full Maven coordinates[ \t]*$/.test(line)) {
+                  foundHeader = true;
+                }
+              }
+              return null;
+            }
+
+            const coords = extractCoordinatesFromBody(issue.body);
+            const hasLibraryRequestTitle = Boolean(coords) && issue.title === `Support for ${coords}`;
+            const isUnlabeledLibraryRequest = labelNames.length === 0 && hasLibraryRequestTitle;
+            if (isUnlabeledLibraryRequest) {
+              await github.rest.issues.addLabels({
+                owner,
+                repo,
+                issue_number,
+                labels: ["library-new-request", "priority"]
+              });
+              core.info("Added library-new-request and priority labels to unlabeled library request.");
+            }
+
+            core.setOutput(
+              "should_triage",
+              hasLibraryNewRequestLabel || isUnlabeledLibraryRequest ? "true" : "false"
+            );
+
       - name: "Checkout repository"
+        if: ${{ steps.classify.outputs.should_triage == 'true' }}
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: "Extract Maven coordinates"
+        if: ${{ steps.classify.outputs.should_triage == 'true' }}
         id: extract
         env:
           ISSUE_BODY: ${{ github.event.issue.body }}
@@ -36,6 +87,7 @@ jobs:
           echo "coords=$COORDS" >> "$GITHUB_OUTPUT"
 
       - name: "Validate coordinates format"
+        if: ${{ steps.classify.outputs.should_triage == 'true' }}
         id: validate
         run: |
           set -Eeuo pipefail
@@ -48,7 +100,7 @@ jobs:
           fi
 
       - name: "Close issue - invalid coordinates format"
-        if: ${{ steps.validate.outputs.invalid == 'true' }}
+        if: ${{ steps.classify.outputs.should_triage == 'true' && steps.validate.outputs.invalid == 'true' }}
         uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           script: |
@@ -79,7 +131,7 @@ jobs:
             await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
 
       - name: "Close issue - duplicate request for exact coordinates"
-        if: ${{ steps.validate.outputs.invalid != 'true' }}
+        if: ${{ steps.classify.outputs.should_triage == 'true' && steps.validate.outputs.invalid != 'true' }}
         id: duplicate
         uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
@@ -141,7 +193,7 @@ jobs:
             await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
 
       - name: "Check if library/version is already supported by the repository"
-        if: ${{ steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' }}
+        if: ${{ steps.classify.outputs.should_triage == 'true' && steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' }}
         id: support
         run: |
           set -Eeuo pipefail
@@ -160,7 +212,7 @@ jobs:
           echo "exit_code=$STATUS" >> "$GITHUB_OUTPUT"
 
       - name: "Close issue - already supported by the Reachability Metadata Repository"
-        if: ${{ steps.support.outputs.supported == 'true' }}
+        if: ${{ steps.classify.outputs.should_triage == 'true' && steps.support.outputs.supported == 'true' }}
         uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           script: |
@@ -178,7 +230,7 @@ jobs:
             await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
 
       - name: "Mark issue eligible for dependency graph expansion"
-        if: ${{ steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' && steps.support.outputs.supported != 'true' }}
+        if: ${{ steps.classify.outputs.should_triage == 'true' && steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' && steps.support.outputs.supported != 'true' }}
         id: expand
         run: |
           set -Eeuo pipefail

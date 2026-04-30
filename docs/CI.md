@@ -50,6 +50,14 @@ Workflows for style and security:
 - [.github/workflows/scan-docker-images.yml](../.github/workflows/scan-docker-images.yml): scans allowed Docker images on PR/schedule.
 - [.github/workflows/sync-docker-tags.yml](../.github/workflows/sync-docker-tags.yml): automatically synchronizes Docker image tags across the repository when Dependabot updates `allowed-docker-images`. Commits replacements directly into the Dependabot PR, making it merge-ready.
 
+## Issue triage automation
+
+[.github/workflows/triage-new-issues.yml](../.github/workflows/triage-new-issues.yml) runs when a GitHub issue is opened. It ignores pull requests and only proceeds for new-library requests.
+
+For normal user-created issues, the `library-new-request` label from the issue template makes the workflow eligible for triage. For automated issues created by native-build-tools without labels, such as issues opened by non-maintainers, the workflow first checks whether the issue has no labels, uses the standard `Support for groupId:artifactId:version` title, and contains a `### Full Maven coordinates` section. If it matches that shape, the workflow adds `library-new-request` and `priority` before continuing.
+
+Once eligible, the workflow extracts the requested Maven coordinates, validates the `groupId:artifactId:version` format, closes invalid requests, closes duplicate exact-coordinate requests, and closes requests for versions already supported by the repository. If the request remains eligible, it generates a deps.dev dependency graph and opens or reuses `library-new-request` issues for unsupported transitive dependencies, linking them as blockers of the original request.
+
 ## Native Build Tools snapshot setup
 
 The `setup-native-build-tools` action automatically publishes and uses an NBT snapshot if a branch with the same name exists in the native-build-tools repository. To test against a specific NBT branch, simply ensure both branches share the same name.
