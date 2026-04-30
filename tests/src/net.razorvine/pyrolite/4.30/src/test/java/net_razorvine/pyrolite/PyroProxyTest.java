@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 
 import net.razorvine.pickle.PythonException;
 import net.razorvine.pyro.Config;
-import net.razorvine.pyro.IOUtil;
 import net.razorvine.pyro.Message;
 import net.razorvine.pyro.PyroException;
 import net.razorvine.pyro.PyroProxy;
@@ -74,7 +73,7 @@ public class PyroProxyTest {
                     invoke.seq,
                     null,
                     null);
-            IOUtil.send(socket.getOutputStream(), result.to_bytes());
+            send(socket, result);
         } catch (IOException exception) {
             throw new AssertionError("Pyro test server failed", exception);
         }
@@ -97,7 +96,12 @@ public class PyroProxyTest {
                 sequenceNumber,
                 null,
                 null);
-        IOUtil.send(socket.getOutputStream(), message.to_bytes());
+        send(socket, message);
+    }
+
+    private static void send(Socket socket, Message message) throws IOException {
+        socket.getOutputStream().write(message.to_bytes());
+        socket.getOutputStream().flush();
     }
 
     private static byte[] pythonValueErrorWithTraceback(String message, String traceback) throws IOException {
