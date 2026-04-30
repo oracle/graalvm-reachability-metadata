@@ -8,7 +8,7 @@ package org_conscrypt.conscrypt_openjdk_uber;
 
 import org.junit.jupiter.api.Test;
 
-class Conscrypt_openjdk_uberTest {
+public class Conscrypt_openjdk_uberTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
