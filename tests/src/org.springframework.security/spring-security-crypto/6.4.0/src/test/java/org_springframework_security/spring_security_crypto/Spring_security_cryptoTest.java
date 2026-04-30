@@ -110,7 +110,7 @@ public class Spring_security_cryptoTest {
         assertThat(delegating.upgradeEncoding(legacyEncoded)).isTrue();
         assertThatThrownBy(() -> delegating.matches(PASSWORD, "{unknown}" + currentEncoded))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("PasswordEncoder mapped for the id \"unknown\"");
+                .hasMessageContaining("password encoder mapped for the id 'unknown'");
     }
 
     @Test
