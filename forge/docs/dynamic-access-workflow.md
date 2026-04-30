@@ -2,6 +2,7 @@
 
 > **See also:** [Architecture](architecture.md) ·
 > [Native metadata exploration phase](native-metadata-exploration.md) ·
+> [Native test verification gate](native-test-verification.md) ·
 > [Java fail-fix workflow](fix-java-run-fail.md)
 
 ## 1. Purpose
@@ -25,6 +26,7 @@ class until coverage is reached or the per-class budget is exhausted.
 | Per-class iteration cap | strategy parameter `max-iterations` | yes |
 | Per-attempt test-retry cap | strategy parameter `max-class-test-iterations` | yes |
 | Class iteration prompt | strategy `prompts["dynamic-access-iteration"]` | yes |
+| Per-class native-test verification budget | strategy parameter `max-native-test-verification-iterations` | yes (default 100) |
 | Keep tests without DA gain | `--keep-tests-without-dynamic-access` | no |
 
 ## 3. Outputs
@@ -83,18 +85,20 @@ flowchart TD
     Initial --> Has{has dynamic access?}
     Has -- no --> Fallback[Fallback to basic_iterative]
     Has -- yes --> Loop[Per-class iteration loop]
-    Loop -- after each class --> Explore[Native metadata exploration]
-    Explore --> Loop
+    Loop -- "class with coverage gain" --> Gate[Native test verification gate<br/>per class]
+    Gate -- PASSED --> Loop
+    Gate -- FAILED --> HardFail[RUN_STATUS_FAILURE<br/>reset branch]
     Loop --> Wrap[Phase wrap-up]
     Wrap --> Final[Finalization<br/>generateMetadata &rarr; exploration &rarr; codex &rarr; commit]
     Fallback --> End([metrics + exit])
     Final --> End
+    HardFail --> End
 ```
 
 The subsections below specify each box. §6.1 covers the fallback decision,
-§6.2 the per-class loop, §6.3 mid-run report failures, §6.4 the
-per-iteration call into the metadata exploration phase, §6.5 wrap-up, and
-§6.6 the finalization order.
+§6.2 the per-class loop, §6.3 mid-run report failures, §6.4 the per-class
+native-test verification gate, §6.5 wrap-up, and §6.6 the finalization
+order.
 
 ### 6.1 Phase 1 — Initial report and fallback decision
 
@@ -127,7 +131,7 @@ class is rolled back.
 ```mermaid
 flowchart TD
     Pick[next_uncovered_class<br/>excluding exhausted_classes] --> HasClass{class found?}
-    HasClass -- no --> WrapUp[Wrap up phase: see section 6.4]
+    HasClass -- no --> WrapUp[Wrap up phase: see section 6.5]
     HasClass -- yes --> Snap[Snapshot class_checkpoint = HEAD]
     Snap --> AttemptLoop[Per-class attempt loop]
     AttemptLoop --> CheckAttempts{class_attempts < max-iterations?}
@@ -152,9 +156,15 @@ flowchart TD
     ReportOK -- yes --> Delta[compute_class_delta<br/>previous vs current report]
     Delta --> ClassState{class state}
     ClassState -- "uncovered_calls == 0" --> Resolved[Commit test sources<br/>successful_classes += 1<br/>add to exhausted_classes]
-    Resolved --> ClearCtx
+    Resolved --> ResolvedGate[Native test verification gate<br/>see section 6.4]
+    ResolvedGate --> ResolvedGateOK{gate result}
+    ResolvedGateOK -- PASSED --> ClearCtx
+    ResolvedGateOK -- FAILED --> HardFail
     ClassState -- "covered_calls increased" --> PartialCommit[Commit partial coverage<br/>advance class_checkpoint]
-    PartialCommit --> AttemptLoop
+    PartialCommit --> PartialGate[Native test verification gate<br/>see section 6.4]
+    PartialGate --> PartialGateOK{gate result}
+    PartialGateOK -- PASSED --> AttemptLoop
+    PartialGateOK -- FAILED --> HardFail
     ClassState -- "no gain" --> AttemptLoop
     ClassState -- "class disappeared" --> Disappear{covered_calls increased<br/>overall?}
     Disappear -- yes --> Resolved
@@ -182,25 +192,43 @@ phase is a hard failure: the strategy returns `RUN_STATUS_FAILURE` with the
 prompt-iteration count, and the entry script resets the branch to
 `checkpoint_commit_hash`.
 
-### 6.4 Per-iteration metadata exploration
+### 6.4 Per-class native-test verification gate
 
-After **every** per-class iteration that successfully reached `nativeTest`
-(whether the class is fully resolved, partially covered, or merely advanced),
-the strategy invokes the
-[Native Metadata Exploration phase](native-metadata-exploration.md) for the
-current coordinate. The phase produces or refreshes the
-`tests/src/<group>/<artifact>/<version>/natively-collected/` directory.
+After every per-class iteration that committed a coverage gain — i.e. the
+**Resolved** or **PartialCommit** branches in §6.2 — the strategy invokes
+the [Native test verification gate](native-test-verification.md) for the
+current coordinate with
+
+```text
+output_dir = tests/src/<group>/<artifact>/<version>/build/natively-collected/<class-key>/
+```
+
+where `<class-key>` is a sanitized form of the class name the per-class
+iteration just resolved or advanced. The gate iteratively runs the trace
+loop, executes
+`./gradlew nativeTest -PmetadataConfigDirs=<output_dir>`, and falls
+through codex / Pi recovery until `nativeTest` passes or its
+`max-native-test-verification-iterations` budget (default 100) is
+exhausted.
 
 Effects within this workflow:
 
-1. The contents of `natively-collected/` are added to the agent's read-only
-   context for the next class iteration.
-2. The dynamic-access coverage report is regenerated **after** exploration so
-   that any call sites already covered by traced metadata are reflected in
-   the next prompt's "newly-covered" delta.
-3. Exploration failure is non-fatal for the dynamic-access loop; it only
-   suppresses the codex metadata fixup in §6.5 for this iteration and is
-   logged in the run metrics.
+1. The contents of the gate's `output_dir` are added to the agent's
+   read-only context for subsequent class iterations.
+2. The dynamic-access coverage report is regenerated **after** the gate so
+   that any call sites covered by traced or codex/Pi-supplied metadata are
+   reflected in the next class's prompt delta.
+3. **A `FAILED` gate result aborts the workflow with `RUN_STATUS_FAILURE`.**
+   Native Image must always work; partial dynamic-access coverage with a
+   broken `nativeTest` is not an acceptable terminal state. The entry
+   script resets the feature branch to `checkpoint_commit_hash`, records
+   the gate's `last_native_test_log_path` and `intervention_records` in
+   the run metrics, and exits non-zero.
+
+The gate is a reusable component (see
+[native-test-verification.md](native-test-verification.md)) — the
+[fix-java-run-fail](fix-java-run-fail.md) workflow uses the same gate as
+its terminal success criterion.
 
 ### 6.5 Phase wrap-up and post-strategy finalization
 
@@ -269,7 +297,8 @@ useful.
 | `ai_workflows/workflow_strategies/dynamic_access_iterative_strategy.py` | The control loop described in section 6. |
 | `utility_scripts/source_context.py` | `populate_artifact_urls`, `normalize_source_context_types`, `prepare_source_contexts`, `resolve_test_source_layout`. |
 | `utility_scripts/dynamic_access_report.py` | `load_dynamic_access_coverage_report`, `compute_class_delta`, `format_call_sites`. |
-| `utility_scripts/native_metadata_exploration.py` | `run_native_metadata_exploration` — invoked after every per-class iteration and as a precondition to codex fixup. See [native-metadata-exploration.md](native-metadata-exploration.md). |
+| `utility_scripts/native_metadata_exploration.py` | `run_native_metadata_exploration` — the trace loop invoked by the verification gate and as a precondition to codex fixup at finalization. See [native-metadata-exploration.md](native-metadata-exploration.md). |
+| `utility_scripts/native_test_verification.py` | `verify_native_test_passes` — the per-class gate invoked after every class with coverage gain. See [native-test-verification.md](native-test-verification.md). |
 | `prompt_templates/dynamic_access/dynamic-access-iteration.md` | Per-class prompt template. |
 | Reachability-repo Gradle tasks | `scaffold`, `populateArtifactURLs`, `generateDynamicAccessCoverageReport`, `test`, `nativeTest`, `generateMetadata`, `generateLibraryStats`. |
 
@@ -287,9 +316,11 @@ support iff **all** of the following hold at exit:
    `run_native_metadata_exploration(...)` runs **before** any codex fixup; the
    fixup is invoked only when exploration returns `SUCCESS` or
    `SUCCESS_UNVERIFIED`.
-3. After every per-class iteration that reached `nativeTest`, the metadata
-   exploration phase has been invoked and its `natively-collected/` directory
-   either refreshed or recorded as failed in the run metrics.
+3. After every per-class iteration that committed a coverage gain
+   (Resolved or PartialCommit), the
+   [native test verification gate](native-test-verification.md) was
+   invoked and returned `PASSED` or `PASSED_WITH_INTERVENTION`. A `FAILED`
+   gate result aborts the run with `RUN_STATUS_FAILURE`.
 4. The scaffold-placeholder quality gate
    (`cleanup_scaffold_placeholder_tests`) leaves no remaining placeholders.
 5. The metrics record validates against the active schema.

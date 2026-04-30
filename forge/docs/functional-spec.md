@@ -150,6 +150,11 @@ The exit code is `0` for the first two and `1` for failure.
   specification for the iterative trace loop (Gradle task contract,
   convergence rule, status enum, codex hand-off). Implements the
   `native_trace_collect` intervention.
+- [Native test verification gate](native-test-verification.md) —
+  reusable component that asserts `./gradlew nativeTest` passes for a
+  coordinate by composing the trace loop with codex/Pi recovery. Used as
+  the per-class gate in the dynamic-access workflow and the terminal
+  gate in the fix-native-run workflow.
 - [Java compilation / runtime failure fix workflow](fix-java-run-fail.md)
   — version-bump fix workflow shared by `fix_javac_fail` and
   `fix_java_run_fail`. Strategies in this family route through the
