@@ -24,6 +24,7 @@ Provider<Directory> cleanthatFixtureResources = layout.buildDirectory.dir("gener
 Provider<Directory> freshMarkFixtureResources = layout.buildDirectory.dir("generated/freshmark-fixture-resources")
 Provider<Directory> antlr4FormatterFixtureResources = layout.buildDirectory.dir("generated/antlr4-formatter-fixture-resources")
 Provider<Directory> gherkinUtilsFixtureResources = layout.buildDirectory.dir("generated/gherkin-utils-fixture-resources")
+Provider<Directory> diktatFixtureResources = layout.buildDirectory.dir("generated/diktat-fixture-resources")
 
 tasks.register("generateKtfmtFixtureJars") {
     outputs.dir(ktfmtFixtureResources)
@@ -146,6 +147,17 @@ tasks.register("generateGherkinUtilsFixtureJar") {
         delete(outputDir)
 
         createGherkinUtilsFixture(outputDir)
+    }
+}
+
+tasks.register("generateDiktatFixtureJar") {
+    outputs.dir(diktatFixtureResources)
+
+    doLast {
+        File outputDir = diktatFixtureResources.get().asFile
+        delete(outputDir)
+
+        createDiktatFixture(outputDir)
     }
 }
 
@@ -573,6 +585,38 @@ void createGherkinUtilsFixture(File outputDir) {
             sourceSets.test.compileClasspath.asPath)
 }
 
+void createDiktatFixture(File outputDir) {
+    Map<String, String> sources = [
+        "com/diffplug/spotless/glue/diktat/DiktatFormatterFunc.java": """
+            package com.diffplug.spotless.glue.diktat;
+
+            import java.io.File;
+
+            import com.diffplug.spotless.FormatterFunc;
+
+            public class DiktatFormatterFunc implements FormatterFunc.NeedsFile {
+                private final String versionDiktat;
+                private final File configFile;
+                private final boolean isScript;
+
+                public DiktatFormatterFunc(String versionDiktat, File configFile, boolean isScript) {
+                    this.versionDiktat = versionDiktat;
+                    this.configFile = configFile;
+                    this.isScript = isScript;
+                }
+
+                public String applyWithFile(String input, File file) {
+                    String configName = configFile == null ? "no-config" : configFile.getName();
+                    return "diktat:" + versionDiktat + ":" + configName + ":" + isScript + ":" + file.getName()
+                            + ":" + input;
+                }
+            }
+            """
+    ]
+    createFixtureJar(outputDir, "diktat-fixtures", "current", "diktat-fixture.jar", sources,
+            sourceSets.test.compileClasspath.asPath)
+}
+
 void createFixtureJar(File outputDir, String version, String jarName, Map<String, String> sources) {
     createFixtureJar(outputDir, "ktfmt-fixtures", version, jarName, sources)
 }
@@ -622,6 +666,7 @@ sourceSets {
         resources.srcDir(freshMarkFixtureResources)
         resources.srcDir(antlr4FormatterFixtureResources)
         resources.srcDir(gherkinUtilsFixtureResources)
+        resources.srcDir(diktatFixtureResources)
     }
 }
 
@@ -637,6 +682,7 @@ tasks.named("processTestResources") {
     dependsOn(tasks.named("generateFreshMarkFixtureJar"))
     dependsOn(tasks.named("generateAntlr4FormatterFixtureJar"))
     dependsOn(tasks.named("generateGherkinUtilsFixtureJar"))
+    dependsOn(tasks.named("generateDiktatFixtureJar"))
 }
 
 dependencies {
@@ -648,7 +694,7 @@ dependencies {
 graalvmNative {
     binaries {
         test {
-            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|json-simple-fixtures|json-patch-fixtures|gson-fixtures|jackson-json-fixtures|google-java-format-fixtures|palantir-java-format-fixtures|cleanthat-fixtures|freshmark-fixtures|antlr4-formatter-fixtures|gherkin-utils-fixtures)/.*')
+            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|json-simple-fixtures|json-patch-fixtures|gson-fixtures|jackson-json-fixtures|google-java-format-fixtures|palantir-java-format-fixtures|cleanthat-fixtures|freshmark-fixtures|antlr4-formatter-fixtures|gherkin-utils-fixtures|diktat-fixtures)/.*')
         }
     }
 
