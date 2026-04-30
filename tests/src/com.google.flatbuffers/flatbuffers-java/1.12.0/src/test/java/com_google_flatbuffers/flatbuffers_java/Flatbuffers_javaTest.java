@@ -144,6 +144,32 @@ public class Flatbuffers_javaTest {
     }
 
     @Test
+    void flexBuffersRoundTripTypedVectors() {
+        FlexBuffersBuilder builder = new FlexBuffersBuilder(
+                new ArrayReadWriteBuf(128), FlexBuffersBuilder.BUILDER_FLAG_NONE);
+        int vectorStart = builder.startVector();
+        builder.putInt(7);
+        builder.putInt(14);
+        builder.putInt(28);
+        builder.putInt(56);
+        builder.endVector(null, vectorStart, true, false);
+
+        FlexBuffers.Reference reference = finishAndGetRoot(builder);
+        FlexBuffers.TypedVector vector = (FlexBuffers.TypedVector) reference.asVector();
+
+        assertThat(reference.isTypedVector()).isTrue();
+        assertThat(reference.getType()).isEqualTo(FlexBuffers.FBT_VECTOR_INT);
+        assertThat(vector.getElemType()).isEqualTo(FlexBuffers.FBT_INT);
+        assertThat(vector.isEmptyVector()).isFalse();
+        assertThat(vector.size()).isEqualTo(4);
+        assertThat(vector.get(0).isInt()).isTrue();
+        assertThat(vector.get(0).asInt()).isEqualTo(7);
+        assertThat(vector.get(1).asInt()).isEqualTo(14);
+        assertThat(vector.get(2).asInt()).isEqualTo(28);
+        assertThat(vector.get(3).asInt()).isEqualTo(56);
+    }
+
+    @Test
     void readWriteBuffersSupportSequentialWritesRandomAccessUpdatesAndUtf8Strings() {
         ArrayReadWriteBuf arrayBuffer = new ArrayReadWriteBuf(64);
         arrayBuffer.putBoolean(true);
