@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.net.ssl.SSLContext;
@@ -40,6 +41,7 @@ import org.eclipse.jetty.io.Connection;
 import org.eclipse.jetty.io.ConnectionStatistics;
 import org.eclipse.jetty.io.EndPoint;
 import org.eclipse.jetty.io.EofException;
+import org.eclipse.jetty.io.IdleTimeout;
 import org.eclipse.jetty.io.LeakTrackingByteBufferPool;
 import org.eclipse.jetty.io.MappedByteBufferPool;
 import org.eclipse.jetty.io.RuntimeIOException;
@@ -236,6 +238,29 @@ public class Jetty_ioTest {
     }
 
     @Test
+    void idleTimeoutExpiresAfterConfiguredInactivity() throws Exception {
+        TimerScheduler scheduler = new TimerScheduler();
+        scheduler.start();
+        try {
+            RecordingIdleTimeout idleTimeout = new RecordingIdleTimeout(scheduler);
+            idleTimeout.setIdleTimeout(100);
+            idleTimeout.onOpen();
+
+            assertTrue(idleTimeout.isOpen());
+            assertEquals(100, idleTimeout.getIdleTimeout());
+            assertTrue(idleTimeout.getIdleTimestamp() > 0);
+            assertTrue(idleTimeout.awaitExpiration());
+            assertNotNull(idleTimeout.expiration.get());
+            assertTrue(idleTimeout.getIdleFor() >= 0);
+
+            idleTimeout.onClose();
+            assertFalse(idleTimeout.isOpen());
+        } finally {
+            scheduler.stop();
+        }
+    }
+
+    @Test
     void writerOutputStreamDecodesBytesThroughWriter() throws Exception {
         StringWriter writer = new StringWriter();
         byte[] utf8Bytes = "UTF-8: π, Ж, 中".getBytes(StandardCharsets.UTF_8);
@@ -321,6 +346,45 @@ public class Jetty_ioTest {
 
         sslConnection.getDecryptedEndPoint().setConnection(new TestConnection(0, 0, 0, 0));
         assertDoesNotThrow(sslConnection::close);
+    }
+
+    private static final class RecordingIdleTimeout extends IdleTimeout {
+        private final CountDownLatch expirationLatch = new CountDownLatch(1);
+        private final AtomicReference<TimeoutException> expiration = new AtomicReference<>();
+        private boolean open;
+
+        private RecordingIdleTimeout(TimerScheduler scheduler) {
+            super(scheduler);
+        }
+
+        @Override
+        public void onOpen() {
+            open = true;
+            super.onOpen();
+        }
+
+        @Override
+        public void onClose() {
+            open = false;
+            super.onClose();
+        }
+
+        @Override
+        protected void onIdleExpired(TimeoutException timeout) {
+            expiration.set(timeout);
+            expirationLatch.countDown();
+        }
+
+        @Override
+        public boolean isOpen() {
+            return open;
+        }
+
+        boolean awaitExpiration() throws InterruptedException {
+            boolean expired = expirationLatch.await(2, TimeUnit.SECONDS);
+            assertTrue(expired);
+            return true;
+        }
     }
 
     private static final class RecordingHandshakeListener implements SslHandshakeListener {
