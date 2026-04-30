@@ -1,0 +1,40 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package com_thoughtworks_paranamer.paranamer;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.thoughtworks.paranamer.DefaultParanamer;
+import java.lang.reflect.Method;
+import org.junit.jupiter.api.Test;
+
+public class DefaultParanamerTest {
+    @Test
+    void readsParameterNamesFromEmbeddedParanamerDataField() throws Exception {
+        DefaultParanamer paranamer = new DefaultParanamer();
+        Method method = MethodParameterFixture.class.getDeclaredMethod("combine", String.class, int.class);
+
+        String[] parameterNames = paranamer.lookupParameterNames(method);
+
+        assertThat(parameterNames).containsExactly("text", "repeatCount");
+    }
+
+    public static final class MethodParameterFixture {
+        public static final String __PARANAMER_DATA = """
+                v1.0
+                combine java.lang.String,int text,repeatCount
+                """;
+
+        public String combine(String text, int repeatCount) {
+            StringBuilder result = new StringBuilder();
+            for (int index = 0; index < repeatCount; index++) {
+                result.append(text);
+            }
+            return result.toString();
+        }
+    }
+}
