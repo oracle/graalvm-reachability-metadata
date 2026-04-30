@@ -6,38 +6,45 @@
  */
 package org_apache_xbean.xbean_asm9_shaded;
 
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.LinkedList;
-
-import org.apache.xbean.asm9.Type;
-import org.apache.xbean.asm9.tree.analysis.BasicValue;
-import org.apache.xbean.asm9.tree.analysis.SimpleVerifier;
+import org.apache.xbean.asm9.Opcodes;
+import org.apache.xbean.asm9.commons.AnalyzerAdapter;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleVerifierTest {
     @Test
-    void mergesConcreteObjectValuesToTheirCommonSuperclass() {
-        SimpleVerifier verifier = new SimpleVerifier();
-        BasicValue arrayListValue = verifier.newValue(Type.getType(ArrayList.class));
-        BasicValue linkedListValue = verifier.newValue(Type.getType(LinkedList.class));
+    void initializesLocalsFromMethodDescriptor() {
+        AnalyzerAdapter analyzer = new AnalyzerAdapter(
+                "example/Owner",
+                Opcodes.ACC_PUBLIC,
+                "collect",
+                "(ILjava/lang/String;[Ljava/lang/Object;)V",
+                null);
 
-        BasicValue mergedValue = verifier.merge(arrayListValue, linkedListValue);
-
-        assertThat(mergedValue.getType()).isEqualTo(Type.getType(AbstractList.class));
+        assertThat(analyzer.locals)
+                .containsExactly("example/Owner", Opcodes.INTEGER, "java/lang/String", "[Ljava/lang/Object;");
+        assertThat(analyzer.stack).isEmpty();
     }
 
     @Test
-    void recognizesAssignableArrayValues() {
-        SimpleVerifier verifier = new SimpleVerifier();
-        BasicValue objectArrayValue = verifier.newValue(Type.getType(Object[].class));
-        BasicValue stringArrayValue = verifier.newValue(Type.getType(String[].class));
+    void tracksObjectArrayLoadsAndStores() {
+        AnalyzerAdapter analyzer = new AnalyzerAdapter(
+                "example/Owner",
+                Opcodes.ACC_PUBLIC,
+                "readElement",
+                "([Ljava/lang/String;)Ljava/lang/String;",
+                null);
 
-        BasicValue mergedValue = verifier.merge(objectArrayValue, stringArrayValue);
+        analyzer.visitVarInsn(Opcodes.ALOAD, 1);
+        analyzer.visitInsn(Opcodes.ICONST_0);
+        analyzer.visitInsn(Opcodes.AALOAD);
 
-        assertThat(mergedValue).isEqualTo(objectArrayValue);
-        assertThat(mergedValue.getType()).isEqualTo(Type.getType(Object[].class));
+        assertThat(analyzer.stack).containsExactly("java/lang/String");
+
+        analyzer.visitVarInsn(Opcodes.ASTORE, 2);
+
+        assertThat(analyzer.stack).isEmpty();
+        assertThat(analyzer.locals).containsExactly("example/Owner", "[Ljava/lang/String;", "java/lang/String");
     }
 }
