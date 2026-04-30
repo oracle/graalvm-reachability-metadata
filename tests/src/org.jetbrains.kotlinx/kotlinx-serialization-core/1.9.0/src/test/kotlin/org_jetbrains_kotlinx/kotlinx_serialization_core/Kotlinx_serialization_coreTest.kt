@@ -6,6 +6,8 @@
  */
 package org_jetbrains_kotlinx.kotlinx_serialization_core
 
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -151,6 +153,19 @@ public class Kotlinx_serialization_coreTest {
         assertThat(polymorphicDeserializer?.descriptor?.serialName).isEqualTo("sample.UserRenamed")
     }
 
+    @OptIn(ExperimentalUuidApi::class)
+    @Test
+    fun uuidSerializerRoundTripsThroughPublicStringEncodingContract() {
+        val serializer = Uuid.serializer()
+        val uuid = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")
+        val encoder = StringValueEncoder()
+
+        serializer.serialize(encoder, uuid)
+
+        assertThat(encoder.value).isEqualTo(uuid.toString())
+        assertThat(serializer.deserialize(StringValueDecoder(encoder.value))).isEqualTo(uuid)
+    }
+
     @Test
     fun customSerializerRejectsMissingRequiredElements() {
         val decoder = FieldMapDecoder(mapOf("id" to 100))
@@ -230,6 +245,26 @@ public class Kotlinx_serialization_coreTest {
                 newName = newName ?: throw SerializationException("Missing required element newName"),
             )
         }
+    }
+
+    private class StringValueEncoder(
+        override val serializersModule: SerializersModule = SerializersModule {},
+    ) : AbstractEncoder() {
+        lateinit var value: String
+            private set
+
+        override fun encodeString(value: String) {
+            this.value = value
+        }
+    }
+
+    private class StringValueDecoder(
+        private val value: String,
+        override val serializersModule: SerializersModule = SerializersModule {},
+    ) : AbstractDecoder() {
+        override fun decodeElementIndex(descriptor: SerialDescriptor): Int = CompositeDecoder.DECODE_DONE
+
+        override fun decodeString(): String = value
     }
 
     private class FieldMapEncoder(
