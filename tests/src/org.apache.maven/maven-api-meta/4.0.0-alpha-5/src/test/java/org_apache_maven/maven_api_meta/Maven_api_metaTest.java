@@ -7,7 +7,9 @@
 package org_apache_maven.maven_api_meta;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.api.annotations.Consumer;
 import org.apache.maven.api.annotations.Experimental;
@@ -90,6 +92,18 @@ public class Maven_api_metaTest {
 
         assertThat(catalog.namesRequiringNativeImage()).containsExactly("native-image");
         assertThat(catalog.namesAvailableOnJvm()).containsExactly("validate", "deploy");
+    }
+
+    @Test
+    void experimentalAnnotationCanMarkIndividualPreviewOperations() {
+        BuildLifecycle lifecycle = BuildLifecycle.withDefaults();
+
+        assertThat(lifecycle.requiredPhase("java-compile")).isEqualTo("compile");
+        assertThat(lifecycle.requiredPhase("native-build")).isEqualTo("validate");
+        assertThat(lifecycle.requiredPhase("unknown-feature")).isEqualTo("validate");
+        assertThat(lifecycle.previewPhase("native-build")).isEqualTo("native-image");
+        assertThat(lifecycle.previewPhase("java-compile")).isNull();
+        assertThat(lifecycle.previewPhase("unknown-feature")).isNull();
     }
 
     @Experimental
@@ -204,6 +218,68 @@ public class Maven_api_metaTest {
 
         boolean requiresNativeImage() {
             return requiresNativeImage;
+        }
+    }
+
+    @Immutable
+    static final class LifecyclePhase {
+        @Nonnull
+        private final String name;
+
+        private final boolean preview;
+
+        LifecyclePhase(@Nonnull String name, boolean preview) {
+            this.name = name;
+            this.preview = preview;
+        }
+
+        @Nonnull
+        String name() {
+            return name;
+        }
+
+        boolean preview() {
+            return preview;
+        }
+    }
+
+    @ThreadSafe
+    static final class BuildLifecycle {
+        private final Map<String, LifecyclePhase> phasesByFeature;
+
+        @Nonnull
+        private final String defaultPhase;
+
+        private BuildLifecycle(@Nonnull Map<String, LifecyclePhase> phasesByFeature, @Nonnull String defaultPhase) {
+            this.phasesByFeature = Map.copyOf(phasesByFeature);
+            this.defaultPhase = defaultPhase;
+        }
+
+        @Nonnull
+        static BuildLifecycle withDefaults() {
+            Map<String, LifecyclePhase> phasesByFeature = new LinkedHashMap<>();
+            phasesByFeature.put("java-compile", new LifecyclePhase("compile", false));
+            phasesByFeature.put("native-build", new LifecyclePhase("native-image", true));
+            return new BuildLifecycle(phasesByFeature, "validate");
+        }
+
+        @Nonnull
+        String requiredPhase(@Nonnull String featureName) {
+            LifecyclePhase phase = phasesByFeature.get(featureName);
+            if (phase == null || phase.preview()) {
+                return defaultPhase;
+            }
+            return phase.name();
+        }
+
+        @Experimental
+        @Nullable
+        String previewPhase(@Nonnull String featureName) {
+            LifecyclePhase phase = phasesByFeature.get(featureName);
+            if (phase == null || !phase.preview()) {
+                return null;
+            }
+            return phase.name();
         }
     }
 
