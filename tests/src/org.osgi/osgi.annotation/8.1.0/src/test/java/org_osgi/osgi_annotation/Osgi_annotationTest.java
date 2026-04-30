@@ -88,6 +88,17 @@ public class Osgi_annotationTest {
     }
 
     @Test
+    void directRepeatableAnnotationsCanDeclareMultipleBundleClausesOnOneType() {
+        RepeatableAnnotatedComponent component = new RepeatableAnnotatedComponent();
+
+        assertThat(component.capabilityNamespaces())
+                .containsExactly("test.repeatable.capability.one", "test.repeatable.capability.two");
+        assertThat(component.requirementPolicies())
+                .containsExactly(Requirement.Cardinality.MULTIPLE, Requirement.Resolution.OPTIONAL);
+        assertThat(component.headerNames()).containsExactly("Bundle-Category", "Bundle-Vendor");
+    }
+
+    @Test
     void repeatableContainerAnnotationsRetainOrderedAnnotationValues() {
         Capability firstCapability = new FixedCapability("alpha", "one", "1.0.0", new Class<?>[0], "resolve",
                 new String[0]);
@@ -195,6 +206,27 @@ public class Osgi_annotationTest {
 
         @Directive("visibility")
         String visibility() default "public";
+    }
+
+    @Capability(namespace = "test.repeatable.capability.one", name = "one")
+    @Capability(namespace = "test.repeatable.capability.two", name = "two", effective = "active")
+    @Requirement(namespace = "test.repeatable.requirement.one", name = "one")
+    @Requirement(namespace = "test.repeatable.requirement.two", name = "two",
+            cardinality = Requirement.Cardinality.MULTIPLE, resolution = Requirement.Resolution.OPTIONAL)
+    @Header(name = "Bundle-Category", value = "integration-test")
+    @Header(name = "Bundle-Vendor", value = "OSGi Alliance")
+    private static final class RepeatableAnnotatedComponent {
+        String[] capabilityNamespaces() {
+            return new String[] {"test.repeatable.capability.one", "test.repeatable.capability.two"};
+        }
+
+        String[] requirementPolicies() {
+            return new String[] {Requirement.Cardinality.MULTIPLE, Requirement.Resolution.OPTIONAL};
+        }
+
+        String[] headerNames() {
+            return new String[] {"Bundle-Category", "Bundle-Vendor"};
+        }
     }
 
     @Capabilities({
