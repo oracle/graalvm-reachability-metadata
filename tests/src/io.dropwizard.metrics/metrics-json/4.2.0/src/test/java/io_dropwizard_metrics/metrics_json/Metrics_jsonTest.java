@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.codahale.metrics.Clock;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
@@ -128,6 +129,22 @@ public class Metrics_jsonTest {
     }
 
     @Test
+    void meterRatesAreConvertedToTheConfiguredRateUnit() throws Exception {
+        ManualClock clock = new ManualClock();
+        Meter meter = new Meter(clock);
+        ObjectMapper mapper = mapperWith(new MetricsModule(TimeUnit.MINUTES, TimeUnit.MILLISECONDS, true));
+
+        meter.mark(4);
+        clock.add(1, TimeUnit.SECONDS);
+
+        JsonNode json = toJson(mapper, meter);
+
+        assertThat(json.get("count").asLong()).isEqualTo(4L);
+        assertThat(json.get("mean_rate").asDouble()).isEqualTo(240.0d);
+        assertThat(json.get("units").asText()).isEqualTo("events/minute");
+    }
+
+    @Test
     void sampleArraysCanBeSuppressedWithoutRemovingDistributionStatistics() throws Exception {
         ObjectMapper mapper = mapperWith(new MetricsModule(TimeUnit.SECONDS, TimeUnit.NANOSECONDS, false));
         Histogram histogram = new Histogram(new SlidingWindowReservoir(10));
@@ -186,6 +203,19 @@ public class Metrics_jsonTest {
         assertThat(json.at("/error/stack").size()).isGreaterThan(0);
         assertThat(json.at("/error/cause/type").asText()).isEqualTo("java.lang.IllegalStateException");
         assertThat(json.at("/error/cause/message").asText()).isEqualTo("connection refused");
+    }
+
+    private static final class ManualClock extends Clock {
+        private long tick;
+
+        @Override
+        public long getTick() {
+            return tick;
+        }
+
+        private void add(long duration, TimeUnit unit) {
+            tick += unit.toNanos(duration);
+        }
     }
 
     private static ObjectMapper mapperWith(MetricsModule module) {
