@@ -9,6 +9,8 @@ package io_netty.netty_transport_udt;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
@@ -22,6 +24,8 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
@@ -48,6 +52,10 @@ public class Netty_transport_udtTest {
     private static final String BYTE_RESPONSE = "byte-response";
 
     private static final String MESSAGE_RESPONSE = "message-response";
+
+    private static final String RENDEZVOUS_REQUEST = "rendezvous-request";
+
+    private static final String RENDEZVOUS_RESPONSE = "rendezvous-response";
 
     @Test
     public void udtMessageSupportsCopyDuplicateReplaceAndRetainOperations() {
@@ -180,6 +188,64 @@ public class Netty_transport_udtTest {
     }
 
     @Test
+    public void byteRendezvousPeersExchangeDataWithoutServerAcceptor() throws Exception {
+        EventLoopGroup peerOneGroup = new NioEventLoopGroup(1, Executors.defaultThreadFactory(),
+                NioUdtProvider.BYTE_PROVIDER);
+        EventLoopGroup peerTwoGroup = new NioEventLoopGroup(1, Executors.defaultThreadFactory(),
+                NioUdtProvider.BYTE_PROVIDER);
+        Channel peerOneChannel = null;
+        Channel peerTwoChannel = null;
+        AtomicReference<String> peerOneReceived = new AtomicReference<>();
+        AtomicReference<String> peerTwoReceived = new AtomicReference<>();
+        AtomicReference<Throwable> failure = new AtomicReference<>();
+        CountDownLatch messagesReceived = new CountDownLatch(2);
+        try {
+            InetSocketAddress peerOneAddress = availableLoopbackUdtAddress();
+            InetSocketAddress peerTwoAddress = availableLoopbackUdtAddress();
+
+            Bootstrap peerOneBootstrap = new Bootstrap();
+            peerOneBootstrap.group(peerOneGroup)
+                    .channelFactory((ChannelFactory<UdtChannel>) NioUdtProvider.BYTE_RENDEZVOUS)
+                    .handler(new ChannelInitializer<UdtChannel>() {
+                        @Override
+                        protected void initChannel(UdtChannel channel) {
+                            channel.pipeline().addLast(new RendezvousPeerHandler(RENDEZVOUS_RESPONSE,
+                                    peerOneReceived, failure, messagesReceived));
+                        }
+                    });
+
+            Bootstrap peerTwoBootstrap = new Bootstrap();
+            peerTwoBootstrap.group(peerTwoGroup)
+                    .channelFactory((ChannelFactory<UdtChannel>) NioUdtProvider.BYTE_RENDEZVOUS)
+                    .handler(new ChannelInitializer<UdtChannel>() {
+                        @Override
+                        protected void initChannel(UdtChannel channel) {
+                            channel.pipeline().addLast(new RendezvousPeerHandler(RENDEZVOUS_REQUEST,
+                                    peerTwoReceived, failure, messagesReceived));
+                        }
+                    });
+
+            ChannelFuture peerOneConnect = peerOneBootstrap.connect(peerTwoAddress, peerOneAddress);
+            ChannelFuture peerTwoConnect = peerTwoBootstrap.connect(peerOneAddress, peerTwoAddress);
+            peerOneChannel = peerOneConnect.sync().channel();
+            peerTwoChannel = peerTwoConnect.sync().channel();
+
+            peerOneChannel.writeAndFlush(Unpooled.copiedBuffer(RENDEZVOUS_REQUEST, StandardCharsets.UTF_8)).sync();
+            peerTwoChannel.writeAndFlush(Unpooled.copiedBuffer(RENDEZVOUS_RESPONSE, StandardCharsets.UTF_8)).sync();
+
+            assertThat(messagesReceived.await(10, TimeUnit.SECONDS)).as("both rendezvous peers received data").isTrue();
+            assertThat(failure.get()).as("unexpected handler failure").isNull();
+            assertThat(peerOneReceived.get()).isEqualTo(RENDEZVOUS_RESPONSE);
+            assertThat(peerTwoReceived.get()).isEqualTo(RENDEZVOUS_REQUEST);
+        } finally {
+            closeChannel(peerOneChannel);
+            closeChannel(peerTwoChannel);
+            shutdownGroup(peerOneGroup);
+            shutdownGroup(peerTwoGroup);
+        }
+    }
+
+    @Test
     public void messageServerAndClientExchangeUdtMessages() throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup(1, Executors.defaultThreadFactory(),
                 NioUdtProvider.MESSAGE_PROVIDER);
@@ -295,6 +361,12 @@ public class Netty_transport_udtTest {
         assertThat(config.getSoLinger()).isEqualTo(0);
     }
 
+    private static InetSocketAddress availableLoopbackUdtAddress() throws Exception {
+        try (DatagramSocket socket = new DatagramSocket(0, InetAddress.getByName("127.0.0.1"))) {
+            return new InetSocketAddress("127.0.0.1", socket.getLocalPort());
+        }
+    }
+
     private static void closeChannel(Channel channel) {
         if (channel == null) {
             return;
@@ -383,6 +455,46 @@ public class Netty_transport_udtTest {
         }
     }
 
+    private static final class RendezvousPeerHandler extends SimpleChannelInboundHandler<ByteBuf> {
+        private final String expectedMessage;
+
+        private final AtomicReference<String> receivedMessage;
+
+        private final AtomicReference<Throwable> failure;
+
+        private final CountDownLatch messagesReceived;
+
+        private final StringBuilder received = new StringBuilder();
+
+        private RendezvousPeerHandler(String expectedMessage, AtomicReference<String> receivedMessage,
+                AtomicReference<Throwable> failure, CountDownLatch messagesReceived) {
+            this.expectedMessage = expectedMessage;
+            this.receivedMessage = receivedMessage;
+            this.failure = failure;
+            this.messagesReceived = messagesReceived;
+        }
+
+        @Override
+        protected void channelRead0(ChannelHandlerContext context, ByteBuf message) {
+            received.append(message.toString(StandardCharsets.UTF_8));
+            if (received.toString().equals(expectedMessage)) {
+                receivedMessage.set(received.toString());
+                messagesReceived.countDown();
+            } else if (received.length() > expectedMessage.length()) {
+                failure.compareAndSet(null, new AssertionError("unexpected rendezvous message: " + received));
+                messagesReceived.countDown();
+                context.close();
+            }
+        }
+
+        @Override
+        public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
+            failure.compareAndSet(null, cause);
+            messagesReceived.countDown();
+            context.close();
+        }
+    }
+
     private static final class MessageEchoServerHandler extends SimpleChannelInboundHandler<UdtMessage> {
         private final AtomicReference<String> serverReceived;
 
@@ -396,7 +508,8 @@ public class Netty_transport_udtTest {
         @Override
         protected void channelRead0(ChannelHandlerContext context, UdtMessage message) {
             serverReceived.set(message.content().toString(StandardCharsets.UTF_8));
-            context.writeAndFlush(new UdtMessage(Unpooled.copiedBuffer(MESSAGE_RESPONSE, StandardCharsets.UTF_8)));
+            context.writeAndFlush(new UdtMessage(Unpooled.copiedBuffer(MESSAGE_RESPONSE, StandardCharsets.UTF_8)))
+                    .addListener(ChannelFutureListener.CLOSE);
         }
 
         @Override
