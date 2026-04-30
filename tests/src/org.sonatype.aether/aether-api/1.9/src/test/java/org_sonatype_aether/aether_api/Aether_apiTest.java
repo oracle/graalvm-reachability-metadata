@@ -156,7 +156,7 @@ public class Aether_apiTest {
         assertThat(localRepository.getBasedir()).isEqualTo(localDir);
         assertThat(localRepository).isEqualTo(equivalentLocalRepository);
         assertThat(localRepository.hashCode()).isEqualTo(equivalentLocalRepository.hashCode());
-        assertThat(localRepository.toString()).contains(localDir.getAbsolutePath(), "(enhanced)");
+        assertThat(localRepository.toString()).isEqualTo(localDir + " (enhanced)");
 
         assertThat(workspaceRepository.getId()).isEqualTo("workspace");
         assertThat(workspaceRepository.getContentType()).isEqualTo("reactor");
