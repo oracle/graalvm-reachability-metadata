@@ -1,0 +1,1102 @@
+Starting a Gradle Daemon, 3 busy and 2 incompatible and 74 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ddc1f-e457-7b52-82fe-7589db412cd0
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: ch.qos.logback:logback-core:1.2.10
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.2.10".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
+- Set "coordinates" to "ch.qos.logback:logback-core:1.2.10".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the upstream tag before editing the JSON, then I’ll update only the requested file.
+web search: 
+web search: Maven Central ch.qos.logback logback-core 1.2.10 sources jar test jar javadoc repository
+web search: 
+web search: https://repo.maven.apache.org/maven2/ch/qos/logback/logback-core/
+web search: 
+web search: https://repo.maven.apache.org/maven2/ch/qos/logback/logback-core/1.2.10/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: central sonatype ch.qos.logback logback-core 1.2.10 Source Control
+exec
+/usr/bin/bash -lc "rg -n \"\\\"coordinates\\\": \\\"ch\\.qos\\.logback:logback-core\"|logback-core-1\\.2\" build/discovered-artifact-metadata metadata -S" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc
+ exited 2 in 0ms:
+/usr/bin/bash: -c: line 1: unexpected EOF while looking for matching `"'
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc
+ succeeded in 0ms:
+{
+  "coordinates" : "ch.qos.logback:logback-core:1.2.10"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>ch.qos.logback</groupId>
+    <artifactId>logback-parent</artifactId>
+    <version>1.2.10</version>
+  </parent>
+
+  <artifactId>logback-core</artifactId>
+  <packaging>jar</packaging>
+  <name>Logback Core Module</name>
+  <description>logback-core module</description>
+
+  <dependencies>
+    <dependency>
+       <groupId>org.codehaus.janino</groupId>
+      <artifactId>janino</artifactId>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.fusesource.jansi</groupId>
+      <artifactId>jansi</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkCount>1C</forkCount>
+          <reuseForks>true</reuseForks>
+          <parallel>classes</parallel>
+          <threadCount>20</threadCount>
+          <reportFormat>plain</reportFormat>
+          <trimStackTrace>false</trimStackTrace>
+          <excludes>
+            <exclude>**/All*Test.java</exclude>
+            <exclude>**/PackageTest.java</exclude>
+            <!-- ConsoleAppenderTest redirects System.out which is not well tolerated by Maven -->
+            <exclude>**/ConsoleAppenderTest.java</exclude>
+            <!--<exclude>**/TimeBasedRollingTest.java</exclude>-->
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <id>bundle-test-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <instructions>
+            <Export-Package>ch.qos.logback.core.*</Export-Package>
+            <Import-Package>
+              javax.*;resolution:=optional,
+              org.xml.*;resolution:=optional,
+              org.fusesource.jansi;resolution:=optional,
+              org.codehaus.janino;resolution:=optional,
+              org.codehaus.commons.compiler;resolution:=optional,
+              *
+            </Import-Package>
+            <Bundle-RequiredExecutionEnvironment>JavaSE-1.6
+            </Bundle-RequiredExecutionEnvironment>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
+codex
+The POM confirms this module is a plain Java/JVM artifact, not one of the Kotlin/Groovy/Scala language-specific cases. I’m checking Maven Central for the exact 1.2.10 attached artifacts so the source, tests, and docs can use immutable versioned URLs where available.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/ch/qos/logback/logback-parent/1.2.10/logback-parent-1.2.10.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>ch.qos.logback</groupId>
+  <artifactId>logback-parent</artifactId>
+  <version>1.2.10</version>
+  <packaging>pom</packaging>
+
+  <name>Logback-Parent</name>
+  <description>logback project pom.xml file</description>
+
+  <url>http://logback.qos.ch</url>
+
+  <organization>
+    <name>QOS.ch</name>
+    <url>http://www.qos.ch</url>
+  </organization>
+  <inceptionYear>2005</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>Eclipse Public License - v 1.0</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+    </license>
+
+    <license>
+      <name>GNU Lesser General Public License</name>
+      <url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <url>https://github.com/ceki/logback</url>
+    <connection>scm:git@github.com:qos-ch/logback.git</connection>
+  </scm>
+
+  <modules>
+    <module>logback-core</module>
+    <module>logback-classic</module>
+    <module>logback-access</module>
+    <module>logback-site</module>
+    <module>logback-examples</module>
+  </modules>
+
+  <properties>
+    <maven.compiler.source>1.6</maven.compiler.source>
+    <maven.compiler.target>1.6</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <junit.version>4.10</junit.version>
+    <javax.mail.version>1.4</javax.mail.version>
+    <janino.version>3.0.6</janino.version>
+    <!-- slf4j.version property is used below, in
+         logback-classic/pom.xml and in setClasspath.cmd 
+    -->    
+    <slf4j.version>1.7.32</slf4j.version>
+    <cal10n.version>0.8.1</cal10n.version>
+    <consolePlugin.version>1.1.0</consolePlugin.version>
+    <!--<tomcat.version>7.0.59</tomcat.version>-->
+    <tomcat.version>8.5.9</tomcat.version>
+    <!--<jetty.version>7.5.1.v20110908</jetty.version>-->
+    <jetty.version>8.2.0.v20160908</jetty.version>
+    <!--<jetty.version>9.2.9.v20150224</jetty.version>-->
+    <jansi.version>1.9</jansi.version>
+    <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+    <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>    
+    <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
+    <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
+    <maven-source-plugin.version>3.2.0</maven-source-plugin.version>
+    <maven-license-plugin.version>3.0</maven-license-plugin.version>
+    <maven-jar-plugin.version>2.6</maven-jar-plugin.version>
+    <maven-jxr-plugin.version>3.1.1</maven-jxr-plugin.version>
+    <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
+    <cobertura.maven.plugin.version>2.7</cobertura.maven.plugin.version>
+
+  </properties>
+
+  <developers>
+    <developer>
+      <id>ceki</id>
+      <name>Ceki Gulcu</name>
+      <email>ceki@qos.ch</email>
+    </developer>
+
+    <developer>
+      <id>hixi</id>
+      <name>Joern Huxhorn</name>
+      <email>huxi@undisclosed.org</email>
+    </developer>
+  </developers>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>1.7.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- start of dependencies duplicated from logback-bom/pom.xml -->
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-access</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+      </dependency>
+      <!-- end of dependencies duplicated from logback-bom/pom.xml -->
+    
+      <dependency>
+        <groupId>org.codehaus.janino</groupId>
+        <artifactId>janino</artifactId>
+        <version>${janino.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy</artifactId>
+        <version>${groovy.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-test</artifactId>
+        <version>${groovy.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.fusesource.jansi</groupId>
+        <artifactId>jansi</artifactId>
+        <version>${jansi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.mail</groupId>
+        <artifactId>mail</artifactId>
+        <version>${javax.mail.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>dom4j</groupId>
+        <artifactId>dom4j</artifactId>
+        <version>1.6.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-catalina</artifactId>
+        <version>${tomcat.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-coyote</artifactId>
+        <version>${tomcat.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-server</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>3.1.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>2.9.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>2.7.9</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh</artifactId>
+        <version>2.10</version>
+      </extension>
+    </extensions>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${maven-deploy-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>2.5.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.0.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${maven-site-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven-surefire-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${maven-jar-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${maven-javadoc-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>2.10</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5.3</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${maven-source-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>findbugs-maven-plugin</artifactId>
+          <version>3.0.4</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>2.5.4</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
+          <version>1.15</version>
+          <configuration>
+            <ignores>
+              <ignore>sun.reflect.Reflection</ignore>
+            </ignores>
+            <signature>
+              <groupId>org.codehaus.mojo.signature</groupId>
+              <artifactId>java16</artifactId>
+              <version>1.0</version>
+            </signature>
+          </configuration>
+        </plugin>
+
+      </plugins>
+
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/assembly/dist.xml</descriptor>
+          </descriptors>
+          <finalName>logback-${project.version}</finalName>
+          <appendAssemblyId>false</appendAssemblyId>
+          <outputDirectory>target/site/dist/</outputDirectory>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <configuration>
+          <threshold>High</threshold>
+          <!--<trace>true</trace>-->
+          <excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
+        </configuration>
+      </plugin>
+
+ 
+
+
+      <!-- ================ site plugin ==================== -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <reportPlugins>
+
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jxr-plugin</artifactId>
+              <version>${maven-jxr-plugin.version}</version>
+              <configuration>
+                <aggregate>true</aggregate>
+                <javadocDir>target/site/apidocs/</javadocDir>
+                <linkJavadoc>true</linkJavadoc>
+              </configuration>
+            </plugin>
+            
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <version>${maven-javadoc-plugin.version}</version>
+              <configuration>
+                <aggregate>true</aggregate>
+                <linksource>true</linksource>
+                <additionalOptions>
+                  <additionalOption>-Xdoclint:none</additionalOption>
+                  <doclint>none</doclint>
+                </additionalOptions>
+                <links>
+                  <link>
+                    http://docs.oracle.com/javase/6/docs/api/
+                  </link>
+                </links>
+                <groups>
+                  <group>
+                    <title>Logback Core</title>
+                    <packages>ch.qos.logback.core:ch.qos.logback.core.*
+                    </packages>
+                  </group>
+                  <group>
+                    <title>Logback Classic</title>
+                    <packages>
+                      ch.qos.logback:ch.qos.logback.classic:ch.qos.logback.classic.*
+                    </packages>
+                  </group>
+                  <group>
+                    <title>Logback Access</title>
+                    <packages>ch.qos.logback.access:ch.qos.logback.access.*
+                    </packages>
+                  </group>
+                  <group>
+                    <title>SLF4J</title>
+                    <packages>org.slf4j:org.slf4j.*</packages>
+                  </group>
+                  <group>
+                    <title>Examples</title>
+                    <packages>chapter*:joran*</packages>
+                  </group>
+                </groups>
+              </configuration>
+            </plugin>
+
+          </reportPlugins>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <distributionManagement>
+
+    <site>
+      <id>qos_ch</id>
+      <url>scp://te.qos.ch/var/www/logback.qos.ch/htdocs/</url>
+    </site>
+
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+
+  </distributionManagement>
+
+  <profiles>
+    <profile>
+      <id>testSkip</id>
+      <properties>
+        <maven.test.skip>true</maven.test.skip>
+      </properties>
+    </profile>
+    <profile>
+      <id>license</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.mycila</groupId>
+            <artifactId>license-maven-plugin</artifactId>
+            <version>${maven-license-plugin.version}</version>
+            <configuration>
+              <header>src/main/licenseHeader.txt</header>
+              <quiet>false</quiet>
+              <failIfMissing>true</failIfMissing>
+              <aggregate>true</aggregate>
+              <includes>
+                <include>src/**/*.java</include>
+                <include>src/**/*.groovy</include>
+              </includes>
+              <useDefaultExcludes>true</useDefaultExcludes>
+              <useDefaultMapping>true</useDefaultMapping>
+              <properties>
+                <year>1999</year>
+              </properties>
+              <headerDefinitions>
+                <headerDefinition>src/main/javadocHeaders.xml</headerDefinition>
+              </headerDefinitions>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>javadocjar</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${maven-javadoc-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                  <goal>test-jar</goal>
+                </goals>
+              </execution>
+            </executions>
+             <configuration>
+               <additionalparam>-Xdoclint:none</additionalparam>
+               <doclint>none</doclint>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>sign-artifacts</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.6</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>cobertura</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <configuration>
+              <reportPlugins>
+                
+                
+            
+                <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>cobertura-maven-plugin</artifactId>
+                  <version>${cobertura.maven.plugin.version}</version>
+                  <configuration>
+                    <formats>
+                      <format>html</format>
+                    </formats>
+                    <aggregate>true</aggregate>
+                  </configuration>
+                </plugin>
+              </reportPlugins>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+
+  </profiles>
+
+</project>
+
+exec
+/usr/bin/bash -lc "rg -n '\"coordinates\" : \"ch\\.qos\\.logback:logback-core|logback-core-1\\.2' build/discovered-artifact-metadata metadata -S" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc
+ succeeded in 0ms:
+build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json:2:  "coordinates" : "ch.qos.logback:logback-core:1.2.10"
+metadata/ch.qos.logback/logback-core/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.12/logback-core-1.2.12-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.12/logback-core-1.2.12-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.12/logback-core-1.2.12-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/ch/qos/logback/logback-core/1.2.10/ | sed -n '1,240p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: ch/qos/logback/logback-core/1.2.10</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>ch/qos/logback/logback-core/1.2.10</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="logback-core-1.2.10-javadoc.jar" title="logback-core-1.2.10-javadoc.jar">logback-core-1.2.10-javadoc.jar</a>                   2021-12-23 10:09   1945192      
+<a href="logback-core-1.2.10-javadoc.jar.asc" title="logback-core-1.2.10-javadoc.jar.asc">logback-core-1.2.10-javadoc.jar.asc</a>               2021-12-23 10:09       455      
+<a href="logback-core-1.2.10-javadoc.jar.md5" title="logback-core-1.2.10-javadoc.jar.md5">logback-core-1.2.10-javadoc.jar.md5</a>               2021-12-23 10:09        32      
+<a href="logback-core-1.2.10-javadoc.jar.sha1" title="logback-core-1.2.10-javadoc.jar.sha1">logback-core-1.2.10-javadoc.jar.sha1</a>              2021-12-23 10:09        40      
+<a href="logback-core-1.2.10-sources.jar" title="logback-core-1.2.10-sources.jar">logback-core-1.2.10-sources.jar</a>                   2021-12-23 10:09    375752      
+<a href="logback-core-1.2.10-sources.jar.asc" title="logback-core-1.2.10-sources.jar.asc">logback-core-1.2.10-sources.jar.asc</a>               2021-12-23 10:09       455      
+<a href="logback-core-1.2.10-sources.jar.md5" title="logback-core-1.2.10-sources.jar.md5">logback-core-1.2.10-sources.jar.md5</a>               2021-12-23 10:09        32      
+<a href="logback-core-1.2.10-sources.jar.sha1" title="logback-core-1.2.10-sources.jar.sha1">logback-core-1.2.10-sources.jar.sha1</a>              2021-12-23 10:09        40      
+<a href="logback-core-1.2.10-test-javadoc.jar" title="logback-core-1.2.10-test-javadoc.jar">logback-core-1.2.10-test-javadoc.jar</a>              2021-12-23 10:09   1267953      
+<a href="logback-core-1.2.10-test-javadoc.jar.asc" title="logback-core-1.2.10-test-javadoc.jar.asc">logback-core-1.2.10-test-javadoc.jar.asc</a>          2021-12-23 10:09       455      
+<a href="logback-core-1.2.10-test-javadoc.jar.md5" title="logback-core-1.2.10-test-javadoc.jar.md5">logback-core-1.2.10-test-javadoc.jar.md5</a>          2021-12-23 10:09        32      
+<a href="logback-core-1.2.10-test-javadoc.jar.sha1" title="logback-core-1.2.10-test-javadoc.jar.sha1">logback-core-1.2.10-test-javadoc.jar.sha1</a>         2021-12-23 10:09        40      
+<a href="logback-core-1.2.10-test-sources.jar" title="logback-core-1.2.10-test-sources.jar">logback-core-1.2.10-test-sources.jar</a>              2021-12-23 10:09    250077      
+<a href="logback-core-1.2.10-test-sources.jar.asc" title="logback-core-1.2.10-test-sources.jar.asc">logback-core-1.2.10-test-sources.jar.asc</a>          2021-12-23 10:09       455      
+<a href="logback-core-1.2.10-test-sources.jar.md5" title="logback-core-1.2.10-test-sources.jar.md5">logback-core-1.2.10-test-sources.jar.md5</a>          2021-12-23 10:09        32      
+<a href="logback-core-1.2.10-test-sources.jar.sha1" title="logback-core-1.2.10-test-sources.jar.sha1">logback-core-1.2.10-test-sources.jar.sha1</a>         2021-12-23 10:09        40      
+<a href="logback-core-1.2.10-tests.jar" title="logback-core-1.2.10-tests.jar">logback-core-1.2.10-tests.jar</a>                     2021-12-23 10:09    380882      
+<a href="logback-core-1.2.10-tests.jar.asc" title="logback-core-1.2.10-tests.jar.asc">logback-core-1.2.10-tests.jar.asc</a>                 2021-12-23 10:09       455      
+<a href="logback-core-1.2.10-tests.jar.md5" title="logback-core-1.2.10-tests.jar.md5">logback-core-1.2.10-tests.jar.md5</a>                 2021-12-23 10:09        32      
+<a href="logback-core-1.2.10-tests.jar.sha1" title="logback-core-1.2.10-tests.jar.sha1">logback-core-1.2.10-tests.jar.sha1</a>                2021-12-23 10:09        40      
+<a href="logback-core-1.2.10.jar" title="logback-core-1.2.10.jar">logback-core-1.2.10.jar</a>                           2021-12-23 10:09    454203      
+<a href="logback-core-1.2.10.jar.asc" title="logback-core-1.2.10.jar.asc">logback-core-1.2.10.jar.asc</a>                       2021-12-23 10:09       455      
+<a href="logback-core-1.2.10.jar.md5" title="logback-core-1.2.10.jar.md5">logback-core-1.2.10.jar.md5</a>                       2021-12-23 10:09        32      
+<a href="logback-core-1.2.10.jar.sha1" title="logback-core-1.2.10.jar.sha1">logback-core-1.2.10.jar.sha1</a>                      2021-12-23 10:09        40      
+<a href="logback-core-1.2.10.pom" title="logback-core-1.2.10.pom">logback-core-1.2.10.pom</a>                           2021-12-23 10:09      4197      
+<a href="logback-core-1.2.10.pom.asc" title="logback-core-1.2.10.pom.asc">logback-core-1.2.10.pom.asc</a>                       2021-12-23 10:09       455      
+<a href="logback-core-1.2.10.pom.md5" title="logback-core-1.2.10.pom.md5">logback-core-1.2.10.pom.md5</a>                       2021-12-23 10:09        32      
+<a href="logback-core-1.2.10.pom.sha1" title="logback-core-1.2.10.pom.sha1">logback-core-1.2.10.pom.sha1</a>                      2021-12-23 10:09        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/ch.qos.logback/logback-core/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc
+ succeeded in 0ms:
+[
+  {
+    "metadata-version" : "1.1.3",
+    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.1.3/logback-core-1.1.3-sources.jar",
+    "repository-url" : "https://github.com/qos-ch/logback",
+    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.1.3/logback-core-1.1.3-test-sources.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.1.3/logback-core-1.1.3-javadoc.jar",
+    "description" : "Logback Core is the foundational module of the Logback logging framework for Java. It provides appenders, encoders, layouts, rolling policies, filters, and support classes used by higher-level Logback modules.",
+    "tested-versions" : [
+      "1.1.3"
+    ],
+    "allowed-packages" : [
+      "ch.qos.logback.core"
+    ]
+  },
+  {
+    "latest" : true,
+    "metadata-version" : "1.2.12",
+    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.12/logback-core-1.2.12-sources.jar",
+    "repository-url" : "https://github.com/qos-ch/logback",
+    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.12/logback-core-1.2.12-test-sources.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.12/logback-core-1.2.12-javadoc.jar",
+    "tested-versions" : [
+      "1.2.12"
+    ],
+    "allowed-packages" : [
+      "ch.qos.logback"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 02:03:19 GMT
+content-type: application/java-archive
+content-length: 375752
+cf-ray: 9f42f82628d97dd2-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1245846
+etag: "82b88542dc59abaff90a5dde04b6364b"
+last-modified: Thu, 23 Dec 2021 10:09:31 GMT
+x-checksum-md5: 82b88542dc59abaff90a5dde04b6364b
+x-checksum-sha1: 63dc43165f77fedf926b2bcf72212f3755c87fba
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-test-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 02:03:19 GMT
+content-type: application/java-archive
+content-length: 250077
+cf-ray: 9f42f8263ce1a032-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1262990
+etag: "251bf820a4edb6187591bf584b16f40e"
+last-modified: Thu, 23 Dec 2021 10:09:32 GMT
+x-checksum-md5: 251bf820a4edb6187591bf584b16f40e
+x-checksum-sha1: 6ee3023df3ad9560623a700866cf651d0a4683ed
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 02:03:19 GMT
+content-type: application/java-archive
+content-length: 1945192
+cf-ray: 9f42f8266c1bbc5d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 465131
+etag: "21e5f5b67cbfda60aacb2f248e040f15"
+last-modified: Thu, 23 Dec 2021 10:09:33 GMT
+x-checksum-md5: 21e5f5b67cbfda60aacb2f248e040f15
+x-checksum-sha1: a145d4d6484cda74059f3ff629ce229f444cf239
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: github qos-ch logback tag v_1.2.10 logback-core 1.2.10
+codex
+I found exact 1.2.10 Maven Central attachments for sources, test sources, and Javadoc, and the existing in-repo metadata uses the same URL pattern for nearby Logback versions. I’m going to update the discovered JSON with those exact-version URLs and omit `language` because this is not Kotlin, Groovy, or Scala-specific.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
+diff --git a/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json b/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
+index 70458434f0dd2385dce8c3a5512df7991b746fcb..3babaa50ef373ffb06eddba24636ba1a332afd9b
+--- a/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
++++ b/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ch.qos.logback:logback-core:1.2.10"
++  "coordinates" : "ch.qos.logback:logback-core:1.2.10",
++  "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-sources.jar",
++  "repository-url" : "https://github.com/qos-ch/logback",
++  "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-test-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-javadoc.jar",
++  "description" : "Logback Core is the foundational module of the Logback logging framework for Java. It provides appenders, encoders, layouts, rolling policies, filters, and support classes used by higher-level Logback modules."
+ }
+
+diff --git a/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json b/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
+index 70458434f0dd2385dce8c3a5512df7991b746fcb..3babaa50ef373ffb06eddba24636ba1a332afd9b
+--- a/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
++++ b/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ch.qos.logback:logback-core:1.2.10"
++  "coordinates" : "ch.qos.logback:logback-core:1.2.10",
++  "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-sources.jar",
++  "repository-url" : "https://github.com/qos-ch/logback",
++  "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-test-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-javadoc.jar",
++  "description" : "Logback Core is the foundational module of the Logback logging framework for Java. It provides appenders, encoders, layouts, rolling policies, filters, and support classes used by higher-level Logback modules."
+ }
+
+codex
+The file is patched. I’m doing a quick JSON parse and metadata-file validation for the requested coordinates so we catch formatting or schema issues before I hand it back.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc
+ succeeded in 0ms:
+{
+  "coordinates": "ch.qos.logback:logback-core:1.2.10",
+  "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-sources.jar",
+  "repository-url": "https://github.com/qos-ch/logback",
+  "test-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-test-sources.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-javadoc.jar",
+  "description": "Logback Core is the foundational module of the Logback logging framework for Java. It provides appenders, encoders, layouts, rolling policies, filters, and support classes used by higher-level Logback modules."
+}
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=ch.qos.logback:logback-core:1.2.10' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc
+diff --git a/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json b/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
+index 70458434f0dd2385dce8c3a5512df7991b746fcb..3babaa50ef373ffb06eddba24636ba1a332afd9b
+--- a/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
++++ b/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ch.qos.logback:logback-core:1.2.10"
++  "coordinates" : "ch.qos.logback:logback-core:1.2.10",
++  "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-sources.jar",
++  "repository-url" : "https://github.com/qos-ch/logback",
++  "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-test-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-javadoc.jar",
++  "description" : "Logback Core is the foundational module of the Logback logging framework for Java. It provides appenders, encoders, layouts, rolling policies, filters, and support classes used by higher-level Logback modules."
+ }
+
+ succeeded in 1473ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles
+No matching coordinates found for metadata checks. Nothing to do.
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+diff --git a/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json b/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
+index 70458434f0dd2385dce8c3a5512df7991b746fcb..3babaa50ef373ffb06eddba24636ba1a332afd9b
+--- a/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
++++ b/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ch.qos.logback:logback-core:1.2.10"
++  "coordinates" : "ch.qos.logback:logback-core:1.2.10",
++  "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-sources.jar",
++  "repository-url" : "https://github.com/qos-ch/logback",
++  "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-test-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-javadoc.jar",
++  "description" : "Logback Core is the foundational module of the Logback logging framework for Java. It provides appenders, encoders, layouts, rolling policies, filters, and support classes used by higher-level Logback modules."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json b/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
+index 70458434f0dd2385dce8c3a5512df7991b746fcb..3babaa50ef373ffb06eddba24636ba1a332afd9b
+--- a/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
++++ b/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ch.qos.logback:logback-core:1.2.10"
++  "coordinates" : "ch.qos.logback:logback-core:1.2.10",
++  "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-sources.jar",
++  "repository-url" : "https://github.com/qos-ch/logback",
++  "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-test-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-javadoc.jar",
++  "description" : "Logback Core is the foundational module of the Logback logging framework for Java. It provides appenders, encoders, layouts, rolling policies, filters, and support classes used by higher-level Logback modules."
+ }
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org ch.qos.logback logback-core 1.2.10 javadoc sources test-sources
+web search: 
+web search: https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/
+web search: 
+web search: https://github.com/qos-ch/logback
+codex
+Updated [ch.qos.logback-logback-core-1.2.10.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json) with exact 1.2.10 Maven Central URLs for sources, test sources, and Javadoc, plus the `qos-ch/logback` repository URL. Maven Central lists those exact attached artifacts for 1.2.10, and the upstream repository identifies Logback as a Java logging framework, so I left `language` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/))
+
+Validation: `jq` parsed the JSON successfully. `./gradlew checkMetadataFiles -Pcoordinates=ch.qos.logback:logback-core:1.2.10` completed successfully, though Gradle reported no matching coordinates for metadata checks.
+diff --git a/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json b/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
+index 70458434f0dd2385dce8c3a5512df7991b746fcb..3babaa50ef373ffb06eddba24636ba1a332afd9b
+--- a/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
++++ b/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ch.qos.logback:logback-core:1.2.10"
++  "coordinates" : "ch.qos.logback:logback-core:1.2.10",
++  "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-sources.jar",
++  "repository-url" : "https://github.com/qos-ch/logback",
++  "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-test-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10-javadoc.jar",
++  "description" : "Logback Core is the foundational module of the Logback logging framework for Java. It provides appenders, encoders, layouts, rolling policies, filters, and support classes used by higher-level Logback modules."
+ }
+
+2026-04-30T02:03:57.452889Z ERROR codex_core::session: failed to record rollout items: thread 019ddc1f-e457-7b52-82fe-7589db412cd0 not found
+tokens used
+56,669
+Updated [ch.qos.logback-logback-core-1.2.10.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc/build/discovered-artifact-metadata/ch.qos.logback-logback-core-1.2.10.json) with exact 1.2.10 Maven Central URLs for sources, test sources, and Javadoc, plus the `qos-ch/logback` repository URL. Maven Central lists those exact attached artifacts for 1.2.10, and the upstream repository identifies Logback as a Java logging framework, so I left `language` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.10/))
+
+Validation: `jq` parsed the JSON successfully. `./gradlew checkMetadataFiles -Pcoordinates=ch.qos.logback:logback-core:1.2.10` completed successfully, though Gradle reported no matching coordinates for metadata checks.
+Ran agent for ch.qos.logback:logback-core:1.2.10 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc/build/agent-artifact-discovery-logs/ch.qos.logback-logback-core-1.2.10.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2445-7f6c22dc/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 11s
+9 actionable tasks: 4 executed, 5 from cache
