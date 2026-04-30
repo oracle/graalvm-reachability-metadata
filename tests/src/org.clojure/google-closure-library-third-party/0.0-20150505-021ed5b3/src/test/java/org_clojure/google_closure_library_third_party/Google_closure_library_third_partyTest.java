@@ -125,6 +125,22 @@ public class Google_closure_library_third_partyTest {
     }
 
     @Test
+    void htmlParserExposesStandardNamedEntityDecodingTable() throws IOException {
+        Map<String, String> namedEntities = extractJavascriptObjectEntries(
+                readResource("goog/caja/string/html/htmlparser.js"),
+                "goog.string.html.HtmlParser.Entities = ");
+
+        assertThat(namedEntities)
+                .contains(
+                        entry("lt", "'<'"),
+                        entry("gt", "'>'"),
+                        entry("amp", "'&'"),
+                        entry("nbsp", "'\\u00a0'"),
+                        entry("quot", "'\"'"),
+                        entry("apos", "'\\''"));
+    }
+
+    @Test
     void optionalBrowserUtilitiesRetainTheirEntryPoints() throws IOException {
         assertThat(readResource("goog/loremipsum/text/loremipsum.js"))
                 .contains("goog.text.LoremIpsum = function()")
