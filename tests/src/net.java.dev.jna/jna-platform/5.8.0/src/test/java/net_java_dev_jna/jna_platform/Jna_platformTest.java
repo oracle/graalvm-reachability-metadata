@@ -8,7 +8,7 @@ package net_java_dev_jna.jna_platform;
 
 import org.junit.jupiter.api.Test;
 
-class Jna_platformTest {
+public class Jna_platformTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
