@@ -161,6 +161,37 @@ public class Osgi_annotationTest {
         assertThat(new MetaAnnotatedComponent().name()).isEqualTo("meta-component");
     }
 
+    @Test
+    void minimalCapabilityRequirementAndExportDeclarationsUseOptionalDefaults() {
+        Capability capability = new FixedCapability("minimal.capability", "", "", new Class<?>[0], "resolve",
+                new String[0]);
+        Requirement requirement = new FixedRequirement("minimal.requirement", "", "", "", "resolve",
+                new String[0], Requirement.Cardinality.SINGLE, Requirement.Resolution.MANDATORY);
+        Export export = new FixedExport(new String[0], new String[0], Export.Substitution.CALCULATED);
+        Attribute attribute = new FixedAttribute("");
+        Directive directive = new FixedDirective("");
+
+        assertThat(capability.namespace()).isEqualTo("minimal.capability");
+        assertThat(capability.name()).isEmpty();
+        assertThat(capability.version()).isEmpty();
+        assertThat(capability.uses()).isEmpty();
+        assertThat(capability.effective()).isEqualTo("resolve");
+        assertThat(capability.attribute()).isEmpty();
+        assertThat(requirement.namespace()).isEqualTo("minimal.requirement");
+        assertThat(requirement.name()).isEmpty();
+        assertThat(requirement.version()).isEmpty();
+        assertThat(requirement.filter()).isEmpty();
+        assertThat(requirement.effective()).isEqualTo("resolve");
+        assertThat(requirement.attribute()).isEmpty();
+        assertThat(requirement.cardinality()).isEqualTo(Requirement.Cardinality.SINGLE);
+        assertThat(requirement.resolution()).isEqualTo(Requirement.Resolution.MANDATORY);
+        assertThat(export.uses()).isEmpty();
+        assertThat(export.attribute()).isEmpty();
+        assertThat(export.substitution()).isEqualTo(Export.Substitution.CALCULATED);
+        assertThat(attribute.value()).isEmpty();
+        assertThat(directive.value()).isEmpty();
+    }
+
     @ConsumerType
     private interface ConsumerService {
         String format(String value);
