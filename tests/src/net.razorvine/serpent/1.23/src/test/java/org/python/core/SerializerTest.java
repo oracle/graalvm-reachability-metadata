@@ -24,8 +24,8 @@ public class SerializerTest {
         List<Object> values = Arrays.asList(
                 new PyTuple("alpha", 7, true),
                 new PyComplex(3.5, -2.25),
-                new PyByteArray(new byte[] { 'h', 'e', 'l', 'l', 'o' }),
-                new PyMemoryView(new byte[] { 'w', 'o', 'r', 'l', 'd' }));
+                new PyByteArray(new byte[] {'h', 'e', 'l', 'l', 'o' }),
+                new PyMemoryView(new byte[] {'w', 'o', 'r', 'l', 'd' }));
 
         String body = serializeBody(serializer, values);
 
