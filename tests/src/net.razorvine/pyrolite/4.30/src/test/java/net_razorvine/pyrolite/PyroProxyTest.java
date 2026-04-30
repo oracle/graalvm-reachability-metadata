@@ -60,10 +60,10 @@ public class PyroProxyTest {
 
     private static void servePythonExceptionResponse(ServerSocket serverSocket) {
         try (Socket socket = serverSocket.accept()) {
-            Message connect = Message.recv(socket.getInputStream(), new int[] { Message.MSG_CONNECT }, null);
+            Message connect = Message.recv(socket.getInputStream(), new int[] {Message.MSG_CONNECT }, null);
             sendHandshakeResponse(socket, connect.seq);
 
-            Message invoke = Message.recv(socket.getInputStream(), new int[] { Message.MSG_INVOKE }, null);
+            Message invoke = Message.recv(socket.getInputStream(), new int[] {Message.MSG_INVOKE }, null);
             byte[] remoteException = pythonValueErrorWithTraceback("remote failure", "remote traceback\n");
             Message result = new Message(
                     Message.MSG_RESULT,
@@ -81,7 +81,7 @@ public class PyroProxyTest {
 
     private static void sendHandshakeResponse(Socket socket, int sequenceNumber) throws IOException {
         Map<String, Object> metadata = new HashMap<>();
-        metadata.put("methods", new Object[] { "explode" });
+        metadata.put("methods", new Object[] {"explode" });
         metadata.put("attrs", new Object[0]);
         metadata.put("oneways", new Object[0]);
 
