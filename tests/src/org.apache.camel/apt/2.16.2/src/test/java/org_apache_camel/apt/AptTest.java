@@ -153,6 +153,45 @@ public class AptTest {
     }
 
     @Test
+    void jsonSchemaHelperWritesAndParsesOneOfMetadata() {
+        String jsonProperty = JsonSchemaHelper.toJson(
+                "outputs",
+                "element",
+                Boolean.FALSE,
+                "java.util.List",
+                null,
+                "Supported child outputs",
+                Boolean.TRUE,
+                null,
+                null,
+                false,
+                orderedSet(),
+                true,
+                orderedSet("com.example.ToDefinition", "com.example.RouteDefinition"),
+                null,
+                null,
+                false);
+
+        String json = "{\n"
+                + "  \"properties\": {\n"
+                + "    " + jsonProperty + "\n"
+                + "  }\n"
+                + "}";
+        List<Map<String, String>> rows = JsonSchemaHelper.parseJsonSchema("properties", json, true);
+
+        assertThat(rows).hasSize(1);
+        Map<String, String> row = rows.get(0);
+        assertThat(row.get("name")).isEqualTo("outputs");
+        assertThat(row.get("kind")).isEqualTo("element");
+        assertThat(row.get("required")).isEqualTo("false");
+        assertThat(row.get("type")).isEqualTo("array");
+        assertThat(row.get("javaType")).isEqualTo("java.util.List");
+        assertThat(row.get("oneOf")).isEqualTo("com.example.ToDefinition,com.example.RouteDefinition");
+        assertThat(row.get("deprecated")).isEqualTo("true");
+        assertThat(row.get("description")).isEqualTo("Supported child outputs");
+    }
+
+    @Test
     void modelObjectsExposeConstructorDataAndNameBasedIdentity() {
         ComponentModel componentModel = new ComponentModel("demo");
         componentModel.setExtendsScheme("file");
