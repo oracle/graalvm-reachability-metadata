@@ -13,6 +13,8 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.PairSerializer
+import kotlinx.serialization.builtins.TripleSerializer
 import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -95,6 +97,38 @@ public class Kotlinx_serialization_coreTest {
         assertThat(mapDescriptor.kind).isEqualTo(StructureKind.MAP)
         assertThat(mapDescriptor.getElementDescriptor(0).kind).isEqualTo(PrimitiveKind.STRING)
         assertThat(mapDescriptor.getElementDescriptor(1).kind).isEqualTo(PrimitiveKind.INT)
+    }
+
+    @Test
+    fun tupleSerializersEncodeAndDecodePublicKotlinTupleTypes() {
+        val pairSerializer = PairSerializer(Int.serializer(), String.serializer())
+        val pair = 12 to "dozen"
+        val pairEncoder = FieldMapEncoder()
+
+        pairSerializer.serialize(pairEncoder, pair)
+
+        assertThat(pairEncoder.values).containsExactlyEntriesOf(
+            mapOf(
+                "first" to 12,
+                "second" to "dozen",
+            ),
+        )
+        assertThat(pairSerializer.deserialize(FieldMapDecoder(pairEncoder.values))).isEqualTo(pair)
+
+        val tripleSerializer = TripleSerializer(String.serializer(), Int.serializer(), String.serializer())
+        val triple = Triple("left", 3, "right")
+        val tripleEncoder = FieldMapEncoder()
+
+        tripleSerializer.serialize(tripleEncoder, triple)
+
+        assertThat(tripleEncoder.values).containsExactlyEntriesOf(
+            mapOf(
+                "first" to "left",
+                "second" to 3,
+                "third" to "right",
+            ),
+        )
+        assertThat(tripleSerializer.deserialize(FieldMapDecoder(tripleEncoder.values))).isEqualTo(triple)
     }
 
     @Test
