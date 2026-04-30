@@ -15,6 +15,7 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 Provider<Directory> ktfmtFixtureResources = layout.buildDirectory.dir("generated/ktfmt-fixture-resources")
 Provider<Directory> jsonSimpleFixtureResources = layout.buildDirectory.dir("generated/json-simple-fixture-resources")
+Provider<Directory> googleJavaFormatFixtureResources = layout.buildDirectory.dir("generated/google-java-format-fixture-resources")
 
 tasks.register("generateKtfmtFixtureJars") {
     outputs.dir(ktfmtFixtureResources)
@@ -38,6 +39,17 @@ tasks.register("generateJsonSimpleFixtureJar") {
         delete(outputDir)
 
         createJsonSimpleFixture(outputDir)
+    }
+}
+
+tasks.register("generateGoogleJavaFormatFixtureJar") {
+    outputs.dir(googleJavaFormatFixtureResources)
+
+    doLast {
+        File outputDir = googleJavaFormatFixtureResources.get().asFile
+        delete(outputDir)
+
+        createGoogleJavaFormatFixture(outputDir)
     }
 }
 
@@ -200,11 +212,67 @@ void createJsonSimpleFixture(File outputDir) {
     createFixtureJar(outputDir, "json-simple-fixtures", "org-json", "org-json-fixture.jar", sources)
 }
 
+void createGoogleJavaFormatFixture(File outputDir) {
+    Map<String, String> sources = [
+        "com/diffplug/spotless/glue/java/GoogleJavaFormatFormatterFunc.java": """
+            package com.diffplug.spotless.glue.java;
+
+            import com.diffplug.spotless.FormatterFunc;
+
+            public class GoogleJavaFormatFormatterFunc implements FormatterFunc {
+                private final String version;
+                private final String style;
+                private final boolean reflowLongStrings;
+                private final boolean reorderImports;
+                private final boolean formatJavadoc;
+
+                public GoogleJavaFormatFormatterFunc(String version, String style, boolean reflowLongStrings,
+                        boolean reorderImports, boolean formatJavadoc) {
+                    this.version = version;
+                    this.style = style;
+                    this.reflowLongStrings = reflowLongStrings;
+                    this.reorderImports = reorderImports;
+                    this.formatJavadoc = formatJavadoc;
+                }
+
+                public String apply(String input) {
+                    return "format:" + version + ":" + style + ":" + reflowLongStrings + ":" + reorderImports + ":"
+                            + formatJavadoc + ":" + input;
+                }
+            }
+            """,
+        "com/diffplug/spotless/glue/java/GoogleJavaFormatRemoveUnusedImporterFormatterFunc.java": """
+            package com.diffplug.spotless.glue.java;
+
+            import com.diffplug.spotless.FormatterFunc;
+
+            public class GoogleJavaFormatRemoveUnusedImporterFormatterFunc implements FormatterFunc {
+                private final String version;
+
+                public GoogleJavaFormatRemoveUnusedImporterFormatterFunc(String version) {
+                    this.version = version;
+                }
+
+                public String apply(String input) {
+                    return "remove-unused-imports:" + version + ":" + input;
+                }
+            }
+            """
+    ]
+    createFixtureJar(outputDir, "google-java-format-fixtures", "current", "google-java-format-fixture.jar", sources,
+            sourceSets.test.compileClasspath.asPath)
+}
+
 void createFixtureJar(File outputDir, String version, String jarName, Map<String, String> sources) {
     createFixtureJar(outputDir, "ktfmt-fixtures", version, jarName, sources)
 }
 
 void createFixtureJar(File outputDir, String resourceRoot, String version, String jarName, Map<String, String> sources) {
+    createFixtureJar(outputDir, resourceRoot, version, jarName, sources, null)
+}
+
+void createFixtureJar(File outputDir, String resourceRoot, String version, String jarName, Map<String, String> sources,
+        String classpath) {
     File workDir = new File(outputDir, "work/${version}")
     File sourceDir = new File(workDir, "src")
     File classesDir = new File(workDir, "classes")
@@ -214,7 +282,11 @@ void createFixtureJar(File outputDir, String resourceRoot, String version, Strin
         sourceFile.text = source.stripIndent()
     }
     classesDir.mkdirs()
-    ant.javac(srcdir: sourceDir, destdir: classesDir, includeantruntime: false, source: "8", target: "8")
+    Map<String, Object> javacArguments = [srcdir: sourceDir, destdir: classesDir, includeantruntime: false, source: "8", target: "8"]
+    if (classpath != null) {
+        javacArguments.classpath = classpath
+    }
+    ant.javac(javacArguments)
 
     File resourceDir = new File(outputDir, "${resourceRoot}/${version}")
     resourceDir.mkdirs()
@@ -231,12 +303,14 @@ sourceSets {
     test {
         resources.srcDir(ktfmtFixtureResources)
         resources.srcDir(jsonSimpleFixtureResources)
+        resources.srcDir(googleJavaFormatFixtureResources)
     }
 }
 
 tasks.named("processTestResources") {
     dependsOn(tasks.named("generateKtfmtFixtureJars"))
     dependsOn(tasks.named("generateJsonSimpleFixtureJar"))
+    dependsOn(tasks.named("generateGoogleJavaFormatFixtureJar"))
 }
 
 dependencies {
@@ -248,7 +322,7 @@ dependencies {
 graalvmNative {
     binaries {
         test {
-            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|json-simple-fixtures)/.*')
+            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|json-simple-fixtures|google-java-format-fixtures)/.*')
         }
     }
 
