@@ -46,15 +46,16 @@ public class ReflectionUtilsTest {
         assertThat(value).isEqualTo("field-value");
     }
 
-    @SuppressWarnings("deprecation")
     @Test
-    void resolvesOutermostInstanceFromInnerClass() {
+    void invokesMethodOnInnerClassInstance() throws Exception {
         OuterSubject outer = new OuterSubject("outer-value");
         OuterSubject.InnerSubject inner = outer.new InnerSubject();
+        Method method = inner.getClass().getDeclaredMethod("getOuterValue");
 
-        Optional<Object> outermostInstance = ReflectionUtils.getOutermostInstance(inner, OuterSubject.class);
+        Object outerValue = ReflectionUtils.invokeMethod(method, inner);
 
-        assertThat(outermostInstance).hasValueSatisfying(value -> assertThat(value).isSameAs(outer));
+        assertThat(ReflectionUtils.isInnerClass(inner.getClass())).isTrue();
+        assertThat(outerValue).isEqualTo("outer-value");
     }
 
     @Test
