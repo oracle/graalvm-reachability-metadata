@@ -241,7 +241,7 @@ class Jakarta_annotation_apiTest {
         assertThat(retention(Generated.class)).isEqualTo(RetentionPolicy.SOURCE);
 
         assertThat(target(ManagedBean.class)).containsExactly(ElementType.TYPE);
-        assertThat(target(Priority.class)).containsExactly(ElementType.TYPE, ElementType.PARAMETER);
+        assertThat(annotation(Priority.class, Target.class)).isNull();
         assertThat(target(Resource.class)).containsExactlyInAnyOrder(ElementType.TYPE, ElementType.FIELD, ElementType.METHOD);
         assertThat(target(Resources.class)).containsExactly(ElementType.TYPE);
         assertThat(target(PostConstruct.class)).containsExactly(ElementType.METHOD);
