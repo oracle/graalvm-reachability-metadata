@@ -1,0 +1,850 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ddd21-f049-7551-8364-1a792a34a6e0
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: jakarta.authentication:jakarta.authentication-api:3.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json
+- Set "coordinates" to "jakarta.authentication:jakarta.authentication-api:3.0.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing artifact metadata shape, then verify the exact 3.0.0 artifacts and upstream tag before editing the JSON.
+exec
+/usr/bin/zsh -lc "sed -n '1,160p' build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+ succeeded in 0ms:
+{
+  "coordinates" : "jakarta.authentication:jakarta.authentication-api:3.0.0"
+}
+
+exec
+/usr/bin/zsh -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+ succeeded in 0ms:
+/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json
+
+exec
+/usr/bin/zsh -lc "rg -n \"jakarta.authentication|source-code-url|test-code-url|documentation-url\" build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+ succeeded in 0ms:
+build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json:2:  "coordinates" : "jakarta.authentication:jakarta.authentication-api:3.0.0"
+metadata/javax.interceptor/javax.interceptor-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/1.2/javax.interceptor-api-1.2-sources.jar",
+metadata/javax.interceptor/javax.interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.interceptor/javax.interceptor-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/1.2/javax.interceptor-api-1.2-javadoc.jar",
+metadata/org.scala-sbt/test-interface/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0-sources.jar",
+metadata/org.scala-sbt/test-interface/index.json:7:    "test-code-url" : "https://github.com/sbt/test-interface/tree/v1.0/src/test",
+metadata/org.scala-sbt/test-interface/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0-javadoc.jar",
+metadata/com.mysql/mysql-connector-j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.31/mysql-connector-j-8.0.31-sources.jar",
+metadata/com.mysql/mysql-connector-j/index.json:7:    "test-code-url" : "https://github.com/mysql/mysql-connector-j/tree/8.0.31/src/test",
+metadata/com.mysql/mysql-connector-j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.31/mysql-connector-j-8.0.31-javadoc.jar",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-sources.jar",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-tests.jar",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-javadoc.jar",
+metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/paho/org.eclipse.paho.mqttv5.client/1.2.5/org.eclipse.paho.mqttv5.client-1.2.5-sources.jar",
+metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:10:    "test-code-url": "https://github.com/eclipse-paho/paho.mqtt.java/tree/v1.2.5/org.eclipse.paho.mqttv5.client.test/src/test",
+metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:11:    "documentation-url": "https://github.com/eclipse-paho/paho.mqtt.java/blob/v1.2.5/MQTTv5.md",
+metadata/org.sonatype.aether/aether-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-sources.jar",
+metadata/org.sonatype.aether/aether-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.sonatype.aether/aether-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-javadoc.jar",
+metadata/com.graphql-java/graphql-java/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/19.2/graphql-java-19.2-sources.jar",
+metadata/com.graphql-java/graphql-java/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java/tree/v19.2/src/test",
+metadata/com.graphql-java/graphql-java/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/19.2/graphql-java-19.2-javadoc.jar",
+metadata/info.picocli/picocli/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-sources.jar",
+metadata/info.picocli/picocli/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-test-sources.jar",
+metadata/info.picocli/picocli/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-javadoc.jar",
+metadata/org.jline/jline/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0-sources.jar",
+metadata/org.jline/jline/index.json:11:    "test-code-url": "https://github.com/jline/jline3/tree/jline-parent-3.21.0",
+metadata/org.jline/jline/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0-javadoc.jar",
+metadata/org.sonatype.aether/aether-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/1.7/aether-util-1.7-sources.jar",
+metadata/org.sonatype.aether/aether-util/index.json:7:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-util/src/test/java",
+metadata/org.sonatype.aether/aether-util/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/1.7/aether-util-1.7-javadoc.jar",
+metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/2.0.8/oro-2.0.8-sources.jar",
+metadata/oro/oro/index.json:7:    "test-code-url" : "N/A",
+metadata/oro/oro/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/jakarta/oro/tags/oro-2.0.8/docs/index.html",
+metadata/org.eclipse.paho/org.eclipse.paho.client.mqttv3/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/paho/org.eclipse.paho.client.mqttv3/1.2.5/org.eclipse.paho.client.mqttv3-1.2.5-sources.jar",
+metadata/org.eclipse.paho/org.eclipse.paho.client.mqttv3/index.json:10:    "test-code-url": "https://github.com/eclipse-paho/paho.mqtt.java/tree/v1.2.5/org.eclipse.paho.client.mqttv3.test",
+metadata/org.eclipse.paho/org.eclipse.paho.client.mqttv3/index.json:11:    "documentation-url": "https://github.com/eclipse-paho/paho.mqtt.java/blob/v1.2.5/MQTTv3.md",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/19.1/graphql-java-extended-validation-19.1-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java-extended-validation/tree/v19.1/src/test",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/19.1/graphql-java-extended-validation-19.1-javadoc.jar",
+metadata/software.amazon.awssdk/s3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-sources.jar",
+metadata/software.amazon.awssdk/s3/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/2.25.3/services/s3/src/test",
+metadata/software.amazon.awssdk/s3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-javadoc.jar",
+metadata/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-atinject_1.0_spec/1.0/geronimo-atinject_1.0_spec-1.0-sources.jar",
+metadata/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-atinject_1.0_spec/1.0/geronimo-atinject_1.0_spec-1.0-javadoc.jar",
+metadata/org.jline/jline-terminal-jna/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.20.0/jline-terminal-jna-3.20.0-sources.jar",
+metadata/org.jline/jline-terminal-jna/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.20.0/terminal-jna/src/test",
+metadata/org.jline/jline-terminal-jna/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.20.0/jline-terminal-jna-3.20.0-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/5.0.0/java-dataloader-5.0.0-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:7:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v5.0.0/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/5.0.0/java-dataloader-5.0.0-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/3.2.0/java-dataloader-3.2.0-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:21:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v3.2.0/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/3.2.0/java-dataloader-3.2.0-javadoc.jar",
+metadata/org.reactivestreams/reactive-streams/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-sources.jar",
+metadata/org.reactivestreams/reactive-streams/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams-tck/1.0.3/reactive-streams-tck-1.0.3-sources.jar",
+metadata/org.reactivestreams/reactive-streams/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-javadoc.jar",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.1_spec/1.0/geronimo-annotation_1.1_spec-1.0-sources.jar",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.1_spec/1.0/geronimo-annotation_1.1_spec-1.0-javadoc.jar",
+metadata/at.yawk.lz4/lz4-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.10.4/lz4-java-1.10.4-sources.jar",
+metadata/at.yawk.lz4/lz4-java/index.json:7:    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/v1.10.4/src/test",
+metadata/at.yawk.lz4/lz4-java/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.10.4/lz4-java-1.10.4-javadoc.jar",
+metadata/org.osgi/org.osgi.core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.1/org.osgi.core-4.3.1-sources.jar",
+metadata/org.osgi/org.osgi.core/index.json:7:    "test-code-url" : "https://github.com/osgi/osgi/tree/r4v431-core-cmpn-spec-final/org.osgi.test.cases.framework",
+metadata/org.osgi/org.osgi.core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.1/org.osgi.core-4.3.1-javadoc.jar",
+metadata/org.osgi/org.osgi.core/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.0/org.osgi.core-4.3.0-sources.jar",
+metadata/org.osgi/org.osgi.core/index.json:23:    "test-code-url" : "https://github.com/osgi/osgi/tree/r4v43-core-ri-ct-final",
+metadata/org.osgi/org.osgi.core/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.0/org.osgi.core-4.3.0-javadoc.jar",
+metadata/redis.clients/jedis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/3.6.0/jedis-3.6.0-sources.jar",
+metadata/redis.clients/jedis/index.json:7:    "test-code-url" : "https://github.com/redis/jedis/tree/jedis-3.6.0/src/test/java",
+metadata/redis.clients/jedis/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/3.6.0/jedis-3.6.0-javadoc.jar",
+metadata/redis.clients/jedis/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/3.0.0/jedis-3.0.0-sources.jar",
+metadata/redis.clients/jedis/index.json:21:    "test-code-url" : "https://github.com/redis/jedis/tree/jedis-3.0.0/src/test/java",
+metadata/redis.clients/jedis/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/3.0.0/jedis-3.0.0-javadoc.jar",
+metadata/redis.clients/jedis/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/2.9.0/jedis-2.9.0-sources.jar",
+
+web search: 
+web search: jakarta.authentication jakarta.authentication-api 3.0.0 Maven Central sources javadoc repository
+codex
+The target file only has coordinates right now. I found the exact Maven Central directory for 3.0.0, so I’m checking the POM and available classifier artifacts to prefer Maven-hosted source/javadoc/test artifacts where they exist.
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/jakarta.authentication-api-3.0.0.pom' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+exec
+/usr/bin/zsh -lc 'curl -fsSI https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/jakarta.authentication-api-3.0.0-tests.jar || true
+curl -fsSI https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/jakarta.authentication-api-3.0.0-test-sources.jar || true' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+ succeeded in 153ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2020, 2022 Contributors to Eclipse Foundation. All rights reserved.
+    Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.6</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>jakarta.authentication</groupId>
+    <artifactId>jakarta.authentication-api</artifactId>
+    <version>3.0.0</version>
+
+    <name>Jakarta Authentication</name>
+    <description>
+        Jakarta Authentication defines a general low-level SPI for authentication mechanisms, which are controllers
+        that interact with a caller and a container's environment to obtain the caller's credentials, validate these,
+        and pass an authenticated identity (such as name and groups) to the container. 
+        
+        Jakarta Authentication consists of several profiles, with each profile telling how a specific container
+        (such as Jakarta Servlet) can integrate with- and adapt to this SPI.
+    </description>
+    <url>https://github.com/eclipse-ee4j/authentication</url>
+    <organization>
+        <name>Jakarta Authentication</name>
+        <url>https://github.com/eclipse-ee4j/authentication</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>EPL 2.0</name>
+            <url>http://www.eclipse.org/legal/epl-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>GPL2 w/ CPE</name>
+            <url>https://www.gnu.org/software/classpath/license.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>atijms</id>
+            <name>Arjan Tijms</name>
+            <email>arjan.tijms@gmail.com</email>
+            <roles>
+                <role>Project-Lead</role>
+                <role>comitter</role>
+                <role>developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <id>yaminikb</id>
+            <name>Yamini K B</name>
+            <organization>Oracle Corporation</organization>
+            <organizationUrl>http://www.oracle.com/</organizationUrl>
+        </developer>
+    </developers>
+    <contributors>
+        <contributor>
+            <name>Ronald Monzillo</name>
+            <organization>Oracle Corporation</organization>
+            <organizationUrl>http://www.oracle.com/</organizationUrl>
+        </contributor>
+    </contributors>
+
+    <scm>
+        <connection>scm:git:ssh://git@github.com/eclipse-ee4j/authentication.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/eclipse-ee4j/authentication.git</developerConnection>
+        <url>https://github.com/eclipse-ee4j/authentication</url>
+    </scm>
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/eclipse-ee4j/authentication/issues</url>
+    </issueManagement>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+
+    <build>
+        <defaultGoal>install</defaultGoal>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.html</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>META-INF/README</exclude>
+                    <exclude>${findbugs.exclude}</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/..</directory>
+                <includes>
+                    <include>LICENSE.md</include>
+                    <include>NOTICE.md</include>
+                </includes>
+                <targetPath>META-INF</targetPath>
+            </resource>
+            <resource>
+                <directory>${project.basedir}</directory>
+                <includes>
+                    <include>LICENSE.md</include>
+                    <include>NOTICE.md</include>
+                </includes>
+                <targetPath>META-INF</targetPath>
+            </resource>
+        </resources>
+        <plugins>
+            <!-- Sets minimal Maven version to 3.6.0 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.6.0</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        
+            <!-- Restricts the Java version to 11 -->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.0</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                    <compilerArgument>-Xlint:unchecked</compilerArgument>
+                </configuration>
+            </plugin>
+        
+            <!-- First sets properties for the maven-bundle-plugin and later checks if they are indeed used. -->
+            <plugin>
+                <groupId>org.glassfish.build</groupId>
+                <artifactId>spec-version-maven-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <spec>
+                        <specVersion>3.0</specVersion>
+                        <specImplVersion>${project.version}</specImplVersion>
+                        <apiPackage>jakarta.security.auth.message</apiPackage>
+                    </spec>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>set-spec-properties</goal>
+                            <goal>check-module</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <!-- Creates the OSGi MANIFEST.MF file -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>5.1.4</version>
+                <configuration>
+                    <supportedProjectTypes>
+                        <supportedProjectType>jar</supportedProjectType>
+                    </supportedProjectTypes>
+                    <instructions>
+                        <Bundle-Version>${spec.bundle.version}</Bundle-Version>
+                        <Bundle-SymbolicName>${spec.bundle.symbolic-name}</Bundle-SymbolicName>
+                        <Extension-Name>${spec.extension.name}</Extension-Name>
+                        <Implementation-Version>${spec.implementation.version}</Implementation-Version>
+                        <Specification-Version>${spec.specification.version}</Specification-Version>                        
+                        <Bundle-Description>
+                            Jakarta Authentication ${spec.specification.version} Specification
+                        </Bundle-Description>
+                        <Specification-Vendor>Oracle Corporation</Specification-Vendor>
+                        <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                        <Implementation-Vendor-Id>org.glassfish</Implementation-Vendor-Id>
+                        <_include>-${basedir}/osgi.bundle</_include>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <!-- Adds the manifest file created by the org.apache.felix:maven-bundle-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.2</version>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                    <excludes>
+                        <exclude>**/*.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            
+            <!-- 
+               Create Javadoc for API jar
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-api-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <source>11</source>
+                            <additionalJOption>-Xdoclint:none</additionalJOption>
+                            <description>Jakarta Authentication API documentation</description>
+                            <doctitle>Jakarta Authentication API documentation</doctitle>
+                            <windowtitle>Jakarta Authentication API documentation</windowtitle>
+                            <header><![CDATA[<br>Jakarta Authentication API v${project.version}]]></header>
+                            <bottom><![CDATA[
+Comments to: <a href="mailto:jaspic-dev@eclipse.org">jaspic-dev@eclipse.org</a>.<br>
+Copyright &#169; 2020, 2022 Eclipse Foundation. All rights reserved.<br>
+Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">license terms</a>.]]>
+                            </bottom>
+                            <docfilessubdirs>true</docfilessubdirs>
+                            <groups>
+                                <group>
+                                    <title>Jakarta Authentication API Documentation</title>
+                                    <packages>
+                                        jakarta.security.auth.message
+                                        jakarta.security.auth.message.callback
+                                        jakarta.security.auth.message.config
+                                        jakarta.security.auth.message.module
+                                    </packages>
+                                </group>
+                            </groups>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+ succeeded in 136ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jakarta/authentication/jakarta.authentication-api/3.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jakarta/authentication/jakarta.authentication-api/3.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.authentication-api-3.0.0-javadoc.jar" title="jakarta.authentication-api-3.0.0-javadoc.jar">jakarta.authentication-api-3.0.0-javadoc.jar</a>      2022-03-07 23:12    649892      
+<a href="jakarta.authentication-api-3.0.0-javadoc.jar.asc" title="jakarta.authentication-api-3.0.0-javadoc.jar.asc">jakarta.authentication-api-3.0.0-javadoc.jar....</a>  2022-03-07 23:12       833      
+<a href="jakarta.authentication-api-3.0.0-javadoc.jar.md5" title="jakarta.authentication-api-3.0.0-javadoc.jar.md5">jakarta.authentication-api-3.0.0-javadoc.jar....</a>  2022-03-07 23:12        32      
+<a href="jakarta.authentication-api-3.0.0-javadoc.jar.sha1" title="jakarta.authentication-api-3.0.0-javadoc.jar.sha1">jakarta.authentication-api-3.0.0-javadoc.jar....</a>  2022-03-07 23:12        40      
+<a href="jakarta.authentication-api-3.0.0-sources.jar" title="jakarta.authentication-api-3.0.0-sources.jar">jakarta.authentication-api-3.0.0-sources.jar</a>      2022-03-07 23:12     63662      
+<a href="jakarta.authentication-api-3.0.0-sources.jar.asc" title="jakarta.authentication-api-3.0.0-sources.jar.asc">jakarta.authentication-api-3.0.0-sources.jar....</a>  2022-03-07 23:12       833      
+<a href="jakarta.authentication-api-3.0.0-sources.jar.md5" title="jakarta.authentication-api-3.0.0-sources.jar.md5">jakarta.authentication-api-3.0.0-sources.jar....</a>  2022-03-07 23:12        32      
+<a href="jakarta.authentication-api-3.0.0-sources.jar.sha1" title="jakarta.authentication-api-3.0.0-sources.jar.sha1">jakarta.authentication-api-3.0.0-sources.jar....</a>  2022-03-07 23:12        40      
+<a href="jakarta.authentication-api-3.0.0.jar" title="jakarta.authentication-api-3.0.0.jar">jakarta.authentication-api-3.0.0.jar</a>              2022-03-07 23:12     45217      
+<a href="jakarta.authentication-api-3.0.0.jar.asc" title="jakarta.authentication-api-3.0.0.jar.asc">jakarta.authentication-api-3.0.0.jar.asc</a>          2022-03-07 23:12       833      
+<a href="jakarta.authentication-api-3.0.0.jar.md5" title="jakarta.authentication-api-3.0.0.jar.md5">jakarta.authentication-api-3.0.0.jar.md5</a>          2022-03-07 23:12        32      
+<a href="jakarta.authentication-api-3.0.0.jar.sha1" title="jakarta.authentication-api-3.0.0.jar.sha1">jakarta.authentication-api-3.0.0.jar.sha1</a>         2022-03-07 23:12        40      
+<a href="jakarta.authentication-api-3.0.0.pom" title="jakarta.authentication-api-3.0.0.pom">jakarta.authentication-api-3.0.0.pom</a>              2022-03-07 23:12     12634      
+<a href="jakarta.authentication-api-3.0.0.pom.asc" title="jakarta.authentication-api-3.0.0.pom.asc">jakarta.authentication-api-3.0.0.pom.asc</a>          2022-03-07 23:12       833      
+<a href="jakarta.authentication-api-3.0.0.pom.md5" title="jakarta.authentication-api-3.0.0.pom.md5">jakarta.authentication-api-3.0.0.pom.md5</a>          2022-03-07 23:12        32      
+<a href="jakarta.authentication-api-3.0.0.pom.sha1" title="jakarta.authentication-api-3.0.0.pom.sha1">jakarta.authentication-api-3.0.0.pom.sha1</a>         2022-03-07 23:12        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 701ms:
+HTTP/2 404 
+date: Thu, 30 Apr 2026 06:45:04 GMT
+content-type: text/html
+cf-ray: 9f4494db2deae295-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/jakarta.authentication-api-3.0.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Thu, 30 Apr 2026 06:45:04 GMT
+content-type: text/html
+cf-ray: 9f4494dd198796e0-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/jakarta.authentication-api-3.0.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: 
+web search: 
+web search: jakarta.authentication jakarta.authentication-api 3.0.0 Maven Central sources javadoc repository
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://api.github.com/repos/eclipse-ee4j/authentication/tags?per_page=100' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+ exited 1 in 0ms:
+zsh:1: no matches found: https://api.github.com/repos/eclipse-ee4j/authentication/tags?per_page=100
+
+exec
+/usr/bin/zsh -lc "git ls-remote --tags https://github.com/eclipse-ee4j/authentication.git | rg '3\\.0|authentication|release|RELEASE'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+ succeeded in 562ms:
+32df7615166ca460c7623460f45dd9d8c24bc659	refs/tags/1.1.2-RELEASE
+e874c19fd2703c807782ac05c270748b83123926	refs/tags/1.1.2-RELEASE^{}
+44781e1aab8264aba281e4c44ca6a7e8ac2e68ac	refs/tags/1.1.3-RELEASE
+1bd30fbd9e8c05e4d2647695396c6360e643c062	refs/tags/1.1.3-RELEASE^{}
+5674daa02e2c05018a35d35a5d5e9ce8887f48be	refs/tags/2.0.0-RC1-RELEASE
+4cd0c7f90cc790a17febe656e75e94d7a708e7ec	refs/tags/2.0.0-RC1-RELEASE^{}
+4adba279b8ad0e817bb59c5632c4db8bd54be1c1	refs/tags/2.0.0-RC2-RELEASE
+f4b9c3816e6cb5ca612c3864fa85520cccba2e74	refs/tags/2.0.0-RC2-RELEASE^{}
+d1fc2e6d800af355d02f5de7487600efdf7e535e	refs/tags/2.0.0-RC3-RELEASE
+a159b7841061bddda8517ded0bf14a578b35bc2f	refs/tags/2.0.0-RC3-RELEASE^{}
+87bf1907f4593f0dc45cfcb5788aa30d9ed60f0c	refs/tags/2.0.0-RELEASE
+3348689bd273e0ca2ec59c5d99d42a0395823253	refs/tags/2.0.0-RELEASE^{}
+6bbe148d774707fcee40079b23474d77c03c5eb5	refs/tags/3.0.0-RC1-RELEASE
+a5f5cf136c08e8b023fa1ef466753f0b3926c440	refs/tags/3.0.0-RC1-RELEASE^{}
+4289cd051dad386b5a92f3aedc2294824c1cc6f3	refs/tags/3.0.0-RC2-RELEASE
+5c8062798ea76eeb8d8e711bc93c133ee1501b11	refs/tags/3.0.0-RC2-RELEASE^{}
+bb5d26f056de354bf0dac5694661e01cacbf5d9b	refs/tags/3.0.0-RC3-RELEASE
+11b2a01e323d2e64288535c1c746317c1e569fcf	refs/tags/3.0.0-RC3-RELEASE^{}
+4cf4f135a855aa260ba967c6aa9168b2b3224103	refs/tags/3.0.0-RELEASE
+55ed31fd963661f5c5da23338aadd025442ce811	refs/tags/3.0.0-RELEASE^{}
+091f623bf3e4fd06e3e0627330abb55b80bc06dd	refs/tags/3.1.0-M1-RELEASE
+933d5e4e3fa43d087955200e517d1f9f41b935b7	refs/tags/3.1.0-M1-RELEASE^{}
+9efb8506438238a674ab1216b5fee9abe6b549e5	refs/tags/3.1.0-RELEASE
+f50a765dade2e3a1128741cc08c70a93b15f363e	refs/tags/3.1.0-RELEASE^{}
+0577e44329ce61f51fd42e0be69df9038b150ead	refs/tags/3.1.0-RELEASE-tck
+66fe1ab8bb472537d0278f8ce648a2503bd1fa3d	refs/tags/3.1.0-RELEASE-tck^{}
+
+codex
+Maven Central has the 3.0.0 source and javadoc jars, but no tests or test-sources classifier. I found the upstream release tag `3.0.0-RELEASE`; now I’m checking that tag for any checked-in test suite path before deciding whether `test-code-url` is a GitHub tag URL or `N/A`.
+exec
+/usr/bin/zsh -lc "git archive --remote=https://github.com/eclipse-ee4j/authentication.git 3.0.0-RELEASE | tar -tf - | rg '("'^|/)src/test|(''^|/)test|tck|tests'"' | head -80" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+ succeeded in 0ms:
+fatal: operation not supported by protocol
+tar: This does not look like a tar archive
+tar: Exiting with failure status due to previous errors
+
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/eclipse-ee4j/authentication/git/trees/3.0.0-RELEASE?recursive=1' | rg '\"path\":|\"type\":' | rg 'src/test|test|tck|tests' -C 1 | head -120" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+exec
+/usr/bin/zsh -lc 'curl -fsSI https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/jakarta.authentication-api-3.0.0-sources.jar && curl -fsSI https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/jakarta.authentication-api-3.0.0-javadoc.jar' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+ succeeded in 408ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 06:45:23 GMT
+content-type: application/java-archive
+content-length: 63662
+cf-ray: 9f449552cd03870d-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 952380
+etag: "76dafd4f99c4917fb5005c0984487563"
+last-modified: Mon, 07 Mar 2022 23:12:07 GMT
+x-checksum-md5: 76dafd4f99c4917fb5005c0984487563
+x-checksum-sha1: 79bc372c31beee9b5efdc728e3fc8454f652f68f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Thu, 30 Apr 2026 06:45:23 GMT
+content-type: application/java-archive
+content-length: 649892
+cf-ray: 9f4495535dddbbed-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "f6a037043648de1e40267474f0522a5d"
+last-modified: Mon, 07 Mar 2022 23:12:08 GMT
+x-checksum-md5: f6a037043648de1e40267474f0522a5d
+x-checksum-sha1: 3555b100621478719afa5ea5c7d2aa0bbcd7534a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 662ms:
+exec
+/usr/bin/zsh -lc "curl -fsSL https://github.com/eclipse-ee4j/authentication/archive/refs/tags/3.0.0-RELEASE.tar.gz | tar -tzf - | rg '("'^|/)src/test|(''^|/)test|tck|tests'"' | head -80" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+exec
+/usr/bin/zsh -lc "curl -fsSL https://github.com/eclipse-ee4j/authentication/archive/refs/tags/3.0.0-RELEASE.tar.gz | tar -tzf - | sed -n '1,120p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22jakarta.authentication%22%20AND%20a:%22jakarta.authentication-api%22%20AND%20v:%223.0.0%22&rows=20&wt=json'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+ succeeded in 538ms:
+{"responseHeader":{"status":0,"QTime":1,"params":{"q":"g:\"jakarta.authentication\" AND a:\"jakarta.authentication-api\" AND v:\"3.0.0\"","core":"","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"jakarta.authentication:jakarta.authentication-api:3.0.0","g":"jakarta.authentication","a":"jakarta.authentication-api","v":"3.0.0","p":"jar","timestamp":1646694727000,"ec":["-sources.jar",".pom","-javadoc.jar",".jar"],"tags":["container","authenticated","telling","credentials","servlet","several","interact","defines","these","general","that","identity","controllers","mechanisms","jakarta","authentication","validate","which","obtain","level","pass","profile","adapt","profiles","this","groups","specific","each","integrate","with","such","caller","environment","name","consists"]}]}}
+ succeeded in 1403ms:
+ succeeded in 1464ms:
+authentication-3.0.0-RELEASE/
+authentication-3.0.0-RELEASE/.gitignore
+authentication-3.0.0-RELEASE/CONTRIBUTING.md
+authentication-3.0.0-RELEASE/LICENSE.md
+authentication-3.0.0-RELEASE/NOTICE.md
+authentication-3.0.0-RELEASE/README.md
+authentication-3.0.0-RELEASE/api/
+authentication-3.0.0-RELEASE/api/pom.xml
+authentication-3.0.0-RELEASE/api/src/
+authentication-3.0.0-RELEASE/api/src/main/
+authentication-3.0.0-RELEASE/api/src/main/java/
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/AuthException.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/AuthStatus.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/ClientAuth.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/MessageInfo.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/MessagePolicy.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/ServerAuth.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/callback/
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/callback/CallerPrincipalCallback.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/callback/CertStoreCallback.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/callback/GroupPrincipalCallback.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/callback/PasswordValidationCallback.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/callback/PrivateKeyCallback.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/callback/SecretKeyCallback.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/callback/TrustStoreCallback.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/callback/package.html
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/config/
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/config/AuthConfig.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/config/AuthConfigFactory.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/config/AuthConfigProvider.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/config/ClientAuthConfig.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/config/ClientAuthContext.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/config/RegistrationListener.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/config/ServerAuthConfig.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/config/ServerAuthContext.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/config/package.html
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/module/
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/module/ClientAuthModule.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/module/ServerAuthModule.java
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/module/package.html
+authentication-3.0.0-RELEASE/api/src/main/java/jakarta/security/auth/message/package.html
+authentication-3.0.0-RELEASE/api/src/main/java/module-info.java
+authentication-3.0.0-RELEASE/api/src/main/javadoc/
+authentication-3.0.0-RELEASE/api/src/main/javadoc/doc-files/
+authentication-3.0.0-RELEASE/api/src/main/javadoc/doc-files/speclicense.html
+authentication-3.0.0-RELEASE/api/src/main/resources/
+authentication-3.0.0-RELEASE/api/src/main/resources/exclude-common.xml
+authentication-3.0.0-RELEASE/pom.xml
+authentication-3.0.0-RELEASE/spec/
+authentication-3.0.0-RELEASE/spec/README.md
+authentication-3.0.0-RELEASE/spec/assembly.xml
+authentication-3.0.0-RELEASE/spec/pom.xml
+authentication-3.0.0-RELEASE/spec/src/
+authentication-3.0.0-RELEASE/spec/src/main/
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/authentication-spec.adoc
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/future-profiles.adoc
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/images/
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/images/authn-1.png
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/images/authn-1.svg
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/images/authn-2.png
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/images/authn-3.png
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/images/authn-4.png
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/images/jakarta_ee_logo_schooner_color_stacked_default.png
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/issues.adoc
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/license-efsl.adoc
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/loginmodule-bridge-profile.adoc
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/message-authentication.adoc
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/overview.adoc
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/preface.adoc
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/related-documents.adoc
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/revision-history.adoc
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/servlet-container-profile.adoc
+authentication-3.0.0-RELEASE/spec/src/main/asciidoc/soap-profile.adoc
+authentication-3.0.0-RELEASE/spec/src/main/theme/
+authentication-3.0.0-RELEASE/spec/src/main/theme/jakartaee-theme.yml
+authentication-3.0.0-RELEASE/spec/src/theme/
+authentication-3.0.0-RELEASE/spec/src/theme/jakartaee-theme.yml
+
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=jakarta.authentication%203.0.0%20tck&rows=20&wt=json'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22jakarta.authentication%22%20AND%20v:%223.0.0%22&rows=50&wt=json'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+exec
+/usr/bin/zsh -lc "curl -fsSL https://raw.githubusercontent.com/eclipse-ee4j/authentication/3.0.0-RELEASE/README.md | sed -n '1,160p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+ succeeded in 253ms:
+{"responseHeader":{"status":0,"QTime":1,"params":{"q":"g:\"jakarta.authentication\" AND v:\"3.0.0\"","core":"","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"50","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"jakarta.authentication:jakarta.authentication-api:3.0.0","g":"jakarta.authentication","a":"jakarta.authentication-api","v":"3.0.0","p":"jar","timestamp":1646694727000,"ec":["-sources.jar",".pom","-javadoc.jar",".jar"],"tags":["container","authenticated","telling","credentials","servlet","several","interact","defines","these","general","that","identity","controllers","mechanisms","jakarta","authentication","validate","which","obtain","level","pass","profile","adapt","profiles","this","groups","specific","each","integrate","with","such","caller","environment","name","consists"]}]}}
+ succeeded in 257ms:
+{"responseHeader":{"status":0,"QTime":4,"params":{"q":"jakarta.authentication 3.0.0 tck","core":"","defType":"dismax","qf":"text^20 g^5 a^10","indent":"off","spellcheck":"true","fl":"id,g,a,latestVersion,p,ec,repositoryId,text,timestamp,versionCount","start":"","spellcheck.count":"5","sort":"score desc,timestamp desc,g asc,a asc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":0,"start":0,"docs":[]},"spellcheck":{"suggestions":[]},"alternate":["fc:jakarta.authentication 3.0.0 tck"]}
+ succeeded in 358ms:
+# Jakarta Authentication
+
+This repository contains the code for Jakarta Authentication.
+
+[Online JavaDoc](https://javadoc.io/doc/jakarta.security.auth.message/jakarta.security.auth.message-api/)
+
+Building
+--------
+
+Jakarta Authentication can be built by executing the following from the project root:
+
+``mvn clean package``
+
+The API jar can then be found in /api/target.
+
+Making Changes
+--------------
+
+To make changes, fork this repository, make your changes, and submit a pull request.
+
+About Jakarta Authentication
+-------------
+
+Jakarta Authentication defines a general low-level SPI for authentication mechanisms, which are controllers that interact with a caller and a container's environment to obtain the caller's credentials, validate these, and pass an authenticated identity (such as name and groups) to the container. 
+        
+Jakarta Authentication consists of several profiles, with each profile telling how a specific container
+(such as Jakarta Servlet) can integrate with- and adapt to this SPI.
+
+codex
+There are no Maven test classifiers and the 3.0.0 release tag archive has no `src/test`, `tests`, or `tck` path. I’m going to set Maven source/javadoc URLs, the GitHub repository URL, `test-code-url` as `N/A`, and omit `language` because this is a Java/Jakarta API rather than Kotlin/Groovy/Scala-specific.
+apply patch
+patch: completed
+/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json
+diff --git a/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json b/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json
+index a64ed96d2680a3e446aa062fafa8f1a8ba5b05a1..82e21b5f2dfdeb2635259bc5d8338f8ddedf14f7
+--- a/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json
++++ b/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.authentication:jakarta.authentication-api:3.0.0"
++  "coordinates" : "jakarta.authentication:jakarta.authentication-api:3.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/jakarta.authentication-api-3.0.0-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/authentication",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/jakarta.authentication-api-3.0.0-javadoc.jar",
++  "description" : "Jakarta Authentication defines a low-level SPI for authentication mechanisms that interact with callers and containers to obtain credentials, validate them, and pass authenticated identities to the container. It also defines profiles that describe how containers such as Jakarta Servlet integrate with and adapt to that SPI."
+ }
+
+diff --git a/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json b/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json
+index a64ed96d2680a3e446aa062fafa8f1a8ba5b05a1..82e21b5f2dfdeb2635259bc5d8338f8ddedf14f7
+--- a/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json
++++ b/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.authentication:jakarta.authentication-api:3.0.0"
++  "coordinates" : "jakarta.authentication:jakarta.authentication-api:3.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/jakarta.authentication-api-3.0.0-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/authentication",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/jakarta.authentication-api-3.0.0-javadoc.jar",
++  "description" : "Jakarta Authentication defines a low-level SPI for authentication mechanisms that interact with callers and containers to obtain credentials, validate them, and pass authenticated identities to the container. It also defines profiles that describe how containers such as Jakarta Servlet integrate with and adapt to that SPI."
+ }
+
+exec
+/usr/bin/zsh -lc 'jq . build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+ succeeded in 0ms:
+{
+  "coordinates": "jakarta.authentication:jakarta.authentication-api:3.0.0",
+  "source-code-url": "https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/jakarta.authentication-api-3.0.0-sources.jar",
+  "repository-url": "https://github.com/eclipse-ee4j/authentication",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/jakarta.authentication-api-3.0.0-javadoc.jar",
+  "description": "Jakarta Authentication defines a low-level SPI for authentication mechanisms that interact with callers and containers to obtain credentials, validate them, and pass authenticated identities to the container. It also defines profiles that describe how containers such as Jakarta Servlet integrate with and adapt to that SPI."
+}
+
+exec
+/usr/bin/zsh -lc 'git diff -- build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json b/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json
+index a64ed96d2680a3e446aa062fafa8f1a8ba5b05a1..82e21b5f2dfdeb2635259bc5d8338f8ddedf14f7
+--- a/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json
++++ b/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.authentication:jakarta.authentication-api:3.0.0"
++  "coordinates" : "jakarta.authentication:jakarta.authentication-api:3.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/jakarta.authentication-api-3.0.0-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/authentication",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/jakarta.authentication-api-3.0.0-javadoc.jar",
++  "description" : "Jakarta Authentication defines a low-level SPI for authentication mechanisms that interact with callers and containers to obtain credentials, validate them, and pass authenticated identities to the container. It also defines profiles that describe how containers such as Jakarta Servlet integrate with and adapt to that SPI."
+ }
+
+web search: 
+web search: site:repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0 jakarta.authentication-api-3.0.0-sources.jar
+web search: 
+web search: 
+web search: 
+web search: github eclipse-ee4j authentication jakarta authentication 3.0.0 RELEASE
+codex
+Updated [jakarta.authentication-jakarta.authentication-api-3.0.0.json](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json).
+
+Set Maven Central source and javadoc URLs for exact `3.0.0`, repository URL to the Eclipse EE4J GitHub repo, `test-code-url` to `N/A`, and omitted `language`. Maven Central lists source/javadoc classifiers for this artifact version and no test classifier; the project page identifies `eclipse-ee4j/authentication` as the GitHub project and describes the API’s purpose. ([repo1.maven.org](https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/?utm_source=openai))
+
+Verified the JSON with `jq`.
+diff --git a/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json b/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json
+index a64ed96d2680a3e446aa062fafa8f1a8ba5b05a1..82e21b5f2dfdeb2635259bc5d8338f8ddedf14f7
+--- a/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json
++++ b/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.authentication:jakarta.authentication-api:3.0.0"
++  "coordinates" : "jakarta.authentication:jakarta.authentication-api:3.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/jakarta.authentication-api-3.0.0-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/authentication",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/jakarta.authentication-api-3.0.0-javadoc.jar",
++  "description" : "Jakarta Authentication defines a low-level SPI for authentication mechanisms that interact with callers and containers to obtain credentials, validate them, and pass authenticated identities to the container. It also defines profiles that describe how containers such as Jakarta Servlet integrate with and adapt to that SPI."
+ }
+
+2026-04-30T06:46:17.217929Z ERROR codex_core::session: failed to record rollout items: thread 019ddd21-f049-7551-8364-1a792a34a6e0 not found
+tokens used
+53,146
+Updated [jakarta.authentication-jakarta.authentication-api-3.0.0.json](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3/build/discovered-artifact-metadata/jakarta.authentication-jakarta.authentication-api-3.0.0.json).
+
+Set Maven Central source and javadoc URLs for exact `3.0.0`, repository URL to the Eclipse EE4J GitHub repo, `test-code-url` to `N/A`, and omitted `language`. Maven Central lists source/javadoc classifiers for this artifact version and no test classifier; the project page identifies `eclipse-ee4j/authentication` as the GitHub project and describes the API’s purpose. ([repo1.maven.org](https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/?utm_source=openai))
+
+Verified the JSON with `jq`.
+Ran agent for jakarta.authentication:jakarta.authentication-api:3.0.0 (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3/build/agent-artifact-discovery-logs/jakarta.authentication-jakarta.authentication-api-3.0.0.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2817-670d69a3/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 38s
+9 actionable tasks: 4 executed, 5 from cache
