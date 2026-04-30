@@ -18,18 +18,20 @@ The project covers three primary task families:
 1. **New library support** (`library-new-request`) — generate a JUnit (or
    Kotlin/Scala) test suite, produce reachability metadata, and open a PR for
    a previously unsupported library.
-2. **Java compilation fixes** (`fixes-javac-fail`) — repair test sources that
+2. **Coverage improvement** — increase dynamic-access coverage of
+   already-supported libraries (via the `library-update-request` pipeline).
+3. **Java compilation fixes** (`fixes-javac-fail`) — repair test sources that
    no longer compile against a bumped library version.
-3. **Java runtime fixes** (`fixes-java-run-fail`) — repair JVM-mode test
+4. **Java runtime fixes** (`fixes-java-run-fail`) — repair JVM-mode test
    failures that surface when raising a tested library to a new version.
-4. **Native-image runtime fixes** (`fixes-native-image-run-fail`) — update
+5. **Native-image runtime fixes** (`fixes-native-image-run-fail`) — update
    reachability metadata so `nativeTest` passes against the new library
    version, using the native metadata exploration phase.
-5. **Bulk version updates** (`library-bulk-update`) — record newly tested
+6. **Bulk version updates** (`library-bulk-update`) — record newly tested
    upstream versions for already-supported libraries when no fix is required.
-6. **Coverage improvement** (`library-update-request`) — increase
+7. **Coverage improvement** (`library-update-request`) — increase
    dynamic-access coverage of already-supported libraries.
-7. **Docker image updates** (`docker`) — refresh the allowed Docker images
+8. **Docker image updates** (`docker`) — refresh the allowed Docker images
    used by tests, including vulnerability rescans and version bumps.
 
 Out of scope: anything that does not produce reachability metadata or its
@@ -135,4 +137,8 @@ The exit code is `0` for the first two and `1` for failure.
   — version-bump fix workflow shared by `fix_javac_fail` and
   `fix_java_run_fail`. Strategies in this family route through the
   configured post-generation intervention when `nativeTest` still fails.
+- [Coverage improvement workflow](improve-library-coverage.md) — generates
+  additional tests to improve dynamic-access coverage on an existing library
+  version, without modifying existing tests or bumping versions. Triggered by
+  the `library-update-request` pipeline label.
 - (Future) Basic iterative workflow.

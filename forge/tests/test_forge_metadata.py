@@ -511,6 +511,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
                 (forge_metadata.LABEL_JAVAC_FAIL, 0, None),
                 (forge_metadata.LABEL_JAVA_RUN_FAIL, 2, None),
                 (forge_metadata.LABEL_NI_RUN_FAIL, 0, None),
+                (forge_metadata.LABEL_LIBRARY_UPDATE, 0, None),
                 (forge_metadata.LABEL_LIBRARY_NEW, 3, "custom-strategy"),
             ],
         )
@@ -533,6 +534,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
                 (forge_metadata.LABEL_PR_JAVAC_FIX, 2, "review-model"),
                 (forge_metadata.LABEL_PR_JAVA_RUN_FIX, 2, "review-model"),
                 (forge_metadata.LABEL_PR_NI_RUN_FIX, 2, "review-model"),
+                (forge_metadata.LABEL_PR_LIBRARY_UPDATE, 2, "review-model"),
                 (forge_metadata.LABEL_PR_LIBRARY_BULK_UPDATE, 4, "review-model"),
             ],
         )

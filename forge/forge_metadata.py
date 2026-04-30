@@ -50,6 +50,9 @@ from ai_workflows.fix_java_run_fail import (
 from ai_workflows.fix_ni_run import (
     main as run_fix_ni_run_workflow,
 )
+from ai_workflows.improve_library_coverage import (
+    main as run_improve_library_coverage_workflow,
+)
 from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_FAILURE
 from git_scripts.common_git import (
     GitHubRateLimitExceeded,
@@ -63,6 +66,7 @@ from git_scripts.make_pr_javac_fix import main as run_make_pr_javac_fix
 from git_scripts.make_pr_java_run_fix import main as run_make_pr_java_run_fix
 from git_scripts.make_pr_new_library_support import main as run_make_pr_new_library_support
 from git_scripts.make_pr_ni_run_fix import main as run_make_pr_ni_run_fix
+from git_scripts.make_pr_improve_coverage import main as run_make_pr_improve_coverage
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
 from utility_scripts.library_stats import resolve_stats_file_path
 from utility_scripts.metrics_writer import read_pending_metrics
@@ -112,12 +116,14 @@ STATUS_IN_PROGRESS = "In Progress"
 STATUS_DONE = "Done"
 
 LABEL_LIBRARY_NEW = "library-new-request"
+LABEL_LIBRARY_UPDATE = "library-update-request"
 LABEL_JAVAC_FAIL = "fails-javac-compile"
 LABEL_JAVA_RUN_FAIL = "fails-java-run"
 LABEL_NI_RUN_FAIL = "fails-native-image-run"
 LABEL_PR_JAVAC_FIX = "fixes-javac-fail"
 LABEL_PR_JAVA_RUN_FIX = "fixes-java-run-fail"
 LABEL_PR_NI_RUN_FIX = "fixes-native-image-run-fail"
+LABEL_PR_LIBRARY_UPDATE = "library-update-request"
 LABEL_PR_LIBRARY_BULK_UPDATE = "library-bulk-update"
 LABEL_PRIORITY = "priority"
 LABEL_HUMAN_INTERVENTION = "human-intervention"
@@ -313,7 +319,7 @@ def format_github_exception_details(exc: Exception) -> str:
     return repr(exc)
 
 
-PIPELINE_LABELS = {LABEL_LIBRARY_NEW, LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL, LABEL_NI_RUN_FAIL}
+PIPELINE_LABELS = {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE, LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL, LABEL_NI_RUN_FAIL}
 
 
 def get_issue_by_number(issue_number: int) -> tuple[dict, str]:
@@ -1512,7 +1518,7 @@ def resolve_human_intervention_candidate(
         workflow_success: bool = True,
 ) -> HumanInterventionCandidate | None:
     """Return follow-up data when an issue run needs human intervention."""
-    if claimed_issue.label != LABEL_LIBRARY_NEW:
+    if claimed_issue.label not in {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE}:
         if workflow_success:
             return None
         return HumanInterventionCandidate(
@@ -2395,6 +2401,32 @@ def invoke_pipeline(
             )
             return False
 
+    elif claimed_issue.label == LABEL_LIBRARY_UPDATE:
+        log_stage(
+            "improve-coverage-workflow",
+            f"Invoking improve_library_coverage workflow for issue #{issue_number}: "
+            f"{claimed_issue.issue_coordinates}",
+        )
+        pipeline_argv = [
+            "--coordinates", claimed_issue.issue_coordinates,
+            "--reachability-metadata-path", claimed_issue.worktree_path,
+            "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+        ]
+        if claimed_issue.in_metadata_repo:
+            pipeline_argv.append("--in-metadata-repo")
+        if strategy_name:
+            pipeline_argv.extend(["--strategy-name", strategy_name])
+        rc = run_improve_library_coverage_workflow(pipeline_argv)
+        if is_interrupt_exit_code(rc):
+            mark_user_interrupt_requested()
+            raise KeyboardInterrupt
+        if rc != 0:
+            print(
+                f"ERROR: improve_library_coverage workflow failed for issue #{issue_number} (exit {rc})",
+                file=sys.stderr,
+            )
+            return False
+
     else:
         print(f"ERROR: Unknown label '{claimed_issue.label}'", file=sys.stderr)
         return False
@@ -2504,6 +2536,11 @@ def get_work_queue_configs_from_environment(
             strategy_name=os.environ.get("FORGE_NI_RUN_STRATEGY_NAME") or None,
         ),
         WorkQueueConfig(
+            label=LABEL_LIBRARY_UPDATE,
+            limit=get_env_non_negative_int("FORGE_LIBRARY_UPDATE_WORK_LIMIT", 0),
+            strategy_name=os.environ.get("FORGE_LIBRARY_UPDATE_STRATEGY_NAME") or None,
+        ),
+        WorkQueueConfig(
             label=work_label,
             limit=get_env_non_negative_int("FORGE_WORK_LIMIT", 1),
             strategy_name=(
@@ -2549,6 +2586,11 @@ def get_review_queue_configs_from_environment() -> list[ReviewQueueConfig]:
         ReviewQueueConfig(
             label=LABEL_PR_NI_RUN_FIX,
             limit=get_env_non_negative_int("FORGE_NI_RUN_REVIEW_LIMIT", review_limit),
+            model=review_model,
+        ),
+        ReviewQueueConfig(
+            label=LABEL_PR_LIBRARY_UPDATE,
+            limit=get_env_non_negative_int("FORGE_LIBRARY_UPDATE_REVIEW_LIMIT", review_limit),
             model=review_model,
         ),
         ReviewQueueConfig(
@@ -2765,7 +2807,7 @@ def build_claim_metadata(
         print(f"ERROR: No coordinates found in issue title: {issue['title']}", file=sys.stderr)
         return None
 
-    if label == LABEL_LIBRARY_NEW:
+    if label in {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE}:
         return issue_coordinates, None, None
 
     coordinate_parts = extract_coordinate_parts(issue["title"])
@@ -2940,6 +2982,17 @@ def finalize_successful_issue(
                 "--coordinates", claimed_issue.current_coordinates,
                 "--new-version", claimed_issue.new_version,
                 "--reachability-metadata-path", claimed_issue.worktree_path,
+                *(["--in-metadata-repo"] if claimed_issue.in_metadata_repo else []),
+            ]
+        )
+        return
+
+    if claimed_issue.label == LABEL_LIBRARY_UPDATE:
+        run_make_pr_improve_coverage(
+            [
+                "--coordinates", claimed_issue.issue_coordinates,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
                 *(["--in-metadata-repo"] if claimed_issue.in_metadata_repo else []),
             ]
         )
@@ -3884,7 +3937,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument(
         "--label",
-        choices=[LABEL_LIBRARY_NEW, LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL, LABEL_NI_RUN_FAIL],
+        choices=[LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE, LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL, LABEL_NI_RUN_FAIL],
         help="GitHub label to filter issues and select the pipeline.",
     )
     mode.add_argument(

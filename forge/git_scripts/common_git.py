@@ -742,3 +742,64 @@ def format_stats_diff(repo_path, old_coordinates, new_coordinates):
                 lines.append("")
 
     return "\n".join(lines).rstrip() + "\n"
+
+
+def format_stats_before_after(before_stats: dict | None, after_stats: dict | None, coordinates: str) -> str:
+    """Format a before/after comparison of stats for the same library version."""
+    if before_stats is None and after_stats is None:
+        return ""
+    if before_stats == after_stats:
+        return (
+            "\n### Stats comparison (before vs after)\n\n"
+            f"No change in stats for `{coordinates}`.\n"
+        )
+
+    before_label = f"Before ({coordinates})"
+    after_label = f"After ({coordinates})"
+    lines = ["", f"### Stats comparison for `{coordinates}`", ""]
+
+    before_da = before_stats.get("dynamicAccess") if before_stats else None
+    after_da = after_stats.get("dynamicAccess") if after_stats else None
+    if before_da or after_da:
+        lines.append("#### Dynamic access coverage")
+        lines.append("")
+        lines.extend(_format_comparison_pair(
+            before_label, after_label, before_da, after_da, format_dynamic_access_entry
+        ))
+
+        all_categories = set()
+        if before_da:
+            all_categories.update(before_da.get("breakdown", {}).keys())
+        if after_da:
+            all_categories.update(after_da.get("breakdown", {}).keys())
+
+        for category in sorted(all_categories):
+            display_name = category[0].upper() + category[1:]
+            before_cat = before_da.get("breakdown", {}).get(category) if before_da else None
+            after_cat = after_da.get("breakdown", {}).get(category) if after_da else None
+            lines.append("")
+            lines.append(f"**{display_name}:**")
+            lines.extend(_format_comparison_pair(
+                before_label, after_label, before_cat, after_cat, format_dynamic_access_entry
+            ))
+        lines.append("")
+
+    before_cov = before_stats.get("libraryCoverage") if before_stats else None
+    after_cov = after_stats.get("libraryCoverage") if after_stats else None
+    if before_cov or after_cov:
+        lines.append("#### Library coverage")
+        lines.append("")
+        for metric in ("instruction", "line", "method"):
+            display_name = metric[0].upper() + metric[1:]
+            before_entry = before_cov.get(metric) if before_cov else None
+            after_entry = after_cov.get(metric) if after_cov else None
+            before_entry = before_entry if isinstance(before_entry, dict) or before_entry == "N/A" else None
+            after_entry = after_entry if isinstance(after_entry, dict) or after_entry == "N/A" else None
+            if before_entry or after_entry:
+                lines.append(f"**{display_name}:**")
+                lines.extend(_format_comparison_pair(
+                    before_label, after_label, before_entry, after_entry, format_coverage_entry
+                ))
+                lines.append("")
+
+    return "\n".join(lines).rstrip() + "\n"
