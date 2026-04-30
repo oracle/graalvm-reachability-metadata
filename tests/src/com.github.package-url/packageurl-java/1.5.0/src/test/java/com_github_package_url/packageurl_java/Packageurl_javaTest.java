@@ -153,6 +153,18 @@ public class Packageurl_javaTest {
     }
 
     @Test
+    void parsesQualifierKeysCaseInsensitivelyAndCanonicalizesThem() throws Exception {
+        PackageURL packageURL = new PackageURL(
+                "pkg:generic/example/tool@1?Download_URL=archive&Build=release");
+
+        assertThat(packageURL.getQualifiers()).containsExactly(
+                entry("build", "release"),
+                entry("download_url", "archive"));
+        assertThat(packageURL.canonicalize()).isEqualTo(
+                "pkg:generic/example/tool@1?build=release&download_url=archive");
+    }
+
+    @Test
     void validatesPackageUrlSpecificationConstraints() {
         Map<String, ThrowingFactory> invalidInputs = Map.of(
                 "maven package URLs require a namespace", () -> new PackageURL("pkg:maven/commons-lang3@3.12.0"),
