@@ -20,7 +20,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import jakarta.annotation.Generated;
-import jakarta.annotation.ManagedBean;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Priority;
@@ -39,7 +38,6 @@ class Jakarta_annotation_apiTest {
 
     @Test
     void runtimeAnnotationsExposeConfiguredValuesAcrossSupportedTargets() throws Exception {
-        ManagedBean managedBean = annotation(AnnotatedComponent.class, ManagedBean.class);
         Priority priority = annotation(AnnotatedComponent.class, Priority.class);
         DeclareRoles declareRoles = annotation(AnnotatedComponent.class, DeclareRoles.class);
         RunAs runAs = annotation(AnnotatedComponent.class, RunAs.class);
@@ -49,7 +47,6 @@ class Jakarta_annotation_apiTest {
         Priority parameterPriority = annotation(
                 constructor(ParameterizedComponent.class, String.class).getParameters()[0], Priority.class);
 
-        assertThat(managedBean.value()).isEqualTo("inventoryBean");
         assertThat(priority.value()).isEqualTo(10);
         assertThat(declareRoles.value()).containsExactly("admin", "auditor");
         assertThat(runAs.value()).isEqualTo("system");
@@ -72,11 +69,8 @@ class Jakarta_annotation_apiTest {
 
     @Test
     void defaultAnnotationValuesMatchThePublishedApi() throws Exception {
-        ManagedBean managedBean = annotation(DefaultManagedBean.class, ManagedBean.class);
-        Resource resource = annotation(field(DefaultManagedBean.class, "defaultResource"), Resource.class);
+        Resource resource = annotation(field(DefaultResourceHolder.class, "defaultResource"), Resource.class);
         DataSourceDefinition dataSourceDefinition = annotation(DefaultDataSourceHolder.class, DataSourceDefinition.class);
-
-        assertThat(managedBean.value()).isEmpty();
 
         assertThat(resource.name()).isEmpty();
         assertThat(resource.lookup()).isEmpty();
@@ -225,7 +219,6 @@ class Jakarta_annotation_apiTest {
 
     @Test
     void annotationTypesDeclareExpectedMetaAnnotations() {
-        assertThat(retention(ManagedBean.class)).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(retention(Priority.class)).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(retention(Resource.class)).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(retention(Resources.class)).isEqualTo(RetentionPolicy.RUNTIME);
@@ -240,7 +233,6 @@ class Jakarta_annotation_apiTest {
         assertThat(retention(DataSourceDefinitions.class)).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(retention(Generated.class)).isEqualTo(RetentionPolicy.SOURCE);
 
-        assertThat(target(ManagedBean.class)).containsExactly(ElementType.TYPE);
         assertThat(annotation(Priority.class, Target.class)).isNull();
         assertThat(target(Resource.class)).containsExactlyInAnyOrder(ElementType.TYPE, ElementType.FIELD, ElementType.METHOD);
         assertThat(target(Resources.class)).containsExactly(ElementType.TYPE);
@@ -308,8 +300,7 @@ class Jakarta_annotation_apiTest {
         return annotation(annotationType, Target.class).value();
     }
 
-    @ManagedBean
-    private static final class DefaultManagedBean {
+    private static final class DefaultResourceHolder {
 
         @Resource
         private Object defaultResource;
@@ -319,7 +310,6 @@ class Jakarta_annotation_apiTest {
     private static final class DefaultDataSourceHolder {
     }
 
-    @ManagedBean("inventoryBean")
     @Priority(10)
     @DeclareRoles({"admin", "auditor"})
     @RunAs("system")
