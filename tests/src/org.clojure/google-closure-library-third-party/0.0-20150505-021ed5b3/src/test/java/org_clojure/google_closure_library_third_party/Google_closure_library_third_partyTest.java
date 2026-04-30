@@ -12,12 +12,17 @@ import static org.assertj.core.api.Assertions.entry;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 public class Google_closure_library_third_partyTest {
+    private static final Pattern JAVASCRIPT_OBJECT_ENTRY_PATTERN = Pattern.compile("'([^']+)'\\s*:\\s*([^,\\n]+)");
+
     private static final List<String> DISTRIBUTED_RESOURCES = List.of(
             "goog/caja/string/html/htmlparser.js",
             "goog/caja/string/html/htmlsanitizer.js",
@@ -180,6 +185,31 @@ public class Google_closure_library_third_partyTest {
     }
 
     @Test
+    void htmlSanitizerAttributePolicyCoversUrlNameAndScriptHandling() throws IOException {
+        Map<String, String> attributeTypes = extractJavascriptObjectEntries(
+                readResource("goog/caja/string/html/htmlsanitizer.js"),
+                "goog.string.html.HtmlSanitizer.Attributes = ");
+
+        assertThat(attributeTypes)
+                .contains(
+                        entry("a::href", "goog.string.html.HtmlSanitizer.AttributeType.URI"),
+                        entry("form::action", "goog.string.html.HtmlSanitizer.AttributeType.URI"),
+                        entry("img::src", "goog.string.html.HtmlSanitizer.AttributeType.URI"),
+                        entry("img::usemap", "goog.string.html.HtmlSanitizer.AttributeType.URI_FRAGMENT"),
+                        entry("*::id", "goog.string.html.HtmlSanitizer.AttributeType.ID"),
+                        entry("label::for", "goog.string.html.HtmlSanitizer.AttributeType.IDREF"),
+                        entry("td::headers", "goog.string.html.HtmlSanitizer.AttributeType.IDREFS"),
+                        entry("*::class", "goog.string.html.HtmlSanitizer.AttributeType.CLASSES"),
+                        entry("a::name", "goog.string.html.HtmlSanitizer.AttributeType.GLOBAL_NAME"),
+                        entry("input::name", "goog.string.html.HtmlSanitizer.AttributeType.LOCAL_NAME"),
+                        entry("*::onclick", "goog.string.html.HtmlSanitizer.AttributeType.SCRIPT"),
+                        entry("form::onsubmit", "goog.string.html.HtmlSanitizer.AttributeType.SCRIPT"),
+                        entry("*::style", "goog.string.html.HtmlSanitizer.AttributeType.STYLE"),
+                        entry("*::title", "0"))
+                .doesNotContainKey("script::src");
+    }
+
+    @Test
     void projectDocumentationAndLicenseArePackaged() throws IOException {
         assertThat(readResource("README.md"))
                 .contains("# Closure Library")
@@ -213,6 +243,34 @@ public class Google_closure_library_third_partyTest {
                         entry("goog/jpeg_encoder", 1L),
                         entry("goog/svgpan", 1L),
                         entry("goog/dojo", 3L));
+    }
+
+    private static Map<String, String> extractJavascriptObjectEntries(String source, String objectDeclaration) {
+        int objectDeclarationStart = source.indexOf(objectDeclaration);
+        assertThat(objectDeclarationStart)
+                .as("object declaration %s should exist", objectDeclaration)
+                .isNotNegative();
+
+        int objectBodyStart = source.indexOf('{', objectDeclarationStart);
+        int objectBodyEnd = source.indexOf("\n};", objectBodyStart);
+        assertThat(objectBodyStart)
+                .as("object declaration %s should have a body", objectDeclaration)
+                .isNotNegative();
+        assertThat(objectBodyEnd)
+                .as("object declaration %s should have a closing marker", objectDeclaration)
+                .isGreaterThan(objectBodyStart);
+
+        String objectBody = source.substring(objectBodyStart + 1, objectBodyEnd);
+        Matcher entryMatcher = JAVASCRIPT_OBJECT_ENTRY_PATTERN.matcher(objectBody);
+        Map<String, String> entries = new LinkedHashMap<>();
+        while (entryMatcher.find()) {
+            entries.put(entryMatcher.group(1), entryMatcher.group(2).trim());
+        }
+
+        assertThat(entries)
+                .as("object declaration %s should contain entries", objectDeclaration)
+                .isNotEmpty();
+        return entries;
     }
 
     private static String readResource(String resourcePath) throws IOException {
