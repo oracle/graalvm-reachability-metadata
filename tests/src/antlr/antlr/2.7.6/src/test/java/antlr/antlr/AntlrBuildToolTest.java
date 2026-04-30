@@ -7,6 +7,7 @@
 package antlr.antlr;
 
 import antlr.build.Tool;
+import antlr.build.ToolDynamicAccessSupport;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -16,6 +17,13 @@ import java.nio.charset.StandardCharsets;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AntlrBuildToolTest {
+    @Test
+    void loadsToolClassThroughBuildToolBridge() {
+        Class<?> toolClass = ToolDynamicAccessSupport.loadToolClassThroughGeneratedBridge();
+
+        assertThat(toolClass).isEqualTo(Tool.class);
+    }
+
     @Test
     void reportsUsageWhenMainReceivesWrongArgumentCount() {
         PrintStream originalErr = System.err;
