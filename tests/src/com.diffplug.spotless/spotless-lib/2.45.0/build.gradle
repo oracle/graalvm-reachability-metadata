@@ -27,6 +27,7 @@ Provider<Directory> flexmarkFixtureResources = layout.buildDirectory.dir("genera
 Provider<Directory> antlr4FormatterFixtureResources = layout.buildDirectory.dir("generated/antlr4-formatter-fixture-resources")
 Provider<Directory> gherkinUtilsFixtureResources = layout.buildDirectory.dir("generated/gherkin-utils-fixture-resources")
 Provider<Directory> diktatFixtureResources = layout.buildDirectory.dir("generated/diktat-fixture-resources")
+Provider<Directory> sortPomFixtureResources = layout.buildDirectory.dir("generated/sortpom-fixture-resources")
 
 tasks.register("generateKtfmtFixtureJars") {
     outputs.dir(ktfmtFixtureResources)
@@ -182,6 +183,17 @@ tasks.register("generateDiktatFixtureJar") {
         delete(outputDir)
 
         createDiktatFixture(outputDir)
+    }
+}
+
+tasks.register("generateSortPomFixtureJar") {
+    outputs.dir(sortPomFixtureResources)
+
+    doLast {
+        File outputDir = sortPomFixtureResources.get().asFile
+        delete(outputDir)
+
+        createSortPomFixture(outputDir)
     }
 }
 
@@ -696,6 +708,33 @@ void createDiktatFixture(File outputDir) {
             sourceSets.test.compileClasspath.asPath)
 }
 
+void createSortPomFixture(File outputDir) {
+    Map<String, String> sources = [
+        "com/diffplug/spotless/glue/pom/SortPomFormatterFunc.java": """
+            package com.diffplug.spotless.glue.pom;
+
+            import com.diffplug.spotless.FormatterFunc;
+            import com.diffplug.spotless.pom.SortPomCfg;
+
+            public class SortPomFormatterFunc implements FormatterFunc {
+                private final SortPomCfg config;
+
+                public SortPomFormatterFunc(SortPomCfg config) {
+                    this.config = config;
+                }
+
+                public String apply(String input) {
+                    return "sortpom:" + config.encoding + ":" + config.keepBlankLines + ":"
+                            + config.nrOfIndentSpace + ":" + config.sortProperties + ":" + config.sortModules
+                            + ":" + input;
+                }
+            }
+            """
+    ]
+    createFixtureJar(outputDir, "sortpom-fixtures", "current", "sortpom-fixture.jar", sources,
+            sourceSets.test.compileClasspath.asPath)
+}
+
 void createFixtureJar(File outputDir, String version, String jarName, Map<String, String> sources) {
     createFixtureJar(outputDir, "ktfmt-fixtures", version, jarName, sources)
 }
@@ -748,6 +787,7 @@ sourceSets {
         resources.srcDir(antlr4FormatterFixtureResources)
         resources.srcDir(gherkinUtilsFixtureResources)
         resources.srcDir(diktatFixtureResources)
+        resources.srcDir(sortPomFixtureResources)
     }
 }
 
@@ -766,6 +806,7 @@ tasks.named("processTestResources") {
     dependsOn(tasks.named("generateAntlr4FormatterFixtureJar"))
     dependsOn(tasks.named("generateGherkinUtilsFixtureJar"))
     dependsOn(tasks.named("generateDiktatFixtureJar"))
+    dependsOn(tasks.named("generateSortPomFixtureJar"))
 }
 
 dependencies {
@@ -777,7 +818,7 @@ dependencies {
 graalvmNative {
     binaries {
         test {
-            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|ktlint-fixtures|json-simple-fixtures|json-patch-fixtures|gson-fixtures|jackson-json-fixtures|google-java-format-fixtures|palantir-java-format-fixtures|cleanthat-fixtures|freshmark-fixtures|flexmark-fixtures|antlr4-formatter-fixtures|gherkin-utils-fixtures|diktat-fixtures)/.*')
+            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|ktlint-fixtures|json-simple-fixtures|json-patch-fixtures|gson-fixtures|jackson-json-fixtures|google-java-format-fixtures|palantir-java-format-fixtures|cleanthat-fixtures|freshmark-fixtures|flexmark-fixtures|antlr4-formatter-fixtures|gherkin-utils-fixtures|diktat-fixtures|sortpom-fixtures)/.*')
         }
     }
 
