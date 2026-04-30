@@ -263,7 +263,7 @@ public class Jetty_ioTest {
     @Test
     void writerOutputStreamDecodesBytesThroughWriter() throws Exception {
         StringWriter writer = new StringWriter();
-        byte[] utf8Bytes = "UTF-8: π, Ж, 中".getBytes(StandardCharsets.UTF_8);
+        byte[] utf8Bytes = "UTF-8: \u03C0, \u0416, \u4E2D".getBytes(StandardCharsets.UTF_8);
         byte[] decoratedTail = "--tail--".getBytes(StandardCharsets.UTF_8);
 
         try (WriterOutputStream stream = new WriterOutputStream(writer, StandardCharsets.UTF_8.name())) {
@@ -276,7 +276,7 @@ public class Jetty_ioTest {
             stream.flush();
         }
 
-        assertEquals("ASCII and UTF-8: π, Ж, 中\ntail", writer.toString());
+        assertEquals("ASCII and UTF-8: \u03C0, \u0416, \u4E2D\ntail", writer.toString());
     }
 
     @Test
