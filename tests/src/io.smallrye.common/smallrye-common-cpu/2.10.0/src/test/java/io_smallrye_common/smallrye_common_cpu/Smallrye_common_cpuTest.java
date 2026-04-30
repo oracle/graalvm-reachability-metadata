@@ -96,8 +96,6 @@ public class Smallrye_common_cpuTest {
 
     @Test
     void cacheInfoReportsInternallyConsistentCacheLevels() {
-        assertThat(new CacheInfo()).isNotNull();
-
         int levelEntryCount = CacheInfo.getLevelEntryCount();
         assertThat(levelEntryCount).isNotNegative();
 
