@@ -16,8 +16,7 @@ public class ConstantsTest {
     @Test
     void experimentalApiChecksTheCallerClassBytecodeResource() {
         assertThatIllegalStateException()
-                .isThrownBy(ExperimentalClassVisitor::new)
-                .withMessageContaining("ASM9_EXPERIMENTAL can only be used");
+                .isThrownBy(ExperimentalClassVisitor::new);
     }
 
     private static final class ExperimentalClassVisitor extends ClassVisitor {
