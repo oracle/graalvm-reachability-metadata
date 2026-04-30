@@ -14,8 +14,10 @@ import static org.slf4j.event.Level.TRACE;
 import static org.slf4j.event.Level.WARN;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
-import java.util.ListResourceBundle;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Handler;
@@ -118,6 +120,25 @@ public class Jul_to_slf4jTest {
     }
 
     @Test
+    void publishFallsBackToRawMessagesWhenLocalizationCannotBeResolved() {
+        ConcurrentLinkedQueue<SubstituteLoggingEvent> capturedEvents = new ConcurrentLinkedQueue<>();
+        SubstituteLogger logger = new SubstituteLogger("i18n.fallback.logger", capturedEvents, false);
+        FixedLoggerBridgeHandler handler = new FixedLoggerBridgeHandler(logger);
+
+        LogRecord missingResourceRecord = logRecord(Level.INFO, "missing.localization.key", null);
+        missingResourceRecord.setResourceBundle(fallbackLocalizationBundle());
+        LogRecord invalidPatternRecord = logRecord(Level.INFO, "invalid.pattern", null);
+        invalidPatternRecord.setResourceBundle(fallbackLocalizationBundle());
+        invalidPatternRecord.setParameters(new Object[] { "ignored" });
+
+        handler.publish(missingResourceRecord);
+        handler.publish(invalidPatternRecord);
+
+        assertThat(capturedEvents).extracting(SubstituteLoggingEvent::getMessage)
+                .containsExactly("missing.localization.key", "broken {");
+    }
+
+    @Test
     void publishUsesLocationAwareLoggerWhenAvailable() {
         CapturingLocationAwareLogger logger = new CapturingLocationAwareLogger("location.aware.logger");
         FixedLoggerBridgeHandler handler = new FixedLoggerBridgeHandler(logger);
@@ -156,12 +177,11 @@ public class Jul_to_slf4jTest {
     }
 
     private static ResourceBundle localizationBundle() {
-        return new ListResourceBundle() {
-            @Override
-            protected Object[][] getContents() {
-                return new Object[][] { { "localized", "processed {1} {0}" } };
-            }
-        };
+        return new StaticResourceBundle(Map.of("localized", "processed {1} {0}"));
+    }
+
+    private static ResourceBundle fallbackLocalizationBundle() {
+        return new StaticResourceBundle(Map.of("invalid.pattern", "broken {"));
     }
 
     private static Handler noOpJulHandler() {
@@ -178,6 +198,24 @@ public class Jul_to_slf4jTest {
             public void close() {
             }
         };
+    }
+
+    private static final class StaticResourceBundle extends ResourceBundle {
+        private final Map<String, String> messages;
+
+        private StaticResourceBundle(Map<String, String> messages) {
+            this.messages = messages;
+        }
+
+        @Override
+        protected Object handleGetObject(String key) {
+            return messages.get(key);
+        }
+
+        @Override
+        public Enumeration<String> getKeys() {
+            return Collections.enumeration(messages.keySet());
+        }
     }
 
     private static final class FixedLoggerBridgeHandler extends SLF4JBridgeHandler {
