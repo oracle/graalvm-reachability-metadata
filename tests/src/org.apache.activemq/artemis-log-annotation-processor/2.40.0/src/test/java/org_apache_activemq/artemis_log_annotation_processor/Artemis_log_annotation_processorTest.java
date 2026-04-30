@@ -148,7 +148,7 @@ public class Artemis_log_annotation_processorTest {
                 "public class SampleBundle_impl implements SampleBundle",
                 "private final Logger logger;",
                 "private static void _copyStackTraceMinusOne(final Throwable e)",
-                "public SampleBundle_impl(Logger logger )",
+                "public SampleBundle_impl(Logger logger)",
                 "public Logger logger()",
                 "return logger;",
                 "public java.lang.String simple()",
