@@ -254,6 +254,32 @@ public class Jakarta_enterprise_lang_modelTest {
     }
 
     @Test
+    void classInfoModelsTypeParametersAndHierarchy() {
+        FakeClassInfo numberDeclaration = new FakeClassInfo("java.lang.Number", "Number");
+        FakeClassType numberType = new FakeClassType(numberDeclaration);
+        FakeTypeVariable valueParameter = new FakeTypeVariable("V", List.of(numberType));
+        FakeClassInfo comparableDeclaration = new FakeClassInfo("java.lang.Comparable", "Comparable");
+        FakeClassInfo serializableDeclaration = new FakeClassInfo("java.io.Serializable", "Serializable");
+        FakeClassInfo modelDeclaration = new FakeClassInfo("example.Model", "Model");
+        FakeParameterizedType comparableOfModel = new FakeParameterizedType(
+                new FakeClassType(comparableDeclaration), List.of(new FakeClassType(modelDeclaration)));
+        FakeClassType serializableType = new FakeClassType(serializableDeclaration);
+        FakeClassInfo derivedDeclaration = new FakeClassInfo("example.Derived", "Derived");
+        derivedDeclaration.typeParameters = List.of(valueParameter);
+        derivedDeclaration.superClass = numberType;
+        derivedDeclaration.superClassDeclaration = numberDeclaration;
+        derivedDeclaration.superInterfaces = List.of(comparableOfModel, serializableType);
+        derivedDeclaration.superInterfacesDeclarations = List.of(comparableDeclaration, serializableDeclaration);
+
+        assertThat(derivedDeclaration.typeParameters()).containsExactly(valueParameter);
+        assertThat(derivedDeclaration.superClass()).isSameAs(numberType);
+        assertThat(derivedDeclaration.superClassDeclaration()).isSameAs(numberDeclaration);
+        assertThat(derivedDeclaration.superInterfaces()).containsExactly(comparableOfModel, serializableType);
+        assertThat(derivedDeclaration.superInterfacesDeclarations())
+                .containsExactly(comparableDeclaration, serializableDeclaration);
+    }
+
+    @Test
     void annotationInfoDefaultsDelegateToDeclarationAndValueMember() {
         FakeClassInfo annotationDeclaration = new FakeClassInfo("example.Config", "Config");
         FakeAnnotationInfo repeatableMarker = new FakeAnnotationInfo(
