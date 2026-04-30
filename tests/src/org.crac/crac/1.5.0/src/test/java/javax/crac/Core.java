@@ -33,6 +33,10 @@ public final class Core {
         return checkpointRestoreCount;
     }
 
+    public static boolean firstRegisteredResourceEquals(Object candidate) {
+        return GLOBAL_CONTEXT.firstRegisteredResourceEquals(candidate);
+    }
+
     public static void clear() {
         GLOBAL_CONTEXT.clear();
         checkpointRestoreCount = 0;
@@ -48,6 +52,10 @@ public final class Core {
 
         private int registeredResourceCount() {
             return resources.size();
+        }
+
+        private boolean firstRegisteredResourceEquals(Object candidate) {
+            return !resources.isEmpty() && resources.get(0).equals(candidate);
         }
 
         private void clear() {
