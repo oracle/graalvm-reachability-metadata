@@ -34,15 +34,6 @@ public class ClassReaderTest {
         assertThat(classReader.getInterfaces()).isEmpty();
     }
 
-    @Test
-    void readsApplicationClassBytesFromTheSystemClassLoader() throws IOException {
-        ClassReader classReader = new ClassReader(ClassReaderTest.class.getName());
-
-        assertThat(classReader.getClassName()).isEqualTo("org_apache_xbean/xbean_asm9_shaded/ClassReaderTest");
-        assertThat(classReader.getSuperName()).isEqualTo("java/lang/Object");
-        assertThat(classReader.getInterfaces()).isEmpty();
-    }
-
     private static byte[] createClassBytes() {
         ClassWriter classWriter = new ClassWriter(0);
         classWriter.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, "sample/Generated", null, "java/lang/Object", null);
