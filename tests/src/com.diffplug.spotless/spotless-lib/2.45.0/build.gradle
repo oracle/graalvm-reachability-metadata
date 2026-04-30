@@ -17,6 +17,7 @@ Provider<Directory> ktfmtFixtureResources = layout.buildDirectory.dir("generated
 Provider<Directory> jsonSimpleFixtureResources = layout.buildDirectory.dir("generated/json-simple-fixture-resources")
 Provider<Directory> jsonPatchFixtureResources = layout.buildDirectory.dir("generated/json-patch-fixture-resources")
 Provider<Directory> googleJavaFormatFixtureResources = layout.buildDirectory.dir("generated/google-java-format-fixture-resources")
+Provider<Directory> palantirJavaFormatFixtureResources = layout.buildDirectory.dir("generated/palantir-java-format-fixture-resources")
 Provider<Directory> cleanthatFixtureResources = layout.buildDirectory.dir("generated/cleanthat-fixture-resources")
 Provider<Directory> freshMarkFixtureResources = layout.buildDirectory.dir("generated/freshmark-fixture-resources")
 Provider<Directory> antlr4FormatterFixtureResources = layout.buildDirectory.dir("generated/antlr4-formatter-fixture-resources")
@@ -66,6 +67,17 @@ tasks.register("generateGoogleJavaFormatFixtureJar") {
         delete(outputDir)
 
         createGoogleJavaFormatFixture(outputDir)
+    }
+}
+
+tasks.register("generatePalantirJavaFormatFixtureJar") {
+    outputs.dir(palantirJavaFormatFixtureResources)
+
+    doLast {
+        File outputDir = palantirJavaFormatFixtureResources.get().asFile
+        delete(outputDir)
+
+        createPalantirJavaFormatFixture(outputDir)
     }
 }
 
@@ -391,6 +403,32 @@ void createGoogleJavaFormatFixture(File outputDir) {
             sourceSets.test.compileClasspath.asPath)
 }
 
+void createPalantirJavaFormatFixture(File outputDir) {
+    Map<String, String> sources = [
+        "com/diffplug/spotless/glue/pjf/PalantirJavaFormatFormatterFunc.java": """
+            package com.diffplug.spotless.glue.pjf;
+
+            import com.diffplug.spotless.FormatterFunc;
+
+            public class PalantirJavaFormatFormatterFunc implements FormatterFunc {
+                private final String style;
+                private final boolean formatJavadoc;
+
+                public PalantirJavaFormatFormatterFunc(String style, boolean formatJavadoc) {
+                    this.style = style;
+                    this.formatJavadoc = formatJavadoc;
+                }
+
+                public String apply(String input) {
+                    return "palantir:" + style + ":" + formatJavadoc + ":" + input;
+                }
+            }
+            """
+    ]
+    createFixtureJar(outputDir, "palantir-java-format-fixtures", "current", "palantir-java-format-fixture.jar", sources,
+            sourceSets.test.compileClasspath.asPath)
+}
+
 void createFreshMarkFixture(File outputDir) {
     Map<String, String> sources = [
         "com/diffplug/freshmark/FreshMark.java": """
@@ -500,6 +538,7 @@ sourceSets {
         resources.srcDir(jsonSimpleFixtureResources)
         resources.srcDir(jsonPatchFixtureResources)
         resources.srcDir(googleJavaFormatFixtureResources)
+        resources.srcDir(palantirJavaFormatFixtureResources)
         resources.srcDir(cleanthatFixtureResources)
         resources.srcDir(freshMarkFixtureResources)
         resources.srcDir(antlr4FormatterFixtureResources)
@@ -512,6 +551,7 @@ tasks.named("processTestResources") {
     dependsOn(tasks.named("generateJsonSimpleFixtureJar"))
     dependsOn(tasks.named("generateJsonPatchFixtureJar"))
     dependsOn(tasks.named("generateGoogleJavaFormatFixtureJar"))
+    dependsOn(tasks.named("generatePalantirJavaFormatFixtureJar"))
     dependsOn(tasks.named("generateCleanthatFixtureJar"))
     dependsOn(tasks.named("generateFreshMarkFixtureJar"))
     dependsOn(tasks.named("generateAntlr4FormatterFixtureJar"))
@@ -527,7 +567,7 @@ dependencies {
 graalvmNative {
     binaries {
         test {
-            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|json-simple-fixtures|json-patch-fixtures|google-java-format-fixtures|cleanthat-fixtures|freshmark-fixtures|antlr4-formatter-fixtures|gherkin-utils-fixtures)/.*')
+            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|json-simple-fixtures|json-patch-fixtures|google-java-format-fixtures|palantir-java-format-fixtures|cleanthat-fixtures|freshmark-fixtures|antlr4-formatter-fixtures|gherkin-utils-fixtures)/.*')
         }
     }
 
