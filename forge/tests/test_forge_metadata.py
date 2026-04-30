@@ -895,14 +895,12 @@ class InterruptHandlingTests(unittest.TestCase):
         claimed_issue = _claimed_issue()
 
         with patch.object(forge_metadata, "run_add_new_library_support_workflow", return_value=130), \
-                patch.object(forge_metadata, "require_graalvm_home_env") as require_graalvm_home, \
-                patch.object(forge_metadata, "run_metadata_fix_until_tests_pass") as validate_metadata:
+                patch.object(forge_metadata, "require_graalvm_home_env") as require_graalvm_home:
             with self.assertRaises(KeyboardInterrupt):
                 forge_metadata.invoke_pipeline(claimed_issue, None, False)
 
         self.assertTrue(forge_metadata.is_user_interrupt_requested())
         require_graalvm_home.assert_not_called()
-        validate_metadata.assert_not_called()
 
     def test_interrupted_failed_workflow_skips_human_intervention_handling(self) -> None:
         claimed_issue = _claimed_issue()

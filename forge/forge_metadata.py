@@ -80,7 +80,7 @@ from utility_scripts.task_logs import (
     resolve_logs_root,
     sanitize_library_log_segment,
 )
-from utility_scripts.workflow_setup import require_graalvm_home_env, run_metadata_fix_until_tests_pass
+from utility_scripts.workflow_setup import require_graalvm_home_env
 
 try:
     import fcntl
@@ -2313,25 +2313,6 @@ def invoke_pipeline(
         if rc != 0:
             print(
                 f"\nERROR: add_new_library_support workflow failed for issue #{issue_number} (exit {rc})",
-                file=sys.stderr,
-            )
-            return False
-        graalvm_25_home = require_graalvm_home_env(POST_GENERATION_GRAALVM_ENV_VAR)
-        log_stage(
-            "post-generation-validation",
-            f"Running validation for issue #{issue_number} with {POST_GENERATION_GRAALVM_ENV_VAR}",
-        )
-        if not run_metadata_fix_until_tests_pass(
-            repo_path=claimed_issue.worktree_path,
-            library=claimed_issue.issue_coordinates,
-            graalvm_home=graalvm_25_home,
-            graalvm_env_var_name=POST_GENERATION_GRAALVM_ENV_VAR,
-        ):
-            if is_user_interrupt_requested():
-                raise KeyboardInterrupt
-            print(
-                f"ERROR: Post-generation validation failed for issue #{issue_number} with "
-                f"{POST_GENERATION_GRAALVM_ENV_VAR}.",
                 file=sys.stderr,
             )
             return False

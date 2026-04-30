@@ -9,6 +9,7 @@ from abc import ABC, abstractmethod
 import re
 import subprocess
 import sys
+from typing import Callable
 
 from ai_workflows.fix_metadata_codex import run_codex_metadata_fix
 from ai_workflows.fix_post_generation_pi import (
@@ -134,6 +135,19 @@ class WorkflowStrategy(ABC):
         result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         return result.stdout
 
+    def _run_command_with_env(self, cmd: str, env: dict[str, str] | None = None) -> str:
+        """Execute a shell command with optional environment overrides."""
+        result = subprocess.run(
+            cmd,
+            shell=True,
+            cwd=getattr(self, "reachability_repo_path", None),
+            env=env,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
+        return result.stdout
+
     @staticmethod
     def _get_first_failed_task(output: str):
         """Extract the first Gradle task name that failed from build output, or None."""
@@ -145,47 +159,93 @@ class WorkflowStrategy(ABC):
         """Run Gradle tests for a library and classify post-generation failures."""
         self.post_generation_intervention = None
         test_cmd = f"./gradlew test -Pcoordinates={library}"
-        test_output = self._run_command(test_cmd)
-        if self._get_first_failed_task(test_output) is None:
-            return RUN_STATUS_SUCCESS
-
-        log_stage("metadata-fix", f"Running metadata fix workflow for {self.library}")
         repo_path = getattr(self, "reachability_repo_path", os.getcwd())
-        codex_rc, codex_log_path, codex_timed_out = run_codex_metadata_fix(repo_path, library)
-        recovery_test_output = test_output
-        if not codex_timed_out and codex_rc == 0:
-            recovery_test_output = self._run_command(test_cmd)
-            if self._get_first_failed_task(recovery_test_output) is None:
+        final_status = RUN_STATUS_SUCCESS
+
+        def run_lane(
+                stage_name: str,
+                command_runner: Callable[[], str],
+        ) -> str:
+            log_stage("post-generation-test", f"Running {stage_name} for {library}")
+            test_output = command_runner()
+            if self._get_first_failed_task(test_output) is None:
+                log_stage("post-generation-test", f"{stage_name} passed for {library}")
                 return RUN_STATUS_SUCCESS
-        log_stage("post-generation-fix", f"Running pi post generation fix for {self.library}")
-        pi_rc, intervention_path, pi_timed_out = run_pi_post_generation_fix(
-            reachability_metadata_path=repo_path,
-            coordinates=library,
-            codex_log_path=codex_log_path,
-            test_output=recovery_test_output,
-            model_name=self.model_name,
-            timeout_seconds=self._parameter_int("post-generation-timeout-seconds", DEFAULT_PI_TIMEOUT_SECONDS),
-            max_test_output_chars=self._parameter_int(
-                "post-generation-test-output-chars",
-                DEFAULT_MAX_TEST_OUTPUT_CHARS,
-            ),
+
+            log_stage("metadata-fix", f"Running metadata fix workflow for {library} after {stage_name} failure")
+            codex_rc, codex_log_path, codex_timed_out = run_codex_metadata_fix(repo_path, library)
+            recovery_test_output = test_output
+            if not codex_timed_out and codex_rc == 0:
+                recovery_test_output = command_runner()
+                if self._get_first_failed_task(recovery_test_output) is None:
+                    log_stage("post-generation-test", f"{stage_name} passed for {library} after metadata fix")
+                    return RUN_STATUS_SUCCESS
+
+            log_stage("post-generation-fix", f"Running pi post generation fix for {library} after {stage_name} failure")
+            pi_rc, intervention_path, pi_timed_out = run_pi_post_generation_fix(
+                reachability_metadata_path=repo_path,
+                coordinates=library,
+                codex_log_path=codex_log_path,
+                test_output=recovery_test_output,
+                model_name=self.model_name,
+                timeout_seconds=self._parameter_int("post-generation-timeout-seconds", DEFAULT_PI_TIMEOUT_SECONDS),
+                max_test_output_chars=self._parameter_int(
+                    "post-generation-test-output-chars",
+                    DEFAULT_MAX_TEST_OUTPUT_CHARS,
+                ),
+            )
+            if pi_timed_out or pi_rc != 0:
+                return RUN_STATUS_FAILURE
+
+            rerun_output = command_runner()
+            if self._get_first_failed_task(rerun_output) is not None:
+                return RUN_STATUS_FAILURE
+
+            with open(intervention_path, "r", encoding="utf-8") as intervention_file:
+                intervention_markdown = intervention_file.read().strip()
+
+            if self.post_generation_intervention is None:
+                self.post_generation_intervention = {
+                    "stage": POST_GENERATION_STAGE_METADATA_FIX_FAILED,
+                    "intervention_file": os.path.relpath(intervention_path, repo_path),
+                    "analysis_markdown": intervention_markdown,
+                }
+            return SUCCESS_WITH_INTERVENTION_STATUS
+
+        regular_status = run_lane(
+            "current-defaults latest GRAALVM test",
+            lambda: self._run_command_with_env(test_cmd),
         )
-        if pi_timed_out or pi_rc != 0:
+        if regular_status == RUN_STATUS_FAILURE:
             return RUN_STATUS_FAILURE
+        if regular_status == SUCCESS_WITH_INTERVENTION_STATUS:
+            final_status = SUCCESS_WITH_INTERVENTION_STATUS
 
-        rerun_output = self._run_command(test_cmd)
-        if self._get_first_failed_task(rerun_output) is not None:
+        future_defaults_env = dict(os.environ)
+        future_defaults_env["GVM_TCK_NATIVE_IMAGE_MODE"] = "future-defaults-all"
+        future_defaults_status = run_lane(
+            "future-defaults latest GRAALVM test",
+            lambda: self._run_command_with_env(test_cmd, future_defaults_env),
+        )
+        if future_defaults_status == RUN_STATUS_FAILURE:
             return RUN_STATUS_FAILURE
+        if future_defaults_status == SUCCESS_WITH_INTERVENTION_STATUS:
+            final_status = SUCCESS_WITH_INTERVENTION_STATUS
 
-        with open(intervention_path, "r", encoding="utf-8") as intervention_file:
-            intervention_markdown = intervention_file.read().strip()
+        graalvm_25_home = os.environ["GRAALVM_HOME_25_0"]
+        graalvm_25_env = dict(os.environ)
+        graalvm_25_env["GRAALVM_HOME"] = graalvm_25_home
+        graalvm_25_env["JAVA_HOME"] = graalvm_25_home
+        graalvm_25_status = run_lane(
+            "current-defaults GRAALVM_25_0 test",
+            lambda: self._run_command_with_env(test_cmd, graalvm_25_env),
+        )
+        if graalvm_25_status == RUN_STATUS_FAILURE:
+            return RUN_STATUS_FAILURE
+        if graalvm_25_status == SUCCESS_WITH_INTERVENTION_STATUS:
+            final_status = SUCCESS_WITH_INTERVENTION_STATUS
 
-        self.post_generation_intervention = {
-            "stage": POST_GENERATION_STAGE_METADATA_FIX_FAILED,
-            "intervention_file": os.path.relpath(intervention_path, repo_path),
-            "analysis_markdown": intervention_markdown,
-        }
-        return SUCCESS_WITH_INTERVENTION_STATUS
+        return final_status
 
     def _run_gradle_command_with_output(self, command: list[str]) -> subprocess.CompletedProcess[str]:
         """Run a Gradle command in the reachability repo and capture combined output."""
