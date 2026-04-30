@@ -9,10 +9,13 @@ package libcore.io;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.apache.kafka.shaded.com.google.protobuf.AbstractParser;
+import org.apache.kafka.shaded.com.google.protobuf.CodedInputStream;
 import org.apache.kafka.shaded.com.google.protobuf.CodedOutputStream;
+import org.apache.kafka.shaded.com.google.protobuf.ExtensionRegistryLite;
 import org.apache.kafka.shaded.com.google.protobuf.GeneratedMessageLite;
-import org.apache.kafka.shaded.com.google.protobuf.GeneratedMessageLite.DefaultInstanceBasedParser;
 import org.apache.kafka.shaded.com.google.protobuf.GeneratedMessageLite.MethodToInvoke;
+import org.apache.kafka.shaded.com.google.protobuf.InvalidProtocolBufferException;
 import org.apache.kafka.shaded.com.google.protobuf.Parser;
 import org.junit.jupiter.api.Test;
 
@@ -73,7 +76,7 @@ public class UnsafeUtilTest {
                         synchronized (MinimalLiteMessage.class) {
                             localParser = parser;
                             if (localParser == null) {
-                                localParser = new DefaultInstanceBasedParser<>(DEFAULT_INSTANCE);
+                                localParser = new MinimalLiteParser();
                                 parser = localParser;
                             }
                         }
@@ -91,6 +94,15 @@ public class UnsafeUtilTest {
         private static final class Builder extends GeneratedMessageLite.Builder<MinimalLiteMessage, Builder> {
             private Builder() {
                 super(DEFAULT_INSTANCE);
+            }
+        }
+
+        private static final class MinimalLiteParser extends AbstractParser<MinimalLiteMessage> {
+            @Override
+            public MinimalLiteMessage parsePartialFrom(
+                    CodedInputStream input,
+                    ExtensionRegistryLite extensionRegistry) throws InvalidProtocolBufferException {
+                return DEFAULT_INSTANCE;
             }
         }
     }
