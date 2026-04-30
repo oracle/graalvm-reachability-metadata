@@ -18,6 +18,7 @@ Provider<Directory> jsonSimpleFixtureResources = layout.buildDirectory.dir("gene
 Provider<Directory> jsonPatchFixtureResources = layout.buildDirectory.dir("generated/json-patch-fixture-resources")
 Provider<Directory> googleJavaFormatFixtureResources = layout.buildDirectory.dir("generated/google-java-format-fixture-resources")
 Provider<Directory> cleanthatFixtureResources = layout.buildDirectory.dir("generated/cleanthat-fixture-resources")
+Provider<Directory> freshMarkFixtureResources = layout.buildDirectory.dir("generated/freshmark-fixture-resources")
 
 tasks.register("generateKtfmtFixtureJars") {
     outputs.dir(ktfmtFixtureResources)
@@ -74,6 +75,17 @@ tasks.register("generateCleanthatFixtureJar") {
         delete(outputDir)
 
         createCleanthatFixture(outputDir)
+    }
+}
+
+tasks.register("generateFreshMarkFixtureJar") {
+    outputs.dir(freshMarkFixtureResources)
+
+    doLast {
+        File outputDir = freshMarkFixtureResources.get().asFile
+        delete(outputDir)
+
+        createFreshMarkFixture(outputDir)
     }
 }
 
@@ -355,6 +367,33 @@ void createGoogleJavaFormatFixture(File outputDir) {
             sourceSets.test.compileClasspath.asPath)
 }
 
+void createFreshMarkFixture(File outputDir) {
+    Map<String, String> sources = [
+        "com/diffplug/freshmark/FreshMark.java": """
+            package com.diffplug.freshmark;
+
+            import java.util.Map;
+            import java.util.function.Consumer;
+
+            public class FreshMark {
+                private final Map<String, ?> properties;
+                private final Consumer<String> logger;
+
+                public FreshMark(Map<String, ?> properties, Consumer<String> logger) {
+                    this.properties = properties;
+                    this.logger = logger;
+                }
+
+                public String compile(String input) {
+                    logger.accept("freshmark fixture formatting " + input.length() + " characters");
+                    return "freshmark:" + properties.get("project") + ":" + input;
+                }
+            }
+            """
+    ]
+    createFixtureJar(outputDir, "freshmark-fixtures", "current", "freshmark-fixture.jar", sources)
+}
+
 void createFixtureJar(File outputDir, String version, String jarName, Map<String, String> sources) {
     createFixtureJar(outputDir, "ktfmt-fixtures", version, jarName, sources)
 }
@@ -398,6 +437,7 @@ sourceSets {
         resources.srcDir(jsonPatchFixtureResources)
         resources.srcDir(googleJavaFormatFixtureResources)
         resources.srcDir(cleanthatFixtureResources)
+        resources.srcDir(freshMarkFixtureResources)
     }
 }
 
@@ -407,6 +447,7 @@ tasks.named("processTestResources") {
     dependsOn(tasks.named("generateJsonPatchFixtureJar"))
     dependsOn(tasks.named("generateGoogleJavaFormatFixtureJar"))
     dependsOn(tasks.named("generateCleanthatFixtureJar"))
+    dependsOn(tasks.named("generateFreshMarkFixtureJar"))
 }
 
 dependencies {
@@ -418,7 +459,7 @@ dependencies {
 graalvmNative {
     binaries {
         test {
-            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|json-simple-fixtures|json-patch-fixtures|google-java-format-fixtures|cleanthat-fixtures)/.*')
+            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|json-simple-fixtures|json-patch-fixtures|google-java-format-fixtures|cleanthat-fixtures|freshmark-fixtures)/.*')
         }
     }
 
