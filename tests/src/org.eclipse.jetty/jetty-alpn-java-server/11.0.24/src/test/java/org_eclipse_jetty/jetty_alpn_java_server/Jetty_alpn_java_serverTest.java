@@ -7,6 +7,7 @@
 package org_eclipse_jetty.jetty_alpn_java_server;
 
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.function.BiFunction;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -15,6 +16,7 @@ import org.eclipse.jetty.alpn.java.server.JDK9ServerALPNProcessor;
 import org.eclipse.jetty.alpn.server.ALPNServerConnection;
 import org.eclipse.jetty.io.ByteArrayEndPoint;
 import org.eclipse.jetty.io.EndPoint;
+import org.eclipse.jetty.io.ssl.ALPNProcessor;
 import org.eclipse.jetty.io.ssl.SslConnection;
 import org.eclipse.jetty.server.AbstractConnectionFactory;
 import org.eclipse.jetty.server.ConnectionFactory;
@@ -40,6 +42,14 @@ public class Jetty_alpn_java_serverTest {
         assertThatCode(processor::init).doesNotThrowAnyException();
         assertThat(processor.appliesTo(sslEngine)).isTrue();
         assertThat(sslEngine.getHandshakeApplicationProtocolSelector()).isNull();
+    }
+
+    @Test
+    void serverAlpnProcessorIsAvailableThroughServiceLoader() {
+        ServiceLoader<ALPNProcessor.Server> processors = ServiceLoader.load(ALPNProcessor.Server.class);
+
+        assertThat(processors)
+                .anySatisfy(processor -> assertThat(processor).isInstanceOf(JDK9ServerALPNProcessor.class));
     }
 
     @Test
