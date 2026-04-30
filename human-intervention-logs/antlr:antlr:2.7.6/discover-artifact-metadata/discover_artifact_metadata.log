@@ -1,0 +1,2718 @@
+Starting a Gradle Daemon, 4 busy and 3 incompatible Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ddd35-738d-7b60-abe3-5c7821bb9e4b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: antlr:antlr:2.7.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.7.6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json
+- Set "coordinates" to "antlr:antlr:2.7.6".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven first, then fall back to upstream tags if Maven lacks sources/tests/docs. After that I’ll patch the JSON directly and run a quick validity check.
+web search: 
+web search: antlr antlr 2.7.6 Maven Central sources jar
+codex
+Maven Central has a `antlr-2.7.6-sources.jar`, so I’m checking its contents before using upstream URLs. The main question is whether that artifact also carries tests and versioned docs, which would take precedence per your instructions.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/antlr-antlr-2.7.6.json && sed -n '1,200p' build/discovered-artifact-metadata/antlr-antlr-2.7.6.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+-rw-rw-r-- 1 vjovanov vjovanov 42 Apr 30 09:06 build/discovered-artifact-metadata/antlr-antlr-2.7.6.json
+{
+  "coordinates" : "antlr:antlr:2.7.6"
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/antlr/antlr/2.7.6/antlr-2.7.6.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>antlr</groupId>
+  <artifactId>antlr</artifactId>
+  <version>2.7.6</version>
+  <packaging>jar</packaging>
+  <name>AntLR</name>
+  <url>http://www.antlr.org/</url>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/antlr/antlr/2.7.6/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: antlr/antlr/2.7.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>antlr/antlr/2.7.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="antlr-2.7.6-sources.jar" title="antlr-2.7.6-sources.jar">antlr-2.7.6-sources.jar</a>                           2006-01-31 01:35    436285      
+<a href="antlr-2.7.6-sources.jar.md5" title="antlr-2.7.6-sources.jar.md5">antlr-2.7.6-sources.jar.md5</a>                       2006-01-31 01:35        32      
+<a href="antlr-2.7.6-sources.jar.sha1" title="antlr-2.7.6-sources.jar.sha1">antlr-2.7.6-sources.jar.sha1</a>                      2006-01-31 01:35        40      
+<a href="antlr-2.7.6.jar" title="antlr-2.7.6.jar">antlr-2.7.6.jar</a>                                   2006-01-31 01:35    443432      
+<a href="antlr-2.7.6.jar.md5" title="antlr-2.7.6.jar.md5">antlr-2.7.6.jar.md5</a>                               2006-01-31 01:35        32      
+<a href="antlr-2.7.6.jar.sha1" title="antlr-2.7.6.jar.sha1">antlr-2.7.6.jar.sha1</a>                              2006-01-31 01:35        40      
+<a href="antlr-2.7.6.pom" title="antlr-2.7.6.pom">antlr-2.7.6.pom</a>                                   2006-01-31 01:35       230      
+<a href="antlr-2.7.6.pom.md5" title="antlr-2.7.6.pom.md5">antlr-2.7.6.pom.md5</a>                               2006-01-31 01:35        32      
+<a href="antlr-2.7.6.pom.sha1" title="antlr-2.7.6.pom.sha1">antlr-2.7.6.pom.sha1</a>                              2006-01-31 01:35        40      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-01-31 01:35       109      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-01-31 01:35        73      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-01-31 01:35       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: ANTLR 2.7.6 release source tests documentation tag
+exec
+/usr/bin/bash -lc "curl -fsSL https://www.antlr2.org/download.html | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/antlr-2.7.6-sources.jar" https://repo1.maven.org/maven2/antlr/antlr/2.7.6/antlr-2.7.6-sources.jar; jar tf "$tmp/antlr-2.7.6-sources.jar" | sed -n '"'1,220p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 116ms:
+META-INF/
+META-INF/MANIFEST.MF
+antlr/
+antlr/collections/
+antlr/collections/impl/
+antlr/ASdebug/
+antlr/build/
+antlr/preprocessor/
+antlr/debug/
+antlr/debug/misc/
+antlr/actions/
+antlr/actions/java/
+antlr/actions/cpp/
+antlr/actions/python/
+antlr/actions/csharp/
+antlr/CommonASTWithHiddenTokens.java
+antlr/SynPredBlock.java
+antlr/JavaBlockFinishingInfo.java
+antlr/ExceptionHandler.java
+antlr/TreeSpecifierNode.java
+antlr/Tool.java
+antlr/LLkAnalyzer.java
+antlr/CommonToken.java
+antlr/DefaultFileLineFormatter.java
+antlr/collections/Stack.java
+antlr/collections/List.java
+antlr/collections/ASTEnumeration.java
+antlr/collections/AST.java
+antlr/collections/impl/LLCell.java
+antlr/collections/impl/Vector.java
+antlr/collections/impl/VectorEnumerator.java
+antlr/collections/impl/ASTEnumerator.java
+antlr/collections/impl/IndexedVector.java
+antlr/collections/impl/VectorEnumeration.java
+antlr/collections/impl/LList.java
+antlr/collections/impl/ASTArray.java
+antlr/collections/impl/LLEnumeration.java
+antlr/collections/impl/IntRange.java
+antlr/collections/impl/BitSet.java
+antlr/collections/Enumerator.java
+antlr/GrammarAnalyzer.java
+antlr/AlternativeBlock.java
+antlr/CommonHiddenStreamToken.java
+antlr/CppCharFormatter.java
+antlr/CharFormatter.java
+antlr/TokenStreamRetryException.java
+antlr/ANTLRStringBuffer.java
+antlr/RuleRefElement.java
+antlr/ZeroOrMoreBlock.java
+antlr/CppCodeGenerator.java
+antlr/Makefile.in
+antlr/ParserSharedInputState.java
+antlr/ParseTree.java
+antlr/PythonCharFormatter.java
+antlr/JavaCharFormatter.java
+antlr/GrammarAtom.java
+antlr/TokenBuffer.java
+antlr/ASdebug/ASDebugStream.java
+antlr/ASdebug/TokenOffsetInfo.java
+antlr/ASdebug/IASDebugStream.java
+antlr/MismatchedCharException.java
+antlr/ActionTransInfo.java
+antlr/BlockWithImpliedExitPath.java
+antlr/TokenStreamHiddenTokenFilter.java
+antlr/HTMLCodeGenerator.java
+antlr/DefaultToolErrorHandler.java
+antlr/FileCopyException.java
+antlr/RuleEndElement.java
+antlr/GrammarElement.java
+antlr/CharQueue.java
+antlr/NameSpace.java
+antlr/Alternative.java
+antlr/antlr.g
+antlr/Version.java.in
+antlr/CSharpNameSpace.java
+antlr/MakeGrammar.java
+antlr/CSharpCharFormatter.java
+antlr/GrammarSymbol.java
+antlr/ToolErrorHandler.java
+antlr/SemanticException.java
+antlr/TokenStreamException.java
+antlr/Grammar.java
+antlr/ParseTreeToken.java
+antlr/DiagnosticCodeGenerator.java
+antlr/RuleSymbol.java
+antlr/PythonBlockFinishingInfo.java
+antlr/Utils.java
+antlr/DocBookCodeGenerator.java
+antlr/ParserGrammar.java
+antlr/CommonAST.java
+antlr/ImportVocabTokenManager.java
+antlr/DumpASTVisitor.java
+antlr/TokenRangeElement.java
+antlr/CodeGenerator.java
+antlr/CppBlockFinishingInfo.java
+antlr/ASTPair.java
+antlr/TokenQueue.java
+antlr/TreeParser.java
+antlr/FileLineFormatter.java
+antlr/PythonCodeGenerator.java
+antlr/CharLiteralElement.java
+antlr/TokenWithIndex.java
+antlr/BlockEndElement.java
+antlr/ASTFactory.java
+antlr/PreservingFileWriter.java
+antlr/NoViableAltException.java
+antlr/TokenStreamRecognitionException.java
+antlr/WildcardElement.java
+antlr/Lookahead.java
+antlr/CharRangeElement.java
+antlr/build/Tool.java
+antlr/build/StreamScarfer.java
+antlr/build/ANTLR.java
+antlr/LexerGrammar.java
+antlr/AlternativeElement.java
+antlr/CharStreamException.java
+antlr/TokenStreamRewriteEngine.java
+antlr/TokenManager.java
+antlr/LexerSharedInputState.java
+antlr/TreeParserSharedInputState.java
+antlr/ByteBuffer.java
+antlr/ANTLRLexer.java
+antlr/CSharpBlockFinishingInfo.java
+antlr/CSharpCodeGenerator.java
+antlr/Parser.java
+antlr/tokdef.g
+antlr/SimpleTokenManager.java
+antlr/TokenRefElement.java
+antlr/ANTLRTokenTypes.java
+antlr/TokenStream.java
+antlr/TokenStreamSelector.java
+antlr/TreeWalkerGrammar.java
+antlr/BlockContext.java
+antlr/PrintWriterWithSMAP.java
+antlr/BaseAST.java
+antlr/ANTLRParser.java
+antlr/JavaCodeGenerator.java
+antlr/ASTIterator.java
+antlr/ASTNULLType.java
+antlr/CharStreamIOException.java
+antlr/StringLiteralSymbol.java
+antlr/DefaultJavaCodeGeneratorPrintWriterManager.java
+antlr/ASTVisitor.java
+antlr/preprocessor/Tool.java
+antlr/preprocessor/Option.java
+antlr/preprocessor/Grammar.java
+antlr/preprocessor/Rule.java
+antlr/preprocessor/preproc.g
+antlr/preprocessor/Preprocessor.java
+antlr/preprocessor/PreprocessorTokenTypes.java
+antlr/preprocessor/PreprocessorLexer.java
+antlr/preprocessor/GrammarFile.java
+antlr/preprocessor/Hierarchy.java
+antlr/DefineGrammarSymbols.java
+antlr/OneOrMoreBlock.java
+antlr/NoViableAltForCharException.java
+antlr/ParseTreeRule.java
+antlr/debug/ParseTreeDebugParser.java
+antlr/debug/SyntacticPredicateAdapter.java
+antlr/debug/SyntacticPredicateListener.java
+antlr/debug/SyntacticPredicateEvent.java
+antlr/debug/ParserReporter.java
+antlr/debug/SemanticPredicateListener.java
+antlr/debug/DebuggingCharScanner.java
+antlr/debug/DebuggingParser.java
+antlr/debug/ParserAdapter.java
+antlr/debug/InputBufferEvent.java
+antlr/debug/NewLineListener.java
+antlr/debug/InputBufferAdapter.java
+antlr/debug/InputBufferListener.java
+antlr/debug/SemanticPredicateEvent.java
+antlr/debug/InputBufferReporter.java
+antlr/debug/DebuggingInputBuffer.java
+antlr/debug/InputBufferEventSupport.java
+antlr/debug/TraceEvent.java
+antlr/debug/MessageAdapter.java
+antlr/debug/ParserEventSupport.java
+antlr/debug/Tracer.java
+antlr/debug/ParserListener.java
+antlr/debug/NewLineEvent.java
+antlr/debug/misc/JTreeASTPanel.java
+antlr/debug/misc/ASTFrame.java
+antlr/debug/misc/JTreeASTModel.java
+antlr/debug/LLkDebuggingParser.java
+antlr/debug/ParserTokenListener.java
+antlr/debug/MessageListener.java
+antlr/debug/TraceListener.java
+antlr/debug/ParserMatchEvent.java
+antlr/debug/MessageEvent.java
+antlr/debug/TraceAdapter.java
+antlr/debug/ParserTokenEvent.java
+antlr/debug/GuessingEvent.java
+antlr/debug/ParserTokenAdapter.java
+antlr/debug/ParserController.java
+antlr/debug/Event.java
+antlr/debug/ListenerBase.java
+antlr/debug/ParserMatchListener.java
+antlr/debug/SemanticPredicateAdapter.java
+antlr/debug/ParserMatchAdapter.java
+antlr/CharScanner.java
+antlr/Token.java
+antlr/StringUtils.java
+antlr/ANTLRTokdefLexer.java
+antlr/LLkParser.java
+antlr/ANTLRException.java
+antlr/RecognitionException.java
+antlr/ANTLRHashString.java
+antlr/LLkGrammarAnalyzer.java
+antlr/StringLiteralElement.java
+antlr/TokenStreamBasicFilter.java
+antlr/ANTLRError.java
+antlr/CharBuffer.java
+antlr/TreeBlockContext.java
+antlr/TokenSymbol.java
+antlr/MismatchedTokenException.java
+antlr/ANTLRTokdefParser.java
+antlr/ExceptionSpec.java
+antlr/TreeElement.java
+antlr/actions/java/ActionLexer.java
+antlr/actions/java/action.g
+
+ succeeded in 271ms:
+<html>
+
+<head>
+<title>ANTLR Software Download</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<table width=100%>
+<tr>
+<td valign=top width=50%>
+<font face="arial,helvetica" size="2">
+
+<p>
+<b>ANTLR v3 (released May 17, 2007)</b>
+
+<br><br>
+<a href="http://www.antlr.org/download">ANTLR 3.0 release</a> (latest version)
+
+<p>
+<b>ANTLR v2 stable version is 2.7.7 (released November 1, 2006)</b><br><br>
+
+  <a href="/download/antlr-2.7.7.tar.gz"><b>antlr-2.7.7.tar.gz</b></a> (source distribution)<br>
+
+<p>
+<b>RPMs, MSI, and zips</b><br><br>
+
+    <a href="download/antlr-2.7.7.msi">antlr-2.7.7.msi</a> (<a href="download/antlr-2.7.7.msi.md5">md5 hash</a>)<br>
+    <a href="download/antlr-2.7.6.msi">antlr-2.7.6.msi</a> (<a href="download/antlr-2.7.6.msi.md5">md5 hash</a>)<br>
+    <a href="download/antlr-2.7.5-1.i586.rpm">antlr-2.7.5-1.i586.rpm</a> (<a href="download/antlr-2.7.5-1.i586.rpm.md5">md5 hash</a>)<br>
+    <a href="download/antlr-2.7.5-1.src.rpm">antlr-2.7.5-1.src.rpm</a> (<a href="download/antlr-2.7.5-1.src.rpm.md5">md5 hash</a>)<br>
+    <a href="download/antlr-2.7.5.msi">antlr-2.7.5.msi</a> (<a href="download/antlr-2.7.5.msi.md5">md5 hash</a>)<br>
+    <a href="download/antlr-2.7.5.zip">antlr-2.7.5.msi zipped</a> (<a href="download/antlr-2.7.5.zip.md5">md5 hash</a>)<br>
+
+<br>
+<b>ANTLR Plug-ins and tools</b><br><br>
+
+<a href="http://www.placidsystems.com/">ANTLR Studio Eclipse Plugin</a> [a very impressive integration of ANTLR with eclipse for creating, editing, and debugging parsers]<br>
+
+<br>
+<b>Stand-alone ANTLR Tool executables</b><br><br>
+
+    <a href="/download/antlr-2.7.6.exe"><b>antlr-2.7.6.exe</b></a> (Win32 executable made with mingw)<br>
+    <a href="/download/antlr-2.7.5.jar"><b>antlr-2.7.5.jar</b></a> (jar file only--tool and Java runtime)<br>
+    <a href="/download/antlr-2.7.5.exe"><b>antlr-2.7.5.exe</b></a> (Win32 executable made with mingw)<br>
+
+<!--
+<br>
+<b>Cygwin</b><br><br>
+    <a href="download/antlr-cygwin/antlr-2.7.5-2.tar.bz2">antlr-2.7.5-2.tar.bz2</a><br>
+    <a href="download/antlr-cygwin/antlr-2.7.5-2-src.tar.bz2">antlr-2.7.5-2-src.tar.bz2</a><br>
+    <a href="download/antlr-cygwin/setup.hint">setup.hint</a><br>
+<a href="download/antlr-cygwin/antlr-2.7.5-2.md5">MD5</a>
+<br>
+-->
+
+<br>
+<b>Source distribution</b><br><br>
+
+    <a href="/download/antlr-2.7.7.tar.gz"><b>antlr-2.7.7.tar.gz</b></a><br>
+
+<br>
+<b>Useful or common extras</b><br><br>
+
+    <a href="http://www.stringtemplate.org"><b><tt>StringTemplate</tt></a></b> Template Engine<br>
+    <a href="http://sourceforge.net/projects/xpa"><b>XPA</b></a>: XML processing for ANTLR<br>
+
+<br>
+<b>Previous versions</b><br><br>
+
+  <a href="/download/antlr-2.7.6.tar.gz"><b>antlr-2.7.6.tar.gz</b></a> (source distribution)<br>
+  <a href="http://www.antlr2.org/share/1144614835258/antlr.net-2.7.6.rar"><b>Antlr.NET 2.7.6</b></a> (converted from antlr.jar with IKVM)
+    <a href="/download/antlr-2.7.5.tar.gz"><b>antlr-2.7.5.tar.gz</b></a><br>
+    <a href="/download/antlr-2.7.4.tar.gz"><b>antlr-2.7.4.tar.gz</b></a><br>
+    <a href="/download/antlr-2.7.4.jar"><b>antlr-2.7.4.jar (jar file only)</b></a><br>
+    <a href="http://www.antlr2.org/share/1098084489511/cantlr.exe.gz"><b>antlr 2.7.4</b></a> (Win32 w/o dependencies on cygwin dlls)<br>
+    <a href="http://www.antlr2.org/share/1084363796019/antlr-2.7.4-binary.tar.bz2"><b>antlr 2.7.4</b></a> (linux x86 with c lib)<br>
+    <a href="/download/antlr-2.7.3.tar.gz"><b>antlr-2.7.3.tar.gz</b></a><br>
+    <a href="/download/antlr-2.7.3.jar"><b>antlr-2.7.3.jar (jar file only)</b></a><br>
+    <a href="/download/antlr-2.7.2.zip"><b>antlr-2.7.2.zip</b></a><br>
+    <a href="/download/antlr-2.7.2.tar.gz"><b>antlr-2.7.2.tar.gz</b></a><br>
+    <a href="/download/antlr-2.7.1.tar.gz"><b>antlr-2.7.1.tar.gz</b></a><br>
+    <a href="/download/antlr-2.7.0.zip"><b>antlr-2.7.0.zip</b></a><br>
+    <a href="/download/antlr-2.7.0.tar.gz"><b>antlr-2.7.0.tar.gz</b></a><br>
+    <a href="/download/antlr-2.6.0.zip"><b>antlr-2.6.0.zip</b></a><br>
+    <a href="/download/antlr-2.6.0.tar.gz"><b>antlr-2.6.0.tar.gz</b></a><br>
+    <a href="/download/antlr-2.5.0.zip"><b>antlr-2.5.0.zip</b></a><br>
+    <a href="/download/antlr-2.5.0.tar.gz"><b>antlr-2.5.0.tar.gz</b></a><br>
+    <a href="/download/antlr-2.4.0.zip"><b>antlr-2.4.0.zip</b></a><br>
+
+</td>
+<td width=50% valign=top align=right>
+<font face="arial,helvetica" size="2">
+
+<table border=0 cellspacing=0 cellpadding=1 width=200>
+<tr>
+  <td width=1 bgcolor="#cccccc">
+  <table border=0 cellspacing=0 cellpadding=10 width=200>
+  <tr>
+    <td bgcolor="#ffffff">
+    <font face="arial,helvetica" size="2">
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-butcc-donate.gif" border="0" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">
+<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----MIIHbwYJKoZIhvcNAQcEoIIHYDCCB1wCAQExggEwMIIBLAIBADCBlDCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20CAQAwDQYJKoZIhvcNAQEBBQAEgYCrdy1Koun23GuO10iTQ5FnjrxHt8uPsZNY5Jc1Yogpvnz7c97SQM/k9g5zznhrw8SML9f/8Wc7yRFmP/jz/NkElSScwdiQD8bGlwdEeUMKThjabBWtU7phvfnvZGM5ff4InbiKR23AEZtX0dNGFrKC3B6dEvskHBAtwB40MJ5bKDELMAkGBSsOAwIaBQAwgewGCSqGSIb3DQEHATAUBggqhkiG9w0DBwQIhomSdIN1k6GAgci82QqygQVmdBxTsl8YxUHI22VPzQCoEr4sZoJUxLrVZtD6Ay+ZR9XJTurNMcMRcQtWFl1i5chg+UbiE1R9JE7dpY3Gz99m4MG91YS1SWhc5wlEpdAi0JNX/cjhwL95NYP8eSsr0NPPMXnHzj9I9OWtVvcmsz+Qu//TvyG5O886jahbZj/NYqEG4Lp35Z/FjEc3e5LEwWXrau2oKEC2NO0hArEnCYBbnYKQV9gXhgSzSpOj45LCNcHZyCvwNljOfRf729Q/j4NWdKCCA4cwggODMIIC7KADAgECAgEAMA0GCSqGSIb3DQEBBQUAMIGOMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFjAUBgNVBAcTDU1vdW50YWluIFZpZXcxFDASBgNVBAoTC1BheVBhbCBJbmMuMRMwEQYDVQQLFApsaXZlX2NlcnRzMREwDwYDVQQDFAhsaXZlX2FwaTEcMBoGCSqGSIb3DQEJARYNcmVAcGF5cGFsLmNvbTAeFw0wNDAyMTMxMDEzMTVaFw0zNTAyMTMxMDEzMTVaMIGOMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFjAUBgNVBAcTDU1vdW50YWluIFZpZXcxFDASBgNVBAoTC1BheVBhbCBJbmMuMRMwEQYDVQQLFApsaXZlX2NlcnRzMREwDwYDVQQDFAhsaXZlX2FwaTEcMBoGCSqGSIb3DQEJARYNcmVAcGF5cGFsLmNvbTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAwUdO3fxEzEtcnI7ZKZL412XvZPugoni7i7D7prCe0AtaHTc97CYgm7NsAtJyxNLixmhLV8pyIEaiHXWAh8fPKW+R017+EmXrr9EaquPmsVvTywAAE1PMNOKqo2kl4Gxiz9zZqIajOm1fZGWcGS0f5JQ2kBqNbvbg2/Za+GJ/qwUCAwEAAaOB7jCB6zAdBgNVHQ4EFgQUlp98u8ZvF71ZP1LXChvsENZklGswgbsGA1UdIwSBszCBsIAUlp98u8ZvF71ZP1LXChvsENZklGuhgZSkgZEwgY4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJDQTEWMBQGA1UEBxMNTW91bnRhaW4gVmlldzEUMBIGA1UEChMLUGF5UGFsIEluYy4xEzARBgNVBAsUCmxpdmVfY2VydHMxETAPBgNVBAMUCGxpdmVfYXBpMRwwGgYJKoZIhvcNAQkBFg1yZUBwYXlwYWwuY29tggEAMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADgYEAgV86VpqAWuXvX6Oro4qJ1tYVIT5DgWpE692Ag422H7yRIr/9j/iKG4Thia/Oflx4TdL+IFJBAyPK9v6zZNZtBgPBynXb048hsP16l2vi0k5Q2JKiPDsEfBhGI+HnxLXEaUWAcVfCsQFvd2A1sxRr67ip5y2wwBelUecP3AjJ+YcxggGaMIIBlgIBATCBlDCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20CAQAwCQYFKw4DAhoFAKBdMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTA2MDUzMTIzMDczMVowIwYJKoZIhvcNAQkEMRYEFNoT3UpXGKrjOMcRV9navSOvBwAeMA0GCSqGSIb3DQEBAQUABIGAwNyn7ECfrJ8X5YZOrUK+2NfiOJWuw1BW3GH4jwMfUkeg/VsP75TTZBBJVilmheAtamY6KmbY1Zq1yiyJOuZOMCu2ooFt5y4KBy8ePxNRSnlQJANTFM7/2xHceXVxusm/W4mzFHtgDGoQ3mSGu2sPXwwQlBjRdcF8hyyLqDNR1hE=-----END PKCS7-----
+">
+</form>
+<br>
+<b>Support the ANTLR Project by making a donation!</b>
+<br><br>
+Terence often
+pays for things like the antlr.org server, conference travel,
+and this site design (that alone cost US$1000).  Buy him a
+beer and pizza remotely ;)
+    </td>
+  </tr>
+   </table>
+  </td>
+</tr>
+</table>
+
+<br>
+
+<table border=0 cellspacing=0 cellpadding=1 width=200>
+<tr>
+  <td width=1 bgcolor="#cccccc">
+  <table border=0 cellspacing=0 cellpadding=10 width=200>
+  <tr>
+    <td bgcolor="#ffffff">
+    <font face="arial,helvetica" size="2">
+
+    ANTLR comes with complete source and has <a href=/license.html><b>no restrictions</b></a> on its use.<br><br>
+
+    Please see <a href=/doc/getting-started.html><b>getting started</b></a>.<br><br>
+
+    <b>Terence Parr</b>, the ANTLR project leader, is available for <a
+    href="/support.html"><b>tech support and
+    consulting</b></a>.<br><br>
+
+    Please also join in the ANTLR discussions on the <a href="/support.html"><b>antlr-interest list</b></a>.<br>
+
+    </td>
+  </tr>
+   </table>
+  </td>
+</tr>
+</table>
+
+<br>
+
+<table border=0 cellspacing=0 cellpadding=1 width=200>
+<tr>
+  <td width=1 bgcolor="#cccccc">
+  <table border=0 cellspacing=0 cellpadding=10 width=200>
+  <tr>
+    <td bgcolor="#ffffff">
+    <font face="arial,helvetica" size="2">
+<b>Binaries</b><br><br>
+
+The binary files are native executables for the ANTLR tool itself (not
+ the run-time support etc...).
+You do not have to have Java on your system now to use ANTLR for
+C++, C#, or Python output.  Even for Java users, it is still more convenient
+to run this binary as it loads faster and you don't have CLASSPATH issues.
+<br>
+<br>
+Luca Di Gaspero provided a <a href="/share/1069557132934/makefile.gcj"><b>makefile</b></a> so you can use GCJ to build your own.<br>
+   </td>
+  </tr>
+   </table>
+  </td>
+</tr>
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://www.antlr2.org/download/antlr-2.7.6.tar.gz | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 146ms:
+HTTP/2 200 
+server: GitHub.com
+content-type: application/gzip
+last-modified: Fri, 15 Aug 2014 18:53:58 GMT
+access-control-allow-origin: *
+etag: "53ee5746-1b99e6"
+expires: Thu, 30 Apr 2026 07:16:20 GMT
+cache-control: max-age=600
+x-proxy-cache: MISS
+x-github-request-id: C09E:FAB6D:9BD7629:9D83494:69F2FF6B
+accept-ranges: bytes
+age: 0
+date: Thu, 30 Apr 2026 07:06:20 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230178-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1777532780.072484,VS0,VE136
+vary: Accept-Encoding
+x-fastly-request-id: c31ddc9f9c86ef0a78c87d5bc4f7dfadbc9040e2
+content-length: 1808870
+
+
+web search: 
+web search: 
+web search: 
+web search: antlr antlr 2.7.6 maven central sources jar
+web search: 
+web search: github antlr2 antlr-2.7.6 tag
+codex
+The Maven source JAR is source-only and does not expose a separate test artifact. I found the upstream 2.7.6 source distribution, so I’m inspecting it for versioned test and doc paths before deciding which URLs have enough confidence.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/antlr-2.7.6.tar.gz" https://www.antlr2.org/download/antlr-2.7.6.tar.gz; tar -tzf "$tmp/antlr-2.7.6.tar.gz" | sed -n '"'1,260p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+exec
+/usr/bin/bash -lc "curl -fsSL https://www.antlr2.org/doc/ | sed -n '1,140p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+exec
+/usr/bin/bash -lc "curl -fsSL https://www.antlr2.org/doc/getting-started.html | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 128ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<title>ANTLR Reference Manual</title>
+<meta name="keywords" content="language translation, languages, tree parser, parsing, parser generator, template, engine, template engine, code instrumentation, Java, Python, C Sharp, C#, C++, Terence Parr, ANTLR, translation, code generation, templates, model-view-controller, MVC, strict separation, function language, StringTemplate" />
+<meta name="description" content="ANTLR: ANother Tool for Language Recognition, (formerly PCCTS) is a language tool that provides a framework for constructing recognizers, compilers, and translators from grammatical descriptions containing Java, C#, C++, or Python actions." />
+<meta name="description" content="StringTemplate: a Java template engine used for any application generating text such as language translators and dynamic web sites; available in C# and Python as well." />
+
+</head>
+
+<body link="#336699" vlink="#6FA2D4" text="#000000">
+
+
+<!--
+Keywords: language translation, languages, tree parser, parsing, parser generator, template, engine, template engine, code instrumentation, Java, Python, C Sharp, C#, C++, Terence Parr, ANTLR, translation, code generation, templates, model-view-controller, MVC, strict separation, function language, StringTemplate
+
+Description: StringTemplate is a template engine used for any application generating text such as language translators and dynamic web sites.
+-->
+
+<!-- Terence Parr -->
+
+<!-- University of San Francisco -->
+
+<!-- parser generator -->
+
+<!-- tree parser -->
+
+<!-- tree walker -->
+
+<!-- java template engine -->
+
+<!-- python template engine -->
+
+<!-- C# template engine -->
+
+<!-- code generation -->
+
+<!-- language translation -->
+
+<!-- C++, C#, Java, Python, C -->
+
+<div align="center">
+<!-- BEGIN NAVIGATION -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td align="right">
+<font size="2" face="arial,helvetica"><strong><a href="http://www.antlr2.org/">Home</a></strong> |
+<strong><a href="http://www.antlr2.org/download.html">Download</a></strong> |
+ 
+<strong><a href="https://theantlrguy.atlassian.net/wiki">Wiki</a></strong> |
+<strong><a href="http://www.antlr2.org/about.html">About ANTLR</a></strong> |
+<strong><a href="http://www.antlr2.org/misc/feedback">Feedback</a></strong> |
+<strong><a href="http://www.antlr.org/support.html">Support</a></strong> |
+</font><br>
+<img src="http://www.antlr2.org/images/shim.gif" width="780" height="5" alt="" border="0"><br>
+</td>
+</tr>
+</table>
+<!-- END NAVIGATION -->
+
+<div align="center"><img src="http://www.antlr2.org/images/shim.gif" width="780" height="6" alt="" border="0"></div>
+
+<!-- BEGIN BANNER -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td align="left" width="499">
+<a href="http://www.antlr2.org/"><img src="http://www.antlr2.org/images/logo-head-v2.gif" width="499" height="48" alt="" border="0"></a>
+</td>
+<td align="left" width="100%" background="http://www.antlr2.org/images/head-shim.gif" bgcolor="#336699"><img src="http://www.antlr2.org/images/logo-head.gif" width="1" height="1" alt="" border="0"></td>
+
+<td align="right" valign="top" width="150" background="http://www.antlr2.org/images/head-shim.gif" bgcolor="#336699"><img src="http://www.antlr2.org/images/shim.gif" width="150" height="8" alt="" border="0"><br>
+<font size="2" face="arial,helvetica"><strong>Latest version is <font color="#ffffff">2.7.7.</font><br>
+Download now! &raquo;</strong></font><br></td>
+
+
+<td align="right" valign="middle" width="128" background="http://www.antlr2.org/images/head-shim.gif" bgcolor="#336699">
+<a href="http://www.antlr2.org/download.html"><img src="http://www.antlr2.org/images/button-download.gif" width="122" height="29" alt="Download" align="right" border="0"></a></td>
+</tr>
+</table>
+<!-- END BANNER -->
+
+<div align="center"><img src="http://www.antlr2.org/images/shim.gif" width="780" height="1" alt="" border="0"></div>
+
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#ffffff" width="175" valign="top">
+<!-- left column -->
+
+<table width="100%" cellpadding="3" cellspacing="1" border="0">
+	<tr>
+	<td bgcolor="#CBFF7D">
+	<font size="2" face="arial,helvetica">
+	<b><font color="#CBFF7D">&raquo;</font> <a href="http://www.antlr2.org/">Home</a></b><br>
+	</font>
+	</td>
+	</tr>
+	</table>
+	<table width="100%" cellpadding="3" cellspacing="1" border="0">
+	<tr>
+	<td bgcolor="#CBFF7D">
+	<font size="2" face="arial,helvetica">
+	<b><font color="#CBFF7D">&raquo;</font> <a href="http://www.antlr2.org/download.html">Download</a></b><br>
+	</font>
+	</td>
+	</tr>
+	</table>
+    <table width="100%" cellpadding="3" cellspacing="1" border="0">
+	<tr>
+	<td bgcolor="#CBFF7D">
+	<font size="2" face="arial,helvetica">
+	<b><font color="#CBFF7D">&raquo;</font> <a href="https://twitter.com/the_antlr_guy">News</a></b><br>
+	</font>
+	</td>
+	</tr>
+	</table>
+	<table width="100%" cellpadding="3" cellspacing="1" border="0">
+	<tr>
+	<td colspan="2" bgcolor="#CBFF7D">
+	<font size="2" face="arial,helvetica">
+	<b><font color="#CBFF7D">&raquo;</font>Using ANTLR</b><br>
+	</font>
+	</td>
+	</tr>
+	
+	<tr>
+	<td bgcolor="#ffffff"></td>
+	<td bgcolor="#ffffff">
+	<font size="2" face="arial,helvetica">
+	<b><font color="#ffffff">&raquo;</font> <a href="http://www.antlr2.org/doc/index.html">Documentation</a></b><br>
+	</font>
+	</td>
+	</tr>
+	
+	<tr>
+	<td bgcolor="#ffffff"></td>
+	<td bgcolor="#ffffff">
+	<font size="2" face="arial,helvetica">
+	<b><font color="#ffffff">&raquo;</font> <a href="https://theantlrguy.atlassian.net/wiki">Wiki</a></b><br>
+	</font>
+	</td>
+
+ succeeded in 208ms:
+antlr-2.7.6/
+antlr-2.7.6/aclocal.m4
+antlr-2.7.6/antlr/
+antlr-2.7.6/antlr/ActionElement.java
+antlr-2.7.6/antlr/actions/
+antlr-2.7.6/antlr/actions/cpp/
+antlr-2.7.6/antlr/actions/cpp/action.g
+antlr-2.7.6/antlr/actions/cpp/ActionLexer.java
+antlr-2.7.6/antlr/actions/cpp/ActionLexerTokenTypes.java
+antlr-2.7.6/antlr/actions/csharp/
+antlr-2.7.6/antlr/actions/csharp/action.g
+antlr-2.7.6/antlr/actions/csharp/ActionLexer.java
+antlr-2.7.6/antlr/actions/csharp/ActionLexerTokenTypes.java
+antlr-2.7.6/antlr/actions/java/
+antlr-2.7.6/antlr/actions/java/action.g
+antlr-2.7.6/antlr/actions/java/ActionLexer.java
+antlr-2.7.6/antlr/actions/java/ActionLexerTokenTypes.java
+antlr-2.7.6/antlr/actions/python/
+antlr-2.7.6/antlr/actions/python/action.g
+antlr-2.7.6/antlr/actions/python/ActionLexer.java
+antlr-2.7.6/antlr/actions/python/ActionLexerTokenTypes.java
+antlr-2.7.6/antlr/actions/python/code.g
+antlr-2.7.6/antlr/actions/python/CodeLexer.java
+antlr-2.7.6/antlr/actions/python/CodeLexerTokenTypes.java
+antlr-2.7.6/antlr/ActionTransInfo.java
+antlr-2.7.6/antlr/Alternative.java
+antlr-2.7.6/antlr/AlternativeBlock.java
+antlr-2.7.6/antlr/AlternativeElement.java
+antlr-2.7.6/antlr/antlr.g
+antlr-2.7.6/antlr/ANTLRError.java
+antlr-2.7.6/antlr/ANTLRException.java
+antlr-2.7.6/antlr/ANTLRGrammarParseBehavior.java
+antlr-2.7.6/antlr/ANTLRHashString.java
+antlr-2.7.6/antlr/ANTLRLexer.java
+antlr-2.7.6/antlr/ANTLRParser.java
+antlr-2.7.6/antlr/ANTLRStringBuffer.java
+antlr-2.7.6/antlr/ANTLRTokdefLexer.java
+antlr-2.7.6/antlr/ANTLRTokdefParser.java
+antlr-2.7.6/antlr/ANTLRTokdefParserTokenTypes.java
+antlr-2.7.6/antlr/ANTLRTokenTypes.java
+antlr-2.7.6/antlr/ASdebug/
+antlr-2.7.6/antlr/ASdebug/ASDebugStream.java
+antlr-2.7.6/antlr/ASdebug/IASDebugStream.java
+antlr-2.7.6/antlr/ASdebug/TokenOffsetInfo.java
+antlr-2.7.6/antlr/ASTFactory.java
+antlr-2.7.6/antlr/ASTIterator.java
+antlr-2.7.6/antlr/ASTNULLType.java
+antlr-2.7.6/antlr/ASTPair.java
+antlr-2.7.6/antlr/ASTVisitor.java
+antlr-2.7.6/antlr/BaseAST.java
+antlr-2.7.6/antlr/BlockContext.java
+antlr-2.7.6/antlr/BlockEndElement.java
+antlr-2.7.6/antlr/BlockWithImpliedExitPath.java
+antlr-2.7.6/antlr/build/
+antlr-2.7.6/antlr/build/ANTLR.java
+antlr-2.7.6/antlr/build/StreamScarfer.java
+antlr-2.7.6/antlr/build/Tool.java
+antlr-2.7.6/antlr/ByteBuffer.java
+antlr-2.7.6/antlr/CharBuffer.java
+antlr-2.7.6/antlr/CharFormatter.java
+antlr-2.7.6/antlr/CharLiteralElement.java
+antlr-2.7.6/antlr/CharQueue.java
+antlr-2.7.6/antlr/CharRangeElement.java
+antlr-2.7.6/antlr/CharScanner.java
+antlr-2.7.6/antlr/CharStreamException.java
+antlr-2.7.6/antlr/CharStreamIOException.java
+antlr-2.7.6/antlr/CodeGenerator.java
+antlr-2.7.6/antlr/collections/
+antlr-2.7.6/antlr/collections/AST.java
+antlr-2.7.6/antlr/collections/ASTEnumeration.java
+antlr-2.7.6/antlr/collections/Enumerator.java
+antlr-2.7.6/antlr/collections/impl/
+antlr-2.7.6/antlr/collections/impl/ASTArray.java
+antlr-2.7.6/antlr/collections/impl/ASTEnumerator.java
+antlr-2.7.6/antlr/collections/impl/BitSet.java
+antlr-2.7.6/antlr/collections/impl/IndexedVector.java
+antlr-2.7.6/antlr/collections/impl/IntRange.java
+antlr-2.7.6/antlr/collections/impl/LLCell.java
+antlr-2.7.6/antlr/collections/impl/LLEnumeration.java
+antlr-2.7.6/antlr/collections/impl/LList.java
+antlr-2.7.6/antlr/collections/impl/Vector.java
+antlr-2.7.6/antlr/collections/impl/VectorEnumeration.java
+antlr-2.7.6/antlr/collections/impl/VectorEnumerator.java
+antlr-2.7.6/antlr/collections/List.java
+antlr-2.7.6/antlr/collections/Stack.java
+antlr-2.7.6/antlr/CommonAST.java
+antlr-2.7.6/antlr/CommonASTWithHiddenTokens.java
+antlr-2.7.6/antlr/CommonHiddenStreamToken.java
+antlr-2.7.6/antlr/CommonToken.java
+antlr-2.7.6/antlr/CppBlockFinishingInfo.java
+antlr-2.7.6/antlr/CppCharFormatter.java
+antlr-2.7.6/antlr/CppCodeGenerator.java
+antlr-2.7.6/antlr/CSharpBlockFinishingInfo.java
+antlr-2.7.6/antlr/CSharpCharFormatter.java
+antlr-2.7.6/antlr/CSharpCodeGenerator.java
+antlr-2.7.6/antlr/CSharpNameSpace.java
+antlr-2.7.6/antlr/debug/
+antlr-2.7.6/antlr/debug/DebuggingCharScanner.java
+antlr-2.7.6/antlr/debug/DebuggingInputBuffer.java
+antlr-2.7.6/antlr/debug/DebuggingParser.java
+antlr-2.7.6/antlr/debug/Event.java
+antlr-2.7.6/antlr/debug/GuessingEvent.java
+antlr-2.7.6/antlr/debug/InputBufferAdapter.java
+antlr-2.7.6/antlr/debug/InputBufferEvent.java
+antlr-2.7.6/antlr/debug/InputBufferEventSupport.java
+antlr-2.7.6/antlr/debug/InputBufferListener.java
+antlr-2.7.6/antlr/debug/InputBufferReporter.java
+antlr-2.7.6/antlr/debug/ListenerBase.java
+antlr-2.7.6/antlr/debug/LLkDebuggingParser.java
+antlr-2.7.6/antlr/debug/MessageAdapter.java
+antlr-2.7.6/antlr/debug/MessageEvent.java
+antlr-2.7.6/antlr/debug/MessageListener.java
+antlr-2.7.6/antlr/debug/misc/
+antlr-2.7.6/antlr/debug/misc/ASTFrame.java
+antlr-2.7.6/antlr/debug/misc/JTreeASTModel.java
+antlr-2.7.6/antlr/debug/misc/JTreeASTPanel.java
+antlr-2.7.6/antlr/debug/NewLineEvent.java
+antlr-2.7.6/antlr/debug/NewLineListener.java
+antlr-2.7.6/antlr/debug/ParserAdapter.java
+antlr-2.7.6/antlr/debug/ParserController.java
+antlr-2.7.6/antlr/debug/ParserEventSupport.java
+antlr-2.7.6/antlr/debug/ParserListener.java
+antlr-2.7.6/antlr/debug/ParserMatchAdapter.java
+antlr-2.7.6/antlr/debug/ParserMatchEvent.java
+antlr-2.7.6/antlr/debug/ParserMatchListener.java
+antlr-2.7.6/antlr/debug/ParserReporter.java
+antlr-2.7.6/antlr/debug/ParserTokenAdapter.java
+antlr-2.7.6/antlr/debug/ParserTokenEvent.java
+antlr-2.7.6/antlr/debug/ParserTokenListener.java
+antlr-2.7.6/antlr/debug/ParseTreeDebugParser.java
+antlr-2.7.6/antlr/debug/SemanticPredicateAdapter.java
+antlr-2.7.6/antlr/debug/SemanticPredicateEvent.java
+antlr-2.7.6/antlr/debug/SemanticPredicateListener.java
+antlr-2.7.6/antlr/debug/SyntacticPredicateAdapter.java
+antlr-2.7.6/antlr/debug/SyntacticPredicateEvent.java
+antlr-2.7.6/antlr/debug/SyntacticPredicateListener.java
+antlr-2.7.6/antlr/debug/TraceAdapter.java
+antlr-2.7.6/antlr/debug/TraceEvent.java
+antlr-2.7.6/antlr/debug/TraceListener.java
+antlr-2.7.6/antlr/debug/Tracer.java
+antlr-2.7.6/antlr/DefaultFileLineFormatter.java
+antlr-2.7.6/antlr/DefaultJavaCodeGeneratorPrintWriterManager.java
+antlr-2.7.6/antlr/DefaultToolErrorHandler.java
+antlr-2.7.6/antlr/DefineGrammarSymbols.java
+antlr-2.7.6/antlr/DiagnosticCodeGenerator.java
+antlr-2.7.6/antlr/DocBookCodeGenerator.java
+antlr-2.7.6/antlr/DumpASTVisitor.java
+antlr-2.7.6/antlr/ExceptionHandler.java
+antlr-2.7.6/antlr/ExceptionSpec.java
+antlr-2.7.6/antlr/FileCopyException.java
+antlr-2.7.6/antlr/FileLineFormatter.java
+antlr-2.7.6/antlr/Grammar.java
+antlr-2.7.6/antlr/GrammarAnalyzer.java
+antlr-2.7.6/antlr/GrammarAtom.java
+antlr-2.7.6/antlr/GrammarElement.java
+antlr-2.7.6/antlr/GrammarSymbol.java
+antlr-2.7.6/antlr/HTMLCodeGenerator.java
+antlr-2.7.6/antlr/ImportVocabTokenManager.java
+antlr-2.7.6/antlr/InputBuffer.java
+antlr-2.7.6/antlr/JavaBlockFinishingInfo.java
+antlr-2.7.6/antlr/JavaCharFormatter.java
+antlr-2.7.6/antlr/JavaCodeGenerator.java
+antlr-2.7.6/antlr/JavaCodeGeneratorPrintWriterManager.java
+antlr-2.7.6/antlr/LexerGrammar.java
+antlr-2.7.6/antlr/LexerSharedInputState.java
+antlr-2.7.6/antlr/LLkAnalyzer.java
+antlr-2.7.6/antlr/LLkGrammarAnalyzer.java
+antlr-2.7.6/antlr/LLkParser.java
+antlr-2.7.6/antlr/Lookahead.java
+antlr-2.7.6/antlr/Makefile.in
+antlr-2.7.6/antlr/MakeGrammar.java
+antlr-2.7.6/antlr/MismatchedCharException.java
+antlr-2.7.6/antlr/MismatchedTokenException.java
+antlr-2.7.6/antlr/NameSpace.java
+antlr-2.7.6/antlr/NoViableAltException.java
+antlr-2.7.6/antlr/NoViableAltForCharException.java
+antlr-2.7.6/antlr/OneOrMoreBlock.java
+antlr-2.7.6/antlr/Parser.java
+antlr-2.7.6/antlr/ParserGrammar.java
+antlr-2.7.6/antlr/ParserSharedInputState.java
+antlr-2.7.6/antlr/ParseTree.java
+antlr-2.7.6/antlr/ParseTreeRule.java
+antlr-2.7.6/antlr/ParseTreeToken.java
+antlr-2.7.6/antlr/preprocessor/
+antlr-2.7.6/antlr/preprocessor/Grammar.java
+antlr-2.7.6/antlr/preprocessor/GrammarFile.java
+antlr-2.7.6/antlr/preprocessor/Hierarchy.java
+antlr-2.7.6/antlr/preprocessor/Option.java
+antlr-2.7.6/antlr/preprocessor/preproc.g
+antlr-2.7.6/antlr/preprocessor/Preprocessor.java
+antlr-2.7.6/antlr/preprocessor/PreprocessorLexer.java
+antlr-2.7.6/antlr/preprocessor/PreprocessorTokenTypes.java
+antlr-2.7.6/antlr/preprocessor/Rule.java
+antlr-2.7.6/antlr/preprocessor/Tool.java
+antlr-2.7.6/antlr/PreservingFileWriter.java
+antlr-2.7.6/antlr/PrintWriterWithSMAP.java
+antlr-2.7.6/antlr/PythonBlockFinishingInfo.java
+antlr-2.7.6/antlr/PythonCharFormatter.java
+antlr-2.7.6/antlr/PythonCodeGenerator.java
+antlr-2.7.6/antlr/RecognitionException.java
+antlr-2.7.6/antlr/RuleBlock.java
+antlr-2.7.6/antlr/RuleEndElement.java
+antlr-2.7.6/antlr/RuleRefElement.java
+antlr-2.7.6/antlr/RuleSymbol.java
+antlr-2.7.6/antlr/SemanticException.java
+antlr-2.7.6/antlr/SimpleTokenManager.java
+antlr-2.7.6/antlr/StringLiteralElement.java
+antlr-2.7.6/antlr/StringLiteralSymbol.java
+antlr-2.7.6/antlr/StringUtils.java
+antlr-2.7.6/antlr/SynPredBlock.java
+antlr-2.7.6/antlr/tokdef.g
+antlr-2.7.6/antlr/Token.java
+antlr-2.7.6/antlr/TokenBuffer.java
+antlr-2.7.6/antlr/TokenManager.java
+antlr-2.7.6/antlr/TokenQueue.java
+antlr-2.7.6/antlr/TokenRangeElement.java
+antlr-2.7.6/antlr/TokenRefElement.java
+antlr-2.7.6/antlr/TokenStream.java
+antlr-2.7.6/antlr/TokenStreamBasicFilter.java
+antlr-2.7.6/antlr/TokenStreamException.java
+antlr-2.7.6/antlr/TokenStreamHiddenTokenFilter.java
+antlr-2.7.6/antlr/TokenStreamIOException.java
+antlr-2.7.6/antlr/TokenStreamRecognitionException.java
+antlr-2.7.6/antlr/TokenStreamRetryException.java
+antlr-2.7.6/antlr/TokenStreamRewriteEngine.java
+antlr-2.7.6/antlr/TokenStreamSelector.java
+antlr-2.7.6/antlr/TokenSymbol.java
+antlr-2.7.6/antlr/TokenWithIndex.java
+antlr-2.7.6/antlr/Tool.java
+antlr-2.7.6/antlr/ToolErrorHandler.java
+antlr-2.7.6/antlr/TreeBlockContext.java
+antlr-2.7.6/antlr/TreeElement.java
+antlr-2.7.6/antlr/TreeParser.java
+antlr-2.7.6/antlr/TreeParserSharedInputState.java
+antlr-2.7.6/antlr/TreeSpecifierNode.java
+antlr-2.7.6/antlr/TreeWalkerGrammar.java
+antlr-2.7.6/antlr/Utils.java
+antlr-2.7.6/antlr/Version.java
+antlr-2.7.6/antlr/Version.java.in
+antlr-2.7.6/antlr/WildcardElement.java
+antlr-2.7.6/antlr/ZeroOrMoreBlock.java
+antlr-2.7.6/antlr.jar
+antlr-2.7.6/CHANGES.txt
+antlr-2.7.6/configure
+antlr-2.7.6/configure.in
+antlr-2.7.6/doc/
+antlr-2.7.6/doc/ANTLRException.gif
+antlr-2.7.6/doc/closure.gif
+antlr-2.7.6/doc/cpp-runtime.html
+antlr-2.7.6/doc/csharp-runtime.html
+antlr-2.7.6/doc/err.html
+antlr-2.7.6/doc/glossary.html
+antlr-2.7.6/doc/hidden.stream.gif
+antlr-2.7.6/doc/index.html
+antlr-2.7.6/doc/inheritance.html
+antlr-2.7.6/doc/j-guru-blue.jpg
+antlr-2.7.6/doc/jguru-logo.gif
+antlr-2.7.6/doc/lexer.html
+antlr-2.7.6/doc/lexer.to.parser.tokens.gif
+antlr-2.7.6/doc/logo.gif
+
+ succeeded in 146ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<title>Getting Started with ANTLR</title>
+<meta name="keywords" content="language translation, languages, tree parser, parsing, parser generator, template, engine, template engine, code instrumentation, Java, Python, C Sharp, C#, C++, Terence Parr, ANTLR, translation, code generation, templates, model-view-controller, MVC, strict separation, function language, StringTemplate" />
+<meta name="description" content="ANTLR: ANother Tool for Language Recognition, (formerly PCCTS) is a language tool that provides a framework for constructing recognizers, compilers, and translators from grammatical descriptions containing Java, C#, C++, or Python actions." />
+<meta name="description" content="StringTemplate: a Java template engine used for any application generating text such as language translators and dynamic web sites; available in C# and Python as well." />
+
+</head>
+
+<body link="#336699" vlink="#6FA2D4" text="#000000">
+
+
+<!--
+Keywords: language translation, languages, tree parser, parsing, parser generator, template, engine, template engine, code instrumentation, Java, Python, C Sharp, C#, C++, Terence Parr, ANTLR, translation, code generation, templates, model-view-controller, MVC, strict separation, function language, StringTemplate
+
+Description: StringTemplate is a template engine used for any application generating text such as language translators and dynamic web sites.
+-->
+
+<!-- Terence Parr -->
+
+<!-- University of San Francisco -->
+
+<!-- parser generator -->
+
+<!-- tree parser -->
+
+<!-- tree walker -->
+
+<!-- java template engine -->
+
+<!-- python template engine -->
+
+<!-- C# template engine -->
+
+<!-- code generation -->
+
+<!-- language translation -->
+
+<!-- C++, C#, Java, Python, C -->
+
+<div align="center">
+<!-- BEGIN NAVIGATION -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td align="right">
+<font size="2" face="arial,helvetica"><strong><a href="http://www.antlr2.org/">Home</a></strong> |
+<strong><a href="http://www.antlr2.org/download.html">Download</a></strong> |
+ 
+<strong><a href="https://theantlrguy.atlassian.net/wiki">Wiki</a></strong> |
+<strong><a href="http://www.antlr2.org/about.html">About ANTLR</a></strong> |
+<strong><a href="http://www.antlr2.org/misc/feedback">Feedback</a></strong> |
+<strong><a href="http://www.antlr.org/support.html">Support</a></strong> |
+</font><br>
+<img src="http://www.antlr2.org/images/shim.gif" width="780" height="5" alt="" border="0"><br>
+</td>
+</tr>
+</table>
+<!-- END NAVIGATION -->
+
+<div align="center"><img src="http://www.antlr2.org/images/shim.gif" width="780" height="6" alt="" border="0"></div>
+
+<!-- BEGIN BANNER -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td align="left" width="499">
+<a href="http://www.antlr2.org/"><img src="http://www.antlr2.org/images/logo-head-v2.gif" width="499" height="48" alt="" border="0"></a>
+</td>
+<td align="left" width="100%" background="http://www.antlr2.org/images/head-shim.gif" bgcolor="#336699"><img src="http://www.antlr2.org/images/logo-head.gif" width="1" height="1" alt="" border="0"></td>
+
+<td align="right" valign="top" width="150" background="http://www.antlr2.org/images/head-shim.gif" bgcolor="#336699"><img src="http://www.antlr2.org/images/shim.gif" width="150" height="8" alt="" border="0"><br>
+<font size="2" face="arial,helvetica"><strong>Latest version is <font color="#ffffff">2.7.7.</font><br>
+Download now! &raquo;</strong></font><br></td>
+
+
+<td align="right" valign="middle" width="128" background="http://www.antlr2.org/images/head-shim.gif" bgcolor="#336699">
+<a href="http://www.antlr2.org/download.html"><img src="http://www.antlr2.org/images/button-download.gif" width="122" height="29" alt="Download" align="right" border="0"></a></td>
+</tr>
+</table>
+<!-- END BANNER -->
+
+<div align="center"><img src="http://www.antlr2.org/images/shim.gif" width="780" height="1" alt="" border="0"></div>
+
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#ffffff" width="175" valign="top">
+<!-- left column -->
+
+<table width="100%" cellpadding="3" cellspacing="1" border="0">
+	<tr>
+	<td bgcolor="#CBFF7D">
+	<font size="2" face="arial,helvetica">
+	<b><font color="#CBFF7D">&raquo;</font> <a href="http://www.antlr2.org/">Home</a></b><br>
+	</font>
+	</td>
+	</tr>
+	</table>
+	<table width="100%" cellpadding="3" cellspacing="1" border="0">
+	<tr>
+	<td bgcolor="#CBFF7D">
+	<font size="2" face="arial,helvetica">
+	<b><font color="#CBFF7D">&raquo;</font> <a href="http://www.antlr2.org/download.html">Download</a></b><br>
+	</font>
+	</td>
+	</tr>
+	</table>
+    <table width="100%" cellpadding="3" cellspacing="1" border="0">
+	<tr>
+	<td bgcolor="#CBFF7D">
+	<font size="2" face="arial,helvetica">
+	<b><font color="#CBFF7D">&raquo;</font> <a href="https://twitter.com/the_antlr_guy">News</a></b><br>
+	</font>
+	</td>
+	</tr>
+	</table>
+	<table width="100%" cellpadding="3" cellspacing="1" border="0">
+	<tr>
+	<td colspan="2" bgcolor="#CBFF7D">
+	<font size="2" face="arial,helvetica">
+	<b><font color="#CBFF7D">&raquo;</font>Using ANTLR</b><br>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/antlr/antlr/2.7.6/antlr-2.7.6-sources.jar.sha1 && printf '\\n'; curl -fsSL https://repo1.maven.org/maven2/antlr/antlr/2.7.6/antlr-2.7.6.jar.sha1 && printf '\\n'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 0ms:
+604014ca080ee7d3547f044ff4bd2c6ebfc0b82b
+cf4f67dae5df4f9932ae7810f4548ef3e14dd35e
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/antlr-2.7.6.tar.gz" https://www.antlr2.org/download/antlr-2.7.6.tar.gz; tar -tzf "$tmp/antlr-2.7.6.tar.gz" | rg -i '"'("'^|/)(test|tests|examples?|doc|junit)'"' | sed -n '1,240p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/antlr-2.7.6.tar.gz" https://www.antlr2.org/download/antlr-2.7.6.tar.gz; tar -xzf "$tmp/antlr-2.7.6.tar.gz" -C "$tmp" antlr-2.7.6/README.txt antlr-2.7.6/INSTALL.txt antlr-2.7.6/Makefile.in 2>/dev/null || true; find "$tmp/antlr-2.7.6" -maxdepth 2 -type f | sort | sed -n '"'1,200p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 252ms:
+antlr-2.7.6/antlr/DocBookCodeGenerator.java
+antlr-2.7.6/doc/
+antlr-2.7.6/doc/ANTLRException.gif
+antlr-2.7.6/doc/closure.gif
+antlr-2.7.6/doc/cpp-runtime.html
+antlr-2.7.6/doc/csharp-runtime.html
+antlr-2.7.6/doc/err.html
+antlr-2.7.6/doc/glossary.html
+antlr-2.7.6/doc/hidden.stream.gif
+antlr-2.7.6/doc/index.html
+antlr-2.7.6/doc/inheritance.html
+antlr-2.7.6/doc/j-guru-blue.jpg
+antlr-2.7.6/doc/jguru-logo.gif
+antlr-2.7.6/doc/lexer.html
+antlr-2.7.6/doc/lexer.to.parser.tokens.gif
+antlr-2.7.6/doc/logo.gif
+antlr-2.7.6/doc/Makefile.in
+antlr-2.7.6/doc/metalang.html
+antlr-2.7.6/doc/optional.gif
+antlr-2.7.6/doc/options.html
+antlr-2.7.6/doc/posclosure.gif
+antlr-2.7.6/doc/python-runtime.html
+antlr-2.7.6/doc/runtime.html
+antlr-2.7.6/doc/sor.html
+antlr-2.7.6/doc/stream.perspectives.gif
+antlr-2.7.6/doc/stream.selector.gif
+antlr-2.7.6/doc/stream.splitter.gif
+antlr-2.7.6/doc/streams.html
+antlr-2.7.6/doc/subrule.gif
+antlr-2.7.6/doc/trees.html
+antlr-2.7.6/doc/vocab.html
+antlr-2.7.6/examples/
+antlr-2.7.6/examples/cpp/
+antlr-2.7.6/examples/cpp/ASTsupport/
+antlr-2.7.6/examples/cpp/ASTsupport/Main.cpp
+antlr-2.7.6/examples/cpp/ASTsupport/Makefile.in
+antlr-2.7.6/examples/cpp/ASTsupport/test.g
+antlr-2.7.6/examples/cpp/calc/
+antlr-2.7.6/examples/cpp/calc/calc.g
+antlr-2.7.6/examples/cpp/calc/Main.cpp
+antlr-2.7.6/examples/cpp/calc/Main2.cpp
+antlr-2.7.6/examples/cpp/calc/Main3.cpp
+antlr-2.7.6/examples/cpp/calc/Makefile.in
+antlr-2.7.6/examples/cpp/calc/test.in
+antlr-2.7.6/examples/cpp/cleanup.ksh
+antlr-2.7.6/examples/cpp/exprAST/
+antlr-2.7.6/examples/cpp/exprAST/expr.g
+antlr-2.7.6/examples/cpp/exprAST/Main.cpp
+antlr-2.7.6/examples/cpp/exprAST/Makefile.in
+antlr-2.7.6/examples/cpp/exprAST/test.in
+antlr-2.7.6/examples/cpp/exprAST/test2.in
+antlr-2.7.6/examples/cpp/filter/
+antlr-2.7.6/examples/cpp/filter/Makefile.in
+antlr-2.7.6/examples/cpp/filter/t.g
+antlr-2.7.6/examples/cpp/filter/Test.cpp
+antlr-2.7.6/examples/cpp/filter/test.html
+antlr-2.7.6/examples/cpp/filterWithRule/
+antlr-2.7.6/examples/cpp/filterWithRule/Makefile.in
+antlr-2.7.6/examples/cpp/filterWithRule/t.g
+antlr-2.7.6/examples/cpp/filterWithRule/t.html
+antlr-2.7.6/examples/cpp/filterWithRule/Test.cpp
+antlr-2.7.6/examples/cpp/flexLexer/
+antlr-2.7.6/examples/cpp/flexLexer/java.g
+antlr-2.7.6/examples/cpp/flexLexer/java.l
+antlr-2.7.6/examples/cpp/flexLexer/java.tree.g
+antlr-2.7.6/examples/cpp/flexLexer/LexTokenStream.cpp
+antlr-2.7.6/examples/cpp/flexLexer/LexTokenStream.hpp
+antlr-2.7.6/examples/cpp/flexLexer/Main.cpp
+antlr-2.7.6/examples/cpp/flexLexer/Makefile.in
+antlr-2.7.6/examples/cpp/flexLexer/T.java
+antlr-2.7.6/examples/cpp/heteroAST/
+antlr-2.7.6/examples/cpp/heteroAST/BinaryOperatorAST.hpp
+antlr-2.7.6/examples/cpp/heteroAST/calc.g
+antlr-2.7.6/examples/cpp/heteroAST/CalcAST.hpp
+antlr-2.7.6/examples/cpp/heteroAST/INTNode.hpp
+antlr-2.7.6/examples/cpp/heteroAST/Main.cpp
+antlr-2.7.6/examples/cpp/heteroAST/Makefile.in
+antlr-2.7.6/examples/cpp/heteroAST/MULTNode.hpp
+antlr-2.7.6/examples/cpp/heteroAST/PLUSNode.hpp
+antlr-2.7.6/examples/cpp/heteroAST/test.in
+antlr-2.7.6/examples/cpp/HTML/
+antlr-2.7.6/examples/cpp/HTML/html.g
+antlr-2.7.6/examples/cpp/HTML/Main.cpp
+antlr-2.7.6/examples/cpp/HTML/Makefile.in
+antlr-2.7.6/examples/cpp/HTML/test.html
+antlr-2.7.6/examples/cpp/IDL/
+antlr-2.7.6/examples/cpp/IDL/idl.g
+antlr-2.7.6/examples/cpp/IDL/Main.cpp
+antlr-2.7.6/examples/cpp/IDL/Makefile.in
+antlr-2.7.6/examples/cpp/IDL/test.idl
+antlr-2.7.6/examples/cpp/imagNodeAST/
+antlr-2.7.6/examples/cpp/imagNodeAST/Main.cpp
+antlr-2.7.6/examples/cpp/imagNodeAST/Makefile.in
+antlr-2.7.6/examples/cpp/imagNodeAST/simple.in
+antlr-2.7.6/examples/cpp/imagNodeAST/test.in
+antlr-2.7.6/examples/cpp/imagNodeAST/treewalk.g
+antlr-2.7.6/examples/cpp/includeFile/
+antlr-2.7.6/examples/cpp/includeFile/incl.h
+antlr-2.7.6/examples/cpp/includeFile/Main.cpp
+antlr-2.7.6/examples/cpp/includeFile/Main.hpp
+antlr-2.7.6/examples/cpp/includeFile/Makefile.in
+antlr-2.7.6/examples/cpp/includeFile/P.g
+antlr-2.7.6/examples/cpp/includeFile/subincl.h
+antlr-2.7.6/examples/cpp/includeFile/test.c
+antlr-2.7.6/examples/cpp/inherit.tinyc/
+antlr-2.7.6/examples/cpp/inherit.tinyc/input.c
+antlr-2.7.6/examples/cpp/inherit.tinyc/Main.cpp
+antlr-2.7.6/examples/cpp/inherit.tinyc/Makefile.in
+antlr-2.7.6/examples/cpp/inherit.tinyc/runtest.bat
+antlr-2.7.6/examples/cpp/inherit.tinyc/subc.g
+antlr-2.7.6/examples/cpp/java/
+antlr-2.7.6/examples/cpp/java/java.g
+antlr-2.7.6/examples/cpp/java/java.tree.g
+antlr-2.7.6/examples/cpp/java/Main.cpp
+antlr-2.7.6/examples/cpp/java/Makefile.in
+antlr-2.7.6/examples/cpp/java/tests/
+antlr-2.7.6/examples/cpp/java/tests/E.java
+antlr-2.7.6/examples/cpp/java/tests/T.java
+antlr-2.7.6/examples/cpp/lexRewrite/
+antlr-2.7.6/examples/cpp/lexRewrite/Main.cpp
+antlr-2.7.6/examples/cpp/lexRewrite/Makefile.in
+antlr-2.7.6/examples/cpp/lexRewrite/rewrite.g
+antlr-2.7.6/examples/cpp/lexRewrite/test.in
+antlr-2.7.6/examples/cpp/Makefile.in
+antlr-2.7.6/examples/cpp/multiLexer/
+antlr-2.7.6/examples/cpp/multiLexer/CommonTokenTypes.txt
+antlr-2.7.6/examples/cpp/multiLexer/javadoclex.g
+antlr-2.7.6/examples/cpp/multiLexer/javadocparse.g
+antlr-2.7.6/examples/cpp/multiLexer/javalex.g
+antlr-2.7.6/examples/cpp/multiLexer/javaparse.g
+antlr-2.7.6/examples/cpp/multiLexer/Main.cpp
+antlr-2.7.6/examples/cpp/multiLexer/Makefile.in
+antlr-2.7.6/examples/cpp/multiLexer/test.in
+antlr-2.7.6/examples/cpp/multiParser/
+antlr-2.7.6/examples/cpp/multiParser/lexer.g
+antlr-2.7.6/examples/cpp/multiParser/Main.cpp
+antlr-2.7.6/examples/cpp/multiParser/Makefile.in
+antlr-2.7.6/examples/cpp/multiParser/parser1.g
+antlr-2.7.6/examples/cpp/multiParser/parser2.g
+antlr-2.7.6/examples/cpp/multiParser/test.in
+antlr-2.7.6/examples/cpp/parseBinary/
+antlr-2.7.6/examples/cpp/parseBinary/data
+antlr-2.7.6/examples/cpp/parseBinary/data.g
+antlr-2.7.6/examples/cpp/parseBinary/Main.cpp
+antlr-2.7.6/examples/cpp/parseBinary/Makefile.in
+antlr-2.7.6/examples/cpp/preserveWhiteSpace/
+antlr-2.7.6/examples/cpp/preserveWhiteSpace/instr.g
+antlr-2.7.6/examples/cpp/preserveWhiteSpace/Main.cpp
+antlr-2.7.6/examples/cpp/preserveWhiteSpace/Makefile.in
+antlr-2.7.6/examples/cpp/preserveWhiteSpace/readme.txt
+antlr-2.7.6/examples/cpp/preserveWhiteSpace/test.in
+antlr-2.7.6/examples/cpp/tinyc/
+antlr-2.7.6/examples/cpp/tinyc/input.c
+antlr-2.7.6/examples/cpp/tinyc/lexer.g
+antlr-2.7.6/examples/cpp/tinyc/Main.cpp
+antlr-2.7.6/examples/cpp/tinyc/Makefile.in
+antlr-2.7.6/examples/cpp/tinyc/tinyc.g
+antlr-2.7.6/examples/cpp/tokenStreamRewrite/
+antlr-2.7.6/examples/cpp/tokenStreamRewrite/input.c
+antlr-2.7.6/examples/cpp/tokenStreamRewrite/main.cpp
+antlr-2.7.6/examples/cpp/tokenStreamRewrite/Makefile.in
+antlr-2.7.6/examples/cpp/tokenStreamRewrite/tinyc.g
+antlr-2.7.6/examples/cpp/transform/
+antlr-2.7.6/examples/cpp/transform/calc.g
+antlr-2.7.6/examples/cpp/transform/Main.cpp
+antlr-2.7.6/examples/cpp/transform/Makefile.in
+antlr-2.7.6/examples/cpp/transform/test.in
+antlr-2.7.6/examples/cpp/treewalk/
+antlr-2.7.6/examples/cpp/treewalk/Main.cpp
+antlr-2.7.6/examples/cpp/treewalk/Makefile.in
+antlr-2.7.6/examples/cpp/treewalk/MyAST.h
+antlr-2.7.6/examples/cpp/treewalk/simple.in
+antlr-2.7.6/examples/cpp/treewalk/test.in
+antlr-2.7.6/examples/cpp/treewalk/treewalk.g
+antlr-2.7.6/examples/cpp/unicode/
+antlr-2.7.6/examples/cpp/unicode/main.cpp
+antlr-2.7.6/examples/cpp/unicode/Makefile.in
+antlr-2.7.6/examples/cpp/unicode/MismatchedUnicodeCharException.cpp
+antlr-2.7.6/examples/cpp/unicode/MismatchedUnicodeCharException.hpp
+antlr-2.7.6/examples/cpp/unicode/test.in
+antlr-2.7.6/examples/cpp/unicode/unicode.g
+antlr-2.7.6/examples/cpp/unicode/UnicodeCharBuffer.hpp
+antlr-2.7.6/examples/cpp/unicode/UnicodeCharScanner.hpp
+antlr-2.7.6/examples/csharp/
+antlr-2.7.6/examples/csharp/ASTsupport/
+antlr-2.7.6/examples/csharp/ASTsupport/ASTSupport.build
+antlr-2.7.6/examples/csharp/ASTsupport/ASTType49.cs
+antlr-2.7.6/examples/csharp/ASTsupport/csccbug.cs
+antlr-2.7.6/examples/csharp/ASTsupport/Makefile.in
+antlr-2.7.6/examples/csharp/ASTsupport/MyAST.cs
+antlr-2.7.6/examples/csharp/ASTsupport/shiplist
+antlr-2.7.6/examples/csharp/ASTsupport/t.bat
+antlr-2.7.6/examples/csharp/ASTsupport/test.g
+antlr-2.7.6/examples/csharp/ASTsupport/TestASTFactory.cs
+antlr-2.7.6/examples/csharp/calc/
+antlr-2.7.6/examples/csharp/calc/calc.build
+antlr-2.7.6/examples/csharp/calc/Calc.cs
+antlr-2.7.6/examples/csharp/calc/calc.g
+antlr-2.7.6/examples/csharp/calc/Makefile.in
+antlr-2.7.6/examples/csharp/calc/shiplist
+antlr-2.7.6/examples/csharp/calc/test.in
+antlr-2.7.6/examples/csharp/columns/
+antlr-2.7.6/examples/csharp/columns/columns.build
+antlr-2.7.6/examples/csharp/columns/csccbug.cs
+antlr-2.7.6/examples/csharp/columns/Makefile.in
+antlr-2.7.6/examples/csharp/columns/shiplist
+antlr-2.7.6/examples/csharp/columns/test.in
+antlr-2.7.6/examples/csharp/columns/track.g
+antlr-2.7.6/examples/csharp/cpp/
+antlr-2.7.6/examples/csharp/cpp/cpp.build
+antlr-2.7.6/examples/csharp/cpp/cpp.g
+antlr-2.7.6/examples/csharp/cpp/cpp.in
+antlr-2.7.6/examples/csharp/cpp/incl.h
+antlr-2.7.6/examples/csharp/cpp/Makefile.in
+antlr-2.7.6/examples/csharp/cpp/subincl.h
+antlr-2.7.6/examples/csharp/csccbug.cs
+antlr-2.7.6/examples/csharp/csharp_v1/
+antlr-2.7.6/examples/csharp/csharp_v1/ASTNode.cs
+antlr-2.7.6/examples/csharp/csharp_v1/ASTNodeFactory.cs
+antlr-2.7.6/examples/csharp/csharp_v1/CodeMaskEnums.cs
+antlr-2.7.6/examples/csharp/csharp_v1/csharp.flex
+antlr-2.7.6/examples/csharp/csharp_v1/csharp_v1.build
+antlr-2.7.6/examples/csharp/csharp_v1/CSharpFlexLexer.cs
+antlr-2.7.6/examples/csharp/csharp_v1/CSharpLexer.g
+antlr-2.7.6/examples/csharp/csharp_v1/CSharpLexerBase.g
+antlr-2.7.6/examples/csharp/csharp_v1/CSharpParser.csproj
+antlr-2.7.6/examples/csharp/csharp_v1/CSharpParser.g
+antlr-2.7.6/examples/csharp/csharp_v1/CSharpPreprocessorHooverLexer.g
+antlr-2.7.6/examples/csharp/csharp_v1/CSharpPreprocessorLexer.g
+antlr-2.7.6/examples/csharp/csharp_v1/CSharpPrettyPrinter.g
+antlr-2.7.6/examples/csharp/csharp_v1/CustomHiddenStreamToken.cs
+antlr-2.7.6/examples/csharp/csharp_v1/LICENSE.TXT
+antlr-2.7.6/examples/csharp/csharp_v1/Main.cs
+antlr-2.7.6/examples/csharp/csharp_v1/README.TXT
+antlr-2.7.6/examples/csharp/csharp_v1/testfiles/
+antlr-2.7.6/examples/csharp/csharp_v1/testfiles/AllCSharpConstructs.cs
+antlr-2.7.6/examples/csharp/csharp_v1/testfiles/Empty.cs
+antlr-2.7.6/examples/csharp/csharp_v1/testfiles/EmptyNamespace.cs
+antlr-2.7.6/examples/csharp/csharp_v1/testfiles/Testing.cs
+antlr-2.7.6/examples/csharp/csharp_v1/testfiles/Using.cs
+
+ succeeded in 263ms:
+/tmp/tmp.a5hYKAOG2w/antlr-2.7.6/INSTALL.txt
+/tmp/tmp.a5hYKAOG2w/antlr-2.7.6/Makefile.in
+/tmp/tmp.a5hYKAOG2w/antlr-2.7.6/README.txt
+
+web search: 
+web search: antlr/antlr GitHub ANTLR 2 repository
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/antlr-2.7.6.tar.gz" https://www.antlr2.org/download/antlr-2.7.6.tar.gz; tar -tzf "$tmp/antlr-2.7.6.tar.gz" | rg -i '"'("'^|/)(test|tests)(/|'"\\.|"'$)|runtest|junit|Test[A-Z]|'"\\.test' | sed -n '1,300p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/antlr-2.7.6.tar.gz" https://www.antlr2.org/download/antlr-2.7.6.tar.gz; tar -xzf "$tmp/antlr-2.7.6.tar.gz" -C "$tmp"; find "$tmp/antlr-2.7.6" -maxdepth 3 -type f '"\\( -iname '*test*' -o -iname '*junit*' -o -iname 'runtest*' \\) | sed \"s#"'$tmp/##" | sort | sed -n '"'1,240p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 278ms:
+ succeeded in 299ms:
+antlr-2.7.6/examples/cpp/ASTsupport/test.g
+antlr-2.7.6/examples/cpp/calc/test.in
+antlr-2.7.6/examples/cpp/exprAST/test.in
+antlr-2.7.6/examples/cpp/filter/Test.cpp
+antlr-2.7.6/examples/cpp/filter/test.html
+antlr-2.7.6/examples/cpp/filterWithRule/Test.cpp
+antlr-2.7.6/examples/cpp/heteroAST/test.in
+antlr-2.7.6/examples/cpp/HTML/test.html
+antlr-2.7.6/examples/cpp/IDL/test.idl
+antlr-2.7.6/examples/cpp/imagNodeAST/test.in
+antlr-2.7.6/examples/cpp/includeFile/test.c
+antlr-2.7.6/examples/cpp/inherit.tinyc/runtest.bat
+antlr-2.7.6/examples/cpp/java/tests/
+antlr-2.7.6/examples/cpp/java/tests/E.java
+antlr-2.7.6/examples/cpp/java/tests/T.java
+antlr-2.7.6/examples/cpp/lexRewrite/test.in
+antlr-2.7.6/examples/cpp/multiLexer/test.in
+antlr-2.7.6/examples/cpp/multiParser/test.in
+antlr-2.7.6/examples/cpp/preserveWhiteSpace/test.in
+antlr-2.7.6/examples/cpp/transform/test.in
+antlr-2.7.6/examples/cpp/treewalk/test.in
+antlr-2.7.6/examples/cpp/unicode/test.in
+antlr-2.7.6/examples/csharp/ASTsupport/test.g
+antlr-2.7.6/examples/csharp/ASTsupport/TestASTFactory.cs
+antlr-2.7.6/examples/csharp/calc/test.in
+antlr-2.7.6/examples/csharp/columns/test.in
+antlr-2.7.6/examples/csharp/csharp_v1/testfiles/
+antlr-2.7.6/examples/csharp/csharp_v1/testfiles/AllCSharpConstructs.cs
+antlr-2.7.6/examples/csharp/csharp_v1/testfiles/Empty.cs
+antlr-2.7.6/examples/csharp/csharp_v1/testfiles/EmptyNamespace.cs
+antlr-2.7.6/examples/csharp/csharp_v1/testfiles/Testing.cs
+antlr-2.7.6/examples/csharp/csharp_v1/testfiles/Using.cs
+antlr-2.7.6/examples/csharp/csharp_v1/testfiles/UsingGlobalAttributes.cs
+antlr-2.7.6/examples/csharp/exprAST/test.in
+antlr-2.7.6/examples/csharp/filter/Test.cs
+antlr-2.7.6/examples/csharp/filter/test.html
+antlr-2.7.6/examples/csharp/filterWithRule/Test.cs
+antlr-2.7.6/examples/csharp/filterWithRule/Test.java
+antlr-2.7.6/examples/csharp/heteroAST/test.in
+antlr-2.7.6/examples/csharp/HTML/test.html
+antlr-2.7.6/examples/csharp/IDL/test.idl
+antlr-2.7.6/examples/csharp/imagNodeAST/test.in
+antlr-2.7.6/examples/csharp/includeFile/test.c
+antlr-2.7.6/examples/csharp/inherit.tinyc/runtest.bat
+antlr-2.7.6/examples/csharp/inherit.tinyc/runtest.sh
+antlr-2.7.6/examples/csharp/java/tests/
+antlr-2.7.6/examples/csharp/java/tests/E.java
+antlr-2.7.6/examples/csharp/java/tests/Main.java
+antlr-2.7.6/examples/csharp/java/tests/T.java
+antlr-2.7.6/examples/csharp/multiLexer/test.in
+antlr-2.7.6/examples/csharp/parseBinary/runtests.bat
+antlr-2.7.6/examples/csharp/ParseTreeDebug/Test.cs
+antlr-2.7.6/examples/csharp/preserveWhiteSpace/test.in
+antlr-2.7.6/examples/csharp/unicode/test.in
+antlr-2.7.6/examples/java/ASTsupport/test.g
+antlr-2.7.6/examples/java/ASTsupport/TestASTFactory.java
+antlr-2.7.6/examples/java/calc/test.in
+antlr-2.7.6/examples/java/columns/test.in
+antlr-2.7.6/examples/java/exprAST/test.in
+antlr-2.7.6/examples/java/filter/test.html
+antlr-2.7.6/examples/java/filter/Test.java
+antlr-2.7.6/examples/java/filterWithRule/Test.java
+antlr-2.7.6/examples/java/heteroAST/test.in
+antlr-2.7.6/examples/java/HTML/test.html
+antlr-2.7.6/examples/java/IDL/test.idl
+antlr-2.7.6/examples/java/imagNodeAST/test.in
+antlr-2.7.6/examples/java/includeFile/test.c
+antlr-2.7.6/examples/java/inherit.tinyc/runtest.bat
+antlr-2.7.6/examples/java/inherit.tinyc/runtest.sh
+antlr-2.7.6/examples/java/java/tests/
+antlr-2.7.6/examples/java/java/tests/E.java
+antlr-2.7.6/examples/java/java/tests/T.java
+antlr-2.7.6/examples/java/lexRewrite/test.in
+antlr-2.7.6/examples/java/linkChecker/test.html
+antlr-2.7.6/examples/java/multiLexer/test.in
+antlr-2.7.6/examples/java/pascal/test/
+antlr-2.7.6/examples/java/pascal/test/big.pas
+antlr-2.7.6/examples/java/pascal/test/P_0_1.PAS
+antlr-2.7.6/examples/java/pascal/test/P_3_1.PAS
+antlr-2.7.6/examples/java/pascal/test/P_4_1.PAS
+antlr-2.7.6/examples/java/pascal/test/P_4_2.PAS
+antlr-2.7.6/examples/java/pascal/test/P_4_3.PAS
+antlr-2.7.6/examples/java/pascal/test/P_4_4.PAS
+antlr-2.7.6/examples/java/pascal/test/P_4_5.PAS
+antlr-2.7.6/examples/java/pascal/test/P_8_2.PAS
+antlr-2.7.6/examples/java/preserveWhiteSpace/test.in
+antlr-2.7.6/examples/java/transform/test.in
+antlr-2.7.6/examples/java/treewalk/test.in
+antlr-2.7.6/examples/java/unicode/test.in
+antlr-2.7.6/examples/java/unicode.IDENTs/test.in
+antlr-2.7.6/examples/java/xml/test.xml
+antlr-2.7.6/examples/python/lexerTester/
+antlr-2.7.6/examples/python/lexerTester/lexertester.g
+antlr-2.7.6/examples/python/lexerTester/LT1test.py
+antlr-2.7.6/examples/python/lexerTester/LT2test.py
+antlr-2.7.6/examples/python/lexerTester/LT3test.py
+antlr-2.7.6/examples/python/lexerTester/LT4test.py
+antlr-2.7.6/examples/python/lexerTester/LT5test.py
+antlr-2.7.6/examples/python/lexerTester/Makefile.in
+antlr-2.7.6/examples/python/lexerTester/shiplist
+antlr-2.7.6/examples/python/lexerTester/simplelexer1.g
+antlr-2.7.6/examples/python/lexerTester/simplelexer2.g
+antlr-2.7.6/examples/python/lexerTester/simplelexer3.g
+antlr-2.7.6/examples/python/lexerTester/simplelexer4.g
+antlr-2.7.6/examples/python/lexerTester/simplelexer5.g
+antlr-2.7.6/examples/python/lexerTester/test.in
+antlr-2.7.6/examples/python/linkChecker/test.html
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/orgs/antlr/repos?per_page=100 | rg '\"full_name\"|\"html_url\"|\"name\"' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 675ms:
+    "name": "antlrworks",
+    "full_name": "antlr/antlrworks",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/antlrworks",
+    "name": "antlrcs",
+    "full_name": "antlr/antlrcs",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/antlrcs",
+      "name": "Other",
+    "name": "examples-v3",
+    "full_name": "antlr/examples-v3",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/examples-v3",
+    "name": "antlr4",
+    "full_name": "antlr/antlr4",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/antlr4",
+      "name": "BSD 3-Clause \"New\" or \"Revised\" License",
+    "name": "stringtemplate4",
+    "full_name": "antlr/stringtemplate4",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/stringtemplate4",
+      "name": "Other",
+    "name": "antlr3",
+    "full_name": "antlr/antlr3",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/antlr3",
+    "name": "stringtemplate3",
+    "full_name": "antlr/stringtemplate3",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/stringtemplate3",
+      "name": "Other",
+    "name": "stringtemplate4-objc",
+    "full_name": "antlr/stringtemplate4-objc",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/stringtemplate4-objc",
+    "name": "grammars-v4",
+    "full_name": "antlr/grammars-v4",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/grammars-v4",
+      "name": "MIT License",
+    "name": "website-antlr4",
+    "full_name": "antlr/website-antlr4",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/website-antlr4",
+      "name": "Other",
+    "name": "website-st4",
+    "full_name": "antlr/website-st4",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/website-st4",
+      "name": "Other",
+    "name": "intellij-plugin-v4",
+    "full_name": "antlr/intellij-plugin-v4",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/intellij-plugin-v4",
+      "name": "BSD 3-Clause \"New\" or \"Revised\" License",
+    "name": "website-antlr3",
+    "full_name": "antlr/website-antlr3",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/website-antlr3",
+      "name": "Other",
+    "name": "website-antlr2",
+    "full_name": "antlr/website-antlr2",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/website-antlr2",
+      "name": "Other",
+    "name": "symtab",
+    "full_name": "antlr/symtab",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/symtab",
+      "name": "Other",
+    "name": "antlr4-cpp",
+    "full_name": "antlr/antlr4-cpp",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/antlr4-cpp",
+      "name": "Other",
+    "name": "jetbrains-plugin-st4",
+    "full_name": "antlr/jetbrains-plugin-st4",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/jetbrains-plugin-st4",
+      "name": "BSD 2-Clause \"Simplified\" License",
+    "name": "antlr4-intellij-adaptor",
+    "full_name": "antlr/antlr4-intellij-adaptor",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/antlr4-intellij-adaptor",
+      "name": "BSD 2-Clause \"Simplified\" License",
+    "name": "jetbrains-plugin-sample",
+    "full_name": "antlr/jetbrains-plugin-sample",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/jetbrains-plugin-sample",
+      "name": "BSD 2-Clause \"Simplified\" License",
+    "name": "grammars-v3",
+    "full_name": "antlr/grammars-v3",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/grammars-v3",
+    "name": "codebuff",
+    "full_name": "antlr/codebuff",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/codebuff",
+      "name": "BSD 2-Clause \"Simplified\" License",
+    "name": "antlr4test-maven-plugin",
+    "full_name": "antlr/antlr4test-maven-plugin",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/antlr4test-maven-plugin",
+      "name": "BSD 3-Clause \"New\" or \"Revised\" License",
+    "name": "Antlr4Formatter",
+    "full_name": "antlr/Antlr4Formatter",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/Antlr4Formatter",
+      "name": "BSD 2-Clause \"Simplified\" License",
+    "name": "antlr-php-runtime",
+    "full_name": "antlr/antlr-php-runtime",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/antlr-php-runtime",
+      "name": "BSD 3-Clause \"New\" or \"Revised\" License",
+    "name": "antlr-php-runtime-phpstan",
+    "full_name": "antlr/antlr-php-runtime-phpstan",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/antlr-php-runtime-phpstan",
+      "name": "Other",
+    "name": "antlr4-ci",
+    "full_name": "antlr/antlr4-ci",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/antlr4-ci",
+    "name": "performance",
+    "full_name": "antlr/performance",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/performance",
+      "name": "BSD 3-Clause \"New\" or \"Revised\" License",
+    "name": "antlr4-tools",
+    "full_name": "antlr/antlr4-tools",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/antlr4-tools",
+      "name": "MIT License",
+    "name": "antlr4-lab",
+    "full_name": "antlr/antlr4-lab",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/antlr4-lab",
+      "name": "MIT License",
+    "name": "_grammar-test",
+    "full_name": "antlr/_grammar-test",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/_grammar-test",
+    "name": "antlr5-specs",
+    "full_name": "antlr/antlr5-specs",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/antlr5-specs",
+      "name": "BSD 3-Clause \"New\" or \"Revised\" License",
+    "name": "antlr5",
+    "full_name": "antlr/antlr5",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/antlr5",
+      "name": "BSD 3-Clause \"New\" or \"Revised\" License",
+    "name": "grammars-v5",
+    "full_name": "antlr/grammars-v5",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/grammars-v5",
+    "name": "antlr5-lab",
+    "full_name": "antlr/antlr5-lab",
+      "html_url": "https://github.com/antlr",
+    "html_url": "https://github.com/antlr/antlr5-lab",
+      "name": "BSD 3-Clause \"New\" or \"Revised\" License",
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|antlr2|repo1.maven.org|maven2/.+-sources.jar|download/.+\\.tar\\.gz' build/discovered-artifact-metadata | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f | sed -n '1,40p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 0ms:
+build/discovered-artifact-metadata/antlr-antlr-2.7.6.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"' build/discovered-artifact-metadata | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 0ms:
+web search: 
+web search: https://repo1.maven.org/maven2/antlr/antlr/2.7.6/
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/antlr-2.7.6.tar.gz" https://www.antlr2.org/download/antlr-2.7.6.tar.gz; tar -xzf "$tmp/antlr-2.7.6.tar.gz" -C "$tmp" antlr-2.7.6/doc/index.html antlr-2.7.6/README.txt antlr-2.7.6/CHANGES.txt; rg -n '"'Version|2\\.7\\.6|2\\.7\\.5|What.*ANTLR|framework' \""'$tmp/antlr-2.7.6/doc/index.html" "$tmp/antlr-2.7.6/README.txt" "$tmp/antlr-2.7.6/CHANGES.txt" | sed -n '"'1,180p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22antlr%22+AND+a:%22antlr%22+AND+v:%222.7.6%22&rows=20&wt=json'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/search/repositories?q=antlr+2.7.6+antlr2+in:name,description,readme&per_page=10' | rg '\"full_name\"|\"html_url\"|\"description\"|\"updated_at\"' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 179ms:
+{"responseHeader":{"status":0,"QTime":3,"params":{"q":"g:\"antlr\" AND a:\"antlr\" AND v:\"2.7.6\"","core":"","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"antlr:antlr:2.7.6","g":"antlr","a":"antlr","v":"2.7.6","p":"jar","timestamp":1138671334000,"ec":["-sources.jar",".jar",".pom"]}]}}
+ succeeded in 226ms:
+/tmp/tmp.lH3t9lpSdg/antlr-2.7.6/CHANGES.txt:1:Changes with Antlr 2.7.6
+/tmp/tmp.lH3t9lpSdg/antlr-2.7.6/README.txt:64: as PCCTS - is a language tool that provides a framework for 
+/tmp/tmp.lH3t9lpSdg/antlr-2.7.6/README.txt:98:   http://www.antlr.org/blog/CHANGES-2.7.6.txt
+/tmp/tmp.lH3t9lpSdg/antlr-2.7.6/README.txt:202: Version 1.00B was released via an internet newsgroup (comp.compilers) 
+/tmp/tmp.lH3t9lpSdg/antlr-2.7.6/README.txt:216: Purdue. Version 1.00 incorporated this algorithm and included the AST
+/tmp/tmp.lH3t9lpSdg/antlr-2.7.6/README.txt:224: Version 1.06 was released in December 1992 and represented a large 
+/tmp/tmp.lH3t9lpSdg/antlr-2.7.6/README.txt:237: Version 1.10 was released on August 31, 1993 after Terence�s release
+/tmp/tmp.lH3t9lpSdg/antlr-2.7.6/README.txt:350: 2.7.5 release Xmas 2004 had the following enhancements:
+/tmp/tmp.lH3t9lpSdg/antlr-2.7.6/README.txt:355:  * A new make/autoconf framework as been contributed by Wolfgang
+/tmp/tmp.lH3t9lpSdg/antlr-2.7.6/README.txt:360: 2.7.6 release xmas 2005 was mainly a bug fix release.
+/tmp/tmp.lH3t9lpSdg/antlr-2.7.6/doc/index.html:53:    <div align="left"><pre><font face="Arial"><i>ANTLR Version 2.7.6
+/tmp/tmp.lH3t9lpSdg/antlr-2.7.6/doc/index.html:57:    <h2>What's ANTLR</h2>
+/tmp/tmp.lH3t9lpSdg/antlr-2.7.6/doc/index.html:61:    is a language tool that provides a framework for constructing recognizers, compilers, and
+/tmp/tmp.lH3t9lpSdg/antlr-2.7.6/doc/index.html:92:    <p><a href="http://www.antlr.org/blog/CHANGES-2.7.6.txt"><big><big>ANTLR 2.7.6 release notes</big></big></a></p>
+/tmp/tmp.lH3t9lpSdg/antlr-2.7.6/doc/index.html:208:          <li><a href="vocab.html#What files associated with vocabulary does ANTLR generate?">What
+/tmp/tmp.lH3t9lpSdg/antlr-2.7.6/doc/index.html:232:        <li><a href="runtime.html#_bb3">What ANTLR generates</a></li>
+
+ succeeded in 274ms:
+      "full_name": "Distrotech/antlr2",
+        "html_url": "https://github.com/Distrotech",
+      "html_url": "https://github.com/Distrotech/antlr2",
+      "description": "Build antlr2 needed for gjdoc http://www.antlr2.org/download/antlr-2.7.7.tar.gz",
+      "updated_at": "2024-10-09T14:52:24Z",
+
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|test-code-url|documentation-url|discovered-artifact-metadata|repository-url' . | sed -n '1,240p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 0ms:
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:299:                null, // source-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:300:                null, // repository-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:301:                null, // test-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:302:                null, // documentation-url
+./skills/review-library-bulk-update/SKILL.md:3:description: Review automated pull requests with the `library-bulk-update` label in graalvm-reachability-metadata. Use when asked to review or triage a PR that bumps tested versions for existing libraries, including approve vs close decisions, CI checks, diff-scope validation, and verification of `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` changes.
+./skills/review-library-bulk-update/SKILL.md:57:   - Review `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` with the same rules used by `PopulateArtifactURLs`.
+./skills/review-library-bulk-update/SKILL.md:67:- `repository-url` is the canonical repository root URL.
+./skills/review-library-bulk-update/SKILL.md:68:- `repository-url` must not include a versioned tree path such as `/tree/<tag>`.
+./skills/review-library-bulk-update/SKILL.md:69:- `source-code-url`, `test-code-url`, and `documentation-url` must point to the exact library version in the changed entry.
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:24:    private static final String DISCOVERY_DIR = "discovered-artifact-metadata";
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:26:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:28:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:30:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:32:        @JsonProperty("documentation-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:16:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:18:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:20:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:22:        @JsonProperty("documentation-url")
+./forge/utility_scripts/source_context.py:23:    "main": "source-code-url",
+./forge/utility_scripts/source_context.py:24:    "test": "test-code-url",
+./forge/utility_scripts/source_context.py:25:    "documentation": "documentation-url",
+./forge/utility_scripts/source_context.py:216:        repository_url=normalize_url_value(index_entry.get("repository-url")),
+./forge/docs/dynamic-access-workflow.md:52:   `source-code-url`, `test-code-url`, and `documentation-url` as required.
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:96:    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, description, and language when those fields already contain values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:106:    @Option(option = "verify-artifact-sources", description = "Require source/test-source validation before selecting source-code-url or test-code-url values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:304:                - source-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:305:                - repository-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:306:                - test-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:307:                - documentation-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:352:                    - Set "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:353:                    - Set "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:354:                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:355:                    - Set "test-code-url" to the selected test suite URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:356:                    - Set "documentation-url" to the selected project documentation URL for version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:362:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:365:                - Set missing "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:366:                - Set missing "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:367:                - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:368:                - Set missing "test-code-url" to the selected test suite URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:369:                - Set missing "documentation-url" to the selected project documentation URL for version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:169:                - Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:194:    task.setDescription("Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.")
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:6:    "repository-url" : "https://github.com/apiguardian-team/apiguardian",
+./metadata/org.apiguardian/apiguardian-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apiguardian/apiguardian-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+./metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+./metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:178:                .containsEntry("source-code-url", "https://example.com/source")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:179:                .containsEntry("repository-url", "https://example.com/repository")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:180:                .containsEntry("test-code-url", "https://example.com/tests")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:181:                .containsEntry("documentation-url", "https://example.com/docs")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:224:                .containsEntry("source-code-url", "https://example.com/source")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:225:                .containsEntry("repository-url", "https://example.com/repository")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:226:                .containsEntry("test-code-url", "https://example.com/tests")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:227:                .containsEntry("documentation-url", "https://example.com/docs")
+./metadata/org.apache.arrow/arrow-format/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-sources.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:6:    "repository-url" : "https://github.com/apache/arrow",
+./metadata/org.apache.arrow/arrow-format/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.arrow/arrow-format/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-javadoc.jar",
+./docs/CONTRIBUTING.md:108:* `source-code-url`: URL to the metadata source code location for this index entry.
+./docs/CONTRIBUTING.md:109:* `repository-url`: URL to the canonical project repository for this index entry.
+./docs/CONTRIBUTING.md:110:* `test-code-url`: URL to the test source code location for this index entry.
+./docs/CONTRIBUTING.md:111:* `documentation-url`: URL to the project documentation for this index entry.
+./docs/CONTRIBUTING.md:140:     "source-code-url": "https://github.com/example/repo/tree/main/metadata/org.example/library/1.1.0",
+./docs/CONTRIBUTING.md:141:     "repository-url": "https://github.com/example/repo",
+./docs/CONTRIBUTING.md:142:     "test-code-url": "https://github.com/example/repo/tree/main/tests/src/org.example/library/1.0.0",
+./docs/CONTRIBUTING.md:143:     "documentation-url": "https://github.com/example/repo/tree/main/README.md",
+./docs/CONTRIBUTING.md:155:To populate `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description` fields in matching `index.json` entries:
+./docs/FUNCTIONAL_SPEC.md:137:The schema follows semver, and **minor- and patch-version bumps** (e.g., `v2.0.1` → `v2.0.2` or `v2.0.x` → `v2.1.0`) are guaranteed to be backward-compatible with native-build-tools. Minor bumps add new optional fields used by the website, the test harness, or future tooling (`requires`, `test-version`, `skipped-versions`, `language`, `source-code-url`, `test-code-url`, `documentation-url`, `repository-url`); patch bumps refine validation of those same auxiliary fields. The plugin reads only the six fields enumerated above, so an older native-build-tools release continues to resolve metadata correctly against any newer minor or patch version of the schema. Only a **major-version bump** can break the contract, which NFR-4 forbids — schema changes are additive only.
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:58:                .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", \"description\", and \"language\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:59:                .contains("Set missing \"repository-url\" to the selected repository URL.")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:60:                .contains("\"repository-url\" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no \"/tree/v_1.2.11\").")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:61:                .contains("Set missing \"documentation-url\" to the selected project documentation URL for version \"1.4.1\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:66:                .contains("- source-code-url: <missing>")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:121:                .contains("- source-code-url: https://example.com/source-a")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:150:                .contains("- source-code-url: https://example.com/source-a")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:220:                    "source-code-url": "https://example.com/source-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:221:                    "repository-url": "https://example.com/repository-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:222:                    "test-code-url": "https://example.com/tests-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:223:                    "documentation-url": "https://example.com/docs-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:56:                .contains("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:69:        Path discoveryFile = tempDir.resolve("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+./metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-sources.jar",
+./metadata/org.jctools/jctools-core/index.json:9:    "repository-url": "https://github.com/JCTools/JCTools",
+./metadata/org.jctools/jctools-core/index.json:10:    "test-code-url": "https://github.com/JCTools/JCTools/tree/v2.1.2/jctools-core/src/test",
+./metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/2.0.0.Final/jboss-interceptor-spi-2.0.0.Final-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:6:    "repository-url" : "https://github.com/jbossinterceptors/jbossinterceptors",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:8:    "documentation-url" : "N/A",
+./metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-3.10.8-jakarta-sources.jar",
+./metadata/org.ehcache/ehcache/index.json:12:    "repository-url": "https://github.com/ehcache/ehcache3",
+./metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+./metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-3.10.8-jakarta-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+./metadata/org.apache.commons/commons-compress/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-sources.jar",
+./metadata/org.apache.commons/commons-compress/index.json:5:    "repository-url" : "https://github.com/apache/commons-compress",
+./metadata/org.apache.commons/commons-compress/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-test-sources.jar",
+./metadata/org.apache.commons/commons-compress/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-javadoc.jar",
+./metadata/org.apache.commons/commons-compress/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-sources.jar",
+./metadata/org.apache.commons/commons-compress/index.json:20:    "repository-url" : "https://github.com/apache/commons-compress",
+./metadata/org.apache.commons/commons-compress/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-test-sources.jar",
+./metadata/org.apache.commons/commons-compress/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-javadoc.jar",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/jakarta.websocket-client-api-2.1.0-sources.jar",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/websocket",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/jakarta.websocket-client-api-2.1.0-javadoc.jar",
+./metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/0.31.1/opencensus-api-0.31.1-sources.jar",
+./metadata/io.opencensus/opencensus-api/index.json:7:    "repository-url": "https://github.com/census-instrumentation/opencensus-java",
+./metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v0.31.1/api/src/test",
+./metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/0.31.1/opencensus-api-0.31.1-javadoc.jar",
+./metadata/org.apache.commons/commons-dbcp2/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-sources.jar",
+./metadata/org.apache.commons/commons-dbcp2/index.json:9:    "repository-url": "https://github.com/apache/commons-dbcp",
+./metadata/org.apache.commons/commons-dbcp2/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-test-sources.jar",
+./metadata/org.apache.commons/commons-dbcp2/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-javadoc.jar",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/2.1.0/jakarta.websocket-api-2.1.0-sources.jar",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/websocket",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/2.1.0/jakarta.websocket-api-2.1.0-javadoc.jar",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-sources.jar",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:6:    "repository-url" : "https://github.com/openzipkin/zipkin",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/2.23.2/zipkin-tests/src/test",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-javadoc.jar",
+./metadata/org.apache.commons/commons-text/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-sources.jar",
+./metadata/org.apache.commons/commons-text/index.json:6:    "repository-url" : "https://gitbox.apache.org/repos/asf?p=commons-text.git",
+./metadata/org.apache.commons/commons-text/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-test-sources.jar",
+./metadata/org.apache.commons/commons-text/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-javadoc.jar",
+./metadata/org.junit.platform/junit-platform-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2-sources.jar",
+./metadata/org.junit.platform/junit-platform-commons/index.json:6:    "repository-url" : "https://github.com/junit-team/junit5",
+./metadata/org.junit.platform/junit-platform-commons/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.junit.platform/junit-platform-commons/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2-javadoc.jar",
+./metadata/org.apache.commons/commons-pool2/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-sources.jar",
+./metadata/org.apache.commons/commons-pool2/index.json:9:    "repository-url": "https://github.com/apache/commons-pool",
+./metadata/org.apache.commons/commons-pool2/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-test-sources.jar",
+./metadata/org.apache.commons/commons-pool2/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-javadoc.jar",
+./metadata/org.apache.commons/commons-lang3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-sources.jar",
+./metadata/org.apache.commons/commons-lang3/index.json:6:    "repository-url" : "https://github.com/apache/commons-lang",
+./metadata/org.apache.commons/commons-lang3/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-test-sources.jar",
+./metadata/org.apache.commons/commons-lang3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-javadoc.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:10:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+./metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/2.0.1/mail/src/test",
+./metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77-javadoc.jar",
+./metadata/org.apache.commons/commons-collections4/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-sources.jar",
+./metadata/org.apache.commons/commons-collections4/index.json:6:    "repository-url" : "https://github.com/apache/commons-collections",
+./metadata/org.apache.commons/commons-collections4/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-test-sources.jar",
+./metadata/org.apache.commons/commons-collections4/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.70/bcpkix-jdk15on-1.70-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:9:    "repository-url": "https://github.com/bcgit/bc-java",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:10:    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.70/bcpkix-jdk15on-1.70-javadoc.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:6:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine/src/snakeyaml-engine-3.0.1/src/test/java/",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+./metadata/org.example/library/index.json:9:    "source-code-url": "N/A",
+./metadata/org.example/library/index.json:10:    "repository-url": "N/A",
+./metadata/org.example/library/index.json:11:    "test-code-url": "N/A",
+./metadata/org.example/library/index.json:12:    "documentation-url": "N/A",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:6:    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-sources.jar",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:13:    "repository-url": "https://github.com/jboss/jboss-jakarta-servlet-api_spec",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.15.2",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.15.2/src/test",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-javadoc.jar",
+./metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-sources.jar",
+./metadata/log4j/log4j/index.json:8:    "repository-url": "https://github.com/apache/logging-log4j1",
+./metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-1.2.17/tests",
+./metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-javadoc.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20150505-021ed5b3/google-closure-library-third-party-0.0-20150505-021ed5b3-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:6:    "repository-url" : "https://github.com/google/closure-library",
+./metadata/org.clojure/google-closure-library-third-party/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20150505-021ed5b3/google-closure-library-third-party-0.0-20150505-021ed5b3-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:8:    "documentation-url" : "https://github.com/google/closure-library/blob/021ed5b313da392a7139d0d3cf7011999ac8b672/README.md",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-annotations",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:38:    "repository-url" : "https://github.com/FasterXML/jackson-annotations",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:39:    "test-code-url" : "N/A",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:40:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-javadoc.jar",
+./metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/5.12.0/amqp-client-5.12.0-sources.jar",
+./metadata/com.rabbitmq/amqp-client/index.json:6:    "repository-url" : "https://github.com/rabbitmq/rabbitmq-java-client",
+./metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v5.12.0/src/test",
+./metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/5.12.0/amqp-client-5.12.0-javadoc.jar",
+./metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-sources.jar",
+./metadata/org.scalatest/scalatest-compatible/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+./metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalatest-test/src/test",
+./metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-javadoc.jar",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.3/paranamer-2.3-sources.jar",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:6:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:7:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-2.3/paranamer/src/test",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.3/paranamer-2.3-javadoc.jar",
+./metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-sources.jar",
+./metadata/org.awaitility/awaitility/index.json:6:    "repository-url" : "https://github.com/awaitility/awaitility",
+./metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-tests.jar",
+./metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-javadoc.jar",
+./metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-sources.jar",
+./metadata/org.awaitility/awaitility/index.json:22:    "repository-url" : "https://github.com/awaitility/awaitility",
+./metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-tests.jar",
+
+exec
+/usr/bin/bash -lc "find . -name '*artifact*metadata*' -o -name '*schema*' | sed -n '1,200p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 0ms:
+./stats/schemas
+./stats/schemas/run_metrics_output_schema.json
+./stats/schemas/library-stats-schema-v1.0.2.json
+./metadata/schemas
+./metadata/schemas/metadata-library-index-schema-v2.0.1.json
+./metadata/schemas/reachability-metadata-schema-v1.2.0.json
+./metadata/schemas/library-and-framework-list-schema-v1.0.0.json
+./build/discovered-artifact-metadata
+./forge/schemas
+./forge/schemas/strategy_schema.json
+./forge/schemas/benchmark_suite_schema.json
+./forge/schemas/benchmark_run_metrics_schema.json
+./forge/utility_scripts/schema_validator.py
+
+exec
+/usr/bin/bash -lc "sed -n '1,90p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 0ms:
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Build-local discovered metadata for a single library coordinate.
+ */
+public record DiscoveredArtifactMetadata(
+        String coordinates,
+        @JsonProperty("source-code-url")
+        String sourceCodeUrl,
+        @JsonProperty("repository-url")
+        String repositoryUrl,
+        @JsonProperty("test-code-url")
+        String testCodeUrl,
+        @JsonProperty("documentation-url")
+        String documentationUrl,
+        @JsonProperty("description")
+        String description,
+        @JsonProperty("language")
+        LibraryLanguage language
+) {}
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/schemas/metadata-library-index-schema-v2.0.1.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 0ms:
+{
+  "$id": "https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/metadata/schemas/metadata-library-index-schema-v2.0.1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Schema for metadata/<groupId>/<artifactId>/index.json. Each entry describes a metadata bundle for a range of library versions.",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "allowed-packages",
+      "metadata-version",
+      "tested-versions"
+    ],
+    "properties": {
+      "metadata-version": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Subdirectory name where the metadata files for this entry reside, e.g. '7.1.0.Final'."
+      },
+      "tested-versions": {
+        "type": "array",
+        "description": "Explicitly tested upstream library versions that this metadata is known to support.",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "test-version": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Overrides 'metadata-version' for use in test directories. This allows one metadata entry to share tests defined for a different version's metadata directory."
+      },
+      "source-code-url": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Optional URL pointing to the metadata source code for this entry."
+      },
+      "repository-url": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Optional URL pointing to the canonical project repository for this entry."
+      },
+      "documentation-url": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Optional URL pointing to the project documentation for this entry."
+      },
+      "description": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Optional two-sentence explanation of what the library does."
+      },
+      "language": {
+        "$ref": "#/$defs/libraryLanguage"
+      },
+      "test-code-url": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Optional URL pointing to the test source code for this entry."
+      },
+      "latest": {
+        "type": "boolean",
+        "description": "Marks this entry as the latest/default metadata for currently supported versions."
+      },
+      "default-for": {
+        "type": "string",
+        "description": "Java regular expression describing the version range for which this entry should be used by default (e.g. '7\\\\.1\\\\..*')."
+      },
+      "override": {
+        "type": "boolean",
+        "description": "When true, expresses the intent to exclude outdated built-in metadata shipped with Native Image for the matched versions."
+      },
+      "allowed-packages": {
+        "type": "array",
+        "description": "Packages expected to contain metadata entries for this library. Used by CI checks.",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "skipped-versions": {
+        "type": "array",
+        "description": "Versions explicitly excluded from support, each with a reason.",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [ "version", "reason" ],
+          "properties": {
+            "version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      },
+      "requires": {
+        "type": "array",
+        "description": "List of dependent modules (group:artifact) whose metadata is required at runtime.",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "$ref": "#/$defs/moduleCoordinate"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "moduleCoordinate": {
+      "type": "string",
+      "pattern": "^[^:]+:[^:]+$"
+
+exec
+/usr/bin/bash -lc "sed -n '330,390p' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 0ms:
+                testVersion
+        ).strip();
+    }
+
+    private static String sourceArtifactVerificationInstructions(boolean verifyArtifactSources, String version) {
+        if (!verifyArtifactSources) {
+            return "";
+        }
+        return """
+                Source Artifact Verification (required):
+                - Verify candidate source URLs for version "%s", including Maven and non-Maven candidates.
+                - If you use Maven source artifacts, confirm `-sources.jar` contains real source files (`.java`, `.kt`, `.scala`, `.groovy`), not only metadata/license files.
+                - If you use Maven test-source artifacts, confirm `-test-sources.jar` contains real test source files.
+                - For non-Maven source/test URLs (for example repository tree pages or downloadable archives), verify that the selected URL resolves to real source/test files for the exact version.
+                - If a candidate source/test URL fails this verification, do not use it. Prefer a verified repository tag URL instead.
+                """.formatted(version).strip();
+    }
+
+    private static String urlUpdateInstructions(boolean overwriteExisting, String version) {
+        if (overwriteExisting) {
+            return """
+                    - Overwrite existing URL values.
+                    - Set "source-code-url" to the selected source URL.
+                    - Set "repository-url" to the selected repository URL.
+                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+                    - Set "test-code-url" to the selected test suite URL.
+                    - Set "documentation-url" to the selected project documentation URL for version "%s".
+                    - Set "description" to a concise explanation of the library in exactly two sentences.
+                    - Set "language" to the structured language object when the library is language-specific; otherwise leave the field absent.
+                    """.formatted(version).strip();
+        }
+        return """
+                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+                - A field is missing only when absent, null, or blank.
+                - Do not modify fields that already contain a non-blank value.
+                - Set missing "source-code-url" to the selected source URL.
+                - Set missing "repository-url" to the selected repository URL.
+                - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+                - Set missing "test-code-url" to the selected test suite URL.
+                - Set missing "documentation-url" to the selected project documentation URL for version "%s".
+                - Set missing "description" to a concise explanation of the library in exactly two sentences.
+                - Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+                """.formatted(version).strip();
+    }
+
+    private static String currentValue(String value) {
+        return hasText(value) ? value : "<missing>";
+    }
+
+    private static String currentLanguageValue(MetadataVersionsIndexEntry entry) {
+        if (entry.language() == null) {
+            return "<missing>";
+        }
+        return "{\"name\": \"%s\", \"version\": \"%s\"}".formatted(entry.language().name(), entry.language().version());
+    }
+
+    private List<String> buildInvocation(List<String> commandTokens, String prompt) {
+        List<String> invocation = new ArrayList<>(commandTokens.size() + 1);
+        boolean replaced = false;
+        for (String token : commandTokens) {
+            if (token.contains(PROMPT_PLACEHOLDER)) {
+
+codex
+I can verify exact 2.7.6 source and documentation inside the upstream archive, and Maven confirms there is no test-source or javadoc artifact for this coordinate. I’m doing one more pass for a canonical SCM repository, because the project homepage/source archive is not the same as a repository root.
+exec
+/usr/bin/bash -lc "curl -fsSL https://www.antlr2.org/ | rg -i 'repository|cvs|svn|git|sourceforge|github|download|source' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+exec
+/usr/bin/bash -lc "curl -fsSL https://www.antlr2.org/about.html | rg -i 'repository|cvs|svn|git|sourceforge|github|download|source' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+exec
+/usr/bin/bash -lc "curl -fsSL https://www.antlr2.org/license.html | rg -i 'repository|cvs|svn|git|sourceforge|github|download|source|copyright' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 126ms:
+<strong><a href="http://www.antlr2.org/download.html">Download</a></strong> |
+Download now! &raquo;</strong></font><br></td>
+<a href="http://www.antlr2.org/download.html"><img src="http://www.antlr2.org/images/button-download.gif" width="122" height="29" alt="Download" align="right" border="0"></a></td>
+Java, C#, C++, or Python actions.  ANTLR provides excellent support for tree construction, tree walking, and translation.  There are currently about <b>5,000</b> ANTLR source downloads a month.
+Creative coding language and IDE uses ANTLR for source preprocessing<br><br>
+ANTLR 3 grammar and generated Java parser for XQuery with Update, Scripting...<br><br><a href="http://mdsl.sourceforge.net/"><b>mdsl</b></a><br>
+
+ succeeded in 117ms:
+    company may do whatever they wish with source code distributed with ANTLR or the code
+    ANTLR or incorporate any source code into one of your programs (commercial product,
+    that the headers remain intact in our source code. As long as these guidelines are kept,
+valid, the author grants a copyright licence to the general public
+derivates under the terms of any (OSI approved) Open Source licence.
+(a) The contribution was created in whole or in part by me and I have the right to submit it under the open source license indicated in the file; or
+(b) The contribution is based upon previous work that, to the best of my knowledge, is covered under an appropriate open source license and I have the right under that license to submit that work with modifications, whether created in whole or in part by me, under the same open source license (unless I am permitted to submit under a different license), as indicated in the file; or
+(d) In the case of each of (a), (b), or (c), I understand and agree that this project and the contribution are public and that a record of the contribution (including all personal information I submit with it, including my sign-off) is maintained indefinitely and may be redistributed consistent with this project or the open source license indicated in the file. 
+
+ succeeded in 122ms:
+<strong><a href="http://www.antlr2.org/download.html">Download</a></strong> |
+Download now! &raquo;</strong></font><br></td>
+<a href="http://www.antlr2.org/download.html"><img src="http://www.antlr2.org/images/button-download.gif" width="122" height="29" alt="Download" align="right" border="0"></a></td>
+	<b><font color="#CBFF7D">&raquo;</font> <a href="http://www.antlr2.org/download.html">Download</a></b><br>
+Java, C#, Python, or C++ actions.  ANTLR is popular because it is easy to understand, powerful, flexible, generates human-readable output, and comes with complete source.  ANTLR provides excellent support for tree construction, tree walking, and translation.  There are currently over 5000 ANTLR source downloads a month.
+
+exec
+/usr/bin/bash -lc "for url in https://repo.maven.apache.org/maven2/antlr/antlr/2.7.6/antlr-2.7.6-sources.jar https://repo.maven.apache.org/maven2/antlr/antlr/2.7.6/antlr-2.7.6-test-sources.jar https://repo.maven.apache.org/maven2/antlr/antlr/2.7.6/antlr-2.7.6-tests.jar https://repo.maven.apache.org/maven2/antlr/antlr/2.7.6/antlr-2.7.6-javadoc.jar; do printf '%s ' \""'$url"; curl -o /dev/null -s -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22antlr%22+AND+a:%22antlr%22+AND+v:%222.7.6%22&core=gav&rows=20&wt=json' | jq -r '.response.docs[0].ec[]'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/antlr-2.7.6.tar.gz" https://www.antlr2.org/download/antlr-2.7.6.tar.gz; tar -xzf "$tmp/antlr-2.7.6.tar.gz" -C "$tmp" antlr-2.7.6/doc/index.html antlr-2.7.6/README.txt; sed -n '"'53,70p' \""'$tmp/antlr-2.7.6/doc/index.html"; sed -n '"'60,70p' \""'$tmp/antlr-2.7.6/README.txt"; rm -rf "$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 213ms:
+    <div align="left"><pre><font face="Arial"><i>ANTLR Version 2.7.6
+</i><font
+face="Arial" size="2"><em>December 7, 2005</em></font></pre>
+
+    <h2>What's ANTLR</h2>
+
+<p><font
+    face="Arial"><strong>ANTLR</strong>, ANother Tool for Language Recognition, (formerly <strong>PCCTS</strong>)
+    is a language tool that provides a framework for constructing recognizers, compilers, and
+    translators from grammatical descriptions containing Java, C++, or C# actions [You can use
+    PCCTS 1.xx to generate C-based parsers].</font></p>
+    <p><font face="Arial">Computer language translation has become a common task. While
+    compilers and tools for traditional computer languages (such as C or Java) are still being
+    built, their number is dwarfed by the thousands of mini-languages for which recognizers
+    and translators are being developed. Programmers construct translators for database
+    formats, graphical data files (e.g., PostScript, AutoCAD), text processing files (e.g.,
+    HTML, SGML).&nbsp; ANTLR is designed to handle all of your translation tasks.</p>
+
+
+WHAT IS ANTLR?
+
+ ANTLR, (AN)other (T)ool for (L)anguage (R)ecognition - formerly known 
+ as PCCTS - is a language tool that provides a framework for 
+ constructing recognizers, compilers, and translators from grammatical 
+ descriptions containing actions in the following languages:
+
+  Java, 
+  C++, 
+  C# or
+
+ succeeded in 286ms:
+-sources.jar
+.jar
+.pom
+
+ succeeded in 749ms:
+404
+https://repo.maven.apache.org/maven2/antlr/antlr/2.7.6/antlr-2.7.6-tests.jar 404
+https://repo.maven.apache.org/maven2/antlr/antlr/2.7.6/antlr-2.7.6-javadoc.jar 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://www.antlr2.org/doc/index.html | rg -n 'ANTLR Version|release notes|2\\.7\\.' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 122ms:
+72:<font size="2" face="arial,helvetica"><strong>Latest version is <font color="#ffffff">2.7.7.</font><br>
+434:    <div align="left"><pre><font face="Arial"><i>ANTLR Version 2.7.5
+473:    <p><a href="http://www.antlr.org/blog/CHANGES-2.7.5.txt"><big><big>ANTLR 2.7.5 release notes</big></big></a></p>
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/search/repositories?q=antlr2+antlr+2.7.6&per_page=20' | jq -r '.items[] | [.full_name, .html_url, (.description // \"\")] | @tsv' | sed -n '1,60p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+exec
+/usr/bin/bash -lc "curl -fsSL https://sourceforge.net/projects/antlr/ | rg -i 'code|git|svn|cvs|repository|antlr2|2\\.7\\.6' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/search/code?q=antlr-2.7.6+in:file' | jq -r '.items[] | [.repository.full_name, .html_url] | @tsv' | sed -n '1,40p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 104ms:
+curl: (22) The requested URL returned error: 401
+
+ succeeded in 249ms:
+ succeeded in 260ms:
+                country_code2: 'CH',
+            }SF.EU_country_codes = ["IT","DK","CH","AI","DE","GP","WF","EE","HR","VG","TC","RO","HU","GB","PL","YT","GS","NO","CW","FI","SH","BG","ME","RE","FR","MQ","PN","CY","MF","NC","IO","LV","AW","SE","BM","IS","SK","FK","CZ","ES","GG","IE","JE","SI","GF","AT","NL","GL","PT","BL","LU","GI","LI","PF","BE","TF","KY","LT","AX","MT","PM","SX","GR","MS"];
+            SF.unknown_country_codes = ["","A1","A2","O1"];
+<a href="/p/antlr/code/" title="Browse Code"
+        class="button blue big-text browse_code">
+        Browse Code
+                <a href="/p/antlr/code/"
+                <span>Code</span></a>
+                                <span class="p-locality">San Diego, CA <span class="p-postal-code">92101</span></span><br>
+                    return key + "=" + encodeURIComponent(params[key]);
+            imageUrl = imageUrl.replace(encodeURIComponent("$PAGE_TITLE"), document.title);  
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://sourceforge.net/p/antlr/code/ | rg -i 'git|svn|cvs|clone|repository|checkout|tree|code' | sed -n '1,180p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+exec
+/usr/bin/bash -lc "curl -fsSL https://sourceforge.net/p/antlr/code/HEAD/tree/ | rg -i 'antlr|2\\.7\\.6|trunk|tags|branches|repository|tree|commit' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+exec
+/usr/bin/bash -lc "curl -I -L -s https://sourceforge.net/p/antlr/code/HEAD/tree/tags/antlr-2.7.6/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 223ms:
+HTTP/2 404 
+date: Thu, 30 Apr 2026 07:08:07 GMT
+content-type: text/html; charset=utf-8
+content-length: 43641
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1777483952>; rel=preload; as=style
+content-security-policy: report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; form-action 'self'; object-src 'none'; script-src-attr 'none' 'report-sample'; frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; upgrade-insecure-requests; frame-ancestors 'self'; fenced-frame-src https:; script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+set-cookie: VISITOR=2e1d58f1-04b8-474d-afe8-782455a73669; Max-Age=315360000; Path=/; expires=Sun, 27-Apr-2036 07:08:07 GMT; secure; HttpOnly
+set-cookie: _csrf_token=06309b2de304fc02a1888923295f76565da1747c49c955887490963772ed56705ae44f7cc7ca65ef; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=pR7a5WP4yK6VlbspWezGJCwcbzb87fy8sMibDY3WccU-1777532887.422565-1.0.1.1-_o7AQ6kLaHXYXE0WrTm04BNTMR87ut3As7KIkgqvsKgnjvNGCUmzszLKacEpG_cNUYPgCIuFdQCEXwxQMyzCvjmWHi0OHu4pWAYCRP1h_QujbrP6qWobytSEkk3hxIHT; HttpOnly; Secure; Path=/; Domain=sourceforge.net; Expires=Thu, 30 Apr 2026 07:38:07 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9f44b6a269158628-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 436ms:
+curl: (22) The requested URL returned error: 404
+
+2026-04-30T07:08:19.392757Z ERROR codex_core::tools::router: error=write_stdin failed: stdin is closed for this session; rerun exec_command with tty=true to keep stdin open
+ succeeded in 12707ms:
+  antlr / Code
+                country_code2: 'CH',
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/p/antlr/code/feed.rss"/>
+    <link rel="alternate" type="application/atom+xml" title="Atom" href="/p/antlr/code/feed.atom"/>
+        <link rel="canonical" href="https://sourceforge.net/p/antlr/code/ci/master/tree/" />
+            dimension2: 'git'
+            let imageUrl = "https://io.narrative.io/?companyId=2440&id=first_party%3A0a1b2eca-6fd8-49b2-b965-d24872eeec33&id=site_name%3Asourceforge.net&id=url%3A%2Fp%2Fantlr%2Fcode%2Fci%2Fmaster%2Ftree%2F&id=pagetitle%3A%24PAGE_TITLE&id=vertical%3AOpen+Source+Software&id=product%3Aantlr";
+            imageUrl = imageUrl.replace(encodeURIComponent("$PAGE_TITLE"), document.title);  
+    <section id="page-body" class=" neighborhood-Projects project-antlr mountpoint-code 
+                    <span itemprop="name">Code</span>
+        <h1  >antlr Code
+        <a href="/p/antlr/code/" class="tool-git-32" >
+            Code
+        <a class="icon" href="/p/antlr/code/commit_browser" rel="nofollow" title="Browse Commits"><i class="fa fa-list"></i>
+        <a class="icon" href="/p/antlr/code/fork" rel="nofollow" title="Fork"><i class="fa fa-code-fork"></i>
+        <a href="/p/antlr/code/merge-requests/"  rel="nofollow" >
+        <a href="/p/antlr/code/ci/master/tree/"  rel="nofollow" >
+Tree <a href="/p/antlr/code/ci/b81aa6b96640f208d63a288fa8785ca808a23372/" rel="nofollow">[b81aa6]</a> 
+<form class="tarball" action="/p/antlr/code/ci/master/tarball" method="post">
+<a class="icon" href="/p/antlr/code/ci/b81aa6b96640f208d63a288fa8785ca808a23372/log/?path=" rel="nofollow" title="History"><i class="fa fa-calendar"></i>&nbsp;History</a>
+<a class="icon" href="/p/antlr/code/feed/" rel="nofollow" title="Feed"><i class="fa fa-rss"></i></a>
+            <a class="btn" data-url="git clone https://git.code.sf.net/p/antlr/code antlr-code" title="HTTPS">
+            <a class="btn" data-url="git clone git://git.code.sf.net/p/antlr/code antlr-code" title="git://">
+              git://
+             value="git clone https://git.code.sf.net/p/antlr/code antlr-code"/>
+        <a href="/p/antlr/code/ci/b81aa6b96640f208d63a288fa8785ca808a23372/" rel="nofollow">
+        <a class="icon" href=".gitignore" rel="nofollow" title=".gitignore"><i class="fa fa-file-o"></i>&nbsp;.gitignore</a>
+        <a href="/p/antlr/code/ci/b81aa6b96640f208d63a288fa8785ca808a23372/" rel="nofollow">
+        <a href="/p/antlr/code/ci/b81aa6b96640f208d63a288fa8785ca808a23372/" rel="nofollow">
+        <a href="/p/antlr/code/ci/b81aa6b96640f208d63a288fa8785ca808a23372/" rel="nofollow">
+        <a href="/p/antlr/code/ci/b81aa6b96640f208d63a288fa8785ca808a23372/" rel="nofollow">
+<p>This is the repo with example code for my <a href="http://niels.nu/blog/2015/antlr-is-awesome.html" rel="nofollow">Antlr is Awesome</a> blog post. </p></div>
+                                <span class="p-street-address">1320 Columbia Street Suite 310</span><br>
+                                <span class="p-locality">San Diego, CA <span class="p-postal-code">92101</span></span><br>
+    var checkout_cmd = $(this).attr('data-url');
+    $(parent).find('input').val(checkout_cmd);
+    if (checkout_cmd.indexOf(' http://') !== -1 || checkout_cmd.indexOf(' https://') !== -1 ) {
+        $.get('/p/antlr/code/status', function(data) {
+            'page_location': 'https://sourceforge.net/p/antlr/code/ci/master/tree/',
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/antlr-2.7.6.tar.gz" https://www.antlr2.org/download/antlr-2.7.6.tar.gz; tar -xzf "$tmp/antlr-2.7.6.tar.gz" -C "$tmp"; rg -n '"'test|examples|check|runtest' \""'$tmp/antlr-2.7.6/Makefile.in" "$tmp/antlr-2.7.6/configure.in" "$tmp/antlr-2.7.6/INSTALL.txt" "$tmp/antlr-2.7.6/README.txt" | sed -n '"'1,220p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/antlr-2.7.6.tar.gz" https://www.antlr2.org/download/antlr-2.7.6.tar.gz; tar -xzf "$tmp/antlr-2.7.6.tar.gz" -C "$tmp"; find "$tmp/antlr-2.7.6" -maxdepth 2 -type f -iname '"'*makefile*' -print | sed -n '1,80p'; sed -n '1,220p' \""'$tmp/antlr-2.7.6/examples/Makefile.in" 2>/dev/null || true; rm -rf "$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 248ms:
+/tmp/tmp.4qlxR45gUE/antlr-2.7.6/lib/Makefile.in
+/tmp/tmp.4qlxR45gUE/antlr-2.7.6/Makefile.in
+/tmp/tmp.4qlxR45gUE/antlr-2.7.6/antlr/Makefile.in
+/tmp/tmp.4qlxR45gUE/antlr-2.7.6/doc/Makefile.in
+/tmp/tmp.4qlxR45gUE/antlr-2.7.6/examples/Makefile.in
+###############################################################################
+# $Id:$
+###############################################################################
+## do not change this value 
+subdir=examples
+
+## get configured variables
+@stdvars@
+
+## get configured (standard) rules
+@stdmake@
+
+## get configured dependencies 
+@stddeps@
+
+ succeeded in 258ms:
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:5: want to get some general information please checkout file  
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:22: You may want to checkout also some target specific information on how
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:87:   $ ./configure --disable-examples
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:94:  ANTLR's source distribution contains lot's of examples. Making them
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:95:  can be quit longish. You may want to skip those examples if you are
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:96:  just interested in  building the core libraries. Note that examples
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:211: running regression tests. It will makes you very confident if all
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:212: test run through:
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:214:   $ make test
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:216: However, please don't panic if a test fails. In most cases it is
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:217: rather a problem  of running the test itself than a problem with
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:275: For a set of standard examples have a look into directory "examples"
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:299: Configure is not looking up the registry to check for installed soft-
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:300: ware. Instead, configure will just check the $PATH for known compiler
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:301: names and also check some well know locations like "/usr/local/bin"
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:357: The default behaviour of configure is to check whether a suitable
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:471: You may leave out the examples just by
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:473:  --disable-examples
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:476: we recommend to configure with examples, test them and to study them
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:507: all flags that can be given to ANTLR (check java antlr.Tools -h).  
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:543: Here configure will check your $PATH for y-make and z-make bug x-make
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:548: the file is directly checked for existence. Here's an example:
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:553: /usr/bin/make is checked for existence.
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:566: ANTLR  has  been tested with SUN Java 1.4.x using either SUN's javac
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:568: tested and are not expected to work.
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:785: if test -z "${CXX}" ; then
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:793:This script snippet checks about the compiler to be used for compiling
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:941:  $ cd ${builddir} && ./config.status --recheck && make
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:977: examples tested. Then just move on and remove subdirectory
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:978: "examples".
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:1039: ANTLR  has  been  developed  and  tested on platforms listed below. A 
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:1040: platform is considered supported and tested if basically all standard
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:1041: examples are working.
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:1058: ANTLR has been tested on:
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/INSTALL.txt:1079:   options. Jikes 1.14 and 1.15 are not tested due to compilation
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/README.txt:40:Please consult the INSTALL.txt file for information on tested
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/README.txt:41:configurations.  If you have a comment about an already tested
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/README.txt:47:wipe out all of your work from your system.  We do some simple testing 
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/README.txt:49:testing this release on a source repository that is not critical to 
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/README.txt:114:  $ make test         # optional
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/README.txt:145: For a set of standard examples have a look into directory "examples"
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/README.txt:221: University of Minnesota) tested this version extensively. Dana 
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/README.txt:222: Hoggatt (Micro Data Base Systems, Inc.) tested 1.00 heavily. 
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/Makefile.in:12:##   SUBDIRS     = antlr doc examples lib
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/Makefile.in:20:## clean, install, test etc.
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/Makefile.in:32:test clean distclean install ::
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/Makefile.in:33:	@ if test -f examples/Makefile ; then \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/Makefile.in:34:		$(MAKE) -C examples $@ ; \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/Makefile.in:115:	@echo " public static final String datestamp  = \"$(TIMESTAMP)\";"  >> antlr/Version.java
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/Makefile.in:167:	Q=`find . -name Makefile` && test -n "$$Q" && $(RM) $${Q}
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:208:## option --enable-examples
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:214:  [examples],
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:216:  [include examples into this configuration (enabled)],
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:231:    if test -n "${ANTLR_WITH_ANTLR_CMD}" ; then
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:250:    if test -n "${ANTLR_WITH_ANTLR_JAR}" ; then
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:359:test -z "$CYGPATH"    && AC_PATH_PROGS(CYGPATH, cygpath$EXEEXT )
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:364:if test -n "$CYGPATH" ; then
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:391:   own candidate a check for GNU make is skipped and all bets are on.
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:408:if test "x${user_make}" == "x" ; then
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:525:    ## by writing a specialized test.
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:530:    test -n "${BOOTCLASSPATH}" && {
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:533:        test -f "${f}" -o -d "${f}" || {
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:538:Please check arguments given to
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:550:    test -z "${BOOTCLASSPATH}" && {
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:555:          while test $# -gt 1 ; do
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:558:            test -d "$d" || continue
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:560:            test -d "$d" || continue
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:561:            test -f "$d/jre/lib/rt.jar" && {
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:566:            test -f "$d/lib/rt.jar" && {
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:573:          test -z "${BOOTCLASSPATH}" && {
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:576:              if test -f "$fwdir/$x/Classes/classes.jar" ; then
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:583:          test -z "${BOOTCLASSPATH}" && {
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:593:    test -n "${BOOTCLASSPATH}" && {
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:607:      while test $# -gt 0 ; do
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:671:    if test "x$GXX" = xyes; then
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:684:        ## check whether this is Microsoft C++ (tbd)
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:688:        ## check whether this is Borland C++ (tbd)
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:691:        ## check whether this is SUN C++ (tbd)
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:696:        ## check whether this is IBM C++ (tbd)
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:700:        ## check whether this is HP C++ (tbd)
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:704:        ## check for Digital UNIX cxx (Tru64)??
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:771:    ## Some further specific test required as are using std C++.
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:777:test -z "$DOXYGEN" && AC_PATH_PROG(DOXYGEN, doxygen, doxygen,  )
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:785:test -z "$MKDIR" && AC_PATH_PROG(MKDIR, mkdir$EXEEXT, mkdir$EXEEXT )
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:786:test -z "$RM"    && AC_PATH_PROG(RM,    rm$EXEEXT, rm$EXEEXT )
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:800:test -z "$CHMOD" && AC_PATH_PROG(CHMOD, chmod$EXEEXT, chmod$EXEEXT )
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:801:test -z "$SED"   && AC_PATH_PROG(SED,   sed$EXEEXT, sed$EXEEXT )
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:802:test -z "$CAT"   && AC_PATH_PROG(CAT,   cat$EXEEXT, cat$EXEEXT )
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:803:test -z "$GREP"  && AC_PATH_PROG(GREP,  grep$EXEEXT, grep$EXEEXT )
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:848:    # We have a Makefile that loops through all python examples.
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:852:          [examples/python/Makefile]
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:855:            examples/python/asn1/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:856:            examples/python/ASTsupport/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:857:            examples/python/calc/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:858:            examples/python/columns/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:859:            examples/python/exprAST/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:860:            examples/python/filter/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:861:            examples/python/filterWithRule/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:862:            examples/python/heteroAST/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:863:            examples/python/HTML/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:864:            examples/python/IDL/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:865:            examples/python/imagNodeAST/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:866:            examples/python/includeFile/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:867:            examples/python/inherit.tinyc/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:868:            examples/python/java/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:869:            examples/python/lexerTester/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:870:            examples/python/lexRewrite/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:871:            examples/python/linkChecker/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:872:            examples/python/multiLexer/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:873:            examples/python/multiParser/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:874:            examples/python/parseBinary/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:875:            examples/python/pascal/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:876:            examples/python/cpp/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:877:            examples/python/preserveWhiteSpace/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:878:            examples/python/tinybasic/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:879:            examples/python/tinyc/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:880:            examples/python/transform/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:881:            examples/python/treewalk/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:882:            examples/python/unicode/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:883:            examples/python/unicode.IDENTs/Makefile \
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:884:            examples/python/xml/Makefile
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:916:test -n "${CSHARPC}"  && {
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:950:    # We have a Makefile that loops through all python examples.
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:953:        AC_CONFIG_FILES([examples/csharp/ASTsupport/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:954:        AC_CONFIG_FILES([examples/csharp/HTML/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:955:        AC_CONFIG_FILES([examples/csharp/IDL/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:956:        AC_CONFIG_FILES([examples/csharp/ParseTreeDebug/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:957:        AC_CONFIG_FILES([examples/csharp/TokenStreamRewrite/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:958:        AC_CONFIG_FILES([examples/csharp/calc/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:959:        AC_CONFIG_FILES([examples/csharp/columns/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:960:        AC_CONFIG_FILES([examples/csharp/exprAST/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:961:        AC_CONFIG_FILES([examples/csharp/filter/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:962:        AC_CONFIG_FILES([examples/csharp/filterWithRule/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:963:        AC_CONFIG_FILES([examples/csharp/heteroAST/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:964:        AC_CONFIG_FILES([examples/csharp/java/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:965:        AC_CONFIG_FILES([examples/csharp/multiLexer/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:966:        AC_CONFIG_FILES([examples/csharp/parseBinary/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:967:        AC_CONFIG_FILES([examples/csharp/preserveWhiteSpace/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:968:        AC_CONFIG_FILES([examples/csharp/tinyc/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:969:        AC_CONFIG_FILES([examples/csharp/unicode/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:970:        AC_CONFIG_FILES([examples/csharp/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1021:    # C++ examples
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1024:        AC_CONFIG_FILES([examples/cpp/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1025:        AC_CONFIG_FILES([examples/cpp/ASTsupport/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1026:        AC_CONFIG_FILES([examples/cpp/calc/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1027:        AC_CONFIG_FILES([examples/cpp/exprAST/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1028:        AC_CONFIG_FILES([examples/cpp/filter/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1029:        AC_CONFIG_FILES([examples/cpp/filterWithRule/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1030:        AC_CONFIG_FILES([examples/cpp/flexLexer/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1031:        AC_CONFIG_FILES([examples/cpp/HTML/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1032:        AC_CONFIG_FILES([examples/cpp/heteroAST/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1033:        AC_CONFIG_FILES([examples/cpp/IDL/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1034:        AC_CONFIG_FILES([examples/cpp/imagNodeAST/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1035:        AC_CONFIG_FILES([examples/cpp/includeFile/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1036:        AC_CONFIG_FILES([examples/cpp/inherit.tinyc/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1037:        AC_CONFIG_FILES([examples/cpp/java/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1038:        AC_CONFIG_FILES([examples/cpp/lexRewrite/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1039:        AC_CONFIG_FILES([examples/cpp/multiLexer/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1040:        AC_CONFIG_FILES([examples/cpp/multiParser/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1041:        AC_CONFIG_FILES([examples/cpp/parseBinary/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1042:        AC_CONFIG_FILES([examples/cpp/preserveWhiteSpace/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1043:        AC_CONFIG_FILES([examples/cpp/tinyc/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1044:        AC_CONFIG_FILES([examples/cpp/tokenStreamRewrite/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1045:        AC_CONFIG_FILES([examples/cpp/transform/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1046:        AC_CONFIG_FILES([examples/cpp/treewalk/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1047:        AC_CONFIG_FILES([examples/cpp/unicode/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1057:    AC_CONFIG_FILES([examples/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1070:        AC_CONFIG_FILES([examples/java/ASTsupport/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1071:        AC_CONFIG_FILES([examples/java/HTML/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1072:        AC_CONFIG_FILES([examples/java/IDL/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1073:        AC_CONFIG_FILES([examples/java/calc/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1074:        AC_CONFIG_FILES([examples/java/columns/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1075:        AC_CONFIG_FILES([examples/java/exprAST/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1076:        AC_CONFIG_FILES([examples/java/filter/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1077:        AC_CONFIG_FILES([examples/java/filterWithRule/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1078:        AC_CONFIG_FILES([examples/java/heteroAST/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1079:        AC_CONFIG_FILES([examples/java/imagNodeAST/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1080:        AC_CONFIG_FILES([examples/java/includeFile/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1081:        AC_CONFIG_FILES([examples/java/inherit.tinyc/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1082:        AC_CONFIG_FILES([examples/java/java/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1083:        AC_CONFIG_FILES([examples/java/lexRewrite/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1084:        AC_CONFIG_FILES([examples/java/linkChecker/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1085:        AC_CONFIG_FILES([examples/java/multiLexer/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1086:        AC_CONFIG_FILES([examples/java/parseBinary/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1087:        AC_CONFIG_FILES([examples/java/pascal/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1088:        AC_CONFIG_FILES([examples/java/preserveWhiteSpace/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1089:        AC_CONFIG_FILES([examples/java/tinybasic/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1090:        AC_CONFIG_FILES([examples/java/tinyc/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1091:        AC_CONFIG_FILES([examples/java/transform/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1092:        AC_CONFIG_FILES([examples/java/treewalk/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1093:        AC_CONFIG_FILES([examples/java/unicode.IDENTs/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1094:        AC_CONFIG_FILES([examples/java/unicode/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1095:        AC_CONFIG_FILES([examples/java/xml/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1096:        AC_CONFIG_FILES([examples/java/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1097:        AC_CONFIG_FILES([examples/java/cpp/Makefile])
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1126:    if test "x${file_list}" == "x" ; then
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1136:        if test -f "${f}" ; then
+/tmp/tmp.MSIedVd9J6/antlr-2.7.6/configure.in:1183:test -z "${JAVA}" && {
+
+codex
+I found no confident canonical SCM root for ANTLR 2.7.6, so I’ll leave `repository-url` as `N/A` instead of treating the homepage or a non-authoritative mirror as a repository. For versioned tests and docs, the official 2.7.6 source distribution is the best exact-version URL: it contains the `make test` example suite and `doc/index.html` marked `ANTLR Version 2.7.6`.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json
+diff --git a/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json b/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json
+index 1a4648b779e98ea5204cd582184417c90e08fa6f..d222829de049928215fdaf11315959f8d688b578
+--- a/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json
++++ b/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "antlr:antlr:2.7.6"
++  "coordinates" : "antlr:antlr:2.7.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/antlr/antlr/2.7.6/antlr-2.7.6-sources.jar",
++  "repository-url" : "N/A",
++  "test-code-url" : "https://www.antlr2.org/download/antlr-2.7.6.tar.gz",
++  "documentation-url" : "https://www.antlr2.org/download/antlr-2.7.6.tar.gz",
++  "description" : "ANTLR 2 is a parser generator and language recognition framework for building lexers, parsers, tree walkers, compilers, and translators from grammar descriptions. This artifact provides the Java runtime and tool classes used to process ANTLR grammars and generate recognizers for targets such as Java, C++, C#, and Python."
+ }
+
+diff --git a/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json b/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json
+index 1a4648b779e98ea5204cd582184417c90e08fa6f..d222829de049928215fdaf11315959f8d688b578
+--- a/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json
++++ b/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "antlr:antlr:2.7.6"
++  "coordinates" : "antlr:antlr:2.7.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/antlr/antlr/2.7.6/antlr-2.7.6-sources.jar",
++  "repository-url" : "N/A",
++  "test-code-url" : "https://www.antlr2.org/download/antlr-2.7.6.tar.gz",
++  "documentation-url" : "https://www.antlr2.org/download/antlr-2.7.6.tar.gz",
++  "description" : "ANTLR 2 is a parser generator and language recognition framework for building lexers, parsers, tree walkers, compilers, and translators from grammar descriptions. This artifact provides the Java runtime and tool classes used to process ANTLR grammars and generate recognizers for targets such as Java, C++, C#, and Python."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/antlr-antlr-2.7.6.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 0ms:
+{
+  "coordinates": "antlr:antlr:2.7.6",
+  "source-code-url": "https://repo.maven.apache.org/maven2/antlr/antlr/2.7.6/antlr-2.7.6-sources.jar",
+  "repository-url": "N/A",
+  "test-code-url": "https://www.antlr2.org/download/antlr-2.7.6.tar.gz",
+  "documentation-url": "https://www.antlr2.org/download/antlr-2.7.6.tar.gz",
+  "description": "ANTLR 2 is a parser generator and language recognition framework for building lexers, parsers, tree walkers, compilers, and translators from grammar descriptions. This artifact provides the Java runtime and tool classes used to process ANTLR grammars and generate recognizers for targets such as Java, C++, C#, and Python."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/antlr-antlr-2.7.6.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json b/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json
+index 1a4648b779e98ea5204cd582184417c90e08fa6f..d222829de049928215fdaf11315959f8d688b578
+--- a/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json
++++ b/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "antlr:antlr:2.7.6"
++  "coordinates" : "antlr:antlr:2.7.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/antlr/antlr/2.7.6/antlr-2.7.6-sources.jar",
++  "repository-url" : "N/A",
++  "test-code-url" : "https://www.antlr2.org/download/antlr-2.7.6.tar.gz",
++  "documentation-url" : "https://www.antlr2.org/download/antlr-2.7.6.tar.gz",
++  "description" : "ANTLR 2 is a parser generator and language recognition framework for building lexers, parsers, tree walkers, compilers, and translators from grammar descriptions. This artifact provides the Java runtime and tool classes used to process ANTLR grammars and generate recognizers for targets such as Java, C++, C#, and Python."
+ }
+
+codex
+The JSON parses cleanly. I’m checking the worktree state now; this file is under `build/`, so it may be ignored and not appear in a normal diff even though it has been updated.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/antlr-antlr-2.7.6.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 0ms:
+{
+  "coordinates" : "antlr:antlr:2.7.6",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/antlr/antlr/2.7.6/antlr-2.7.6-sources.jar",
+  "repository-url" : "N/A",
+  "test-code-url" : "https://www.antlr2.org/download/antlr-2.7.6.tar.gz",
+  "documentation-url" : "https://www.antlr2.org/download/antlr-2.7.6.tar.gz",
+  "description" : "ANTLR 2 is a parser generator and language recognition framework for building lexers, parsers, tree walkers, compilers, and translators from grammar descriptions. This artifact provides the Java runtime and tool classes used to process ANTLR grammars and generate recognizers for targets such as Java, C++, C#, and Python."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/antlr-antlr-2.7.6.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4
+ succeeded in 0ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json b/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json
+index 1a4648b779e98ea5204cd582184417c90e08fa6f..d222829de049928215fdaf11315959f8d688b578
+--- a/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json
++++ b/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "antlr:antlr:2.7.6"
++  "coordinates" : "antlr:antlr:2.7.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/antlr/antlr/2.7.6/antlr-2.7.6-sources.jar",
++  "repository-url" : "N/A",
++  "test-code-url" : "https://www.antlr2.org/download/antlr-2.7.6.tar.gz",
++  "documentation-url" : "https://www.antlr2.org/download/antlr-2.7.6.tar.gz",
++  "description" : "ANTLR 2 is a parser generator and language recognition framework for building lexers, parsers, tree walkers, compilers, and translators from grammar descriptions. This artifact provides the Java runtime and tool classes used to process ANTLR grammars and generate recognizers for targets such as Java, C++, C#, and Python."
+ }
+
+web search: 
+web search: repo.maven.apache.org antlr antlr 2.7.6 sources jar
+web search: 
+web search: ANTLR 2.7.6 source distribution make test doc index
+web search: 
+web search: https://www.antlr2.org/download.html
+codex
+Updated [antlr-antlr-2.7.6.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json).
+
+I used the Maven Central `antlr-2.7.6-sources.jar` for `source-code-url` and the official ANTLR 2.7.6 source distribution for the exact-version test/docs archive. ([repo1.maven.org](https://repo1.maven.org/maven2/antlr/antlr/2.7.6/)) I left `repository-url` as `N/A` because I did not find a confident canonical SCM repository root, and omitted `language` because this is not Kotlin, Groovy, or Scala-specific.
+
+Validation: `jq` parses the JSON successfully.
+diff --git a/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json b/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json
+index 1a4648b779e98ea5204cd582184417c90e08fa6f..d222829de049928215fdaf11315959f8d688b578
+--- a/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json
++++ b/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "antlr:antlr:2.7.6"
++  "coordinates" : "antlr:antlr:2.7.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/antlr/antlr/2.7.6/antlr-2.7.6-sources.jar",
++  "repository-url" : "N/A",
++  "test-code-url" : "https://www.antlr2.org/download/antlr-2.7.6.tar.gz",
++  "documentation-url" : "https://www.antlr2.org/download/antlr-2.7.6.tar.gz",
++  "description" : "ANTLR 2 is a parser generator and language recognition framework for building lexers, parsers, tree walkers, compilers, and translators from grammar descriptions. This artifact provides the Java runtime and tool classes used to process ANTLR grammars and generate recognizers for targets such as Java, C++, C#, and Python."
+ }
+
+2026-04-30T07:09:10.971972Z ERROR codex_core::session: failed to record rollout items: thread 019ddd35-738d-7b60-abe3-5c7821bb9e4b not found
+tokens used
+123,817
+Updated [antlr-antlr-2.7.6.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4/build/discovered-artifact-metadata/antlr-antlr-2.7.6.json).
+
+I used the Maven Central `antlr-2.7.6-sources.jar` for `source-code-url` and the official ANTLR 2.7.6 source distribution for the exact-version test/docs archive. ([repo1.maven.org](https://repo1.maven.org/maven2/antlr/antlr/2.7.6/)) I left `repository-url` as `N/A` because I did not find a confident canonical SCM repository root, and omitted `language` because this is not Kotlin, Groovy, or Scala-specific.
+
+Validation: `jq` parses the JSON successfully.
+Ran agent for antlr:antlr:2.7.6 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4/build/agent-artifact-discovery-logs/antlr-antlr-2.7.6.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1298-b04f1ec4/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 14s
+9 actionable tasks: 4 executed, 5 from cache
