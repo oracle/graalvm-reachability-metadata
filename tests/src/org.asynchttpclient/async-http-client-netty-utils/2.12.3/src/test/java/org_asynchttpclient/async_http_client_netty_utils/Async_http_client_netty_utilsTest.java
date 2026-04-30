@@ -163,6 +163,28 @@ public class Async_http_client_netty_utilsTest {
     }
 
     @Test
+    void decodesUtf8AcrossMixedHeapAndDirectBuffers() {
+        String text = "mixed heap and direct 😀 buffers";
+        byte[] encoded = text.getBytes(StandardCharsets.UTF_8);
+        int emojiLeadByte = indexOf(encoded, (byte) 0xF0);
+        ByteBuf heap = Unpooled.wrappedBuffer(Arrays.copyOfRange(encoded, 0, emojiLeadByte + 2));
+        ByteBuf direct = ByteBufAllocator.DEFAULT.directBuffer();
+        direct.writeBytes(Arrays.copyOfRange(encoded, emojiLeadByte + 2, encoded.length));
+
+        try {
+            assertThat(Utf8ByteBufCharsetDecoder.decodeUtf8(heap, direct)).isEqualTo(text);
+            assertThat(Utf8ByteBufCharsetDecoder.decodeUtf8Chars(heap, direct)).containsExactly(text.toCharArray());
+            assertThat(ByteBufUtils.byteBuf2String(StandardCharsets.UTF_8, heap, direct)).isEqualTo(text);
+            assertThat(ByteBufUtils.byteBuf2Chars(StandardCharsets.UTF_8, heap, direct))
+                    .containsExactly(text.toCharArray());
+            assertThat(heap.readerIndex()).isZero();
+            assertThat(direct.readerIndex()).isZero();
+        } finally {
+            direct.release();
+        }
+    }
+
+    @Test
     void replacesMalformedUtf8Input() {
         ByteBuf invalid = Unpooled.wrappedBuffer(new byte[] {(byte) 0xE2, 0x28, (byte) 0xA1});
 
