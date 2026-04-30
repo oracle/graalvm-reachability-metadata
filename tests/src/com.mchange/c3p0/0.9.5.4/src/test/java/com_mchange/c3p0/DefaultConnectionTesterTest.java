@@ -11,12 +11,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.mchange.v2.c3p0.ConnectionTester;
 import com.mchange.v2.c3p0.cfg.C3P0Config;
 import com.mchange.v2.c3p0.impl.DefaultConnectionTester;
+import com.mchange.v2.cfg.MultiPropertiesConfig;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.Properties;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -62,8 +64,12 @@ public class DefaultConnectionTesterTest {
     }
 
     private static void configureQuerylessTestRunner(String querylessTestRunner) {
-        System.setProperty(QUERYLESS_TEST_RUNNER_PROPERTY, querylessTestRunner);
-        C3P0Config.refreshMainConfig();
+        Properties overrides = new Properties();
+        overrides.setProperty(QUERYLESS_TEST_RUNNER_PROPERTY, querylessTestRunner);
+        C3P0Config.refreshMainConfig(
+                new MultiPropertiesConfig[] {MultiPropertiesConfig.fromProperties(overrides)},
+                "DefaultConnectionTesterTest overrides"
+        );
     }
 
     private static Connection newConnectionProxy(InvocationHandler handler) {
