@@ -22,7 +22,7 @@ public class Opentelemetry_semconvTest {
 
     @Test
     void resourceAttributesExposeTypedKeysAndWorkWithAttributesBuilders() {
-        assertThat(ResourceAttributes.SCHEMA_URL).isEqualTo("https://opentelemetry.io/schemas/1.19.0");
+        assertThat(ResourceAttributes.SCHEMA_URL).isEqualTo("https://opentelemetry.io/schemas/1.20.0");
 
         assertAttributeKey(ResourceAttributes.SERVICE_NAME, "service.name", AttributeType.STRING);
         assertAttributeKey(ResourceAttributes.CLOUD_PROVIDER, "cloud.provider", AttributeType.STRING);
@@ -81,7 +81,7 @@ public class Opentelemetry_semconvTest {
 
     @Test
     void traceAttributesExposeTypedKeysAndSupportTypedAttributePayloads() {
-        assertThat(SemanticAttributes.SCHEMA_URL).isEqualTo("https://opentelemetry.io/schemas/1.19.0");
+        assertThat(SemanticAttributes.SCHEMA_URL).isEqualTo("https://opentelemetry.io/schemas/1.20.0");
         assertThat(SemanticAttributes.EXCEPTION_EVENT_NAME).isEqualTo("exception");
 
         assertAttributeKey(SemanticAttributes.DB_SYSTEM, "db.system", AttributeType.STRING);
@@ -120,9 +120,9 @@ public class Opentelemetry_semconvTest {
                         SemanticAttributes.NetHostConnectionTypeValues.WIFI)
                 .put(SemanticAttributes.NET_HOST_CONNECTION_SUBTYPE,
                         SemanticAttributes.NetHostConnectionSubtypeValues.LTE)
-                .put(SemanticAttributes.HTTP_FLAVOR, SemanticAttributes.HttpFlavorValues.HTTP_2_0)
-                .put(SemanticAttributes.MESSAGING_DESTINATION_KIND,
-                        SemanticAttributes.MessagingDestinationKindValues.TOPIC)
+                .put(SemanticAttributes.NET_PROTOCOL_NAME, "http")
+                .put(SemanticAttributes.NET_PROTOCOL_VERSION, "2.0")
+                .put(SemanticAttributes.MESSAGING_DESTINATION_NAME, "orders")
                 .put(SemanticAttributes.MESSAGING_OPERATION,
                         SemanticAttributes.MessagingOperationValues.PROCESS)
                 .put(SemanticAttributes.MESSAGING_ROCKETMQ_MESSAGE_TYPE,
@@ -159,10 +159,9 @@ public class Opentelemetry_semconvTest {
                 .isEqualTo(SemanticAttributes.NetHostConnectionTypeValues.WIFI);
         assertThat(traceAttributes.get(SemanticAttributes.NET_HOST_CONNECTION_SUBTYPE))
                 .isEqualTo(SemanticAttributes.NetHostConnectionSubtypeValues.LTE);
-        assertThat(traceAttributes.get(SemanticAttributes.HTTP_FLAVOR))
-                .isEqualTo(SemanticAttributes.HttpFlavorValues.HTTP_2_0);
-        assertThat(traceAttributes.get(SemanticAttributes.MESSAGING_DESTINATION_KIND))
-                .isEqualTo(SemanticAttributes.MessagingDestinationKindValues.TOPIC);
+        assertThat(traceAttributes.get(SemanticAttributes.NET_PROTOCOL_NAME)).isEqualTo("http");
+        assertThat(traceAttributes.get(SemanticAttributes.NET_PROTOCOL_VERSION)).isEqualTo("2.0");
+        assertThat(traceAttributes.get(SemanticAttributes.MESSAGING_DESTINATION_NAME)).isEqualTo("orders");
         assertThat(traceAttributes.get(SemanticAttributes.MESSAGING_OPERATION))
                 .isEqualTo(SemanticAttributes.MessagingOperationValues.PROCESS);
         assertThat(traceAttributes.get(SemanticAttributes.MESSAGING_ROCKETMQ_MESSAGE_TYPE))
@@ -626,24 +625,10 @@ public class Opentelemetry_semconvTest {
         );
 
         assertThat(List.of(
-                SemanticAttributes.HttpFlavorValues.HTTP_1_0,
-                SemanticAttributes.HttpFlavorValues.HTTP_1_1,
-                SemanticAttributes.HttpFlavorValues.HTTP_2_0,
-                SemanticAttributes.HttpFlavorValues.HTTP_3_0,
-                SemanticAttributes.HttpFlavorValues.SPDY,
-                SemanticAttributes.HttpFlavorValues.QUIC
-        )).containsExactly("1.0", "1.1", "2.0", "3.0", "SPDY", "QUIC");
-
-        assertThat(List.of(
                 SemanticAttributes.GraphqlOperationTypeValues.QUERY,
                 SemanticAttributes.GraphqlOperationTypeValues.MUTATION,
                 SemanticAttributes.GraphqlOperationTypeValues.SUBSCRIPTION
         )).containsExactly("query", "mutation", "subscription");
-
-        assertThat(List.of(
-                SemanticAttributes.MessagingDestinationKindValues.QUEUE,
-                SemanticAttributes.MessagingDestinationKindValues.TOPIC
-        )).containsExactly("queue", "topic");
 
         assertThat(List.of(
                 SemanticAttributes.MessagingOperationValues.RECEIVE,
