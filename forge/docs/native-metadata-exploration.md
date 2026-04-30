@@ -115,7 +115,7 @@ if verify and len(run_dirs) > 0:
     ./gradlew verifyExactReachabilityMetadata \
         -Pcoordinates=<g:a:v> \
         -PmetadataConfigDirs=<output_dir> \
-        -PexactPackages=<group>
+        -PconditionPackages=<group>
 ```
 
 The phase does **not** accept a list of run arguments — the test binary is
@@ -197,7 +197,7 @@ flowchart TD
     Budget -- no --> Cap[Budget exhausted]
     Cap --> FinalMerge
     Converged --> FinalMerge[**Single** gradlew mergeNativeTraceMetadata<br/>-PinputDirs=run-0,...,run-N<br/>-PoutputDir=output_dir]
-    FinalMerge --> Verify[Optional: gradlew verifyExactReachabilityMetadata<br/>-PmetadataConfigDirs=output_dir<br/>-PexactPackages=&lt;packages&gt;]
+    FinalMerge --> Verify[Optional: gradlew verifyExactReachabilityMetadata<br/>-PmetadataConfigDirs=output_dir<br/>-PconditionPackages=&lt;packages&gt;]
     Verify --> VerOK{task ok?}
     VerOK -- yes --> Done([return SUCCESS<br/>or BUDGET_EXHAUSTED])
     VerOK -- no --> Soft([return SUCCESS_UNVERIFIED])
@@ -332,20 +332,42 @@ Behavior:
 ### 7.2 `runNativeTraceImage`
 
 Runs the binary produced by `nativeTraceImage` once, capturing traced
-metadata to a caller-specified directory.
+metadata to a caller-specified directory. Used by both the deterministic
+trace loop in this spec **and** the
+[native test verification gate](native-test-verification.md), which drives
+it directly per outer cycle.
 
 | Property | Required | Meaning |
 | --- | --- | --- |
 | `-Pcoordinates=<group:artifact:version>` | yes | Same coordinates used to build. |
 | `-PtraceMetadataPath=<absolute path>` | yes | Becomes `-XX:TraceMetadata=path=...`. Must be a fresh per-iteration directory. |
 | `-PtraceMetadataConditionPackages=<pkg1,pkg2,...>` | yes | Becomes `-XX:TraceMetadataConditionPackages=...`. |
+| `-PmetadataConfigDirs=<dir1,dir2,...>` | no | Comma-separated absolute paths of prior accepted trace dirs; translated to `-H:ConfigurationFileDirectories=...` so the rebuild sees what tracing has already collected. Omitted on the first iteration. |
 
-Behavior:
+Build-flag behavior:
+
+- The task adds `-H:+UnlockExperimentalVMOptions
+  -H:+MetadataTracingSupport -H:-UnlockExperimentalVMOptions` so the
+  binary writes traced metadata at runtime.
+- The task **also** adds `--exact-reachability-metadata` and
+  `-H:MissingRegistrationReportingMode=Exit`. These ensure the binary
+  exits with `ExitStatus.MISSING_METADATA` (172) when an access misses
+  the metadata supplied via `-PmetadataConfigDirs`, instead of throwing.
+  The verification gate routes on this exit code; the trace-only loop in
+  this spec ignores it (its termination is convergence-based, see §5).
+
+Runtime behavior:
 
 - The task always invokes the binary the same way. There are no
   caller-supplied program arguments.
-- The task's exit code is **informational only**. It is logged and
-  surfaced in the result, but it does not drive termination.
+- The Exec uses `ignoreExitValue=true`, so the binary's exit code does
+  not fail the Gradle invocation. Callers recover the actual binary exit
+  code from the captured Gradle log (Gradle prints
+  `... finished with non-zero exit value N` for any non-zero exit).
+- For the deterministic trace loop (§5), the task's exit code remains
+  **informational only**: the loop terminates on convergence, budget
+  exhaustion, or a `nativeTraceImage` build failure — never on the run
+  task's exit code.
 
 ### 7.3 `mergeNativeTraceMetadata`
 
@@ -367,13 +389,27 @@ Behavior:
 
 ### 7.4 `verifyExactReachabilityMetadata` (optional)
 
-Used only when the caller passes `verify=True`.
+Used by the trace loop when the caller passes `verify=True`, and by the
+[native test verification gate](native-test-verification.md) on every
+verification cycle (chained with `nativeTest` in a single Gradle
+invocation).
 
 | Property | Required | Meaning |
 | --- | --- | --- |
 | `-Pcoordinates=<group:artifact:version>` | yes | Same coordinates. |
 | `-PmetadataConfigDirs=<absolute path>` | yes | Typically the phase's output directory. |
-| `-PexactPackages=<pkg1,pkg2,...>` | yes | Becomes `--exact-reachability-metadata=...`. |
+| `-PconditionPackages=<pkg1,pkg2,...>` | yes | Routed to the missing-metadata condition prefix; scopes which package prefixes the strict check applies to. |
+
+Build-flag behavior:
+
+- Adds `--exact-reachability-metadata` (no value — the flag is scoped
+  globally; the supplied packages reach the binary via the
+  condition-prefix mechanism, not as the value of
+  `--exact-reachability-metadata`).
+- Adds `-H:MissingRegistrationReportingMode=Exit` so the resulting
+  binary exits with `ExitStatus.MISSING_METADATA` (172) on missing
+  metadata instead of throwing. The verification gate relies on this
+  exit code to distinguish metadata gaps from other test failures.
 
 A failing verifier task downgrades the phase status from `SUCCESS` to
 `SUCCESS_UNVERIFIED`.

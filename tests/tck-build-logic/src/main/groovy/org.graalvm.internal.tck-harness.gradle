@@ -216,13 +216,13 @@ tasks.register("mergeNativeTraceMetadata", Exec) { Exec task ->
 }
 
 // gradle verifyExactReachabilityMetadata -Pcoordinates=<maven-coordinates> -PmetadataConfigDirs=<dir>
-//     -PexactPackages=<pkg1,pkg2,...>
+//     -PconditionPackages=<pkg1,pkg2,...>
 tasks.register("verifyExactReachabilityMetadata", VerifyExactReachabilityMetadataInvocationTask.class) { task ->
     task.setDescription("Builds native tests with exact reachability metadata for matching coordinates")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
     task.doFirst {
         requiredDirectoryListProperty("metadataConfigDirs", true)
-        requiredGradleProperty("exactPackages")
+        requiredGradleProperty("conditionPackages")
     }
 }
 

@@ -22,7 +22,7 @@ public abstract class VerifyExactReachabilityMetadataInvocationTask extends AllC
                 "verifyExactReachabilityMetadata"
         ));
         appendProperty(command, "metadataConfigDirs");
-        appendProperty(command, "exactPackages");
+        appendProperty(command, "conditionPackages");
         return command;
     }
 

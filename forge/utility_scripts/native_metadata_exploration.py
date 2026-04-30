@@ -202,7 +202,7 @@ def run_native_metadata_exploration(
             "verifyExactReachabilityMetadata",
             f"-Pcoordinates={coordinate}",
             f"-PmetadataConfigDirs={output_dir}",
-            f"-PexactPackages={condition_packages_arg}",
+            f"-PconditionPackages={condition_packages_arg}",
         ]
         verifier_log_path = _new_log_path(coordinate, "verify")
         verify_rc = _run_gradle(verify_cmd, reachability_repo_path, verifier_log_path)

@@ -170,7 +170,7 @@ if (nativeTraceImageTaskRequested && project.hasProperty("metadataConfigDirs")) 
 }
 if (verifyExactReachabilityMetadataTaskRequested) {
     requiredGradleProperty("metadataConfigDirs")
-    requiredGradleProperty("exactPackages")
+    requiredGradleProperty("conditionPackages")
     requiredDirectoryListProperty("metadataConfigDirs", true)
 }
 
@@ -295,7 +295,21 @@ Provider<List<String>> nativeTraceBuildArgs = providers.provider {
         buildArgs.add("-H:ConfigurationFileDirectories=${metadataConfigDirs.join(",")}")
     }
     if (verifyExactReachabilityMetadataTaskRequested) {
-        buildArgs.add("--exact-reachability-metadata=${requiredGradleProperty("exactPackages")}")
+        // --exact-reachability-metadata is scoped globally and takes no value;
+        // the supplied conditionPackages flow to the binary at run time as
+        // -XX:TraceMetadataConditionPackages on the run task that invokes the
+        // image.
+        buildArgs.add("--exact-reachability-metadata")
+    }
+    if (runNativeTraceImageTaskRequested) {
+        // The verification gate runs runNativeTraceImage in its correction
+        // loop and routes on the binary's exit code. Bake exact-metadata
+        // reporting + Exit-on-missing into the trace binary so the gate can
+        // observe ExitStatus.MISSING_METADATA (172) for a metadata gap and
+        // distinguish it from other test failures, while still collecting
+        // trace metadata in the same run.
+        buildArgs.add("--exact-reachability-metadata")
+        buildArgs.add("-H:MissingRegistrationReportingMode=Exit")
     }
     return buildArgs
 }
@@ -313,7 +327,7 @@ tasks.named("nativeTestCompile", BuildNativeImageTask).configure { BuildNativeIm
     if (verifyExactReachabilityMetadataTaskRequested) {
         task.doFirst {
             requiredDirectoryListProperty("metadataConfigDirs", true)
-            requiredGradleProperty("exactPackages")
+            requiredGradleProperty("conditionPackages")
         }
     }
 }
@@ -365,7 +379,7 @@ tasks.register("verifyExactReachabilityMetadata") { task ->
     task.dependsOn(tasks.named("nativeTestCompile"))
     task.doFirst {
         requiredDirectoryListProperty("metadataConfigDirs", true)
-        requiredGradleProperty("exactPackages")
+        requiredGradleProperty("conditionPackages")
     }
 }
 

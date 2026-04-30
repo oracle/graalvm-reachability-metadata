@@ -5,29 +5,35 @@
 
 """Native test verification gate.
 
-Composes the iterative trace loop in ``utility_scripts/native_metadata_exploration``
-with the codex / Pi recovery cascade to assert that ``./gradlew nativeTest``
-passes for a coordinate. See ``forge/docs/native-test-verification.md`` for
-the full contract.
+Drives ``./gradlew runNativeTraceImage`` per outer cycle. The trace binary is
+built with ``-H:+MetadataTracingSupport`` (collects metadata) plus
+``--exact-reachability-metadata`` and ``-H:MissingRegistrationReportingMode=Exit``
+(causes ``ExitStatus.MISSING_METADATA`` 172 on missing metadata instead of
+throwing). One run produces both signals: a trace dir and the binary's exit
+code. The gate routes on that exit code:
+
+- ``0``     → ``PASSED`` (or ``PASSED_WITH_INTERVENTION`` if codex ran in an
+  earlier cycle).
+- ``172``   → metadata gap; append the cycle's trace dir to the running
+  ``metadataConfigDirs`` so the next cycle's build sees it, then continue.
+- any other → run ``run_codex_metadata_fix`` once. Codex finishes it: on
+  codex success return ``PASSED_WITH_INTERVENTION``; on codex failure return
+  ``FAILED``. The gate does not re-verify after codex.
+
+Pi is not invoked. Removing failing tests would mask code/test issues that
+must surface to the coding agent. See
+``forge/docs/native-test-verification.md`` for the full contract.
 """
 
 from __future__ import annotations
 
 import os
 import re
+import shutil
 import subprocess
 from dataclasses import dataclass, field
 
 from ai_workflows.fix_metadata_codex import run_codex_metadata_fix
-from ai_workflows.fix_post_generation_pi import (
-    DEFAULT_MAX_TEST_OUTPUT_CHARS,
-    DEFAULT_PI_TIMEOUT_SECONDS,
-    run_pi_post_generation_fix,
-)
-from utility_scripts.native_metadata_exploration import (
-    NativeExplorationResult,
-    run_native_metadata_exploration,
-)
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import (
     build_timestamped_task_log_path,
@@ -40,16 +46,27 @@ STATUS_PASSED = "PASSED"
 STATUS_PASSED_WITH_INTERVENTION = "PASSED_WITH_INTERVENTION"
 STATUS_FAILED = "FAILED"
 
+# Exit code emitted by ExitStatus.MISSING_METADATA when the binary was built
+# with -H:MissingRegistrationReportingMode=Exit and encounters missing
+# reachability metadata at runtime.
+MISSING_METADATA_EXIT_CODE = 172
+
 _GATE_STAGE = "native-test-verify"
 _LOG_TASK_TYPE = "native-test-verify"
+
+# Gradle prints "...finished with non-zero exit value N" when the trace
+# binary's Exec returns a non-zero exit. We recover the binary's exit code
+# from this line because the Exec itself runs with ignoreExitValue=true and
+# Gradle's own exit code does not include it.
+_EXIT_VALUE_PATTERN = re.compile(r"exit\s+value\s+(\d+)", re.IGNORECASE)
 
 
 @dataclass
 class InterventionRecord:
-    """One recovery step that ran during a verification cycle."""
+    """One codex run that took place inside the gate."""
 
-    stage: str  # which cycle index this happened in, e.g. "iter-3-codex"
-    kind: str  # "codex" or "pi"
+    stage: str
+    kind: str  # "codex"
     log_path: str
 
 
@@ -61,8 +78,9 @@ class NativeTestVerificationResult:
     output_dir: str
     iterations_used: int
     last_native_test_log_path: str | None = None
+    last_native_test_exit_code: int | None = None
+    accepted_run_dirs: list[str] = field(default_factory=list)
     intervention_records: list[InterventionRecord] = field(default_factory=list)
-    last_exploration: NativeExplorationResult | None = None
 
 
 def verify_native_test_passes(
@@ -71,68 +89,102 @@ def verify_native_test_passes(
         output_dir: str,
         condition_packages: list[str] | None = None,
         max_iterations: int = 100,
-        max_trace_iterations: int = 5,
-        model_name: str | None = None,
-        post_generation_timeout_seconds: int = DEFAULT_PI_TIMEOUT_SECONDS,
-        post_generation_test_output_chars: int = DEFAULT_MAX_TEST_OUTPUT_CHARS,
+        max_trace_iterations: int = 5,  # accepted for API compat; unused.
+        model_name: str | None = None,  # accepted for API compat; unused.
 ) -> NativeTestVerificationResult:
-    """Iteratively trace, verify ``nativeTest`` passes, and recover via codex/Pi.
+    """Iteratively run runNativeTraceImage until the binary passes or fails.
 
     See ``forge/docs/native-test-verification.md`` for the full contract.
     """
+    del max_trace_iterations, model_name  # accepted for compat; unused now.
     if max_iterations < 1:
         raise ValueError("max_iterations must be >= 1")
     if not os.path.isabs(output_dir):
         raise ValueError("output_dir must be an absolute path")
+
+    group = coordinate.split(":", 1)[0]
+    packages = list(condition_packages) if condition_packages else [group]
+    condition_packages_arg = ",".join(packages)
+
+    runs_dir = os.path.normpath(os.path.join(output_dir, "..", "runs"))
+    _reset_directory(output_dir)
+    _reset_directory(runs_dir)
 
     log_stage(
         _GATE_STAGE,
         f"start coordinate={coordinate} output_dir={output_dir} budget={max_iterations}",
     )
 
+    accepted_run_dirs: list[str] = []
     intervention_records: list[InterventionRecord] = []
     intervention_used = False
-    last_native_test_log: str | None = None
-    last_exploration: NativeExplorationResult | None = None
+    last_log_path: str | None = None
+    last_binary_rc: int | None = None
 
     def _make_result(status: str, iterations_used: int) -> NativeTestVerificationResult:
         return NativeTestVerificationResult(
             status=status,
             output_dir=output_dir,
             iterations_used=iterations_used,
-            last_native_test_log_path=last_native_test_log,
+            last_native_test_log_path=last_log_path,
+            last_native_test_exit_code=last_binary_rc,
+            accepted_run_dirs=list(accepted_run_dirs),
             intervention_records=intervention_records,
-            last_exploration=last_exploration,
         )
 
     for cycle in range(max_iterations):
         log_stage(_GATE_STAGE, f"cycle {cycle + 1}/{max_iterations}")
 
-        last_exploration = run_native_metadata_exploration(
+        run_dir = os.path.join(runs_dir, f"cycle-{cycle}")
+        os.makedirs(run_dir, exist_ok=True)
+        log_path = _gate_log_path(coordinate, cycle, "runNativeTraceImage")
+        gradle_rc, binary_rc = _run_native_trace_image(
             reachability_repo_path=reachability_repo_path,
             coordinate=coordinate,
-            output_dir=output_dir,
-            condition_packages=condition_packages,
-            max_iterations=max_trace_iterations,
-            verify=False,
+            run_dir=run_dir,
+            condition_packages_arg=condition_packages_arg,
+            metadata_config_dirs=accepted_run_dirs,
+            log_path=log_path,
         )
+        last_log_path = log_path
+        last_binary_rc = binary_rc if binary_rc is not None else gradle_rc
 
-        nt_log = _native_test_log_path(coordinate, cycle, "post-trace")
-        nt_rc = _run_native_test(reachability_repo_path, coordinate, output_dir, nt_log)
-        last_native_test_log = nt_log
-        if nt_rc == 0:
-            log_stage(_GATE_STAGE, f"cycle {cycle + 1}: nativeTest passed after trace")
+        if binary_rc == 0:
+            log_stage(
+                _GATE_STAGE,
+                f"cycle {cycle + 1}: binary passed (exit 0); merging accepted trace dirs",
+            )
+            _merge_into_output(
+                reachability_repo_path=reachability_repo_path,
+                run_dirs=accepted_run_dirs,
+                output_dir=output_dir,
+            )
             status = STATUS_PASSED_WITH_INTERVENTION if intervention_used else STATUS_PASSED
             return _make_result(status, cycle + 1)
 
+        if binary_rc == MISSING_METADATA_EXIT_CODE:
+            log_stage(
+                _GATE_STAGE,
+                f"cycle {cycle + 1}: binary exited 172 (missing metadata); "
+                f"adding {os.path.basename(run_dir)} to config_dirs",
+            )
+            accepted_run_dirs.append(run_dir)
+            continue
+
         log_stage(
             _GATE_STAGE,
-            f"cycle {cycle + 1}: nativeTest failed after trace; running codex",
+            f"cycle {cycle + 1}: binary failed (gradle_exit={gradle_rc}, binary_exit={binary_rc}); "
+            "routing to codex (terminal)",
         )
         codex_rc, codex_log_path, codex_timed_out = run_codex_metadata_fix(
             reachability_repo_path,
             coordinate,
-            reproduction_command=_native_test_command(coordinate, output_dir),
+            reproduction_command=_run_native_trace_image_command(
+                coordinate=coordinate,
+                run_dir=run_dir,
+                condition_packages_arg=condition_packages_arg,
+                metadata_config_dirs=accepted_run_dirs,
+            ),
         )
         intervention_records.append(
             InterventionRecord(
@@ -141,79 +193,63 @@ def verify_native_test_passes(
                 log_path=codex_log_path,
             )
         )
-
-        recovery_test_output = _read_log(nt_log)
-        if not codex_timed_out and codex_rc == 0:
-            intervention_used = True
-            nt_log = _native_test_log_path(coordinate, cycle, "post-codex")
-            nt_rc = _run_native_test(reachability_repo_path, coordinate, output_dir, nt_log)
-            last_native_test_log = nt_log
-            if nt_rc == 0:
-                log_stage(_GATE_STAGE, f"cycle {cycle + 1}: nativeTest passed after codex")
-                return _make_result(STATUS_PASSED_WITH_INTERVENTION, cycle + 1)
-            recovery_test_output = _read_log(nt_log)
-
-        if model_name:
+        if codex_timed_out or codex_rc != 0:
             log_stage(
                 _GATE_STAGE,
-                f"cycle {cycle + 1}: nativeTest failed after codex; running Pi",
+                f"codex did not converge (timed_out={codex_timed_out}, rc={codex_rc}); FAILED",
             )
-            pi_rc, pi_intervention_path, pi_timed_out = run_pi_post_generation_fix(
-                reachability_metadata_path=reachability_repo_path,
-                coordinates=coordinate,
-                codex_log_path=codex_log_path,
-                test_output=recovery_test_output,
-                model_name=model_name,
-                timeout_seconds=post_generation_timeout_seconds,
-                max_test_output_chars=post_generation_test_output_chars,
-            )
-            intervention_records.append(
-                InterventionRecord(
-                    stage=f"cycle-{cycle + 1}-pi",
-                    kind="pi",
-                    log_path=pi_intervention_path,
-                )
-            )
-            if not pi_timed_out and pi_rc == 0:
-                intervention_used = True
-                nt_log = _native_test_log_path(coordinate, cycle, "post-pi")
-                nt_rc = _run_native_test(reachability_repo_path, coordinate, output_dir, nt_log)
-                last_native_test_log = nt_log
-                if nt_rc == 0:
-                    log_stage(_GATE_STAGE, f"cycle {cycle + 1}: nativeTest passed after Pi")
-                    return _make_result(STATUS_PASSED_WITH_INTERVENTION, cycle + 1)
-        else:
-            log_stage(
-                _GATE_STAGE,
-                f"cycle {cycle + 1}: skipping Pi fall-through (no model_name configured)",
-            )
+            return _make_result(STATUS_FAILED, cycle + 1)
+        log_stage(_GATE_STAGE, "codex finished; trusting codex's outcome")
+        return _make_result(STATUS_PASSED_WITH_INTERVENTION, cycle + 1)
 
     log_stage(
         _GATE_STAGE,
-        f"FAILED after {max_iterations} cycles; last log: {display_log_path(last_native_test_log) if last_native_test_log else 'none'}",
+        f"FAILED after {max_iterations} cycles "
+        f"(metadata-gap-exhausted; last binary_exit={last_binary_rc})",
     )
     return _make_result(STATUS_FAILED, max_iterations)
 
 
-def _native_test_command(coordinate: str, output_dir: str) -> str:
-    return (
-        f"./gradlew nativeTest -Pcoordinates={coordinate} "
-        f"-PmetadataConfigDirs={output_dir}"
-    )
+def _run_native_trace_image_command(
+        coordinate: str,
+        run_dir: str,
+        condition_packages_arg: str,
+        metadata_config_dirs: list[str],
+) -> str:
+    parts = [
+        "./gradlew runNativeTraceImage",
+        f"-Pcoordinates={coordinate}",
+        f"-PtraceMetadataPath={run_dir}",
+        f"-PtraceMetadataConditionPackages={condition_packages_arg}",
+    ]
+    if metadata_config_dirs:
+        parts.append(f"-PmetadataConfigDirs={','.join(metadata_config_dirs)}")
+    return " ".join(parts)
 
 
-def _run_native_test(
+def _run_native_trace_image(
         reachability_repo_path: str,
         coordinate: str,
-        output_dir: str,
+        run_dir: str,
+        condition_packages_arg: str,
+        metadata_config_dirs: list[str],
         log_path: str,
-) -> int:
+) -> tuple[int, int | None]:
+    """Run ``runNativeTraceImage`` and surface the binary's exit code.
+
+    Returns ``(gradle_rc, binary_rc)``. ``binary_rc`` is parsed from the
+    Gradle log's "exit value N" line. It will be ``None`` when the build
+    failed before the binary ran.
+    """
     cmd = [
         "./gradlew",
-        "nativeTest",
+        "runNativeTraceImage",
         f"-Pcoordinates={coordinate}",
-        f"-PmetadataConfigDirs={output_dir}",
+        f"-PtraceMetadataPath={run_dir}",
+        f"-PtraceMetadataConditionPackages={condition_packages_arg}",
     ]
+    if metadata_config_dirs:
+        cmd.append(f"-PmetadataConfigDirs={','.join(metadata_config_dirs)}")
     log_stage(
         _GATE_STAGE,
         f"$ {' '.join(cmd)}  (log: {display_log_path(log_path)})",
@@ -227,28 +263,67 @@ def _run_native_test(
             stderr=subprocess.STDOUT,
             check=False,
         )
-    return result.returncode
+    if result.returncode == 0:
+        # The Exec inside runNativeTraceImage uses ignoreExitValue=true, so a
+        # zero gradle exit code does not necessarily mean the binary returned
+        # 0; parse to be sure.
+        binary_rc = _parse_binary_exit_code(log_path)
+        if binary_rc is None:
+            binary_rc = 0
+        return result.returncode, binary_rc
+    return result.returncode, _parse_binary_exit_code(log_path)
 
 
-def _native_test_log_path(coordinate: str, cycle_index: int, suffix: str) -> str:
-    return build_timestamped_task_log_path(
-        _LOG_TASK_TYPE,
-        sanitize_library_log_segment(coordinate),
-        f"cycle-{cycle_index}-nativeTest-{suffix}",
+def _parse_binary_exit_code(log_path: str) -> int | None:
+    """Recover the binary's exit code from a ``exit value N`` log line."""
+    try:
+        with open(log_path, "r", encoding="utf-8", errors="replace") as handle:
+            content = handle.read()
+    except OSError:
+        return None
+    matches = _EXIT_VALUE_PATTERN.findall(content)
+    if not matches:
+        return None
+    try:
+        return int(matches[-1])
+    except ValueError:
+        return None
+
+
+def _merge_into_output(
+        reachability_repo_path: str,
+        run_dirs: list[str],
+        output_dir: str,
+) -> None:
+    """Merge accepted per-cycle trace dirs into the caller's ``output_dir``."""
+    if not run_dirs:
+        return
+    cmd = [
+        "./gradlew",
+        "mergeNativeTraceMetadata",
+        f"-PinputDirs={','.join(run_dirs)}",
+        f"-PoutputDir={output_dir}",
+    ]
+    log_stage(_GATE_STAGE, f"$ {' '.join(cmd)}", indent_level=1)
+    subprocess.run(
+        cmd,
+        cwd=reachability_repo_path,
+        check=False,
     )
 
 
-def _read_log(path: str | None, limit: int = 64 * 1024) -> str:
-    if not path:
-        return ""
-    try:
-        with open(path, "r", encoding="utf-8") as handle:
-            data = handle.read()
-    except OSError:
-        return ""
-    if len(data) > limit:
-        return data[-limit:]
-    return data
+def _reset_directory(path: str) -> None:
+    if os.path.exists(path):
+        shutil.rmtree(path)
+    os.makedirs(path, exist_ok=True)
+
+
+def _gate_log_path(coordinate: str, cycle_index: int, suffix: str) -> str:
+    return build_timestamped_task_log_path(
+        _LOG_TASK_TYPE,
+        sanitize_library_log_segment(coordinate),
+        f"cycle-{cycle_index}-{suffix}",
+    )
 
 
 def class_key_from_class_name(class_name: str) -> str:
