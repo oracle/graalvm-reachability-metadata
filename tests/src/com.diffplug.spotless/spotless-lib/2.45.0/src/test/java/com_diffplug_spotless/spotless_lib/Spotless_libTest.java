@@ -8,7 +8,7 @@ package com_diffplug_spotless.spotless_lib;
 
 import org.junit.jupiter.api.Test;
 
-class Spotless_libTest {
+public class Spotless_libTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");

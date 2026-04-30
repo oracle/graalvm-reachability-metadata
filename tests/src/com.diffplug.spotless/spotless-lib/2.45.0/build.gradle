@@ -4,11 +4,186 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import org.gradle.api.file.Directory
+import org.gradle.api.provider.Provider
+
 plugins {
     id "org.graalvm.internal.tck"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+
+Provider<Directory> ktfmtFixtureResources = layout.buildDirectory.dir("generated/ktfmt-fixture-resources")
+
+tasks.register("generateKtfmtFixtureJars") {
+    outputs.dir(ktfmtFixtureResources)
+
+    doLast {
+        File outputDir = ktfmtFixtureResources.get().asFile
+        delete(outputDir)
+
+        createModernKtfmtFixture(outputDir, "0.46", "modern")
+        createModernKtfmtFixture(outputDir, "0.31", "format")
+        createOldKtfmtFixture(outputDir, "0.30", "old", true)
+        createOldKtfmtFixture(outputDir, "0.18", "pre-field", false)
+    }
+}
+
+void createModernKtfmtFixture(File outputDir, String version, String prefix) {
+    Map<String, String> sources = [
+        "com/facebook/ktfmt/format/FormattingOptions.java": """
+            package com.facebook.ktfmt.format;
+
+            public class FormattingOptions {
+                public enum Style {
+                    DEFAULT
+                }
+
+                private final Style style;
+                private final int maxWidth;
+                private final int blockIndent;
+                private final int continuationIndent;
+                private final boolean removeUnusedImports;
+                private final boolean debuggingPrintOpsAfterFormatting;
+
+                public FormattingOptions() {
+                    this(Style.DEFAULT, 100, 4, 4, true, false);
+                }
+
+                public FormattingOptions(Style style, int maxWidth, int blockIndent, int continuationIndent,
+                        boolean removeUnusedImports, boolean debuggingPrintOpsAfterFormatting) {
+                    this.style = style;
+                    this.maxWidth = maxWidth;
+                    this.blockIndent = blockIndent;
+                    this.continuationIndent = continuationIndent;
+                    this.removeUnusedImports = removeUnusedImports;
+                    this.debuggingPrintOpsAfterFormatting = debuggingPrintOpsAfterFormatting;
+                }
+
+                public Style getStyle() {
+                    return style;
+                }
+
+                public int getMaxWidth() {
+                    return maxWidth;
+                }
+
+                public int getBlockIndent() {
+                    return blockIndent;
+                }
+
+                public int getContinuationIndent() {
+                    return continuationIndent;
+                }
+
+                public boolean getRemoveUnusedImports() {
+                    return removeUnusedImports;
+                }
+
+                public boolean getDebuggingPrintOpsAfterFormatting() {
+                    return debuggingPrintOpsAfterFormatting;
+                }
+
+                public FormattingOptions copy(Style style, int maxWidth, int blockIndent, int continuationIndent,
+                        boolean removeUnusedImports, boolean debuggingPrintOpsAfterFormatting) {
+                    return new FormattingOptions(style, maxWidth, blockIndent, continuationIndent, removeUnusedImports,
+                            debuggingPrintOpsAfterFormatting);
+                }
+            }
+            """,
+        "com/facebook/ktfmt/format/Formatter.java": """
+            package com.facebook.ktfmt.format;
+
+            public class Formatter {
+                public static final FormattingOptions DEFAULT_FORMAT = new FormattingOptions();
+                public static final FormattingOptions DROPBOX_FORMAT = new FormattingOptions();
+                public static final FormattingOptions GOOGLE_FORMAT = new FormattingOptions();
+                public static final FormattingOptions KOTLINLANG_FORMAT = new FormattingOptions();
+
+                public static String format(String input) {
+                    return \"${prefix}-default:\" + input;
+                }
+
+                public static String format(FormattingOptions options, String input) {
+                    return \"${prefix}:\" + input;
+                }
+            }
+            """
+    ]
+    createFixtureJar(outputDir, version, "ktfmt-${version}.jar", sources)
+}
+
+void createOldKtfmtFixture(File outputDir, String version, String prefix, boolean formatterFields) {
+    String fields = formatterFields ? """
+                public static final FormattingOptions DEFAULT_FORMAT = new FormattingOptions();
+                public static final FormattingOptions DROPBOX_FORMAT = new FormattingOptions();
+                public static final FormattingOptions GOOGLE_FORMAT = new FormattingOptions();
+                public static final FormattingOptions KOTLINLANG_FORMAT = new FormattingOptions();
+        """ : ""
+    Map<String, String> sources = [
+        "com/facebook/ktfmt/FormattingOptions.java": """
+            package com.facebook.ktfmt;
+
+            public class FormattingOptions {
+                public static class Companion {
+                    public Companion(Object marker) {}
+
+                    public FormattingOptions dropboxStyle() {
+                        return new FormattingOptions();
+                    }
+                }
+            }
+            """,
+        "com/facebook/ktfmt/FormatterKt.java": """
+            package com.facebook.ktfmt;
+
+            public class FormatterKt {
+                ${fields}
+                public static String format(String input) {
+                    return \"${prefix}-default:\" + input;
+                }
+
+                public static String format(FormattingOptions options, String input) {
+                    return \"${prefix}-options:\" + input;
+                }
+            }
+            """
+    ]
+    createFixtureJar(outputDir, version, "ktfmt-${version}.jar", sources)
+}
+
+void createFixtureJar(File outputDir, String version, String jarName, Map<String, String> sources) {
+    File workDir = new File(outputDir, "work/${version}")
+    File sourceDir = new File(workDir, "src")
+    File classesDir = new File(workDir, "classes")
+    sources.each { relativePath, source ->
+        File sourceFile = new File(sourceDir, relativePath)
+        sourceFile.parentFile.mkdirs()
+        sourceFile.text = source.stripIndent()
+    }
+    classesDir.mkdirs()
+    ant.javac(srcdir: sourceDir, destdir: classesDir, includeantruntime: false, source: "8", target: "8")
+
+    File resourceDir = new File(outputDir, "ktfmt-fixtures/${version}")
+    resourceDir.mkdirs()
+    ant.jar(destfile: new File(resourceDir, jarName), basedir: classesDir)
+
+    File indexFile = new File(outputDir, "ktfmt-fixtures/${version}.classpath")
+    indexFile.parentFile.mkdirs()
+    indexFile.text = "ktfmt-fixtures/${version}/${jarName}\n"
+
+    delete(workDir)
+}
+
+sourceSets {
+    test {
+        resources.srcDir(ktfmtFixtureResources)
+    }
+}
+
+tasks.named("processTestResources") {
+    dependsOn(tasks.named("generateKtfmtFixtureJars"))
+}
 
 dependencies {
     testImplementation "com.diffplug.spotless:spotless-lib:$libraryVersion"
@@ -16,6 +191,12 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('-H:IncludeResources=ktfmt-fixtures/.*')
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
