@@ -13,6 +13,7 @@ import java.nio.file.Path as JdkPath
 import java.util.Comparator
 import kotlin.io.path.Path
 import kotlin.io.path.appendText
+import kotlin.io.path.copyTo
 import kotlin.io.path.createTempDirectory
 import kotlin.io.path.createTempFile
 import kotlin.io.path.deleteIfExists
@@ -107,6 +108,26 @@ public class Kotlin_stdlib_jdk7Test {
             assertThat(jsonFile.exists()).isTrue()
             assertThat(alphaFile.deleteIfExists()).isTrue()
             assertThat(alphaFile.deleteIfExists()).isFalse()
+        }
+    }
+
+    @Test
+    public fun copyToCopiesFileContentsAndCanReplaceExistingTarget() {
+        withTemporaryDirectory { directory: JdkPath ->
+            val sourceFile: JdkPath = directory.resolve("source.txt")
+            val targetFile: JdkPath = directory.resolve("target.txt")
+
+            sourceFile.writeText("status=initial", Charsets.UTF_8)
+            val copiedFile: JdkPath = sourceFile.copyTo(targetFile)
+
+            assertThat(copiedFile).isEqualTo(targetFile)
+            assertThat(targetFile.readText(Charsets.UTF_8)).isEqualTo("status=initial")
+
+            sourceFile.writeText("status=updated", Charsets.UTF_8)
+            val replacedFile: JdkPath = sourceFile.copyTo(targetFile, overwrite = true)
+
+            assertThat(replacedFile).isEqualTo(targetFile)
+            assertThat(targetFile.readText(Charsets.UTF_8)).isEqualTo("status=updated")
         }
     }
 
