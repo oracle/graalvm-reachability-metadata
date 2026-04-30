@@ -80,6 +80,17 @@ public class Jcip_annotationsTest {
     }
 
     @Test
+    void guardedBySupportsSelfGuardedState() {
+        SelfGuardedTaskQueue queue = new SelfGuardedTaskQueue();
+
+        assertThat(queue.enqueueIfMissing("compile")).isTrue();
+        assertThat(queue.enqueueIfMissing("compile")).isFalse();
+        assertThat(queue.enqueueIfMissing("package")).isTrue();
+        assertThat(queue.drain()).containsExactly("compile", "package");
+        assertThat(queue.drain()).isEmpty();
+    }
+
+    @Test
     void notThreadSafeAnnotatedMutableTypeKeepsInsertionOrder() {
         MutableAuditTrail auditTrail = new MutableAuditTrail();
 
@@ -266,6 +277,28 @@ public class Jcip_annotationsTest {
 
         private static synchronized void clear() {
             entries.clear();
+        }
+    }
+
+    private static final class SelfGuardedTaskQueue {
+        @GuardedBy("itself")
+        private final List<String> tasks = new ArrayList<>();
+
+        private boolean enqueueIfMissing(String task) {
+            synchronized (tasks) {
+                if (tasks.contains(task)) {
+                    return false;
+                }
+                return tasks.add(task);
+            }
+        }
+
+        private List<String> drain() {
+            synchronized (tasks) {
+                List<String> drainedTasks = List.copyOf(tasks);
+                tasks.clear();
+                return drainedTasks;
+            }
         }
     }
 
