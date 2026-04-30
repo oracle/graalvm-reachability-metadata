@@ -38,7 +38,7 @@ public class SerializerTest {
 
     @Test
     public void serializesSerializablePropertiesThroughPublicGetters() throws Exception {
-        Serializer serializer = new Serializer(false, true, true);
+        Serializer serializer = new Serializer(false, true);
         URI uri = new URI("https://example.com:8443/docs?q=serpent#section");
 
         String body = serializeBody(serializer, uri);
