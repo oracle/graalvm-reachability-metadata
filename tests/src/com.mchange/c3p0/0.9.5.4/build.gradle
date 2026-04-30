@@ -25,3 +25,21 @@ graalvmNative {
         }
     }
 }
+
+tasks.register("configuredC3P0RegistryTest", Test) {
+    description = "Runs C3P0Registry tests with a configured management coordinator."
+    group = "verification"
+
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform()
+
+    include "com_mchange/c3p0/C3P0RegistryTest.class"
+    systemProperty "com.mchange.v2.c3p0.management.ManagementCoordinator",
+            "com.mchange.v2.c3p0.management.NullManagementCoordinator"
+    shouldRunAfter tasks.named("test")
+}
+
+tasks.named("test") {
+    finalizedBy tasks.named("configuredC3P0RegistryTest")
+}

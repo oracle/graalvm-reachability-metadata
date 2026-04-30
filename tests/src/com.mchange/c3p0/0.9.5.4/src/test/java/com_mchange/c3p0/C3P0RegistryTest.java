@@ -42,7 +42,7 @@ public class C3P0RegistryTest {
     }
 
     @Test
-    void initializesDefaultManagementCoordinatorWhenNoOverrideIsConfigured() {
+    void initializesRegistryManagementCoordinator() {
         ConnectionTester defaultTester = C3P0Registry.getDefaultConnectionTester();
 
         assertThat(defaultTester).isNotNull();
