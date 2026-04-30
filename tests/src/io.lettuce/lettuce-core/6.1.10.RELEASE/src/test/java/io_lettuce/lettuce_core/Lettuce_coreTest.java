@@ -19,6 +19,7 @@ import io.lettuce.core.GeoWithin;
 import io.lettuce.core.KeyValue;
 import io.lettuce.core.Limit;
 import io.lettuce.core.Range;
+import io.lettuce.core.ReadFrom;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.ScanArgs;
@@ -47,6 +48,7 @@ import io.lettuce.core.event.Event;
 import io.lettuce.core.event.connection.ConnectedEvent;
 import io.lettuce.core.event.connection.ConnectEvent;
 import io.lettuce.core.models.role.RedisInstance;
+import io.lettuce.core.models.role.RedisNodeDescription;
 import io.lettuce.core.models.stream.PendingMessage;
 import io.lettuce.core.output.IntegerOutput;
 import io.lettuce.core.output.StatusOutput;
@@ -67,10 +69,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
 import reactor.core.Disposable;
 import reactor.core.scheduler.Schedulers;
@@ -302,13 +306,13 @@ public class Lettuce_coreTest {
         ByteBuffer encodedString = StringCodec.UTF8.encodeValue(unicodeValue);
         assertThat(StringCodec.UTF8.decodeValue(encodedString)).isEqualTo(unicodeValue);
 
-        byte[] bytes = new byte[] { 1, 2, 3, 4 };
+        byte[] bytes = new byte[] {1, 2, 3, 4};
         ByteBuffer encodedBytes = ByteArrayCodec.INSTANCE.encodeValue(bytes);
         assertThat(ByteArrayCodec.INSTANCE.decodeValue(encodedBytes)).containsExactly(bytes);
 
         RedisCodec<String, byte[]> mixedCodec = RedisCodec.of(StringCodec.UTF8, ByteArrayCodec.INSTANCE);
         assertThat(mixedCodec.decodeKey(utf8Buffer("key-one"))).isEqualTo("key-one");
-        assertThat(mixedCodec.decodeValue(ByteBuffer.wrap(new byte[] { 9, 8, 7 }))).containsExactly(9, 8, 7);
+        assertThat(mixedCodec.decodeValue(ByteBuffer.wrap(new byte[] {9, 8, 7}))).containsExactly(9, 8, 7);
 
         StatusOutput<String, String> statusOutput = new StatusOutput<>(StringCodec.UTF8);
         statusOutput.set(utf8Buffer("QUEUED"));
@@ -379,6 +383,29 @@ public class Lettuce_coreTest {
     }
 
     @Test
+    void selectsReadNodesUsingReadFromPolicies() {
+        TestRedisNode upstream = new TestRedisNode(
+                "redis-primary.example.test", 6379, RedisInstance.Role.UPSTREAM);
+        TestRedisNode replicaEast = new TestRedisNode(
+                "redis-replica-east.example.test", 6380, RedisInstance.Role.REPLICA);
+        TestRedisNode replicaWest = new TestRedisNode(
+                "redis-replica-west.example.test", 6381, RedisInstance.Role.REPLICA);
+        TestReadFromNodes topology = new TestReadFromNodes(
+                Arrays.<RedisNodeDescription>asList(upstream, replicaEast, replicaWest));
+
+        assertThat(ReadFrom.UPSTREAM.select(topology)).containsExactly(upstream);
+        assertThat(ReadFrom.REPLICA.select(topology)).containsExactly(replicaEast, replicaWest);
+        assertThat(ReadFrom.ANY_REPLICA.select(topology)).containsExactly(replicaEast, replicaWest);
+        assertThat(ReadFrom.UPSTREAM_PREFERRED.select(topology)).containsExactly(upstream, replicaEast, replicaWest);
+        assertThat(ReadFrom.REPLICA_PREFERRED.select(topology)).containsExactly(replicaEast, replicaWest, upstream);
+        assertThat(ReadFrom.ANY.select(topology)).containsExactly(upstream, replicaEast, replicaWest);
+        assertThat(ReadFrom.regex(Pattern.compile("redis-replica-.*\\.example\\.test")).select(topology))
+                .containsExactly(replicaEast, replicaWest);
+        assertThat(ReadFrom.valueOf("replicaPreferred").select(topology))
+                .containsExactly(replicaEast, replicaWest, upstream);
+    }
+
+    @Test
     void calculatesClusterSlotsAndBuildsTopologyModels() {
         int userSlot = SlotHash.getSlot("{user1000}.following");
         assertThat(SlotHash.getSlot("{user1000}.followers")).isEqualTo(userSlot);
@@ -445,6 +472,44 @@ public class Lettuce_coreTest {
                 .extracting(RedisClusterNode::getNodeId)
                 .containsExactly("node-b");
         assertThat(parsedRanges.get(1).getUpstream().getUri().getPort()).isEqualTo(7002);
+    }
+
+    private static final class TestRedisNode implements RedisNodeDescription {
+        private final RedisURI uri;
+        private final RedisInstance.Role role;
+
+        private TestRedisNode(String host, int port, RedisInstance.Role role) {
+            this.uri = RedisURI.create("redis://" + host + ":" + port);
+            this.role = role;
+        }
+
+        @Override
+        public RedisURI getUri() {
+            return uri;
+        }
+
+        @Override
+        public RedisInstance.Role getRole() {
+            return role;
+        }
+    }
+
+    private static final class TestReadFromNodes implements ReadFrom.Nodes {
+        private final List<RedisNodeDescription> nodes;
+
+        private TestReadFromNodes(List<RedisNodeDescription> nodes) {
+            this.nodes = nodes;
+        }
+
+        @Override
+        public List<RedisNodeDescription> getNodes() {
+            return nodes;
+        }
+
+        @Override
+        public Iterator<RedisNodeDescription> iterator() {
+            return nodes.iterator();
+        }
     }
 
     private static String commandString(CompositeArgument argument) {
