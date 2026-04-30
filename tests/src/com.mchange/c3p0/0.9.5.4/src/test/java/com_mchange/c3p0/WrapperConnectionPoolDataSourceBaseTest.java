@@ -123,6 +123,7 @@ public class WrapperConnectionPoolDataSourceBaseTest {
 
     private static DriverManagerDataSource newSerializableNestedDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource(false);
+        dataSource.setIdentityToken("nested-direct-token");
         dataSource.setJdbcUrl("jdbc:test:direct");
         dataSource.setDescription("nested serializable data source");
         return dataSource;
