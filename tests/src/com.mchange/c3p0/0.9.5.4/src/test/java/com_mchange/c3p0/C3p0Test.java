@@ -8,7 +8,7 @@ package com_mchange.c3p0;
 
 import org.junit.jupiter.api.Test;
 
-class C3p0Test {
+public class C3p0Test {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
