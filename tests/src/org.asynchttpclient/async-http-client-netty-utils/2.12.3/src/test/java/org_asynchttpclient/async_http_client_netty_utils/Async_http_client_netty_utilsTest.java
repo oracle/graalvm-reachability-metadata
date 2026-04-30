@@ -44,6 +44,23 @@ public class Async_http_client_netty_utilsTest {
     }
 
     @Test
+    void copiesReadableBytesFromDirectBufferWithoutChangingReaderIndex() {
+        ByteBuf direct = ByteBufAllocator.DEFAULT.directBuffer();
+        direct.writeBytes(new byte[] {5, 10, 15, 20, 25});
+        direct.readerIndex(2);
+
+        try {
+            byte[] bytes = ByteBufUtils.byteBuf2Bytes(direct);
+
+            assertThat(bytes).containsExactly((byte) 15, (byte) 20, (byte) 25);
+            assertThat(direct.readerIndex()).isEqualTo(2);
+            assertThat(direct.readableBytes()).isEqualTo(3);
+        } finally {
+            direct.release();
+        }
+    }
+
+    @Test
     void decodesSingleUtf8ByteBufToStringAndChars() {
         String text = "ASCII, accents éà, CJK 東京, emoji 🚀";
         ByteBuf buffer = utf8Buffer(text);
