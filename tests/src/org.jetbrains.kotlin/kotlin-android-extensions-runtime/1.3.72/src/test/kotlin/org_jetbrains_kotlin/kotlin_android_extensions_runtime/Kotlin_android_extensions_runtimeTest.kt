@@ -6,8 +6,10 @@
  */
 package org_jetbrains_kotlin.kotlin_android_extensions_runtime
 
+import android.view.View
 import kotlinx.android.extensions.CacheImplementation
 import kotlinx.android.extensions.ContainerOptions
+import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parceler
 import kotlinx.android.parcel.Parcelize
@@ -89,6 +91,14 @@ public class Kotlin_android_extensions_runtimeTest {
     }
 
     @Test
+    public fun layoutContainerImplementationsCanExposeNullableContainerViews() {
+        val container: LayoutContainer = EmptyLayoutContainer
+        val containerView: View? = container.containerView
+
+        assertThat(containerView).isNull()
+    }
+
+    @Test
     public fun annotatedDomainTypesRemainUsableAsRegularKotlinObjects() {
         val cacheCarrier: CachePolicyCarrier = CachePolicyCarrier("hash-map-cache")
         val parcelCarrier: ParcelAnnotationCarrier = ParcelAnnotationCarrier(raw = mapOf("answer" to 42))
@@ -122,3 +132,7 @@ private data class ParcelAnnotationCarrier(
 private data class ParcelizedMarker(
     val id: @WriteWith<Parceler<*>> String
 )
+
+private object EmptyLayoutContainer : LayoutContainer {
+    override val containerView: View? = null
+}
