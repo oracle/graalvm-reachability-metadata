@@ -30,6 +30,7 @@ import org.codehaus.plexus.util.xml.Xpp3DomWriter;
 import org.codehaus.plexus.util.xml.XmlStreamReader;
 import org.codehaus.plexus.util.xml.XmlStreamWriter;
 import org.codehaus.plexus.util.xml.XmlUtil;
+import org.codehaus.plexus.util.xml.XmlWriterUtil;
 import org.codehaus.plexus.util.xml.pull.MXParser;
 import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParser;
@@ -259,6 +260,28 @@ public class Plexus_xmlTest {
         parser.require(XmlPullParser.START_TAG, "urn:items", "item");
         assertThat(parser.getAttributeValue("", "sku")).isEqualTo("A-1");
         assertThat(parser.nextText()).isEqualTo("alpha < beta & gamma");
+    }
+
+    @Test
+    void xmlWriterUtilWritesSafeWrappedCommentsInsideXmlDocuments() throws Exception {
+        StringWriter out = new StringWriter();
+        XMLWriter writer = new CompactXMLWriter(out);
+        writer.startElement("document");
+        XmlWriterUtil.writeComment(writer, "Generated <!--internal--> comment text spans multiple words", 1, 2, 42);
+        writer.startElement("value");
+        writer.writeText("content");
+        writer.endElement();
+        writer.endElement();
+
+        String xml = out.toString();
+        assertThat(xml).contains("<!-- Generated internal comment text");
+        assertThat(xml).contains("<!-- spans multiple words");
+        assertThat(xml).doesNotContain("<!--internal-->");
+        assertThat(xml).contains("<value>content</value>");
+
+        Xpp3Dom parsed = Xpp3DomBuilder.build(new StringReader(xml));
+        assertThat(parsed.getName()).isEqualTo("document");
+        assertThat(parsed.getChild("value").getValue()).isEqualTo("content");
     }
 
     @Test
