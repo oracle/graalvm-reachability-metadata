@@ -11,7 +11,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
@@ -118,6 +120,26 @@ public class Arquillian_core_apiTest {
         assertThat(activeContext.get()).isEqualTo("request-two");
     }
 
+    @Test
+    public void scopeAnnotationsCanSelectIndependentContextualInstances() {
+        ScopedInstanceRegistry registry = new ScopedInstanceRegistry();
+        ApplicationScoped applicationScope = new ApplicationScopedLiteral();
+        CustomScoped customScope = new CustomScopedLiteral();
+
+        registry.producer(applicationScope).set("global-configuration");
+        registry.producer(customScope).set("tenant-configuration");
+
+        Instance<String> applicationView = registry.instance(applicationScope);
+        Instance<String> customView = registry.instance(customScope);
+
+        assertThat(applicationView.get()).isEqualTo("global-configuration");
+        assertThat(customView.get()).isEqualTo("tenant-configuration");
+
+        registry.producer(applicationScope).set("global-refresh");
+        assertThat(applicationView.get()).isEqualTo("global-refresh");
+        assertThat(customView.get()).isEqualTo("tenant-configuration");
+    }
+
     private static final class RecordingEvent<T> implements Event<T> {
         private final List<T> events = new ArrayList<>();
 
@@ -196,6 +218,18 @@ public class Arquillian_core_apiTest {
         }
     }
 
+    private static final class ScopedInstanceRegistry {
+        private final Map<Class<? extends Annotation>, SimpleInstanceProducer<String>> instances = new HashMap<>();
+
+        private InstanceProducer<String> producer(Annotation scope) {
+            return instances.computeIfAbsent(scope.annotationType(), ignored -> new SimpleInstanceProducer<>());
+        }
+
+        private Instance<String> instance(Annotation scope) {
+            return producer(scope);
+        }
+    }
+
     private static final class SimpleInjector implements Injector {
         private final InstanceProducer<String> messageProducer;
         private final InstanceProducer<String> applicationStateProducer;
@@ -237,6 +271,20 @@ public class Arquillian_core_apiTest {
 
     @Scope
     private @interface CustomScoped {
+    }
+
+    private static final class ApplicationScopedLiteral implements ApplicationScoped {
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return ApplicationScoped.class;
+        }
+    }
+
+    private static final class CustomScopedLiteral implements CustomScoped {
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return CustomScoped.class;
+        }
     }
 
     private static final class SnapshottingExecutorService implements ExecutorService {
