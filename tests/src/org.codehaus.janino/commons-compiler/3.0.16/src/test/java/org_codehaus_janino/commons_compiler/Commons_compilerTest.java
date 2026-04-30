@@ -8,7 +8,7 @@ package org_codehaus_janino.commons_compiler;
 
 import org.junit.jupiter.api.Test;
 
-class Commons_compilerTest {
+public class Commons_compilerTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
