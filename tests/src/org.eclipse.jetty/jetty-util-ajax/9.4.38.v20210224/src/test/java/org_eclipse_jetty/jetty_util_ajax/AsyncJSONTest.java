@@ -37,7 +37,7 @@ public class AsyncJSONTest {
 
         assertThat(complete).isTrue();
         assertThat(parsed).isInstanceOf(ConvertiblePayload.class);
-        ConvertiblePayload payload = (ConvertiblePayload)parsed;
+        ConvertiblePayload payload = (ConvertiblePayload) parsed;
         assertThat(payload.getName()).isEqualTo("jetty");
         assertThat(payload.getCount()).isEqualTo(13L);
         assertThat(payload.isActive()).isTrue();
@@ -65,10 +65,10 @@ public class AsyncJSONTest {
         @Override
         @SuppressWarnings("unchecked")
         public void fromJSON(Map object) {
-            name = (String)object.get("name");
-            count = ((Number)object.get("count")).longValue();
-            active = (Boolean)object.get("active");
-            tags = (List<String>)object.get("tags");
+            name = (String) object.get("name");
+            count = ((Number) object.get("count")).longValue();
+            active = (Boolean) object.get("active");
+            tags = (List<String>) object.get("tags");
         }
 
         public String getName() {

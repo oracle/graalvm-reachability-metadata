@@ -27,7 +27,7 @@ public class JSONPojoConvertorTest {
         Object converted = convertor.fromJSON(properties);
 
         assertThat(converted).isInstanceOf(RoundTripWidget.class);
-        RoundTripWidget widget = (RoundTripWidget)converted;
+        RoundTripWidget widget = (RoundTripWidget) converted;
         assertThat(widget.getName()).isEqualTo("jetty");
         assertThat(widget.getCount()).isEqualTo(7);
         assertThat(widget.isEnabled()).isTrue();
@@ -42,7 +42,7 @@ public class JSONPojoConvertorTest {
         Object parsed = JSON.parse(json.toJSON(widget));
 
         assertThat(parsed).isInstanceOf(Map.class);
-        Map<?, ?> properties = (Map<?, ?>)parsed;
+        Map<?, ?> properties = (Map<?, ?>) parsed;
         assertThat(properties.get("class")).isEqualTo(RoundTripWidget.class.getName());
         assertThat(properties.get("name")).isEqualTo("ajax");
         assertThat(properties.get("count")).isEqualTo(Long.valueOf(11L));

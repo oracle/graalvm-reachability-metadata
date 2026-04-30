@@ -24,7 +24,7 @@ public class JSONObjectConvertorTest {
         Object parsed = JSON.parse(json.toJSON(snapshot));
 
         assertThat(parsed).isInstanceOf(Map.class);
-        Map<?, ?> properties = (Map<?, ?>)parsed;
+        Map<?, ?> properties = (Map<?, ?>) parsed;
         assertThat(properties.get("name")).isEqualTo("jetty");
         assertThat(properties.get("count")).isEqualTo(Long.valueOf(38L));
         assertThat(properties.get("ready")).isEqualTo(Boolean.TRUE);

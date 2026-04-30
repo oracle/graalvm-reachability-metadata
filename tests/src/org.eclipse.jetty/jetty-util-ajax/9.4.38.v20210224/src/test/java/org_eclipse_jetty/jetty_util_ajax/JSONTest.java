@@ -32,7 +32,7 @@ public class JSONTest {
         Object parsed = json.parse(new JSON.StringSource(source));
 
         assertThat(parsed).isInstanceOf(ConvertiblePayload.class);
-        ConvertiblePayload payload = (ConvertiblePayload)parsed;
+        ConvertiblePayload payload = (ConvertiblePayload) parsed;
         assertThat(payload.getName()).isEqualTo("jetty");
         assertThat(payload.getCount()).isEqualTo(21L);
         assertThat(payload.isEnabled()).isTrue();
@@ -56,9 +56,9 @@ public class JSONTest {
 
         @Override
         public void fromJSON(Map object) {
-            name = (String)object.get("name");
-            count = ((Number)object.get("count")).longValue();
-            enabled = (Boolean)object.get("enabled");
+            name = (String) object.get("name");
+            count = ((Number) object.get("count")).longValue();
+            enabled = (Boolean) object.get("enabled");
         }
 
         public String getName() {
