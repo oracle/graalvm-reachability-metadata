@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -239,6 +240,24 @@ public class AptTest {
     }
 
     @Test
+    void endpointHelperSortsEndpointOptionsByDocumentedGroupPriorityAndName() {
+        List<EndpointOption> options = Arrays.asList(
+                endpointOption("zeta", "producer", "producer"),
+                endpointOption("authentication", "security", "security"),
+                endpointOption("timeout", "common (advanced)", "common,advanced"),
+                endpointOption("beta", "common", "common"),
+                endpointOption("alpha", "common", null),
+                endpointOption("delayed", "consumer", "consumer"));
+        Comparator<EndpointOption> comparator = EndpointHelper.createGroupAndLabelComparator();
+
+        options.sort(comparator);
+
+        assertThat(options)
+                .extracting(EndpointOption::getName)
+                .containsExactly("alpha", "beta", "timeout", "delayed", "zeta", "authentication");
+    }
+
+    @Test
     void endpointAnnotationProcessorCreatesCompleteComponentSchema() {
         ComponentModel component = new ComponentModel("demo");
         component.setExtendsScheme("file");
@@ -305,6 +324,11 @@ public class AptTest {
     void documentationHelperReturnsNullForUnknownInheritedSchemas() {
         assertThat(DocumentationHelper.findComponentJavaDoc("unknown", "unknown", "field")).isNull();
         assertThat(DocumentationHelper.findEndpointJavaDoc("unknown", "unknown", "field")).isNull();
+    }
+
+    private static EndpointOption endpointOption(String name, String group, String label) {
+        return new EndpointOption(name, "java.lang.String", null, null, null, "Option documentation", null, null,
+                false, false, group, label, false, orderedSet());
     }
 
     private static Map<String, Map<String, String>> byName(List<Map<String, String>> rows) {
