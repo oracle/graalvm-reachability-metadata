@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.ClientEndpointConfig;
 import jakarta.websocket.CloseReason;
+import jakarta.websocket.ContainerProvider;
 import jakarta.websocket.DecodeException;
 import jakarta.websocket.Decoder;
 import jakarta.websocket.DeploymentException;
@@ -398,6 +399,13 @@ public class Jakarta_websocket_client_apiTest {
         assertThat(extension.getParameters().get(0).getValue()).isEqualTo("true");
         assertThat(StandardCharsets.UTF_8.decode(pong.getApplicationData()).toString()).isEqualTo("pong");
         assertThat(response.getHeaders()).containsEntry("Server", List.of("test"));
+    }
+
+    @Test
+    void containerProviderReportsMissingServiceImplementation() {
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(ContainerProvider::getWebSocketContainer)
+                .withMessage("Could not find an implementation class.");
     }
 
     @Test
