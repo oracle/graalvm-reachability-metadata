@@ -8,7 +8,7 @@ package jakarta_authentication.jakarta_authentication_api;
 
 import org.junit.jupiter.api.Test;
 
-class Jakarta_authentication_apiTest {
+public class Jakarta_authentication_apiTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
