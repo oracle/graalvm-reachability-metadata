@@ -6,7 +6,6 @@
  */
 package com_esotericsoftware.kryo_shaded;
 
-import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.reflectasm.shaded.org.objectweb.asm.ClassReader;
 import org.junit.jupiter.api.Test;
 
@@ -15,9 +14,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ClassReaderTest {
     @Test
     void readsClassBytesFromSystemResource() throws Exception {
-        ClassReader reader = new ClassReader(Kryo.class.getName());
+        ClassReader reader = new ClassReader(ClassReader.class.getName());
 
-        assertThat(reader.getClassName()).isEqualTo("com/esotericsoftware/kryo/Kryo");
+        assertThat(reader.getClassName())
+                .isEqualTo("com/esotericsoftware/reflectasm/shaded/org/objectweb/asm/ClassReader");
         assertThat(reader.getSuperName()).isEqualTo("java/lang/Object");
     }
 }

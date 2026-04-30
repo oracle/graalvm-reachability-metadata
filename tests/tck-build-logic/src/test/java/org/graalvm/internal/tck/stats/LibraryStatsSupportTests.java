@@ -378,6 +378,57 @@ class LibraryStatsSupportTests {
     }
 
     @Test
+    void buildDynamicAccessCoverageReportCoversLineLessCallSitesByMethodCoverage() throws IOException {
+        Path libraryJar = createLibraryJar(tempDir.resolve("demo.jar"), List.of("com/example/BytecodeOnly.class"));
+
+        Path dynamicAccessDir = tempDir.resolve("dynamic-access");
+        Files.createDirectories(dynamicAccessDir.resolve("demo"));
+        Files.writeString(
+                dynamicAccessDir.resolve("demo").resolve("resource-calls.json"),
+                """
+                {
+                  "java.lang.ClassLoader#getSystemResourceAsStream(java.lang.String)": [
+                    "com.example.BytecodeOnly.<init>(Unknown Source)"
+                  ]
+                }
+                """,
+                StandardCharsets.UTF_8
+        );
+
+        Path jacocoReport = tempDir.resolve("jacoco.xml");
+        Files.writeString(
+                jacocoReport,
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <report name="demo">
+                  <package name="com/example">
+                    <class name="com/example/BytecodeOnly">
+                      <method name="&lt;init&gt;" desc="()V">
+                        <counter type="INSTRUCTION" missed="0" covered="7"/>
+                      </method>
+                    </class>
+                  </package>
+                  <counter type="INSTRUCTION" missed="0" covered="7"/>
+                  <counter type="METHOD" missed="0" covered="1"/>
+                </report>
+                """,
+                StandardCharsets.UTF_8
+        );
+
+        LibraryStatsModels.DynamicAccessCoverageReport report = LibraryStatsSupport.buildDynamicAccessCoverageReport(
+                "com.example:demo:1.0.0",
+                List.of(libraryJar),
+                dynamicAccessDir,
+                jacocoReport
+        );
+
+        assertThat(report.totals().coveredCalls()).isEqualTo(1);
+        assertThat(report.classes()).hasSize(1);
+        assertThat(report.classes().get(0).coveredCalls()).isEqualTo(1);
+        assertThat(report.classes().get(0).callSites().get(0).covered()).isTrue();
+    }
+
+    @Test
     void buildDynamicAccessCoverageReportReturnsEmptyClassesWhenDynamicAccessDirectoryIsMissing() throws IOException {
         Path libraryJar = createLibraryJar(tempDir.resolve("demo.jar"), List.of("com/example/Foo.class"));
 
