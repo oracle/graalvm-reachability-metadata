@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.googlecode.concurrenttrees.common.KeyValuePair;
+import com.googlecode.concurrenttrees.common.PrettyPrinter;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.RadixTree;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
@@ -83,6 +84,29 @@ public class Concurrent_treesTest {
                 .containsExactlyInAnyOrder("small car", "family car");
         assertThat(pairsByKey(tree.getKeyValuePairsForClosestKeys("FORD FUSION")))
                 .containsExactly(Map.entry("FORD FIESTA", "small car"), Map.entry("FORD FOCUS", "family car"));
+    }
+
+    @Test
+    void prettyPrinterRendersTreeStructureAndValues() {
+        ConcurrentRadixTree<String> tree = new ConcurrentRadixTree<>(NODE_FACTORY);
+        tree.put("team", "group");
+        tree.put("tea", "drink");
+        tree.put("to", "direction");
+        tree.put("ton", "weight");
+
+        String expected = """
+                ○
+                └── ○ t
+                    ├── ○ ea (drink)
+                    │   └── ○ m (group)
+                    └── ○ o (direction)
+                        └── ○ n (weight)
+                """;
+
+        assertThat(PrettyPrinter.prettyPrint(tree)).isEqualTo(expected);
+        StringBuilder rendered = new StringBuilder();
+        PrettyPrinter.prettyPrint(tree, rendered);
+        assertThat(rendered).hasToString(expected);
     }
 
     @Test
