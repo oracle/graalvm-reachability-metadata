@@ -53,7 +53,7 @@ public class Commons_fileupload2_coreTest {
     @Test
     void parsesMultipartRequestIntoDiskFileItemsWithHeadersAndProgress() throws Exception {
         String boundary = "AaB03x";
-        String text = "Résumé café";
+        String text = "R\u00e9sum\u00e9 caf\u00e9";
         byte[] body = multipart(boundary,
                 part("Content-Disposition: form-data; name=\"description\"",
                         "Content-Type: text/plain; charset=UTF-8",
@@ -112,9 +112,9 @@ public class Commons_fileupload2_coreTest {
         List<DiskFileItem> items = upload.parseRequest(request(boundary, body));
 
         assertThat(items).singleElement().satisfies(item -> {
-            assertThat(item.getFieldName()).isEqualTo("café");
+            assertThat(item.getFieldName()).isEqualTo("caf\u00e9");
             assertThat(item.isFormField()).isFalse();
-            assertThat(item.getName()).isEqualTo("résumé.txt");
+            assertThat(item.getName()).isEqualTo("r\u00e9sum\u00e9.txt");
             assertThat(item.getContentType()).isEqualTo("text/plain; charset=UTF-8");
             assertThat(item.getString()).isEqualTo("contents");
         });
