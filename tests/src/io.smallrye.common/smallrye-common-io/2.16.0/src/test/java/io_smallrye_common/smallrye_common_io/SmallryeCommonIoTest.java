@@ -118,6 +118,27 @@ public class SmallryeCommonIoTest {
     }
 
     @Test
+    void quietDirectoryStreamDeleteReportsRemovedEntriesWithoutDeletingOpenedDirectory() throws IOException {
+        Path root = newWorkspace("quiet-delete-stream-root");
+        Path left = root.resolve("left");
+        Path right = root.resolve("right").resolve("deep");
+        Files.createDirectories(left);
+        Files.createDirectories(right);
+        Files.writeString(root.resolve("top.txt"), "top", StandardCharsets.UTF_8);
+        Files.writeString(left.resolve("left.txt"), "left", StandardCharsets.UTF_8);
+        Files.writeString(right.resolve("right.txt"), "right", StandardCharsets.UTF_8);
+
+        DeleteStats stats;
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(root)) {
+            stats = Files2.deleteRecursivelyQuietlyEvenIfInsecure(stream);
+        }
+
+        assertThat(stats).isEqualTo(new DeleteStats(3, 3, 3, 3));
+        assertThat(root).isDirectory();
+        assertThat(listDirectory(root)).isEmpty();
+    }
+
+    @Test
     void cleanRecursivelyKeepsDirectoryButRemovesChildren() throws IOException {
         Path root = newWorkspace("clean-root");
         Files.createDirectories(root.resolve("left"));
