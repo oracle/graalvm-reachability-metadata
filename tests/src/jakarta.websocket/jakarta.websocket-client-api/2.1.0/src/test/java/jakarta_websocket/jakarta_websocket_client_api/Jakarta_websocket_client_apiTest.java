@@ -269,6 +269,21 @@ public class Jakarta_websocket_client_apiTest {
     }
 
     @Test
+    void endpointOptionalLifecycleCallbacksAreNoOpsWhenNotOverridden() {
+        ClientEndpointConfig config = ClientEndpointConfig.Builder.create().build();
+        InMemorySession session = new InMemorySession("session-open-only");
+        OpenOnlyEndpoint endpoint = new OpenOnlyEndpoint();
+        CloseReason closeReason = new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "done");
+
+        endpoint.onOpen(session, config);
+        endpoint.onClose(session, closeReason);
+        endpoint.onError(session, new RuntimeException("ignored"));
+
+        assertThat(endpoint.session()).isSameAs(session);
+        assertThat(endpoint.config()).isSameAs(config);
+    }
+
+    @Test
     void endpointLifecycleAndMessageHandlersReceiveExpectedValues() throws Exception {
         ClientEndpointConfig config = ClientEndpointConfig.Builder.create().build();
         InMemorySession session = new InMemorySession("session-2");
@@ -622,6 +637,25 @@ public class Jakarta_websocket_client_apiTest {
     public static final class UnsupportedEndpoint extends Endpoint {
         @Override
         public void onOpen(Session session, EndpointConfig config) {
+        }
+    }
+
+    public static final class OpenOnlyEndpoint extends Endpoint {
+        private Session session;
+        private EndpointConfig config;
+
+        @Override
+        public void onOpen(Session session, EndpointConfig config) {
+            this.session = session;
+            this.config = config;
+        }
+
+        public Session session() {
+            return session;
+        }
+
+        public EndpointConfig config() {
+            return config;
         }
     }
 
