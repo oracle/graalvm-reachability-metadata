@@ -38,6 +38,7 @@ public class NativeLibraryLoaderTest {
             "org.conscrypt.HostProperties",
             "org.conscrypt.HostProperties$OperatingSystem",
             "org.conscrypt.HostProperties$Architecture",
+            "org.conscrypt.HostProperties$Architecture$1",
             "org.conscrypt.Platform");
 
     @Test
