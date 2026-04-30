@@ -230,6 +230,37 @@ public class Opentelemetry_sdkTest {
     }
 
     @Test
+    void parentBasedSamplerDropsRootSpansAndKeepsSampledRemoteChildren() {
+        RecordingSpanExporter exporter = new RecordingSpanExporter();
+        SdkTracerProvider tracerProvider = SdkTracerProvider.builder()
+                .setSampler(Sampler.parentBased(Sampler.alwaysOff()))
+                .addSpanProcessor(SimpleSpanProcessor.create(exporter))
+                .build();
+        Tracer tracer = tracerProvider.tracerBuilder("sampler-tracer").build();
+        SpanContext sampledRemoteParent = SpanContext.createFromRemoteParent(
+                "00000000000000000000000000000077",
+                "0000000000000088",
+                TraceFlags.getSampled(),
+                TraceState.getDefault());
+
+        Span droppedRootSpan = tracer.spanBuilder("dropped-root-span").startSpan();
+        droppedRootSpan.end();
+        Span sampledChildSpan = tracer.spanBuilder("sampled-remote-child")
+                .setParent(Context.root().with(Span.wrap(sampledRemoteParent)))
+                .startSpan();
+        sampledChildSpan.end();
+
+        assertThat(droppedRootSpan.getSpanContext().isSampled()).isFalse();
+        assertThat(sampledChildSpan.getSpanContext().isSampled()).isTrue();
+        assertThat(tracerProvider.shutdown().join(5, TimeUnit.SECONDS).isSuccess()).isTrue();
+
+        assertThat(exporter.findSpan("dropped-root-span")).isEmpty();
+        SpanData childData = exporter.findSpan("sampled-remote-child").orElseThrow(AssertionError::new);
+        assertThat(childData.getParentSpanContext().getSpanId()).isEqualTo(sampledRemoteParent.getSpanId());
+        assertThat(childData.getSpanContext().getTraceId()).isEqualTo(sampledRemoteParent.getTraceId());
+    }
+
+    @Test
     void spanLimitsRetainTelemetryTotalsWhileDroppingExcessAttributesEventsAndLinks() {
         RecordingSpanExporter exporter = new RecordingSpanExporter();
         SpanLimits limits = SpanLimits.builder()
