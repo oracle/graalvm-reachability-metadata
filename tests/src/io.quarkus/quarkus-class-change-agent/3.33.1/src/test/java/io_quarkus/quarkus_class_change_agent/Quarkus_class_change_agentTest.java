@@ -79,7 +79,7 @@ public class Quarkus_class_change_agentTest {
 
     @Test
     void retrievedInstrumentationCanBeUsedForClassChangeCapabilityQueries() {
-        Class<?>[] loadedClasses = { ClassChangeAgent.class, Quarkus_class_change_agentTest.class };
+        Class<?>[] loadedClasses = {ClassChangeAgent.class, Quarkus_class_change_agentTest.class};
         RecordingInstrumentation instrumentation = new RecordingInstrumentation(
                 true, Set.of(ClassChangeAgent.class), loadedClasses);
 
