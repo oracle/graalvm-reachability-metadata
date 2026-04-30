@@ -124,6 +124,15 @@ public class Apiguardian_apiTest {
     }
 
     @Test
+    void consumersReturnsDefensiveCopy() {
+        API annotation = annotation(AnnotatedFixture.class, API.class);
+        String[] consumers = annotation.consumers();
+        consumers[0] = "changed-consumer";
+
+        assertThat(annotation.consumers()).containsExactly("library-users", "extension-authors");
+    }
+
+    @Test
     void annotationInstancesHaveStandardEqualityHashCodeAndStringSemantics() throws NoSuchMethodException {
         Method firstMethod = AnnotatedFixture.class.getMethod("deprecatedOperation");
         Method secondMethod = AnotherAnnotatedFixture.class.getMethod("deprecatedOperation");
