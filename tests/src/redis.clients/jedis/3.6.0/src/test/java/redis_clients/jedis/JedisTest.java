@@ -11,6 +11,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -18,6 +21,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -228,7 +233,7 @@ public class JedisTest {
     }
 
     @Test
-    void parsesShardInfoUriAndCreatesUnconnectedJedisResource() {
+    void parsesShardInfoUriAndCreatesConnectedJedisResource() throws Exception {
         JedisShardInfo redisUri = new JedisShardInfo(URI.create("redis://:secret@cache.example.test:6380/3"));
         assertThat(redisUri.getHost()).isEqualTo("cache.example.test");
         assertThat(redisUri.getPort()).isEqualTo(6380);
@@ -253,10 +258,17 @@ public class JedisTest {
         assertThat(shardInfo.getPassword()).isEqualTo("changed");
         assertThat(shardInfo.toString()).contains("localhost").contains("6382");
 
-        Jedis jedis = shardInfo.createResource();
-        assertThat(jedis).isNotNull();
-        assertThat(jedis.isConnected()).isFalse();
-        jedis.close();
+        try (ServerSocket serverSocket = new ServerSocket(0)) {
+            CompletableFuture<Void> acceptedConnection = acceptSingleConnection(serverSocket);
+            JedisShardInfo localShardInfo = new JedisShardInfo(
+                    "localhost", serverSocket.getLocalPort(), 500, "local-primary", false);
+
+            try (Jedis jedis = localShardInfo.createResource()) {
+                assertThat(jedis).isNotNull();
+                assertThat(jedis.isConnected()).isTrue();
+            }
+            acceptedConnection.get(5, TimeUnit.SECONDS);
+        }
     }
 
     @Test
@@ -339,6 +351,25 @@ public class JedisTest {
                     throw new IllegalArgumentException(keyText);
             }
         }
+    }
+
+    private static CompletableFuture<Void> acceptSingleConnection(ServerSocket serverSocket) {
+        CompletableFuture<Void> acceptedConnection = new CompletableFuture<>();
+        Thread serverThread = new Thread(() -> {
+            try (Socket socket = serverSocket.accept()) {
+                acceptedConnection.complete(null);
+                socket.getInputStream().read();
+            } catch (IOException exception) {
+                if (acceptedConnection.isDone() || serverSocket.isClosed()) {
+                    acceptedConnection.complete(null);
+                } else {
+                    acceptedConnection.completeExceptionally(exception);
+                }
+            }
+        }, "jedis-test-server");
+        serverThread.setDaemon(true);
+        serverThread.start();
+        return acceptedConnection;
     }
 
     private static RedisInputStream input(String data) {
