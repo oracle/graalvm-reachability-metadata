@@ -111,6 +111,35 @@ public final class Opentelemetry_sdk_logsTest {
     }
 
     @Test
+    void compositeLogRecordProcessorFansOutEmitsFlushAndShutdown() {
+        RecordingProcessor first = new RecordingProcessor();
+        RecordingProcessor second = new RecordingProcessor();
+        LogRecordProcessor compositeProcessor = LogRecordProcessor.composite(Arrays.asList(first, second));
+        SdkLoggerProvider loggerProvider = SdkLoggerProvider.builder()
+                .addLogRecordProcessor(compositeProcessor)
+                .build();
+
+        loggerProvider.get("composite.processor.logger")
+                .logRecordBuilder()
+                .setBody("processed by composite")
+                .setAttribute(USER_ID, "carol")
+                .emit();
+        CompletableResultCode flushResult = loggerProvider.forceFlush().join(10, TimeUnit.SECONDS);
+        CompletableResultCode shutdownResult = loggerProvider.shutdown().join(10, TimeUnit.SECONDS);
+
+        assertThat(flushResult.isSuccess()).isTrue();
+        assertThat(shutdownResult.isSuccess()).isTrue();
+        assertThat(first.getRecords()).hasSize(1);
+        assertThat(second.getRecords()).hasSize(1);
+        assertThat(first.isFlushed()).isTrue();
+        assertThat(second.isFlushed()).isTrue();
+        assertThat(first.isShutdown()).isTrue();
+        assertThat(second.isShutdown()).isTrue();
+        assertThat(first.getRecords().get(0).getBody().asString()).isEqualTo("processed by composite");
+        assertThat(second.getRecords().get(0).getAttributes().get(USER_ID)).isEqualTo("carol");
+    }
+
+    @Test
     void eventBuilderAddsEventAttributesWhenDomainIsConfigured() {
         InMemoryLogRecordExporter exporter = InMemoryLogRecordExporter.create();
         SdkLoggerProvider loggerProvider = SdkLoggerProvider.builder()
@@ -302,6 +331,41 @@ public final class Opentelemetry_sdk_logsTest {
         @Override
         public CompletableResultCode forceFlush() {
             return delegate.forceFlush();
+        }
+    }
+
+    private static final class RecordingProcessor implements LogRecordProcessor {
+        private final List<LogRecordData> records = new ArrayList<>();
+        private boolean flushed;
+        private boolean shutdown;
+
+        @Override
+        public void onEmit(ReadWriteLogRecord logRecord) {
+            records.add(logRecord.toLogRecordData());
+        }
+
+        @Override
+        public CompletableResultCode shutdown() {
+            shutdown = true;
+            return CompletableResultCode.ofSuccess();
+        }
+
+        @Override
+        public CompletableResultCode forceFlush() {
+            flushed = true;
+            return CompletableResultCode.ofSuccess();
+        }
+
+        private List<LogRecordData> getRecords() {
+            return Collections.unmodifiableList(records);
+        }
+
+        private boolean isFlushed() {
+            return flushed;
+        }
+
+        private boolean isShutdown() {
+            return shutdown;
         }
     }
 
