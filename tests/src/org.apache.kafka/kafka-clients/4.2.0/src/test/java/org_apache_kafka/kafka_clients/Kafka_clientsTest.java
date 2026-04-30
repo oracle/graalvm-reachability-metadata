@@ -8,7 +8,7 @@ package org_apache_kafka.kafka_clients;
 
 import org.junit.jupiter.api.Test;
 
-class Kafka_clientsTest {
+public class Kafka_clientsTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
