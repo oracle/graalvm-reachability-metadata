@@ -280,6 +280,18 @@ public class AnnotationsTest {
     }
 
     @Test
+    public void jdkConstantCursorAndInputEventMaskAliasesDescribeAwtInputValues() {
+        int cursorType = selectCursorTypeAlias(Cursor.CROSSHAIR_CURSOR);
+        int mouseAndKeyboardMask = selectInputEventMaskAlias(
+                InputEvent.BUTTON1_DOWN_MASK | InputEvent.ALT_DOWN_MASK);
+
+        assertThat(isCrosshairCursor(cursorType)).isTrue();
+        assertThat(hasInputEventMask(mouseAndKeyboardMask, InputEvent.BUTTON1_DOWN_MASK)).isTrue();
+        assertThat(hasInputEventMask(mouseAndKeyboardMask, InputEvent.ALT_DOWN_MASK)).isTrue();
+        assertThat(hasInputEventMask(mouseAndKeyboardMask, InputEvent.SHIFT_DOWN_MASK)).isFalse();
+    }
+
+    @Test
     public void jdkConstantAliasAnnotationsCoverCommonSwingAwtAndRegexConstants() {
         assertThat(selectHorizontalAlignment(SwingConstants.TRAILING)).isEqualTo(SwingConstants.TRAILING);
         assertThat(selectFlowLayoutAlignment(FlowLayout.LEADING)).isEqualTo(FlowLayout.LEADING);
@@ -408,6 +420,26 @@ public class AnnotationsTest {
     @MagicConstant(flagsFromClass = InputEvent.class)
     private static int selectInputMask(@MagicConstant(flagsFromClass = InputEvent.class) int inputEventMask) {
         return inputEventMask;
+    }
+
+    @JdkConstants.CursorType
+    private static int selectCursorTypeAlias(@JdkConstants.CursorType int cursorType) {
+        return cursorType;
+    }
+
+    private static boolean isCrosshairCursor(@JdkConstants.CursorType int cursorType) {
+        return cursorType == Cursor.CROSSHAIR_CURSOR;
+    }
+
+    @JdkConstants.InputEventMask
+    private static int selectInputEventMaskAlias(@JdkConstants.InputEventMask int mask) {
+        return mask;
+    }
+
+    private static boolean hasInputEventMask(
+            @JdkConstants.InputEventMask int mask,
+            @JdkConstants.InputEventMask int expectedMask) {
+        return (mask & expectedMask) == expectedMask;
     }
 
     @JdkConstants.HorizontalAlignment
