@@ -60,6 +60,29 @@ public class Flatbuffers_javaTest {
     }
 
     @Test
+    void flatBufferBuilderCreatesVectorsOfNestedTables() {
+        FlatBufferBuilder builder = new FlatBufferBuilder(64);
+        int pencilOffset = createLineItem(builder, "pencil", 2, 125L);
+        int notebookOffset = createLineItem(builder, "notebook", 1, 475L);
+        int eraserOffset = createLineItem(builder, "eraser", 3, 50L);
+        int itemsOffset = builder.createVectorOfTables(new int[] {pencilOffset, notebookOffset, eraserOffset});
+
+        builder.startTable(1);
+        builder.addOffset(0, itemsOffset, 0);
+        int orderOffset = builder.endTable();
+        builder.finish(orderOffset);
+
+        ByteBuffer buffer = builder.dataBuffer().order(ByteOrder.LITTLE_ENDIAN);
+        int order = rootTable(buffer);
+        int items = indirect(buffer, order + fieldOffset(buffer, order, 0));
+
+        assertThat(buffer.getInt(items)).isEqualTo(3);
+        assertLineItem(buffer, readTableVectorElement(buffer, items, 0), "pencil", 2, 125L);
+        assertLineItem(buffer, readTableVectorElement(buffer, items, 1), "notebook", 1, 475L);
+        assertLineItem(buffer, readTableVectorElement(buffer, items, 2), "eraser", 3, 50L);
+    }
+
+    @Test
     void flatBufferBuilderControlsDefaultFieldEmissionAndSizePrefixes() {
         FlatBufferBuilder defaultBuilder = new FlatBufferBuilder(8);
         defaultBuilder.startTable(1);
@@ -200,6 +223,21 @@ public class Flatbuffers_javaTest {
         assertThat(byteBuffer.requestCapacity(63)).isTrue();
     }
 
+    private static int createLineItem(FlatBufferBuilder builder, String name, int quantity, long unitPriceInCents) {
+        int nameOffset = builder.createString(name);
+        builder.startTable(3);
+        builder.addOffset(0, nameOffset, 0);
+        builder.addInt(1, quantity, 0);
+        builder.addLong(2, unitPriceInCents, 0L);
+        return builder.endTable();
+    }
+
+    private static void assertLineItem(ByteBuffer buffer, int item, String name, int quantity, long unitPriceInCents) {
+        assertThat(readStringField(buffer, item, 0)).isEqualTo(name);
+        assertThat(readIntField(buffer, item, 1)).isEqualTo(quantity);
+        assertThat(readLongField(buffer, item, 2)).isEqualTo(unitPriceInCents);
+    }
+
     private static FlexBuffers.Reference finishAndGetRoot(FlexBuffersBuilder builder) {
         builder.finish();
         return FlexBuffers.getRoot(builder.getBuffer());
@@ -233,6 +271,10 @@ public class Flatbuffers_javaTest {
         return buffer.getInt(table + fieldOffset(buffer, table, field));
     }
 
+    private static long readLongField(ByteBuffer buffer, int table, int field) {
+        return buffer.getLong(table + fieldOffset(buffer, table, field));
+    }
+
     private static boolean readBooleanField(ByteBuffer buffer, int table, int field) {
         return buffer.get(table + fieldOffset(buffer, table, field)) != 0;
     }
@@ -245,6 +287,11 @@ public class Flatbuffers_javaTest {
         duplicate.position(stringStart + Integer.BYTES);
         duplicate.get(bytes);
         return new String(bytes, StandardCharsets.UTF_8);
+    }
+
+    private static int readTableVectorElement(ByteBuffer buffer, int vector, int index) {
+        int offsetLocation = vector + Integer.BYTES + index * Integer.BYTES;
+        return indirect(buffer, offsetLocation);
     }
 
     private static int[] readIntVectorField(ByteBuffer buffer, int table, int field) {
