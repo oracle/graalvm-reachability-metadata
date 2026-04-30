@@ -6,27 +6,65 @@
  */
 package org_apache_kafka.kafka_clients;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.security.Provider;
 import java.security.Security;
 import java.util.Map;
 
 import org.apache.kafka.common.config.SecurityConfig;
-import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.common.security.auth.SecurityProviderCreator;
 import org.apache.kafka.common.utils.SecurityUtils;
 import org.junit.jupiter.api.Test;
 
 public class SecurityUtilsTest {
+    private static final String TEST_PROVIDER_NAME = "SecurityUtilsDynamicAccessProvider";
+
     @Test
-    void resolvesConfiguredSecurityProviderClassesBeforeRejectingWrongType() {
-        Provider[] providersBefore = Security.getProviders();
+    void installsConfiguredSecurityProviderFromCreatorClassName() {
+        Security.removeProvider(TEST_PROVIDER_NAME);
+        TestSecurityProviderCreator.configured = false;
+
+        String creatorClassName = System.getProperty(
+                "security.utils.test.provider.creator",
+                TestSecurityProviderCreator.class.getName());
         Map<String, Object> configs = Map.of(
                 SecurityConfig.SECURITY_PROVIDERS_CONFIG,
-                "  " + StringSerializer.class.getName() + "  ");
+                "  " + creatorClassName.substring(0, creatorClassName.length()) + "  ");
 
-        SecurityUtils.addConfiguredSecurityProviders(configs);
+        try {
+            SecurityUtils.addConfiguredSecurityProviders(configs);
 
-        assertArrayEquals(providersBefore, Security.getProviders());
+            assertTrue(TestSecurityProviderCreator.configured);
+            assertSame(TestSecurityProviderCreator.PROVIDER, Security.getProvider(TEST_PROVIDER_NAME));
+            assertEquals(TEST_PROVIDER_NAME, Security.getProviders()[0].getName());
+        } finally {
+            Security.removeProvider(TEST_PROVIDER_NAME);
+        }
+    }
+
+    public static final class TestSecurityProviderCreator implements SecurityProviderCreator {
+        static final Provider PROVIDER = new TestSecurityProvider();
+        static boolean configured;
+
+        @Override
+        public void configure(Map<String, ?> config) {
+            configured = true;
+        }
+
+        @Override
+        public Provider getProvider() {
+            return PROVIDER;
+        }
+    }
+
+    private static final class TestSecurityProvider extends Provider {
+        private static final long serialVersionUID = 1L;
+
+        TestSecurityProvider() {
+            super(TEST_PROVIDER_NAME, "1.0", "SecurityUtils dynamic-access test provider");
+        }
     }
 }
