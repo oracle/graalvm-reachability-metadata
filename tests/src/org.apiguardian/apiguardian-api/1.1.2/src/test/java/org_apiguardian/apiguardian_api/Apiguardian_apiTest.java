@@ -157,7 +157,8 @@ public class Apiguardian_apiTest {
 
     // Checkstyle: allow direct annotation access
     private static <A extends Annotation> A annotation(AnnotatedElement element, Class<A> annotationType) {
-        return element.getAnnotation(annotationType);
+        AnnotatedElement elementAnnotationAccess = element;
+        return elementAnnotationAccess.getAnnotation(annotationType);
     }
     // Checkstyle: disallow direct annotation access
 
