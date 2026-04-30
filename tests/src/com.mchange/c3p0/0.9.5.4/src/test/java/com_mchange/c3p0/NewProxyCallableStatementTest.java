@@ -9,8 +9,8 @@ package com_mchange.c3p0;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mchange.v2.c3p0.C3P0ProxyStatement;
-import com.mchange.v2.c3p0.impl.C3P0PooledConnection;
-import com.mchange.v2.c3p0.impl.DefaultConnectionTester;
+import com.mchange.v2.c3p0.WrapperConnectionPoolDataSource;
+import java.io.PrintWriter;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -18,25 +18,23 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Collections;
 import java.util.Map;
+import java.util.logging.Logger;
+import javax.sql.DataSource;
+import javax.sql.PooledConnection;
 import org.junit.jupiter.api.Test;
 
 public class NewProxyCallableStatementTest {
     @Test
     void rawStatementOperationInvokesMethodOnUnderlyingCallableStatement() throws Exception {
-        TrackingConnectionHandler connectionHandler = new TrackingConnectionHandler();
-        Connection physicalConnection = newConnectionProxy(connectionHandler);
-        connectionHandler.attach(physicalConnection);
-        C3P0PooledConnection pooledConnection = new C3P0PooledConnection(
-                physicalConnection,
-                new DefaultConnectionTester(),
-                false,
-                false,
-                null,
-                "new-proxy-callable-statement-test"
-        );
+        TrackingDataSource nestedDataSource = new TrackingDataSource();
+        WrapperConnectionPoolDataSource connectionPoolDataSource = new WrapperConnectionPoolDataSource(false);
+        connectionPoolDataSource.setNestedDataSource(nestedDataSource);
+        connectionPoolDataSource.setUsesTraditionalReflectiveProxies(false);
 
+        PooledConnection pooledConnection = connectionPoolDataSource.getPooledConnection();
         Connection connection = pooledConnection.getConnection();
         CallableStatement callableStatement = connection.prepareCall("{ call read_value(?) }");
         C3P0ProxyStatement proxyStatement = (C3P0ProxyStatement) callableStatement;
@@ -48,7 +46,8 @@ public class NewProxyCallableStatementTest {
         );
 
         assertThat(rawValue).isEqualTo("raw-callable-value-1");
-        assertThat(connectionHandler.callableStatementHandler.rawGetStringCalls).isEqualTo(1);
+        assertThat(nestedDataSource.connectionHandler().callableStatementHandler().rawGetStringCalls())
+                .isEqualTo(1);
 
         callableStatement.close();
         connection.close();
@@ -56,11 +55,13 @@ public class NewProxyCallableStatementTest {
     }
 
     private static Connection newConnectionProxy(TrackingConnectionHandler handler) {
-        return (Connection) Proxy.newProxyInstance(
+        Connection connection = (Connection) Proxy.newProxyInstance(
                 NewProxyCallableStatementTest.class.getClassLoader(),
                 new Class<?>[] {Connection.class},
                 handler
         );
+        handler.attach(connection);
+        return connection;
     }
 
     private static CallableStatement newCallableStatementProxy(
@@ -119,6 +120,65 @@ public class NewProxyCallableStatementTest {
         }
     }
 
+    private static final class TrackingDataSource implements DataSource {
+        private final TrackingConnectionHandler connectionHandler = new TrackingConnectionHandler();
+        private final Connection connection = newConnectionProxy(connectionHandler);
+        private PrintWriter logWriter;
+        private int loginTimeout;
+
+        @Override
+        public Connection getConnection() {
+            return connection;
+        }
+
+        @Override
+        public Connection getConnection(String username, String password) {
+            return connection;
+        }
+
+        @Override
+        public PrintWriter getLogWriter() {
+            return logWriter;
+        }
+
+        @Override
+        public void setLogWriter(PrintWriter logWriter) {
+            this.logWriter = logWriter;
+        }
+
+        @Override
+        public void setLoginTimeout(int seconds) {
+            loginTimeout = seconds;
+        }
+
+        @Override
+        public int getLoginTimeout() {
+            return loginTimeout;
+        }
+
+        @Override
+        public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+            throw new SQLFeatureNotSupportedException("Parent logger is not available for this test data source.");
+        }
+
+        @Override
+        public <T> T unwrap(Class<T> iface) throws SQLException {
+            if (iface.isInstance(this)) {
+                return iface.cast(this);
+            }
+            throw new SQLException("Cannot unwrap to " + iface.getName());
+        }
+
+        @Override
+        public boolean isWrapperFor(Class<?> iface) {
+            return iface.isInstance(this);
+        }
+
+        private TrackingConnectionHandler connectionHandler() {
+            return connectionHandler;
+        }
+    }
+
     private static final class TrackingConnectionHandler implements InvocationHandler {
         private final TrackingCallableStatementHandler callableStatementHandler =
                 new TrackingCallableStatementHandler();
@@ -133,6 +193,10 @@ public class NewProxyCallableStatementTest {
 
         private void attach(Connection connectionProxy) {
             this.connectionProxy = connectionProxy;
+        }
+
+        private TrackingCallableStatementHandler callableStatementHandler() {
+            return callableStatementHandler;
         }
 
         @Override
@@ -205,6 +269,10 @@ public class NewProxyCallableStatementTest {
 
         private void attach(Connection connection) {
             this.connection = connection;
+        }
+
+        private int rawGetStringCalls() {
+            return rawGetStringCalls;
         }
 
         @Override
