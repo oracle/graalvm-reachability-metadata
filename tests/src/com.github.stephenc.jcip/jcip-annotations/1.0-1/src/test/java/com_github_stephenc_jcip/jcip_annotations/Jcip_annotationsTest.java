@@ -70,6 +70,16 @@ public class Jcip_annotationsTest {
     }
 
     @Test
+    void guardedBySupportsClassLevelLockForStaticState() {
+        StaticGuardedRegistry.clear();
+
+        assertThat(StaticGuardedRegistry.register("primary")).isEqualTo(1);
+        assertThat(StaticGuardedRegistry.register("secondary")).isEqualTo(2);
+        assertThat(StaticGuardedRegistry.snapshot()).containsExactly("primary", "secondary");
+        assertThat(StaticGuardedRegistry.describe()).isEqualTo("registered=2");
+    }
+
+    @Test
     void notThreadSafeAnnotatedMutableTypeKeepsInsertionOrder() {
         MutableAuditTrail auditTrail = new MutableAuditTrail();
 
@@ -221,6 +231,41 @@ public class Jcip_annotationsTest {
 
         String describeState() {
             return snapshotUsingThisMonitor();
+        }
+    }
+
+    private static final class StaticGuardedRegistry {
+        @GuardedBy("StaticGuardedRegistry.class")
+        private static final List<String> entries = new ArrayList<>();
+
+        private StaticGuardedRegistry() {
+        }
+
+        private static synchronized int register(String entry) {
+            entries.add(entry);
+            return entries.size();
+        }
+
+        @GuardedBy("StaticGuardedRegistry.class")
+        private static synchronized List<String> snapshotWhileHoldingClassMonitor() {
+            return List.copyOf(entries);
+        }
+
+        private static List<String> snapshot() {
+            return snapshotWhileHoldingClassMonitor();
+        }
+
+        @GuardedBy("StaticGuardedRegistry.class")
+        private static synchronized String describeWhileHoldingClassMonitor() {
+            return "registered=" + entries.size();
+        }
+
+        private static String describe() {
+            return describeWhileHoldingClassMonitor();
+        }
+
+        private static synchronized void clear() {
+            entries.clear();
         }
     }
 
