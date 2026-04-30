@@ -16,13 +16,13 @@ public class ConstantsTest {
     @Test
     void experimentalApiChecksExternalVisitorBytecodeResource() {
         assertThatIllegalStateException()
-                .isThrownBy(ExperimentalClassVisitor::new);
+                .isThrownBy(ConstantsExperimentalClassVisitor::new);
     }
+}
 
-    private static final class ExperimentalClassVisitor extends ClassVisitor {
-        @SuppressWarnings("deprecation")
-        private ExperimentalClassVisitor() {
-            super(Opcodes.ASM10_EXPERIMENTAL);
-        }
+final class ConstantsExperimentalClassVisitor extends ClassVisitor {
+    @SuppressWarnings("deprecation")
+    ConstantsExperimentalClassVisitor() {
+        super(Opcodes.ASM10_EXPERIMENTAL);
     }
 }
