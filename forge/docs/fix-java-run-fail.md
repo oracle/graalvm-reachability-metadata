@@ -2,7 +2,8 @@
 
 > **See also:** [Architecture](architecture.md) ·
 > [Dynamic-access workflow](../docs/dynamic-access-workflow.md) ·
-> [Native metadata exploration phase](../docs/native-metadata-exploration.md)
+> [Native metadata exploration phase](../docs/native-metadata-exploration.md) ·
+> [Native test verification gate](../docs/native-test-verification.md)
 
 ## Problem
 
@@ -235,3 +236,18 @@ Rules:
 - The phase contract — inputs, outputs, statuses, output directory — is
   owned by the exploration spec. This section only specifies *when* the
   workflow calls it and *how* it routes the result.
+
+### Terminal native-test verification gate
+
+After the agent (or the codex/Pi cascade) produces its final edit, the
+runtime fix workflow invokes the
+[native test verification gate](../docs/native-test-verification.md) once
+with `output_dir = tests/src/<group>/<artifact>/<version>/build/natively-collected/_global_/`
+as the workflow's terminal success criterion. The gate iteratively re-runs
+the trace loop and `./gradlew nativeTest` until the test passes or the
+`max-native-test-verification-iterations` budget is exhausted. A `FAILED`
+gate result aborts the workflow with `RUN_STATUS_FAILURE`; partial
+recovery is not an acceptable terminal state. This is the same component
+used by the [dynamic-access workflow](../docs/dynamic-access-workflow.md)
+per-class gate, configured with a single global output directory instead
+of a per-class one.

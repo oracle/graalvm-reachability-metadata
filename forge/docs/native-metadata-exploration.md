@@ -40,8 +40,15 @@ At a glance:
 > **See also:** [Functional spec](functional-spec.md) ·
 > [Architecture](architecture.md) ·
 > [Workflow strategies & interventions](workflow-strategies.md) ·
+> [Native test verification gate](native-test-verification.md) ·
 > [Dynamic-access workflow](dynamic-access-workflow.md) ·
 > [Java fail-fix workflow](fix-java-run-fail.md)
+>
+> The deterministic loop specified here is also composed into the
+> [native test verification gate](native-test-verification.md), which
+> wraps it with `nativeTest` execution and codex/Pi recovery so callers
+> can assert "Native Image tests pass" rather than just "metadata was
+> collected".
 
 ## 1. Purpose
 
