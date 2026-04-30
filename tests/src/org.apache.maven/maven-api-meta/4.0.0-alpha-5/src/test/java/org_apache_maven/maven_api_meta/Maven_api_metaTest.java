@@ -81,6 +81,21 @@ public class Maven_api_metaTest {
         assertThat(invocationLog.entries()).containsExactly("validate", "package");
     }
 
+    @Test
+    void experimentalAnnotationCanDefineDomainSpecificApiMarkers() {
+        PreviewGoalCatalog catalog = new PreviewGoalCatalog(List.of(
+                new PreviewGoal("validate", false),
+                new PreviewGoal("native-image", true),
+                new PreviewGoal("deploy", false)));
+
+        assertThat(catalog.namesRequiringNativeImage()).containsExactly("native-image");
+        assertThat(catalog.namesAvailableOnJvm()).containsExactly("validate", "deploy");
+    }
+
+    @Experimental
+    @interface PreviewApi {
+    }
+
     @Consumer
     interface ExtensionConsumer {
         @Nonnull
@@ -166,6 +181,59 @@ public class Maven_api_metaTest {
         @Nonnull
         List<String> entries() {
             return List.copyOf(entries);
+        }
+    }
+
+    @PreviewApi
+    @Immutable
+    static final class PreviewGoal {
+        @Nonnull
+        private final String name;
+
+        private final boolean requiresNativeImage;
+
+        PreviewGoal(@Nonnull String name, boolean requiresNativeImage) {
+            this.name = name;
+            this.requiresNativeImage = requiresNativeImage;
+        }
+
+        @Nonnull
+        String name() {
+            return name;
+        }
+
+        boolean requiresNativeImage() {
+            return requiresNativeImage;
+        }
+    }
+
+    @ThreadSafe
+    static final class PreviewGoalCatalog {
+        private final List<PreviewGoal> goals;
+
+        PreviewGoalCatalog(@Nonnull List<PreviewGoal> goals) {
+            this.goals = List.copyOf(goals);
+        }
+
+        @Nonnull
+        List<String> namesRequiringNativeImage() {
+            return namesByNativeImageRequirement(true);
+        }
+
+        @Nonnull
+        List<String> namesAvailableOnJvm() {
+            return namesByNativeImageRequirement(false);
+        }
+
+        @Nonnull
+        private List<String> namesByNativeImageRequirement(boolean requiresNativeImage) {
+            List<String> names = new ArrayList<>();
+            for (PreviewGoal goal : goals) {
+                if (goal.requiresNativeImage() == requiresNativeImage) {
+                    names.add(goal.name());
+                }
+            }
+            return List.copyOf(names);
         }
     }
 }
