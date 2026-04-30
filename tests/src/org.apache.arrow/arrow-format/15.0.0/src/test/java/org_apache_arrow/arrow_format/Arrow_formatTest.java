@@ -276,7 +276,9 @@ public class Arrow_formatTest {
         int buffersVector = createBuffersVector(builder, new long[][] {{0L, 1L }, {8L, 40L }, {48L, 8L } });
         int compression = BodyCompression.createBodyCompression(
                 builder, CompressionType.ZSTD, BodyCompressionMethod.BUFFER);
-        int recordBatchOffset = RecordBatch.createRecordBatch(builder, 5L, nodesVector, buffersVector, compression);
+        int variadicBufferCounts = RecordBatch.createVariadicBufferCountsVector(builder, new long[] {2L });
+        int recordBatchOffset = RecordBatch.createRecordBatch(
+                builder, 5L, nodesVector, buffersVector, compression, variadicBufferCounts);
         int metadata = KeyValue.createKeyValue(
                 builder, builder.createString("batch"), builder.createString("compressed"));
         int metadataVector = Message.createCustomMetadataVector(builder, new int[] {metadata });
@@ -306,6 +308,9 @@ public class Arrow_formatTest {
         assertThat(recordBatch.buffers(1).length()).isEqualTo(40L);
         assertThat(recordBatch.compression().codec()).isEqualTo(CompressionType.ZSTD);
         assertThat(recordBatch.compression().method()).isEqualTo(BodyCompressionMethod.BUFFER);
+        assertThat(recordBatch.variadicBufferCountsLength()).isEqualTo(1);
+        assertThat(recordBatch.variadicBufferCounts(0)).isEqualTo(2L);
+        assertThat(recordBatch.variadicBufferCountsVector()).isNotNull();
     }
 
     @Test
@@ -314,7 +319,7 @@ public class Arrow_formatTest {
 
         int nodesVector = createFieldNodesVector(builder, new long[][] {{3L, 0L } });
         int buffersVector = createBuffersVector(builder, new long[][] {{0L, 1L }, {8L, 12L } });
-        int recordBatchOffset = RecordBatch.createRecordBatch(builder, 3L, nodesVector, buffersVector, 0);
+        int recordBatchOffset = RecordBatch.createRecordBatch(builder, 3L, nodesVector, buffersVector, 0, 0);
         int dictionaryBatchOffset = DictionaryBatch.createDictionaryBatch(builder, 7L, recordBatchOffset, true);
         int messageOffset = Message.createMessage(
                 builder, MetadataVersion.V5, MessageHeader.DictionaryBatch, dictionaryBatchOffset, 20L, 0);
@@ -481,7 +486,8 @@ public class Arrow_formatTest {
         assertThat(DictionaryKind.name(DictionaryKind.DenseArray)).isEqualTo("DenseArray");
         assertThat(CompressionType.name(CompressionType.ZSTD)).isEqualTo("ZSTD");
         assertThat(BodyCompressionMethod.name(BodyCompressionMethod.BUFFER)).isEqualTo("BUFFER");
-        assertThat(Feature.name((int) Feature.COMPRESSED_BODY)).isEqualTo("COMPRESSED_BODY");
+        assertThat(Feature.DICTIONARY_REPLACEMENT).isEqualTo(1L);
+        assertThat(Feature.COMPRESSED_BODY).isEqualTo(2L);
         assertThat(DateUnit.name(DateUnit.DAY)).isEqualTo("DAY");
         assertThat(TimeUnit.name(TimeUnit.NANOSECOND)).isEqualTo("NANOSECOND");
         assertThat(Precision.name(Precision.HALF)).isEqualTo("HALF");
