@@ -74,6 +74,17 @@ public class Spi_annotationsTest {
     }
 
     @Test
+    void endpointAnnotationCanDeclareConsumerOnlyEndpoint() {
+        UriEndpoint endpoint = ConsumerEndpoint.class.getAnnotation(UriEndpoint.class);
+
+        assertThat(endpoint.scheme()).isEqualTo("consume");
+        assertThat(endpoint.syntax()).isEqualTo("consume:queue");
+        assertThat(endpoint.title()).isEqualTo("Consumer endpoint");
+        assertThat(endpoint.consumerOnly()).isTrue();
+        assertThat(endpoint.producerOnly()).isFalse();
+    }
+
+    @Test
     void uriPathAnnotationExposesPathMetadata() throws NoSuchFieldException {
         Field accountField = RichEndpoint.class.getDeclaredField("account");
         UriPath path = accountField.getAnnotation(UriPath.class);
@@ -259,6 +270,10 @@ public class Spi_annotationsTest {
 
         @UriParam
         private String option;
+    }
+
+    @UriEndpoint(scheme = "consume", syntax = "consume:queue", title = "Consumer endpoint", consumerOnly = true)
+    private static final class ConsumerEndpoint {
     }
 
     private static final class EndpointConsumer {
