@@ -66,6 +66,20 @@ final class Silencer_lib_2_13Test {
   }
 
   @Test
+  def annotatedExpressionsAndFunctionLiteralsKeepTheirComputedValues(): Unit = {
+    val multiply: Int => Int = (((value: Int) => value * 3): @silent("function literal expression"))
+
+    val filteredTotal: Int = ((1 to 5)
+      .map(multiply)
+      .filter(_ % 2 == 0)
+      .sum: @silent("collection pipeline expression"))
+    val branchResult: String = (if (filteredTotal > 10) "large" else "small"): @silent("conditional expression")
+
+    assertThat(filteredTotal).isEqualTo(18)
+    assertThat(branchResult).isEqualTo("large")
+  }
+
+  @Test
   def annotatedGenericTypesAndAliasesRemainTypeTransparent(): Unit = {
     val holder: AnnotatedHolder[String] = AnnotatedHolder("item")
     val aliases: AnnotatedHelpers.Aliases = List("left", "right")
