@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import org.codehaus.plexus.util.xml.CompactXMLWriter;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.ReaderFactory;
+import org.codehaus.plexus.util.xml.SerializerXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
 import org.codehaus.plexus.util.xml.WriterFactory;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
@@ -260,6 +261,50 @@ public class Plexus_xmlTest {
         parser.require(XmlPullParser.START_TAG, "urn:items", "item");
         assertThat(parser.getAttributeValue("", "sku")).isEqualTo("A-1");
         assertThat(parser.nextText()).isEqualTo("alpha < beta & gamma");
+    }
+
+    @Test
+    void serializerXmlWriterBridgesXmlWriterCallsToNamespaceAwareSerializer() throws Exception {
+        StringWriter out = new StringWriter();
+        XmlSerializer serializer = new MXSerializer();
+        serializer.setOutput(out);
+        serializer.startDocument("UTF-8", Boolean.TRUE);
+        serializer.setPrefix("cfg", "urn:config");
+
+        SerializerXMLWriter writer = new SerializerXMLWriter("urn:config", serializer);
+        writer.startElement("settings");
+        writer.addAttribute("id", "alpha & beta");
+        writer.startElement("entry");
+        writer.writeText("enabled < true & safe");
+        writer.endElement();
+        writer.startElement("snippet");
+        writer.writeMarkup("<raw>trusted & unescaped</raw>");
+        writer.endElement();
+        writer.endElement();
+        serializer.endDocument();
+
+        assertThat(writer.getExceptions()).isEmpty();
+        String xml = out.toString();
+        assertThat(xml).contains("cfg:id=\"alpha &amp; beta\"");
+        assertThat(xml).contains("enabled &lt; true &amp; safe");
+        assertThat(xml).contains("<![CDATA[<raw>trusted & unescaped</raw>]]>");
+
+        MXParser parser = new MXParser();
+        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+        parser.setInput(new StringReader(xml));
+        assertThat(parser.nextTag()).isEqualTo(XmlPullParser.START_TAG);
+        parser.require(XmlPullParser.START_TAG, "urn:config", "settings");
+        assertThat(parser.getAttributeValue("urn:config", "id")).isEqualTo("alpha & beta");
+
+        assertThat(parser.nextTag()).isEqualTo(XmlPullParser.START_TAG);
+        parser.require(XmlPullParser.START_TAG, "urn:config", "entry");
+        assertThat(parser.nextText()).isEqualTo("enabled < true & safe");
+
+        assertThat(parser.nextTag()).isEqualTo(XmlPullParser.START_TAG);
+        parser.require(XmlPullParser.START_TAG, "urn:config", "snippet");
+        assertThat(parser.nextText()).isEqualTo("<raw>trusted & unescaped</raw>");
+        assertThat(parser.nextTag()).isEqualTo(XmlPullParser.END_TAG);
+        parser.require(XmlPullParser.END_TAG, "urn:config", "settings");
     }
 
     @Test
