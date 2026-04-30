@@ -55,7 +55,7 @@ public class ConsoleEngineImplInnerVariableReferenceCompleterTest {
                 .parser(new DefaultParser())
                 .build();
         SystemCompleter completer = engine.compileCompleters();
-        completer.compile();
+        completer.compile(Candidate::new);
 
         List<Candidate> candidates = complete(completer, reader, "slurp ${profile}.");
         List<String> values = candidates.stream().map(Candidate::value).collect(Collectors.toList());
