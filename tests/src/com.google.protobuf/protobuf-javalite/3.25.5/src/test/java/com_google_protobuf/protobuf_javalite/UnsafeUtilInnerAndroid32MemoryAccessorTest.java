@@ -24,4 +24,14 @@ public class UnsafeUtilInnerAndroid32MemoryAccessorTest {
         assertEquals("", defaultEntry.getKey());
         assertEquals(Value.getDefaultInstance(), defaultEntry.getValue());
     }
+
+    @Test
+    public void directAndroid32AccessorReadsStaticField() {
+        MapEntryLite<String, Value> defaultEntry =
+                UnsafeUtilAndroid32MemoryAccessorAccess.loadMapDefaultEntryThroughAndroid32Accessor();
+
+        assertNotNull(defaultEntry);
+        assertEquals("", defaultEntry.getKey());
+        assertEquals(Value.getDefaultInstance(), defaultEntry.getValue());
+    }
 }

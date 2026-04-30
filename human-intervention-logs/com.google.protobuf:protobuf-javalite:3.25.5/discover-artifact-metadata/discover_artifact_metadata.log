@@ -1,0 +1,1042 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ddc7c-7c09-7651-bcd5-1c88b3339a5d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.google.protobuf:protobuf-javalite:3.25.5
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.25.5".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
+- Set "coordinates" to "com.google.protobuf:protobuf-javalite:3.25.5".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven Central first, then fall back to the upstream tag if Maven does not publish source/test/doc artifacts for this exact version. After that I’ll patch the JSON in place and validate it.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'com\\.google\\.protobuf-protobuf-javalite-3\\.25\\.5\\.json"'$'"'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+ succeeded in 0ms:
+{
+  "coordinates" : "com.google.protobuf:protobuf-javalite:3.25.5"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5.pom' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.google.protobuf</groupId>
+    <artifactId>protobuf-parent</artifactId>
+    <version>3.25.5</version>
+  </parent>
+
+  <artifactId>protobuf-javalite</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Protocol Buffers [Lite]</name>
+  <description>
+    Lite version of Protocol Buffers library. This version is optimized for code size, but does
+    not guarantee API/ABI stability.
+  </description>
+  <dependencies>
+    
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- OSGI bundle configuration -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Automatic-Module-Name>com.google.protobuf</Automatic-Module-Name> <!-- Java9+ Jigsaw module name -->
+            <Bundle-DocURL>https://developers.google.com/protocol-buffers/</Bundle-DocURL>
+            <Bundle-SymbolicName>com.google.protobuf</Bundle-SymbolicName>
+            <Export-Package>com.google.protobuf;version=${project.version}</Export-Package>
+            <Import-Package>sun.misc;resolution:=optional,*</Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+codex
+The POM confirms this is the lite Java Protocol Buffers artifact and exposes the project documentation URL, but it does not include the SCM details itself. I’m checking the published Maven classifiers now so source/test/documentation URLs can prefer Maven-hosted artifacts where they exist.
+exec
+/usr/bin/bash -lc "rg 'source-code-url|test-code-url|documentation-url|repository-url' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+ succeeded in 0ms:
+metadata/com.ning/compress-lzf/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/1.0.3/compress-lzf-1.0.3-sources.jar",
+metadata/com.ning/compress-lzf/index.json:    "repository-url" : "https://github.com/ning/compress",
+metadata/com.ning/compress-lzf/index.json:    "test-code-url" : "https://github.com/ning/compress/tree/compress-lzf-1.0.3/src/test",
+metadata/com.ning/compress-lzf/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/1.0.3/compress-lzf-1.0.3-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-sources.jar",
+metadata/org.jctools/jctools-core/index.json:    "repository-url": "https://github.com/JCTools/JCTools",
+metadata/org.jctools/jctools-core/index.json:    "test-code-url": "https://github.com/JCTools/JCTools/tree/v2.1.2/jctools-core/src/test",
+metadata/org.jctools/jctools-core/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:    "repository-url" : "https://github.com/apache/commons-compress",
+metadata/org.apache.commons/commons-compress/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:    "repository-url" : "https://github.com/apache/commons-compress",
+metadata/org.apache.commons/commons-compress/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-sources.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:    "repository-url": "https://github.com/apache/commons-dbcp",
+metadata/org.apache.commons/commons-dbcp2/index.json:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-test-sources.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-javadoc.jar",
+metadata/org.apache.commons/commons-text/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-sources.jar",
+metadata/org.apache.commons/commons-text/index.json:    "repository-url" : "https://gitbox.apache.org/repos/asf?p=commons-text.git",
+metadata/org.apache.commons/commons-text/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-test-sources.jar",
+metadata/org.apache.commons/commons-text/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-javadoc.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:    "repository-url" : "https://github.com/apiguardian-team/apiguardian",
+metadata/org.apiguardian/apiguardian-api/index.json:    "test-code-url" : "N/A",
+metadata/org.apiguardian/apiguardian-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-javadoc.jar",
+metadata/org.apache.commons/commons-pool2/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-sources.jar",
+metadata/org.apache.commons/commons-pool2/index.json:    "repository-url": "https://github.com/apache/commons-pool",
+metadata/org.apache.commons/commons-pool2/index.json:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-test-sources.jar",
+metadata/org.apache.commons/commons-pool2/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:    "repository-url": "https://github.com/javaee/activation",
+metadata/javax.activation/javax.activation-api/index.json:    "test-code-url": "N/A",
+metadata/javax.activation/javax.activation-api/index.json:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/org.apache.commons/commons-lang3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-sources.jar",
+metadata/org.apache.commons/commons-lang3/index.json:    "repository-url" : "https://github.com/apache/commons-lang",
+metadata/org.apache.commons/commons-lang3/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-test-sources.jar",
+metadata/org.apache.commons/commons-lang3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5-sources.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5-tests.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14-sources.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14-tests.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14-javadoc.jar",
+metadata/javax.activation/activation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+metadata/javax.activation/activation/index.json:    "repository-url" : "https://github.com/javaee/activation",
+metadata/javax.activation/activation/index.json:    "test-code-url" : "N/A",
+metadata/javax.activation/activation/index.json:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/org.apache.commons/commons-collections4/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-sources.jar",
+metadata/org.apache.commons/commons-collections4/index.json:    "repository-url" : "https://github.com/apache/commons-collections",
+metadata/org.apache.commons/commons-collections4/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-test-sources.jar",
+metadata/org.apache.commons/commons-collections4/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-javadoc.jar",
+metadata/javax.persistence/javax.persistence-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/2.2/javax.persistence-api-2.2-sources.jar",
+metadata/javax.persistence/javax.persistence-api/index.json:    "repository-url": "https://github.com/javaee/jpa-spec",
+metadata/javax.persistence/javax.persistence-api/index.json:    "test-code-url": "N/A",
+metadata/javax.persistence/javax.persistence-api/index.json:    "documentation-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/2.2/javax.persistence-api-2.2-javadoc.jar",
+metadata/org.apache.arrow/arrow-format/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:    "repository-url" : "https://github.com/apache/arrow",
+metadata/org.apache.arrow/arrow-format/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.arrow/arrow-format/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-javadoc.jar",
+metadata/org.example/library/index.json:    "source-code-url": "N/A",
+metadata/org.example/library/index.json:    "repository-url": "N/A",
+metadata/org.example/library/index.json:    "test-code-url": "N/A",
+metadata/org.example/library/index.json:    "documentation-url": "N/A",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/google/protobuf/protobuf-parent/3.25.5/protobuf-parent-3.25.5.pom' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.google.protobuf</groupId>
+  <artifactId>protobuf-parent</artifactId>
+  <version>3.25.5</version>
+  <packaging>pom</packaging>
+
+  <name>Protocol Buffers [Parent]</name>
+  <inceptionYear>2008</inceptionYear>
+  <url>https://developers.google.com/protocol-buffers/</url>
+  <description>
+    Protocol Buffers are a way of encoding structured data in an efficient yet
+    extensible format.
+  </description>
+
+  <developers>
+    <developer>
+      <id>protobuf</id>
+      <name>Protocol Buffers</name>
+      <email>protobuf@googlegroups.com</email>
+      <organization>Google</organization>
+      <organizationUrl>https://protobuf.dev</organizationUrl>
+      <timezone>America/Los_Angeles</timezone>
+    </developer>
+  </developers>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <!-- These are relative to the submodules -->
+    <protobuf.basedir>${project.basedir}/../..</protobuf.basedir>
+    <protobuf.source.dir>${protobuf.basedir}/src</protobuf.source.dir>
+    <protoc>${protobuf.basedir}/protoc</protoc>
+    <test.proto.dir>src/test/proto</test.proto.dir>
+    <generated.sources.dir>${project.build.directory}/generated-sources</generated.sources.dir>
+    <generated.testsources.dir>${project.build.directory}/generated-test-sources</generated.testsources.dir>
+  </properties>
+
+  <licenses>
+    <license>
+      <name>BSD-3-Clause</name>
+      <url>https://opensource.org/licenses/BSD-3-Clause</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <url>https://github.com/protocolbuffers/protobuf</url>
+    <connection>scm:git:https://github.com/protocolbuffers/protobuf.git</connection>
+  </scm>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>sonatype-nexus-staging</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>4.3.1</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>32.0.1-android</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava-testlib</artifactId>
+        <version>32.0.1-android</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.google.truth</groupId>
+        <artifactId>truth</artifactId>
+        <version>1.1.2</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.6.1</version>
+          <configuration>
+            <source>1.7</source>
+            <target>1.7</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.4</version>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.10.3</version>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+              <configuration>
+                <failOnError>false</failOnError>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.6</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.10</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>3.0.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.0.0-M5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
+          <version>1.20</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+        <configuration>
+          <signature>
+            <groupId>net.sf.androidscents.signature</groupId>
+            <artifactId>android-api-level-14</artifactId>
+            <version>4.0_r4</version>
+          </signature>
+          <ignores>
+            <ignore>sun.misc.Unsafe</ignore>
+          </ignores>
+        </configuration>
+        <executions>
+          <execution>
+            <id>android</id>
+            <phase>test</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>2.2.1</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.10.3</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <configuration>
+                  <failOnError>false</failOnError>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.6</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>1.6.6</version>
+            <extensions>true</extensions>
+            <configuration>
+              <serverId>sonatype-nexus-staging</serverId>
+              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+              <autoReleaseAfterClose>false</autoReleaseAfterClose>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.jetbrains.dokka</groupId>
+            <artifactId>dokka-maven-plugin</artifactId>
+            <version>1.4.32</version>
+            <executions>
+              <execution>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>javadocJar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <modules>
+    <module>bom</module>
+    <module>lite</module>
+    <module>core</module>
+    <module>util</module>
+    <module>kotlin</module>
+    <module>kotlin-lite</module>
+  </modules>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/google/protobuf/protobuf-javalite/3.25.5</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/google/protobuf/protobuf-javalite/3.25.5</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="protobuf-javalite-3.25.5-javadoc.jar" title="protobuf-javalite-3.25.5-javadoc.jar">protobuf-javalite-3.25.5-javadoc.jar</a>              2024-09-18 22:48   1486135      
+<a href="protobuf-javalite-3.25.5-javadoc.jar.asc" title="protobuf-javalite-3.25.5-javadoc.jar.asc">protobuf-javalite-3.25.5-javadoc.jar.asc</a>          2024-09-18 22:48       659      
+<a href="protobuf-javalite-3.25.5-javadoc.jar.md5" title="protobuf-javalite-3.25.5-javadoc.jar.md5">protobuf-javalite-3.25.5-javadoc.jar.md5</a>          2024-09-18 22:48        32      
+<a href="protobuf-javalite-3.25.5-javadoc.jar.sha1" title="protobuf-javalite-3.25.5-javadoc.jar.sha1">protobuf-javalite-3.25.5-javadoc.jar.sha1</a>         2024-09-18 22:48        40      
+<a href="protobuf-javalite-3.25.5-sources.jar" title="protobuf-javalite-3.25.5-sources.jar">protobuf-javalite-3.25.5-sources.jar</a>              2024-09-18 22:48    362193      
+<a href="protobuf-javalite-3.25.5-sources.jar.asc" title="protobuf-javalite-3.25.5-sources.jar.asc">protobuf-javalite-3.25.5-sources.jar.asc</a>          2024-09-18 22:48       659      
+<a href="protobuf-javalite-3.25.5-sources.jar.md5" title="protobuf-javalite-3.25.5-sources.jar.md5">protobuf-javalite-3.25.5-sources.jar.md5</a>          2024-09-18 22:48        32      
+<a href="protobuf-javalite-3.25.5-sources.jar.sha1" title="protobuf-javalite-3.25.5-sources.jar.sha1">protobuf-javalite-3.25.5-sources.jar.sha1</a>         2024-09-18 22:48        40      
+<a href="protobuf-javalite-3.25.5.jar" title="protobuf-javalite-3.25.5.jar">protobuf-javalite-3.25.5.jar</a>                      2024-09-18 22:48    711462      
+<a href="protobuf-javalite-3.25.5.jar.asc" title="protobuf-javalite-3.25.5.jar.asc">protobuf-javalite-3.25.5.jar.asc</a>                  2024-09-18 22:48       659      
+<a href="protobuf-javalite-3.25.5.jar.md5" title="protobuf-javalite-3.25.5.jar.md5">protobuf-javalite-3.25.5.jar.md5</a>                  2024-09-18 22:48        32      
+<a href="protobuf-javalite-3.25.5.jar.sha1" title="protobuf-javalite-3.25.5.jar.sha1">protobuf-javalite-3.25.5.jar.sha1</a>                 2024-09-18 22:48        40      
+<a href="protobuf-javalite-3.25.5.pom" title="protobuf-javalite-3.25.5.pom">protobuf-javalite-3.25.5.pom</a>                      2024-09-18 22:48      1561      
+<a href="protobuf-javalite-3.25.5.pom.asc" title="protobuf-javalite-3.25.5.pom.asc">protobuf-javalite-3.25.5.pom.asc</a>                  2024-09-18 22:48       659      
+<a href="protobuf-javalite-3.25.5.pom.md5" title="protobuf-javalite-3.25.5.pom.md5">protobuf-javalite-3.25.5.pom.md5</a>                  2024-09-18 22:48        32      
+<a href="protobuf-javalite-3.25.5.pom.sha1" title="protobuf-javalite-3.25.5.pom.sha1">protobuf-javalite-3.25.5.pom.sha1</a>                 2024-09-18 22:48        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: https://github.com/protocolbuffers/protobuf/tree/v25.5/java/lite
+web search: 
+web search: repo1.maven.org com/google/protobuf/protobuf-javalite/3.25.5 protobuf-javalite-3.25.5-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/com/google/protobuf/protobuf-javalite/
+web search: 
+web search: https://repo1.maven.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/
+web search: 
+web search: https://github.com/protocolbuffers/protobuf/tree/v25.5/java/lite/src/test
+codex
+Maven Central publishes sources and javadocs for `protobuf-javalite:3.25.5`, but not a test-sources/tests classifier in that artifact directory. For the test suite, I’m using the upstream `v25.5` tag, which is the Protobuf release tag corresponding to Java artifact `3.25.5`.
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-test-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-tests.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/protocolbuffers/protobuf/v25.5/java/lite/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/protocolbuffers/protobuf/git/ref/tags/v25.5 | sed -n '1,80p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+ succeeded in 212ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Thu, 30 Apr 2026 03:44:32 GMT
+content-type: text/html
+cf-ray: 9f438c6bebf1fcc9-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 207ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Thu, 30 Apr 2026 03:44:32 GMT
+content-type: text/html
+cf-ray: 9f438c6bf9ccbe85-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 165ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.google.protobuf</groupId>
+    <artifactId>protobuf-parent</artifactId>
+    <version>3.25.5</version>
+  </parent>
+
+  <artifactId>protobuf-javalite</artifactId>
+  <packaging>bundle</packaging>
+
+  <name>Protocol Buffers [Lite]</name>
+  <description>
+    Lite version of Protocol Buffers library. This version is optimized for code size, but does
+    not guarantee API/ABI stability.
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+     <!-- Include core protos in the bundle as resources -->
+     <resources>
+      <resource>
+        <directory>${protobuf.source.dir}</directory>
+        <includes>
+          <include>google/protobuf/any.proto</include>
+          <include>google/protobuf/api.proto</include>
+          <include>google/protobuf/duration.proto</include>
+          <include>google/protobuf/empty.proto</include>
+          <include>google/protobuf/field_mask.proto</include>
+          <include>google/protobuf/source_context.proto</include>
+          <include>google/protobuf/struct.proto</include>
+          <include>google/protobuf/timestamp.proto</include>
+          <include>google/protobuf/type.proto</include>
+          <include>google/protobuf/wrappers.proto</include>
+        </includes>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>${protobuf.source.dir}</directory>
+        <includes>
+          <include>google/protobuf/testdata/golden_message_oneof_implemented</include>
+          <include>google/protobuf/testdata/golden_packed_fields_message</include>
+        </includes>
+      </testResource>
+    </testResources>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>copy-source-files</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${generated.sources.dir}/com/google/protobuf</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/../core/src/main/java/com/google/protobuf</directory>
+                  <includes>
+                    <!-- Keep in sync with //java/core:BUILD  -->
+                    <include>AbstractMessageLite.java</include>
+                    <include>AbstractParser.java</include>
+                    <include>AbstractProtobufList.java</include>
+                    <include>AllocatedBuffer.java</include>
+                    <include>Android.java</include>
+                    <include>ArrayDecoders.java</include>
+                    <include>BinaryReader.java</include>
+                    <include>BinaryWriter.java</include>
+                    <include>BooleanArrayList.java</include>
+                    <include>BufferAllocator.java</include>
+                    <include>ByteBufferWriter.java</include>
+                    <include>ByteOutput.java</include>
+                    <include>ByteString.java</include>
+                    <include>CanIgnoreReturnValue.java</include>
+                    <include>CheckReturnValue.java</include>
+                    <include>CodedInputStream.java</include>
+                    <include>CodedInputStreamReader.java</include>
+                    <include>CodedOutputStream.java</include>
+                    <include>CodedOutputStreamWriter.java</include>
+                    <include>CompileTimeConstant.java</include>
+                    <include>DoubleArrayList.java</include>
+                    <include>ExperimentalApi.java</include>
+                    <include>ExtensionLite.java</include>
+                    <include>ExtensionRegistryFactory.java</include>
+                    <include>ExtensionRegistryLite.java</include>
+                    <include>ExtensionSchema.java</include>
+                    <include>ExtensionSchemaLite.java</include>
+                    <include>ExtensionSchemas.java</include>
+                    <include>FieldInfo.java</include>
+                    <include>FieldSet.java</include>
+                    <include>FieldType.java</include>
+                    <include>FloatArrayList.java</include>
+                    <include>GeneratedMessageInfoFactory.java</include>
+                    <include>GeneratedMessageLite.java</include>
+                    <include>InlineMe.java</include>
+                    <include>IntArrayList.java</include>
+                    <include>Internal.java</include>
+                    <include>InvalidProtocolBufferException.java</include>
+                    <include>IterableByteBufferInputStream.java</include>
+                    <include>Java8Compatibility.java</include>
+                    <include>JavaType.java</include>
+                    <include>LazyField.java</include>
+                    <include>LazyFieldLite.java</include>
+                    <include>LazyStringArrayList.java</include>
+                    <include>LazyStringList.java</include>
+                    <include>ListFieldSchema.java</include>
+                    <include>LongArrayList.java</include>
+                    <include>ManifestSchemaFactory.java</include>
+                    <include>MapEntryLite.java</include>
+                    <include>MapFieldLite.java</include>
+                    <include>MapFieldSchema.java</include>
+                    <include>MapFieldSchemaLite.java</include>
+                    <include>MapFieldSchemas.java</include>
+                    <include>MessageInfo.java</include>
+                    <include>MessageInfoFactory.java</include>
+                    <include>MessageLite.java</include>
+                    <include>MessageLiteOrBuilder.java</include>
+                    <include>MessageLiteToString.java</include>
+                    <include>MessageSchema.java</include>
+                    <include>MessageSetSchema.java</include>
+                    <include>MutabilityOracle.java</include>
+                    <include>NewInstanceSchema.java</include>
+                    <include>NewInstanceSchemaLite.java</include>
+                    <include>NewInstanceSchemas.java</include>
+                    <include>NioByteString.java</include>
+                    <include>OneofInfo.java</include>
+                    <include>Parser.java</include>
+                    <include>PrimitiveNonBoxingCollection.java</include>
+                    <include>ProtoSyntax.java</include>
+                    <include>Protobuf.java</include>
+                    <include>ProtobufArrayList.java</include>
+                    <include>ProtocolStringList.java</include>
+                    <include>RawMessageInfo.java</include>
+                    <include>Reader.java</include>
+                    <include>RopeByteString.java</include>
+                    <include>Schema.java</include>
+                    <include>SchemaFactory.java</include>
+                    <include>SchemaUtil.java</include>
+                    <include>SmallSortedMap.java</include>
+                    <include>StructuralMessageInfo.java</include>
+                    <include>TextFormatEscaper.java</include>
+                    <include>UninitializedMessageException.java</include>
+                    <include>UnknownFieldSchema.java</include>
+                    <include>UnknownFieldSetLite.java</include>
+                    <include>UnknownFieldSetLiteSchema.java</include>
+                    <include>UnmodifiableLazyStringList.java</include>
+                    <include>UnsafeByteOperations.java</include>
+                    <include>UnsafeUtil.java</include>
+                    <include>Utf8.java</include>
+                    <include>WireFormat.java</include>
+                    <include>Writer.java</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-test-source-files</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${generated.testsources.dir}/com/google/protobuf</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/../core/src/test/java/com/google/protobuf</directory>
+                  <!-- For sources, we want to be explicit about what we add so we don't accidentally
+                  increase the size of the lite runtime library. For tests, we want to be defensive
+                  and exclude only the full runtime exclusive tests so we don't accidentally miss
+                  any test. -->
+                  <excludes>
+                    <!-- Keep in sync with //java/core:lite_tests BUILD rule. -->
+                    <exclude>AbstractMessageTest.java</exclude>
+                    <exclude>AbstractProto2SchemaTest.java</exclude>
+                    <exclude>AnyTest.java</exclude>
+                    <exclude>CodedInputStreamTest.java</exclude>
+                    <exclude>DeprecatedFieldTest.java</exclude>
+                    <exclude>DescriptorsTest.java</exclude>
+                    <exclude>DiscardUnknownFieldsTest.java</exclude>
+                    <exclude>DynamicMessageTest.java</exclude>
+                    <exclude>ExtensionRegistryFactoryTest.java</exclude>
+                    <exclude>FieldPresenceTest.java</exclude>
+                    <exclude>ForceFieldBuildersPreRun.java</exclude>
+                    <exclude>GeneratedMessageTest.java</exclude>
+                    <exclude>LazyFieldTest.java</exclude>
+                    <exclude>LazyStringEndToEndTest.java</exclude>
+                    <exclude>MapForProto2Test.java</exclude>
+                    <exclude>MapTest.java</exclude>
+                    <exclude>MessageTest.java</exclude>
+                    <exclude>NestedBuildersTest.java</exclude>
+                    <exclude>PackedFieldTest.java</exclude>
+
+ succeeded in 181ms:
+{
+  "ref": "refs/tags/v25.5",
+  "node_id": "MDM6UmVmMjMzNTc1ODg6cmVmcy90YWdzL3YyNS41",
+  "url": "https://api.github.com/repos/protocolbuffers/protobuf/git/refs/tags/v25.5",
+  "object": {
+    "sha": "26cdde8670bef2a758ebe309e4b94e70cb9ee3f6",
+    "type": "tag",
+    "url": "https://api.github.com/repos/protocolbuffers/protobuf/git/tags/26cdde8670bef2a758ebe309e4b94e70cb9ee3f6"
+  }
+}
+
+web search: 
+web search: https://github.com/protocolbuffers/protobuf/tree/v25.5/java/lite/src/test
+web search: 
+web search: site:repo.maven.apache.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5 protobuf-javalite-3.25.5-javadoc.jar
+codex
+I’ve got enough to make the update: Maven Central sources and javadocs, GitHub repository, and the tagged Java lite test directory. I’m leaving `language` absent because this is a Java artifact rather than Kotlin, Groovy, or Scala-specific under the requested schema.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
+diff --git a/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json b/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
+index 9d1720fe212f483d3e9a6200fb24075d0798287d..5728889562fc6ee63aa4744a9215cb3fd67aafc9
+--- a/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
++++ b/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.protobuf:protobuf-javalite:3.25.5"
++  "coordinates" : "com.google.protobuf:protobuf-javalite:3.25.5",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-sources.jar",
++  "repository-url" : "https://github.com/protocolbuffers/protobuf",
++  "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v25.5/java/lite/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-javadoc.jar",
++  "description" : "Protocol Buffers Java Lite provides a smaller Java runtime for reading and writing Protocol Buffers messages. It is optimized for reduced code size, especially on Android and other constrained environments, and does not guarantee API or ABI stability."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json b/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
+index 9d1720fe212f483d3e9a6200fb24075d0798287d..5728889562fc6ee63aa4744a9215cb3fd67aafc9
+--- a/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
++++ b/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.protobuf:protobuf-javalite:3.25.5"
++  "coordinates" : "com.google.protobuf:protobuf-javalite:3.25.5",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-sources.jar",
++  "repository-url" : "https://github.com/protocolbuffers/protobuf",
++  "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v25.5/java/lite/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-javadoc.jar",
++  "description" : "Protocol Buffers Java Lite provides a smaller Java runtime for reading and writing Protocol Buffers messages. It is optimized for reduced code size, especially on Android and other constrained environments, and does not guarantee API or ABI stability."
+ }
+
+codex
+The JSON is patched. I’m doing a quick validation pass now: parse the file and check the four URLs resolve as expected.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+ succeeded in 0ms:
+{
+  "coordinates": "com.google.protobuf:protobuf-javalite:3.25.5",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-sources.jar",
+  "repository-url": "https://github.com/protocolbuffers/protobuf",
+  "test-code-url": "https://github.com/protocolbuffers/protobuf/tree/v25.5/java/lite/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-javadoc.jar",
+  "description": "Protocol Buffers Java Lite provides a smaller Java runtime for reading and writing Protocol Buffers messages. It is optimized for reduced code size, especially on Android and other constrained environments, and does not guarantee API or ABI stability."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 03:44:55 GMT
+content-type: application/java-archive
+content-length: 1486135
+cf-ray: 9f438cfc082fbe77-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2299466
+etag: "6352db99443b9d4cebcb29b239cf02f9"
+last-modified: Wed, 18 Sep 2024 22:48:23 GMT
+x-checksum-md5: 6352db99443b9d4cebcb29b239cf02f9
+x-checksum-sha1: f865cb86dd48325a904c239244b262c67266c147
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 03:44:55 GMT
+content-type: application/java-archive
+content-length: 362193
+cf-ray: 9f438cfc0b9924bc-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1845302
+etag: "7a50f6e90140aa979908b076179bf467"
+last-modified: Wed, 18 Sep 2024 22:48:23 GMT
+x-checksum-md5: 7a50f6e90140aa979908b076179bf467
+x-checksum-sha1: 5b14d3798035c5d93746bcd1f8431911347c85d4
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/protocolbuffers/protobuf/tree/v25.5/java/lite/src/test | sed -n '1,12p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+diff --git a/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json b/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
+index 9d1720fe212f483d3e9a6200fb24075d0798287d..5728889562fc6ee63aa4744a9215cb3fd67aafc9
+--- a/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
++++ b/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.protobuf:protobuf-javalite:3.25.5"
++  "coordinates" : "com.google.protobuf:protobuf-javalite:3.25.5",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-sources.jar",
++  "repository-url" : "https://github.com/protocolbuffers/protobuf",
++  "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v25.5/java/lite/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-javadoc.jar",
++  "description" : "Protocol Buffers Java Lite provides a smaller Java runtime for reading and writing Protocol Buffers messages. It is optimized for reduced code size, especially on Android and other constrained environments, and does not guarantee API or ABI stability."
+ }
+
+ succeeded in 557ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 03:44:56 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"c2fe06aa0ec38ca54bff7369a84550eb"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/protocolbuffers/protobuf | sed -n '1,12p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+diff --git a/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json b/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
+index 9d1720fe212f483d3e9a6200fb24075d0798287d..5728889562fc6ee63aa4744a9215cb3fd67aafc9
+--- a/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
++++ b/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.protobuf:protobuf-javalite:3.25.5"
++  "coordinates" : "com.google.protobuf:protobuf-javalite:3.25.5",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-sources.jar",
++  "repository-url" : "https://github.com/protocolbuffers/protobuf",
++  "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v25.5/java/lite/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-javadoc.jar",
++  "description" : "Protocol Buffers Java Lite provides a smaller Java runtime for reading and writing Protocol Buffers messages. It is optimized for reduced code size, especially on Android and other constrained environments, and does not guarantee API or ABI stability."
+ }
+
+ succeeded in 736ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 03:45:00 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"afcfbd2d23f3baae82b66d197b3838ea"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+ succeeded in 0ms:
+{
+  "coordinates" : "com.google.protobuf:protobuf-javalite:3.25.5",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-sources.jar",
+  "repository-url" : "https://github.com/protocolbuffers/protobuf",
+  "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v25.5/java/lite/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-javadoc.jar",
+  "description" : "Protocol Buffers Java Lite provides a smaller Java runtime for reading and writing Protocol Buffers messages. It is optimized for reduced code size, especially on Android and other constrained environments, and does not guarantee API or ABI stability."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825
+ succeeded in 0ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json b/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
+index 9d1720fe212f483d3e9a6200fb24075d0798287d..5728889562fc6ee63aa4744a9215cb3fd67aafc9
+--- a/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
++++ b/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.protobuf:protobuf-javalite:3.25.5"
++  "coordinates" : "com.google.protobuf:protobuf-javalite:3.25.5",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-sources.jar",
++  "repository-url" : "https://github.com/protocolbuffers/protobuf",
++  "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v25.5/java/lite/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-javadoc.jar",
++  "description" : "Protocol Buffers Java Lite provides a smaller Java runtime for reading and writing Protocol Buffers messages. It is optimized for reduced code size, especially on Android and other constrained environments, and does not guarantee API or ABI stability."
+ }
+
+web search: 
+web search: https://github.com/protocolbuffers/protobuf/tree/v25.5/java/lite/src/test
+web search: 
+web search: 
+codex
+Updated [com.google.protobuf-protobuf-javalite-3.25.5.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json).
+
+I used Maven Central URLs for the sources and javadocs, the upstream Protocol Buffers repository URL, and the tagged `v25.5` Java lite test suite because Maven does not publish a test-sources/tests classifier for this artifact. The artifact is Java, not Kotlin/Groovy/Scala-specific, so I left `language` absent; the two-sentence description matches the lite/mobile/code-size purpose documented for `protobuf-javalite:3.25.5`. ([mvnrepository.com](https://mvnrepository.com/artifact/com.google.protobuf/protobuf-javalite/3.25.5))
+
+Validation: `jq .` passed, and the source, javadoc, repository, and test URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json b/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
+index 9d1720fe212f483d3e9a6200fb24075d0798287d..5728889562fc6ee63aa4744a9215cb3fd67aafc9
+--- a/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
++++ b/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.protobuf:protobuf-javalite:3.25.5"
++  "coordinates" : "com.google.protobuf:protobuf-javalite:3.25.5",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-sources.jar",
++  "repository-url" : "https://github.com/protocolbuffers/protobuf",
++  "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v25.5/java/lite/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-javalite/3.25.5/protobuf-javalite-3.25.5-javadoc.jar",
++  "description" : "Protocol Buffers Java Lite provides a smaller Java runtime for reading and writing Protocol Buffers messages. It is optimized for reduced code size, especially on Android and other constrained environments, and does not guarantee API or ABI stability."
+ }
+
+2026-04-30T03:45:21.796016Z ERROR codex_core::session: failed to record rollout items: thread 019ddc7c-7c09-7651-bcd5-1c88b3339a5d not found
+tokens used
+68,905
+Updated [com.google.protobuf-protobuf-javalite-3.25.5.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825/build/discovered-artifact-metadata/com.google.protobuf-protobuf-javalite-3.25.5.json).
+
+I used Maven Central URLs for the sources and javadocs, the upstream Protocol Buffers repository URL, and the tagged `v25.5` Java lite test suite because Maven does not publish a test-sources/tests classifier for this artifact. The artifact is Java, not Kotlin/Groovy/Scala-specific, so I left `language` absent; the two-sentence description matches the lite/mobile/code-size purpose documented for `protobuf-javalite:3.25.5`. ([mvnrepository.com](https://mvnrepository.com/artifact/com.google.protobuf/protobuf-javalite/3.25.5))
+
+Validation: `jq .` passed, and the source, javadoc, repository, and test URLs returned HTTP 200.
+Ran agent for com.google.protobuf:protobuf-javalite:3.25.5 (exit 0). Log: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825/build/agent-artifact-discovery-logs/com.google.protobuf-protobuf-javalite-3.25.5.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2711-abf66825/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 23s
+9 actionable tasks: 4 executed, 5 from cache
