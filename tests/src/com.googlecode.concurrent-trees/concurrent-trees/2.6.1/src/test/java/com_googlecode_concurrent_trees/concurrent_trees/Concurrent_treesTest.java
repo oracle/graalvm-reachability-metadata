@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.PrettyPrinter;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
@@ -107,6 +108,24 @@ public class Concurrent_treesTest {
         StringBuilder rendered = new StringBuilder();
         PrettyPrinter.prettyPrint(tree, rendered);
         assertThat(rendered).hasToString(expected);
+    }
+
+    @Test
+    void charSequencesGenerateAndTransformSubsequences() {
+        assertThat(strings(CharSequences.generatePrefixes("catalog")))
+                .containsExactly("c", "ca", "cat", "cata", "catal", "catalo", "catalog");
+        assertThat(strings(CharSequences.generateSuffixes("catalog")))
+                .containsExactly("catalog", "atalog", "talog", "alog", "log", "og", "g");
+
+        assertThat(CharSequences.getCommonPrefix("catalog", "caterpillar").toString()).isEqualTo("cat");
+        assertThat(CharSequences.getPrefix("catalog", 4).toString()).isEqualTo("cata");
+        assertThat(CharSequences.getSuffix("catalog", 3).toString()).isEqualTo("alog");
+        assertThat(CharSequences.subtractPrefix("catalog", "cat").toString()).isEqualTo("alog");
+        assertThat(CharSequences.concatenate("cata", "log").toString()).isEqualTo("catalog");
+        assertThat(CharSequences.reverse("catalog").toString()).isEqualTo("golatac");
+        assertThat(CharSequences.fromCharArray(new char[] {'t', 'r', 'i', 'e'}).toString()).isEqualTo("trie");
+        assertThat(CharSequences.toCharArray(new StringBuilder("trie"))).containsExactly('t', 'r', 'i', 'e');
+        assertThat(CharSequences.toString(new StringBuilder("trie"))).isEqualTo("trie");
     }
 
     @Test
