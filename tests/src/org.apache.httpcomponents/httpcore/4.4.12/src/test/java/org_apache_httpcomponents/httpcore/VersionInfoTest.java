@@ -13,6 +13,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class VersionInfoTest {
 
+    private static final String EXPECTED_RELEASE = "4.4.12";
+
     @Test
     void loadVersionInfoReadsPackagedVersionProperties() {
         ClassLoader classLoader = VersionInfo.class.getClassLoader();
@@ -21,7 +23,7 @@ class VersionInfoTest {
         assertThat(versionInfo).isNotNull();
         assertThat(versionInfo.getPackage()).isEqualTo("org.apache.http");
         assertThat(versionInfo.getModule()).isEqualTo("httpcore");
-        assertThat(versionInfo.getRelease()).isEqualTo("4.4.11");
+        assertThat(versionInfo.getRelease()).isEqualTo(EXPECTED_RELEASE);
         assertThat(versionInfo.getTimestamp()).isEqualTo(VersionInfo.UNAVAILABLE);
         assertThat(versionInfo.getClassloader()).isEqualTo(classLoader.toString());
     }
@@ -31,6 +33,6 @@ class VersionInfoTest {
         String userAgent = VersionInfo.getUserAgent("httpcore-test", "org.apache.http", VersionInfo.class);
 
         assertThat(userAgent)
-                .isEqualTo("httpcore-test/4.4.11 (Java/" + System.getProperty("java.version") + ")");
+                .isEqualTo("httpcore-test/" + EXPECTED_RELEASE + " (Java/" + System.getProperty("java.version") + ")");
     }
 }
