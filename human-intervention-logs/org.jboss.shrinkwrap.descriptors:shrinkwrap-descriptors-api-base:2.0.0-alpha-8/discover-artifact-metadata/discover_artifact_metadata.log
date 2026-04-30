@@ -1,0 +1,1848 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ddf18-459b-73b3-9ef2-3211f4763feb
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0-alpha-8
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.0.0-alpha-8".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json
+- Set "coordinates" to "org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0-alpha-8".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata shape first, then verify the artifact’s published Maven files and upstream tag before editing the JSON.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0-alpha-8"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 0ms:
+web search: 
+web search: Maven org.jboss.shrinkwrap.descriptors shrinkwrap-descriptors-api-base 2.0.0-alpha-8
+web search: 
+web search: https://central.sonatype.com/artifact/org.jboss.shrinkwrap.descriptors/shrinkwrap-descriptors-api-base
+codex
+The target file only has `coordinates` today. I found the artifact on Maven Central and am checking the exact `2.0.0-alpha-8` classifiers now, because Maven-published source/test/doc artifacts take precedence when they exist.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-parent</artifactId>
+        <version>2.0.0-alpha-8</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Configuration -->
+    <artifactId>shrinkwrap-descriptors-api-base</artifactId>
+    <name>ShrinkWrap Descriptors API Base</name>
+    <description>Base for Client View of the ShrinkWrap Descriptors Project</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="shrinkwrap-descriptors-api-base-2.0.0-alpha-8-javadoc.jar" title="shrinkwrap-descriptors-api-base-2.0.0-alpha-8-javadoc.jar">shrinkwrap-descriptors-api-base-2.0.0-alpha-8...</a>  2015-09-29 19:44    130873      
+<a href="shrinkwrap-descriptors-api-base-2.0.0-alpha-8-javadoc.jar.md5" title="shrinkwrap-descriptors-api-base-2.0.0-alpha-8-javadoc.jar.md5">shrinkwrap-descriptors-api-base-2.0.0-alpha-8...</a>  2015-09-29 19:44        32      
+<a href="shrinkwrap-descriptors-api-base-2.0.0-alpha-8-javadoc.jar.sha1" title="shrinkwrap-descriptors-api-base-2.0.0-alpha-8-javadoc.jar.sha1">shrinkwrap-descriptors-api-base-2.0.0-alpha-8...</a>  2015-09-29 19:44        40      
+<a href="shrinkwrap-descriptors-api-base-2.0.0-alpha-8-sources.jar" title="shrinkwrap-descriptors-api-base-2.0.0-alpha-8-sources.jar">shrinkwrap-descriptors-api-base-2.0.0-alpha-8...</a>  2015-09-29 19:44     21428      
+<a href="shrinkwrap-descriptors-api-base-2.0.0-alpha-8-sources.jar.md5" title="shrinkwrap-descriptors-api-base-2.0.0-alpha-8-sources.jar.md5">shrinkwrap-descriptors-api-base-2.0.0-alpha-8...</a>  2015-09-29 19:44        32      
+<a href="shrinkwrap-descriptors-api-base-2.0.0-alpha-8-sources.jar.sha1" title="shrinkwrap-descriptors-api-base-2.0.0-alpha-8-sources.jar.sha1">shrinkwrap-descriptors-api-base-2.0.0-alpha-8...</a>  2015-09-29 19:44        40      
+<a href="shrinkwrap-descriptors-api-base-2.0.0-alpha-8.jar" title="shrinkwrap-descriptors-api-base-2.0.0-alpha-8.jar">shrinkwrap-descriptors-api-base-2.0.0-alpha-8...</a>  2015-09-29 19:44     17061      
+<a href="shrinkwrap-descriptors-api-base-2.0.0-alpha-8.jar.md5" title="shrinkwrap-descriptors-api-base-2.0.0-alpha-8.jar.md5">shrinkwrap-descriptors-api-base-2.0.0-alpha-8...</a>  2015-09-29 19:44        32      
+<a href="shrinkwrap-descriptors-api-base-2.0.0-alpha-8.jar.sha1" title="shrinkwrap-descriptors-api-base-2.0.0-alpha-8.jar.sha1">shrinkwrap-descriptors-api-base-2.0.0-alpha-8...</a>  2015-09-29 19:44        40      
+<a href="shrinkwrap-descriptors-api-base-2.0.0-alpha-8.pom" title="shrinkwrap-descriptors-api-base-2.0.0-alpha-8.pom">shrinkwrap-descriptors-api-base-2.0.0-alpha-8...</a>  2015-09-29 19:44      1031      
+<a href="shrinkwrap-descriptors-api-base-2.0.0-alpha-8.pom.md5" title="shrinkwrap-descriptors-api-base-2.0.0-alpha-8.pom.md5">shrinkwrap-descriptors-api-base-2.0.0-alpha-8...</a>  2015-09-29 19:44        32      
+<a href="shrinkwrap-descriptors-api-base-2.0.0-alpha-8.pom.sha1" title="shrinkwrap-descriptors-api-base-2.0.0-alpha-8.pom.sha1">shrinkwrap-descriptors-api-base-2.0.0-alpha-8...</a>  2015-09-29 19:44        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-parent/2.0.0-alpha-8/shrinkwrap-descriptors-parent-2.0.0-alpha-8.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vi:ts=2:sw=2:expandtab: -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>16</version>
+    </parent>
+
+    <!-- Model Information -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Information -->
+    <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+    <artifactId>shrinkwrap-descriptors-parent</artifactId>
+    <version>2.0.0-alpha-8</version>
+    <packaging>pom</packaging>
+    <name>ShrinkWrap Descriptors Aggregator</name>
+    <url>http://www.jboss.org</url>
+    <description>ShrinkWrap Descriptors Aggregator</description>
+
+    <!-- Properties -->
+    <properties>
+
+        <!-- Versioning -->
+        <version.junit>4.11</version.junit>
+        <version.fest-assert>1.4</version.fest-assert>
+        <version.mockito-all>1.9.5</version.mockito-all>
+    </properties>
+
+    <!-- SCM -->
+    <scm>
+        <connection>scm:git:git://github.com/shrinkwrap/descriptors.git</connection>
+        <developerConnection>scm:git:git@github.com:shrinkwrap/descriptors.git</developerConnection>
+        <url>http://github.com/shrinkwrap/descriptors</url>
+      <tag>2.0.0-alpha-8</tag>
+  </scm>
+
+    <!-- Issues -->
+    <issueManagement>
+        <system>jira</system>
+        <url>http://jira.jboss.com/jira/browse/SHRINKDESC</url>
+    </issueManagement>
+
+    <!-- Licenses -->
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <!-- Aggregate Modules -->
+    <modules>
+        <module>api-base</module>
+        <module>api-javaee</module>
+        <module>api-javaee-prototype</module>
+        <module>api-jboss</module>
+        <module>api-misc</module>
+        <module>ant</module>
+        <module>bom</module>
+        <module>build-resources</module>
+        <module>depchain</module>
+        <module>gen</module>
+        <module>impl-base</module>
+        <module>impl-javaee</module>
+        <module>impl-javaee-prototype</module>
+        <module>impl-jboss</module>
+        <module>impl-misc</module>
+        <module>spi</module>
+        <module>test</module>
+        <module>test-util</module>
+        <module>metadata-parser</module>
+        <module>metadata-parser-test</module>
+    </modules>
+
+    <!-- Plugin Configuration -->
+    <build>
+        <plugins>
+
+            <!-- Release -->
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
+                </configuration>
+            </plugin>
+
+            <!-- Surefire -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <trimStackTrace>false</trimStackTrace>
+                    <printSummary>true</printSummary>
+                    <includes>
+                        <include>**/*TestCase.java</include>
+                        <include>**/*MojoTest.java</include>
+                        <include>**/*TestSuite.java</include>
+                    </includes>
+                    <forkMode>always</forkMode>
+                </configuration>
+            </plugin>
+
+            <!-- Enforce Maven Environment -->
+            <plugin>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-maven-environment</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <rules>
+                        <requireMavenVersion>
+                            <version>[2.2.0,)</version>
+                            <!-- Must be more that 2.2 to support Assembly "includeModuleDirectory":
+                                http://maven.apache.org/plugins/maven-assembly-plugin/assembly.html -->
+                        </requireMavenVersion>
+                        <requireJavaVersion>
+                            <version>[1.5.0,)</version>
+                            <!-- Must be at least JDK5 -->
+                        </requireJavaVersion>
+                        <requireProperty>
+                            <property>env.JAVA_HOME</property>
+                            <message>"JAVA_HOME needs to be set to compile"</message>
+                        </requireProperty>
+                        <!-- <requireProperty> <property>env.JAVA5_HOME</property> <message>"JAVA5_HOME
+                            needs to be set to run some tests in the JRE5 runtime"</message> </requireProperty> -->
+                    </rules>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <doclet>org.jboss.apiviz.APIviz</doclet>
+                    <docletArtifact>
+                        <groupId>org.jboss.apiviz</groupId>
+                        <artifactId>apiviz</artifactId>
+                        <version>1.3.2.GA</version>
+                    </docletArtifact>
+                    <useStandardDocletOptions>true</useStandardDocletOptions>
+                    <charset>UTF-8</charset>
+                    <encoding>UTF-8</encoding>
+                    <docencoding>UTF-8</docencoding>
+                    <breakiterator>true</breakiterator>
+                    <version>true</version>
+                    <author>true</author>
+                    <keywords>true</keywords>
+                    <stylesheetfile>${basedir}/javadoc/javadoc.css</stylesheetfile>
+                    <javadocDirectory>${basedir}/javadoc</javadocDirectory>
+                    <docfilessubdirs>true</docfilessubdirs>
+                    <detectLinks>true</detectLinks>
+                    <excludePackageNames>
+                        org.jboss.shrinkwrap.descriptor.api.spec.*:org.jboss.shrinkwrap.descriptor.impl.*:org.jboss.shrinkwrap.descriptor.example:org.jboss.shrinkwrap.descriptor.spi
+                    </excludePackageNames>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>aggregate</id>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                        <phase>site</phase>
+                        <configuration>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <!-- Compiler -->
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <inherited>true</inherited>
+                    <configuration>
+                        <source>1.6</source>
+                        <target>1.6</target>
+                        <showWarnings>true</showWarnings>
+                        <optimize>true</optimize>
+                        <compilerVersion>1.6</compilerVersion>
+                        <fork>true</fork>
+                        <compilerArguments>
+                            <source>1.5</source>
+                            <target>1.5</target>
+                        </compilerArguments>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>2.9.1</version>
+                    <configuration>
+                        <configLocation>code-style/checkstyle.xml</configLocation>
+                        <logViolationsToConsole>true</logViolationsToConsole>
+                        <violationSeverity>error</violationSeverity>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>checkstyle-report</id>
+                            <phase>process-classes</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+                            <artifactId>shrinkwrap-descriptors-build-resources</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+                <!-- So m2e doesn't throw errors for features it doesn't support in the
+                    POM -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-checkstyle-plugin</artifactId>
+                                        <versionRange>[1.0.0,)</versionRange>
+                                        <goals>
+                                            <goal>check</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <execute />
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+    </build>
+
+    <!-- Dependency Management -->
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.easytesting</groupId>
+                <artifactId>fest-assert</artifactId>
+                <version>${version.fest-assert}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>${version.mockito-all}</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>jboss-public-repository</id>
+            <name>JBoss Repository</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jboss-public-repository</id>
+            <name>JBoss Repository</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-sources.jar -o /tmp/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-sources.jar && jar tf /tmp/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/jboss/
+org/jboss/shrinkwrap/
+org/jboss/shrinkwrap/descriptor/
+org/jboss/shrinkwrap/descriptor/api/
+org/jboss/shrinkwrap/descriptor/api/spec/
+org/jboss/shrinkwrap/descriptor/api/spec/se/
+org/jboss/shrinkwrap/descriptor/api/spec/se/manifest/
+org/jboss/shrinkwrap/descriptor/api/Child.java
+org/jboss/shrinkwrap/descriptor/api/CommonExtends.java
+org/jboss/shrinkwrap/descriptor/api/DescriptorImporter.java
+org/jboss/shrinkwrap/descriptor/api/Immutable.java
+org/jboss/shrinkwrap/descriptor/api/Descriptor.java
+org/jboss/shrinkwrap/descriptor/api/DescriptorImportException.java
+org/jboss/shrinkwrap/descriptor/api/DescriptorExportException.java
+org/jboss/shrinkwrap/descriptor/api/DescriptorNamespace.java
+org/jboss/shrinkwrap/descriptor/api/Mutable.java
+org/jboss/shrinkwrap/descriptor/api/GetTcclAction.java
+org/jboss/shrinkwrap/descriptor/api/Descriptors.java
+org/jboss/shrinkwrap/descriptor/api/DescriptorConstructionInfo.java
+org/jboss/shrinkwrap/descriptor/api/DescriptorInstantiator.java
+org/jboss/shrinkwrap/descriptor/api/DescriptorExporter.java
+org/jboss/shrinkwrap/descriptor/api/spec/se/manifest/ManifestDescriptor.java
+org/jboss/shrinkwrap/descriptor/api/spec/se/manifest/ManifestAppletDef.java
+org/jboss/shrinkwrap/descriptor/api/spec/se/manifest/ManifestEntryDef.java
+org/jboss/shrinkwrap/descriptor/api/spec/se/manifest/ManifestCommonDef.java
+META-INF/INDEX.LIST
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/shrinkwrap/descriptors.git 'refs/tags/2.0.0-alpha-8*'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-javadoc.jar -o /tmp/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-javadoc.jar && jar tf /tmp/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-javadoc.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 242ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/jboss/
+org/jboss/shrinkwrap/
+org/jboss/shrinkwrap/descriptor/
+org/jboss/shrinkwrap/descriptor/api/
+org/jboss/shrinkwrap/descriptor/api/class-use/
+allclasses-noframe.html
+deprecated-list.html
+help-doc.html
+overview-tree.html
+allclasses-frame.html
+package-list
+serialized-form.html
+stylesheet.css
+org/jboss/shrinkwrap/descriptor/api/DescriptorNamespace.html
+org/jboss/shrinkwrap/descriptor/api/Immutable.html
+org/jboss/shrinkwrap/descriptor/api/DescriptorExportException.html
+org/jboss/shrinkwrap/descriptor/api/package-summary.png
+org/jboss/shrinkwrap/descriptor/api/Descriptor.png
+org/jboss/shrinkwrap/descriptor/api/DescriptorImportException.png
+org/jboss/shrinkwrap/descriptor/api/Descriptors.png
+org/jboss/shrinkwrap/descriptor/api/package-frame.html
+org/jboss/shrinkwrap/descriptor/api/DescriptorImporter.png
+org/jboss/shrinkwrap/descriptor/api/DescriptorImporter.html
+org/jboss/shrinkwrap/descriptor/api/DescriptorExporter.html
+org/jboss/shrinkwrap/descriptor/api/CommonExtends.html
+org/jboss/shrinkwrap/descriptor/api/package-summary.html
+org/jboss/shrinkwrap/descriptor/api/Descriptors.html
+org/jboss/shrinkwrap/descriptor/api/DescriptorExporter.png
+org/jboss/shrinkwrap/descriptor/api/DescriptorImportException.html
+org/jboss/shrinkwrap/descriptor/api/DescriptorExportException.png
+org/jboss/shrinkwrap/descriptor/api/package-use.html
+org/jboss/shrinkwrap/descriptor/api/Child.png
+org/jboss/shrinkwrap/descriptor/api/Descriptor.html
+org/jboss/shrinkwrap/descriptor/api/package-tree.html
+org/jboss/shrinkwrap/descriptor/api/Immutable.png
+org/jboss/shrinkwrap/descriptor/api/Mutable.png
+org/jboss/shrinkwrap/descriptor/api/class-use/DescriptorNamespace.html
+org/jboss/shrinkwrap/descriptor/api/class-use/Immutable.html
+org/jboss/shrinkwrap/descriptor/api/class-use/DescriptorExportException.html
+org/jboss/shrinkwrap/descriptor/api/class-use/DescriptorImporter.html
+org/jboss/shrinkwrap/descriptor/api/class-use/DescriptorExporter.html
+org/jboss/shrinkwrap/descriptor/api/class-use/CommonExtends.html
+org/jboss/shrinkwrap/descriptor/api/class-use/Descriptors.html
+org/jboss/shrinkwrap/descriptor/api/class-use/DescriptorImportException.html
+org/jboss/shrinkwrap/descriptor/api/class-use/Descriptor.html
+org/jboss/shrinkwrap/descriptor/api/class-use/Mutable.html
+org/jboss/shrinkwrap/descriptor/api/class-use/Child.html
+org/jboss/shrinkwrap/descriptor/api/CommonExtends.png
+org/jboss/shrinkwrap/descriptor/api/Mutable.html
+org/jboss/shrinkwrap/descriptor/api/Child.html
+org/jboss/shrinkwrap/descriptor/api/DescriptorNamespace.png
+index.html
+index-all.html
+script.js
+constant-values.html
+META-INF/INDEX.LIST
+
+ succeeded in 321ms:
+7f91af207e4238e7bdb51383b76712c2efcfb565	refs/tags/2.0.0-alpha-8
+fe5006fe6e00459f3fcf213d8e2abd6430c1bf46	refs/tags/2.0.0-alpha-8^{}
+
+codex
+Maven Central publishes both `-sources.jar` and `-javadoc.jar` for this exact artifact version, but no obvious `-tests.jar` in the artifact directory. I’m checking the tagged upstream tree for the module’s test path before deciding whether `test-code-url` should be a tag URL or `N/A`.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/shrinkwrap/descriptors/git/trees/2.0.0-alpha-8?recursive=1 | rg 'api-base|test' | head -200" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/shrinkwrap/descriptors/git/trees/2.0.0-alpha-8?recursive=1 | rg 'api-base/src/test|api-base/.+Test|api-base/.+TestCase|test/src' | head -200" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/shrinkwrap/descriptors/git/trees/2.0.0-alpha-8?recursive=1 | rg '\"path\": \"api-base/' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 501ms:
+      "path": "ant/src/test",
+      "path": "ant/src/test/java",
+      "path": "ant/src/test/java/org",
+      "path": "ant/src/test/java/org/jboss",
+      "path": "ant/src/test/java/org/jboss/shrinkwrap",
+      "path": "ant/src/test/java/org/jboss/shrinkwrap/descriptor",
+      "path": "ant/src/test/java/org/jboss/shrinkwrap/descriptor/metadata",
+      "path": "ant/src/test/java/org/jboss/shrinkwrap/descriptor/metadata/task",
+      "path": "ant/src/test/java/org/jboss/shrinkwrap/descriptor/metadata/task/AntTaskParserTestCase.java",
+      "path": "ant/src/test/resources",
+      "path": "ant/src/test/resources/dtd",
+      "path": "ant/src/test/resources/dtd/connector_1_0.dtd",
+      "path": "ant/src/test/resources/dtd/jetty_7_configure.dtd",
+      "path": "ant/src/test/resources/task",
+      "path": "ant/src/test/resources/task/ant_build.xml",
+      "path": "ant/src/test/resources/xml",
+      "path": "ant/src/test/resources/xml/copyright.xml",
+      "path": "ant/src/test/resources/xml/schemasDatasources.xml",
+      "path": "ant/src/test/resources/xml/schemasIronJacamar.xml",
+      "path": "ant/src/test/resources/xml/schemasIronJacamarAll.xml",
+      "path": "ant/src/test/resources/xml/schemasResourceAdapter.xml",
+      "path": "ant/src/test/resources/xsd",
+      "path": "ant/src/test/resources/xsd/datasources_1_0.xsd",
+      "path": "ant/src/test/resources/xsd/ddJava.xsl",
+      "path": "ant/src/test/resources/xsd/instance1.xml",
+      "path": "ant/src/test/resources/xsd/ironjacamar_1_0.xsd",
+      "path": "ant/src/test/resources/xsd/metadata.xml",
+      "path": "ant/src/test/resources/xsd/metadataNew.xml",
+      "path": "ant/src/test/resources/xsd/resource-adapters_1_0.xsd",
+      "path": "ant/src/test/resources/xsd/tempMetadata3117577610235292908.xml",
+      "path": "ant/src/test/resources/xsd/testcases.xsd",
+      "path": "api-base",
+      "path": "api-base/pom.xml",
+      "path": "api-base/src",
+      "path": "api-base/src/main",
+      "path": "api-base/src/main/java",
+      "path": "api-base/src/main/java/org",
+      "path": "api-base/src/main/java/org/jboss",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/Child.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/CommonExtends.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/Descriptor.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/DescriptorConstructionInfo.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/DescriptorExportException.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/DescriptorExporter.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/DescriptorImportException.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/DescriptorImporter.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/DescriptorInstantiator.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/DescriptorNamespace.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/Descriptors.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/GetTcclAction.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/Immutable.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/Mutable.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/spec",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/spec/se",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/spec/se/manifest",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/spec/se/manifest/ManifestAppletDef.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/spec/se/manifest/ManifestCommonDef.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/spec/se/manifest/ManifestDescriptor.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/spec/se/manifest/ManifestEntryDef.java",
+      "path": "gen/src/test",
+      "path": "gen/src/test/resources",
+      "path": "gen/src/test/resources/empty.xml",
+      "path": "gen/src/test/resources/test-attributes-web.xml",
+      "path": "gen/src/test/resources/test-filter-web.xml",
+      "path": "gen/src/test/resources/test-servlet-web.xml",
+      "path": "gen/src/test/resources/test-session-config-web.xml",
+      "path": "gen/src/test/resources/test-web.xml",
+      "path": "gen/src/test/resources/test-web2.xml",
+      "path": "impl-base/src/test",
+      "path": "impl-base/src/test/java",
+      "path": "impl-base/src/test/java/org",
+      "path": "impl-base/src/test/java/org/jboss",
+      "path": "impl-base/src/test/java/org/jboss/shrinkwrap",
+      "path": "impl-base/src/test/java/org/jboss/shrinkwrap/descriptor",
+      "path": "impl-base/src/test/java/org/jboss/shrinkwrap/descriptor/api",
+      "path": "impl-base/src/test/java/org/jboss/shrinkwrap/descriptor/api/DescriptorImporterTestCase.java",
+      "path": "impl-base/src/test/java/org/jboss/shrinkwrap/descriptor/api/ManifestDescriptorTestCase.java",
+      "path": "impl-base/src/test/java/org/jboss/shrinkwrap/descriptor/api/TestDescriptor.java",
+      "path": "impl-base/src/test/java/org/jboss/shrinkwrap/descriptor/api/TestDescriptorImpl.java",
+      "path": "impl-base/src/test/java/org/jboss/shrinkwrap/descriptor/gen",
+      "path": "impl-base/src/test/java/org/jboss/shrinkwrap/descriptor/gen/TestDescriptorImpl.java",
+      "path": "impl-base/src/test/resources",
+      "path": "impl-base/src/test/resources/META-INF",
+      "path": "impl-base/src/test/resources/META-INF/services",
+      "path": "impl-base/src/test/resources/META-INF/services/org.jboss.shrinkwrap.descriptor.api.TestDescriptor",
+      "path": "impl-base/src/test/resources/empty.xml",
+      "path": "impl-base/src/test/resources/test-2-ejb-jar.xml",
+      "path": "impl-base/src/test/resources/test-2-persistence.xml",
+      "path": "impl-base/src/test/resources/test-attributes-web.xml",
+      "path": "impl-base/src/test/resources/test-ejb-jar.xml",
+      "path": "impl-base/src/test/resources/test-filter-web.xml",
+      "path": "impl-base/src/test/resources/test-jboss.xml",
+      "path": "impl-base/src/test/resources/test-persistence.xml",
+      "path": "impl-base/src/test/resources/test-servlet-web.xml",
+      "path": "impl-base/src/test/resources/test-session-config-web.xml",
+      "path": "impl-base/src/test/resources/test-web-generated-1.xml",
+      "path": "impl-base/src/test/resources/test-web.xml",
+      "path": "impl-base/src/test/resources/test-web2.xml",
+      "path": "impl-base/src/test/resources/test.xml",
+      "path": "impl-javaee-prototype/src/test",
+      "path": "impl-javaee-prototype/src/test/java",
+      "path": "impl-javaee-prototype/src/test/java/org",
+      "path": "impl-javaee-prototype/src/test/java/org/jboss",
+      "path": "impl-javaee-prototype/src/test/java/org/jboss/shrinkwrap",
+      "path": "impl-javaee-prototype/src/test/java/org/jboss/shrinkwrap/descriptor",
+      "path": "impl-javaee-prototype/src/test/java/org/jboss/shrinkwrap/descriptor/impl",
+      "path": "impl-javaee-prototype/src/test/java/org/jboss/shrinkwrap/descriptor/impl/common",
+      "path": "impl-javaee-prototype/src/test/java/org/jboss/shrinkwrap/descriptor/impl/common/DescriptorNameTestDelegate.java",
+      "path": "impl-javaee-prototype/src/test/java/org/jboss/shrinkwrap/descriptor/impl/webapp30",
+      "path": "impl-javaee-prototype/src/test/java/org/jboss/shrinkwrap/descriptor/impl/webapp30/WebAppDescriptorTestCase.java",
+      "path": "impl-javaee-prototype/src/test/java/org/jboss/shrinkwrap/descriptor/impl/webapp30/WebAppMutableDescriptorTestCase.java",
+      "path": "impl-javaee-prototype/src/test/java/org/jboss/shrinkwrap/descriptor/impl/webcommon30",
+      "path": "impl-javaee-prototype/src/test/java/org/jboss/shrinkwrap/descriptor/impl/webcommon30/FilterMutableTypeTestCase.java",
+      "path": "impl-javaee-prototype/src/test/java/org/jboss/shrinkwrap/descriptor/impl/webcommon30/FilterTypeTestCase.java",
+      "path": "metadata-parser-test",
+      "path": "metadata-parser-test/.gitignore",
+      "path": "metadata-parser-test/pom.xml",
+      "path": "metadata-parser-test/pom.xml~",
+      "path": "metadata-parser-test/src",
+      "path": "metadata-parser-test/src/main",
+      "path": "metadata-parser-test/src/main/resources",
+      "path": "metadata-parser-test/src/main/resources/META-INF",
+      "path": "metadata-parser-test/src/main/resources/META-INF/services",
+      "path": "metadata-parser-test/src/main/resources/META-INF/services/org.jboss.datasources.api.DatasourcesDescriptor",
+      "path": "metadata-parser-test/src/main/resources/META-INF/services/org.jboss.ironjacamar.api.IronjacamarDescriptor",
+      "path": "metadata-parser-test/src/main/resources/META-INF/services/org.jboss.resourceadapters.api.ResourceAdaptersDescriptor",
+      "path": "metadata-parser-test/src/test",
+      "path": "metadata-parser-test/src/test/resources",
+      "path": "metadata-parser-test/src/test/resources/dtd",
+      "path": "metadata-parser-test/src/test/resources/dtd/connector_1_0.dtd",
+      "path": "metadata-parser-test/src/test/resources/dtd/jetty_6_configure.dtd",
+      "path": "metadata-parser-test/src/test/resources/dtd/jetty_7_configure.dtd",
+      "path": "metadata-parser-test/src/test/resources/packageInfo",
+      "path": "metadata-parser-test/src/test/resources/packageInfo/datasourceApi",
+      "path": "metadata-parser-test/src/test/resources/packageInfo/datasourceApi/package-info.java",
+      "path": "metadata-parser-test/src/test/resources/packageInfo/datasourceImpl",
+      "path": "metadata-parser-test/src/test/resources/packageInfo/datasourceImpl/package-info.java",
+      "path": "metadata-parser-test/src/test/resources/test-gen-datasources10.xml",
+      "path": "metadata-parser-test/src/test/resources/test-gen-ironjacamar.xml",
+      "path": "metadata-parser-test/src/test/resources/test-gen-resourceadapter10.xml",
+      "path": "metadata-parser-test/src/test/resources/test-orig-connector10.xml",
+      "path": "metadata-parser-test/src/test/resources/test-orig-jetty7.xml",
+      "path": "metadata-parser-test/src/test/resources/xsd",
+      "path": "metadata-parser-test/src/test/resources/xsd/datasources_1_0.xsd",
+      "path": "metadata-parser-test/src/test/resources/xsd/ironjacamar_1_0.xsd",
+      "path": "metadata-parser-test/src/test/resources/xsd/orm_1_0.xsd",
+      "path": "metadata-parser-test/src/test/resources/xsd/orm_2_0.xsd",
+      "path": "metadata-parser-test/src/test/resources/xsd/persistence_1_0.xsd",
+      "path": "metadata-parser-test/src/test/resources/xsd/persistence_2_0.xsd",
+      "path": "metadata-parser-test/src/test/resources/xsd/resource-adapters_1_0.xsd",
+      "path": "metadata-parser-test/src/test/resources/xslt",
+      "path": "metadata-parser-test/src/test/resources/xslt/contributors.xml",
+      "path": "metadata-parser-test/src/test/resources/xslt/copyright.xml",
+      "path": "metadata-parser-test/src/test/resources/xslt/ddJava.xsl",
+      "path": "metadata-parser-test/src/test/resources/xslt/metadata.xml",
+      "path": "metadata-parser-test/src/test/resources/xslt/metadataIronjacamar.xml",
+      "path": "metadata-parser-test/src/test/resources/xslt/metadataIronjacamar_1.xml",
+      "path": "metadata-parser-test/src/test/resources/xslt/metadataJBossEE6.xml",
+      "path": "metadata-parser-test/src/teststatic",
+      "path": "metadata-parser-test/src/teststatic/java",
+      "path": "metadata-parser-test/src/teststatic/java/org",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap/descriptor",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap/descriptor/test",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap/descriptor/test/ironjacamar",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap/descriptor/test/ironjacamar/ConnectorDescriptorTestCase.java",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap/descriptor/test/ironjacamar/DataSourcesTestCase.java",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap/descriptor/test/ironjacamar/DtdParserTest.java",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap/descriptor/test/ironjacamar/IronJacamarTestCase.java",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap/descriptor/test/ironjacamar/Jetty7TestCase.java",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap/descriptor/test/ironjacamar/ResourceAdaptersTestCase.java",
+      "path": "metadata-parser/src/test",
+      "path": "metadata-parser/src/test/java",
+      "path": "metadata-parser/src/test/java/org",
+      "path": "metadata-parser/src/test/java/org/jboss",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap/descriptor",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap/descriptor/metadata",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap/descriptor/metadata/DomTestUtil.java",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap/descriptor/metadata/MetadataParserTest.java",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap/descriptor/metadata/PackageInfoTest.java",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap/descriptor/metadata/filter",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap/descriptor/metadata/filter/AttributeFilterTestCase.java",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap/descriptor/metadata/filter/AttributeGroupFilterTestCase.java",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap/descriptor/metadata/filter/ComplexTypeFilterTestCase.java",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap/descriptor/metadata/filter/ElementFilterTestCase.java",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap/descriptor/metadata/filter/EnumFilterTestCase.java",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap/descriptor/metadata/filter/ExtensionFilterTestCase.java",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap/descriptor/metadata/filter/GroupFilterTestCase.java",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap/descriptor/metadata/filter/ListFilterTestCase.java",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap/descriptor/metadata/filter/RestrictionFilterTestCase.java",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap/descriptor/metadata/filter/SimpleContentFilterTestCase.java",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap/descriptor/metadata/filter/UnionFilterTestCase.java",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap/descriptor/metadata/mojo",
+      "path": "metadata-parser/src/test/java/org/jboss/shrinkwrap/descriptor/metadata/mojo/MetadataParserMojoTest.java",
+      "path": "metadata-parser/src/test/resources",
+
+ succeeded in 547ms:
+      "path": "api-base/pom.xml",
+      "path": "api-base/src",
+      "path": "api-base/src/main",
+      "path": "api-base/src/main/java",
+      "path": "api-base/src/main/java/org",
+      "path": "api-base/src/main/java/org/jboss",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/Child.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/CommonExtends.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/Descriptor.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/DescriptorConstructionInfo.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/DescriptorExportException.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/DescriptorExporter.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/DescriptorImportException.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/DescriptorImporter.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/DescriptorInstantiator.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/DescriptorNamespace.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/Descriptors.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/GetTcclAction.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/Immutable.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/Mutable.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/spec",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/spec/se",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/spec/se/manifest",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/spec/se/manifest/ManifestAppletDef.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/spec/se/manifest/ManifestCommonDef.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/spec/se/manifest/ManifestDescriptor.java",
+      "path": "api-base/src/main/java/org/jboss/shrinkwrap/descriptor/api/spec/se/manifest/ManifestEntryDef.java",
+
+ succeeded in 554ms:
+      "path": "metadata-parser-test/src",
+      "path": "metadata-parser-test/src/main",
+      "path": "metadata-parser-test/src/main/resources",
+      "path": "metadata-parser-test/src/main/resources/META-INF",
+      "path": "metadata-parser-test/src/main/resources/META-INF/services",
+      "path": "metadata-parser-test/src/main/resources/META-INF/services/org.jboss.datasources.api.DatasourcesDescriptor",
+      "path": "metadata-parser-test/src/main/resources/META-INF/services/org.jboss.ironjacamar.api.IronjacamarDescriptor",
+      "path": "metadata-parser-test/src/main/resources/META-INF/services/org.jboss.resourceadapters.api.ResourceAdaptersDescriptor",
+      "path": "metadata-parser-test/src/test",
+      "path": "metadata-parser-test/src/test/resources",
+      "path": "metadata-parser-test/src/test/resources/dtd",
+      "path": "metadata-parser-test/src/test/resources/dtd/connector_1_0.dtd",
+      "path": "metadata-parser-test/src/test/resources/dtd/jetty_6_configure.dtd",
+      "path": "metadata-parser-test/src/test/resources/dtd/jetty_7_configure.dtd",
+      "path": "metadata-parser-test/src/test/resources/packageInfo",
+      "path": "metadata-parser-test/src/test/resources/packageInfo/datasourceApi",
+      "path": "metadata-parser-test/src/test/resources/packageInfo/datasourceApi/package-info.java",
+      "path": "metadata-parser-test/src/test/resources/packageInfo/datasourceImpl",
+      "path": "metadata-parser-test/src/test/resources/packageInfo/datasourceImpl/package-info.java",
+      "path": "metadata-parser-test/src/test/resources/test-gen-datasources10.xml",
+      "path": "metadata-parser-test/src/test/resources/test-gen-ironjacamar.xml",
+      "path": "metadata-parser-test/src/test/resources/test-gen-resourceadapter10.xml",
+      "path": "metadata-parser-test/src/test/resources/test-orig-connector10.xml",
+      "path": "metadata-parser-test/src/test/resources/test-orig-jetty7.xml",
+      "path": "metadata-parser-test/src/test/resources/xsd",
+      "path": "metadata-parser-test/src/test/resources/xsd/datasources_1_0.xsd",
+      "path": "metadata-parser-test/src/test/resources/xsd/ironjacamar_1_0.xsd",
+      "path": "metadata-parser-test/src/test/resources/xsd/orm_1_0.xsd",
+      "path": "metadata-parser-test/src/test/resources/xsd/orm_2_0.xsd",
+      "path": "metadata-parser-test/src/test/resources/xsd/persistence_1_0.xsd",
+      "path": "metadata-parser-test/src/test/resources/xsd/persistence_2_0.xsd",
+      "path": "metadata-parser-test/src/test/resources/xsd/resource-adapters_1_0.xsd",
+      "path": "metadata-parser-test/src/test/resources/xslt",
+      "path": "metadata-parser-test/src/test/resources/xslt/contributors.xml",
+      "path": "metadata-parser-test/src/test/resources/xslt/copyright.xml",
+      "path": "metadata-parser-test/src/test/resources/xslt/ddJava.xsl",
+      "path": "metadata-parser-test/src/test/resources/xslt/metadata.xml",
+      "path": "metadata-parser-test/src/test/resources/xslt/metadataIronjacamar.xml",
+      "path": "metadata-parser-test/src/test/resources/xslt/metadataIronjacamar_1.xml",
+      "path": "metadata-parser-test/src/test/resources/xslt/metadataJBossEE6.xml",
+      "path": "metadata-parser-test/src/teststatic",
+      "path": "metadata-parser-test/src/teststatic/java",
+      "path": "metadata-parser-test/src/teststatic/java/org",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap/descriptor",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap/descriptor/test",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap/descriptor/test/ironjacamar",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap/descriptor/test/ironjacamar/ConnectorDescriptorTestCase.java",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap/descriptor/test/ironjacamar/DataSourcesTestCase.java",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap/descriptor/test/ironjacamar/DtdParserTest.java",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap/descriptor/test/ironjacamar/IronJacamarTestCase.java",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap/descriptor/test/ironjacamar/Jetty7TestCase.java",
+      "path": "metadata-parser-test/src/teststatic/java/org/jboss/shrinkwrap/descriptor/test/ironjacamar/ResourceAdaptersTestCase.java",
+      "path": "test/src",
+      "path": "test/src/test",
+      "path": "test/src/test/java",
+      "path": "test/src/test/java/org",
+      "path": "test/src/test/java/org/jboss",
+      "path": "test/src/test/java/org/jboss/shrinkwrap",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/application5",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/application5/ApplicationDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/application6",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/application6/ApplicationDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/application7",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/application7/ApplicationDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/batch10",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/batch10/BatchDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/beans10",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/beans10/BeansDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/beans11",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/beans11/BeansDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/connector10",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/connector10/ConnectorDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/connector15",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/connector15/ConnectorDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/connector16",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/connector16/ConnectorDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/connector17",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/connector17/ConnectorDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/ejb30",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/ejb30/EjbJarDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/ejbjar31",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/ejbjar31/EjbJarDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/ejbjar32",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/ejbjar32/EjbJarDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/facesconfig20",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/facesconfig20/FacesConfigDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/facesconfig22",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/facesconfig22/FacesConfigDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/jbossdeployment12",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/jbossdeployment12/JBossDeploymentStructureTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/jbossmodule13",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/jbossmodule13/ModuleTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/jbossweb60",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/jbossweb60/JbossWebDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/jetty7",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/jetty7/Jetty7TestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/job10",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/job10/JobDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/jsptaglibrary20",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/jsptaglibrary20/WebJspTagLibraryDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/jsptaglibrary21",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/jsptaglibrary21/WebJspTagLibraryDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/permissions7",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/permissions7/PermissionsDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/persistence10",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/persistence10/PersistenceDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/persistence20",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/persistence20/PersistenceDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/persistence21",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/persistence21/PersistenceDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/portedfrompoc",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/portedfrompoc/BeansDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/portedfrompoc/DescriptorExporterTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/portedfrompoc/DescriptorsTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/portedfrompoc/PersistenceDescriptorEclipseLinkTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/portedfrompoc/PersistenceDescriptorHibernateTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/portedfrompoc/PersistenceDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/portedfrompoc/WebAppDefTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/portlet20",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/portlet20/PortletDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/validationConfiguration11",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/validationConfiguration11/ValidationConfigurationDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/webapp25",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/webapp25/WebAppDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/webapp30",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/webapp30/WebAppDescriptorAttributeGroupTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/webapp30/WebAppDescriptorComplexTypeTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/webapp30/WebAppDescriptorImportAsTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/webapp30/WebAppDescriptorNamespaceTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/webapp30/WebAppDescriptorSimpleTypeTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/webapp30/WebAppDescriptorTestCase.java",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/webapp31",
+      "path": "test/src/test/java/org/jboss/shrinkwrap/descriptor/test/webapp31/WebAppDescriptorTestCase.java",
+      "path": "test/src/test/resources",
+      "path": "test/src/test/resources/test-absent-module.xml",
+      "path": "test/src/test/resources/test-alias-module.xml",
+      "path": "test/src/test/resources/test-gen-application6.xml",
+      "path": "test/src/test/resources/test-gen-application7.xml",
+      "path": "test/src/test/resources/test-gen-batch10.xml",
+      "path": "test/src/test/resources/test-gen-beans10.xml",
+      "path": "test/src/test/resources/test-gen-beans11.xml",
+      "path": "test/src/test/resources/test-gen-connector16.xml",
+      "path": "test/src/test/resources/test-gen-connector17.xml",
+      "path": "test/src/test/resources/test-gen-ejbjar31.xml",
+      "path": "test/src/test/resources/test-gen-ejbjar32.xml",
+      "path": "test/src/test/resources/test-gen-jboss51.xml",
+      "path": "test/src/test/resources/test-gen-jbossweb60.xml",
+      "path": "test/src/test/resources/test-gen-job10.xml",
+      "path": "test/src/test/resources/test-gen-permissions7.xml",
+      "path": "test/src/test/resources/test-gen-persistence10.xml",
+      "path": "test/src/test/resources/test-gen-persistence20.xml",
+      "path": "test/src/test/resources/test-gen-persistence21.xml",
+      "path": "test/src/test/resources/test-gen-portlet20.xml",
+      "path": "test/src/test/resources/test-gen-validation-configuration11.xml",
+      "path": "test/src/test/resources/test-gen-validation-mapping11.xml",
+      "path": "test/src/test/resources/test-gen-webapp30-1.xml",
+      "path": "test/src/test/resources/test-gen-webapp30.xml",
+      "path": "test/src/test/resources/test-gen-webjsptaglibrary20.xml",
+      "path": "test/src/test/resources/test-gen-webjsptaglibrary21.xml",
+      "path": "test/src/test/resources/test-jboss-deployment-structure.xml",
+      "path": "test/src/test/resources/test-module.xml",
+      "path": "test/src/test/resources/test-orig-connector10.xml",
+      "path": "test/src/test/resources/test-orig-connector15.xml",
+      "path": "test/src/test/resources/test-orig-ejbjar31.xml",
+      "path": "test/src/test/resources/test-orig-ejbjar32.xml",
+      "path": "test/src/test/resources/test-orig-facesconfig20.xml",
+      "path": "test/src/test/resources/test-orig-facesconfig22.xml",
+      "path": "test/src/test/resources/test-orig-jetty7.xml",
+      "path": "test/src/test/resources/test-orig-persistence20.xml",
+      "path": "test/src/test/resources/test-orig-webapp30.xml",
+      "path": "test/src/test/resources/xml",
+      "path": "test/src/test/resources/xml/application50",
+      "path": "test/src/test/resources/xml/application50/Ear5xEverything_testEverything.xml",
+      "path": "test/src/test/resources/xml/ejb30",
+      "path": "test/src/test/resources/xml/ejb30/EjbJar3xEverything_testEverything.xml",
+
+exec
+/usr/bin/bash -lc "rg 'test-code-url|documentation-url|source-code-url|repository-url|language' -g '*.json' . | head -200" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 0ms:
+./metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:    "repository-url" : "https://github.com/apiguardian-team/apiguardian",
+./metadata/org.apiguardian/apiguardian-api/index.json:    "test-code-url" : "N/A",
+./metadata/org.apiguardian/apiguardian-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:    "repository-url": "https://github.com/javaee/activation",
+./metadata/javax.activation/javax.activation-api/index.json:    "test-code-url": "N/A",
+./metadata/javax.activation/javax.activation-api/index.json:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/javax.activation/activation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/javax.activation/activation/index.json:    "repository-url" : "https://github.com/javaee/activation",
+./metadata/javax.activation/activation/index.json:    "test-code-url" : "N/A",
+./metadata/javax.activation/activation/index.json:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/org.apache.arrow/arrow-format/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/15.0.0/arrow-format-15.0.0-sources.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:    "repository-url" : "https://github.com/apache/arrow",
+./metadata/org.apache.arrow/arrow-format/index.json:    "test-code-url" : "N/A",
+./metadata/org.apache.arrow/arrow-format/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/15.0.0/arrow-format-15.0.0-javadoc.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-sources.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:    "repository-url" : "https://github.com/apache/arrow",
+./metadata/org.apache.arrow/arrow-format/index.json:    "test-code-url" : "N/A",
+./metadata/org.apache.arrow/arrow-format/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-javadoc.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:    "test-code-url": "N/A",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/2.0.0.Final/jboss-interceptor-spi-2.0.0.Final-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:    "repository-url" : "https://github.com/jbossinterceptors/jbossinterceptors",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:    "test-code-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:    "documentation-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:    "test-code-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:    "documentation-url" : "N/A",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/jakarta.websocket-client-api-2.1.0-sources.jar",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:    "repository-url" : "https://github.com/jakartaee/websocket",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:    "test-code-url" : "N/A",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/jakarta.websocket-client-api-2.1.0-javadoc.jar",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/2.1.0/jakarta.websocket-api-2.1.0-sources.jar",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:    "repository-url" : "https://github.com/jakartaee/websocket",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:    "test-code-url" : "N/A",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/2.1.0/jakarta.websocket-api-2.1.0-javadoc.jar",
+./metadata/org.junit.platform/junit-platform-commons/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2-sources.jar",
+./metadata/org.junit.platform/junit-platform-commons/index.json:    "repository-url" : "https://github.com/junit-team/junit5",
+./metadata/org.junit.platform/junit-platform-commons/index.json:    "test-code-url" : "N/A",
+./metadata/org.junit.platform/junit-platform-commons/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2-javadoc.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+./metadata/com.sun.mail/jakarta.mail/index.json:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/2.0.1/mail/src/test",
+./metadata/com.sun.mail/jakarta.mail/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine/src/snakeyaml-engine-3.0.1/src/test/java/",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20250515-f04e4c0e/google-closure-library-third-party-0.0-20250515-f04e4c0e-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:    "repository-url" : "https://github.com/google/closure-library",
+./metadata/org.clojure/google-closure-library-third-party/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20250515-f04e4c0e/google-closure-library-third-party-0.0-20250515-f04e4c0e-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:    "documentation-url" : "https://github.com/google/closure-library/blob/f04e4c0e/README.md",
+./metadata/org.clojure/google-closure-library-third-party/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20150505-021ed5b3/google-closure-library-third-party-0.0-20150505-021ed5b3-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:    "repository-url" : "https://github.com/google/closure-library",
+./metadata/org.clojure/google-closure-library-third-party/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20150505-021ed5b3/google-closure-library-third-party-0.0-20150505-021ed5b3-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:    "documentation-url" : "https://github.com/google/closure-library/blob/021ed5b313da392a7139d0d3cf7011999ac8b672/README.md",
+./metadata/org.postgresql/postgresql/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:    "repository-url" : "https://github.com/pgjdbc/pgjdbc",
+./metadata/org.postgresql/postgresql/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-jdbc-src.tar.gz",
+./metadata/org.postgresql/postgresql/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:    "repository-url" : "https://github.com/pgjdbc/pgjdbc",
+./metadata/org.postgresql/postgresql/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-jdbc-src.tar.gz",
+./metadata/org.postgresql/postgresql/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:    "repository-url" : "https://github.com/javaee/servlet-spec",
+./metadata/javax.servlet/javax.servlet-api/index.json:    "test-code-url" : "N/A",
+./metadata/javax.servlet/javax.servlet-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+./metadata/org.eclipse.aether/aether-util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114-sources.jar",
+./metadata/org.eclipse.aether/aether-util/index.json:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git",
+./metadata/org.eclipse.aether/aether-util/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/1.0.2.v20150114/aether-1.0.2.v20150114-source-release.zip",
+./metadata/org.eclipse.aether/aether-util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114-javadoc.jar",
+./metadata/org.eclipse.aether/aether-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-sources.jar",
+./metadata/org.eclipse.aether/aether-api/index.json:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git/tree/",
+./metadata/org.eclipse.aether/aether-api/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/1.0.2.v20150114/aether-1.0.2.v20150114-source-release.zip",
+./metadata/org.eclipse.aether/aether-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-javadoc.jar",
+./metadata/org.eclipse.aether/aether-spi/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-spi/1.0.2.v20150114/aether-spi-1.0.2.v20150114-sources.jar",
+./metadata/org.eclipse.aether/aether-spi/index.json:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git/tree/",
+./metadata/org.eclipse.aether/aether-spi/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/1.0.2.v20150114/aether-1.0.2.v20150114-source-release.zip",
+./metadata/org.eclipse.aether/aether-spi/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-spi/1.0.2.v20150114/aether-spi-1.0.2.v20150114-javadoc.jar",
+./metadata/org.eclipse.aether/aether-impl/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-impl/1.0.2.v20150114/aether-impl-1.0.2.v20150114-sources.jar",
+./metadata/org.eclipse.aether/aether-impl/index.json:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git",
+./metadata/org.eclipse.aether/aether-impl/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/1.0.2.v20150114/aether-1.0.2.v20150114-source-release.zip",
+./metadata/org.eclipse.aether/aether-impl/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-impl/1.0.2.v20150114/aether-impl-1.0.2.v20150114-javadoc.jar",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:    "source-code-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-sources.jar",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:    "repository-url": "https://github.com/spotbugs/spotbugs",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:    "test-code-url": "N/A",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-javadoc.jar",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-sources.jar",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:    "repository-url" : "https://github.com/FasterXML/stax2-api",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:    "test-code-url" : "N/A",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-javadoc.jar",
+./metadata/org.dom4j/dom4j/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/dom4j/dom4j/2.1.1/dom4j-2.1.1-sources.jar",
+./metadata/org.dom4j/dom4j/index.json:    "repository-url" : "https://github.com/dom4j/dom4j",
+./metadata/org.dom4j/dom4j/index.json:    "test-code-url" : "https://github.com/dom4j/dom4j/tree/version-2.1.1/src/test",
+./metadata/org.dom4j/dom4j/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/dom4j/dom4j/2.1.1/dom4j-2.1.1-javadoc.jar",
+./metadata/org.latencyutils/LatencyUtils/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/latencyutils/LatencyUtils/2.0.3/LatencyUtils-2.0.3-sources.jar",
+./metadata/org.latencyutils/LatencyUtils/index.json:    "repository-url" : "https://github.com/LatencyUtils/LatencyUtils",
+./metadata/org.latencyutils/LatencyUtils/index.json:    "test-code-url" : "https://github.com/LatencyUtils/LatencyUtils/tree/LatencyUtils-2.0.3/src/test",
+./metadata/org.latencyutils/LatencyUtils/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/latencyutils/LatencyUtils/2.0.3/LatencyUtils-2.0.3-javadoc.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-sources.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:    "repository-url": "https://github.com/fusesource/hawtbuf",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:    "test-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-tests.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-javadoc.jar",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-sources.jar",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:    "repository-url" : "https://github.com/jakartaee/validation",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:    "test-code-url" : "https://github.com/jakartaee/validation/tree/3.0.0/src/test",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-javadoc.jar",
+./metadata/org.xmlunit/xmlunit-placeholders/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/xmlunit/xmlunit-placeholders/2.10.2/xmlunit-placeholders-2.10.2-sources.jar",
+./metadata/org.xmlunit/xmlunit-placeholders/index.json:    "repository-url" : "https://github.com/xmlunit/xmlunit",
+./metadata/org.xmlunit/xmlunit-placeholders/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/xmlunit/xmlunit-placeholders/2.10.2/xmlunit-placeholders-2.10.2-tests.jar",
+./metadata/org.xmlunit/xmlunit-placeholders/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/xmlunit/xmlunit-placeholders/2.10.2/xmlunit-placeholders-2.10.2-javadoc.jar",
+./metadata/org.xmlunit/xmlunit-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1-sources.jar",
+./metadata/org.xmlunit/xmlunit-core/index.json:    "repository-url" : "https://github.com/xmlunit/xmlunit",
+./metadata/org.xmlunit/xmlunit-core/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1-tests.jar",
+./metadata/org.xmlunit/xmlunit-core/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1-javadoc.jar",
+./metadata/aopalliance/aopalliance/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar",
+./metadata/aopalliance/aopalliance/index.json:    "repository-url" : "https://sourceforge.net/p/aopalliance/code/",
+./metadata/aopalliance/aopalliance/index.json:    "test-code-url" : "N/A",
+./metadata/aopalliance/aopalliance/index.json:    "documentation-url" : "https://sourceforge.net/projects/aopalliance/files/aopalliance/1.0/aopalliance.zip/download",
+./metadata/javax.annotation/jsr250-api/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/javax/annotation/jsr250-api/1.0/jsr250-api-1.0-sources.jar",
+./metadata/javax.annotation/jsr250-api/index.json:    "repository-url": "N/A",
+./metadata/javax.annotation/jsr250-api/index.json:    "test-code-url": "N/A",
+./metadata/javax.annotation/jsr250-api/index.json:    "documentation-url": "https://jcp.org/aboutJava/communityprocess/final/jsr250/index.html",
+./metadata/javax.annotation/javax.annotation-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/annotation/javax.annotation-api/1.2/javax.annotation-api-1.2-sources.jar",
+./metadata/javax.annotation/javax.annotation-api/index.json:    "repository-url" : "https://github.com/javaee/javax.annotation",
+./metadata/javax.annotation/javax.annotation-api/index.json:    "test-code-url" : "N/A",
+./metadata/javax.annotation/javax.annotation-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/javax/annotation/javax.annotation-api/1.2/javax.annotation-api-1.2-javadoc.jar",
+./metadata/org.apache.santuario/xmlsec/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/4.0.4/xmlsec-4.0.4-sources.jar",
+./metadata/org.apache.santuario/xmlsec/index.json:    "repository-url": "https://github.com/apache/santuario-xml-security-java",
+./metadata/org.apache.santuario/xmlsec/index.json:    "test-code-url": "https://github.com/apache/santuario-xml-security-java/tree/xmlsec-4.0.4/src/test",
+./metadata/org.apache.santuario/xmlsec/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/4.0.4/xmlsec-4.0.4-javadoc.jar",
+./metadata/javax.jcr/jcr/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/jcr/jcr/1.0/jcr-1.0-sources.jar",
+./metadata/javax.jcr/jcr/index.json:    "repository-url" : "N/A",
+./metadata/javax.jcr/jcr/index.json:    "test-code-url" : "N/A",
+./metadata/javax.jcr/jcr/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/javax/jcr/jcr/1.0/jcr-1.0-javadoc.jar",
+./metadata/org.sonatype.aether/aether-util/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/1.7/aether-util-1.7-sources.jar",
+./metadata/org.sonatype.aether/aether-util/index.json:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+./metadata/org.sonatype.aether/aether-util/index.json:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-util/src/test/java",
+./metadata/org.sonatype.aether/aether-util/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/1.7/aether-util-1.7-javadoc.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.9/aether-api-1.9-sources.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+./metadata/org.sonatype.aether/aether-api/index.json:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.9/aether-api/src/test/java",
+./metadata/org.sonatype.aether/aether-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.9/aether-api-1.9-javadoc.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-sources.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+./metadata/org.sonatype.aether/aether-api/index.json:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-api/src/test/java",
+./metadata/org.sonatype.aether/aether-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-javadoc.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.7/aether-api-1.7-sources.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+./metadata/org.sonatype.aether/aether-api/index.json:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-api/src/test/java",
+./metadata/org.sonatype.aether/aether-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.7/aether-api-1.7-javadoc.jar",
+./metadata/org.sonatype.aether/aether-spi/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-sources.jar",
+./metadata/org.sonatype.aether/aether-spi/index.json:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+./metadata/org.sonatype.aether/aether-spi/index.json:    "test-code-url" : "N/A",
+./metadata/org.sonatype.aether/aether-spi/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-javadoc.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-sources.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.0.6/src/test",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-javadoc.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-sources.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.5.2/src/test",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-javadoc.jar",
+./metadata/com.vaadin.external.google/android-json/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1-sources.jar",
+./metadata/com.vaadin.external.google/android-json/index.json:    "repository-url" : "http://developer.android.com/sdk/",
+./metadata/com.vaadin.external.google/android-json/index.json:    "test-code-url" : "N/A",
+./metadata/com.vaadin.external.google/android-json/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1-javadoc.jar",
+./metadata/org.glassfish/javax.servlet/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/javax.servlet/3.1/javax.servlet-3.1-sources.jar",
+./metadata/org.glassfish/javax.servlet/index.json:    "repository-url" : "https://github.com/javaee/glassfish",
+./metadata/org.glassfish/javax.servlet/index.json:    "test-code-url" : "N/A",
+./metadata/org.glassfish/javax.servlet/index.json:    "documentation-url" : "https://javadoc.io/doc/org.glassfish/javax.servlet/3.1",
+./metadata/org.glassfish/javax.annotation/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/javax.annotation/10.0-b28/javax.annotation-10.0-b28-sources.jar",
+./metadata/org.glassfish/javax.annotation/index.json:    "repository-url" : "https://github.com/javaee/glassfish",
+./metadata/org.glassfish/javax.annotation/index.json:    "test-code-url" : "N/A",
+./metadata/org.glassfish/javax.annotation/index.json:    "documentation-url" : "N/A",
+./metadata/org.glassfish/javax.annotation/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/javax.annotation/3.1/javax.annotation-3.1-sources.jar",
+./metadata/org.glassfish/javax.annotation/index.json:    "repository-url" : "https://github.com/javaee/glassfish",
+./metadata/org.glassfish/javax.annotation/index.json:    "test-code-url" : "N/A",
+./metadata/org.glassfish/javax.annotation/index.json:    "documentation-url" : "https://javadoc.io/doc/org.glassfish/javax.annotation/3.1",
+
+exec
+/usr/bin/bash -lc "rg 'discovered-artifact-metadata|documentation-url|test-code-url' -n . | head -100" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 0ms:
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:301:                null, // test-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:302:                null, // documentation-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:24:    private static final String DISCOVERY_DIR = "discovered-artifact-metadata";
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:30:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:32:        @JsonProperty("documentation-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:20:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:22:        @JsonProperty("documentation-url")
+./docs/CONTRIBUTING.md:110:* `test-code-url`: URL to the test source code location for this index entry.
+./docs/CONTRIBUTING.md:111:* `documentation-url`: URL to the project documentation for this index entry.
+./docs/CONTRIBUTING.md:142:     "test-code-url": "https://github.com/example/repo/tree/main/tests/src/org.example/library/1.0.0",
+./docs/CONTRIBUTING.md:143:     "documentation-url": "https://github.com/example/repo/tree/main/README.md",
+./docs/CONTRIBUTING.md:155:To populate `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description` fields in matching `index.json` entries:
+./docs/FUNCTIONAL_SPEC.md:137:The schema follows semver, and **minor- and patch-version bumps** (e.g., `v2.0.1` → `v2.0.2` or `v2.0.x` → `v2.1.0`) are guaranteed to be backward-compatible with native-build-tools. Minor bumps add new optional fields used by the website, the test harness, or future tooling (`requires`, `test-version`, `skipped-versions`, `language`, `source-code-url`, `test-code-url`, `documentation-url`, `repository-url`); patch bumps refine validation of those same auxiliary fields. The plugin reads only the six fields enumerated above, so an older native-build-tools release continues to resolve metadata correctly against any newer minor or patch version of the schema. Only a **major-version bump** can break the contract, which NFR-4 forbids — schema changes are additive only.
+./skills/review-library-bulk-update/SKILL.md:3:description: Review automated pull requests with the `library-bulk-update` label in graalvm-reachability-metadata. Use when asked to review or triage a PR that bumps tested versions for existing libraries, including approve vs close decisions, CI checks, diff-scope validation, and verification of `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` changes.
+./skills/review-library-bulk-update/SKILL.md:57:   - Review `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` with the same rules used by `PopulateArtifactURLs`.
+./skills/review-library-bulk-update/SKILL.md:69:- `source-code-url`, `test-code-url`, and `documentation-url` must point to the exact library version in the changed entry.
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:180:                .containsEntry("test-code-url", "https://example.com/tests")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:181:                .containsEntry("documentation-url", "https://example.com/docs")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:226:                .containsEntry("test-code-url", "https://example.com/tests")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:227:                .containsEntry("documentation-url", "https://example.com/docs")
+./forge/utility_scripts/source_context.py:24:    "test": "test-code-url",
+./forge/utility_scripts/source_context.py:25:    "documentation": "documentation-url",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:58:                .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", \"description\", and \"language\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:61:                .contains("Set missing \"documentation-url\" to the selected project documentation URL for version \"1.4.1\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:222:                    "test-code-url": "https://example.com/tests-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:223:                    "documentation-url": "https://example.com/docs-a",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:96:    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, description, and language when those fields already contain values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:106:    @Option(option = "verify-artifact-sources", description = "Require source/test-source validation before selecting source-code-url or test-code-url values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:306:                - test-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:307:                - documentation-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:355:                    - Set "test-code-url" to the selected test suite URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:356:                    - Set "documentation-url" to the selected project documentation URL for version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:362:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:368:                - Set missing "test-code-url" to the selected test suite URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:369:                - Set missing "documentation-url" to the selected project documentation URL for version "%s".
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:56:                .contains("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:69:        Path discoveryFile = tempDir.resolve("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:169:                - Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:307:    task.setDescription("Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.")
+./forge/docs/dynamic-access-workflow.md:52:   `source-code-url`, `test-code-url`, and `documentation-url` as required.
+./metadata/org.apache.commons/commons-compress/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-test-sources.jar",
+./metadata/org.apache.commons/commons-compress/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-javadoc.jar",
+./metadata/org.apache.commons/commons-compress/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-test-sources.jar",
+./metadata/org.apache.commons/commons-compress/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/org.openjfx/javafx-base/index.json:7:    "test-code-url" : "https://github.com/javafxports/openjdk-jfx/tree/11.0.2+1/tests",
+./metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-javadoc.jar",
+./metadata/org.jline/jline-terminal-jna/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.20.0/terminal-jna/src/test",
+./metadata/org.jline/jline-terminal-jna/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.20.0/jline-terminal-jna-3.20.0-javadoc.jar",
+./metadata/org.apache.commons/commons-dbcp2/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-test-sources.jar",
+./metadata/org.apache.commons/commons-dbcp2/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+./metadata/org.jline/jline-console/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-3.28.0/console/src/test",
+./metadata/org.jline/jline-console/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/3.28.0/jline-console-3.28.0-javadoc.jar",
+./metadata/org.jline/jline-console/index.json:52:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.22.0/console/src/test",
+./metadata/org.jline/jline-console/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/3.22.0/jline-console-3.22.0-javadoc.jar",
+./metadata/org.apache.commons/commons-text/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-test-sources.jar",
+./metadata/org.apache.commons/commons-text/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:9:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-test.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-test.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:34:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-javadoc.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apiguardian/apiguardian-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-javadoc.jar",
+./metadata/org.apache.commons/commons-pool2/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-test-sources.jar",
+./metadata/org.apache.commons/commons-pool2/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-javadoc.jar",
+./metadata/org.jline/jline/index.json:11:    "test-code-url": "https://github.com/jline/jline3/tree/jline-parent-3.21.0",
+./metadata/org.jline/jline/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/org.apache.commons/commons-lang3/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-test-sources.jar",
+./metadata/org.apache.commons/commons-lang3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-javadoc.jar",
+./metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/1.5.0/jackrabbit-jcr-commons/src/test/java",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/1.5.0/jackrabbit-jcr-commons/README.txt",
+./metadata/org.apache.commons/commons-collections4/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-test-sources.jar",
+./metadata/org.apache.commons/commons-collections4/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-javadoc.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.arrow/arrow-format/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/15.0.0/arrow-format-15.0.0-javadoc.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:21:    "test-code-url" : "N/A",
+./metadata/org.apache.arrow/arrow-format/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-javadoc.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/2.0.0/src/test/java",
+./metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/2.0.0/stax-ex-2.0.0-javadoc.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/1.8.2/src/test",
+./metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8.2/stax-ex-1.8.2-javadoc.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/1.8/stax-ex/src/test",
+./metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8/stax-ex-1.8-javadoc.jar",
+./metadata/org.example/library/index.json:11:    "test-code-url": "N/A",
+./metadata/org.example/library/index.json:12:    "documentation-url": "N/A",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-2.15.2/toml/src/test",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-javadoc.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+./metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+./metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-3.10.8-jakarta-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '330,380p' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 0ms:
+                testVersion
+        ).strip();
+    }
+
+    private static String sourceArtifactVerificationInstructions(boolean verifyArtifactSources, String version) {
+        if (!verifyArtifactSources) {
+            return "";
+        }
+        return """
+                Source Artifact Verification (required):
+                - Verify candidate source URLs for version "%s", including Maven and non-Maven candidates.
+                - If you use Maven source artifacts, confirm `-sources.jar` contains real source files (`.java`, `.kt`, `.scala`, `.groovy`), not only metadata/license files.
+                - If you use Maven test-source artifacts, confirm `-test-sources.jar` contains real test source files.
+                - For non-Maven source/test URLs (for example repository tree pages or downloadable archives), verify that the selected URL resolves to real source/test files for the exact version.
+                - If a candidate source/test URL fails this verification, do not use it. Prefer a verified repository tag URL instead.
+                """.formatted(version).strip();
+    }
+
+    private static String urlUpdateInstructions(boolean overwriteExisting, String version) {
+        if (overwriteExisting) {
+            return """
+                    - Overwrite existing URL values.
+                    - Set "source-code-url" to the selected source URL.
+                    - Set "repository-url" to the selected repository URL.
+                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+                    - Set "test-code-url" to the selected test suite URL.
+                    - Set "documentation-url" to the selected project documentation URL for version "%s".
+                    - Set "description" to a concise explanation of the library in exactly two sentences.
+                    - Set "language" to the structured language object when the library is language-specific; otherwise leave the field absent.
+                    """.formatted(version).strip();
+        }
+        return """
+                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+                - A field is missing only when absent, null, or blank.
+                - Do not modify fields that already contain a non-blank value.
+                - Set missing "source-code-url" to the selected source URL.
+                - Set missing "repository-url" to the selected repository URL.
+                - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+                - Set missing "test-code-url" to the selected test suite URL.
+                - Set missing "documentation-url" to the selected project documentation URL for version "%s".
+                - Set missing "description" to a concise explanation of the library in exactly two sentences.
+                - Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+                """.formatted(version).strip();
+    }
+
+    private static String currentValue(String value) {
+        return hasText(value) ? value : "<missing>";
+    }
+
+    private static String currentLanguageValue(MetadataVersionsIndexEntry entry) {
+        if (entry.language() == null) {
+
+exec
+/usr/bin/bash -lc "sed -n '100,120p' docs/CONTRIBUTING.md" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 0ms:
+* `tested-versions`: An array of library versions verified to work with this specific metadata.
+* `allowed-packages`: An array of package prefixes. The TCK ensures that configuration entries (like reflection targets) belong strictly to these packages.
+
+**Optional Keys:**
+* `latest`: Boolean. If `true`, this is the default metadata version for the artifact.
+* `requires`: An array of `groupId:artifactId` coordinates for libraries this metadata depends on.
+* `default-for`: A Java-format regex used to match library versions if no exact match exists in `tested-versions` (e.g., `"0\\.0\\..*"`).
+* `test-version`: Defines the subdirectory in `tests/src` containing the test code. Use this to share a single test suite across multiple metadata versions.
+* `source-code-url`: URL to the metadata source code location for this index entry.
+* `repository-url`: URL to the canonical project repository for this index entry.
+* `test-code-url`: URL to the test source code location for this index entry.
+* `documentation-url`: URL to the project documentation for this index entry.
+* `description`: A concise explanation of the library in exactly two sentences.
+* `skipped-versions`: An array of objects (with `version` and `reason`) to explicitly exclude library versions known to be broken or incompatible.
+* `override`: Boolean. If `true`, excludes outdated builtin GraalVM metadata.
+
+#### Comprehensive Example
+
+```json
+[
+  {
+
+exec
+/usr/bin/bash -lc "sed -n '150,185p' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 0ms:
+
+    private String buildPrompt(Coordinates parsedCoordinates, Path discoveryFile) {
+        return """
+                Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: %s
+                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+                - { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+                - { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+                - { "name": "scala", "version": "2" } for Scala 2 libraries
+                - { "name": "scala", "version": "3" } for Scala 3 libraries
+                If the library is not language-specific, leave the "language" field absent.
+                The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "%s".
+                The source, test suite, and documentation URLs should point to the right tag of the library.
+                If we have these source of these artifacts on maven, that should be prefered.
+                If there are tests on maven that should also be prefered.
+                The "description" field must explain what the library does in exactly two sentences.
+
+                Update this file directly:
+                - File: %s
+                - Set "coordinates" to "%s".
+                - Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+                - Set "description" to the selected two-sentence explanation.
+                - If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+                - Keep the JSON valid and consistently formatted.
+                """.formatted(
+                parsedCoordinates.toString(),
+                parsedCoordinates.version(),
+                discoveryFile.toString().replace('\\', '/'),
+                parsedCoordinates.toString()
+        ).strip();
+    }
+
+    private List<String> buildInvocation(List<String> commandTokens, String prompt) {
+        List<String> invocation = new ArrayList<>(commandTokens.size() + 1);
+        boolean replaced = false;
+        for (String token : commandTokens) {
+            if (token.contains(PROMPT_PLACEHOLDER)) {
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-parent/2.0.0-alpha-8/ | rg 'source|test|javadoc|jar|tar|zip|pom'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 0ms:
+<a href="shrinkwrap-descriptors-parent-2.0.0-alpha-8-source-release.zip" title="shrinkwrap-descriptors-parent-2.0.0-alpha-8-source-release.zip">shrinkwrap-descriptors-parent-2.0.0-alpha-8-s...</a>  2015-09-29 19:44   5806573      
+<a href="shrinkwrap-descriptors-parent-2.0.0-alpha-8-source-release.zip.md5" title="shrinkwrap-descriptors-parent-2.0.0-alpha-8-source-release.zip.md5">shrinkwrap-descriptors-parent-2.0.0-alpha-8-s...</a>  2015-09-29 19:44        32      
+<a href="shrinkwrap-descriptors-parent-2.0.0-alpha-8-source-release.zip.sha1" title="shrinkwrap-descriptors-parent-2.0.0-alpha-8-source-release.zip.sha1">shrinkwrap-descriptors-parent-2.0.0-alpha-8-s...</a>  2015-09-29 19:44        40      
+<a href="shrinkwrap-descriptors-parent-2.0.0-alpha-8.pom" title="shrinkwrap-descriptors-parent-2.0.0-alpha-8.pom">shrinkwrap-descriptors-parent-2.0.0-alpha-8.p...</a>  2015-09-29 19:44     12727      
+<a href="shrinkwrap-descriptors-parent-2.0.0-alpha-8.pom.md5" title="shrinkwrap-descriptors-parent-2.0.0-alpha-8.pom.md5">shrinkwrap-descriptors-parent-2.0.0-alpha-8.p...</a>  2015-09-29 19:44        32      
+<a href="shrinkwrap-descriptors-parent-2.0.0-alpha-8.pom.sha1" title="shrinkwrap-descriptors-parent-2.0.0-alpha-8.pom.sha1">shrinkwrap-descriptors-parent-2.0.0-alpha-8.p...</a>  2015-09-29 19:44        40      
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/shrinkwrap/descriptors/ | rg 'shrinkwrap-descriptors.*'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 0ms:
+<a href="shrinkwrap-descriptors-ant/" title="shrinkwrap-descriptors-ant/">shrinkwrap-descriptors-ant/</a>                                      -         -      
+<a href="shrinkwrap-descriptors-api/" title="shrinkwrap-descriptors-api/">shrinkwrap-descriptors-api/</a>                                      -         -      
+<a href="shrinkwrap-descriptors-api-base/" title="shrinkwrap-descriptors-api-base/">shrinkwrap-descriptors-api-base/</a>                                 -         -      
+<a href="shrinkwrap-descriptors-api-docker/" title="shrinkwrap-descriptors-api-docker/">shrinkwrap-descriptors-api-docker/</a>                               -         -      
+<a href="shrinkwrap-descriptors-api-javaee/" title="shrinkwrap-descriptors-api-javaee/">shrinkwrap-descriptors-api-javaee/</a>                               -         -      
+<a href="shrinkwrap-descriptors-api-javaee-prototype/" title="shrinkwrap-descriptors-api-javaee-prototype/">shrinkwrap-descriptors-api-javaee-prototype/</a>                     -         -      
+<a href="shrinkwrap-descriptors-api-jboss/" title="shrinkwrap-descriptors-api-jboss/">shrinkwrap-descriptors-api-jboss/</a>                                -         -      
+<a href="shrinkwrap-descriptors-api-misc/" title="shrinkwrap-descriptors-api-misc/">shrinkwrap-descriptors-api-misc/</a>                                 -         -      
+<a href="shrinkwrap-descriptors-bom/" title="shrinkwrap-descriptors-bom/">shrinkwrap-descriptors-bom/</a>                                      -         -      
+<a href="shrinkwrap-descriptors-build-resources/" title="shrinkwrap-descriptors-build-resources/">shrinkwrap-descriptors-build-resources/</a>                          -         -      
+<a href="shrinkwrap-descriptors-depchain/" title="shrinkwrap-descriptors-depchain/">shrinkwrap-descriptors-depchain/</a>                                 -         -      
+<a href="shrinkwrap-descriptors-gen/" title="shrinkwrap-descriptors-gen/">shrinkwrap-descriptors-gen/</a>                                      -         -      
+<a href="shrinkwrap-descriptors-impl/" title="shrinkwrap-descriptors-impl/">shrinkwrap-descriptors-impl/</a>                                     -         -      
+<a href="shrinkwrap-descriptors-impl-base/" title="shrinkwrap-descriptors-impl-base/">shrinkwrap-descriptors-impl-base/</a>                                -         -      
+<a href="shrinkwrap-descriptors-impl-docker/" title="shrinkwrap-descriptors-impl-docker/">shrinkwrap-descriptors-impl-docker/</a>                              -         -      
+<a href="shrinkwrap-descriptors-impl-javaee/" title="shrinkwrap-descriptors-impl-javaee/">shrinkwrap-descriptors-impl-javaee/</a>                              -         -      
+<a href="shrinkwrap-descriptors-impl-javaee-prototype/" title="shrinkwrap-descriptors-impl-javaee-prototype/">shrinkwrap-descriptors-impl-javaee-prototype/</a>                    -         -      
+<a href="shrinkwrap-descriptors-impl-jboss/" title="shrinkwrap-descriptors-impl-jboss/">shrinkwrap-descriptors-impl-jboss/</a>                               -         -      
+<a href="shrinkwrap-descriptors-impl-misc/" title="shrinkwrap-descriptors-impl-misc/">shrinkwrap-descriptors-impl-misc/</a>                                -         -      
+<a href="shrinkwrap-descriptors-metadata-parser/" title="shrinkwrap-descriptors-metadata-parser/">shrinkwrap-descriptors-metadata-parser/</a>                          -         -      
+<a href="shrinkwrap-descriptors-metadata-parser-test/" title="shrinkwrap-descriptors-metadata-parser-test/">shrinkwrap-descriptors-metadata-parser-test/</a>                     -         -      
+<a href="shrinkwrap-descriptors-parent/" title="shrinkwrap-descriptors-parent/">shrinkwrap-descriptors-parent/</a>                                   -         -      
+<a href="shrinkwrap-descriptors-parent-docker/" title="shrinkwrap-descriptors-parent-docker/">shrinkwrap-descriptors-parent-docker/</a>                            -         -      
+<a href="shrinkwrap-descriptors-spi/" title="shrinkwrap-descriptors-spi/">shrinkwrap-descriptors-spi/</a>                                      -         -      
+<a href="shrinkwrap-descriptors-test/" title="shrinkwrap-descriptors-test/">shrinkwrap-descriptors-test/</a>                                     -         -      
+<a href="shrinkwrap-descriptors-test-util/" title="shrinkwrap-descriptors-test-util/">shrinkwrap-descriptors-test-util/</a>                                -         -      
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-test/2.0.0-alpha-8/ | rg 'sources|test|jar|pom' || true" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 277ms:
+	<title>Central Repository: org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-test/2.0.0-alpha-8</title>
+		<h1>org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-test/2.0.0-alpha-8</h1>
+<a href="shrinkwrap-descriptors-test-2.0.0-alpha-8.jar" title="shrinkwrap-descriptors-test-2.0.0-alpha-8.jar">shrinkwrap-descriptors-test-2.0.0-alpha-8.jar</a>     2015-09-29 19:50      2896      
+<a href="shrinkwrap-descriptors-test-2.0.0-alpha-8.jar.md5" title="shrinkwrap-descriptors-test-2.0.0-alpha-8.jar.md5">shrinkwrap-descriptors-test-2.0.0-alpha-8.jar...</a>  2015-09-29 19:50        32      
+<a href="shrinkwrap-descriptors-test-2.0.0-alpha-8.jar.sha1" title="shrinkwrap-descriptors-test-2.0.0-alpha-8.jar.sha1">shrinkwrap-descriptors-test-2.0.0-alpha-8.jar...</a>  2015-09-29 19:50        40      
+<a href="shrinkwrap-descriptors-test-2.0.0-alpha-8.pom" title="shrinkwrap-descriptors-test-2.0.0-alpha-8.pom">shrinkwrap-descriptors-test-2.0.0-alpha-8.pom</a>     2015-09-29 19:50      3566      
+<a href="shrinkwrap-descriptors-test-2.0.0-alpha-8.pom.md5" title="shrinkwrap-descriptors-test-2.0.0-alpha-8.pom.md5">shrinkwrap-descriptors-test-2.0.0-alpha-8.pom...</a>  2015-09-29 19:50        32      
+<a href="shrinkwrap-descriptors-test-2.0.0-alpha-8.pom.sha1" title="shrinkwrap-descriptors-test-2.0.0-alpha-8.pom.sha1">shrinkwrap-descriptors-test-2.0.0-alpha-8.pom...</a>  2015-09-29 19:50        40      
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-parent/2.0.0-alpha-8/shrinkwrap-descriptors-parent-2.0.0-alpha-8-source-release.zip -o /tmp/shrinkwrap-descriptors-parent-2.0.0-alpha-8-source-release.zip && unzip -Z1 /tmp/shrinkwrap-descriptors-parent-2.0.0-alpha-8-source-release.zip | rg '("'^|/)api-base/src/test|(''^|/)test/src/test|(''^|/)impl-base/src/test'"' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-test/2.0.0-alpha-8/shrinkwrap-descriptors-test-2.0.0-alpha-8.jar -o /tmp/shrinkwrap-descriptors-test-2.0.0-alpha-8.jar && jar tf /tmp/shrinkwrap-descriptors-test-2.0.0-alpha-8.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-test/2.0.0-alpha-8/shrinkwrap-descriptors-test-2.0.0-alpha-8.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 285ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/maven/
+META-INF/maven/org.jboss.shrinkwrap.descriptors/
+META-INF/maven/org.jboss.shrinkwrap.descriptors/shrinkwrap-descriptors-test/
+META-INF/maven/org.jboss.shrinkwrap.descriptors/shrinkwrap-descriptors-test/pom.xml
+META-INF/maven/org.jboss.shrinkwrap.descriptors/shrinkwrap-descriptors-test/pom.properties
+META-INF/INDEX.LIST
+
+ succeeded in 284ms:
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-parent</artifactId>
+        <version>2.0.0-alpha-8</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Configuration -->
+    <artifactId>shrinkwrap-descriptors-test</artifactId>
+    <name>ShrinkWrap Descriptors Static Tests</name>
+    <description>Handcoded Tests for the Generated Implementation of the ShrinkWrap Descriptors Project</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.spec</groupId>
+            <artifactId>jboss-javaee-6.0</artifactId>
+            <type>pom</type>
+            <version>1.0.0.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+            <artifactId>shrinkwrap-descriptors-impl-javaee</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+            <artifactId>shrinkwrap-descriptors-impl-jboss</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+            <artifactId>shrinkwrap-descriptors-impl-misc</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+            <artifactId>shrinkwrap-descriptors-impl-base</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+            <artifactId>shrinkwrap-descriptors-test-util</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Testing -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+
+            <!-- Surefire -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- Run in Java5; be build with a JDK6 compiler so ensure we don't
+                        use any JDK6 libs -->
+                    <jvm>${env.JAVA5_HOME}/bin/java</jvm>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+ succeeded in 630ms:
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/xml/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/xml/application50/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/xml/ejb30/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/application5/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/persistence21/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/permissions7/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/ejbjar31/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/jbossmodule13/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/persistence10/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/jbossweb60/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/validationConfiguration11/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/portedfrompoc/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/connector10/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/jbossdeployment12/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/facesconfig22/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/jsptaglibrary20/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/connector17/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/ejbjar32/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/jsptaglibrary21/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/facesconfig20/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/application7/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/job10/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/beans11/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/batch10/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/connector15/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/persistence20/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/application6/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/portlet20/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/webapp31/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/beans10/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/webapp25/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/connector16/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/jetty7/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/ejb30/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/java/org/jboss/shrinkwrap/descriptor/test/webapp30/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/impl-base/src/test/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/impl-base/src/test/resources/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/impl-base/src/test/resources/META-INF/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/impl-base/src/test/resources/META-INF/services/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/impl-base/src/test/java/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/impl-base/src/test/java/org/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/impl-base/src/test/java/org/jboss/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/impl-base/src/test/java/org/jboss/shrinkwrap/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/impl-base/src/test/java/org/jboss/shrinkwrap/descriptor/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/impl-base/src/test/java/org/jboss/shrinkwrap/descriptor/api/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/impl-base/src/test/java/org/jboss/shrinkwrap/descriptor/gen/
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-orig-facesconfig22.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-gen-webjsptaglibrary20.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-gen-webapp30.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-gen-persistence20.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-gen-webjsptaglibrary21.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-gen-validation-configuration11.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-gen-persistence10.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-gen-job10.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-orig-facesconfig20.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-orig-webapp30.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-orig-jetty7.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-orig-connector15.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-gen-jbossweb60.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-gen-application6.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-orig-persistence20.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-jboss-deployment-structure.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-gen-portlet20.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-gen-application7.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-gen-persistence21.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-orig-ejbjar31.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-orig-connector10.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-gen-beans10.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-absent-module.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-gen-webapp30-1.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-gen-beans11.xml
+shrinkwrap-descriptors-parent-2.0.0-alpha-8/test/src/test/resources/test-gen-connector16.xml
+
+codex
+The tagged repository has no `api-base/src/test` directory, while Maven Central’s parent `source-release.zip` for `2.0.0-alpha-8` contains the project test suite under `test/src/test` and related module tests. I’m going to use the artifact `-sources.jar` and `-javadoc.jar`, the parent source release for tests, and the canonical GitHub repository root.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json
+diff --git a/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json b/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json
+index 6c46f893a45a5f8ebbabcc1d4dff447f25bc7ad3..c2146fb98920db617916e30cc74803146eb480c8
+--- a/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json
++++ b/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0-alpha-8"
++  "coordinates" : "org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0-alpha-8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-sources.jar",
++  "repository-url" : "https://github.com/shrinkwrap/descriptors",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-parent/2.0.0-alpha-8/shrinkwrap-descriptors-parent-2.0.0-alpha-8-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-javadoc.jar",
++  "description" : "ShrinkWrap Descriptors API Base provides the core client-facing interfaces and helper types for creating, importing, exporting, and mutating descriptor models. It supplies common descriptor contracts, namespace handling, and Java SE manifest descriptor APIs used by the broader ShrinkWrap Descriptors project."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json b/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json
+index 6c46f893a45a5f8ebbabcc1d4dff447f25bc7ad3..c2146fb98920db617916e30cc74803146eb480c8
+--- a/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json
++++ b/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0-alpha-8"
++  "coordinates" : "org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0-alpha-8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-sources.jar",
++  "repository-url" : "https://github.com/shrinkwrap/descriptors",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-parent/2.0.0-alpha-8/shrinkwrap-descriptors-parent-2.0.0-alpha-8-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-javadoc.jar",
++  "description" : "ShrinkWrap Descriptors API Base provides the core client-facing interfaces and helper types for creating, importing, exporting, and mutating descriptor models. It supplies common descriptor contracts, namespace handling, and Java SE manifest descriptor APIs used by the broader ShrinkWrap Descriptors project."
+ }
+
+web search: 
+web search: https://github.com/shrinkwrap/descriptors/tree/2.0.0-alpha-8
+web search: 
+web search: repo.maven.apache.org maven2 org jboss shrinkwrap descriptors shrinkwrap-descriptors-api-base 2.0.0-alpha-8 sources javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/org.jboss.shrinkwrap.descriptors/shrinkwrap-descriptors-api-base
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 0ms:
+{
+  "coordinates": "org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0-alpha-8",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-sources.jar",
+  "repository-url": "https://github.com/shrinkwrap/descriptors",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-parent/2.0.0-alpha-8/shrinkwrap-descriptors-parent-2.0.0-alpha-8-source-release.zip",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-javadoc.jar",
+  "description": "ShrinkWrap Descriptors API Base provides the core client-facing interfaces and helper types for creating, importing, exporting, and mutating descriptor models. It supplies common descriptor contracts, namespace handling, and Java SE manifest descriptor APIs used by the broader ShrinkWrap Descriptors project."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-parent/2.0.0-alpha-8/shrinkwrap-descriptors-parent-2.0.0-alpha-8-source-release.zip \\
+  https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-javadoc.jar \\
+  https://github.com/shrinkwrap/descriptors; do curl -fsSIL \""'$url" | sed -n '"'1p'; done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+diff --git a/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json b/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json
+index 6c46f893a45a5f8ebbabcc1d4dff447f25bc7ad3..c2146fb98920db617916e30cc74803146eb480c8
+--- a/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json
++++ b/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0-alpha-8"
++  "coordinates" : "org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0-alpha-8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-sources.jar",
++  "repository-url" : "https://github.com/shrinkwrap/descriptors",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-parent/2.0.0-alpha-8/shrinkwrap-descriptors-parent-2.0.0-alpha-8-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-javadoc.jar",
++  "description" : "ShrinkWrap Descriptors API Base provides the core client-facing interfaces and helper types for creating, importing, exporting, and mutating descriptor models. It supplies common descriptor contracts, namespace handling, and Java SE manifest descriptor APIs used by the broader ShrinkWrap Descriptors project."
+ }
+
+ succeeded in 1039ms:
+HTTP/2 200 
+HTTP/2 200 
+HTTP/2 200 
+
+codex
+The JSON parses cleanly, and each selected URL responds with HTTP 200. I’m checking status now because the file lives under `build/`, which may be ignored by Git even though it was updated in place as requested.
+exec
+/usr/bin/bash -lc 'git ls-files --error-unmatch build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json 2>/dev/null || true' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0-alpha-8",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-sources.jar",
+  "repository-url" : "https://github.com/shrinkwrap/descriptors",
+  "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-parent/2.0.0-alpha-8/shrinkwrap-descriptors-parent-2.0.0-alpha-8-source-release.zip",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-javadoc.jar",
+  "description" : "ShrinkWrap Descriptors API Base provides the core client-facing interfaces and helper types for creating, importing, exporting, and mutating descriptor models. It supplies common descriptor contracts, namespace handling, and Java SE manifest descriptor APIs used by the broader ShrinkWrap Descriptors project."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json b/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json
+index 6c46f893a45a5f8ebbabcc1d4dff447f25bc7ad3..c2146fb98920db617916e30cc74803146eb480c8
+--- a/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json
++++ b/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0-alpha-8"
++  "coordinates" : "org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0-alpha-8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-sources.jar",
++  "repository-url" : "https://github.com/shrinkwrap/descriptors",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-parent/2.0.0-alpha-8/shrinkwrap-descriptors-parent-2.0.0-alpha-8-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-javadoc.jar",
++  "description" : "ShrinkWrap Descriptors API Base provides the core client-facing interfaces and helper types for creating, importing, exporting, and mutating descriptor models. It supplies common descriptor contracts, namespace handling, and Java SE manifest descriptor APIs used by the broader ShrinkWrap Descriptors project."
+ }
+
+web search: 
+web search: https://github.com/shrinkwrap/descriptors/tree/2.0.0-alpha-8
+web search: 
+web search: "shrinkwrap-descriptors-api-base-2.0.0-alpha-8-sources.jar"
+web search: 
+web search: https://jarcasting.com/artifacts/org.jboss.shrinkwrap.descriptors/shrinkwrap-descriptors-api-base/
+web search: 
+web search: https://repo1.maven.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0/
+web search: 
+web search: https://jarcasting.com/artifacts/org.jboss.shrinkwrap.descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/
+web search: 
+web search: "shrinkwrap-descriptors-parent-2.0.0-alpha-8-source-release.zip" "repo1.maven.org"
+codex
+Updated [the discovered metadata JSON](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json).
+
+I used the exact Maven `2.0.0-alpha-8` source and javadoc artifacts, the Maven parent source-release ZIP for test sources, and the canonical `shrinkwrap/descriptors` repository root. I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library. ([jarcasting.com](https://jarcasting.com/artifacts/org.jboss.shrinkwrap.descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/))
+
+Validation: `jq` parsed the JSON successfully, and the selected URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json b/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json
+index 6c46f893a45a5f8ebbabcc1d4dff447f25bc7ad3..c2146fb98920db617916e30cc74803146eb480c8
+--- a/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json
++++ b/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0-alpha-8"
++  "coordinates" : "org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0-alpha-8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-sources.jar",
++  "repository-url" : "https://github.com/shrinkwrap/descriptors",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-parent/2.0.0-alpha-8/shrinkwrap-descriptors-parent-2.0.0-alpha-8-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8-javadoc.jar",
++  "description" : "ShrinkWrap Descriptors API Base provides the core client-facing interfaces and helper types for creating, importing, exporting, and mutating descriptor models. It supplies common descriptor contracts, namespace handling, and Java SE manifest descriptor APIs used by the broader ShrinkWrap Descriptors project."
+ }
+
+2026-04-30T15:55:42.206175Z ERROR codex_core::session: failed to record rollout items: thread 019ddf18-459b-73b3-9ef2-3211f4763feb not found
+tokens used
+105,709
+Updated [the discovered metadata JSON](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba/build/discovered-artifact-metadata/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.json).
+
+I used the exact Maven `2.0.0-alpha-8` source and javadoc artifacts, the Maven parent source-release ZIP for test sources, and the canonical `shrinkwrap/descriptors` repository root. I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library. ([jarcasting.com](https://jarcasting.com/artifacts/org.jboss.shrinkwrap.descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/))
+
+Validation: `jq` parsed the JSON successfully, and the selected URLs returned HTTP 200.
+Ran agent for org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0-alpha-8 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba/build/agent-artifact-discovery-logs/org.jboss.shrinkwrap.descriptors-shrinkwrap-descriptors-api-base-2.0.0-alpha-8.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3761-2648e0ba/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 19s
+9 actionable tasks: 4 executed, 5 from cache
