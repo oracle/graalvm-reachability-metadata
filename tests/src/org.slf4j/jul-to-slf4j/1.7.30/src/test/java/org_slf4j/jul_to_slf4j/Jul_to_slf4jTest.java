@@ -93,6 +93,44 @@ public class Jul_to_slf4jTest {
     }
 
     @Test
+    void bridgeHandlerForwardsRecordsLoggedThroughJulApi() {
+        ConcurrentLinkedQueue<SubstituteLoggingEvent> capturedEvents = new ConcurrentLinkedQueue<>();
+        SubstituteLogger logger = new SubstituteLogger("jul.pipeline.slf4j.logger", capturedEvents, false);
+        FixedLoggerBridgeHandler handler = new FixedLoggerBridgeHandler(logger);
+        java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger("jul.pipeline.source.logger");
+        Handler[] originalLoggerHandlers = julLogger.getHandlers();
+        boolean originalUseParentHandlers = julLogger.getUseParentHandlers();
+        Level originalLevel = julLogger.getLevel();
+
+        try {
+            for (Handler originalLoggerHandler : originalLoggerHandlers) {
+                julLogger.removeHandler(originalLoggerHandler);
+            }
+            julLogger.addHandler(handler);
+            julLogger.setUseParentHandlers(false);
+            julLogger.setLevel(Level.ALL);
+
+            julLogger.info("message sent through the JUL logger API");
+        } finally {
+            for (Handler loggerHandler : julLogger.getHandlers()) {
+                julLogger.removeHandler(loggerHandler);
+            }
+            for (Handler originalLoggerHandler : originalLoggerHandlers) {
+                julLogger.addHandler(originalLoggerHandler);
+            }
+            julLogger.setUseParentHandlers(originalUseParentHandlers);
+            julLogger.setLevel(originalLevel);
+        }
+
+        assertThat(capturedEvents).hasSize(1);
+        SubstituteLoggingEvent event = capturedEvents.iterator().next();
+        assertThat(event.getLoggerName()).isEqualTo("jul.pipeline.slf4j.logger");
+        assertThat(event.getLevel()).isEqualTo(INFO);
+        assertThat(event.getMessage()).isEqualTo("message sent through the JUL logger API");
+        assertThat(event.getThrowable()).isNull();
+    }
+
+    @Test
     void publishMapsJulLevelsAndMessageFormattingToPlainSlf4jLogger() {
         ConcurrentLinkedQueue<SubstituteLoggingEvent> capturedEvents = new ConcurrentLinkedQueue<>();
         SubstituteLogger logger = new SubstituteLogger("plain.slf4j.logger", capturedEvents, false);
@@ -129,7 +167,7 @@ public class Jul_to_slf4jTest {
         missingResourceRecord.setResourceBundle(fallbackLocalizationBundle());
         LogRecord invalidPatternRecord = logRecord(Level.INFO, "invalid.pattern", null);
         invalidPatternRecord.setResourceBundle(fallbackLocalizationBundle());
-        invalidPatternRecord.setParameters(new Object[] { "ignored" });
+        invalidPatternRecord.setParameters(new Object[] {"ignored"});
 
         handler.publish(missingResourceRecord);
         handler.publish(invalidPatternRecord);
