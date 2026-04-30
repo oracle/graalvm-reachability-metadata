@@ -231,6 +231,52 @@ public class Slf4j_jboss_logmanagerTest {
     }
 
     @Test
+    void loggedRecordsCaptureSlf4jMdcContext() {
+        String loggerName = Slf4j_jboss_logmanagerTest.class.getName() + ".mdcRecords";
+        org.jboss.logmanager.Logger jbossLogger = LogContext.getLogContext().getLogger(loggerName);
+        CapturingHandler handler = new CapturingHandler();
+        Map<String, String> originalContext = MDC.getCopyOfContextMap();
+        try {
+            MDC.clear();
+            org.jboss.logmanager.MDC.clear();
+            try (LoggerScope scope = new LoggerScope(jbossLogger, handler, org.jboss.logmanager.Level.INFO)) {
+                Logger logger = LoggerFactory.getLogger(loggerName);
+
+                MDC.put("requestId", "req-42");
+                MDC.put("tenant", "green");
+                logger.info("processing {}", "invoice");
+
+                assertThat(handler.records()).hasSize(1);
+                ExtLogRecord firstRecord = handler.extRecord(0);
+                firstRecord.copyMdc();
+                assertThat(firstRecord.getMdc("requestId")).isEqualTo("req-42");
+                assertThat(firstRecord.getMdc("tenant")).isEqualTo("green");
+                assertThat(firstRecord.getMdcCopy()).containsOnly(
+                        Map.entry("requestId", "req-42"),
+                        Map.entry("tenant", "green")
+                );
+
+                MDC.put("requestId", "req-43");
+                MDC.remove("tenant");
+                logger.info("processed invoice");
+
+                assertThat(handler.records()).hasSize(2);
+                ExtLogRecord secondRecord = handler.extRecord(1);
+                secondRecord.copyMdc();
+                assertThat(secondRecord.getMdc("requestId")).isEqualTo("req-43");
+                assertThat(secondRecord.getMdc("tenant")).isNull();
+                assertThat(secondRecord.getMdcCopy()).containsOnly(Map.entry("requestId", "req-43"));
+            }
+        } finally {
+            MDC.clear();
+            org.jboss.logmanager.MDC.clear();
+            if (originalContext != null) {
+                MDC.setContextMap(originalContext);
+            }
+        }
+    }
+
+    @Test
     void markerLoggingOverloadsIgnoreMarkersAndReachJbossLogManager() {
         String loggerName = Slf4j_jboss_logmanagerTest.class.getName() + ".markerLogging";
         org.jboss.logmanager.Logger jbossLogger = LogContext.getLogContext().getLogger(loggerName);
