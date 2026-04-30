@@ -27,9 +27,6 @@ At a glance:
             (only if any run accepted)
                       |
                       v
-       (optional) verifyExactReachabilityMetadata
-                      |
-                      v
         result = status + output_dir + failure
                       |
                       v
@@ -110,12 +107,6 @@ if len(run_dirs) > 0:
     ./gradlew mergeNativeTraceMetadata \
         -PinputDirs=<run_dirs joined by ','> \
         -PoutputDir=<output_dir>
-
-if verify and len(run_dirs) > 0:
-    ./gradlew verifyExactReachabilityMetadata \
-        -Pcoordinates=<g:a:v> \
-        -PmetadataConfigDirs=<output_dir> \
-        -PconditionPackages=<group>
 ```
 
 The phase does **not** accept a list of run arguments — the test binary is
@@ -197,18 +188,14 @@ flowchart TD
     Budget -- no --> Cap[Budget exhausted]
     Cap --> FinalMerge
     Converged --> FinalMerge[**Single** gradlew mergeNativeTraceMetadata<br/>-PinputDirs=run-0,...,run-N<br/>-PoutputDir=output_dir]
-    FinalMerge --> Verify[Optional: gradlew verifyExactReachabilityMetadata<br/>-PmetadataConfigDirs=output_dir<br/>-PconditionPackages=&lt;packages&gt;]
-    Verify --> VerOK{task ok?}
-    VerOK -- yes --> Done([return SUCCESS<br/>or BUDGET_EXHAUSTED])
-    VerOK -- no --> Soft([return SUCCESS_UNVERIFIED])
+    FinalMerge --> Done([return SUCCESS<br/>or BUDGET_EXHAUSTED])
 ```
 
 Per-iteration semantics:
 
 - All toolchain steps go through Gradle. The phase invokes `./gradlew
-  nativeTraceImage`, `./gradlew runNativeTraceImage`, `./gradlew
-  mergeNativeTraceMetadata`, and (optionally) `./gradlew
-  verifyExactReachabilityMetadata`. No direct call to `native-image` or
+  nativeTraceImage`, `./gradlew runNativeTraceImage`, and `./gradlew
+  mergeNativeTraceMetadata`. No direct call to `native-image` or
   `native-image-utils` ever appears in the phase implementation.
 - The image is **rebuilt every iteration** with all prior raw
   `metadata-run-<i>` directories passed through
@@ -237,10 +224,9 @@ Status enumeration:
 
 | Status | Meaning | Caller action |
 | --- | --- | --- |
-| `SUCCESS` | The phase converged (no new metadata in the last iteration) and (when `verify=True`) the `--exact-reachability-metadata` build succeeded. | Pass the output directory to codex fixup as additional read-only context. |
-| `SUCCESS_UNVERIFIED` | The phase converged but the verifier build failed. | Pass output directory + verifier output to codex fixup. |
+| `SUCCESS` | The phase converged (no new metadata in the last iteration) and the final merge succeeded. | Pass the output directory to codex fixup as additional read-only context. |
 | `BUDGET_EXHAUSTED` | `max-trace-iterations` reached before convergence; the final merge still ran on whatever was collected. | Pass the partial output directory to codex fixup, plus a note that the budget was exhausted. |
-| `BUILD_FAILED` | The trace image build failed in some iteration. The merge ran on prior accepted traces (if any); the output directory may be empty or partial. | Pass whatever was merged plus the failure diagnostics to codex fixup — see §9. The build failure may be a non-metadata problem that codex must resolve. |
+| `BUILD_FAILED` | The trace image build failed in some iteration, **or** the final `mergeNativeTraceMetadata` invocation failed. The output directory may be empty or partial. | Pass whatever was merged plus the failure diagnostics to codex fixup — see §9. |
 
 **Every status routes through codex fixup.** Failure of the exploration
 phase is no longer a reason to skip codex. Instead, the failure
@@ -265,7 +251,6 @@ def run_native_metadata_exploration(
     output_dir: str,                          # absolute; caller-chosen, see §4
     condition_packages: list[str] | None = None,
     max_iterations: int = 5,
-    verify: bool = True,
 ) -> NativeExplorationResult: ...
 ```
 
@@ -279,14 +264,13 @@ clobbering.
 - the absolute path to the output directory (echoes the caller's input),
 - the absolute path to the per-iteration runs directory (`runs/`),
 - the per-iteration build/run log paths,
-- the verifier output (if `verify=True`),
 - the iteration count actually used,
 - **`failure`** — populated whenever the status is not `SUCCESS`. Carries:
   - `failed_task` — the Gradle task name that triggered the status
-    (`nativeTraceImage`, `runNativeTraceImage`,
-    `mergeNativeTraceMetadata`, or `verifyExactReachabilityMetadata`),
+    (`nativeTraceImage`, `runNativeTraceImage`, or
+    `mergeNativeTraceMetadata`),
   - `failed_iteration` — the iteration index when applicable, or `None`
-    for merge / verifier failures,
+    for merge failures,
   - `failure_log_path` — absolute path to the persisted Gradle output for
     the failing task,
   - `failure_summary` — short string extracted from the log (first failed
@@ -383,38 +367,11 @@ Behavior:
 
 - The task fails the phase with a non-`SUCCESS` status only if the merge
   itself fails (the existing status enum does not currently distinguish
-  this; an implementation note: treat a merge failure as
-  `SUCCESS_UNVERIFIED` and surface the task output in the result).
+  this; the loop maps a merge failure to `BUILD_FAILED` and surfaces the
+  task output in the result's `failure` block).
 - The task is the **only** point at which `native-image-utils` is invoked.
 
-### 7.4 `verifyExactReachabilityMetadata` (optional)
-
-Used by the trace loop when the caller passes `verify=True`, and by the
-[native test verification gate](native-test-verification.md) on every
-verification cycle (chained with `nativeTest` in a single Gradle
-invocation).
-
-| Property | Required | Meaning |
-| --- | --- | --- |
-| `-Pcoordinates=<group:artifact:version>` | yes | Same coordinates. |
-| `-PmetadataConfigDirs=<absolute path>` | yes | Typically the phase's output directory. |
-| `-PconditionPackages=<pkg1,pkg2,...>` | yes | Routed to the missing-metadata condition prefix; scopes which package prefixes the strict check applies to. |
-
-Build-flag behavior:
-
-- Adds `--exact-reachability-metadata` (no value — the flag is scoped
-  globally; the supplied packages reach the binary via the
-  condition-prefix mechanism, not as the value of
-  `--exact-reachability-metadata`).
-- Adds `-H:MissingRegistrationReportingMode=Exit` so the resulting
-  binary exits with `ExitStatus.MISSING_METADATA` (172) on missing
-  metadata instead of throwing. The verification gate relies on this
-  exit code to distinguish metadata gaps from other test failures.
-
-A failing verifier task downgrades the phase status from `SUCCESS` to
-`SUCCESS_UNVERIFIED`.
-
-### 7.5 General requirements
+### 7.4 General requirements
 
 - `gh` / `gradle` toolchain configuration (GraalVM home, Java home, native
   image binary, `native-image-utils` location) is the reachability repo's
@@ -537,11 +494,9 @@ that the post-iteration `./gradlew test` already passed, in which case
 flowchart LR
     Explore[run_native_metadata_exploration] --> Status{status}
     Status -- "SUCCESS" --> CodexCtx[codex fixup with output_dir as context]
-    Status -- "SUCCESS_UNVERIFIED" --> CodexCtx2[codex fixup with output_dir + verifier_output]
     Status -- "BUDGET_EXHAUSTED" --> CodexCtx3[codex fixup with partial output_dir + budget note]
     Status -- "BUILD_FAILED" --> CodexFail[codex fixup with partial output_dir + failure diagnostics<br/>see §9.2]
     CodexCtx --> PiFall[Pi fall-through if tests still fail]
-    CodexCtx2 --> PiFall
     CodexCtx3 --> PiFall
     CodexFail --> PiFall
     PiFall --> Result[InterventionResult: passed / passed_with_intervention / failed]
@@ -580,18 +535,15 @@ A `run_native_metadata_exploration(...)` invocation is correct iff:
    terminated** — a later `BUILD_FAILED` does not discard earlier
    successful traces. The merge is skipped only when no iteration
    produced new metadata, in which case `<output_dir>` is left empty.
-9. When `verify=True` and the merge ran, `./gradlew
-   verifyExactReachabilityMetadata` is invoked exactly once. Its result
-   determines whether the phase returns `SUCCESS` or `SUCCESS_UNVERIFIED`.
-10. On any non-`SUCCESS` status, the result's `failure` field is
-    populated with `failed_task`, `failed_iteration` (when applicable),
-    `failure_log_path` (an absolute path to a persisted Gradle log), and
-    a short `failure_summary`. This information is the sole contract for
-    callers handing the failure off to codex fixup (§9).
-11. The function returns the status enum, the absolute output directory,
+9. On any non-`SUCCESS` status, the result's `failure` field is
+   populated with `failed_task`, `failed_iteration` (when applicable),
+   `failure_log_path` (an absolute path to a persisted Gradle log), and
+   a short `failure_summary`. This information is the sole contract for
+   callers handing the failure off to codex fixup (§9).
+10. The function returns the status enum, the absolute output directory,
     the absolute per-run directory, and (on failure) the diagnostic
     fields described in §6 and §9.
-12. No code path inside the loop shells out to codex fixup, the agent,
+11. No code path inside the loop shells out to codex fixup, the agent,
     or any LLM. The loop is purely deterministic. Routing the result to
     codex (and the Pi fall-through) is the responsibility of the
     `native_trace_collect` intervention that wraps it.

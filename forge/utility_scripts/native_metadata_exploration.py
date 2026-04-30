@@ -31,7 +31,6 @@ from utility_scripts.task_logs import (
 
 
 STATUS_SUCCESS = "SUCCESS"
-STATUS_SUCCESS_UNVERIFIED = "SUCCESS_UNVERIFIED"
 STATUS_BUDGET_EXHAUSTED = "BUDGET_EXHAUSTED"
 STATUS_BUILD_FAILED = "BUILD_FAILED"
 
@@ -61,7 +60,6 @@ class NativeExplorationResult:
     build_log_paths: list[str] = field(default_factory=list)
     run_log_paths: list[str] = field(default_factory=list)
     merge_log_path: str | None = None
-    verifier_log_path: str | None = None
     failure: NativeExplorationFailure | None = None
 
 
@@ -71,7 +69,6 @@ def run_native_metadata_exploration(
         output_dir: str,
         condition_packages: list[str] | None = None,
         max_iterations: int = 5,
-        verify: bool = True,
 ) -> NativeExplorationResult:
     """Run the iterative trace loop for ``coordinate``.
 
@@ -183,38 +180,13 @@ def run_native_metadata_exploration(
                 _TRACE_STAGE,
                 f"mergeNativeTraceMetadata failed; see {display_log_path(merge_log_path)}",
             )
-            # A merge failure downgrades a SUCCESS / BUDGET_EXHAUSTED to
-            # SUCCESS_UNVERIFIED so callers still get whatever the merge
-            # wrote, plus the failure diagnostics.
-            terminal_status = STATUS_SUCCESS_UNVERIFIED
+            terminal_status = STATUS_BUILD_FAILED
             failure = NativeExplorationFailure(
                 failed_task="mergeNativeTraceMetadata",
                 failed_iteration=None,
                 failure_log_path=merge_log_path,
                 failure_summary=_extract_failure_summary(merge_log_path),
             )
-
-    # Optional exact-metadata verification.
-    verifier_log_path: str | None = None
-    if verify and run_dirs and terminal_status in {STATUS_SUCCESS, STATUS_BUDGET_EXHAUSTED}:
-        verify_cmd = [
-            "./gradlew",
-            "verifyExactReachabilityMetadata",
-            f"-Pcoordinates={coordinate}",
-            f"-PmetadataConfigDirs={output_dir}",
-            f"-PconditionPackages={condition_packages_arg}",
-        ]
-        verifier_log_path = _new_log_path(coordinate, "verify")
-        verify_rc = _run_gradle(verify_cmd, reachability_repo_path, verifier_log_path)
-        if verify_rc != 0:
-            terminal_status = STATUS_SUCCESS_UNVERIFIED
-            if failure is None:
-                failure = NativeExplorationFailure(
-                    failed_task="verifyExactReachabilityMetadata",
-                    failed_iteration=None,
-                    failure_log_path=verifier_log_path,
-                    failure_summary=_extract_failure_summary(verifier_log_path),
-                )
 
     log_stage(
         _TRACE_STAGE,
@@ -230,7 +202,6 @@ def run_native_metadata_exploration(
         build_log_paths=build_log_paths,
         run_log_paths=run_log_paths,
         merge_log_path=merge_log_path,
-        verifier_log_path=verifier_log_path,
         failure=failure,
     )
 

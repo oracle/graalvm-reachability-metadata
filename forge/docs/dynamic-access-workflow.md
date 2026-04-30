@@ -315,7 +315,7 @@ support iff **all** of the following hold at exit:
    followed by a commit) returns success. In `_finalize_successful_iteration`,
    `run_native_metadata_exploration(...)` runs **before** any codex fixup; the
    fixup is invoked only when exploration returns `SUCCESS` or
-   `SUCCESS_UNVERIFIED`.
+   `BUDGET_EXHAUSTED`.
 3. After every per-class iteration that committed a coverage gain
    (Resolved or PartialCommit), the
    [native test verification gate](native-test-verification.md) was

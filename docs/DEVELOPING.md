@@ -236,15 +236,6 @@ Rebuild with merged metadata for another tracing iteration:
   -PmetadataConfigDirs=<absolute-merged-metadata-dir>
 ```
 
-Verify exact reachability metadata for a package prefix:
-
-```console
-./gradlew verifyExactReachabilityMetadata \
-  -Pcoordinates=<group:artifact:version> \
-  -PmetadataConfigDirs=<absolute-metadata-dir-0>,<absolute-metadata-dir-1>,... \
-  -PconditionPackages=<package_prefix1,package_prefix2,...>
-```
-
 ### Splitting test-only metadata
 
 Moves test-only entries from library `reachability-metadata.json` in `metadata/`, into the corresponding test resources metadata file.
@@ -319,7 +310,6 @@ These tasks support the scheduled workflow that checks newer upstream library ve
 - Build trace-enabled native image: `./gradlew nativeTraceImage -Pcoordinates=group:artifact:version`
 - Run trace-enabled native image: `./gradlew runNativeTraceImage -Pcoordinates=group:artifact:version -PtraceMetadataPath=<absolute-trace-output-dir> -PtraceMetadataConditionPackages=<package1,package2,...>`
 - Merge native trace metadata: `./gradlew mergeNativeTraceMetadata -PinputDirs=<absolute-trace-output-dir-0>,<absolute-trace-output-dir-1>,... -PoutputDir=<absolute-merged-metadata-dir>`
-- Verify exact reachability metadata: `./gradlew verifyExactReachabilityMetadata -Pcoordinates=group:artifact:version -PmetadataConfigDirs=<absolute-metadata-dir-0>,<absolute-metadata-dir-1>,... -PconditionPackages=<package_prefix1,package_prefix2,...>`
 - Split test-only metadata: `./gradlew splitTestOnlyMetadata -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]`
 - Fix test that fails Native Image run for new library version: `./gradlew fixTestNativeImageRun -PtestLibraryCoordinates=group:artifact:version -PnewLibraryVersion=version`
 - Test (single lib): `./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]`

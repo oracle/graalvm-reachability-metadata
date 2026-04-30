@@ -213,7 +213,7 @@ flowchart LR
     Status -- "SUCCESS" --> Verify[Re-run nativeTest]
     Verify -- pass --> Done([fixed without LLM])
     Verify -- fail --> Codex[run_codex_metadata_fix<br/>with output_dir + result.failure]
-    Status -- "SUCCESS_UNVERIFIED / BUDGET_EXHAUSTED" --> Codex
+    Status -- "BUDGET_EXHAUSTED" --> Codex
     Status -- "BUILD_FAILED" --> Codex
     Codex -- still fails --> Agent[Hand off to agent with raw nativeTest output]
 ```
