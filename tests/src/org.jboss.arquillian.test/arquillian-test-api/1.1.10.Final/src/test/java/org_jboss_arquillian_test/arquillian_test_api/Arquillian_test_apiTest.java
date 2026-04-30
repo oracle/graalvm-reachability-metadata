@@ -78,6 +78,15 @@ public class Arquillian_test_apiTest {
     }
 
     @Test
+    void lambdaCallbackParametersCanDeclareArquillianResources() {
+        ResourceUriFormatter formatter = (@ArquillianResource(URI.class) URI resourceUri) -> resourceUri.getScheme()
+                + ":" + resourceUri.getSchemeSpecificPart();
+        URI resourceUri = URI.create("urn:arquillian:deployment");
+
+        assertThat(formatter.format(resourceUri)).isEqualTo("urn:arquillian:deployment");
+    }
+
+    @Test
     void annotationContractAllowsRuntimeLookupOnFieldsAndParametersOnly() {
         Retention retention = ArquillianResource.class.getAnnotation(Retention.class);
         Target target = ArquillianResource.class.getAnnotation(Target.class);
@@ -129,6 +138,11 @@ public class Arquillian_test_apiTest {
     private static ArquillianResource annotationOnField(String fieldName) throws Exception {
         Field field = ResourceConsumer.class.getDeclaredField(fieldName);
         return field.getAnnotation(ArquillianResource.class);
+    }
+
+    @FunctionalInterface
+    private interface ResourceUriFormatter {
+        String format(URI resourceUri);
     }
 
     private static final class ResourceConsumer {
