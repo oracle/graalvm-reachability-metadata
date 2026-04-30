@@ -112,7 +112,15 @@ final class Memory {
     private Memory() {
     }
 
+    public static long peekLong(long address, boolean swap) {
+        throw unsupported();
+    }
+
     public static long peekLong(int address, boolean swap) {
+        throw unsupported();
+    }
+
+    public static void pokeLong(long address, long value, boolean swap) {
         throw unsupported();
     }
 
@@ -120,7 +128,15 @@ final class Memory {
         throw unsupported();
     }
 
+    public static void pokeInt(long address, int value, boolean swap) {
+        throw unsupported();
+    }
+
     public static void pokeInt(int address, int value, boolean swap) {
+        throw unsupported();
+    }
+
+    public static int peekInt(long address, boolean swap) {
         throw unsupported();
     }
 
@@ -128,7 +144,15 @@ final class Memory {
         throw unsupported();
     }
 
+    public static void pokeByte(long address, byte value) {
+        throw unsupported();
+    }
+
     public static void pokeByte(int address, byte value) {
+        throw unsupported();
+    }
+
+    public static byte peekByte(long address) {
         throw unsupported();
     }
 
@@ -136,7 +160,15 @@ final class Memory {
         throw unsupported();
     }
 
+    public static void pokeByteArray(long address, byte[] bytes, int offset, int count) {
+        throw unsupported();
+    }
+
     public static void pokeByteArray(int address, byte[] bytes, int offset, int count) {
+        throw unsupported();
+    }
+
+    public static void peekByteArray(long address, byte[] bytes, int offset, int count) {
         throw unsupported();
     }
 
