@@ -18,6 +18,7 @@ import org.eclipse.jetty.io.ByteArrayEndPoint;
 import org.eclipse.jetty.io.EndPoint;
 import org.eclipse.jetty.io.ssl.ALPNProcessor;
 import org.eclipse.jetty.io.ssl.SslConnection;
+import org.eclipse.jetty.io.ssl.SslHandshakeListener;
 import org.eclipse.jetty.server.AbstractConnectionFactory;
 import org.eclipse.jetty.server.ConnectionFactory;
 import org.eclipse.jetty.server.Connector;
@@ -117,11 +118,30 @@ public class Jetty_alpn_java_serverTest {
         assertThat(rejectingH2Factory.seenCipherSuite).isNotBlank();
     }
 
+    @Test
+    void handshakeSucceededFallsBackToDefaultProtocolWhenNoProtocolWasNegotiated() throws Exception {
+        JDK9ServerALPNProcessor processor = new JDK9ServerALPNProcessor();
+        ALPNTestContext context = newALPNTestContext(new HttpConnectionFactory());
+        processor.configure(context.sslEngine, context.alpnConnection);
+
+        SslHandshakeListener listener = handshakeListener(context);
+        listener.handshakeSucceeded(new SslHandshakeListener.Event(context.sslEngine));
+
+        assertThat(context.alpnConnection.getProtocol()).isEqualTo(DEFAULT_PROTOCOL);
+    }
+
     private static String select(ALPNTestContext context, List<String> clientProtocols) {
         BiFunction<SSLEngine, List<String>, String> selector =
                 context.sslEngine.getHandshakeApplicationProtocolSelector();
         assertThat(selector).isNotNull();
         return selector.apply(context.sslEngine, clientProtocols);
+    }
+
+    private static SslHandshakeListener handshakeListener(ALPNTestContext context) {
+        BiFunction<SSLEngine, List<String>, String> selector =
+                context.sslEngine.getHandshakeApplicationProtocolSelector();
+        assertThat(selector).isInstanceOf(SslHandshakeListener.class);
+        return (SslHandshakeListener) selector;
     }
 
     private static ALPNTestContext newALPNTestContext(ConnectionFactory... connectionFactories) throws Exception {
