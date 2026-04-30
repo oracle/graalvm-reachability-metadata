@@ -14,10 +14,10 @@ import org.junit.jupiter.api.Test;
 public class I18nTest {
     @Test
     void formatsKnownErrorMessagesFromTheResourceBundle() {
-        String message = I18n.err(I18n.ERR_00001_BAD_TRANSITION_FROM_STATE, "START", "0x30");
+        String message = I18n.err(I18n.ERR_01200_BAD_TRANSITION_FROM_STATE, "START", "0x30");
 
         assertThat(message)
-                .startsWith("ERR_00001_BAD_TRANSITION_FROM_STATE ")
+                .startsWith("ERR_01200_BAD_TRANSITION_FROM_STATE ")
                 .contains("Bad transition from state START, tag 0x30");
     }
 
