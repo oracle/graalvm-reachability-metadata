@@ -94,14 +94,8 @@ public class UnsafeUtilTest {
     }
 
     public static class ConstructorProbe {
-        private final long address;
-        private final int size;
-        private final Object owner;
-
         public ConstructorProbe(long address, int size, Object owner) {
-            this.address = address;
-            this.size = size;
-            this.owner = owner;
+            throw new IllegalStateException("probe constructor should be wrapped by UnsafeUtil");
         }
     }
 
