@@ -1,0 +1,1474 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ddbd7-d77c-7c52-b03d-0d4fa082ac31
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.conscrypt:conscrypt-openjdk-uber:1.4.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.4.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
+- Set "coordinates" to "org.conscrypt:conscrypt-openjdk-uber:1.4.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and upstream tags first, then patch the JSON in place with only the requested fields.
+exec
+/usr/bin/bash -lc "pwd && ls -la build/discovered-artifact-metadata && sed -n '1,200p' build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+total 12
+drwxrwxr-x 2 vjovanov vjovanov 4096 Apr 30 02:44 .
+drwxrwxr-x 4 vjovanov vjovanov 4096 Apr 30 02:44 ..
+-rw-rw-r-- 1 vjovanov vjovanov   67 Apr 30 02:44 org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
+{
+  "coordinates" : "org.conscrypt:conscrypt-openjdk-uber:1.4.0"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "conscrypt-openjdk-uber|org.conscrypt" -S .' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+ succeeded in 0ms:
+./metadata/io.netty/netty-common/4.1.80.Final/reachability-metadata.json:4785:      "type": "org.conscrypt.Conscrypt",
+./metadata/io.netty/netty-common/4.1.80.Final/reachability-metadata.json:4799:      "type": "org.conscrypt.ConscryptEngine",
+./metadata/io.netty/netty-common/4.1.80.Final/reachability-metadata.json:4840:      "type": "org.conscrypt.ConscryptEngine",
+./metadata/io.netty/netty-common/4.1.80.Final/reachability-metadata.json:4856:      "type": "org.conscrypt.ConscryptEngine",
+./metadata/io.netty/netty-common/4.1.80.Final/reachability-metadata.json:4889:      "type": "org.conscrypt.OpenSSLContextImpl$TLSv13",
+./metadata/io.netty/netty-common/4.1.115.Final/reachability-metadata.json:4840:      "type": "org.conscrypt.Conscrypt",
+./metadata/io.netty/netty-common/4.1.115.Final/reachability-metadata.json:4854:      "type": "org.conscrypt.ConscryptEngine",
+./metadata/io.netty/netty-common/4.1.115.Final/reachability-metadata.json:4895:      "type": "org.conscrypt.ConscryptEngine",
+./metadata/io.netty/netty-common/4.1.115.Final/reachability-metadata.json:4911:      "type": "org.conscrypt.ConscryptEngine",
+./metadata/io.netty/netty-common/4.1.115.Final/reachability-metadata.json:4944:      "type": "org.conscrypt.OpenSSLContextImpl$TLSv13",
+
+web search: 
+web search: Maven Central org.conscrypt conscrypt-openjdk-uber 1.4.0 sources tests javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/
+codex
+Maven Central has the 1.4.0 sources and javadoc artifacts, but I’m checking whether a test artifact exists and what tag name upstream used so the test and docs URLs are version-exact.
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"|\"language\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+ succeeded in 0ms:
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/5.3.31/spring-instrument-5.3.31-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/5.3.31/spring-instrument-5.3.31-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-sources.jar",
+metadata/org.awaitility/awaitility/index.json:6:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-sources.jar",
+metadata/org.awaitility/awaitility/index.json:20:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-tests.jar",
+metadata/org.awaitility/awaitility/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-util/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.9/jetty-core/jetty-util/src/test",
+metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:20:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:21:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:7:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-client/index.json:8:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.1.5/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:24:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-client/index.json:25:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.0/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:62:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:63:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-client/index.json:64:    "test-code-url" : "https://github.com/eclipse/jetty.project/tree/jetty-11.0.12/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:65:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.1.3/jetty-core/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:26:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-server/index.json:27:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.1/jetty-core/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:28:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:55:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:56:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-server/index.json:57:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-11.0.12/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:58:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+metadata/javax.cache/cache-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/1.1.0/cache-api-1.1.0-sources.jar",
+metadata/javax.cache/cache-api/index.json:5:    "repository-url" : "https://github.com/jsr107/jsr107spec",
+metadata/javax.cache/cache-api/index.json:6:    "test-code-url" : "N/A",
+metadata/javax.cache/cache-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/1.1.0/cache-api-1.1.0-javadoc.jar",
+metadata/javax.cache/cache-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/1.1.1/cache-api-1.1.1-sources.jar",
+metadata/javax.cache/cache-api/index.json:20:    "repository-url" : "https://github.com/jsr107/jsr107spec",
+metadata/javax.cache/cache-api/index.json:21:    "test-code-url" : "N/A",
+metadata/javax.cache/cache-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/1.1.1/cache-api-1.1.1-javadoc.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/2.0.0.Final/jboss-interceptor-spi-2.0.0.Final-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:6:    "repository-url" : "https://github.com/jbossinterceptors/jbossinterceptors",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:8:    "documentation-url" : "N/A",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/google/conscrypt.git | rg '1\\.4\\.0|v1\\.4\\.0|refs/tags/1\\.4|refs/tags/v1\\.4'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+ succeeded in 177ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.conscrypt</groupId>
+  <artifactId>conscrypt-openjdk-uber</artifactId>
+  <version>1.4.0</version>
+  <name>org.conscrypt:conscrypt-openjdk-uber</name>
+  <description>Conscrypt: OpenJdk UberJAR</description>
+  <url>https://conscrypt.org/</url>
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>conscrypt</id>
+      <name>Conscrypt Contributors</name>
+      <email>conscrypt@googlegroups.com</email>
+      <url>https://conscrypt.org/</url>
+      <organization>Google, Inc.</organization>
+      <organizationUrl>https://www.google.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/google/conscrypt.git</connection>
+    <developerConnection>scm:git:git@github.com:google/conscrypt.git</developerConnection>
+    <url>https://github.com/google/conscrypt</url>
+  </scm>
+</project>
+
+ succeeded in 180ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/conscrypt/conscrypt-openjdk-uber/1.4.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/conscrypt/conscrypt-openjdk-uber/1.4.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="conscrypt-openjdk-uber-1.4.0-javadoc.jar" title="conscrypt-openjdk-uber-1.4.0-javadoc.jar">conscrypt-openjdk-uber-1.4.0-javadoc.jar</a>          2018-10-04 08:45       261      
+<a href="conscrypt-openjdk-uber-1.4.0-javadoc.jar.asc" title="conscrypt-openjdk-uber-1.4.0-javadoc.jar.asc">conscrypt-openjdk-uber-1.4.0-javadoc.jar.asc</a>      2018-10-04 08:45       821      
+<a href="conscrypt-openjdk-uber-1.4.0-javadoc.jar.asc.md5" title="conscrypt-openjdk-uber-1.4.0-javadoc.jar.asc.md5">conscrypt-openjdk-uber-1.4.0-javadoc.jar.asc....</a>  2018-10-04 08:45        32      
+<a href="conscrypt-openjdk-uber-1.4.0-javadoc.jar.asc.sha1" title="conscrypt-openjdk-uber-1.4.0-javadoc.jar.asc.sha1">conscrypt-openjdk-uber-1.4.0-javadoc.jar.asc....</a>  2018-10-04 08:45        40      
+<a href="conscrypt-openjdk-uber-1.4.0-javadoc.jar.md5" title="conscrypt-openjdk-uber-1.4.0-javadoc.jar.md5">conscrypt-openjdk-uber-1.4.0-javadoc.jar.md5</a>      2018-10-04 08:45        32      
+<a href="conscrypt-openjdk-uber-1.4.0-javadoc.jar.sha1" title="conscrypt-openjdk-uber-1.4.0-javadoc.jar.sha1">conscrypt-openjdk-uber-1.4.0-javadoc.jar.sha1</a>     2018-10-04 08:45        40      
+<a href="conscrypt-openjdk-uber-1.4.0-sources.jar" title="conscrypt-openjdk-uber-1.4.0-sources.jar">conscrypt-openjdk-uber-1.4.0-sources.jar</a>          2018-10-04 08:45    279961      
+<a href="conscrypt-openjdk-uber-1.4.0-sources.jar.asc" title="conscrypt-openjdk-uber-1.4.0-sources.jar.asc">conscrypt-openjdk-uber-1.4.0-sources.jar.asc</a>      2018-10-04 08:45       821      
+<a href="conscrypt-openjdk-uber-1.4.0-sources.jar.asc.md5" title="conscrypt-openjdk-uber-1.4.0-sources.jar.asc.md5">conscrypt-openjdk-uber-1.4.0-sources.jar.asc....</a>  2018-10-04 08:45        32      
+<a href="conscrypt-openjdk-uber-1.4.0-sources.jar.asc.sha1" title="conscrypt-openjdk-uber-1.4.0-sources.jar.asc.sha1">conscrypt-openjdk-uber-1.4.0-sources.jar.asc....</a>  2018-10-04 08:45        40      
+<a href="conscrypt-openjdk-uber-1.4.0-sources.jar.md5" title="conscrypt-openjdk-uber-1.4.0-sources.jar.md5">conscrypt-openjdk-uber-1.4.0-sources.jar.md5</a>      2018-10-04 08:45        32      
+<a href="conscrypt-openjdk-uber-1.4.0-sources.jar.sha1" title="conscrypt-openjdk-uber-1.4.0-sources.jar.sha1">conscrypt-openjdk-uber-1.4.0-sources.jar.sha1</a>     2018-10-04 08:45        40      
+<a href="conscrypt-openjdk-uber-1.4.0.jar" title="conscrypt-openjdk-uber-1.4.0.jar">conscrypt-openjdk-uber-1.4.0.jar</a>                  2018-10-04 08:45   4299729      
+<a href="conscrypt-openjdk-uber-1.4.0.jar.asc" title="conscrypt-openjdk-uber-1.4.0.jar.asc">conscrypt-openjdk-uber-1.4.0.jar.asc</a>              2018-10-04 08:45       821      
+<a href="conscrypt-openjdk-uber-1.4.0.jar.asc.md5" title="conscrypt-openjdk-uber-1.4.0.jar.asc.md5">conscrypt-openjdk-uber-1.4.0.jar.asc.md5</a>          2018-10-04 08:45        32      
+<a href="conscrypt-openjdk-uber-1.4.0.jar.asc.sha1" title="conscrypt-openjdk-uber-1.4.0.jar.asc.sha1">conscrypt-openjdk-uber-1.4.0.jar.asc.sha1</a>         2018-10-04 08:45        40      
+<a href="conscrypt-openjdk-uber-1.4.0.jar.md5" title="conscrypt-openjdk-uber-1.4.0.jar.md5">conscrypt-openjdk-uber-1.4.0.jar.md5</a>              2018-10-04 08:45        32      
+<a href="conscrypt-openjdk-uber-1.4.0.jar.sha1" title="conscrypt-openjdk-uber-1.4.0.jar.sha1">conscrypt-openjdk-uber-1.4.0.jar.sha1</a>             2018-10-04 08:45        40      
+<a href="conscrypt-openjdk-uber-1.4.0.pom" title="conscrypt-openjdk-uber-1.4.0.pom">conscrypt-openjdk-uber-1.4.0.pom</a>                  2018-10-04 08:45      1264      
+<a href="conscrypt-openjdk-uber-1.4.0.pom.asc" title="conscrypt-openjdk-uber-1.4.0.pom.asc">conscrypt-openjdk-uber-1.4.0.pom.asc</a>              2018-10-04 08:45       821      
+<a href="conscrypt-openjdk-uber-1.4.0.pom.asc.md5" title="conscrypt-openjdk-uber-1.4.0.pom.asc.md5">conscrypt-openjdk-uber-1.4.0.pom.asc.md5</a>          2018-10-04 08:45        32      
+<a href="conscrypt-openjdk-uber-1.4.0.pom.asc.sha1" title="conscrypt-openjdk-uber-1.4.0.pom.asc.sha1">conscrypt-openjdk-uber-1.4.0.pom.asc.sha1</a>         2018-10-04 08:45        40      
+<a href="conscrypt-openjdk-uber-1.4.0.pom.md5" title="conscrypt-openjdk-uber-1.4.0.pom.md5">conscrypt-openjdk-uber-1.4.0.pom.md5</a>              2018-10-04 08:45        32      
+<a href="conscrypt-openjdk-uber-1.4.0.pom.sha1" title="conscrypt-openjdk-uber-1.4.0.pom.sha1">conscrypt-openjdk-uber-1.4.0.pom.sha1</a>             2018-10-04 08:45        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 359ms:
+92e1c615894e86db75fd24acfdb8bd60c5a6579c	refs/tags/1.4.0
+cbeee807f2ec1388686e390cf0d97d5aa7c1f90e	refs/tags/1.4.0^{}
+9b7e908c4e3e17f75134b51682278765dfdaf877	refs/tags/1.4.1
+a534294c998dcf3be089bda4a540519d09400631	refs/tags/1.4.1^{}
+2d5e9c3291296722e62f393c3853683e9130692d	refs/tags/1.4.2
+cfeac3018004b9d3b0c96390051d7ea022f5e036	refs/tags/1.4.2^{}
+
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org org/conscrypt/conscrypt-openjdk-uber/1.4.0
+web search: 
+web search: github google conscrypt 1.4.0 README tests docs
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/google/conscrypt/git/trees/1.4.0?recursive=1 | rg '\"path\":' | rg '("'^|/)(src/test|test|tests)|README|CAPABILITIES|docs|site|javadoc'"' | head -200" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-sources.jar && curl -fsSL -I https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+ exited 22 in 201ms:
+HTTP/2 404 
+date: Thu, 30 Apr 2026 00:44:44 GMT
+content-type: text/html
+cf-ray: 9f4285086ff403b5-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 318ms:
+      "path": "CAPABILITIES.md",
+      "path": "README.md",
+      "path": "common/src/test",
+      "path": "common/src/test/java",
+      "path": "common/src/test/java/org",
+      "path": "common/src/test/java/org/conscrypt",
+      "path": "common/src/test/java/org/conscrypt/CertPinManagerTest.java",
+      "path": "common/src/test/java/org/conscrypt/ChainStrengthAnalyzerTest.java",
+      "path": "common/src/test/java/org/conscrypt/TrustManagerImplTest.java",
+      "path": "common/src/test/java/org/conscrypt/ct",
+      "path": "common/src/test/java/org/conscrypt/ct/CTVerifierTest.java",
+      "path": "common/src/test/java/org/conscrypt/ct/SerializationTest.java",
+      "path": "openjdk-integ-tests/src/test",
+      "path": "openjdk-integ-tests/src/test/java",
+      "path": "openjdk-integ-tests/src/test/java/org",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/ConscryptJava6Suite.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/ConscryptSuite.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/AlgorithmParameterGeneratorTestDH.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/AlgorithmParameterGeneratorTestDSA.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/AlgorithmParametersPSSTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/AlgorithmParametersTestAES.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/AlgorithmParametersTestDES.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/AlgorithmParametersTestDESede.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/AlgorithmParametersTestDH.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/AlgorithmParametersTestDSA.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/AlgorithmParametersTestGCM.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/AlgorithmParametersTestOAEP.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/KeyFactoryTestDH.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/KeyFactoryTestDSA.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/KeyFactoryTestRSA.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/KeyPairGeneratorTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/KeyPairGeneratorTestDH.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/KeyPairGeneratorTestDSA.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/KeyPairGeneratorTestRSA.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/MessageDigestTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/README.ASN1",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/SignatureTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/cert",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/cert/CertificateFactoryTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/java/security/cert/X509CertificateTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/crypto",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/crypto/CipherBasicsTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/crypto/CipherTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/crypto/ECDHKeyAgreementTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/crypto/KeyGeneratorTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/net",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/net/ssl",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/net/ssl/HttpsURLConnectionTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/net/ssl/KeyManagerFactoryTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/net/ssl/KeyStoreBuilderParametersTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/net/ssl/SNIHostNameTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/net/ssl/SSLContextTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/net/ssl/SSLEngineTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/net/ssl/SSLEngineVersionCompatibilityTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/net/ssl/SSLParametersTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/net/ssl/SSLServerSocketFactoryTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/net/ssl/SSLServerSocketTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/net/ssl/SSLSessionContextTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/net/ssl/SSLSessionTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/net/ssl/SSLSocketFactoryTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/net/ssl/SSLSocketTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/net/ssl/SSLSocketVersionCompatibilityTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/net/ssl/TrustManagerFactoryTest.java",
+      "path": "openjdk-integ-tests/src/test/java/org/conscrypt/javax/net/ssl/X509KeyManagerTest.java",
+      "path": "openjdk-integ-tests/src/test/resources",
+      "path": "openjdk-integ-tests/src/test/resources/crypto",
+      "path": "openjdk-integ-tests/src/test/resources/crypto/aes-cbc.csv",
+      "path": "openjdk-integ-tests/src/test/resources/crypto/aes-cfb128.csv",
+      "path": "openjdk-integ-tests/src/test/resources/crypto/aes-cfb8.csv",
+      "path": "openjdk-integ-tests/src/test/resources/crypto/aes-ecb.csv",
+      "path": "openjdk-integ-tests/src/test/resources/crypto/aes-gcm.csv",
+      "path": "openjdk-integ-tests/src/test/resources/crypto/aes-ofb.csv",
+      "path": "openjdk-integ-tests/src/test/resources/crypto/build_test_files.sh",
+      "path": "openjdk-integ-tests/src/test/resources/crypto/chacha20-poly1305.csv",
+      "path": "openjdk-integ-tests/src/test/resources/crypto/chacha20.csv",
+      "path": "openjdk-integ-tests/src/test/resources/crypto/desede-cbc.csv",
+      "path": "openjdk-integ-tests/src/test/resources/crypto/desede-cfb64.csv",
+      "path": "openjdk-integ-tests/src/test/resources/crypto/desede-cfb8.csv",
+      "path": "openjdk-integ-tests/src/test/resources/crypto/desede-ecb.csv",
+      "path": "openjdk-integ-tests/src/test/resources/crypto/desede-ofb.csv",
+      "path": "openjdk-integ-tests/src/test/resources/crypto/parse_records.py",
+      "path": "openjdk/src/test",
+      "path": "openjdk/src/test/java",
+      "path": "openjdk/src/test/java/org",
+      "path": "openjdk/src/test/java/org/conscrypt",
+      "path": "openjdk/src/test/java/org/conscrypt/AbstractSessionContextTest.java",
+      "path": "openjdk/src/test/java/org/conscrypt/AddressUtilsTest.java",
+      "path": "openjdk/src/test/java/org/conscrypt/ApplicationProtocolSelectorAdapterTest.java",
+      "path": "openjdk/src/test/java/org/conscrypt/ClientSessionContextTest.java",
+      "path": "openjdk/src/test/java/org/conscrypt/ConscryptEngineTest.java",
+      "path": "openjdk/src/test/java/org/conscrypt/ConscryptSocketTest.java",
+      "path": "openjdk/src/test/java/org/conscrypt/ConscryptTest.java",
+      "path": "openjdk/src/test/java/org/conscrypt/DuckTypedPSKKeyManagerTest.java",
+      "path": "openjdk/src/test/java/org/conscrypt/FileClientSessionCacheTest.java",
+      "path": "openjdk/src/test/java/org/conscrypt/MockSessionBuilder.java",
+      "path": "openjdk/src/test/java/org/conscrypt/NativeCryptoTest.java",
+      "path": "openjdk/src/test/java/org/conscrypt/NativeRefTest.java",
+      "path": "openjdk/src/test/java/org/conscrypt/NativeSslSessionTest.java",
+      "path": "openjdk/src/test/java/org/conscrypt/OpenSSLKeyTest.java",
+      "path": "openjdk/src/test/java/org/conscrypt/OpenSSLX509CertificateTest.java",
+      "path": "openjdk/src/test/java/org/conscrypt/PlatformTest.java",
+      "path": "openjdk/src/test/java/org/conscrypt/RenegotiationTest.java",
+      "path": "openjdk/src/test/java/org/conscrypt/SSLUtilsTest.java",
+      "path": "openjdk/src/test/java/org/conscrypt/ServerSessionContextTest.java",
+      "path": "openjdk/src/test/java/org/conscrypt/TestSessionBuilder.java",
+      "path": "openjdk/src/test/java/org/conscrypt/TestSessionBuilderTest.java",
+      "path": "openjdk/src/test/java/org/conscrypt/ZpenSSLX509Certificate.java",
+      "path": "openjdk/src/test/resources",
+      "path": "openjdk/src/test/resources/README",
+      "path": "openjdk/src/test/resources/blacklist_test_chain.pem",
+      "path": "openjdk/src/test/resources/blacklist_test_valid_ca.pem",
+      "path": "openjdk/src/test/resources/blacklist_test_valid_chain.pem",
+      "path": "openjdk/src/test/resources/ca-cert.pem",
+      "path": "openjdk/src/test/resources/cert-ct-embedded.pem",
+      "path": "openjdk/src/test/resources/cert-ct-poisoned.pem",
+      "path": "openjdk/src/test/resources/cert-key.pem",
+      "path": "openjdk/src/test/resources/cert.pem",
+      "path": "openjdk/src/test/resources/ct-server-key-public.pem",
+      "path": "openjdk/src/test/resources/ct-signed-timestamp-list",
+      "path": "openjdk/src/test/resources/ct-signed-timestamp-list-invalid",
+      "path": "openjdk/src/test/resources/ct-signed-timestamp-list-unknown",
+      "path": "openjdk/src/test/resources/ocsp-response-sct-extension.der",
+      "path": "openjdk/src/test/resources/ocsp-response.der",
+      "path": "openjdk/src/test/resources/test_blacklist_ca.pem",
+      "path": "openjdk/src/test/resources/test_blacklist_ca_key.pem",
+      "path": "platform/src/test",
+      "path": "platform/src/test/java",
+      "path": "platform/src/test/java/org",
+      "path": "platform/src/test/java/org/conscrypt",
+      "path": "platform/src/test/java/org/conscrypt/CertBlacklistTest.java",
+      "path": "platform/src/test/java/org/conscrypt/TrustedCertificateStoreTest.java",
+      "path": "platform/src/test/java/org/conscrypt/ct",
+      "path": "platform/src/test/java/org/conscrypt/ct/CTLogStoreImplTest.java",
+      "path": "release/README.md",
+      "path": "testing/src/main/java/tests",
+      "path": "testing/src/main/java/tests/net",
+      "path": "testing/src/main/java/tests/net/DelegatingSSLSocketFactory.java",
+      "path": "testing/src/main/java/tests/net/DelegatingSocketFactory.java",
+      "path": "testing/src/main/java/tests/util",
+      "path": "testing/src/main/java/tests/util/ForEachRunner.java",
+      "path": "testing/src/main/java/tests/util/Pair.java",
+
+ exited 22 in 220ms:
+curl: (22) ThHTTP/2 404 
+date: Thu, 30 Apr 2026 00:44:44 GMT
+content-type: text/html
+cf-ray: 9f4285090cda8628-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+e requested URL returned error: 404
+
+ succeeded in 251ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 00:44:44 GMT
+content-type: application/java-archive
+content-length: 261
+cf-ray: 9f42850969bd8bbd-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "8b9fc4aa1c95344d939061b48af10fda"
+last-modified: Thu, 04 Oct 2018 08:45:40 GMT
+x-checksum-md5: 8b9fc4aa1c95344d939061b48af10fda
+x-checksum-sha1: 1c2dc5c55d344948a6d60bb518c4262c525cb4d5
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/google/conscrypt/1.4.0/build.gradle | sed -n '1,260p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/google/conscrypt/1.4.0/openjdk/build.gradle | sed -n '1,260p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/google/conscrypt/1.4.0/openjdk-uber/build.gradle | sed -n '1,260p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/google/conscrypt/1.4.0/README.md | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+ succeeded in 163ms:
+buildscript {
+    ext.android_tools = 'com.android.tools.build:gradle:3.1.3'
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        // This must be applied in the root project otherwise each subproject will
+        // have it in a different ClassLoader.
+        classpath android_tools
+    }
+}
+
+plugins {
+  // Add dependency for build script so we can access Git from our
+  // build script.
+  id 'org.ajoberstar.grgit' version '2.2.1'
+  id 'net.ltgt.errorprone' version '0.0.11'
+}
+
+subprojects {
+    def androidProject = ((project.name == 'conscrypt-android')
+            || (project.name == 'conscrypt-android-platform')
+            || (project.name == 'conscrypt-benchmark-android')
+            || (project.name == 'conscrypt-benchmark-caliper'))
+    if (androidProject) {
+        repositories {
+            google()
+        }
+    } else {
+        apply plugin: 'java-library'
+        apply plugin: 'cpp'
+
+        model {
+            toolChains {
+                visualCpp(VisualCpp)
+                // Prefer Clang over Gcc (order here matters!)
+                clang(Clang)
+                gcc(Gcc)
+            }
+        }
+    }
+    apply plugin: "maven"
+    apply plugin: "signing"
+    apply plugin: "idea"
+    apply plugin: "jacoco"
+    apply plugin: "net.ltgt.errorprone"
+
+    group = "org.conscrypt"
+    description = 'Conscrypt is an alternate Java Security Provider that uses BoringSSL'
+    version = "1.4.0"
+
+    ext {
+        os = org.gradle.internal.os.OperatingSystem.current();
+        if (os.isLinux()) {
+            osName = "linux"
+        } else if (os.isMacOsX()) {
+            osName = "osx"
+        } else if (os.isWindows()) {
+            osName = "windows"
+        } else {
+            throw new GradleException("Unsupported os: " + os.name)
+        }
+
+        if (project.hasProperty("boringsslHome")) {
+            boringsslHome = project.property("boringsslHome")
+        } else {
+            boringsslHome = "$System.env.BORINGSSL_HOME"
+        }
+
+        boringsslIncludeDir = normalizePath("$boringsslHome/include")
+        boringssl32BuildDir = normalizePath("$boringsslHome/build32")
+        boringssl64BuildDir = normalizePath("$boringsslHome/build64")
+
+        if (project.hasProperty("jdkHome")) {
+            jdkHome = project.property("jdkHome")
+        } else {
+            jdkHome = "$System.env.JAVA_HOME"
+        }
+        jdkIncludeDir = normalizePath("$jdkHome/include")
+        // Needs to be binary compatible with androidMinSdkVersion
+        androidMinJavaVersion = JavaVersion.VERSION_1_7
+
+        build32Bit = file("$boringssl32BuildDir").exists()
+        build64Bit = file("$boringssl64BuildDir").exists()
+
+        // Ensure the environment is configured properly.
+        assert file("$boringsslHome").exists()
+        assert file("$boringsslIncludeDir").exists()
+        assert build32Bit || build64Bit
+        assert file("$jdkHome").exists()
+        assert file("$jdkIncludeDir").exists()
+
+        // Get the commit hash for BoringSSL.
+        boringSslGit = org.ajoberstar.grgit.Grgit.open(dir: boringsslHome)
+        boringSslVersion = boringSslGit.head().id
+
+        // Allow the java executable to be specified via env/property for each architecture.
+        javaExecutable32 = System.getProperty('javaExecutable32', System.env.CONSCRYPT_JAVA_EXECUTABLE_32)
+        javaExecutable64 = System.getProperty('javaExecutable64', System.env.CONSCRYPT_JAVA_EXECUTABLE_64)
+
+        jmhVersion = '1.19'
+        libraries = [
+                android_tools: android_tools,
+                roboelectric: 'org.robolectric:android-all:7.1.0_r7-robolectric-0',
+
+                // Test dependencies.
+                bouncycastle_apis: 'org.bouncycastle:bcpkix-jdk15on:1.56',
+                bouncycastle_provider: 'org.bouncycastle:bcprov-jdk15on:1.56',
+                junit  : 'junit:junit:4.12',
+                mockito: 'org.mockito:mockito-core:1.9.5',
+                truth  : 'com.google.truth:truth:0.28',
+
+                // Benchmark dependencies
+                jmh_core: "org.openjdk.jmh:jmh-core:${jmhVersion}",
+                jmh_generator_annprocess: "org.openjdk.jmh:jmh-generator-annprocess:${jmhVersion}",
+                jmh_generator_asm: "org.openjdk.jmh:jmh-generator-asm:${jmhVersion}",
+                jmh_generator_bytecode: "org.openjdk.jmh:jmh-generator-bytecode:${jmhVersion}",
+                jmh_generator_reflection: "org.openjdk.jmh:jmh-generator-reflection:${jmhVersion}",
+                netty_handler: 'io.netty:netty-handler:4.1.8.Final',
+                netty_tcnative: 'io.netty:netty-tcnative-boringssl-static:1.1.33.Fork26',
+        ]
+
+        signJar = { jarPath ->
+            if (rootProject.hasProperty('signingKeystore') && rootProject.hasProperty('signingPassword')) {
+                def command = 'jarsigner -keystore ' + rootProject.signingKeystore +
+                        ' -storepass ' + rootProject.signingPassword +
+                        ' ' + jarPath + ' signingcert'
+                def process = command.execute()
+                process.waitFor()
+                if (process.exitValue()) {
+                    throw new GradleException('Jar signing failed for ' + jarPath + ': ' + process.text)
+                }
+            }
+        }
+    }
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        jcenter()
+    }
+
+    signing {
+        required false
+        sign configurations.archives
+    }
+
+    signArchives.doFirst {
+        configurations.archives.allArtifacts.each {
+            if (it.type == 'jar' && it.classifier != 'sources' && it.classifier != 'javadoc') {
+                signJar(it.file.absolutePath)
+            }
+        }
+    }
+
+    task generateProperties(type: WriteProperties) {
+        ext {
+            parsedVersion = VersionNumber.parse(version)
+        }
+        property("org.conscrypt.version.major", parsedVersion.getMajor())
+        property("org.conscrypt.version.minor", parsedVersion.getMinor())
+        property("org.conscrypt.version.patch", parsedVersion.getMicro())
+        property("org.conscrypt.boringssl.version", boringSslVersion)
+        outputFile "build/generated/resources/org/conscrypt/conscrypt.properties"
+    }
+
+    if (!androidProject) {
+        sourceCompatibility = JavaVersion.VERSION_1_6
+        targetCompatibility = JavaVersion.VERSION_1_6
+
+        [compileJava, compileTestJava].each() {
+            it.options.compilerArgs += ["-Xlint:all", "-Xlint:-options", '-Xmaxwarns', '9999999']
+            it.options.encoding = "UTF-8"
+            if (rootProject.hasProperty('failOnWarnings') && rootProject.failOnWarnings.toBoolean()) {
+                it.options.compilerArgs += ["-Werror"]
+            }
+        }
+
+        compileTestJava {
+            // serialVersionUID is basically guaranteed to be useless in our tests
+            options.compilerArgs += ["-Xlint:-serial"]
+        }
+
+        jar.manifest {
+            attributes('Implementation-Title': name,
+                    'Implementation-Version': version,
+                    'Built-By': System.getProperty('user.name'),
+                    'Built-JDK': System.getProperty('java.version'),
+                    'Source-Compatibility': sourceCompatibility,
+                    'Target-Compatibility': targetCompatibility)
+        }
+
+        javadoc.options {
+            encoding = 'UTF-8'
+            links 'https://docs.oracle.com/javase/8/docs/api/'
+        }
+
+        // Disable JavaDoc doclint on Java 8. It's annoying.
+        if (JavaVersion.current().isJava8Compatible()) {
+            allprojects {
+                tasks.withType(Javadoc) {
+                    options.addStringOption('Xdoclint:none', '-quiet')
+                }
+            }
+        }
+
+        task javadocJar(type: Jar) {
+            classifier = 'javadoc'
+            from javadoc
+        }
+
+        task sourcesJar(type: Jar) {
+            classifier = 'sources'
+            from sourceSets.main.allSource
+        }
+
+        artifacts {
+            archives sourcesJar
+            archives javadocJar
+        }
+
+        uploadArchives.repositories.mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+            String stagingUrl
+            if (rootProject.hasProperty('repositoryId')) {
+                stagingUrl = 'https://oss.sonatype.org/service/local/staging/deployByRepositoryId/' +
+                        rootProject.repositoryId
+            } else {
+                stagingUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            }
+            def configureAuth = {
+                if (rootProject.hasProperty('ossrhUsername') && rootProject.hasProperty('ossrhPassword')) {
+                    authentication(userName: rootProject.ossrhUsername, password: rootProject.ossrhPassword)
+                }
+            }
+            repository(url: stagingUrl, configureAuth)
+            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/', configureAuth)
+        }
+
+        [
+                install.repositories.mavenInstaller,
+                uploadArchives.repositories.mavenDeployer,
+        ]*.pom*.whenConfigured { pom ->
+            pom.project {
+                name "$project.group:$project.name"
+                description project.description
+                url 'https://conscrypt.org/'
+
+                scm {
+                    connection 'scm:git:https://github.com/google/conscrypt.git'
+                    developerConnection 'scm:git:git@github.com:google/conscrypt.git'
+                    url 'https://github.com/google/conscrypt'
+                }
+
+                licenses {
+                    license {
+                        name 'Apache 2'
+                        url 'https://www.apache.org/licenses/LICENSE-2.0'
+                    }
+
+ succeeded in 166ms:
+description = 'Conscrypt: OpenJdk'
+
+ext {
+    jniSourceDir = "$rootDir/common/src/jni"
+    assert file("$jniSourceDir").exists()
+
+    // Build the list of classifiers that will be used in the build.
+    arch32Name = 'x86'
+    arch64Name = 'x86_64'
+    nativeClassifiers = []
+    nativeClassifier64Bit = null
+    nativeClassifier32Bit = null
+    preferredClassifier = null
+    preferredSourceSet = null
+    preferredNativeFileDir = null
+    if (build64Bit) {
+        // Add the 64-Bit classifier first, as the preferred classifier.
+        nativeClassifier64Bit = classifierFor(osName, arch64Name)
+        nativeClassifiers += nativeClassifier64Bit
+        preferredClassifier = nativeClassifier64Bit
+        preferredSourceSet = sourceSetName(preferredClassifier)
+        preferredNativeFileDir = nativeResourcesDir(preferredClassifier)
+    }
+    if (build32Bit) {
+        nativeClassifier32Bit = classifierFor(osName, arch32Name)
+        nativeClassifiers += nativeClassifier32Bit
+        if (preferredClassifier == null) {
+            preferredClassifier = nativeClassifier32Bit
+            preferredSourceSet = sourceSetName(preferredClassifier)
+            preferredNativeFileDir = nativeResourcesDir(preferredClassifier)
+        }
+    }
+}
+
+sourceSets {
+
+    main {
+        java {
+            srcDirs += "${rootDir}/common/src/main/java"
+            srcDirs += project(':conscrypt-constants').sourceSets.main.java.srcDirs
+        }
+        resources {
+            srcDirs += "build/generated/resources"
+        }
+    }
+
+    platform {
+        java {
+            srcDirs = [ "src/main/java" ]
+            includes = [ "org/conscrypt/Platform.java" ]
+        }
+    }
+
+    test {
+        java {
+            srcDirs += "${rootDir}/common/src/test/java"
+        }
+        resources {
+            // This shouldn't be needed but seems to help IntelliJ locate the native artifact.
+            srcDirs += preferredNativeFileDir
+        }
+    }
+
+    // Add the source sets for each of the native build
+    nativeClassifiers.each { nativeClassifier ->
+        def sourceSetName = sourceSetName(nativeClassifier)
+        def testSourceSetName = testSourceSetName(nativeClassifier)
+
+        // Main sources for the native build
+        "$sourceSetName" {
+            output.dir(nativeResourcesDir(nativeClassifier), builtBy: "copyNativeLib${sourceSetName}")
+        }
+
+        // Test sources for the native build
+        "$testSourceSetName" {
+            java {
+                // Include the test source.
+                srcDirs = test.java.srcDirs
+            }
+            resources {
+                srcDirs = ["src/test/resources"]
+            }
+            output.dir(nativeResourcesDir(nativeClassifier), builtBy: "copyNativeLib${sourceSetName}")
+        }
+    }
+}
+
+compileJava {
+    dependsOn generateProperties
+}
+
+task platformJar(type: Jar) {
+    from sourceSets.platform.output
+}
+
+if (isExecutableOnPath('cpplint')) {
+    task cpplint(type: Exec) {
+        executable = 'cpplint'
+
+        // TODO(nmittler): Is there a better way of getting the JNI sources?
+        def pattern = ['**/*.cc', '**/*.h']
+        def sourceFiles = fileTree(dir: jniSourceDir, includes: pattern).asPath.tokenize(':')
+        // Adding roots so that class #ifdefs don't require full path from the project root.
+        args = sourceFiles
+
+        // Capture stderr from the process
+        errorOutput = new ByteArrayOutputStream();
+
+        // Need to ignore exit value so that doLast will execute.
+        ignoreExitValue = true
+
+        doLast {
+            // Create the report file.
+            def reportDir = file("${buildDir}/cpplint")
+            reportDir.mkdirs();
+            def reportFile = new File(reportDir, "report.txt")
+            def reportStream = new FileOutputStream(reportFile)
+
+            try {
+                // Check for failure
+                if (execResult != null) {
+                    execResult.assertNormalExitValue()
+                }
+            } catch (Exception e) {
+                // The process failed - get the error report from the stderr.
+                String report = errorOutput.toString();
+
+                // Write the report to the console.
+                System.err.println(report)
+
+                // Also write the report file.
+                reportStream.write(report.bytes);
+
+                // Extension method cpplint.output() can be used to obtain the report
+                ext.output = {
+                    return report
+                }
+
+                // Rethrow the exception to terminate the build.
+                throw e;
+            } finally {
+                reportStream.close();
+            }
+        }
+    }
+    check.dependsOn cpplint
+}
+
+configurations {
+    publicApiDocs
+    platform
+}
+
+artifacts {
+    platform platformJar
+}
+
+// Append the BoringSSL-Version to the manifest.
+jar.manifest {
+    attributes 'BoringSSL-Version' : boringSslVersion
+}
+
+dependencies {
+    // This is used for the @hide annotation processing in JavaDoc
+    publicApiDocs project(':conscrypt-api-doclet')
+
+    compileOnly project(':conscrypt-constants'),
+                configurations.publicApiDocs
+
+    testImplementation project(':conscrypt-constants'),
+            project(':conscrypt-testing'),
+            libraries.junit,
+            libraries.mockito
+
+    testRuntimeClasspath sourceSets["$preferredSourceSet"].output
+
+    // Configure the dependencies for the native tests.
+    nativeClassifiers.each { nativeClassifier ->
+        def testCompileConfigName = testSourceSet(nativeClassifier).compileConfigurationName
+        "${testCompileConfigName}" (
+                sourceSets.main.output, // Explicitly add the main classes
+                project(':conscrypt-constants'),
+                project(':conscrypt-testing'),
+                libraries.junit,
+                libraries.mockito
+        )
+    }
+
+    platformCompileOnly sourceSets.main.output
+}
+
+nativeClassifiers.each { nativeClassifier ->
+    // Create the JAR task and add it's output to the published archives for this project
+    addNativeJar(nativeClassifier)
+
+    // Create the test task and have it auto run whenever the test task runs.
+    addNativeTest(nativeClassifier)
+
+    // Build the classes as part of the standard build.
+    classes.dependsOn sourceSet(nativeClassifier).classesTaskName
+    testClasses.dependsOn testSourceSet(nativeClassifier).classesTaskName
+}
+
+// Adds a JAR task for the native library.
+def addNativeJar(nativeClassifier) {
+    // Create a JAR for this configuration and add it to the output archives.
+    SourceSet sourceSet = sourceSet(nativeClassifier)
+    def jarTaskName = sourceSet.jarTaskName
+    task "$jarTaskName"(type: Jar) {
+        // Depend on the regular classes task
+        dependsOn classes
+        manifest = jar.manifest
+        classifier = nativeClassifier
+
+        from sourceSet.output + sourceSets.main.output
+    }
+
+    def jarTask = tasks["$jarTaskName"]
+
+    // Add the jar task to the standard build.
+    jar.dependsOn jarTask
+
+    // Add it to the 'archives' configuration so that the artifact will be automatically built and
+    // installed/deployed.
+    artifacts.add('archives', jarTask)
+}
+
+// Optionally adds a test task for the given platform
+def addNativeTest(nativeClassifier) {
+    SourceSet testSourceSet = testSourceSet(nativeClassifier)
+
+    // Just use the same name as the source set for the task.
+    def testTaskName = "${testSourceSet.name}"
+    def javaExecutable
+    def javaArchFlag
+    if (testSourceSet.name.endsWith("${arch32Name}Test")) {
+        // 32-bit test
+        javaExecutable = javaExecutable32 != null ? javaExecutable32 : test.executable
+        javaArchFlag = '-d32'
+    } else {
+        // 64-bit test
+        javaExecutable = javaExecutable64 != null ? javaExecutable64 : test.executable
+        javaArchFlag = '-d64'
+    }
+
+    // Execute the java executable to see if it supports the architecture flag.
+    def javaError = new ByteArrayOutputStream()
+    exec {
+        System.out.println("Running tests with java executable: " + javaExecutable + ".")
+        executable javaExecutable
+        args = ["$javaArchFlag", '-version']
+        ignoreExitValue true
+        errorOutput = javaError
+    }
+
+    // Only add the test if the javaArchFlag is supported for the selected JVM
+    def archSupported = !javaError.toString().toLowerCase().contains('error')
+    if (archSupported) {
+        task "$testTaskName"(type: Test) {
+            mustRunAfter test
+
+ succeeded in 166ms:
+description = 'Conscrypt: OpenJdk UberJAR'
+
+ext {
+    buildUberJar = Boolean.parseBoolean(System.getProperty('org.conscrypt.openjdk.buildUberJar', 'false'))
+    uberJarClassifiers = (System.getProperty('org.conscrypt.openjdk.uberJarClassifiers',
+            'osx-x86_64,linux-x86_64,windows-x86,windows-x86_64')).split(',')
+    classesDir = "${buildDir}/classes"
+    resourcesDir = "${buildDir}/resources"
+    sourcesDir = "${buildDir}/sources"
+}
+
+if (buildUberJar) {
+    configurations {
+        uberJar
+    }
+
+    // Point the jar task to the copied classes and resources directories.
+    jar {
+        from classesDir
+        from resourcesDir
+    }
+
+    sourcesJar {
+        from sourcesDir
+    }
+
+    // Add the dependencies for the uber jar.
+    uberJarClassifiers.each { uberJarClassifier ->
+        dependencies.uberJar "${group}:conscrypt-openjdk:${version}:${uberJarClassifier}"
+    }
+
+    /**
+     * Copy the native libraries to the resources directory.
+     */
+    task copySharedLibs(type: Copy, dependsOn: configurations.uberJar) {
+        from {
+            configurations.uberJar.collect {
+                zipTree(it)
+            }
+        }
+        include '/META-INF/native/**'
+        into file(resourcesDir)
+    }
+    jar.dependsOn copySharedLibs
+
+    /**
+     * Copy the object files to the classes directory.
+     */
+    task copyClasses(type: Copy, dependsOn: configurations.uberJar) {
+        from {
+            configurations.uberJar.collect {
+                zipTree(it)
+            }
+        }
+        exclude '/META-INF/**'
+        into file(classesDir)
+    }
+    jar.dependsOn copyClasses
+
+    task copySources(type: Copy, dependsOn: ":conscrypt-openjdk:sourcesJar") {
+        from {
+            project(":conscrypt-openjdk").sourceSets.main.java
+        }
+        into file(sourcesDir)
+    }
+    sourcesJar.dependsOn copySources
+
+    // Append the BoringSSL-Version to the manifest. Note that this assumes that the
+    // version of BoringSSL for each artifact exactly matches the one on the
+    // current system.
+    jar.manifest {
+        attributes 'BoringSSL-Version': boringSslVersion
+    }
+} else {
+    // Not building an uber jar - disable all tasks.
+    tasks.collect {
+        it.enabled = false
+    }
+}
+
+
+ succeeded in 159ms:
+Conscrypt - A Java Security Provider
+========================================
+
+Conscrypt is a Java Security Provider (JSP) that implements parts of the Java
+Cryptography Extension (JCE) and Java Secure Socket Extension (JSSE).  It uses
+BoringSSL to provide cryptographic primitives and Transport Layer Security (TLS)
+for Java applications on Android and OpenJDK.  See [the capabilities
+documentation](CAPABILITIES.md) for detailed information on what is provided.
+
+The core SSL engine has borrowed liberally from the [Netty](http://netty.io/) project and their
+work on [netty-tcnative](http://netty.io/wiki/forked-tomcat-native.html), giving `Conscrypt`
+similar performance.
+
+<table>
+  <tr>
+    <td><b>Homepage:</b></td>
+    <td>
+      <a href="https://conscrypt.org/">conscrypt.org</a>
+    </td>
+  </tr>
+  <tr>
+    <td><b>Mailing List:</b></td>
+    <td>
+      <a href="https://groups.google.com/forum/#!forum/conscrypt">conscrypt@googlegroups.com</a>
+    </td>
+  </tr>
+</table>
+
+Download
+-------------
+Conscrypt supports **Java 6** or later on OpenJDK and **Gingerbread (API Level
+9)** or later on Android.  The build artifacts are available on Maven Central.
+
+### Download JARs
+You can download
+[the JARs](http://search.maven.org/#search%7Cga%7C1%7Cg:%22org.conscrypt%22)
+directly from the Maven repositories.
+
+### OpenJDK (i.e. non-Android)
+
+#### Native Classifiers
+
+The OpenJDK artifacts are platform-dependent since each embeds a native library for a particular
+platform. We publish artifacts to Maven Central for the following platforms:
+
+Classifier | OS | Architecture
+-----------| ------- | ---------------- |
+linux-x86_64 | Linux | x86_64 (64-bit)
+osx-x86_64 | Mac | x86_64 (64-bit)
+windows-x86 | Windows | x86 (32-bit)
+windows-x86_64 | Windows | x86_64 (64-bit)
+
+#### Maven
+
+Use the [os-maven-plugin](https://github.com/trustin/os-maven-plugin) to add the dependency:
+
+```xml
+<build>
+  <extensions>
+    <extension>
+      <groupId>kr.motd.maven</groupId>
+      <artifactId>os-maven-plugin</artifactId>
+      <version>1.4.1.Final</version>
+    </extension>
+  </extensions>
+</build>
+
+<dependency>
+  <groupId>org.conscrypt</groupId>
+  <artifactId>conscrypt-openjdk</artifactId>
+  <version>1.2.0</version>
+  <classifier>${os.detected.classifier}</classifier>
+</dependency>
+```
+
+#### Gradle
+Use the [osdetector-gradle-plugin](https://github.com/google/osdetector-gradle-plugin)
+(which is a wrapper around the os-maven-plugin) to add the dependency:
+
+```gradle
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.google.gradle:osdetector-gradle-plugin:1.4.0'
+  }
+}
+
+// Use the osdetector-gradle-plugin
+apply plugin: "com.google.osdetector"
+
+dependencies {
+  compile 'org.conscrypt:conscrypt-openjdk:1.2.0:' + osdetector.classifier
+}
+```
+
+#### Uber JAR
+
+For convenience, we also publish an Uber JAR to Maven Central that contains the shared
+libraries for all of the published platforms. While the overall size of the JAR is
+larger than depending on a platform-specific artifact, it greatly simplifies the task of
+dependency management for most platforms.
+
+To depend on the uber jar, simply use the `conscrypt-openjdk-uber` artifacts.
+
+##### Maven
+```xml
+<dependency>
+  <groupId>org.conscrypt</groupId>
+  <artifactId>conscrypt-openjdk-uber</artifactId>
+  <version>1.2.0</version>
+</dependency>
+```
+
+##### Gradle
+```gradle
+dependencies {
+  compile 'org.conscrypt:conscrypt-openjdk-uber:1.2.0'
+}
+```
+
+### Android
+
+The Android AAR file contains native libraries for x86, x86_64, armeabi-v7a, and
+arm64-v8a.
+
+#### Gradle
+
+```gradle
+dependencies {
+  compile 'org.conscrypt:conscrypt-android:1.2.0'
+}
+```
+
+
+How to Build
+------------
+
+If you are making changes to Conscrypt, see the [building
+instructions](BUILDING.md).
+
+web search: 
+web search: https://github.com/google/conscrypt/tree/1.4.0/openjdk/src/test
+web search: 
+web search: org.conscrypt conscrypt-openjdk-uber 1.4.0 maven central
+codex
+The artifact has Maven Central sources and javadocs, no Maven tests artifact, and upstream tag `1.4.0` contains the OpenJDK tests under `openjdk/src/test`. I’m writing the metadata with no `language` field because this is a Java provider artifact, not Kotlin, Groovy, or Scala-specific.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
+diff --git a/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json b/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
+index 3404f0edfe71d09af94a43e5e4e5419f1c6babaf..f5ffb1b8c413feff0b4142d3ebda3408a7a8bd8e
+--- a/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
++++ b/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.conscrypt:conscrypt-openjdk-uber:1.4.0"
++  "coordinates" : "org.conscrypt:conscrypt-openjdk-uber:1.4.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-sources.jar",
++  "repository-url" : "https://github.com/google/conscrypt",
++  "test-code-url" : "https://github.com/google/conscrypt/tree/1.4.0/openjdk/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-javadoc.jar",
++  "description" : "Conscrypt is a Java Security Provider that implements parts of the Java Cryptography Extension and Java Secure Socket Extension using BoringSSL. The OpenJDK uber JAR bundles native libraries for all published platforms so applications can use Conscrypt without choosing a platform-specific classifier."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json b/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
+index 3404f0edfe71d09af94a43e5e4e5419f1c6babaf..f5ffb1b8c413feff0b4142d3ebda3408a7a8bd8e
+--- a/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
++++ b/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.conscrypt:conscrypt-openjdk-uber:1.4.0"
++  "coordinates" : "org.conscrypt:conscrypt-openjdk-uber:1.4.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-sources.jar",
++  "repository-url" : "https://github.com/google/conscrypt",
++  "test-code-url" : "https://github.com/google/conscrypt/tree/1.4.0/openjdk/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-javadoc.jar",
++  "description" : "Conscrypt is a Java Security Provider that implements parts of the Java Cryptography Extension and Java Secure Socket Extension using BoringSSL. The OpenJDK uber JAR bundles native libraries for all published platforms so applications can use Conscrypt without choosing a platform-specific classifier."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+ succeeded in 0ms:
+{
+  "coordinates": "org.conscrypt:conscrypt-openjdk-uber:1.4.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-sources.jar",
+  "repository-url": "https://github.com/google/conscrypt",
+  "test-code-url": "https://github.com/google/conscrypt/tree/1.4.0/openjdk/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-javadoc.jar",
+  "description": "Conscrypt is a Java Security Provider that implements parts of the Java Cryptography Extension and Java Secure Socket Extension using BoringSSL. The OpenJDK uber JAR bundles native libraries for all published platforms so applications can use Conscrypt without choosing a platform-specific classifier."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json b/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
+index 3404f0edfe71d09af94a43e5e4e5419f1c6babaf..f5ffb1b8c413feff0b4142d3ebda3408a7a8bd8e
+--- a/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
++++ b/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.conscrypt:conscrypt-openjdk-uber:1.4.0"
++  "coordinates" : "org.conscrypt:conscrypt-openjdk-uber:1.4.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-sources.jar",
++  "repository-url" : "https://github.com/google/conscrypt",
++  "test-code-url" : "https://github.com/google/conscrypt/tree/1.4.0/openjdk/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-javadoc.jar",
++  "description" : "Conscrypt is a Java Security Provider that implements parts of the Java Cryptography Extension and Java Secure Socket Extension using BoringSSL. The OpenJDK uber JAR bundles native libraries for all published platforms so applications can use Conscrypt without choosing a platform-specific classifier."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json && git diff --no-index /dev/null build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+ succeeded in 0ms:
+diff --git 1/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json 2/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
+new file mode 100644
+index 0000000000..f5ffb1b8c4
+--- /dev/null
++++ 2/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
+@@ -0,0 +1,8 @@
++{
++  "coordinates" : "org.conscrypt:conscrypt-openjdk-uber:1.4.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-sources.jar",
++  "repository-url" : "https://github.com/google/conscrypt",
++  "test-code-url" : "https://github.com/google/conscrypt/tree/1.4.0/openjdk/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-javadoc.jar",
++  "description" : "Conscrypt is a Java Security Provider that implements parts of the Java Cryptography Extension and Java Secure Socket Extension using BoringSSL. The OpenJDK uber JAR bundles native libraries for all published platforms so applications can use Conscrypt without choosing a platform-specific classifier."
++}
+
+diff --git a/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json b/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
+index 3404f0edfe71d09af94a43e5e4e5419f1c6babaf..f5ffb1b8c413feff0b4142d3ebda3408a7a8bd8e
+--- a/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
++++ b/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.conscrypt:conscrypt-openjdk-uber:1.4.0"
++  "coordinates" : "org.conscrypt:conscrypt-openjdk-uber:1.4.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-sources.jar",
++  "repository-url" : "https://github.com/google/conscrypt",
++  "test-code-url" : "https://github.com/google/conscrypt/tree/1.4.0/openjdk/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-javadoc.jar",
++  "description" : "Conscrypt is a Java Security Provider that implements parts of the Java Cryptography Extension and Java Secure Socket Extension using BoringSSL. The OpenJDK uber JAR bundles native libraries for all published platforms so applications can use Conscrypt without choosing a platform-specific classifier."
+ }
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/google/conscrypt/tree/1.4.0/openjdk/src/test' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 00:45:32 GMT
+content-type: application/java-archive
+content-length: 279961
+cf-ray: 9f4286376a5129a7-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 144506
+etag: "33562e14a4dbf9b69376ff9ede6b330b"
+last-modified: Thu, 04 Oct 2018 08:45:39 GMT
+x-checksum-md5: 33562e14a4dbf9b69376ff9ede6b330b
+x-checksum-sha1: f5848fc57169f92026055ce5e190caaa7b3eef50
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 00:45:32 GMT
+content-type: application/java-archive
+content-length: 261
+cf-ray: 9f4286376a43be6d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 105944
+etag: "8b9fc4aa1c95344d939061b48af10fda"
+last-modified: Thu, 04 Oct 2018 08:45:40 GMT
+x-checksum-md5: 8b9fc4aa1c95344d939061b48af10fda
+x-checksum-sha1: 1c2dc5c55d344948a6d60bb518c4262c525cb4d5
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/google/conscrypt' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d
+ succeeded in 426ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 00:45:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"f1a881c8a9ed8e3d1bc0a76cce3ac0ed"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=3LcMW9B5Hv8vzO6bYRFEXJHghTlzaM9CBatTg4u%2FQo%2BI4D7ZCV2Gk%2Br2c5KNtBd28yRWfJZxN91%2BheGWJcIjWewE9owzeAjLAgwl8fQGDXn5a8kDZ3cOVh5%2F6F3gEPbQ1JHgl7awUYSF0yS0hW%2BL5tjingDKxjK9qmpiw1U8s74mEH69dKgPhC3y7YU1fXFS50u%2FiLO0MD0GccI4o%2F1vecb%2BoNfL2ZbBJzdBIfNvVa%2BJ0pW6fSrjf4FHWj3zkd8rE1ZUZf98QiOD6%2FvH1Q7HHQ%3D%3D--AYVZY4MtopRsW4om--uKGKUmi32m%2BuqJJKR4joKw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1256466362.1777509932; expires=Fri, 30 Apr 2027 00:45:32 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 00:45:32 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FE:23742C:2C37A80:222663B:69F2A62C
+
+
+diff --git a/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json b/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
+index 3404f0edfe71d09af94a43e5e4e5419f1c6babaf..f5ffb1b8c413feff0b4142d3ebda3408a7a8bd8e
+--- a/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
++++ b/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.conscrypt:conscrypt-openjdk-uber:1.4.0"
++  "coordinates" : "org.conscrypt:conscrypt-openjdk-uber:1.4.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-sources.jar",
++  "repository-url" : "https://github.com/google/conscrypt",
++  "test-code-url" : "https://github.com/google/conscrypt/tree/1.4.0/openjdk/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-javadoc.jar",
++  "description" : "Conscrypt is a Java Security Provider that implements parts of the Java Cryptography Extension and Java Secure Socket Extension using BoringSSL. The OpenJDK uber JAR bundles native libraries for all published platforms so applications can use Conscrypt without choosing a platform-specific classifier."
+ }
+
+ succeeded in 694ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 00:45:33 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"fc0c5b450a3a01ed04948d7683c29d03"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=dFquLSwSiGwFmwY8jYXWO9WVe26FQjfNjxQKlksPqpjbckVUZiPcsKEmKKa8kacwVP3dTlNBtS3rHMThaJfi6K%2FpykbNXHUbsO3XEbYReLfQC%2Fax6ltjweAbjvoFGB26vLoWO96dYiecNhlEKGgsu9TIPsTKw8EsMhUzw6l3khHL%2F3fLuVfgAmOXlLrX11gR6yAF5b8yFfBFv6%2F%2Bmqv50lXAoI99C5%2BO21MaVkETyxgX4rymqPtlp%2B5C1oe5tw14o0jeDjJt2%2B1%2BiYWBdGR%2FXw%3D%3D--n8eYZgnd8ivTkQq1--h8RTO%2FoA3FclOd2zGKCdEg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.464626433.1777509932; expires=Fri, 30 Apr 2027 00:45:32 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 00:45:32 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5101:2C62BE:2BC9D90:21D8AEF:69F2A62C
+
+
+web search: 
+web search: Conscrypt 1.4.0 GitHub google conscrypt tag 1.4.0
+web search: 
+web search: https://github.com/google/conscrypt/tree/1.4.0/openjdk/src/test
+codex
+Updated [org.conscrypt-conscrypt-openjdk-uber-1.4.0.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json) with the Maven Central sources and javadocs, GitHub repository, and the `1.4.0` OpenJDK test suite path. Maven Central lists sources and javadocs for this exact artifact version, but no tests jar, so the test URL points at the upstream tag instead. ([repo1.maven.org](https://repo1.maven.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/?utm_source=openai))
+
+I left `language` absent because this is a Java Conscrypt provider artifact, not a Kotlin, Groovy, or Scala-specific library. The JSON validates with `jq`. ([github.com](https://github.com/google/conscrypt/blob/1.4.0/README.md))
+diff --git a/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json b/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
+index 3404f0edfe71d09af94a43e5e4e5419f1c6babaf..f5ffb1b8c413feff0b4142d3ebda3408a7a8bd8e
+--- a/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
++++ b/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.conscrypt:conscrypt-openjdk-uber:1.4.0"
++  "coordinates" : "org.conscrypt:conscrypt-openjdk-uber:1.4.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-sources.jar",
++  "repository-url" : "https://github.com/google/conscrypt",
++  "test-code-url" : "https://github.com/google/conscrypt/tree/1.4.0/openjdk/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/conscrypt-openjdk-uber-1.4.0-javadoc.jar",
++  "description" : "Conscrypt is a Java Security Provider that implements parts of the Java Cryptography Extension and Java Secure Socket Extension using BoringSSL. The OpenJDK uber JAR bundles native libraries for all published platforms so applications can use Conscrypt without choosing a platform-specific classifier."
+ }
+
+2026-04-30T00:45:49.286749Z ERROR codex_core::session: failed to record rollout items: thread 019ddbd7-d77c-7c52-b03d-0d4fa082ac31 not found
+tokens used
+84,715
+Updated [org.conscrypt-conscrypt-openjdk-uber-1.4.0.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d/build/discovered-artifact-metadata/org.conscrypt-conscrypt-openjdk-uber-1.4.0.json) with the Maven Central sources and javadocs, GitHub repository, and the `1.4.0` OpenJDK test suite path. Maven Central lists sources and javadocs for this exact artifact version, but no tests jar, so the test URL points at the upstream tag instead. ([repo1.maven.org](https://repo1.maven.org/maven2/org/conscrypt/conscrypt-openjdk-uber/1.4.0/?utm_source=openai))
+
+I left `language` absent because this is a Java Conscrypt provider artifact, not a Kotlin, Groovy, or Scala-specific library. The JSON validates with `jq`. ([github.com](https://github.com/google/conscrypt/blob/1.4.0/README.md))
+Ran agent for org.conscrypt:conscrypt-openjdk-uber:1.4.0 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d/build/agent-artifact-discovery-logs/org.conscrypt-conscrypt-openjdk-uber-1.4.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1462-062f484d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 41s
+9 actionable tasks: 4 executed, 5 from cache
