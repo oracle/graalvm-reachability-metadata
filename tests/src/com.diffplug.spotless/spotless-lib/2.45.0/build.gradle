@@ -16,6 +16,7 @@ String libraryVersion = tck.testedLibraryVersion.get()
 Provider<Directory> ktfmtFixtureResources = layout.buildDirectory.dir("generated/ktfmt-fixture-resources")
 Provider<Directory> jsonSimpleFixtureResources = layout.buildDirectory.dir("generated/json-simple-fixture-resources")
 Provider<Directory> jsonPatchFixtureResources = layout.buildDirectory.dir("generated/json-patch-fixture-resources")
+Provider<Directory> gsonFixtureResources = layout.buildDirectory.dir("generated/gson-fixture-resources")
 Provider<Directory> jacksonJsonFixtureResources = layout.buildDirectory.dir("generated/jackson-json-fixture-resources")
 Provider<Directory> googleJavaFormatFixtureResources = layout.buildDirectory.dir("generated/google-java-format-fixture-resources")
 Provider<Directory> palantirJavaFormatFixtureResources = layout.buildDirectory.dir("generated/palantir-java-format-fixture-resources")
@@ -57,6 +58,17 @@ tasks.register("generateJsonPatchFixtureJar") {
         delete(outputDir)
 
         createJsonPatchFixture(outputDir)
+    }
+}
+
+tasks.register("generateGsonFixtureJar") {
+    outputs.dir(gsonFixtureResources)
+
+    doLast {
+        File outputDir = gsonFixtureResources.get().asFile
+        delete(outputDir)
+
+        createGsonFixture(outputDir)
     }
 }
 
@@ -333,6 +345,32 @@ void createJsonPatchFixture(File outputDir) {
             sourceSets.test.compileClasspath.asPath)
 }
 
+void createGsonFixture(File outputDir) {
+    Map<String, String> sources = [
+        "com/diffplug/spotless/glue/gson/GsonFormatterFunc.java": """
+            package com.diffplug.spotless.glue.gson;
+
+            import com.diffplug.spotless.FormatterFunc;
+            import com.diffplug.spotless.json.gson.GsonConfig;
+
+            public class GsonFormatterFunc implements FormatterFunc {
+                private final GsonConfig config;
+
+                public GsonFormatterFunc(GsonConfig config) {
+                    this.config = config;
+                }
+
+                public String apply(String input) {
+                    return "gson:" + config.isSortByKeys() + ":" + config.isEscapeHtml() + ":"
+                            + config.getIndentSpaces() + ":" + input;
+                }
+            }
+            """
+    ]
+    createFixtureJar(outputDir, "gson-fixtures", "current", "gson-fixture.jar", sources,
+            sourceSets.test.compileClasspath.asPath)
+}
+
 void createJacksonJsonFixture(File outputDir) {
     Map<String, String> sources = [
         "com/diffplug/spotless/glue/json/JacksonJsonFormatterFunc.java": """
@@ -576,6 +614,7 @@ sourceSets {
         resources.srcDir(ktfmtFixtureResources)
         resources.srcDir(jsonSimpleFixtureResources)
         resources.srcDir(jsonPatchFixtureResources)
+        resources.srcDir(gsonFixtureResources)
         resources.srcDir(jacksonJsonFixtureResources)
         resources.srcDir(googleJavaFormatFixtureResources)
         resources.srcDir(palantirJavaFormatFixtureResources)
@@ -590,6 +629,7 @@ tasks.named("processTestResources") {
     dependsOn(tasks.named("generateKtfmtFixtureJars"))
     dependsOn(tasks.named("generateJsonSimpleFixtureJar"))
     dependsOn(tasks.named("generateJsonPatchFixtureJar"))
+    dependsOn(tasks.named("generateGsonFixtureJar"))
     dependsOn(tasks.named("generateJacksonJsonFixtureJar"))
     dependsOn(tasks.named("generateGoogleJavaFormatFixtureJar"))
     dependsOn(tasks.named("generatePalantirJavaFormatFixtureJar"))
@@ -608,7 +648,7 @@ dependencies {
 graalvmNative {
     binaries {
         test {
-            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|json-simple-fixtures|json-patch-fixtures|jackson-json-fixtures|google-java-format-fixtures|palantir-java-format-fixtures|cleanthat-fixtures|freshmark-fixtures|antlr4-formatter-fixtures|gherkin-utils-fixtures)/.*')
+            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|json-simple-fixtures|json-patch-fixtures|gson-fixtures|jackson-json-fixtures|google-java-format-fixtures|palantir-java-format-fixtures|cleanthat-fixtures|freshmark-fixtures|antlr4-formatter-fixtures|gherkin-utils-fixtures)/.*')
         }
     }
 
