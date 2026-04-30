@@ -6,11 +6,261 @@
  */
 package org_apache_camel.spi_annotations;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
+import org.apache.camel.spi.Metadata;
+import org.apache.camel.spi.UriEndpoint;
+import org.apache.camel.spi.UriParam;
+import org.apache.camel.spi.UriParams;
+import org.apache.camel.spi.UriPath;
 import org.junit.jupiter.api.Test;
 
-class Spi_annotationsTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class Spi_annotationsTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void endpointAnnotationExposesConfiguredValues() {
+        UriEndpoint endpoint = RichEndpoint.class.getAnnotation(UriEndpoint.class);
+
+        assertThat(endpoint.scheme()).isEqualTo("rich");
+        assertThat(endpoint.extendsScheme()).isEqualTo("base");
+        assertThat(endpoint.syntax()).isEqualTo("rich:account:operation");
+        assertThat(endpoint.alternativeSyntax()).isEqualTo("rich:account/operation");
+        assertThat(endpoint.consumerClass()).isEqualTo(EndpointConsumer.class);
+        assertThat(endpoint.consumerPrefix()).isEqualTo("consumer.");
+        assertThat(endpoint.title()).isEqualTo("Rich endpoint");
+        assertThat(endpoint.label()).isEqualTo("testing,core");
+        assertThat(endpoint.producerOnly()).isTrue();
+        assertThat(endpoint.consumerOnly()).isFalse();
+        assertThat(endpoint.lenientProperties()).isTrue();
+        assertThat(endpoint.excludeProperties()).isEqualTo("secretToken,legacyOption");
+    }
+
+    @Test
+    void endpointAnnotationProvidesDocumentedDefaults() {
+        UriEndpoint endpoint = MinimalEndpoint.class.getAnnotation(UriEndpoint.class);
+
+        assertThat(endpoint.scheme()).isEqualTo("minimal");
+        assertThat(endpoint.title()).isEqualTo("Minimal endpoint");
+        assertThat(endpoint.syntax()).isEqualTo("minimal:path");
+        assertThat(endpoint.extendsScheme()).isEmpty();
+        assertThat(endpoint.alternativeSyntax()).isEmpty();
+        assertThat(endpoint.consumerClass()).isEqualTo(Object.class);
+        assertThat(endpoint.consumerPrefix()).isEmpty();
+        assertThat(endpoint.label()).isEmpty();
+        assertThat(endpoint.producerOnly()).isFalse();
+        assertThat(endpoint.consumerOnly()).isFalse();
+        assertThat(endpoint.lenientProperties()).isFalse();
+        assertThat(endpoint.excludeProperties()).isEmpty();
+    }
+
+    @Test
+    void uriParamsAndMetadataAnnotationsExposeTypeLevelValues() {
+        UriParams params = RichEndpoint.class.getAnnotation(UriParams.class);
+        Metadata metadata = RichEndpoint.class.getAnnotation(Metadata.class);
+
+        assertThat(params.prefix()).isEqualTo("advanced.");
+        assertThat(metadata.label()).isEqualTo("component");
+        assertThat(metadata.defaultValue()).isEqualTo("enabled");
+        assertThat(metadata.required()).isEqualTo("true");
+        assertThat(metadata.title()).isEqualTo("Component metadata");
+        assertThat(metadata.description()).isEqualTo("Metadata attached to the endpoint type");
+    }
+
+    @Test
+    void uriPathAnnotationExposesPathMetadata() throws NoSuchFieldException {
+        Field accountField = RichEndpoint.class.getDeclaredField("account");
+        UriPath path = accountField.getAnnotation(UriPath.class);
+
+        assertThat(path.name()).isEqualTo("account");
+        assertThat(path.defaultValue()).isEqualTo("primary");
+        assertThat(path.defaultValueNote()).isEqualTo("Uses the primary account when omitted");
+        assertThat(path.description()).isEqualTo("Account identifier used in the URI path");
+        assertThat(path.enums()).isEqualTo("primary,secondary");
+        assertThat(path.label()).isEqualTo("path,required");
+        assertThat(path.javaType()).isEqualTo("java.lang.String");
+    }
+
+    @Test
+    void uriParamAnnotationExposesParameterMetadata() throws NoSuchFieldException {
+        Field flagsField = RichEndpoint.class.getDeclaredField("flags");
+        UriParam param = flagsField.getAnnotation(UriParam.class);
+
+        assertThat(param.name()).isEqualTo("flag");
+        assertThat(param.defaultValue()).isEqualTo("fast");
+        assertThat(param.defaultValueNote()).isEqualTo("Multiple flags may be supplied");
+        assertThat(param.description()).isEqualTo("Runtime flags applied to the endpoint");
+        assertThat(param.enums()).isEqualTo("fast,safe,verbose");
+        assertThat(param.label()).isEqualTo("producer,advanced");
+        assertThat(param.javaType()).isEqualTo("java.util.List<java.lang.String>");
+        assertThat(param.multiValue()).isTrue();
+        assertThat(param.prefix()).isEqualTo("flag.");
+        assertThat(param.optionalPrefix()).isEqualTo("optional.");
+    }
+
+    @Test
+    void fieldAndMethodMetadataAnnotationsExposeValues() throws NoSuchFieldException, NoSuchMethodException {
+        Field descriptionField = RichEndpoint.class.getDeclaredField("description");
+        Method buildUriMethod = RichEndpoint.class.getDeclaredMethod("buildUri");
+        Metadata fieldMetadata = descriptionField.getAnnotation(Metadata.class);
+        Metadata methodMetadata = buildUriMethod.getAnnotation(Metadata.class);
+
+        assertThat(fieldMetadata.label()).isEqualTo("field");
+        assertThat(fieldMetadata.defaultValue()).isEqualTo("n/a");
+        assertThat(fieldMetadata.required()).isEqualTo("false");
+        assertThat(fieldMetadata.title()).isEqualTo("Description");
+        assertThat(fieldMetadata.description()).isEqualTo("Optional endpoint description");
+
+        assertThat(methodMetadata.label()).isEqualTo("operation");
+        assertThat(methodMetadata.defaultValue()).isEqualTo("rich:primary:status");
+        assertThat(methodMetadata.required()).isEqualTo("true");
+        assertThat(methodMetadata.title()).isEqualTo("URI builder");
+        assertThat(methodMetadata.description()).isEqualTo("Builds the endpoint URI");
+    }
+
+    @Test
+    void optionalAnnotationsReturnEmptyDefaults() throws NoSuchFieldException {
+        UriParams params = MinimalEndpoint.class.getAnnotation(UriParams.class);
+        Metadata metadata = MinimalEndpoint.class.getAnnotation(Metadata.class);
+        UriPath path = MinimalEndpoint.class.getDeclaredField("path").getAnnotation(UriPath.class);
+        UriParam param = MinimalEndpoint.class.getDeclaredField("option").getAnnotation(UriParam.class);
+
+        assertThat(params.prefix()).isEmpty();
+        assertThat(metadata.label()).isEmpty();
+        assertThat(metadata.defaultValue()).isEmpty();
+        assertThat(metadata.required()).isEmpty();
+        assertThat(metadata.title()).isEmpty();
+        assertThat(metadata.description()).isEmpty();
+
+        assertThat(path.name()).isEmpty();
+        assertThat(path.defaultValue()).isEmpty();
+        assertThat(path.defaultValueNote()).isEmpty();
+        assertThat(path.description()).isEmpty();
+        assertThat(path.enums()).isEmpty();
+        assertThat(path.label()).isEmpty();
+        assertThat(path.javaType()).isEmpty();
+
+        assertThat(param.name()).isEmpty();
+        assertThat(param.defaultValue()).isEmpty();
+        assertThat(param.defaultValueNote()).isEmpty();
+        assertThat(param.description()).isEmpty();
+        assertThat(param.enums()).isEmpty();
+        assertThat(param.label()).isEmpty();
+        assertThat(param.javaType()).isEmpty();
+        assertThat(param.multiValue()).isFalse();
+        assertThat(param.prefix()).isEmpty();
+        assertThat(param.optionalPrefix()).isEmpty();
+    }
+
+    @Test
+    void annotationTypesDeclareRuntimeRetentionAndSupportedTargets() {
+        assertRuntimeDocumentedTargets(UriEndpoint.class, ElementType.TYPE);
+        assertRuntimeDocumentedTargets(UriParams.class, ElementType.TYPE);
+        assertRuntimeDocumentedTargets(UriPath.class, ElementType.FIELD);
+        assertRuntimeDocumentedTargets(UriParam.class, ElementType.FIELD);
+        assertRuntimeDocumentedTargets(Metadata.class, ElementType.TYPE, ElementType.METHOD, ElementType.FIELD);
+    }
+
+    private static void assertRuntimeDocumentedTargets(
+            Class<?> annotationType,
+            ElementType firstExpectedTarget,
+            ElementType... additionalExpectedTargets) {
+        ElementType[] expectedTargets = expectedTargets(firstExpectedTarget, additionalExpectedTargets);
+
+        assertThat(annotationType).isAnnotation();
+        assertThat(annotationType.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(annotationType.isAnnotationPresent(Documented.class)).isTrue();
+        assertThat(annotationType.getAnnotation(Target.class).value()).containsExactly(expectedTargets);
+    }
+
+    private static ElementType[] expectedTargets(
+            ElementType firstExpectedTarget,
+            ElementType... additionalExpectedTargets) {
+        ElementType[] expectedTargets = new ElementType[additionalExpectedTargets.length + 1];
+        expectedTargets[0] = firstExpectedTarget;
+        System.arraycopy(additionalExpectedTargets, 0, expectedTargets, 1, additionalExpectedTargets.length);
+        return expectedTargets;
+    }
+
+    @UriEndpoint(
+            scheme = "rich",
+            extendsScheme = "base",
+            syntax = "rich:account:operation",
+            alternativeSyntax = "rich:account/operation",
+            consumerClass = EndpointConsumer.class,
+            consumerPrefix = "consumer.",
+            title = "Rich endpoint",
+            label = "testing,core",
+            producerOnly = true,
+            lenientProperties = true,
+            excludeProperties = "secretToken,legacyOption")
+    @UriParams(prefix = "advanced.")
+    @Metadata(
+            label = "component",
+            defaultValue = "enabled",
+            required = "true",
+            title = "Component metadata",
+            description = "Metadata attached to the endpoint type")
+    private static final class RichEndpoint {
+        @UriPath(
+                name = "account",
+                defaultValue = "primary",
+                defaultValueNote = "Uses the primary account when omitted",
+                description = "Account identifier used in the URI path",
+                enums = "primary,secondary",
+                label = "path,required",
+                javaType = "java.lang.String")
+        private String account;
+
+        @UriParam(
+                name = "flag",
+                defaultValue = "fast",
+                defaultValueNote = "Multiple flags may be supplied",
+                description = "Runtime flags applied to the endpoint",
+                enums = "fast,safe,verbose",
+                label = "producer,advanced",
+                javaType = "java.util.List<java.lang.String>",
+                multiValue = true,
+                prefix = "flag.",
+                optionalPrefix = "optional.")
+        private String flags;
+
+        @Metadata(
+                label = "field",
+                defaultValue = "n/a",
+                required = "false",
+                title = "Description",
+                description = "Optional endpoint description")
+        private String description;
+
+        @Metadata(
+                label = "operation",
+                defaultValue = "rich:primary:status",
+                required = "true",
+                title = "URI builder",
+                description = "Builds the endpoint URI")
+        private String buildUri() {
+            return "rich:" + account + ':' + flags;
+        }
+    }
+
+    @UriEndpoint(scheme = "minimal", syntax = "minimal:path", title = "Minimal endpoint")
+    @UriParams
+    @Metadata
+    private static final class MinimalEndpoint {
+        @UriPath
+        private String path;
+
+        @UriParam
+        private String option;
+    }
+
+    private static final class EndpointConsumer {
     }
 }
