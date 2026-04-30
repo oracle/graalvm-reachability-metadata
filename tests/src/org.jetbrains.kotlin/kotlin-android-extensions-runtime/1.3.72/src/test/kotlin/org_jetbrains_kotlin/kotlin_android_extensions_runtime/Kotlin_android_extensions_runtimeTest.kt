@@ -78,6 +78,17 @@ public class Kotlin_android_extensions_runtimeTest {
     }
 
     @Test
+    public fun repeatedTypeParcelersCanBeAppliedToTheSameParcelizedType() {
+        val repeatedTypeParcelerCarrier: RepeatedTypeParcelerCarrier = RepeatedTypeParcelerCarrier(
+            count = 2,
+            total = 4L
+        )
+
+        assertThat(repeatedTypeParcelerCarrier.count).isEqualTo(2)
+        assertThat(repeatedTypeParcelerCarrier.total).isEqualTo(4L)
+    }
+
+    @Test
     public fun annotatedDomainTypesRemainUsableAsRegularKotlinObjects() {
         val cacheCarrier: CachePolicyCarrier = CachePolicyCarrier("hash-map-cache")
         val parcelCarrier: ParcelAnnotationCarrier = ParcelAnnotationCarrier(raw = mapOf("answer" to 42))
@@ -89,6 +100,14 @@ public class Kotlin_android_extensions_runtimeTest {
         assertThat(parcelizedMarker.id).isEqualTo("generated-id")
     }
 }
+
+@Parcelize
+@TypeParceler<Int, Parceler<Int>>
+@TypeParceler<Long, Parceler<Long>>
+private data class RepeatedTypeParcelerCarrier(
+    val count: Int,
+    val total: Long
+)
 
 @ContainerOptions(cache = CacheImplementation.SPARSE_ARRAY)
 private data class CachePolicyCarrier(val name: String)
