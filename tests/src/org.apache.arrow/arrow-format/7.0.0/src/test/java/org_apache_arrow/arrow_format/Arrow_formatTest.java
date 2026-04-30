@@ -72,7 +72,7 @@ public class Arrow_formatTest {
 
         int fieldMetadata = KeyValue.createKeyValue(
                 builder, builder.createString("logicalName"), builder.createString("primary-key"));
-        int fieldMetadataVector = Field.createCustomMetadataVector(builder, new int[] { fieldMetadata });
+        int fieldMetadataVector = Field.createCustomMetadataVector(builder, new int[] {fieldMetadata });
         int intType = Int.createInt(builder, 64, true);
         int dictionaryIndexType = Int.createInt(builder, 32, false);
         int dictionary = DictionaryEncoding.createDictionaryEncoding(
@@ -96,7 +96,7 @@ public class Arrow_formatTest {
                 0,
                 0,
                 0);
-        int tagChildren = Field.createChildrenVector(builder, new int[] { tagChild });
+        int tagChildren = Field.createChildrenVector(builder, new int[] {tagChild });
         int tagsField = Field.createField(
                 builder,
                 builder.createString("tags"),
@@ -109,10 +109,10 @@ public class Arrow_formatTest {
 
         int schemaMetadata = KeyValue.createKeyValue(
                 builder, builder.createString("producer"), builder.createString("integration-test"));
-        int schemaMetadataVector = Schema.createCustomMetadataVector(builder, new int[] { schemaMetadata });
+        int schemaMetadataVector = Schema.createCustomMetadataVector(builder, new int[] {schemaMetadata });
         int featuresVector = Schema.createFeaturesVector(
-                builder, new long[] { Feature.DICTIONARY_REPLACEMENT, Feature.COMPRESSED_BODY });
-        int fieldsVector = Schema.createFieldsVector(builder, new int[] { idField, tagsField });
+                builder, new long[] {Feature.DICTIONARY_REPLACEMENT, Feature.COMPRESSED_BODY });
+        int fieldsVector = Schema.createFieldsVector(builder, new int[] {idField, tagsField });
         int schemaOffset = Schema.createSchema(
                 builder, Endianness.Little, fieldsVector, schemaMetadataVector, featuresVector);
         Schema.finishSchemaBuffer(builder, schemaOffset);
@@ -170,13 +170,13 @@ public class Arrow_formatTest {
                 0,
                 0,
                 0);
-        int fixedSizeListChildren = Field.createChildrenVector(builder, new int[] { fixedSizeListChild });
+        int fixedSizeListChildren = Field.createChildrenVector(builder, new int[] {fixedSizeListChild });
         int mapKey = Field.createField(
                 builder, builder.createString("key"), false, Type.Utf8, createUtf8(builder), 0, 0, 0);
         int mapValue = Field.createField(
                 builder, builder.createString("value"), true, Type.Binary, createBinary(builder), 0, 0, 0);
-        int mapChildren = Field.createChildrenVector(builder, new int[] { mapKey, mapValue });
-        int unionTypeIds = Union.createTypeIdsVector(builder, new int[] { 7, 8 });
+        int mapChildren = Field.createChildrenVector(builder, new int[] {mapKey, mapValue });
+        int unionTypeIds = Union.createTypeIdsVector(builder, new int[] {7, 8 });
 
         int[] fields = new int[] {
             createField(
@@ -272,14 +272,14 @@ public class Arrow_formatTest {
     void messageCarriesRecordBatchHeaderWithNodesBuffersCompressionAndMetadata() {
         FlatBufferBuilder builder = new FlatBufferBuilder(1024);
 
-        int nodesVector = createFieldNodesVector(builder, new long[][] { { 5L, 0L }, { 5L, 1L } });
-        int buffersVector = createBuffersVector(builder, new long[][] { { 0L, 1L }, { 8L, 40L }, { 48L, 8L } });
+        int nodesVector = createFieldNodesVector(builder, new long[][] {{5L, 0L }, {5L, 1L } });
+        int buffersVector = createBuffersVector(builder, new long[][] {{0L, 1L }, {8L, 40L }, {48L, 8L } });
         int compression = BodyCompression.createBodyCompression(
                 builder, CompressionType.ZSTD, BodyCompressionMethod.BUFFER);
         int recordBatchOffset = RecordBatch.createRecordBatch(builder, 5L, nodesVector, buffersVector, compression);
         int metadata = KeyValue.createKeyValue(
                 builder, builder.createString("batch"), builder.createString("compressed"));
-        int metadataVector = Message.createCustomMetadataVector(builder, new int[] { metadata });
+        int metadataVector = Message.createCustomMetadataVector(builder, new int[] {metadata });
         int messageOffset = Message.createMessage(
                 builder, MetadataVersion.V5, MessageHeader.RecordBatch, recordBatchOffset, 56L, metadataVector);
         Message.finishMessageBuffer(builder, messageOffset);
@@ -312,8 +312,8 @@ public class Arrow_formatTest {
     void dictionaryBatchMessageCarriesDictionaryIdDeltaFlagAndDataBatch() {
         FlatBufferBuilder builder = new FlatBufferBuilder(1024);
 
-        int nodesVector = createFieldNodesVector(builder, new long[][] { { 3L, 0L } });
-        int buffersVector = createBuffersVector(builder, new long[][] { { 0L, 1L }, { 8L, 12L } });
+        int nodesVector = createFieldNodesVector(builder, new long[][] {{3L, 0L } });
+        int buffersVector = createBuffersVector(builder, new long[][] {{0L, 1L }, {8L, 12L } });
         int recordBatchOffset = RecordBatch.createRecordBatch(builder, 3L, nodesVector, buffersVector, 0);
         int dictionaryBatchOffset = DictionaryBatch.createDictionaryBatch(builder, 7L, recordBatchOffset, true);
         int messageOffset = Message.createMessage(
@@ -344,12 +344,12 @@ public class Arrow_formatTest {
         int schema = Schema.createSchema(
                 builder,
                 Endianness.Little,
-                Schema.createFieldsVector(builder, new int[] { valueField }),
+                Schema.createFieldsVector(builder, new int[] {valueField }),
                 0,
                 0);
-        int dictionaryBlocks = createBlocksVector(builder, new long[][] { { 128L, 24L, 64L } }, true);
+        int dictionaryBlocks = createBlocksVector(builder, new long[][] {{128L, 24L, 64L } }, true);
         int recordBatchBlocks = createBlocksVector(
-                builder, new long[][] { { 256L, 32L, 96L }, { 384L, 40L, 128L } }, false);
+                builder, new long[][] {{256L, 32L, 96L }, {384L, 40L, 128L } }, false);
         int metadata = KeyValue.createKeyValue(
                 builder, builder.createString("footer"), builder.createString("complete"));
         int footerOffset = Footer.createFooter(
@@ -358,7 +358,7 @@ public class Arrow_formatTest {
                 schema,
                 dictionaryBlocks,
                 recordBatchBlocks,
-                Footer.createCustomMetadataVector(builder, new int[] { metadata }));
+                Footer.createCustomMetadataVector(builder, new int[] {metadata }));
         Footer.finishFooterBuffer(builder, footerOffset);
 
         Footer footer = Footer.getRootAsFooter(builder.dataBuffer());
@@ -569,8 +569,8 @@ public class Arrow_formatTest {
     private static int createDenseTensor(FlatBufferBuilder builder) {
         int rows = TensorDim.createTensorDim(builder, 2L, builder.createString("rows"));
         int columns = TensorDim.createTensorDim(builder, 3L, builder.createString("columns"));
-        int shape = Tensor.createShapeVector(builder, new int[] { rows, columns });
-        int strides = Tensor.createStridesVector(builder, new long[] { 24L, 8L });
+        int shape = Tensor.createShapeVector(builder, new int[] {rows, columns });
+        int strides = Tensor.createStridesVector(builder, new long[] {24L, 8L });
         int type = FloatingPoint.createFloatingPoint(builder, Precision.DOUBLE);
         Tensor.startTensor(builder);
         Tensor.addTypeType(builder, Type.FloatingPoint);
@@ -584,10 +584,10 @@ public class Arrow_formatTest {
     private static int createSparseTensor(FlatBufferBuilder builder) {
         int rows = TensorDim.createTensorDim(builder, 4L, builder.createString("rows"));
         int columns = TensorDim.createTensorDim(builder, 4L, builder.createString("columns"));
-        int shape = SparseTensor.createShapeVector(builder, new int[] { rows, columns });
+        int shape = SparseTensor.createShapeVector(builder, new int[] {rows, columns });
         int valueType = Int.createInt(builder, 32, true);
         int indicesType = Int.createInt(builder, 64, true);
-        int indicesStrides = SparseTensorIndexCOO.createIndicesStridesVector(builder, new long[] { 16L, 8L });
+        int indicesStrides = SparseTensorIndexCOO.createIndicesStridesVector(builder, new long[] {16L, 8L });
         SparseTensorIndexCOO.startSparseTensorIndexCOO(builder);
         SparseTensorIndexCOO.addIndicesType(builder, indicesType);
         SparseTensorIndexCOO.addIndicesStrides(builder, indicesStrides);
@@ -609,14 +609,14 @@ public class Arrow_formatTest {
         int batch = TensorDim.createTensorDim(builder, 2L, builder.createString("batch"));
         int rows = TensorDim.createTensorDim(builder, 3L, builder.createString("rows"));
         int columns = TensorDim.createTensorDim(builder, 4L, builder.createString("columns"));
-        int shape = SparseTensor.createShapeVector(builder, new int[] { batch, rows, columns });
+        int shape = SparseTensor.createShapeVector(builder, new int[] {batch, rows, columns });
         int valueType = Int.createInt(builder, 64, true);
         int indptrType = Int.createInt(builder, 32, false);
-        int indptrBuffers = createCsfIndptrBuffersVector(builder, new long[][] { { 0L, 12L }, { 12L, 16L } });
+        int indptrBuffers = createCsfIndptrBuffersVector(builder, new long[][] {{0L, 12L }, {12L, 16L } });
         int indicesType = Int.createInt(builder, 64, true);
         int indicesBuffers = createCsfIndicesBuffersVector(
-                builder, new long[][] { { 28L, 16L }, { 44L, 20L }, { 64L, 32L } });
-        int axisOrder = SparseTensorIndexCSF.createAxisOrderVector(builder, new int[] { 1, 2, 0 });
+                builder, new long[][] {{28L, 16L }, {44L, 20L }, {64L, 32L } });
+        int axisOrder = SparseTensorIndexCSF.createAxisOrderVector(builder, new int[] {1, 2, 0 });
         int sparseIndex = SparseTensorIndexCSF.createSparseTensorIndexCSF(
                 builder, indptrType, indptrBuffers, indicesType, indicesBuffers, axisOrder);
         SparseTensor.startSparseTensor(builder);
