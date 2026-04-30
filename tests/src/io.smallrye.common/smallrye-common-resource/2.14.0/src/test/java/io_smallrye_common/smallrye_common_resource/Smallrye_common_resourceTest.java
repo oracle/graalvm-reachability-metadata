@@ -209,6 +209,20 @@ public class Smallrye_common_resourceTest {
     }
 
     @Test
+    void jarResourceLoaderResolvesRuntimeVersionedEntriesFromMultiReleaseArchives() throws IOException {
+        Path jarPath = Files.createTempFile("smallrye-resource-multi-release", ".jar");
+        createMultiReleaseJar(jarPath);
+
+        try (JarFileResourceLoader loader = new JarFileResourceLoader(jarPath)) {
+            Resource resource = loader.findResource("versioned/data.txt");
+
+            assertThat(resource).isNotNull();
+            assertThat(resource.pathName()).isEqualTo("versioned/data.txt");
+            assertThat(resource.asString(StandardCharsets.UTF_8)).isEqualTo("runtime-specific data");
+        }
+    }
+
+    @Test
     void urlResourceLoaderWrapsFileUrlResources() throws IOException {
         Path root = Files.createTempDirectory("smallrye-resource-url");
         Path nested = Files.createDirectories(root.resolve("nested"));
@@ -293,6 +307,18 @@ public class Smallrye_common_resourceTest {
             putEntry(outputStream, "assets/data.txt", "jar data");
             putDirectory(outputStream, "assets/nested/");
             putEntry(outputStream, "assets/nested/item.txt", "nested item");
+        }
+    }
+
+    private static void createMultiReleaseJar(Path jarPath) throws IOException {
+        Manifest manifest = new Manifest();
+        Attributes attributes = manifest.getMainAttributes();
+        attributes.put(Attributes.Name.MANIFEST_VERSION, "1.0");
+        attributes.putValue("Multi-Release", "true");
+
+        try (JarOutputStream outputStream = new JarOutputStream(Files.newOutputStream(jarPath), manifest)) {
+            putEntry(outputStream, "versioned/data.txt", "base data");
+            putEntry(outputStream, "META-INF/versions/9/versioned/data.txt", "runtime-specific data");
         }
     }
 
