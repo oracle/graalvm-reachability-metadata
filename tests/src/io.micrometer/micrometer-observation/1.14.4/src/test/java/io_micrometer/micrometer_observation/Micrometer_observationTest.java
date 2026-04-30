@@ -433,8 +433,7 @@ public class Micrometer_observationTest {
                 assertThat(registry.getCurrentObservation()).isSameAs(observation);
             }
             observation.stop();
-        }
-        finally {
+        } finally {
             Observations.resetRegistry();
         }
 
@@ -600,17 +599,17 @@ public class Micrometer_observationTest {
 
         @Override
         public KeyName[] getLowCardinalityKeyNames() {
-            return new KeyName[] { DocumentedLowCardinalityKeyName.OUTCOME };
+            return new KeyName[] {DocumentedLowCardinalityKeyName.OUTCOME};
         }
 
         @Override
         public KeyName[] getHighCardinalityKeyNames() {
-            return new KeyName[] { DocumentedHighCardinalityKeyName.ORDER_ID };
+            return new KeyName[] {DocumentedHighCardinalityKeyName.ORDER_ID};
         }
 
         @Override
         public Observation.Event[] getEvents() {
-            return new Observation.Event[] { Observation.Event.of("created", "order %s created") };
+            return new Observation.Event[] {Observation.Event.of("created", "order %s created")};
         }
 
         @Override
