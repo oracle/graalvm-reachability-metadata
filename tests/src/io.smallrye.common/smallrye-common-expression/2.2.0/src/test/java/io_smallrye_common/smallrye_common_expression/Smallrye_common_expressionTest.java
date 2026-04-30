@@ -213,6 +213,22 @@ public class Smallrye_common_expressionTest {
     }
 
     @Test
+    void escapesAreAppliedInsideDefaultValues() {
+        final String expectedDefault = "line\rnext\btab\fslash\\end";
+        final Expression expression = Expression.compile("${missing:line\\rnext\\btab\\fslash\\\\end}",
+                Expression.Flag.ESCAPES);
+
+        final String result = expression.evaluate((context, builder) -> {
+            assertThat(context.getKey()).isEqualTo("missing");
+            assertThat(context.hasDefault()).isTrue();
+            assertThat(context.getExpandedDefault()).isEqualTo(expectedDefault);
+            context.expandDefault(builder);
+        });
+
+        assertThat(result).isEqualTo(expectedDefault);
+    }
+
+    @Test
     void smartBracesKeepBracedDefaultContentTogetherUnlessDisabled() {
         final Expression smartBraces = Expression.compile("${missing:{one:two}}");
         final Expression noSmartBraces = Expression.compile("${missing:{one:two}}", Expression.Flag.NO_SMART_BRACES);
