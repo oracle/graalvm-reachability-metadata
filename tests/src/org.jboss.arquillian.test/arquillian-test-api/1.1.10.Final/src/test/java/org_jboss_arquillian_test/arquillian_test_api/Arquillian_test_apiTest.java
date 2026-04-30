@@ -30,19 +30,19 @@ public class Arquillian_test_apiTest {
     void defaultFieldResourceTypeIsTheAnnotationType() throws Exception {
         Field field = ResourceConsumer.class.getDeclaredField("defaultResource");
 
-        ArquillianResource resource = field.getAnnotation(ArquillianResource.class);
+        ArquillianResource resource = field./**/getAnnotation(ArquillianResource.class);
 
         assertThat(resource).isNotNull();
         assertThat(resource.annotationType()).isEqualTo(ArquillianResource.class);
         assertThat(resource.value()).isEqualTo(ArquillianResource.class);
-        assertThat(field.isAnnotationPresent(ArquillianResource.class)).isTrue();
+        assertThat(field./**/isAnnotationPresent(ArquillianResource.class)).isTrue();
     }
 
     @Test
     void fieldResourceTypeCanBeSpecialized() throws Exception {
         Field field = ResourceConsumer.class.getDeclaredField("urlResource");
 
-        ArquillianResource resource = field.getAnnotation(ArquillianResource.class);
+        ArquillianResource resource = field./**/getAnnotation(ArquillianResource.class);
 
         assertThat(resource).isNotNull();
         assertThat(resource.value()).isEqualTo(URL.class);
@@ -54,10 +54,10 @@ public class Arquillian_test_apiTest {
         Parameter defaultParameter = method.getParameters()[0];
         Parameter uriParameter = method.getParameters()[1];
 
-        ArquillianResource defaultResource = defaultParameter.getAnnotation(ArquillianResource.class);
-        ArquillianResource uriResource = uriParameter.getAnnotation(ArquillianResource.class);
+        ArquillianResource defaultResource = defaultParameter./**/getAnnotation(ArquillianResource.class);
+        ArquillianResource uriResource = uriParameter./**/getAnnotation(ArquillianResource.class);
 
-        assertThat(defaultParameter.isAnnotationPresent(ArquillianResource.class)).isTrue();
+        assertThat(defaultParameter./**/isAnnotationPresent(ArquillianResource.class)).isTrue();
         assertThat(defaultResource.value()).isEqualTo(ArquillianResource.class);
         assertThat(uriResource.value()).isEqualTo(URI.class);
     }
@@ -68,8 +68,8 @@ public class Arquillian_test_apiTest {
         Parameter defaultParameter = constructor.getParameters()[0];
         Parameter urlParameter = constructor.getParameters()[1];
 
-        ArquillianResource defaultResource = defaultParameter.getAnnotation(ArquillianResource.class);
-        ArquillianResource urlResource = urlParameter.getAnnotation(ArquillianResource.class);
+        ArquillianResource defaultResource = defaultParameter./**/getAnnotation(ArquillianResource.class);
+        ArquillianResource urlResource = urlParameter./**/getAnnotation(ArquillianResource.class);
 
         assertThat(defaultResource).isNotNull();
         assertThat(defaultResource.value()).isEqualTo(ArquillianResource.class);
@@ -88,8 +88,8 @@ public class Arquillian_test_apiTest {
 
     @Test
     void annotationContractAllowsRuntimeLookupOnFieldsAndParametersOnly() {
-        Retention retention = ArquillianResource.class.getAnnotation(Retention.class);
-        Target target = ArquillianResource.class.getAnnotation(Target.class);
+        Retention retention = ArquillianResource.class./**/getAnnotation(Retention.class);
+        Target target = ArquillianResource.class./**/getAnnotation(Target.class);
 
         assertThat(retention).isNotNull();
         assertThat(retention.value()).isEqualTo(RetentionPolicy.RUNTIME);
@@ -103,7 +103,7 @@ public class Arquillian_test_apiTest {
     void valueElementDeclaresTheSameDefaultUsedByAnnotationInstances() throws Exception {
         Method valueElement = ArquillianResource.class.getMethod("value");
         Field field = ResourceConsumer.class.getDeclaredField("defaultResource");
-        ArquillianResource resource = field.getAnnotation(ArquillianResource.class);
+        ArquillianResource resource = field./**/getAnnotation(ArquillianResource.class);
 
         assertThat(valueElement.getReturnType()).isEqualTo(Class.class);
         assertThat(valueElement.getDefaultValue()).isEqualTo(ArquillianResource.class);
@@ -129,15 +129,15 @@ public class Arquillian_test_apiTest {
         Method method = ResourceConsumer.class.getDeclaredMethod("acceptPlainResource", Object.class);
         Parameter parameter = method.getParameters()[0];
 
-        assertThat(field.getAnnotation(ArquillianResource.class)).isNull();
-        assertThat(field.isAnnotationPresent(ArquillianResource.class)).isFalse();
-        assertThat(parameter.getAnnotation(ArquillianResource.class)).isNull();
-        assertThat(parameter.isAnnotationPresent(ArquillianResource.class)).isFalse();
+        assertThat(field./**/getAnnotation(ArquillianResource.class)).isNull();
+        assertThat(field./**/isAnnotationPresent(ArquillianResource.class)).isFalse();
+        assertThat(parameter./**/getAnnotation(ArquillianResource.class)).isNull();
+        assertThat(parameter./**/isAnnotationPresent(ArquillianResource.class)).isFalse();
     }
 
     private static ArquillianResource annotationOnField(String fieldName) throws Exception {
         Field field = ResourceConsumer.class.getDeclaredField(fieldName);
-        return field.getAnnotation(ArquillianResource.class);
+        return field./**/getAnnotation(ArquillianResource.class);
     }
 
     @FunctionalInterface
