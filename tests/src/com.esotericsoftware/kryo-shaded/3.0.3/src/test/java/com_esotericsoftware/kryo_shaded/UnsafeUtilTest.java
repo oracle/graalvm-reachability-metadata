@@ -10,12 +10,14 @@ import com.esotericsoftware.kryo.util.UnsafeUtil;
 import org.junit.jupiter.api.Test;
 import sun.misc.Unsafe;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class UnsafeUtilTest {
     private static final int MEMORY_SIZE = 8;
@@ -69,6 +71,37 @@ public class UnsafeUtilTest {
             if (allocated) {
                 unsafe.freeMemory(address);
             }
+        }
+    }
+
+    @Test
+    void reportsAllocationFailureFromCachedDirectBufferConstructor() throws Exception {
+        Field directByteBufferConstructor = UnsafeUtil.class.getDeclaredField("directByteBufferConstr");
+        directByteBufferConstructor.setAccessible(true);
+        Object originalConstructor = directByteBufferConstructor.get(null);
+        Constructor<ConstructorProbe> probeConstructor = ConstructorProbe.class.getConstructor(
+                long.class, int.class, Object.class);
+
+        try {
+            directByteBufferConstructor.set(null, probeConstructor);
+
+            assertThatThrownBy(() -> UnsafeUtil.getDirectBufferAt(1L, 2))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessageContaining("Cannot allocate ByteBuffer");
+        } finally {
+            directByteBufferConstructor.set(null, originalConstructor);
+        }
+    }
+
+    public static class ConstructorProbe {
+        private final long address;
+        private final int size;
+        private final Object owner;
+
+        public ConstructorProbe(long address, int size, Object owner) {
+            this.address = address;
+            this.size = size;
+            this.owner = owner;
         }
     }
 
