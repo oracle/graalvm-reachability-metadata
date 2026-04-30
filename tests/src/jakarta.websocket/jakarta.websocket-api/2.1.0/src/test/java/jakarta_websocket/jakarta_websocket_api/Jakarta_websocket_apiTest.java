@@ -39,6 +39,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.net.ssl.SSLContext;
 import org.junit.jupiter.api.Test;
 
 public class Jakarta_websocket_apiTest {
@@ -101,6 +102,67 @@ public class Jakarta_websocket_apiTest {
         assertThat(config.getEncoders()).isEmpty();
         assertThat(config.getDecoders()).isEmpty();
         assertThat(config.getConfigurator()).isSameAs(configurator);
+    }
+
+    @Test
+    void clientEndpointConfigBuilderCreatesHandshakeReadyConfiguration() throws Exception {
+        RecordingClientConfigurator configurator = new RecordingClientConfigurator();
+        Extension extension = new SimpleExtension("permessage-deflate", List.of(new SimpleParameter("client_max_window_bits", "10")));
+        SSLContext sslContext = SSLContext.getDefault();
+
+        ClientEndpointConfig config = ClientEndpointConfig.Builder.create()
+                .preferredSubprotocols(List.of("json", "cbor"))
+                .extensions(List.of(extension))
+                .encoders(List.of(IntegerTextEncoder.class))
+                .decoders(List.of(IntegerTextDecoder.class))
+                .sslContext(sslContext)
+                .configurator(configurator)
+                .build();
+
+        assertThat(config.getPreferredSubprotocols()).containsExactly("json", "cbor");
+        assertThat(config.getExtensions()).containsExactly(extension);
+        assertThat(config.getEncoders()).containsExactly(IntegerTextEncoder.class);
+        assertThat(config.getDecoders()).containsExactly(IntegerTextDecoder.class);
+        assertThat(config.getSSLContext()).isSameAs(sslContext);
+        assertThat(config.getConfigurator()).isSameAs(configurator);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> config.getPreferredSubprotocols().add("xml"));
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> config.getExtensions().clear());
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> config.getEncoders().clear());
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> config.getDecoders().clear());
+
+        config.getUserProperties().put("clientName", "metadata-test-client");
+        assertThat(config.getUserProperties()).containsEntry("clientName", "metadata-test-client");
+    }
+
+    @Test
+    void clientConfiguratorCanPrepareRequestHeadersAndObserveHandshakeResponse() {
+        RecordingClientConfigurator configurator = new RecordingClientConfigurator();
+        ClientEndpointConfig config = ClientEndpointConfig.Builder.create()
+                .preferredSubprotocols(null)
+                .extensions(null)
+                .encoders(null)
+                .decoders(null)
+                .configurator(configurator)
+                .build();
+        Map<String, List<String>> requestHeaders = new HashMap<>();
+        SimpleHandshakeResponse response = new SimpleHandshakeResponse(new HashMap<>(Map.of(
+                HandshakeResponse.SEC_WEBSOCKET_ACCEPT, List.of("server-accept-key"),
+                "Sec-WebSocket-Protocol", List.of("json"))));
+
+        config.getConfigurator().beforeRequest(requestHeaders);
+        config.getConfigurator().afterResponse(response);
+
+        assertThat(config.getPreferredSubprotocols()).isEmpty();
+        assertThat(config.getExtensions()).isEmpty();
+        assertThat(config.getEncoders()).isEmpty();
+        assertThat(config.getDecoders()).isEmpty();
+        assertThat(requestHeaders)
+                .containsEntry("X-Client-Trace", List.of("trace-1"))
+                .containsEntry("Sec-WebSocket-Protocol", List.of("json"));
+        assertThat(configurator.acceptedKeys()).containsExactly("server-accept-key");
+        assertThat(configurator.negotiatedSubprotocols()).containsExactly("json");
     }
 
     @Test
@@ -350,6 +412,31 @@ public class Jakarta_websocket_apiTest {
                 }
             }
             return true;
+        }
+    }
+
+    public static class RecordingClientConfigurator extends ClientEndpointConfig.Configurator {
+        private final List<String> acceptedKeys = new ArrayList<>();
+        private final List<String> negotiatedSubprotocols = new ArrayList<>();
+
+        @Override
+        public void beforeRequest(Map<String, List<String>> headers) {
+            headers.put("X-Client-Trace", List.of("trace-1"));
+            headers.put("Sec-WebSocket-Protocol", List.of("json"));
+        }
+
+        @Override
+        public void afterResponse(HandshakeResponse response) {
+            acceptedKeys.addAll(response.getHeaders().get(HandshakeResponse.SEC_WEBSOCKET_ACCEPT));
+            negotiatedSubprotocols.addAll(response.getHeaders().get("Sec-WebSocket-Protocol"));
+        }
+
+        List<String> acceptedKeys() {
+            return acceptedKeys;
+        }
+
+        List<String> negotiatedSubprotocols() {
+            return negotiatedSubprotocols;
         }
     }
 
