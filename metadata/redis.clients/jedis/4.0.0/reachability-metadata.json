@@ -27,6 +27,13 @@
       },
       "type": "redis.clients.jedis.StreamEntryID",
       "serializable": true
+    },
+    {
+      "condition": {
+        "typeReached": "redis.clients.jedis.resps.StreamPendingEntry"
+      },
+      "type": "redis.clients.jedis.StreamEntryID",
+      "serializable": true
     }
   ],
   "serialization": [
@@ -59,6 +66,24 @@
         "typeReached": "redis.clients.jedis.resps.StreamEntry"
       },
       "type": "redis.clients.jedis.resps.StreamEntry"
+    },
+    {
+      "condition": {
+        "typeReached": "redis.clients.jedis.resps.StreamPendingEntry"
+      },
+      "type": "java.lang.String"
+    },
+    {
+      "condition": {
+        "typeReached": "redis.clients.jedis.resps.StreamPendingEntry"
+      },
+      "type": "redis.clients.jedis.StreamEntryID"
+    },
+    {
+      "condition": {
+        "typeReached": "redis.clients.jedis.resps.StreamPendingEntry"
+      },
+      "type": "redis.clients.jedis.resps.StreamPendingEntry"
     }
   ]
 }
