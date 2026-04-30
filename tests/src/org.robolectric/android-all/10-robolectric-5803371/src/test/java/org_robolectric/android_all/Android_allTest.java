@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import android.content.ContentValues;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
@@ -239,6 +240,25 @@ public class Android_allTest {
         Rect unsorted = new Rect(8, 9, 1, 2);
         unsorted.sort();
         assertThat(unsorted).isEqualTo(new Rect(1, 2, 8, 9));
+    }
+
+    @Test
+    void colorParsesNamedAndHexValuesAndExposesChannels() {
+        int translucentGreen = Color.parseColor("#8044CC22");
+
+        assertThat(translucentGreen).isEqualTo(Color.argb(128, 68, 204, 34));
+        assertThat(Color.alpha(translucentGreen)).isEqualTo(128);
+        assertThat(Color.red(translucentGreen)).isEqualTo(68);
+        assertThat(Color.green(translucentGreen)).isEqualTo(204);
+        assertThat(Color.blue(translucentGreen)).isEqualTo(34);
+
+        int opaqueGreen = Color.rgb(68, 204, 34);
+        assertThat(Color.alpha(opaqueGreen)).isEqualTo(255);
+        assertThat(Color.red(opaqueGreen)).isEqualTo(68);
+        assertThat(Color.green(opaqueGreen)).isEqualTo(204);
+        assertThat(Color.blue(opaqueGreen)).isEqualTo(34);
+        assertThat(Color.parseColor("CYAN")).isEqualTo(Color.CYAN);
+        assertThatThrownBy(() -> Color.parseColor("not-a-color")).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
