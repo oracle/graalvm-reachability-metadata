@@ -36,6 +36,23 @@ public class Jackson_module_parameter_namesTest {
     }
 
     @Test
+    void deserializesAnnotatedFactoryMethodUsingImplicitParameterNames() throws Exception {
+        ObjectMapper mapper = mapperWithDefaultParameterNamesModule();
+
+        ApiKey apiKey = mapper.readValue("""
+                {
+                  "identifier": "native-client",
+                  "secret": "rotating-secret",
+                  "enabled": true
+                }
+                """, ApiKey.class);
+
+        assertThat(apiKey.identifier()).isEqualTo("native-client");
+        assertThat(apiKey.secret()).isEqualTo("rotating-secret");
+        assertThat(apiKey.enabled()).isTrue();
+    }
+
+    @Test
     void deserializesNestedValueUsingImplicitParameterNames() throws Exception {
         ObjectMapper mapper = mapperWithDefaultParameterNamesModule();
 
@@ -133,6 +150,35 @@ public class Jackson_module_parameter_namesTest {
     public record Account(String firstName, String lastName, int age, boolean active) {
         @JsonCreator
         public Account {
+        }
+    }
+
+    public static class ApiKey {
+        private final String identifier;
+        private final String secret;
+        private final boolean enabled;
+
+        private ApiKey(String identifier, String secret, boolean enabled) {
+            this.identifier = identifier;
+            this.secret = secret;
+            this.enabled = enabled;
+        }
+
+        @JsonCreator
+        public static ApiKey create(String identifier, String secret, boolean enabled) {
+            return new ApiKey(identifier, secret, enabled);
+        }
+
+        public String identifier() {
+            return identifier;
+        }
+
+        public String secret() {
+            return secret;
+        }
+
+        public boolean enabled() {
+            return enabled;
         }
     }
 
