@@ -165,15 +165,15 @@ public class Jakarta_websocket_client_apiTest {
     void closeReasonValidatesCodeAndUtf8ReasonLength() {
         CloseReason reason = new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "finished");
         CloseReason emptyReason = new CloseReason(CloseReason.CloseCodes.GOING_AWAY, "");
-        CloseReason unicodeReason = new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "policy-✓");
-        String oversizedUtf8Reason = "ü".repeat(62);
+        CloseReason unicodeReason = new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "policy-\u2713");
+        String oversizedUtf8Reason = "\u00fc".repeat(62);
 
         assertThat(reason.getCloseCode()).isSameAs(CloseReason.CloseCodes.NORMAL_CLOSURE);
         assertThat(reason.getReasonPhrase()).isEqualTo("finished");
         assertThat(reason).hasToString("CloseReason[1000,finished]");
         assertThat(emptyReason.getReasonPhrase()).isEmpty();
         assertThat(emptyReason).hasToString("CloseReason[1001]");
-        assertThat(unicodeReason.getReasonPhrase()).isEqualTo("policy-✓");
+        assertThat(unicodeReason.getReasonPhrase()).isEqualTo("policy-\u2713");
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new CloseReason(null, "missing"));
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> new CloseReason(CloseReason.CloseCodes.TOO_BIG, oversizedUtf8Reason));
