@@ -6,11 +6,166 @@
  */
 package org_apache_maven.maven_api_meta;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.maven.api.annotations.Consumer;
+import org.apache.maven.api.annotations.Experimental;
+import org.apache.maven.api.annotations.Generated;
+import org.apache.maven.api.annotations.Immutable;
+import org.apache.maven.api.annotations.Nonnull;
+import org.apache.maven.api.annotations.NotThreadSafe;
+import org.apache.maven.api.annotations.Nullable;
+import org.apache.maven.api.annotations.Provider;
+import org.apache.maven.api.annotations.ThreadSafe;
 import org.junit.jupiter.api.Test;
 
-class Maven_api_metaTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class Maven_api_metaTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void annotationTypesCanBeReferencedFromExecutableCode() {
+        List<Class<?>> annotationTypes = List.of(
+                Consumer.class,
+                Experimental.class,
+                Generated.class,
+                Immutable.class,
+                Nonnull.class,
+                NotThreadSafe.class,
+                Nullable.class,
+                Provider.class,
+                ThreadSafe.class);
+
+        assertThat(annotationTypes)
+                .containsExactly(
+                        Consumer.class,
+                        Experimental.class,
+                        Generated.class,
+                        Immutable.class,
+                        Nonnull.class,
+                        NotThreadSafe.class,
+                        Nullable.class,
+                        Provider.class,
+                        ThreadSafe.class)
+                .doesNotHaveDuplicates();
+    }
+
+    @Test
+    void mavenApiAnnotationsCanDescribeConsumerAndProviderContracts() {
+        MavenExtension extension = new MavenExtension("compiler", "javac");
+        MavenService service = new MavenService(extension);
+
+        assertThat(service.extension().name()).isEqualTo("compiler");
+        assertThat(service.describeExtension("language")).isEqualTo("compiler:language");
+        assertThat(service.describeExtension(null)).isEqualTo("compiler");
+        assertThat(service.serviceIds()).containsExactly("compiler", "javac");
+    }
+
+    @Test
+    void nullableAnnotationsCanDescribeAbsentOptionalValues() {
+        MavenExtension extension = new MavenExtension("resources", null);
+        MavenService service = new MavenService(extension);
+
+        assertThat(extension.implementationHint()).isNull();
+        assertThat(service.describeExtension("native-image")).isEqualTo("resources:native-image");
+        assertThat(service.serviceIds()).containsExactly("resources");
+    }
+
+    @Test
+    void notThreadSafeAnnotationCanMarkMutableCollaborators() {
+        InvocationLog invocationLog = new InvocationLog();
+
+        invocationLog.add("validate");
+        invocationLog.add("package");
+
+        assertThat(invocationLog.entries()).containsExactly("validate", "package");
+    }
+
+    @Consumer
+    interface ExtensionConsumer {
+        @Nonnull
+        String describeExtension(@Nullable String classifier);
+    }
+
+    @Provider
+    @Experimental
+    interface ExtensionProvider {
+        @Nonnull
+        MavenExtension extension();
+    }
+
+    @Generated
+    @Immutable
+    @ThreadSafe
+    static final class MavenExtension {
+        @Nonnull
+        private final String name;
+
+        @Nullable
+        private final String implementationHint;
+
+        MavenExtension(@Nonnull String name, @Nullable String implementationHint) {
+            this.name = name;
+            this.implementationHint = implementationHint;
+        }
+
+        @Nonnull
+        String name() {
+            return name;
+        }
+
+        @Nullable
+        String implementationHint() {
+            return implementationHint;
+        }
+    }
+
+    @NotThreadSafe
+    static final class MavenService implements ExtensionConsumer, ExtensionProvider {
+        private final MavenExtension extension;
+
+        MavenService(@Nonnull MavenExtension extension) {
+            this.extension = extension;
+        }
+
+        @Override
+        @Nonnull
+        public MavenExtension extension() {
+            return extension;
+        }
+
+        @Override
+        @Nonnull
+        public String describeExtension(@Nullable String classifier) {
+            if (classifier == null || classifier.isBlank()) {
+                return extension.name();
+            }
+            return extension.name() + ":" + classifier;
+        }
+
+        @Nonnull
+        List<String> serviceIds() {
+            List<String> ids = new ArrayList<>();
+            ids.add(extension.name());
+            @Nullable String implementationHint = extension.implementationHint();
+            if (implementationHint != null) {
+                ids.add(implementationHint);
+            }
+            return ids;
+        }
+    }
+
+    @NotThreadSafe
+    static final class InvocationLog {
+        private final List<String> entries = new ArrayList<>();
+
+        void add(@Nonnull String entry) {
+            entries.add(entry);
+        }
+
+        @Nonnull
+        List<String> entries() {
+            return List.copyOf(entries);
+        }
     }
 }
