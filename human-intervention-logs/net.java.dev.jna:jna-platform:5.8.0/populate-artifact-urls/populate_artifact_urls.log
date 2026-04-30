@@ -1,0 +1,312 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ddc94-46d4-7050-8242-bfa6264e5738
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.java.dev.jna:jna-platform:5.8.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "5.8.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc/metadata/net.java.dev.jna/jna-platform/index.json
+- Entry selector: "metadata-version" = "5.8.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "5.8.0".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-sources.jar
+- repository-url: https://github.com/java-native-access/jna
+- test-code-url: https://github.com/java-native-access/jna/tree/5.8.0/contrib/platform/test
+- documentation-url: https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-javadoc.jar
+- description: JNA Platform provides prebuilt Java mappings for common native platform APIs on top of Java Native Access. It includes cross-platform utilities and extensive Win32 mappings so Java applications can call operating-system features without writing JNI code.
+- language: <missing>
+
+Context:
+- Coordinate version: 5.8.0
+- Entry test-version: 5.8.0
+codex
+I’ll verify the exact-version artifact URLs, then inspect the existing metadata entry and only fill fields that are actually missing.
+web search: 
+web search: Maven Central net.java.dev.jna jna-platform 5.8.0 sources javadoc
+web search: 
+web search: https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/
+web search: 
+web search: 
+codex
+The Maven directory confirms versioned `sources.jar` and `javadoc.jar` artifacts for `jna-platform` 5.8.0, and the GitHub tag has the platform test directory. I’m checking the local JSON now to see which fields are genuinely blank before editing.
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"5\\.8\\.0\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/net.java.dev.jna/jna-platform/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+4:    "metadata-version" : "5.8.0",
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-sources.jar",
+6:    "repository-url" : "https://github.com/java-native-access/jna",
+7:    "test-code-url" : "https://github.com/java-native-access/jna/tree/5.8.0/contrib/platform/test",
+8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-javadoc.jar",
+9:    "description" : "JNA Platform provides prebuilt Java mappings for common native platform APIs on top of Java Native Access. It includes cross-platform utilities and extensive Win32 mappings so Java applications can call operating-system features without writing JNI code.",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/net.java.dev.jna/jna-platform/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.8.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-sources.jar",
+    "repository-url" : "https://github.com/java-native-access/jna",
+    "test-code-url" : "https://github.com/java-native-access/jna/tree/5.8.0/contrib/platform/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-javadoc.jar",
+    "description" : "JNA Platform provides prebuilt Java mappings for common native platform APIs on top of Java Native Access. It includes cross-platform utilities and extensive Win32 mappings so Java applications can call operating-system features without writing JNI code.",
+    "tested-versions" : [
+      "5.8.0"
+    ],
+    "allowed-packages" : [
+      "com.sun.jna.platform"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+?? metadata/net.java.dev.jna/jna-platform/
+?? tests/src/net.java.dev.jna/jna-platform/
+
+web search: 
+web search: https://github.com/java-native-access/jna/tree/5.8.0/contrib/platform/test
+web search: 
+web search: site:repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0 jna-platform-5.8.0-sources.jar javadoc.jar
+web search: 
+web search: 
+web search: 
+web search: "repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/"
+codex
+The target entry already has non-blank values for all requested URL and description fields. Since `jna-platform` is a Java library and not Kotlin, Groovy, or Scala-specific, the missing `language` field should remain absent under the rules you gave.
+exec
+/usr/bin/bash -lc 'jq empty metadata/net.java.dev.jna/jna-platform/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 04:10:32 GMT
+content-type: application/java-archive
+content-length: 1060344
+cf-ray: 9f43b281ee6c7a85-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 737010
+etag: "ee747e543289efafbccbb4eaff583f92"
+last-modified: Mon, 22 Mar 2021 17:05:23 GMT
+x-checksum-md5: ee747e543289efafbccbb4eaff583f92
+x-checksum-sha1: 8a8b7479318f8b410bff689383e561f03dce9d4b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 04:10:32 GMT
+content-type: application/java-archive
+content-length: 6025496
+cf-ray: 9f43b2823ccce5d9-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1272605
+etag: "fcc80bb405ea7d2426c56b8e0b53ce77"
+last-modified: Mon, 22 Mar 2021 17:05:26 GMT
+x-checksum-md5: fcc80bb405ea7d2426c56b8e0b53ce77
+x-checksum-sha1: 1cec2c15e100a61e363bed5ae1be44a338c9dec2
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/java-native-access/jna/tree/5.8.0/contrib/platform/test' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 573ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 04:10:33 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"21b77092e051847060aa397278479234"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=3q088tJPgofynSILoRgBwiLsBMs6%2FY2%2FOP3cxDEEYbzqW6MHtvcEuur2IRQHnz8Ra%2BZ87dlg2RaYJ8D4PZQ47gTKNzHsMkq4NyLnDPn2MHUiq%2Bic4X%2BVYve5DaxoTayrEEp3qmctRZYMm21UYImEPa7TOMGsbRO4IdysndD%2BaoehSJLqzeyqu447yAsgAaR%2BzvZGlf%2BFf9u1SOjpOUhsNLn%2FOyJs7rhc02VixV6o3WBDVbAm2roEVBRIWgljMJWhWZLXMT8bn1%2Fl9JcaenfdKQ%3D%3D--toBs5zGaezPSn9oh--R10mg4wfE6%2FsIWkiUHkBrw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.289473482.1777522232; expires=Fri, 30 Apr 2027 04:10:32 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 04:10:32 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FF:96432:3EBB371:3123057:69F2D638
+
+
+exec
+/usr/bin/bash -lc 'curl -fsS https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/java-native-access/jna' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 215ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: net/java/dev/jna/jna-platform/5.8.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>net/java/dev/jna/jna-platform/5.8.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jna-platform-5.8.0-javadoc.jar" title="jna-platform-5.8.0-javadoc.jar">jna-platform-5.8.0-javadoc.jar</a>                    2021-03-22 17:05   6025496      
+<a href="jna-platform-5.8.0-javadoc.jar.asc" title="jna-platform-5.8.0-javadoc.jar.asc">jna-platform-5.8.0-javadoc.jar.asc</a>                2021-03-22 17:05       833      
+<a href="jna-platform-5.8.0-javadoc.jar.asc.md5" title="jna-platform-5.8.0-javadoc.jar.asc.md5">jna-platform-5.8.0-javadoc.jar.asc.md5</a>            2021-03-22 17:05        32      
+<a href="jna-platform-5.8.0-javadoc.jar.asc.sha1" title="jna-platform-5.8.0-javadoc.jar.asc.sha1">jna-platform-5.8.0-javadoc.jar.asc.sha1</a>           2021-03-22 17:05        40      
+<a href="jna-platform-5.8.0-javadoc.jar.md5" title="jna-platform-5.8.0-javadoc.jar.md5">jna-platform-5.8.0-javadoc.jar.md5</a>                2021-03-22 17:05        32      
+<a href="jna-platform-5.8.0-javadoc.jar.sha1" title="jna-platform-5.8.0-javadoc.jar.sha1">jna-platform-5.8.0-javadoc.jar.sha1</a>               2021-03-22 17:05        40      
+<a href="jna-platform-5.8.0-jpms.jar" title="jna-platform-5.8.0-jpms.jar">jna-platform-5.8.0-jpms.jar</a>                       2021-03-22 17:05   1338923      
+<a href="jna-platform-5.8.0-jpms.jar.asc" title="jna-platform-5.8.0-jpms.jar.asc">jna-platform-5.8.0-jpms.jar.asc</a>                   2021-03-22 17:05       833      
+<a href="jna-platform-5.8.0-jpms.jar.asc.md5" title="jna-platform-5.8.0-jpms.jar.asc.md5">jna-platform-5.8.0-jpms.jar.asc.md5</a>               2021-03-22 17:05        32      
+<a href="jna-platform-5.8.0-jpms.jar.asc.sha1" title="jna-platform-5.8.0-jpms.jar.asc.sha1">jna-platform-5.8.0-jpms.jar.asc.sha1</a>              2021-03-22 17:05        40      
+<a href="jna-platform-5.8.0-jpms.jar.md5" title="jna-platform-5.8.0-jpms.jar.md5">jna-platform-5.8.0-jpms.jar.md5</a>                   2021-03-22 17:05        32      
+<a href="jna-platform-5.8.0-jpms.jar.sha1" title="jna-platform-5.8.0-jpms.jar.sha1">jna-platform-5.8.0-jpms.jar.sha1</a>                  2021-03-22 17:05        40      
+<a href="jna-platform-5.8.0-sources.jar" title="jna-platform-5.8.0-sources.jar">jna-platform-5.8.0-sources.jar</a>                    2021-03-22 17:05   1060344      
+<a href="jna-platform-5.8.0-sources.jar.asc" title="jna-platform-5.8.0-sources.jar.asc">jna-platform-5.8.0-sources.jar.asc</a>                2021-03-22 17:05       833      
+<a href="jna-platform-5.8.0-sources.jar.asc.md5" title="jna-platform-5.8.0-sources.jar.asc.md5">jna-platform-5.8.0-sources.jar.asc.md5</a>            2021-03-22 17:05        32      
+<a href="jna-platform-5.8.0-sources.jar.asc.sha1" title="jna-platform-5.8.0-sources.jar.asc.sha1">jna-platform-5.8.0-sources.jar.asc.sha1</a>           2021-03-22 17:05        40      
+<a href="jna-platform-5.8.0-sources.jar.md5" title="jna-platform-5.8.0-sources.jar.md5">jna-platform-5.8.0-sources.jar.md5</a>                2021-03-22 17:05        32      
+<a href="jna-platform-5.8.0-sources.jar.sha1" title="jna-platform-5.8.0-sources.jar.sha1">jna-platform-5.8.0-sources.jar.sha1</a>               2021-03-22 17:05        40      
+<a href="jna-platform-5.8.0.jar" title="jna-platform-5.8.0.jar">jna-platform-5.8.0.jar</a>                            2021-03-22 17:05   1338206      
+<a href="jna-platform-5.8.0.jar.asc" title="jna-platform-5.8.0.jar.asc">jna-platform-5.8.0.jar.asc</a>                        2021-03-22 17:05       833      
+<a href="jna-platform-5.8.0.jar.asc.md5" title="jna-platform-5.8.0.jar.asc.md5">jna-platform-5.8.0.jar.asc.md5</a>                    2021-03-22 17:05        32      
+<a href="jna-platform-5.8.0.jar.asc.sha1" title="jna-platform-5.8.0.jar.asc.sha1">jna-platform-5.8.0.jar.asc.sha1</a>                   2021-03-22 17:05        40      
+<a href="jna-platform-5.8.0.jar.md5" title="jna-platform-5.8.0.jar.md5">jna-platform-5.8.0.jar.md5</a>                        2021-03-22 17:05        32      
+<a href="jna-platform-5.8.0.jar.sha1" title="jna-platform-5.8.0.jar.sha1">jna-platform-5.8.0.jar.sha1</a>                       2021-03-22 17:05        40      
+<a href="jna-platform-5.8.0.pom" title="jna-platform-5.8.0.pom">jna-platform-5.8.0.pom</a>                            2021-03-22 17:05      1800      
+<a href="jna-platform-5.8.0.pom.asc" title="jna-platform-5.8.0.pom.asc">jna-platform-5.8.0.pom.asc</a>                        2021-03-22 17:05       833      
+<a href="jna-platform-5.8.0.pom.asc.md5" title="jna-platform-5.8.0.pom.asc.md5">jna-platform-5.8.0.pom.asc.md5</a>                    2021-03-22 17:05        32      
+<a href="jna-platform-5.8.0.pom.asc.sha1" title="jna-platform-5.8.0.pom.asc.sha1">jna-platform-5.8.0.pom.asc.sha1</a>                   2021-03-22 17:05        40      
+<a href="jna-platform-5.8.0.pom.md5" title="jna-platform-5.8.0.pom.md5">jna-platform-5.8.0.pom.md5</a>                        2021-03-22 17:05        32      
+<a href="jna-platform-5.8.0.pom.sha1" title="jna-platform-5.8.0.pom.sha1">jna-platform-5.8.0.pom.sha1</a>                       2021-03-22 17:05        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 582ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 04:10:39 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"7c4789da303c461a229d4eecf9af2433"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=ql5FeRpue7Di8pB1EgG3kecQbBJArqQIMGE6IZlVtKcxOXnorVSVNHSSgC4Us76Gnm0PuDi2N7CeZ4IIdPcxrcYP597b5EcRfw62vTnqPafEQvokkQ8LIbkDFyTU%2BE1lwGtdkH01Iv7Ml49eyttcpcsNutt3%2FDCh3FAmS3PaWM9NjucGVx5ExYQNTbTdv4he1u8T6CjGlzDON3CqAMz4b3FigWVwRnOZRIzrIpjUHlHgiubT3dM5iCag2g4x3ek7pUeBjM%2FRRSJO9FuGA9dSrQ%3D%3D--ZkvsPwiFXj5DoVgB--OkKQrdu26ZRPkMXSGeTywA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1484049735.1777522238; expires=Fri, 30 Apr 2027 04:10:38 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 04:10:38 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FE:23742C:402831F:32338B1:69F2D63E
+
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/net.java.dev.jna/jna-platform/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short metadata/net.java.dev.jna/jna-platform/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+?? metadata/net.java.dev.jna/jna-platform/index.json
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/
+web search: 
+web search: https://github.com/java-native-access/jna/tree/5.8.0/contrib/platform/test
+codex
+No file changes were required in [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc/metadata/net.java.dev.jna/jna-platform/index.json:1). The entry already had non-blank `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and a two-sentence `description`; `language` remains absent because `jna-platform` is not Kotlin, Groovy, or Scala-specific.
+
+I verified Maven Central has the exact-version `5.8.0` sources and javadoc artifacts, and the GitHub `5.8.0` tag contains the platform test directory under `contrib/platform/test`. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/)) JSON validation passed with `jq empty`.
+2026-04-30T04:10:58.157557Z ERROR codex_core::session: failed to record rollout items: thread 019ddc94-46d4-7050-8242-bfa6264e5738 not found
+tokens used
+54,079
+No file changes were required in [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc/metadata/net.java.dev.jna/jna-platform/index.json:1). The entry already had non-blank `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and a two-sentence `description`; `language` remains absent because `jna-platform` is not Kotlin, Groovy, or Scala-specific.
+
+I verified Maven Central has the exact-version `5.8.0` sources and javadoc artifacts, and the GitHub `5.8.0` tag contains the platform test directory under `contrib/platform/test`. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/)) JSON validation passed with `jq empty`.
+Ran agent for net.java.dev.jna:jna-platform:5.8.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc/build/agent-url-discovery-logs/net.java.dev.jna-jna-platform-5.8.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m
+9 actionable tasks: 1 executed, 8 up-to-date

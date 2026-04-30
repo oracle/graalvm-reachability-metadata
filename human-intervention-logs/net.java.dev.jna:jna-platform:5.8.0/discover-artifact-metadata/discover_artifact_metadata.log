@@ -1,0 +1,550 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ddc92-a37f-7681-be2e-773f861e2591
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.java.dev.jna:jna-platform:5.8.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "5.8.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json
+- Set "coordinates" to "net.java.dev.jna:jna-platform:5.8.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven/GitHub first, then patch the JSON directly. I’m checking whether Maven publishes source and test artifacts before falling back to tagged repository paths.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+{
+  "coordinates" : "net.java.dev.jna:jna-platform:5.8.0"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+-rw-rw-r-- 1 vjovanov vjovanov 60 Apr 30 06:08 build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json
+
+web search: 
+web search: Maven Central net.java.dev.jna jna-platform 5.8.0 sources jar pom scm
+web search: 
+web search: https://github.com/java-native-access/jna
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-sources.jar
+codex
+Maven Central confirms the main artifact, and I’m now checking classifiers directly. The exact-version source JAR is the preferred source URL if it exists; test sources are usually not published for this project, so I’ll only use GitHub for tests if Maven lacks them.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+  http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>net.java.dev.jna</groupId>
+  <artifactId>jna-platform</artifactId>
+  <version>5.8.0</version>
+  <packaging>jar</packaging>
+
+  <name>Java Native Access Platform</name>
+  <description>Java Native Access Platform</description>
+  <url>https://github.com/java-native-access/jna</url>
+
+  <licenses>
+      <license>
+          <name>LGPL, version 2.1</name>
+          <url>http://www.gnu.org/licenses/licenses.html</url>
+          <distribution>repo</distribution>
+      </license>
+      <license>
+          <name>Apache License v2.0</name>
+          <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+          <distribution>repo</distribution>
+      </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:https://github.com/java-native-access/jna</connection>
+    <developerConnection>scm:git:ssh://git@github.com/java-native-access/jna.git</developerConnection>
+    <url>https://github.com/java-native-access/jna</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>twall</id>
+      <name>Timothy Wall</name>
+      <roles>
+        <role>Owner</role>
+      </roles>
+    </developer>
+    <developer>
+      <email>mblaesing@doppel-helix.eu</email>
+      <name>Matthias Bläsing</name>
+      <url>https://github.com/matthiasblaesing/</url>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <dependencies>
+    <dependency>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>5.8.0</version>
+    </dependency>
+  </dependencies>
+
+</project>
+
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 04:08:32 GMT
+content-type: application/java-archive
+content-length: 1060344
+cf-ray: 9f43af942fe1dc8b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 732651
+etag: "ee747e543289efafbccbb4eaff583f92"
+last-modified: Mon, 22 Mar 2021 17:05:23 GMT
+x-checksum-md5: ee747e543289efafbccbb4eaff583f92
+x-checksum-sha1: 8a8b7479318f8b410bff689383e561f03dce9d4b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 04:08:32 GMT
+content-type: application/java-archive
+content-length: 6025496
+cf-ray: 9f43af942e74cb74-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 568880
+etag: "fcc80bb405ea7d2426c56b8e0b53ce77"
+last-modified: Mon, 22 Mar 2021 17:05:26 GMT
+x-checksum-md5: fcc80bb405ea7d2426c56b8e0b53ce77
+x-checksum-sha1: 1cec2c15e100a61e363bed5ae1be44a338c9dec2
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-test-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ exited 22 in 244ms:
+HTTP/2 404 
+date: Thu, 30 Apr 2026 04:08:32 GMT
+content-type: text/html
+cf-ray: 9f43af942caf039d-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"' -n build/discovered-artifact-metadata | head -20" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'javadoc.jar|apidocs|docs' -n build/discovered-artifact-metadata | head -30" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'repo1.maven.org.*sources.jar' -n build/discovered-artifact-metadata | head -20" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"' -n . | head -30" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:26:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:16:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:352:                    - Set "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:362:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:365:                - Set missing "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:169:                - Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:178:                .containsEntry("source-code-url", "https://example.com/source")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:224:                .containsEntry("source-code-url", "https://example.com/source")
+./forge/utility_scripts/source_context.py:23:    "main": "source-code-url",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:220:                    "source-code-url": "https://example.com/source-a",
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/2.0.0.Final/jboss-interceptor-spi-2.0.0.Final-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/jakarta.websocket-client-api-2.1.0-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+./docs/CONTRIBUTING.md:140:     "source-code-url": "https://github.com/example/repo/tree/main/metadata/org.example/library/1.1.0",
+./metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-sources.jar",
+./metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-sources.jar",
+./metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-sources.jar",
+./metadata/org.apache.commons/commons-compress/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-sources.jar",
+./metadata/org.apache.commons/commons-compress/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-sources.jar",
+
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f | wc -l' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+1
+
+exec
+/usr/bin/bash -lc "rg 'repo1.maven.org.*sources.jar|repo.maven.apache.org.*sources.jar' -n . | head -30" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-sources.jar",
+./metadata/org.jooq/jooq/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.20.0/jooq-3.20.0-sources.jar",
+./metadata/org.jooq/jooq/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.18.2/jooq-3.18.2-sources.jar",
+./metadata/org.jooq/jooq/index.json:112:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.17.7/jooq-3.17.7-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-sources.jar",
+./metadata/org.immutables/value/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.9-ea-0/value-2.8.9-ea-0-sources.jar",
+./metadata/org.immutables/value/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.6/value-2.8.6-sources.jar",
+./metadata/org.immutables/value/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.2/value-2.8.2-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-core/index.json:79:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-test/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/2.0.21/kotlin-test-2.0.21-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/2.3.20/kotlin-script-runtime-2.3.20-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/2.0.0.Final/jboss-interceptor-spi-2.0.0.Final-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+./metadata/at.yawk.lz4/lz4-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.10.4/lz4-java-1.10.4-sources.jar",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/jakarta.websocket-client-api-2.1.0-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/org.jetbrains.kotlin/kotlin-test/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.21",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/2.0.21/kotlin-test-2.0.21-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.0.21/libraries/kotlin.test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/2.0.21/kotlin-test-2.0.21-javadoc.jar",
+    "description" : "kotlin-test is Kotlin's multiplatform testing library, providing common assertion functions and test annotations for Kotlin code. It integrates the shared kotlin.test API with platform test runners such as JUnit, JUnit 5, TestNG, JavaScript frameworks, and WebAssembly targets.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.0"
+    },
+    "tested-versions" : [
+      "2.0.21",
+      "2.1.0",
+      "2.1.10",
+      "2.1.20",
+      "2.1.21",
+      "2.2.0",
+      "2.2.10",
+      "2.2.20",
+      "2.2.21",
+      "2.3.0",
+      "2.3.10",
+      "2.3.20",
+      "2.3.21",
+      "2.4.0-Beta1",
+      "2.4.0-Beta2"
+    ],
+    "allowed-packages" : [
+      "kotlin.test"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.apache.commons/commons-compress/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+[
+  {
+    "metadata-version" : "1.21",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-sources.jar",
+    "repository-url" : "https://github.com/apache/commons-compress",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-test-sources.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-javadoc.jar",
+    "description" : "Apache Commons Compress provides APIs for reading and writing common archive and compression formats. It supports formats such as ZIP, TAR, 7z, AR, CPIO, GZIP, BZIP2, XZ, LZ4, Brotli, and Zstandard.",
+    "tested-versions" : [
+      "1.21"
+    ],
+    "allowed-packages" : [
+      "org.apache.commons.compress"
+    ]
+  },
+  {
+    "latest" : true,
+    "metadata-version" : "1.23.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-sources.jar",
+    "repository-url" : "https://github.com/apache/commons-compress",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-test-sources.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-javadoc.jar",
+    "description" : "Apache Commons Compress provides APIs for reading and writing common archive and compression formats. It supports formats such as ZIP, TAR, 7z, AR, CPIO, GZIP, BZIP2, XZ, LZ4, Brotli, and Zstandard.",
+    "tested-versions" : [
+      "1.23.0",
+      "1.24.0",
+      "1.25.0",
+      "1.26.0",
+      "1.26.1",
+      "1.26.2",
+      "1.27.0",
+      "1.27.1",
+      "1.28.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.commons"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg '\"test-code-url\".*github.com.*/tree/.*/src/test|\"test-code-url\".*repo.*test' metadata -n | head -30" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+metadata/com.ning/compress-lzf/index.json:7:    "test-code-url" : "https://github.com/ning/compress/tree/compress-lzf-1.0.3/src/test",
+metadata/org.apache.httpcomponents/httpclient/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5-tests.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14-tests.jar",
+metadata/org.jctools/jctools-core/index.json:10:    "test-code-url": "https://github.com/JCTools/JCTools/tree/v2.1.2/jctools-core/src/test",
+metadata/org.iq80.leveldb/leveldb-api/index.json:7:    "test-code-url" : "https://github.com/dain/leveldb/tree/0.6/leveldb/src/test",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v0.31.1/api/src/test",
+metadata/com.github.docker-java/docker-java-transport/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/docker-java/docker-java-transport/3.2.13/docker-java-transport-3.2.13-tests.jar",
+metadata/org.apache.commons/commons-compress/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-test-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.12/httpcore-4.4.12-tests.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:21:    "test-code-url" : "https://github.com/apache/httpcomponents-core/tree/rel/v4.0.1/httpcore/src/test/java",
+metadata/org.apache.httpcomponents/httpcore/index.json:35:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.9/httpcore-4.4.9-tests.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:49:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.10/httpcore-4.4.10-tests.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:63:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.11/httpcore-4.4.11-tests.jar",
+metadata/io.projectreactor/reactor-core/index.json:7:    "test-code-url" : "https://github.com/reactor/reactor-core/tree/v3.5.1/reactor-core/src/test/java",
+metadata/org.apache.commons/commons-dbcp2/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-test-sources.jar",
+metadata/io.micrometer/micrometer-commons/index.json:7:    "test-code-url" : "https://github.com/micrometer-metrics/micrometer/tree/v1.16.0/micrometer-commons/src/test/java",
+metadata/io.micrometer/micrometer-commons/index.json:21:    "test-code-url" : "https://github.com/micrometer-metrics/micrometer/tree/v1.14.4/micrometer-commons/src/test/java",
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/2.23.2/zipkin-tests/src/test",
+metadata/com.mysql/mysql-connector-j/index.json:7:    "test-code-url" : "https://github.com/mysql/mysql-connector-j/tree/8.0.31/src/test",
+metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/2.0.1/mail/src/test",
+metadata/com.barchart.udt/barchart-udt-bundle/index.json:7:    "test-code-url" : "https://github.com/barchart/barchart-udt/tree/barchart-udt-2.3.0/barchart-udt-it/barchart-udt-it-02-bundle-test/src/test",
+metadata/org.apache.commons/commons-text/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-test-sources.jar",
+metadata/at.yawk.lz4/lz4-java/index.json:7:    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/v1.10.4/src/test",
+metadata/javax.xml.bind/jaxb-api/index.json:7:    "test-code-url" : "https://github.com/javaee/jaxb-spec/tree/2.3.1/jaxb-api-test/src/test",
+metadata/org.cache2k/cache2k-core/index.json:7:    "test-code-url" : "https://github.com/cache2k/cache2k/tree/v2.6.1.Final/cache2k-core/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.glassfish.jaxb/txw2/index.json:7:    "test-code-url" : "https://github.com/javaee/jaxb-v2/tree/2.3.1/jaxb-ri/txw/runtime/src/test/java",
+metadata/org.apache.commons/commons-pool2/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-test-sources.jar",
+
+web search: 
+web search: https://github.com/java-native-access/jna/tree/5.8.0
+web search: 
+web search: 
+web search: 
+web search: "jna-platform-5.8.0-sources.jar"
+codex
+The project tag is `5.8.0`, and the platform module’s tests live under `contrib/platform/test` in that tag. I’m going to use Maven Central for the source and Javadoc artifacts, the GitHub repository for the repository URL, and the tagged GitHub test directory for the test suite.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json
+diff --git a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json
+index 6f918bf83a112643fa60570836d33348bd727ce2..37d1a20960d7b2bd75921c83f6d329be83db531e
+--- a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json
++++ b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.java.dev.jna:jna-platform:5.8.0"
++  "coordinates" : "net.java.dev.jna:jna-platform:5.8.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-sources.jar",
++  "repository-url" : "https://github.com/java-native-access/jna",
++  "test-code-url" : "https://github.com/java-native-access/jna/tree/5.8.0/contrib/platform/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-javadoc.jar",
++  "description" : "JNA Platform provides prebuilt Java mappings for common native platform APIs on top of Java Native Access. It includes cross-platform utilities and extensive Win32 mappings so Java applications can call operating-system features without writing JNI code."
+ }
+
+diff --git a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json
+index 6f918bf83a112643fa60570836d33348bd727ce2..37d1a20960d7b2bd75921c83f6d329be83db531e
+--- a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json
++++ b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.java.dev.jna:jna-platform:5.8.0"
++  "coordinates" : "net.java.dev.jna:jna-platform:5.8.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-sources.jar",
++  "repository-url" : "https://github.com/java-native-access/jna",
++  "test-code-url" : "https://github.com/java-native-access/jna/tree/5.8.0/contrib/platform/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-javadoc.jar",
++  "description" : "JNA Platform provides prebuilt Java mappings for common native platform APIs on top of Java Native Access. It includes cross-platform utilities and extensive Win32 mappings so Java applications can call operating-system features without writing JNI code."
+ }
+
+codex
+The JSON is patched. I’m doing a quick parse check and re-reading the file so the final state is confirmed rather than assumed.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+{
+  "coordinates" : "net.java.dev.jna:jna-platform:5.8.0",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-sources.jar",
+  "repository-url" : "https://github.com/java-native-access/jna",
+  "test-code-url" : "https://github.com/java-native-access/jna/tree/5.8.0/contrib/platform/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-javadoc.jar",
+  "description" : "JNA Platform provides prebuilt Java mappings for common native platform APIs on top of Java Native Access. It includes cross-platform utilities and extensive Win32 mappings so Java applications can call operating-system features without writing JNI code."
+}
+
+exec
+/usr/bin/bash -lc 'python3 -m json.tool build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json >/dev/null' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json
+index 6f918bf83a112643fa60570836d33348bd727ce2..37d1a20960d7b2bd75921c83f6d329be83db531e
+--- a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json
++++ b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.java.dev.jna:jna-platform:5.8.0"
++  "coordinates" : "net.java.dev.jna:jna-platform:5.8.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-sources.jar",
++  "repository-url" : "https://github.com/java-native-access/jna",
++  "test-code-url" : "https://github.com/java-native-access/jna/tree/5.8.0/contrib/platform/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-javadoc.jar",
++  "description" : "JNA Platform provides prebuilt Java mappings for common native platform APIs on top of Java Native Access. It includes cross-platform utilities and extensive Win32 mappings so Java applications can call operating-system features without writing JNI code."
+ }
+
+web search: 
+web search: https://github.com/java-native-access/jna/tree/5.8.0/contrib/platform/test
+web search: 
+web search: "net.java.dev.jna" "jna-platform" "5.8.0" "sources.jar"
+web search: 
+web search: central.sonatype.com artifact net.java.dev.jna jna-platform 5.8.0
+web search: 
+web search: https://central.sonatype.com/artifact/net.java.dev.jna/jna-platform
+web search: 
+web search: https://mvnrepository.com/artifact/net.java.dev.jna/jna-platform/5.8.0
+web search: 
+web search: https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/5.8.0/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json
+index 6f918bf83a112643fa60570836d33348bd727ce2..37d1a20960d7b2bd75921c83f6d329be83db531e
+--- a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json
++++ b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.java.dev.jna:jna-platform:5.8.0"
++  "coordinates" : "net.java.dev.jna:jna-platform:5.8.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-sources.jar",
++  "repository-url" : "https://github.com/java-native-access/jna",
++  "test-code-url" : "https://github.com/java-native-access/jna/tree/5.8.0/contrib/platform/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-javadoc.jar",
++  "description" : "JNA Platform provides prebuilt Java mappings for common native platform APIs on top of Java Native Access. It includes cross-platform utilities and extensive Win32 mappings so Java applications can call operating-system features without writing JNI code."
+ }
+
+web search: 
+web search: Maven Central net.java.dev.jna jna-platform 5.8.0
+web search: 
+web search: https://github.com/java-native-access/jna/tree/5.8.0/contrib/platform/test
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/
+web search: 
+web search: https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/5.8.0/
+web search: 
+web search: 
+web search: 
+web search: https://mvnrepository.com/artifact/net.java.dev.jna/jna-platform/5.8.0
+codex
+Updated [net.java.dev.jna-jna-platform-5.8.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json:1) with the exact `5.8.0` source and Javadoc artifacts from Maven Central, the GitHub repository, and the tagged `contrib/platform/test` test suite. Maven Central lists the `5.8.0` source and Javadoc jars, while GitHub exposes the `5.8.0` test directory. ([repo1.maven.org](https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/5.8.0/))
+
+I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library. I also validated the JSON with `python3 -m json.tool`.
+diff --git a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json
+index 6f918bf83a112643fa60570836d33348bd727ce2..37d1a20960d7b2bd75921c83f6d329be83db531e
+--- a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json
++++ b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.java.dev.jna:jna-platform:5.8.0"
++  "coordinates" : "net.java.dev.jna:jna-platform:5.8.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-sources.jar",
++  "repository-url" : "https://github.com/java-native-access/jna",
++  "test-code-url" : "https://github.com/java-native-access/jna/tree/5.8.0/contrib/platform/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.8.0/jna-platform-5.8.0-javadoc.jar",
++  "description" : "JNA Platform provides prebuilt Java mappings for common native platform APIs on top of Java Native Access. It includes cross-platform utilities and extensive Win32 mappings so Java applications can call operating-system features without writing JNI code."
+ }
+
+2026-04-30T04:09:51.184187Z ERROR codex_core::session: failed to record rollout items: thread 019ddc92-a37f-7681-be2e-773f861e2591 not found
+tokens used
+86,527
+Updated [net.java.dev.jna-jna-platform-5.8.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.8.0.json:1) with the exact `5.8.0` source and Javadoc artifacts from Maven Central, the GitHub repository, and the tagged `contrib/platform/test` test suite. Maven Central lists the `5.8.0` source and Javadoc jars, while GitHub exposes the `5.8.0` test directory. ([repo1.maven.org](https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/5.8.0/))
+
+I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library. I also validated the JSON with `python3 -m json.tool`.
+Ran agent for net.java.dev.jna:jna-platform:5.8.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc/build/agent-artifact-discovery-logs/net.java.dev.jna-jna-platform-5.8.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-cce5b3bc/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 41s
+9 actionable tasks: 4 executed, 5 from cache
