@@ -292,6 +292,73 @@ public class Jackson_dataformat_yamlTest {
     }
 
     @Test
+    void generatorAndParserSupportNativeYamlTypeIds() throws Exception {
+        YAMLFactory factory = YAMLFactory.builder()
+                .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
+                .enable(YAMLGenerator.Feature.USE_NATIVE_TYPE_ID)
+                .build();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        try (JsonGenerator generator = factory.createGenerator(output)) {
+            generator.writeStartObject();
+            generator.writeFieldName("resource");
+            generator.writeTypeId("service");
+            generator.writeStartObject();
+            generator.writeStringField("name", "catalog");
+            generator.writeNumberField("replicas", 3);
+            generator.writeEndObject();
+            generator.writeFieldName("labels");
+            generator.writeTypeId("tag-list");
+            generator.writeStartArray();
+            generator.writeString("public");
+            generator.writeString("stable");
+            generator.writeEndArray();
+            generator.writeEndObject();
+        }
+
+        byte[] serialized = output.toByteArray();
+        String yaml = output.toString(StandardCharsets.UTF_8);
+
+        assertThat(yaml)
+                .contains("resource: !<service>")
+                .contains("labels: !<tag-list>")
+                .contains("- \"public\"")
+                .contains("- \"stable\"");
+
+        try (YAMLParser parser = (YAMLParser) factory.createParser(serialized)) {
+            assertThat(parser.canReadTypeId()).isTrue();
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.START_OBJECT);
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.FIELD_NAME);
+            assertThat(parser.currentName()).isEqualTo("resource");
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.START_OBJECT);
+            assertThat(parser.getTypeId()).isEqualTo("service");
+
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.FIELD_NAME);
+            assertThat(parser.currentName()).isEqualTo("name");
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.VALUE_STRING);
+            assertThat(parser.getText()).isEqualTo("catalog");
+
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.FIELD_NAME);
+            assertThat(parser.currentName()).isEqualTo("replicas");
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.VALUE_NUMBER_INT);
+            assertThat(parser.getIntValue()).isEqualTo(3);
+
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.END_OBJECT);
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.FIELD_NAME);
+            assertThat(parser.currentName()).isEqualTo("labels");
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.START_ARRAY);
+            assertThat(parser.getTypeId()).isEqualTo("tag-list");
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.VALUE_STRING);
+            assertThat(parser.getText()).isEqualTo("public");
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.VALUE_STRING);
+            assertThat(parser.getText()).isEqualTo("stable");
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.END_ARRAY);
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.END_OBJECT);
+            assertThat(parser.nextToken()).isNull();
+        }
+    }
+
+    @Test
     void generatorAndParserSupportNativeYamlObjectIds() throws Exception {
         YAMLFactory factory = YAMLFactory.builder()
                 .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
