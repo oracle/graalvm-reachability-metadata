@@ -7,6 +7,7 @@
 package org_playframework.play_exceptions;
 
 import play.api.PlayException;
+import play.api.UsefulException;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,6 +40,31 @@ public class Play_exceptionsTest {
         assertThat(exception.getCause()).isSameAs(cause);
         assertThat(exception.getMessage()).isEqualTo("Runtime error[Handler failed]");
         assertThat(exception.toString()).isEqualTo("@" + exception.id + ": Runtime error[Handler failed]");
+    }
+
+    @Test
+    void usefulExceptionAllowsCustomMessagesAndRuntimeCauses() {
+        IllegalArgumentException cause = new IllegalArgumentException("invalid state");
+
+        CustomUsefulException exception = new CustomUsefulException("Custom diagnostic", cause, "custom-id");
+
+        assertThat(exception.getMessage()).isEqualTo("Custom diagnostic");
+        assertThat(exception.getCause()).isSameAs(cause);
+        assertThat(exception.id).isEqualTo("custom-id");
+        assertThat(exception.title).isNull();
+        assertThat(exception.description).isNull();
+        assertThat(exception.cause).isNull();
+        assertThat(exception.toString()).isEqualTo("@custom-id: Custom diagnostic");
+    }
+
+    @Test
+    void usefulExceptionAllowsMessageOnlyCustomExceptions() {
+        CustomUsefulException exception = new CustomUsefulException("Custom diagnostic", "custom-id");
+
+        assertThat(exception.getMessage()).isEqualTo("Custom diagnostic");
+        assertThat(exception.getCause()).isNull();
+        assertThat(exception.id).isEqualTo("custom-id");
+        assertThat(exception.toString()).isEqualTo("@custom-id: Custom diagnostic");
     }
 
     @Test
@@ -193,6 +219,18 @@ public class Play_exceptionsTest {
         assertThat(exception.htmlDescription()).isEqualTo("<pre>plain source excerpt</pre>");
         assertThat(exception.getMessage()).isEqualTo("Template error[Compilation failed]");
         assertThat(exception.getCause()).isNull();
+    }
+
+    private static final class CustomUsefulException extends UsefulException {
+        private CustomUsefulException(String message, String id) {
+            super(message);
+            this.id = id;
+        }
+
+        private CustomUsefulException(String message, Throwable cause, String id) {
+            super(message, cause);
+            this.id = id;
+        }
     }
 
     private static final class SourceException extends PlayException.ExceptionSource {
