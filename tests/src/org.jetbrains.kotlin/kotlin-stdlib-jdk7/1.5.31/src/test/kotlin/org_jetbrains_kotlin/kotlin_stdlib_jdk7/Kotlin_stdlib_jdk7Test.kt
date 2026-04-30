@@ -24,6 +24,7 @@ import kotlin.io.path.invariantSeparatorsPathString
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.moveTo
 import kotlin.io.path.name
 import kotlin.io.path.nameWithoutExtension
 import kotlin.io.path.readText
@@ -148,6 +149,29 @@ public class Kotlin_stdlib_jdk7Test {
             assertThat(generatedFile.name).startsWith("metadata-").endsWith(".json")
             assertThat(generatedFile.isRegularFile()).isTrue()
             assertThat(generatedFile.readText(Charsets.UTF_8)).isEqualTo("{\"library\":\"kotlin-stdlib-jdk7\"}")
+        }
+    }
+
+    @Test
+    public fun moveToMovesFileContentsAndCanReplaceExistingTarget() {
+        withTemporaryDirectory { directory: JdkPath ->
+            val sourceFile: JdkPath = directory.resolve("source.txt")
+            val targetFile: JdkPath = directory.resolve("target.txt")
+
+            sourceFile.writeText("status=ready", Charsets.UTF_8)
+            val movedFile: JdkPath = sourceFile.moveTo(targetFile)
+
+            assertThat(movedFile).isEqualTo(targetFile)
+            assertThat(sourceFile.exists()).isFalse()
+            assertThat(targetFile.readText(Charsets.UTF_8)).isEqualTo("status=ready")
+
+            val replacementFile: JdkPath = directory.resolve("replacement.txt")
+            replacementFile.writeText("status=replacement", Charsets.UTF_8)
+            val replacedFile: JdkPath = replacementFile.moveTo(targetFile, overwrite = true)
+
+            assertThat(replacedFile).isEqualTo(targetFile)
+            assertThat(replacementFile.exists()).isFalse()
+            assertThat(targetFile.readText(Charsets.UTF_8)).isEqualTo("status=replacement")
         }
     }
 
