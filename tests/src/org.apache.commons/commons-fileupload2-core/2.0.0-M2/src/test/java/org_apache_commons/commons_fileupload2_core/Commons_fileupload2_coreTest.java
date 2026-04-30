@@ -155,6 +155,29 @@ public class Commons_fileupload2_coreTest {
     }
 
     @Test
+    void streamingIteratorSkipsUnreadPartWhenAdvanced() throws Exception {
+        String boundary = "skip-unread";
+        byte[] body = multipart(boundary,
+                part("Content-Disposition: form-data; name=\"first\"", "", "unread payload"),
+                part("Content-Disposition: form-data; name=\"second\"", "", "read payload"));
+        Upload upload = newUpload(DiskFileItemFactory.DEFAULT_THRESHOLD);
+
+        FileItemInputIterator iterator = upload.getItemIterator(request(boundary, body));
+
+        assertThat(iterator.hasNext()).isTrue();
+        FileItemInput first = iterator.next();
+        assertThat(first.getFieldName()).isEqualTo("first");
+        assertThat(iterator.hasNext()).isTrue();
+        FileItemInput second = iterator.next();
+        assertThat(second.getFieldName()).isEqualTo("second");
+        assertThat(readUtf8(second.getInputStream())).isEqualTo("read payload");
+        assertThatExceptionOfType(FileItemInput.ItemSkippedException.class)
+                .isThrownBy(() -> first.getInputStream())
+                .withMessageContaining("getInputStream()");
+        assertThat(iterator.hasNext()).isFalse();
+    }
+
+    @Test
     void enforcesRequestFileAndItemCountLimits() throws Exception {
         String boundary = "limits";
         byte[] body = multipart(boundary,
