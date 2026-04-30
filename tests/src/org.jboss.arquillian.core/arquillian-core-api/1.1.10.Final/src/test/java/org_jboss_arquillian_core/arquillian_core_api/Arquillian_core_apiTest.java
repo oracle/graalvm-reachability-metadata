@@ -8,11 +8,14 @@ package org_jboss_arquillian_core.arquillian_core_api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
+import java.util.function.Consumer;
 
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Injector;
@@ -79,6 +82,24 @@ public class Arquillian_core_apiTest {
     }
 
     @Test
+    public void observerPrecedenceCanPrioritizeEventNotifications() {
+        PrioritizedEvent<String> eventBus = new PrioritizedEvent<>();
+        List<String> notifications = new ArrayList<>();
+
+        eventBus.register(new PrioritizedObservation<>(
+                new ObservesLiteral(-10), event -> notifications.add("low:" + event)));
+        eventBus.register(new PrioritizedObservation<>(
+                new ObservesLiteral(250), event -> notifications.add("high:" + event)));
+        eventBus.register(new PrioritizedObservation<>(
+                new ObservesLiteral(0), event -> notifications.add("default:" + event)));
+
+        eventBus.fire("manager-started");
+
+        assertThat(notifications)
+                .containsExactly("high:manager-started", "default:manager-started", "low:manager-started");
+    }
+
+    @Test
     public void executorServiceSnapshotsAndRestoresContextForSubmittedWork() throws Exception {
         ThreadLocal<String> activeContext = new ThreadLocal<>();
         SnapshottingExecutorService executorService = new SnapshottingExecutorService(activeContext);
@@ -107,6 +128,57 @@ public class Arquillian_core_apiTest {
 
         private List<T> events() {
             return events;
+        }
+    }
+
+    private static final class PrioritizedEvent<T> implements Event<T> {
+        private final List<PrioritizedObservation<T>> observations = new ArrayList<>();
+
+        private void register(PrioritizedObservation<T> observation) {
+            observations.add(observation);
+        }
+
+        @Override
+        public void fire(T event) {
+            observations.stream()
+                    .sorted(Comparator.comparingInt(PrioritizedObservation<T>::precedence).reversed())
+                    .forEach(observation -> observation.accept(event));
+        }
+    }
+
+    private static final class PrioritizedObservation<T> {
+        private final Observes observes;
+        private final Consumer<T> observer;
+
+        private PrioritizedObservation(Observes observes, Consumer<T> observer) {
+            this.observes = observes;
+            this.observer = observer;
+        }
+
+        private int precedence() {
+            return observes.precedence();
+        }
+
+        private void accept(T event) {
+            observer.accept(event);
+        }
+    }
+
+    private static final class ObservesLiteral implements Observes {
+        private final int precedence;
+
+        private ObservesLiteral(int precedence) {
+            this.precedence = precedence;
+        }
+
+        @Override
+        public int precedence() {
+            return precedence;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return Observes.class;
         }
     }
 
