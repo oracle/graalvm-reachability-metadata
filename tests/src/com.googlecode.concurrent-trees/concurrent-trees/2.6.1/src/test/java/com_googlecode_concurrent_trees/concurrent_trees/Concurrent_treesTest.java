@@ -96,12 +96,12 @@ public class Concurrent_treesTest {
         tree.put("ton", "weight");
 
         String expected = """
-                ○
-                └── ○ t
-                    ├── ○ ea (drink)
-                    │   └── ○ m (group)
-                    └── ○ o (direction)
-                        └── ○ n (weight)
+                \u25CB
+                \u2514\u2500\u2500 \u25CB t
+                    \u251C\u2500\u2500 \u25CB ea (drink)
+                    \u2502   \u2514\u2500\u2500 \u25CB m (group)
+                    \u2514\u2500\u2500 \u25CB o (direction)
+                        \u2514\u2500\u2500 \u25CB n (weight)
                 """;
 
         assertThat(PrettyPrinter.prettyPrint(tree)).isEqualTo(expected);
