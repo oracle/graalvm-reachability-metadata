@@ -168,6 +168,27 @@ public class Micrometer_observationTest {
     }
 
     @Test
+    void explicitParentObservationCanBeAssignedIndependentlyOfCurrentScope() {
+        ObservationRegistry registry = ObservationRegistry.create();
+        registry.observationConfig().observationHandler(new RecordingHandler("explicit-parent", context -> true));
+        Observation explicitParent = Observation.start("explicit.parent", registry);
+        Observation currentParent = Observation.start("current.parent", registry);
+
+        try (Observation.Scope currentScope = currentParent.openScope()) {
+            Observation child = Observation.createNotStarted("explicit.child", registry)
+                    .parentObservation(explicitParent)
+                    .start();
+
+            assertThat(child.getContext().getParentObservation()).isSameAs(explicitParent);
+            assertThat(registry.getCurrentObservation()).isSameAs(currentParent);
+            child.stop();
+        }
+
+        currentParent.stop();
+        explicitParent.stop();
+    }
+
+    @Test
     void predicatesNoopRegistriesAndNoopConventionsAvoidUnnecessaryWork() {
         AtomicInteger contextCreations = new AtomicInteger();
         Observation nullRegistryObservation = Observation.createNotStarted("ignored", () -> {
