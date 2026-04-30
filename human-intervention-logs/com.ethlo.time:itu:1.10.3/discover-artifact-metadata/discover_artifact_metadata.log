@@ -1,0 +1,651 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2750-80072f88
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019ddccb-db5e-7a91-be7d-ebdac4eff5ea
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.ethlo.time:itu:1.10.3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.10.3".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2750-80072f88/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json
+- Set "coordinates" to "com.ethlo.time:itu:1.10.3".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream tags, then update the JSON in place with only the fields requested.
+exec
+/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json && sed -n '1,160p' build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2750-80072f88
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2750-80072f88
+-rw-rw-r-- 1 jovan jovan 50 Apr 30 07:10 build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json
+{
+  "coordinates" : "com.ethlo.time:itu:1.10.3"
+}
+
+exec
+/bin/bash -lc "rg -n \"com\\.ethlo\\.time|\\bitu\\b|source-code-url|test-code-url|documentation-url\" metadata build/discovered-artifact-metadata | head -80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2750-80072f88
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json:2:  "coordinates" : "com.ethlo.time:itu:1.10.3"
+metadata/org.latencyutils/LatencyUtils/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/latencyutils/LatencyUtils/2.0.3/LatencyUtils-2.0.3-sources.jar",
+metadata/org.latencyutils/LatencyUtils/index.json:7:    "test-code-url" : "https://github.com/LatencyUtils/LatencyUtils/tree/LatencyUtils-2.0.3/src/test",
+metadata/org.latencyutils/LatencyUtils/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/latencyutils/LatencyUtils/2.0.3/LatencyUtils-2.0.3-javadoc.jar",
+metadata/commons-logging/commons-logging-api/index.json:5:    "source-code-url" : "https://github.com/apache/commons-logging/tree/LOGGING_1_1_0/src/java",
+metadata/commons-logging/commons-logging-api/index.json:7:    "test-code-url" : "https://github.com/apache/commons-logging/tree/LOGGING_1_1_0/src/test",
+metadata/commons-logging/commons-logging-api/index.json:8:    "documentation-url" : "https://github.com/apache/commons-logging/blob/LOGGING_1_1_0/xdocs/guide.xml",
+metadata/javax.persistence/javax.persistence-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/2.2/javax.persistence-api-2.2-sources.jar",
+metadata/javax.persistence/javax.persistence-api/index.json:8:    "test-code-url": "N/A",
+metadata/javax.persistence/javax.persistence-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/2.2/javax.persistence-api-2.2-javadoc.jar",
+metadata/commons-logging/commons-logging/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-sources.jar",
+metadata/commons-logging/commons-logging/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-test-sources.jar",
+metadata/commons-logging/commons-logging/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-sources.jar",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-1.2.17/tests",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-javadoc.jar",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/2.22.2/surefire-logger-api-2.22.2-sources.jar",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/2.22.2/surefire-logger-api-2.22.2-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/3.2.0/java-dataloader-3.2.0-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:7:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v3.2.0/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/3.2.0/java-dataloader-3.2.0-javadoc.jar",
+metadata/org.reactivestreams/reactive-streams/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-sources.jar",
+metadata/org.reactivestreams/reactive-streams/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams-tck/1.0.3/reactive-streams-tck-1.0.3-sources.jar",
+metadata/org.reactivestreams/reactive-streams/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-javadoc.jar",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/19.1/graphql-java-extended-validation-19.1-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java-extended-validation/tree/v19.1/src/test",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/19.1/graphql-java-extended-validation-19.1-javadoc.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine/src/snakeyaml-engine-3.0.1/src/test/java/",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.23.0/protobuf-java-util-3.23.0-sources.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:7:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v23.0/java/util/src/test",
+metadata/com.google.protobuf/protobuf-java-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.23.0/protobuf-java-util-3.23.0-javadoc.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:22:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.22.0/protobuf-java-util-3.22.0-sources.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:24:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v3.22.0/java/util/src/test",
+metadata/com.google.protobuf/protobuf-java-util/index.json:25:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.22.0/protobuf-java-util-3.22.0-javadoc.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:46:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.21.12/protobuf-java-util-3.21.12-sources.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:48:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v3.21.12/java/util/src/test",
+metadata/com.google.protobuf/protobuf-java-util/index.json:49:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.21.12/protobuf-java-util-3.21.12-javadoc.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-sources.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:6:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.0.6/src/test",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-javadoc.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:40:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-sources.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:42:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.5.2/src/test",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:43:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-javadoc.jar",
+metadata/org.jline/jline/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0-sources.jar",
+metadata/org.jline/jline/index.json:11:    "test-code-url": "https://github.com/jline/jline3/tree/jline-parent-3.21.0",
+metadata/org.jline/jline/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0-javadoc.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.0-og/opengauss-jdbc-3.1.0-og-sources.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:10:    "test-code-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/pgjdbc/src/test",
+metadata/org.opengauss/opengauss-jdbc/index.json:11:    "documentation-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/docs",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+metadata/com.graphql-java/graphql-java/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/19.2/graphql-java-19.2-sources.jar",
+metadata/com.graphql-java/graphql-java/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java/tree/v19.2/src/test",
+metadata/com.graphql-java/graphql-java/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/19.2/graphql-java-19.2-javadoc.jar",
+metadata/io.grpc/grpc-netty/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/1.51.0/grpc-netty-1.51.0-sources.jar",
+metadata/io.grpc/grpc-netty/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v1.51.0/netty/src/test",
+metadata/io.grpc/grpc-netty/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/1.51.0/grpc-netty-1.51.0-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-javadoc.jar",
+metadata/com.google.android/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-sources.jar",
+metadata/com.google.android/annotations/index.json:8:    "test-code-url": "N/A",
+metadata/com.google.android/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-javadoc.jar",
+metadata/org.jline/jline-terminal-jna/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.20.0/jline-terminal-jna-3.20.0-sources.jar",
+metadata/org.jline/jline-terminal-jna/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.20.0/terminal-jna/src/test",
+metadata/org.jline/jline-terminal-jna/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.20.0/jline-terminal-jna-3.20.0-javadoc.jar",
+metadata/io.netty/netty-transport-classes-epoll/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/4.1.99.Final/netty-transport-classes-epoll-4.1.99.Final-sources.jar",
+metadata/io.netty/netty-transport-classes-epoll/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/4.1.99.Final/netty-transport-classes-epoll-4.1.99.Final-tests.jar",
+metadata/io.netty/netty-transport-classes-epoll/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/4.1.99.Final/netty-transport-classes-epoll-4.1.99.Final-javadoc.jar",
+metadata/org.attoparser/attoparser/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/2.0.5.RELEASE/attoparser-2.0.5.RELEASE-sources.jar",
+metadata/org.attoparser/attoparser/index.json:7:    "test-code-url" : "https://github.com/attoparser/attoparser/tree/attoparser-2.0.5.RELEASE/src/test",
+metadata/org.attoparser/attoparser/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/2.0.5.RELEASE/attoparser-2.0.5.RELEASE-javadoc.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/19.0/graphql-java-extended-scalars-19.0-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:7:    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/19.0/src/test",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/19.0/graphql-java-extended-scalars-19.0-javadoc.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/5.7.3/spring-security-crypto-5.7.3-sources.jar",
+
+web search: 
+web search: com.ethlo.time itu 1.10.3 Maven repository URL source test javadoc
+web search: 
+web search: https://github.com/ethlo/itu
+web search: 
+web search: https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3
+web search: 
+web search: 
+codex
+Maven Central confirms `sources.jar` and `javadoc.jar` exist for `1.10.3`; I’m checking whether a test artifact exists there before falling back to the upstream tag’s test directory.
+exec
+/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3/itu-1.10.3.pom | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2750-80072f88
+ succeeded in 0ms:
+<!--
+#%L
+Internet Time Utility
+%%
+Copyright (C) 2017 Morten Haraldsen (ethlo)
+%%
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+#L%
+-->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.ethlo.time</groupId>
+    <packaging>bundle</packaging>
+    <artifactId>itu</artifactId>
+    <version>1.10.3</version>
+    <name>Internet Time Utility</name>
+    <description>Extremely fast date-time parser and formatter - RFC 3339 (ISO 8601 profile) and W3C format
+    </description>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <url>https://github.com/ethlo/itu</url>
+    <developers>
+        <developer>
+            <name>Morten Haraldsen</name>
+            <url>https://ethlo.com</url>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.24.2</version>
+            <scope>test</scope>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>com.code-intelligence</groupId>
+            <artifactId>jazzer-junit</artifactId>
+            <version>0.22.1</version>
+            <scope>test</scope>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.10.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.10.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.16.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.3.14</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.12.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <show>public</show>
+                    <source>8</source>
+                    <excludePackageNames>com.ethlo.time.internal;com.ethlo.time.internal.*</excludePackageNames>
+                    <quiet>true</quiet>
+                    <doclint>all,-missing</doclint>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.3</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.8.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.13</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>sonatype-nexus-staging</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>gpg</executable>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>2.2.0</version>
+                <configuration>
+                    <verbose>false</verbose>
+                    <addSvnKeyWords>true</addSvnKeyWords>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>first</id>
+                        <goals>
+                            <goal>update-file-header</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <licenseName>apache_v2</licenseName>
+                            <inceptionYear>2017</inceptionYear>
+                            <organizationName>Morten Haraldsen @ethlo</organizationName>
+                            <addSvnKeyWords>false</addSvnKeyWords>
+                            <canUpdateDescription>false</canUpdateDescription>
+                            <roots>
+                                <root>src/main/java</root>
+                                <root>src/test</root>
+                            </roots>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-third-party</id>
+                        <goals>
+                            <goal>add-third-party</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <excludedScopes>test</excludedScopes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>5.1.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            com.ethlo.time
+                        </Export-Package>
+
+exec
+/bin/bash -lc "git ls-remote --tags https://github.com/ethlo/itu.git 'v1.10.3*' '1.10.3*'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2750-80072f88
+exec
+/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3/ | rg 'test|source|javadoc|pom|jar'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2750-80072f88
+ succeeded in 0ms:
+<a href="itu-1.10.3-javadoc.jar" title="itu-1.10.3-javadoc.jar">itu-1.10.3-javadoc.jar</a>                            2025-01-06 10:07    168198      
+<a href="itu-1.10.3-javadoc.jar.asc" title="itu-1.10.3-javadoc.jar.asc">itu-1.10.3-javadoc.jar.asc</a>                        2025-01-06 10:07       228      
+<a href="itu-1.10.3-javadoc.jar.md5" title="itu-1.10.3-javadoc.jar.md5">itu-1.10.3-javadoc.jar.md5</a>                        2025-01-06 10:07        32      
+<a href="itu-1.10.3-javadoc.jar.sha1" title="itu-1.10.3-javadoc.jar.sha1">itu-1.10.3-javadoc.jar.sha1</a>                       2025-01-06 10:07        40      
+<a href="itu-1.10.3-sources.jar" title="itu-1.10.3-sources.jar">itu-1.10.3-sources.jar</a>                            2025-01-06 10:07     44600      
+<a href="itu-1.10.3-sources.jar.asc" title="itu-1.10.3-sources.jar.asc">itu-1.10.3-sources.jar.asc</a>                        2025-01-06 10:07       228      
+<a href="itu-1.10.3-sources.jar.md5" title="itu-1.10.3-sources.jar.md5">itu-1.10.3-sources.jar.md5</a>                        2025-01-06 10:07        32      
+<a href="itu-1.10.3-sources.jar.sha1" title="itu-1.10.3-sources.jar.sha1">itu-1.10.3-sources.jar.sha1</a>                       2025-01-06 10:07        40      
+<a href="itu-1.10.3.jar" title="itu-1.10.3.jar">itu-1.10.3.jar</a>                                    2025-01-06 10:07     52056      
+<a href="itu-1.10.3.jar.asc" title="itu-1.10.3.jar.asc">itu-1.10.3.jar.asc</a>                                2025-01-06 10:07       228      
+<a href="itu-1.10.3.jar.md5" title="itu-1.10.3.jar.md5">itu-1.10.3.jar.md5</a>                                2025-01-06 10:07        32      
+<a href="itu-1.10.3.jar.sha1" title="itu-1.10.3.jar.sha1">itu-1.10.3.jar.sha1</a>                               2025-01-06 10:07        40      
+<a href="itu-1.10.3.pom" title="itu-1.10.3.pom">itu-1.10.3.pom</a>                                    2025-01-06 10:07     17792      
+<a href="itu-1.10.3.pom.asc" title="itu-1.10.3.pom.asc">itu-1.10.3.pom.asc</a>                                2025-01-06 10:07       228      
+<a href="itu-1.10.3.pom.md5" title="itu-1.10.3.pom.md5">itu-1.10.3.pom.md5</a>                                2025-01-06 10:07        32      
+<a href="itu-1.10.3.pom.sha1" title="itu-1.10.3.pom.sha1">itu-1.10.3.pom.sha1</a>                               2025-01-06 10:07        40      
+
+ succeeded in 423ms:
+5a4d2369a604343620dfac7911cc772a1703bec1	refs/tags/v1.10.3
+
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3/itu-1.10.3.pom | rg -n "<scm>|<connection>|<developerConnection>|<tag>|<url>|<name>|<description>" -C 2' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2750-80072f88
+ succeeded in 0ms:
+25-    <artifactId>itu</artifactId>
+26-    <version>1.10.3</version>
+27:    <name>Internet Time Utility</name>
+28:    <description>Extremely fast date-time parser and formatter - RFC 3339 (ISO 8601 profile) and W3C format
+29-    </description>
+30-    <licenses>
+31-        <license>
+32:            <name>Apache License, Version 2.0</name>
+33:            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+34-            <distribution>repo</distribution>
+35-        </license>
+36-    </licenses>
+37:    <url>https://github.com/ethlo/itu</url>
+38-    <developers>
+39-        <developer>
+40:            <name>Morten Haraldsen</name>
+41:            <url>https://ethlo.com</url>
+42-        </developer>
+43-    </developers>
+--
+247-        <repository>
+248-            <id>sonatype-nexus-staging</id>
+249:            <name>Nexus Release Repository</name>
+250:            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+251-        </repository>
+252-        <snapshotRepository>
+253-            <id>sonatype-nexus-snapshots</id>
+254:            <name>Nexus Snapshot repository</name>
+255:            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+256-        </snapshotRepository>
+257-    </distributionManagement>
+258:    <scm>
+259:        <url>https://github.com/ethlo/itu</url>
+260:        <connection>scm:git:git@github.com/ethlo/itu.git</connection>
+261:        <developerConnection>scm:git:git@github.com/ethlo/itu.git</developerConnection>
+262-    </scm>
+263-    <properties>
+--
+362-                                    <module>
+363-                                        <moduleInfo>
+364:                                            <name>com.ethlo.time</name>
+365-                                            <exports>com.ethlo.time</exports>
+366-                                            <exports>com.ethlo.time.token</exports>
+--
+411-            </snapshots>
+412-            <id>sonatype-nexus-snapshots</id>
+413:            <name>Nexus Snapshot repository</name>
+414:            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+415-        </repository>
+416-    </repositories>
+
+exec
+/bin/bash -lc 'tmpdir=$(mktemp -d); curl -fsSL https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3/itu-1.10.3-sources.jar -o "$tmpdir/sources.jar"; jar tf "$tmpdir/sources.jar" | sed -n '"'1,120p'; rm -rf \""'$tmpdir"' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2750-80072f88
+exec
+/bin/bash -lc 'tmpdir=$(mktemp -d); git clone --depth 1 --branch v1.10.3 https://github.com/ethlo/itu.git "$tmpdir/itu" >/dev/null 2>&1 && find "$tmpdir/itu/src" -maxdepth 3 -type d | sort; rm -rf "$tmpdir"' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2750-80072f88
+ succeeded in 175ms:
+META-INF/MANIFEST.MF
+META-INF/
+com/
+com/ethlo/
+com/ethlo/time/
+com/ethlo/time/token/
+com/ethlo/time/internal/
+com/ethlo/time/internal/util/
+com/ethlo/time/internal/token/
+com/ethlo/time/internal/fixed/
+/
+/home/
+/home/morten/
+/home/morten/dev/
+/home/morten/dev/ethlo/
+/home/morten/dev/ethlo/itu/
+META-INF/maven/
+META-INF/maven/com.ethlo.time/
+META-INF/maven/com.ethlo.time/itu/
+com/ethlo/time/TemporalHandler.java
+com/ethlo/time/DateTimeParsers.java
+com/ethlo/time/TemporalConsumer.java
+com/ethlo/time/LeapSecondException.java
+com/ethlo/time/token/DateTimeToken.java
+com/ethlo/time/token/ConfigurableDateTimeParser.java
+com/ethlo/time/TimezoneOffset.java
+com/ethlo/time/Field.java
+com/ethlo/time/DateTimeTokens.java
+com/ethlo/time/ITU.java
+com/ethlo/time/TemporalType.java
+com/ethlo/time/ParseConfig.java
+com/ethlo/time/DateTimeParser.java
+com/ethlo/time/DateTime.java
+com/ethlo/time/internal/util/ArrayUtils.java
+com/ethlo/time/internal/util/DefaultLeapSecondHandler.java
+com/ethlo/time/internal/util/DateTimeMath.java
+com/ethlo/time/internal/util/LimitedCharArrayIntegerUtil.java
+com/ethlo/time/internal/util/ErrorUtil.java
+com/ethlo/time/internal/util/LeapSecondHandler.java
+com/ethlo/time/internal/token/ZoneOffsetToken.java
+com/ethlo/time/internal/token/DigitsToken.java
+com/ethlo/time/internal/token/SeparatorsToken.java
+com/ethlo/time/internal/token/SeparatorToken.java
+com/ethlo/time/internal/token/FractionsToken.java
+com/ethlo/time/internal/DateTimeFormatException.java
+com/ethlo/time/internal/fixed/ITUFormatter.java
+com/ethlo/time/internal/fixed/ITUParser.java
+leap_second_dates.csv
+/home/morten/dev/ethlo/itu/README.md
+THIRD-PARTY.txt
+META-INF/maven/com.ethlo.time/itu/pom.xml
+META-INF/maven/com.ethlo.time/itu/pom.properties
+
+ succeeded in 741ms:
+/tmp/tmp.lVNKAKNVi9/itu/src
+/tmp/tmp.lVNKAKNVi9/itu/src/main
+/tmp/tmp.lVNKAKNVi9/itu/src/main/java
+/tmp/tmp.lVNKAKNVi9/itu/src/main/java/com
+/tmp/tmp.lVNKAKNVi9/itu/src/main/resources
+/tmp/tmp.lVNKAKNVi9/itu/src/site
+/tmp/tmp.lVNKAKNVi9/itu/src/test
+/tmp/tmp.lVNKAKNVi9/itu/src/test/java
+/tmp/tmp.lVNKAKNVi9/itu/src/test/java/com
+/tmp/tmp.lVNKAKNVi9/itu/src/test/java/samples
+/tmp/tmp.lVNKAKNVi9/itu/src/test/resources
+
+codex
+There is no Maven test or test-sources artifact for this release, so I’ll use the `v1.10.3` GitHub tag for the test suite. The library is plain Java, so I’ll omit the optional `language` field.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2750-80072f88/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json
+diff --git a/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json b/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json
+index e11c74ed2da6cad2a6e934adf68a73be4cb078b4..25aa37c1ae20b51a90d1061b1b1d7676da086a57
+--- a/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json
++++ b/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.ethlo.time:itu:1.10.3"
++  "coordinates" : "com.ethlo.time:itu:1.10.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3/itu-1.10.3-sources.jar",
++  "repository-url" : "https://github.com/ethlo/itu",
++  "test-code-url" : "https://github.com/ethlo/itu/tree/v1.10.3/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3/itu-1.10.3-javadoc.jar",
++  "description" : "Internet Time Utility is a Java library for fast parsing and formatting of RFC 3339 date-time values, the ISO 8601 internet profile. It supports configurable date-time token handling, timezone offsets, fractional seconds, and leap-second related behavior for interoperable timestamp processing."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json b/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json
+index e11c74ed2da6cad2a6e934adf68a73be4cb078b4..25aa37c1ae20b51a90d1061b1b1d7676da086a57
+--- a/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json
++++ b/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.ethlo.time:itu:1.10.3"
++  "coordinates" : "com.ethlo.time:itu:1.10.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3/itu-1.10.3-sources.jar",
++  "repository-url" : "https://github.com/ethlo/itu",
++  "test-code-url" : "https://github.com/ethlo/itu/tree/v1.10.3/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3/itu-1.10.3-javadoc.jar",
++  "description" : "Internet Time Utility is a Java library for fast parsing and formatting of RFC 3339 date-time values, the ISO 8601 internet profile. It supports configurable date-time token handling, timezone offsets, fractional seconds, and leap-second related behavior for interoperable timestamp processing."
+ }
+
+codex
+The JSON is updated. I’m doing a quick parse check and reviewing the final file so formatting and field presence are correct.
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2750-80072f88
+ succeeded in 0ms:
+exec
+/bin/bash -lc "python -m json.tool build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json >/dev/null && sed -n '1,120p' build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2750-80072f88
+ succeeded in 0ms:
+{
+  "coordinates" : "com.ethlo.time:itu:1.10.3",
+  "source-code-url" : "https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3/itu-1.10.3-sources.jar",
+  "repository-url" : "https://github.com/ethlo/itu",
+  "test-code-url" : "https://github.com/ethlo/itu/tree/v1.10.3/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3/itu-1.10.3-javadoc.jar",
+  "description" : "Internet Time Utility is a Java library for fast parsing and formatting of RFC 3339 date-time values, the ISO 8601 internet profile. It supports configurable date-time token handling, timezone offsets, fractional seconds, and leap-second related behavior for interoperable timestamp processing."
+}
+
+diff --git a/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json b/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json
+index e11c74ed2da6cad2a6e934adf68a73be4cb078b4..25aa37c1ae20b51a90d1061b1b1d7676da086a57
+--- a/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json
++++ b/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.ethlo.time:itu:1.10.3"
++  "coordinates" : "com.ethlo.time:itu:1.10.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3/itu-1.10.3-sources.jar",
++  "repository-url" : "https://github.com/ethlo/itu",
++  "test-code-url" : "https://github.com/ethlo/itu/tree/v1.10.3/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3/itu-1.10.3-javadoc.jar",
++  "description" : "Internet Time Utility is a Java library for fast parsing and formatting of RFC 3339 date-time values, the ISO 8601 internet profile. It supports configurable date-time token handling, timezone offsets, fractional seconds, and leap-second related behavior for interoperable timestamp processing."
+ }
+
+exec
+/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2750-80072f88
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json b/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json
+index e11c74ed2da6cad2a6e934adf68a73be4cb078b4..25aa37c1ae20b51a90d1061b1b1d7676da086a57
+--- a/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json
++++ b/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.ethlo.time:itu:1.10.3"
++  "coordinates" : "com.ethlo.time:itu:1.10.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3/itu-1.10.3-sources.jar",
++  "repository-url" : "https://github.com/ethlo/itu",
++  "test-code-url" : "https://github.com/ethlo/itu/tree/v1.10.3/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3/itu-1.10.3-javadoc.jar",
++  "description" : "Internet Time Utility is a Java library for fast parsing and formatting of RFC 3339 date-time values, the ISO 8601 internet profile. It supports configurable date-time token handling, timezone offsets, fractional seconds, and leap-second related behavior for interoperable timestamp processing."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3/
+codex
+Updated [com.ethlo.time-itu-1.10.3.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2750-80072f88/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json) with Maven Central source/javadoc URLs, the GitHub repository URL, and the `v1.10.3` test suite URL. Maven Central has source and javadoc artifacts for this version, but no test artifact, so the tagged GitHub `src/test` path is used. ([repo1.maven.org](https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3/))
+
+The library is plain Java, so no `language` field was added. I also validated the file with `python -m json.tool`.
+diff --git a/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json b/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json
+index e11c74ed2da6cad2a6e934adf68a73be4cb078b4..25aa37c1ae20b51a90d1061b1b1d7676da086a57
+--- a/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json
++++ b/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.ethlo.time:itu:1.10.3"
++  "coordinates" : "com.ethlo.time:itu:1.10.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3/itu-1.10.3-sources.jar",
++  "repository-url" : "https://github.com/ethlo/itu",
++  "test-code-url" : "https://github.com/ethlo/itu/tree/v1.10.3/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3/itu-1.10.3-javadoc.jar",
++  "description" : "Internet Time Utility is a Java library for fast parsing and formatting of RFC 3339 date-time values, the ISO 8601 internet profile. It supports configurable date-time token handling, timezone offsets, fractional seconds, and leap-second related behavior for interoperable timestamp processing."
+ }
+
+2026-04-30T05:11:26.646454Z ERROR codex_core::session: failed to record rollout items: thread 019ddccb-db5e-7a91-be7d-ebdac4eff5ea not found
+tokens used
+36,833
+Updated [com.ethlo.time-itu-1.10.3.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2750-80072f88/build/discovered-artifact-metadata/com.ethlo.time-itu-1.10.3.json) with Maven Central source/javadoc URLs, the GitHub repository URL, and the `v1.10.3` test suite URL. Maven Central has source and javadoc artifacts for this version, but no test artifact, so the tagged GitHub `src/test` path is used. ([repo1.maven.org](https://repo1.maven.org/maven2/com/ethlo/time/itu/1.10.3/))
+
+The library is plain Java, so no `language` field was added. I also validated the file with `python -m json.tool`.
+Ran agent for com.ethlo.time:itu:1.10.3 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2750-80072f88/build/agent-artifact-discovery-logs/com.ethlo.time-itu-1.10.3.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2750-80072f88/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 52s
+9 actionable tasks: 4 executed, 5 from cache
