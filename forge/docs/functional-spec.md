@@ -1,26 +1,36 @@
-# Metadata Forge — Specification
+# Metadata Forge — Functional Specification
+
+> **See also:** [Architecture](architecture.md)
 
 ## 1. Purpose
 
 Metadata Forge automates the production and maintenance of GraalVM
-**reachability metadata** for community Java/Kotlin/Scala libraries. It composes
-LLM-based code-generation agents with deterministic build, test, and reporting
-pipelines from the
-[`oracle/graalvm-reachability-metadata`](https://github.com/oracle/graalvm-reachability-metadata)
-repository (hereafter "the reachability repo") to produce metadata, tests, and
-PRs ready for human review.
+**reachability metadata** for community Java/Kotlin/Scala libraries. It lives
+inside the [`oracle/graalvm-reachability-metadata`](https://github.com/oracle/graalvm-reachability-metadata)
+repository (hereafter "the reachability repo") and composes LLM-based
+code-generation agents with the repo's own build, test, and reporting
+pipelines to produce metadata, tests, and PRs ready for human review.
 
 ## 2. Scope
 
 The project covers three primary task families:
 
-1. **New library support** — generate a JUnit (or Kotlin/Scala) test suite,
-   produce reachability metadata, and open a PR for a previously unsupported
-   library.
-2. **Library version bumps** — fix Java compilation and runtime failures that
-   occur when raising a tested library to a new version.
-3. **Coverage improvement** — increase dynamic-access coverage of
-   already-supported libraries.
+1. **New library support** (`library-new-request`) — generate a JUnit (or
+   Kotlin/Scala) test suite, produce reachability metadata, and open a PR for
+   a previously unsupported library.
+2. **Java compilation fixes** (`fixes-javac-fail`) — repair test sources that
+   no longer compile against a bumped library version.
+3. **Java runtime fixes** (`fixes-java-run-fail`) — repair JVM-mode test
+   failures that surface when raising a tested library to a new version.
+4. **Native-image runtime fixes** (`fixes-native-image-run-fail`) — update
+   reachability metadata so `nativeTest` passes against the new library
+   version, using the native metadata exploration phase.
+5. **Bulk version updates** (`library-bulk-update`) — record newly tested
+   upstream versions for already-supported libraries when no fix is required.
+6. **Coverage improvement** (`library-update-request`) — increase
+   dynamic-access coverage of already-supported libraries.
+7. **Docker image updates** (`docker`) — refresh the allowed Docker images
+   used by tests, including vulnerability rescans and version bumps.
 
 Out of scope: anything that does not produce reachability metadata or its
 supporting tests for the reachability repo.
@@ -40,82 +50,9 @@ supporting tests for the reachability repo.
 | **Dynamic-access report** | JSON written by Gradle task `generateDynamicAccessCoverageReport` to `tests/src/<group>/<artifact>/<version>/build/reports/dynamic-access/dynamic-access-coverage.json`, listing classes and per-class call sites that require dynamic-access metadata, marked covered/uncovered. |
 | **Source context** | Read-only files supplied to the agent. Types: `main` (library source), `test` (upstream tests), `documentation` (Javadoc). Selected by the strategy parameter `source-context-types`. |
 
-## 4. Component Layout
+## 4. Configuration Contracts
 
-```text
-forge/
-├─ ai_workflows/          # Workflow entry points and pluggable agents/strategies
-│  ├─ agents/             # Agent implementations (aider, codex, pi)
-│  └─ workflow_strategies/# Strategy implementations (basic_iterative, dynamic_access_iterative, ...)
-├─ complete_pipelines/    # End-to-end: workflow + PR creation
-├─ git_scripts/           # Branch, push, and PR-opening helpers
-├─ utility_scripts/       # Source-context, metrics, schema, and report helpers
-├─ strategies/            # `predefined_strategies.json`
-├─ prompt_templates/      # Templates loaded by strategies
-├─ schemas/               # JSON schemas for metrics validation
-└─ docs/                  # This specification
-```
-
-## 5. High-Level Architecture
-
-```mermaid
-flowchart LR
-    User[User / CI] -->|--coordinates, --strategy-name| Entry[ai_workflows entry script]
-    Entry --> Strat[Workflow strategy]
-    Entry --> Source[utility_scripts/source_context.py]
-    Strat --> Agent[Registered agent]
-    Strat --> Gradle[Reachability repo / Gradle]
-    Source --> Reachability[(Reachability repo)]
-    Gradle --> Reachability
-    Agent --> Reachability
-    Strat --> Metrics[(Metrics repo: results.json)]
-    Entry -.optional.-> Pipeline[complete_pipelines/*]
-    Pipeline --> GitScripts[git_scripts/make_pr_*.py]
-    GitScripts --> GitHub[(GitHub PR)]
-```
-
-Key invariants:
-
-- The agent **never** invokes Gradle directly. Build/test commands are issued
-  by the strategy via `agent.run_test_command(...)`, which returns combined
-  output to the strategy for analysis.
-- All generated changes must live under the per-library directory
-  `tests/src/<group>/<artifact>/<version>` of the reachability repo, plus that
-  library's `metadata/<group>/<artifact>/index.json`.
-- Every successful run writes a metrics record that validates against
-  [schemas/evaluation_output_schema.json](../schemas/).
-
-## 6. Top-Level Run Sequence
-
-```mermaid
-sequenceDiagram
-    autonumber
-    participant U as User / CI
-    participant Entry as ai_workflows/<workflow>.py
-    participant Setup as utility_scripts (paths, env, source ctx)
-    participant Strat as Workflow strategy
-    participant Agent as Registered agent
-    participant Repo as Reachability repo (Gradle)
-    participant Metrics as Metrics repo
-
-    U->>Entry: Invoke with --coordinates, --strategy-name
-    Entry->>Setup: Resolve repo paths, GraalVM/Java home
-    Entry->>Setup: Load predefined strategy
-    Entry->>Repo: Create feature branch, run scaffold
-    Entry->>Setup: populateArtifactURLs + prepare_source_contexts
-    Entry->>Strat: Instantiate strategy with context + source ctx
-    Entry->>Agent: Initialize agent with editable + read-only files
-    Entry->>Strat: run(agent, checkpoint_commit_hash)
-    Strat->>Agent: send_prompt / run_test_command (loop)
-    Strat->>Repo: Gradle build, test, report, metadata tasks
-    Strat-->>Entry: status, iteration counts
-    Entry->>Metrics: Append validated run-metrics record
-    Entry-->>U: Exit code 0 (success) or 1 (failure)
-```
-
-## 7. Configuration Contracts
-
-### 7.1 CLI inputs (common to all entry scripts)
+### 4.1 CLI inputs (common to all entry scripts)
 
 - `--coordinates <group:artifact:version>` — required.
 - `--reachability-metadata-path` — overrides default reachability-repo clone.
@@ -130,7 +67,7 @@ sequenceDiagram
 - `--keep-tests-without-dynamic-access` — only honored by dynamic-access
   strategies; see [dynamic-access-workflow.md](dynamic-access-workflow.md).
 
-### 7.2 Predefined strategy schema
+### 4.2 Predefined strategy schema
 
 Each entry in `strategies/predefined_strategies.json` must provide:
 
@@ -145,7 +82,7 @@ Each entry in `strategies/predefined_strategies.json` must provide:
   `source-context-types`, etc.).
 - `mcps` — optional list of MCP server names.
 
-### 7.3 Environment
+### 4.3 Environment
 
 - Either `GRAALVM_HOME` or `JAVA_HOME` must point to a GraalVM distribution.
   Both variables are then aligned to that distribution. If neither does, the
@@ -153,7 +90,7 @@ Each entry in `strategies/predefined_strategies.json` must provide:
 - `gh` CLI authenticated against the reachability repo is required for any
   script in `git_scripts/` or `complete_pipelines/`.
 
-## 8. Outputs
+## 5. Outputs
 
 - **Per-run metrics record** appended to
   `<metrics_repo>/{script_run_metrics,benchmark_run_metrics}/<workflow>.json`,
@@ -164,7 +101,7 @@ Each entry in `strategies/predefined_strategies.json` must provide:
 - **Pull request** (only when invoked through `complete_pipelines/` or
   `git_scripts/make_pr_*.py`).
 
-## 9. Failure Semantics
+## 6. Failure Semantics
 
 Every workflow returns one of three statuses:
 
@@ -176,7 +113,7 @@ Every workflow returns one of three statuses:
 
 The exit code is `0` for the first two and `1` for failure.
 
-## 10. Workflow Specifications
+## 7. Workflow Specifications
 
 - [Dynamic access workflow](dynamic-access-workflow.md) — guided test
   generation driven by the dynamic-access coverage report.

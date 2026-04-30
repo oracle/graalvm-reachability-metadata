@@ -4,6 +4,14 @@ Minimal guidelines for automation agents contributing to this repository.
 
 Purpose: ensure safe, focused, and reviewable changes.
 
+## Required Reading
+
+Agents MUST read and strictly adhere to the following before making any changes:
+
+- [Functional Spec](docs/functional-spec.md) — what the system must do.
+- [Architecture](docs/architecture.md) — how the system is structured.
+- [ADRs](docs/adr/) — recorded architectural decisions; do not contradict them.
+
 ## Do
 - Read README.md and DEVELOPING.md before acting.
 - Before adding code, search the repository to see whether the behavior already exists or belongs in an existing module. Prefer `rg` for code and file discovery.

@@ -95,5 +95,6 @@ forge/
 - `utility_scripts/`: shared support code.
 - `docs/`: design notes, workflow specifications, and testing guidance.
 
-See `DEVELOPING.md` for command-level workflow details and
-`docs/overview.md` for the architecture overview.
+See `DEVELOPING.md` for command-level workflow details,
+`docs/overview.md` for the functional specification, and
+`docs/architecture.md` for the architecture overview.
