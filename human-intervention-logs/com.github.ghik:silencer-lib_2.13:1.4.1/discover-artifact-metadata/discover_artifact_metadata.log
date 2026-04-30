@@ -1,0 +1,885 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de096-f294-7ab3-abd0-0e68091a0af2
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.github.ghik:silencer-lib_2.13:1.4.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.4.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json
+- Set "coordinates" to "com.github.ghik:silencer-lib_2.13:1.4.1".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the project repository, then patch the JSON in place with the exact-version URLs.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json && sed -n '1,160p' build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+-rw-rw-r-- 1 vjovanov vjovanov 64 May  1 00:51 build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json
+{
+  "coordinates" : "com.github.ghik:silencer-lib_2.13:1.4.1"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"|source-code-url|documentation-url|test-code-url' build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+ succeeded in 0ms:
+web search: 
+web search: com.github.ghik silencer-lib_2.13 1.4.1 Maven repository GitHub
+web search: 
+web search: https://github.com/ghik/silencer
+codex
+The current JSON only has coordinates. I found the upstream project as `ghik/silencer`; now I’m checking Maven Central for versioned source/docs artifacts and whether a test artifact exists.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/silencer-lib_2.13-1.4.1.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.github.ghik</groupId>
+    <artifactId>silencer-lib_2.13</artifactId>
+    <packaging>jar</packaging>
+    <description>Scala compiler plugin for annotation-based warning suppression</description>
+    <url>https://github.com/ghik/silencer</url>
+    <version>1.4.1</version>
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>Silencer</name>
+    <inceptionYear>2015</inceptionYear>
+    <organization>
+        <name>ghik</name>
+        <url>https://github.com/ghik</url>
+    </organization>
+    <scm>
+        <url>https://github.com/ghik/silencer.git</url>
+        <connection>scm:git:git@github.com:ghik/silencer.git</connection>
+        <developerConnection>scm:git:git@github.com:ghik/silencer.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>ghik</id>
+            <name>Roman Janusz</name>
+            <url>https://github.com/ghik</url>
+            <email>romeqjanoosh@gmail.com</email>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.13.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-reflect</artifactId>
+            <version>2.13.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/github/ghik/silencer-lib_2.13/1.4.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/github/ghik/silencer-lib_2.13/1.4.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="silencer-lib_2.13-1.4.1-javadoc.jar" title="silencer-lib_2.13-1.4.1-javadoc.jar">silencer-lib_2.13-1.4.1-javadoc.jar</a>               2019-06-08 00:18   1130315      
+<a href="silencer-lib_2.13-1.4.1-javadoc.jar.asc" title="silencer-lib_2.13-1.4.1-javadoc.jar.asc">silencer-lib_2.13-1.4.1-javadoc.jar.asc</a>           2019-06-08 00:18       486      
+<a href="silencer-lib_2.13-1.4.1-javadoc.jar.asc.md5" title="silencer-lib_2.13-1.4.1-javadoc.jar.asc.md5">silencer-lib_2.13-1.4.1-javadoc.jar.asc.md5</a>       2019-06-08 00:18        32      
+<a href="silencer-lib_2.13-1.4.1-javadoc.jar.asc.sha1" title="silencer-lib_2.13-1.4.1-javadoc.jar.asc.sha1">silencer-lib_2.13-1.4.1-javadoc.jar.asc.sha1</a>      2019-06-08 00:18        40      
+<a href="silencer-lib_2.13-1.4.1-javadoc.jar.md5" title="silencer-lib_2.13-1.4.1-javadoc.jar.md5">silencer-lib_2.13-1.4.1-javadoc.jar.md5</a>           2019-06-08 00:18        32      
+<a href="silencer-lib_2.13-1.4.1-javadoc.jar.sha1" title="silencer-lib_2.13-1.4.1-javadoc.jar.sha1">silencer-lib_2.13-1.4.1-javadoc.jar.sha1</a>          2019-06-08 00:18        40      
+<a href="silencer-lib_2.13-1.4.1-sources.jar" title="silencer-lib_2.13-1.4.1-sources.jar">silencer-lib_2.13-1.4.1-sources.jar</a>               2019-06-08 00:18      1192      
+<a href="silencer-lib_2.13-1.4.1-sources.jar.asc" title="silencer-lib_2.13-1.4.1-sources.jar.asc">silencer-lib_2.13-1.4.1-sources.jar.asc</a>           2019-06-08 00:18       486      
+<a href="silencer-lib_2.13-1.4.1-sources.jar.asc.md5" title="silencer-lib_2.13-1.4.1-sources.jar.asc.md5">silencer-lib_2.13-1.4.1-sources.jar.asc.md5</a>       2019-06-08 00:18        32      
+<a href="silencer-lib_2.13-1.4.1-sources.jar.asc.sha1" title="silencer-lib_2.13-1.4.1-sources.jar.asc.sha1">silencer-lib_2.13-1.4.1-sources.jar.asc.sha1</a>      2019-06-08 00:18        40      
+<a href="silencer-lib_2.13-1.4.1-sources.jar.md5" title="silencer-lib_2.13-1.4.1-sources.jar.md5">silencer-lib_2.13-1.4.1-sources.jar.md5</a>           2019-06-08 00:18        32      
+<a href="silencer-lib_2.13-1.4.1-sources.jar.sha1" title="silencer-lib_2.13-1.4.1-sources.jar.sha1">silencer-lib_2.13-1.4.1-sources.jar.sha1</a>          2019-06-08 00:18        40      
+<a href="silencer-lib_2.13-1.4.1.jar" title="silencer-lib_2.13-1.4.1.jar">silencer-lib_2.13-1.4.1.jar</a>                       2019-06-08 00:18      1490      
+<a href="silencer-lib_2.13-1.4.1.jar.asc" title="silencer-lib_2.13-1.4.1.jar.asc">silencer-lib_2.13-1.4.1.jar.asc</a>                   2019-06-08 00:18       486      
+<a href="silencer-lib_2.13-1.4.1.jar.asc.md5" title="silencer-lib_2.13-1.4.1.jar.asc.md5">silencer-lib_2.13-1.4.1.jar.asc.md5</a>               2019-06-08 00:18        32      
+<a href="silencer-lib_2.13-1.4.1.jar.asc.sha1" title="silencer-lib_2.13-1.4.1.jar.asc.sha1">silencer-lib_2.13-1.4.1.jar.asc.sha1</a>              2019-06-08 00:18        40      
+<a href="silencer-lib_2.13-1.4.1.jar.md5" title="silencer-lib_2.13-1.4.1.jar.md5">silencer-lib_2.13-1.4.1.jar.md5</a>                   2019-06-08 00:18        32      
+<a href="silencer-lib_2.13-1.4.1.jar.sha1" title="silencer-lib_2.13-1.4.1.jar.sha1">silencer-lib_2.13-1.4.1.jar.sha1</a>                  2019-06-08 00:18        40      
+<a href="silencer-lib_2.13-1.4.1.pom" title="silencer-lib_2.13-1.4.1.pom">silencer-lib_2.13-1.4.1.pom</a>                       2019-06-08 00:18      1903      
+<a href="silencer-lib_2.13-1.4.1.pom.asc" title="silencer-lib_2.13-1.4.1.pom.asc">silencer-lib_2.13-1.4.1.pom.asc</a>                   2019-06-08 00:18       486      
+<a href="silencer-lib_2.13-1.4.1.pom.asc.md5" title="silencer-lib_2.13-1.4.1.pom.asc.md5">silencer-lib_2.13-1.4.1.pom.asc.md5</a>               2019-06-08 00:18        32      
+<a href="silencer-lib_2.13-1.4.1.pom.asc.sha1" title="silencer-lib_2.13-1.4.1.pom.asc.sha1">silencer-lib_2.13-1.4.1.pom.asc.sha1</a>              2019-06-08 00:18        40      
+<a href="silencer-lib_2.13-1.4.1.pom.md5" title="silencer-lib_2.13-1.4.1.pom.md5">silencer-lib_2.13-1.4.1.pom.md5</a>                   2019-06-08 00:18        32      
+<a href="silencer-lib_2.13-1.4.1.pom.sha1" title="silencer-lib_2.13-1.4.1.pom.sha1">silencer-lib_2.13-1.4.1.pom.sha1</a>                  2019-06-08 00:18        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/ghik/silencer.git '*1.4.1*'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+ succeeded in 357ms:
+12540d588b1add3f65235b23e653b295581a8307	refs/tags/v1.4.1
+
+web search: 
+web search: Maven Central com.github.ghik silencer-lib_2.13 1.4.1 sources javadoc tests
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"|\"language\"' -S . --glob '*.json' | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+ succeeded in 0ms:
+./metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/1.2.4.Final/jboss-classfilewriter-1.2.4.Final-sources.jar",
+./metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:6:    "repository-url" : "https://github.com/wildfly/jboss-classfilewriter",
+./metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/1.2.4.Final/jboss-classfilewriter-1.2.4.Final-source-release.zip",
+./metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/1.2.4.Final/jboss-classfilewriter-1.2.4.Final-javadoc.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/4.0.0-M1/jakarta.persistence-api-4.0.0-M1-sources.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/persistence",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/persistence-tck-dist/4.0.0-M1/persistence-tck-dist-4.0.0-M1.zip",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/4.0.0-M1/jakarta.persistence-api-4.0.0-M1-javadoc.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.2.0/jakarta.persistence-api-3.2.0-sources.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:20:    "repository-url" : "https://github.com/jakartaee/persistence",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:21:    "test-code-url" : "https://download.eclipse.org/jakartaee/persistence/3.2/jakarta-persistence-tck-3.2.0.zip",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.2.0/jakarta.persistence-api-3.2.0-javadoc.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0-sources.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:34:    "repository-url" : "https://github.com/jakartaee/persistence",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:35:    "test-code-url" : "N/A",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:36:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0-javadoc.jar",
+./metadata/javax.el/javax.el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0-sources.jar",
+./metadata/javax.el/javax.el-api/index.json:6:    "repository-url" : "https://github.com/javaee/el-spec",
+./metadata/javax.el/javax.el-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.el/javax.el-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0-javadoc.jar",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-sources.jar",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:6:    "repository-url" : "https://github.com/openzipkin/zipkin",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/2.23.2/zipkin-tests/src/test",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-javadoc.jar",
+./metadata/org.freemarker/freemarker/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/freemarker/freemarker/2.3.31/freemarker-2.3.31-sources.jar",
+./metadata/org.freemarker/freemarker/index.json:10:    "repository-url": "https://github.com/apache/freemarker",
+./metadata/org.freemarker/freemarker/index.json:11:    "test-code-url": "https://github.com/apache/freemarker/tree/v2.3.31/src/test",
+./metadata/org.freemarker/freemarker/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/freemarker/freemarker/2.3.31/freemarker-2.3.31-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.15.2",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.15.2/src/test",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-javadoc.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/1.5.0/jackrabbit-jcr-commons-1.5.0-sources.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:6:    "repository-url" : "https://github.com/apache/jackrabbit",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/1.5.0/jackrabbit-jcr-commons/src/test/java",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/1.5.0/jackrabbit-jcr-commons/README.txt",
+./metadata/ch.qos.logback.contrib/logback-jackson/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-jackson/0.1.5/logback-jackson-0.1.5-sources.jar",
+./metadata/ch.qos.logback.contrib/logback-jackson/index.json:9:    "repository-url": "https://github.com/qos-ch/logback-contrib/tree/v_0.1.5",
+./metadata/ch.qos.logback.contrib/logback-jackson/index.json:10:    "test-code-url": "https://github.com/qos-ch/logback-contrib/tree/v_0.1.5/json",
+./metadata/ch.qos.logback.contrib/logback-jackson/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-jackson/0.1.5/logback-jackson-0.1.5-javadoc.jar",
+./metadata/javax.validation/validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/2.0.0.Final/validation-api-2.0.0.Final-sources.jar",
+./metadata/javax.validation/validation-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/validation",
+./metadata/javax.validation/validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/2.0.0.Final/src/test",
+./metadata/javax.validation/validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/2.0.0.Final/validation-api-2.0.0.Final-javadoc.jar",
+./metadata/javax.validation/validation-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.1.0.Final/validation-api-1.1.0.Final-sources.jar",
+./metadata/javax.validation/validation-api/index.json:21:    "repository-url" : "https://github.com/jakartaee/validation",
+./metadata/javax.validation/validation-api/index.json:22:    "test-code-url" : "https://github.com/jakartaee/validation/tree/1.1.0.Final/src/test",
+./metadata/javax.validation/validation-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.1.0.Final/validation-api-1.1.0.Final-javadoc.jar",
+./metadata/javax.validation/validation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-sources.jar",
+./metadata/javax.validation/validation-api/index.json:35:    "repository-url" : "https://github.com/jakartaee/validation",
+./metadata/javax.validation/validation-api/index.json:36:    "test-code-url" : "https://github.com/jakartaee/validation/tree/1.0.0.GA/src/test",
+./metadata/javax.validation/validation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/11.0.24/jetty-alpn-java-server-11.0.24-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-11.0.24/jetty-alpn/jetty-alpn-java-server/src/test",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/11.0.24/jetty-alpn-java-server-11.0.24-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-javadoc.jar",
+./metadata/org.hibernate.models/hibernate-models/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/hibernate/models/hibernate-models/1.0.0.CR3/hibernate-models-1.0.0.CR3-sources.jar",
+./metadata/org.hibernate.models/hibernate-models/index.json:6:    "repository-url" : "https://github.com/hibernate/hibernate-models",
+./metadata/org.hibernate.models/hibernate-models/index.json:7:    "test-code-url" : "https://github.com/hibernate/hibernate-models/tree/1.0.0.CR3/hibernate-models/src/test",
+./metadata/org.hibernate.models/hibernate-models/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/hibernate/models/hibernate-models/1.0.0.CR3/hibernate-models-1.0.0.CR3-javadoc.jar",
+./metadata/ch.qos.logback.contrib/logback-json-classic/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-classic/0.1.5/logback-json-classic-0.1.5-sources.jar",
+./metadata/ch.qos.logback.contrib/logback-json-classic/index.json:9:    "repository-url": "https://github.com/qos-ch/logback-contrib/tree/v_0.1.5",
+./metadata/ch.qos.logback.contrib/logback-json-classic/index.json:10:    "test-code-url": "https://github.com/qos-ch/logback-contrib/tree/v_0.1.5/json/classic/src/test",
+./metadata/ch.qos.logback.contrib/logback-json-classic/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-classic/0.1.5/logback-json-classic-0.1.5-javadoc.jar",
+./metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-sources.jar",
+./metadata/org.awaitility/awaitility/index.json:6:    "repository-url" : "https://github.com/awaitility/awaitility",
+./metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-tests.jar",
+./metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-javadoc.jar",
+./metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-sources.jar",
+./metadata/org.awaitility/awaitility/index.json:22:    "repository-url" : "https://github.com/awaitility/awaitility",
+./metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-tests.jar",
+./metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-annotations",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/silencer-lib_2.13-1.4.1-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/silencer-lib_2.13-1.4.1-javadoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://javadoc.io/doc/com.github.ghik/silencer-lib_2.13/1.4.1/' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+ succeeded in 307ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 22:51:50 GMT
+content-type: application/java-archive
+content-length: 1192
+cf-ray: 9f4a1d091f30273b-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "2fd734baafb8cd79e2488d93624cb687"
+last-modified: Sat, 08 Jun 2019 00:19:39 GMT
+x-checksum-md5: 2fd734baafb8cd79e2488d93624cb687
+x-checksum-sha1: 60e4792dc87ad4e40e087e390b3906db2c27437b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 301ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 22:51:50 GMT
+content-type: application/java-archive
+content-length: 1130315
+cf-ray: 9f4a1d0928ee03b5-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "1c52a3a1c2dfddda1f73675637c782b1"
+last-modified: Sat, 08 Jun 2019 00:20:18 GMT
+x-checksum-md5: 1c52a3a1c2dfddda1f73675637c782b1
+x-checksum-sha1: 806706fdc462737f84ac4f260f8c5fcf2fb7cde1
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 356ms:
+HTTP/2 301 
+date: Thu, 30 Apr 2026 22:51:50 GMT
+content-length: 0
+location: /doc/com.github.ghik/silencer-lib_2.13/1.4.1
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=MrSqsYatHF%2FaJUsvtLSwR%2Bp5%2F5hPjby5rzPtC%2B3A3AdK%2FLp7mED2e7R4GDmIpvhi02kcPwBbS%2B2G1AhemrVZYsqicXa3RYUo1gwp2BKRGGRtkcJ%2FwpttwQcYje4Sdp7nQ%2FW8fN7DeakM"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f4a1d0939bbbc71-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 303 
+date: Thu, 30 Apr 2026 22:51:50 GMT
+content-length: 0
+location: /doc/com.github.ghik/silencer-lib_2.13/1.4.1/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=V6T2IVlbzK%2FYkDnNkz2eSeUjdt0Z9wAqE9iD03ePcpw0KNsBWQA9SYg1tR%2BBuZVRAufSD1jRoHJ7YgwQHMCDBm0fH2P%2BvUg3aBzI%2FW7SWcRmXmLCnYO4%2BXE9bjGRwwSB7HylFAWySErD"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f4a1d09fa34bc71-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Thu, 30 Apr 2026 22:51:50 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/com.github.ghik/silencer-lib_2.13/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=YZXK1lVS8cc1GCMOIffxlvKlGQVtrdSXlTJWC13GlWAcGOvVHUXbmPMjepSQUfAssqQD3JCvFNsy0OsJ7%2Fafa90K0d%2By9C%2B3CfAR8XK6exE%2Bp%2FlWx51eDqcCVr01E%2BwlDOprjMzocIfS"}]}
+server: cloudflare
+cf-ray: 9f4a1d0abaa1bc71-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/ | rg -i 'test|source-release'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+ exited 1 in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/ghik/silencer/v1.4.1/README.md | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/ghik/silencer/git/trees/v1.4.1?recursive=1 | rg '\"path\":' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+ succeeded in 162ms:
+# Silencer: Scala compiler plugin for warning suppression
+
+[![Build Status](https://travis-ci.org/ghik/silencer.svg?branch=master)](https://travis-ci.org/ghik/silencer)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.ghik/silencer-plugin_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.ghik/silencer-plugin_2.12)
+
+Scala has no local warning suppression (see e.g. [scala/bug/issues/1781](https://github.com/scala/bug/issues/1781) for discussion). This plugin aims to change the situation. The direct motivation for this plugin is to be able to turn on `-Xfatal-warnings` option in Scala compiler and enforce zero-warning policy but still be able to consciously silent out warnings which would otherwise be a pointless noise.
+
+## Setup
+
+If you're using SBT, add this to your project definition:
+
+```scala
+libraryDependencies ++= Seq(
+  compilerPlugin("com.github.ghik" %% "silencer-plugin" % silencerVersion),
+  "com.github.ghik" %% "silencer-lib" % silencerVersion % Provided
+)
+```
+
+If you're using Gradle:
+
+```groovy
+ext {
+    scalaBinaryVersion = "..." // e.g. "2.12"
+    silencerVersion = "..." // appropriate silencer version
+}
+configurations {
+    scalacPlugin {
+        transitive = false
+    }
+}
+dependencies {
+    compile "com.github.ghik:silencer-lib_$scalaBinaryVersion:$silencerVersion"
+    scalacPlugin "com.github.ghik:silencer-plugin_$scalaBinaryVersion:$silencerVersion"
+}
+tasks.withType(ScalaCompile) {
+    scalaCompileOptions.additionalParameters =
+            configurations.scalacPlugin.collect { "-Xplugin:" + it.absolutePath }
+}
+```
+    
+Silencer currently works with Scala 2.11.4+, 2.12.0+ and 2.13.0-M4+. Also note that since both `silencer-plugin` and `silencer-lib` are compile time only dependencies, Silencer can also be used in ScalaJS and Scala Native without having to be cross compiled for it.
+
+## Annotation-based suppression
+
+With the plugin enabled, warnings can be suppressed using the `@com.github.ghik.silencer.silent` annotation. 
+It can be applied on a single statement or expression, entire `def`/`val`/`var` definition or entire 
+`class`/`object`/`trait` definition.
+
+```scala
+import com.github.ghik.silencer.silent
+
+@silent class someClass { ... }
+@silent def someMethod() = { ... }
+someDeprecatedApi("something"): @silent
+```
+
+### Message pattern
+
+By default the `@silent` annotation suppresses *all* warnings in some code fragment. You can limit the suppression to
+some specific classes of warnings by passing a message pattern (regular expression) to the annotation, e.g.
+
+```scala
+@silent("deprecated") 
+def usesDeprecatedApi(): Unit = {
+  someDeprecatedApi("something")
+}
+```
+
+### Detecting unused annotations
+
+If a `@silent` annotation does not actually suppress any warnings, you can make `silencer` report an error in such
+situation. This can be enabled by passing the `checkUnused` option to the plugin:
+
+```scala
+scalacOptions += "-P:silencer:checkUnused"
+```
+
+## Global regex-based suppression
+
+You can also suppress warnings globally based on a warning message regex. In order to do that, pass this option to `scalac`:
+
+```scala
+scalacOptions += "-P:silencer:globalFilters=[semi-colon separated message patterns]"
+```
+
+## Filename based suppression
+
+Another option is to suppress all warnings in selected source files. This can be done by specifying a list of file path regexes:
+
+```scala
+scalacOptions += "-P:silencer:pathFilters=[semi-colon separated file path patterns]"
+```
+
+**NOTE**: In order to make builds independent of environment, filename separators are normalized to UNIX style (`/`) before the path is matched against path patterns.
+
+By default, absolute file path is matched against path patterns. In order to make your build independent of where your project is checked out, you can specify a list of source root directories. Source file paths will be relativized with respect to them  before being matched against path patterns. Usually it should be enough to pass project base directory as source root (i.e. `baseDirectory.value` in SBT):
+
+```scala
+scalacOptions += s"-P:silencer:sourceRoots=${baseDirectory.value.getCanonicalPath}"
+```
+
+Another good choice for source roots may be actual SBT source directories:
+
+```scala
+scalacOptions += s"-P:silencer:sourceRoots=${sourceDirectories.value.map(_.getCanonicalPath).mkString(";")}"
+```
+
+
+ succeeded in 239ms:
+      "path": ".gitignore",
+      "path": ".travis.yml",
+      "path": "README.md",
+      "path": "build.sbt",
+      "path": "license.txt",
+      "path": "project",
+      "path": "project/build.properties",
+      "path": "project/plugins.sbt",
+      "path": "silencer-lib",
+      "path": "silencer-lib/src",
+      "path": "silencer-lib/src/main",
+      "path": "silencer-lib/src/main/scala",
+      "path": "silencer-lib/src/main/scala/com",
+      "path": "silencer-lib/src/main/scala/com/github",
+      "path": "silencer-lib/src/main/scala/com/github/ghik",
+      "path": "silencer-lib/src/main/scala/com/github/ghik/silencer",
+      "path": "silencer-lib/src/main/scala/com/github/ghik/silencer/silent.scala",
+      "path": "silencer-lib/src/test",
+      "path": "silencer-lib/src/test/scala",
+      "path": "silencer-lib/src/test/scala/com",
+      "path": "silencer-lib/src/test/scala/com/github",
+      "path": "silencer-lib/src/test/scala/com/github/ghik",
+      "path": "silencer-lib/src/test/scala/com/github/ghik/silencer",
+      "path": "silencer-lib/src/test/scala/com/github/ghik/silencer/MacroImpls.scala",
+      "path": "silencer-plugin",
+      "path": "silencer-plugin/src",
+      "path": "silencer-plugin/src/main",
+      "path": "silencer-plugin/src/main/resources",
+      "path": "silencer-plugin/src/main/resources/scalac-plugin.xml",
+      "path": "silencer-plugin/src/main/scala",
+      "path": "silencer-plugin/src/main/scala/com",
+      "path": "silencer-plugin/src/main/scala/com/github",
+      "path": "silencer-plugin/src/main/scala/com/github/ghik",
+      "path": "silencer-plugin/src/main/scala/com/github/ghik/silencer",
+      "path": "silencer-plugin/src/main/scala/com/github/ghik/silencer/SilencerPlugin.scala",
+      "path": "silencer-plugin/src/main/scala/com/github/ghik/silencer/SuppressingReporter.scala",
+      "path": "silencer-plugin/src/main/scala/com/github/ghik/silencer/Suppression.scala",
+      "path": "silencer-plugin/src/test",
+      "path": "silencer-plugin/src/test/scala",
+      "path": "silencer-plugin/src/test/scala/com",
+      "path": "silencer-plugin/src/test/scala/com/github",
+      "path": "silencer-plugin/src/test/scala/com/github/ghik",
+      "path": "silencer-plugin/src/test/scala/com/github/ghik/silencer",
+      "path": "silencer-plugin/src/test/scala/com/github/ghik/silencer/SilencerPluginTest.scala",
+      "path": "silencer-plugin/testdata",
+      "path": "silencer-plugin/testdata/classSuppression.scala",
+      "path": "silencer-plugin/testdata/globallyFiltered.scala",
+      "path": "silencer-plugin/testdata/globallyFilteredByPath.scala",
+      "path": "silencer-plugin/testdata/inner",
+      "path": "silencer-plugin/testdata/inner/globallyFilteredByPath.scala",
+      "path": "silencer-plugin/testdata/inner/unfiltered.scala",
+      "path": "silencer-plugin/testdata/lateWarning.scala",
+      "path": "silencer-plugin/testdata/localValueSuppression.scala",
+      "path": "silencer-plugin/testdata/macroExpandeeSuppression.scala",
+      "path": "silencer-plugin/testdata/messagePatterns.scala",
+      "path": "silencer-plugin/testdata/methodSuppression.scala",
+      "path": "silencer-plugin/testdata/statementSuppression.scala",
+      "path": "silencer-plugin/testdata/unsuppressed.scala",
+      "path": "silencer-plugin/testdata/unusedSuppressions.scala",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/ghik/silencer/tree/v1.4.1' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/ghik/silencer/tree/v1.4.1/silencer-lib/src/test' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/ghik/silencer' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/ | rg -i 'test|source-release|src'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+ exited 1 in 268ms:
+ succeeded in 459ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 22:52:04 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"a8a7c183c1270a763f5da8e97cd8cb2e"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=XWjX9i7Bo7SAjSzaIw2OxiaVld8TwPr51fKRLfKKHT9dC54vdEcHfCMOEde%2FpANbb27ZfZlYXSLrxvy2FYr29ddIygQ5KMCUl763alnBJ0Mu06CDpwL2ZqJYbcq3jzyBVuvVmQwZD%2BJTT2f%2F%2BDEVaKdfVh3TPmWsJptJtoE1L7SMLuzIUWgQtFyfQ93hAVR6h3GKaF%2BM%2BwzEQCmzY%2F34H313%2BIS2ACXHC%2F0CWSYTUA8l90SI3omxYKnNTsvg4n0nE1gR6wxcKWcvpjl4gV2jpA%3D%3D--KYtNq%2FgH2tQeX2Fc--Eg181lf9WqG1chOiy%2BaOhA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1567486198.1777589523; expires=Fri, 30 Apr 2027 22:52:03 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 22:52:03 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510F:364897:923443:7012DF:69F3DD13
+
+
+ succeeded in 654ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 22:52:04 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"95be950637666878ba5caf5d398b6b9b"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=h9joyWLAffUWHs7FKJb40Qm8myuVSWCqx8cQzW1zkv26FTMDJ9dOz8lKkN8xsEdWZtinrd7MyV7HCdeDpp8mCf8ILZMgq1QkRhWPot3BYA%2FlYRnhBFMB93Dby6uSqNyCeyy5YrDmcMojLOYN06BpSpT8Ap%2BPH8SLp20Dpw6VUhUoScGrzqSJAnivFun1ZXYkQkRK24JLEDYbM%2Fv2H0iG1vqYaVu%2F%2FwvCNdO5Y7envR8mZTTskZvmnNluGHZL05OaEgl5SEYSiaNxP6DbejtP6g%3D%3D--VuZGd6YqxY3qaftc--p22zWx%2B8aWQDzeAczn62fQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1659122377.1777589523; expires=Fri, 30 Apr 2027 22:52:03 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 22:52:03 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FF:1347D0:8FF39F:6E4D11:69F3DD13
+
+
+ succeeded in 868ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 22:52:04 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"89732440edcc922c7a5527a661d30d60"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=bj1%2B9mKCMoyXkFMIDqzoOGLYnnE5Oj%2BOGT%2BFgvdOk5i1zCh0eyGpZH%2BBjI%2FxF0ZdVqXLtzrpc4aeR0kqvnTtFZgNU5de0Vvnhh9T1v5SX9lIFkXiXUgKqi3iiuZy%2Fbl8HTD6gkP76ubFCmBEPiHkgHBWvN3TbSA3MPbD6h7KaWQewpnw5W5vsBE9JPwjD5tB4aZLXW7Jfj%2Bj%2BIYy8SID7TC5GS7Ymne6z778IbJUUd9UKq6iqUB4H2uc0Iw3bUvcrJ%2F99xeAO0i8SWSZGIG2Fw%3D%3D--HXfv%2B3Wgo1pvPmh6--lMWc5ksFabHDYJSPSH%2BVSw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1342317926.1777589523; expires=Fri, 30 Apr 2027 22:52:03 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 22:52:03 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5110:1581E9:92084F:6FF88B:69F3DD13
+
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"\\s*:' metadata build -S --glob '*.json' | head -30" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+ succeeded in 0ms:
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:56:      "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:186:        "language": {
+
+exec
+/usr/bin/bash -lc "sed -n '1,35p' metadata/org.scala-lang/scala3-interfaces/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.3.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala3-interfaces/3.3.1/scala3-interfaces-3.3.1-sources.jar",
+    "repository-url" : "https://github.com/scala/scala3",
+    "test-code-url" : "https://github.com/scala/scala3/tree/3.3.1/tests",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala3-interfaces/3.3.1/scala3-interfaces-3.3.1-javadoc.jar",
+    "description" : "scala3-interfaces provides Java interfaces used by the Scala 3 compiler for compiler callbacks, diagnostics, source files, and source positions. These interfaces define the API surface that tools and integrations use to communicate with the Scala 3 compiler without depending on compiler implementation classes.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "3.3.1",
+      "3.3.2",
+      "3.3.3",
+      "3.3.4",
+      "3.3.5",
+      "3.3.6",
+      "3.3.7",
+      "3.4.0",
+      "3.4.1",
+      "3.4.2",
+      "3.4.3",
+      "3.5.0",
+      "3.5.1",
+      "3.5.2",
+      "3.6.0",
+      "3.6.1",
+      "3.6.2",
+      "3.6.3",
+      "3.6.4",
+      "3.7.0",
+      "3.7.1",
+
+exec
+/usr/bin/bash -lc "sed -n '1,35p' metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+ succeeded in 0ms:
+[
+  {
+    "metadata-version" : "1.3.72",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.3.72/kotlin-stdlib-1.3.72-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.3.72/libraries/stdlib/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.3.72/kotlin-stdlib-1.3.72-javadoc.jar",
+    "description" : "Kotlin Standard Library for JVM provides the core runtime classes, collections, and extension APIs used by Kotlin applications on the JVM. It supports common programming tasks such as text handling, sequences, and Java interoperability required by compiled Kotlin code.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "1.3"
+    },
+    "tested-versions" : [
+      "1.3.72"
+    ],
+    "allowed-packages" : [
+      "kotlin"
+    ]
+  },
+  {
+    "latest" : true,
+    "metadata-version" : "1.7.10",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.7.10/libraries/stdlib/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-javadoc.jar",
+    "description" : "Kotlin Standard Library for JVM provides the core runtime classes, collections, and extension APIs used by Kotlin applications on the JVM. It supports common programming tasks such as text handling, sequences, and Java interoperability required by compiled Kotlin code.",
+    "tested-versions" : [
+      "1.7.10",
+      "1.7.20",
+      "1.7.21",
+      "1.7.22",
+      "1.8.0",
+      "1.8.10",
+      "1.8.20",
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/org.scala-sbt/test-interface/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0-sources.jar",
+    "repository-url" : "https://github.com/sbt/test-interface",
+    "test-code-url" : "https://github.com/sbt/test-interface/tree/v1.0/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0-javadoc.jar",
+    "description" : "test-interface defines the common sbt testing API that test frameworks implement and clients use to run tests and receive results. It provides Java interfaces and selectors for framework discovery, task execution, event reporting, logging, and optional throwable details.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "1.0"
+    ],
+    "allowed-packages" : [
+      "org.scalatools.testing",
+      "sbt.testing"
+    ]
+  }
+]
+
+codex
+Maven Central has exact `1.4.1` sources and javadocs, but no tests or source-release artifact. I’m using the tagged GitHub test directory for the library module and marking it as Scala 2 because the artifact is cross-built as `_2.13`.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json
+diff --git a/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json b/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json
+index 25470f57ccd854f70a6e93630e609073736086d0..843d4e25a175f1334be0a1876d0d2051f9084156
+--- a/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json
++++ b/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.github.ghik:silencer-lib_2.13:1.4.1"
++  "coordinates" : "com.github.ghik:silencer-lib_2.13:1.4.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/silencer-lib_2.13-1.4.1-sources.jar",
++  "repository-url" : "https://github.com/ghik/silencer",
++  "test-code-url" : "https://github.com/ghik/silencer/tree/v1.4.1/silencer-lib/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/silencer-lib_2.13-1.4.1-javadoc.jar",
++  "description" : "silencer-lib provides the @silent annotation used by the Silencer Scala compiler plugin to suppress warnings on expressions, definitions, and types. It supports pattern-limited suppressions so Scala projects can keep fatal warnings enabled while intentionally silencing selected compiler warnings.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json b/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json
+index 25470f57ccd854f70a6e93630e609073736086d0..843d4e25a175f1334be0a1876d0d2051f9084156
+--- a/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json
++++ b/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.github.ghik:silencer-lib_2.13:1.4.1"
++  "coordinates" : "com.github.ghik:silencer-lib_2.13:1.4.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/silencer-lib_2.13-1.4.1-sources.jar",
++  "repository-url" : "https://github.com/ghik/silencer",
++  "test-code-url" : "https://github.com/ghik/silencer/tree/v1.4.1/silencer-lib/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/silencer-lib_2.13-1.4.1-javadoc.jar",
++  "description" : "silencer-lib provides the @silent annotation used by the Silencer Scala compiler plugin to suppress warnings on expressions, definitions, and types. It supports pattern-limited suppressions so Scala projects can keep fatal warnings enabled while intentionally silencing selected compiler warnings.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+ succeeded in 0ms:
+{
+  "coordinates": "com.github.ghik:silencer-lib_2.13:1.4.1",
+  "source-code-url": "https://repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/silencer-lib_2.13-1.4.1-sources.jar",
+  "repository-url": "https://github.com/ghik/silencer",
+  "test-code-url": "https://github.com/ghik/silencer/tree/v1.4.1/silencer-lib/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/silencer-lib_2.13-1.4.1-javadoc.jar",
+  "description": "silencer-lib provides the @silent annotation used by the Silencer Scala compiler plugin to suppress warnings on expressions, definitions, and types. It supports pattern-limited suppressions so Scala projects can keep fatal warnings enabled while intentionally silencing selected compiler warnings.",
+  "language": {
+    "name": "scala",
+    "version": "2"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json b/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json
+index 25470f57ccd854f70a6e93630e609073736086d0..843d4e25a175f1334be0a1876d0d2051f9084156
+--- a/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json
++++ b/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.github.ghik:silencer-lib_2.13:1.4.1"
++  "coordinates" : "com.github.ghik:silencer-lib_2.13:1.4.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/silencer-lib_2.13-1.4.1-sources.jar",
++  "repository-url" : "https://github.com/ghik/silencer",
++  "test-code-url" : "https://github.com/ghik/silencer/tree/v1.4.1/silencer-lib/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/silencer-lib_2.13-1.4.1-javadoc.jar",
++  "description" : "silencer-lib provides the @silent annotation used by the Silencer Scala compiler plugin to suppress warnings on expressions, definitions, and types. It supports pattern-limited suppressions so Scala projects can keep fatal warnings enabled while intentionally silencing selected compiler warnings.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json && sed -n '1,40p' build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f
+ succeeded in 0ms:
+{
+  "coordinates" : "com.github.ghik:silencer-lib_2.13:1.4.1",
+  "source-code-url" : "https://repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/silencer-lib_2.13-1.4.1-sources.jar",
+  "repository-url" : "https://github.com/ghik/silencer",
+  "test-code-url" : "https://github.com/ghik/silencer/tree/v1.4.1/silencer-lib/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/silencer-lib_2.13-1.4.1-javadoc.jar",
+  "description" : "silencer-lib provides the @silent annotation used by the Silencer Scala compiler plugin to suppress warnings on expressions, definitions, and types. It supports pattern-limited suppressions so Scala projects can keep fatal warnings enabled while intentionally silencing selected compiler warnings.",
+  "language" : {
+    "name" : "scala",
+    "version" : "2"
+  }
+}
+
+diff --git a/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json b/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json
+index 25470f57ccd854f70a6e93630e609073736086d0..843d4e25a175f1334be0a1876d0d2051f9084156
+--- a/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json
++++ b/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.github.ghik:silencer-lib_2.13:1.4.1"
++  "coordinates" : "com.github.ghik:silencer-lib_2.13:1.4.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/silencer-lib_2.13-1.4.1-sources.jar",
++  "repository-url" : "https://github.com/ghik/silencer",
++  "test-code-url" : "https://github.com/ghik/silencer/tree/v1.4.1/silencer-lib/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/silencer-lib_2.13-1.4.1-javadoc.jar",
++  "description" : "silencer-lib provides the @silent annotation used by the Silencer Scala compiler plugin to suppress warnings on expressions, definitions, and types. It supports pattern-limited suppressions so Scala projects can keep fatal warnings enabled while intentionally silencing selected compiler warnings.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+web search: 
+web search: https://github.com/ghik/silencer/tree/v1.4.1/silencer-lib/src/test
+web search: 
+web search: repo1.maven.org maven2 com github ghik silencer-lib_2.13 1.4.1 sources jar javadoc jar
+web search: 
+web search: "silencer-lib_2.13-1.4.1-sources.jar"
+web search: 
+web search: site:repo.maven.apache.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1 silencer-lib_2.13-1.4.1-sources.jar
+codex
+Updated [com.github.ghik-silencer-lib_2.13-1.4.1.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json) with the exact-version source, docs, repository, test URL, two-sentence description, and Scala 2 language metadata. The description and test path were checked against the `v1.4.1` README and tagged test tree. ([github.com](https://github.com/ghik/silencer/blob/v1.4.1/README.md))
+
+Validation: `jq .` parsed the JSON successfully.
+diff --git a/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json b/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json
+index 25470f57ccd854f70a6e93630e609073736086d0..843d4e25a175f1334be0a1876d0d2051f9084156
+--- a/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json
++++ b/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.github.ghik:silencer-lib_2.13:1.4.1"
++  "coordinates" : "com.github.ghik:silencer-lib_2.13:1.4.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/silencer-lib_2.13-1.4.1-sources.jar",
++  "repository-url" : "https://github.com/ghik/silencer",
++  "test-code-url" : "https://github.com/ghik/silencer/tree/v1.4.1/silencer-lib/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/github/ghik/silencer-lib_2.13/1.4.1/silencer-lib_2.13-1.4.1-javadoc.jar",
++  "description" : "silencer-lib provides the @silent annotation used by the Silencer Scala compiler plugin to suppress warnings on expressions, definitions, and types. It supports pattern-limited suppressions so Scala projects can keep fatal warnings enabled while intentionally silencing selected compiler warnings.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+2026-04-30T22:52:51.993798Z ERROR codex_core::session: failed to record rollout items: thread 019de096-f294-7ab3-abd0-0e68091a0af2 not found
+tokens used
+61,129
+Updated [com.github.ghik-silencer-lib_2.13-1.4.1.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f/build/discovered-artifact-metadata/com.github.ghik-silencer-lib_2.13-1.4.1.json) with the exact-version source, docs, repository, test URL, two-sentence description, and Scala 2 language metadata. The description and test path were checked against the `v1.4.1` README and tagged test tree. ([github.com](https://github.com/ghik/silencer/blob/v1.4.1/README.md))
+
+Validation: `jq .` parsed the JSON successfully.
+Ran agent for com.github.ghik:silencer-lib_2.13:1.4.1 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f/build/agent-artifact-discovery-logs/com.github.ghik-silencer-lib_2.13-1.4.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3628-4802511f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 31s
+9 actionable tasks: 4 executed, 5 from cache
