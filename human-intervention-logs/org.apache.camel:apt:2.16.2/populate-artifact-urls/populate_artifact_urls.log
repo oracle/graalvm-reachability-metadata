@@ -1,0 +1,395 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3771-3098f2fe
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ddfb2-704b-7361-91a4-5319feef8ff7
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.camel:apt:2.16.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.16.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3771-3098f2fe/metadata/org.apache.camel/apt/index.json
+- Entry selector: "metadata-version" = "2.16.2"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "2.16.2".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/org/apache/camel/apt/2.16.2/apt-2.16.2-sources.jar
+- repository-url: https://github.com/apache/camel
+- test-code-url: https://github.com/apache/camel/tree/camel-2.16.2/tooling/apt/src/test
+- documentation-url: https://repo.maven.apache.org/maven2/org/apache/camel/apt/2.16.2/apt-2.16.2-javadoc.jar
+- description: Apache Camel APT is the annotation processor module used by Camel tooling to process Camel endpoint and EIP annotations at compile time. It generates metadata and documentation model files that Camel components use for endpoint configuration, tooling, and reference documentation.
+- language: <missing>
+
+Context:
+- Coordinate version: 2.16.2
+- Entry test-version: 2.16.2
+codex
+I’ll verify the existing metadata entry first, then check the exact-version artifact URLs before making any scoped JSON edit. Since this is a metadata-only change, I’ll leave unrelated fields untouched.
+exec
+/usr/bin/zsh -lc "rg -n '\"metadata-version\"\\s*:\\s*\"2\\.16\\.2\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.apache.camel/apt/index.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3771-3098f2fe
+ succeeded in 0ms:
+4:    "metadata-version" : "2.16.2",
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/apt/2.16.2/apt-2.16.2-sources.jar",
+6:    "repository-url" : "https://github.com/apache/camel",
+7:    "test-code-url" : "https://github.com/apache/camel/tree/camel-2.16.2/tooling/apt/src/test",
+8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/apt/2.16.2/apt-2.16.2-javadoc.jar",
+9:    "description" : "Apache Camel APT is the annotation processor module used by Camel tooling to process Camel endpoint and EIP annotations at compile time. It generates metadata and documentation model files that Camel components use for endpoint configuration, tooling, and reference documentation.",
+
+exec
+/usr/bin/zsh -lc "sed -n '1,220p' metadata/org.apache.camel/apt/index.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3771-3098f2fe
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.16.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/apt/2.16.2/apt-2.16.2-sources.jar",
+    "repository-url" : "https://github.com/apache/camel",
+    "test-code-url" : "https://github.com/apache/camel/tree/camel-2.16.2/tooling/apt/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/apt/2.16.2/apt-2.16.2-javadoc.jar",
+    "description" : "Apache Camel APT is the annotation processor module used by Camel tooling to process Camel endpoint and EIP annotations at compile time. It generates metadata and documentation model files that Camel components use for endpoint configuration, tooling, and reference documentation.",
+    "tested-versions" : [
+      "2.16.2"
+    ],
+    "allowed-packages" : [
+      "org.apache.camel.tools.apt"
+    ]
+  }
+]
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/camel/apt/2.16.2/
+codex
+The target entry already has non-blank values for every requested URL and the two-sentence description. The only absent field is `language`, and this artifact is a Java annotation processor module rather than Kotlin, Groovy, or Scala-specific, so I’m leaving it absent per the instructions.
+exec
+/usr/bin/zsh -lc 'jq empty metadata/org.apache.camel/apt/index.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3771-3098f2fe
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc 'git diff -- metadata/org.apache.camel/apt/index.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3771-3098f2fe
+ succeeded in 0ms:
+web search: 
+web search: https://github.com/apache/camel/tree/camel-2.16.2/tooling/apt/src/test
+web search: 
+web search: repo.maven.apache.org maven2 org apache camel apt 2.16.2 sources javadoc
+web search: 
+web search: 
+web search: 
+web search: "apt-2.16.2-sources.jar"
+web search: 
+web search: mvnrepository org.apache.camel apt 2.16.2
+web search: 
+web search: central.sonatype.com artifact org.apache.camel apt 2.16.2
+exec
+/usr/bin/zsh -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/camel/apt/2.16.2/apt-2.16.2-sources.jar' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3771-3098f2fe
+exec
+/usr/bin/zsh -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/camel/apt/2.16.2/apt-2.16.2-javadoc.jar' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3771-3098f2fe
+exec
+/usr/bin/zsh -lc 'curl -fsI https://github.com/apache/camel/tree/camel-2.16.2/tooling/apt/src/test' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3771-3098f2fe
+ succeeded in 383ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 18:42:32 GMT
+content-type: application/java-archive
+content-length: 42461
+cf-ray: 9f48afd8cea6562e-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "144d0c2422365ffd885fad51d8395f5f"
+last-modified: Fri, 22 Jan 2016 19:15:25 GMT
+x-checksum-md5: 144d0c2422365ffd885fad51d8395f5f
+x-checksum-sha1: 7d48a6c7fa7bf089a2b8cb8005fcd7bfe189786c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 326ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 18:42:32 GMT
+content-type: application/java-archive
+content-length: 119309
+cf-ray: 9f48afd98f0ae295-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "1ea4aa236237eefb82b7f8f2d487413d"
+last-modified: Fri, 22 Jan 2016 19:15:28 GMT
+x-checksum-md5: 1ea4aa236237eefb82b7f8f2d487413d
+x-checksum-sha1: 04114095bca91d00fa6a78b74560dc8dbc0def90
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 796ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 18:42:33 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"1c11283442e2c7ff229f97fc011ac47c"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=ffUR1px8M4cJZBsBZWLcuAN32ZBFpuogGR2OAcLmAGy9alpn5pzjKbU7%2BvNhLetmuooQBmD2hqIS%2BlybspI1LB2%2BwR5jDCXm9O6jVxhZ%2FYnNwHxq3cbT%2B0sSKsWk2ESavIRxKKXz2KXU0n28kmj6QYpvNPYZsEIxrmn8ssr6UgllUwkDWSrJvzm0VeZM0klA%2BGKDz875cgQE%2BOVvssEbc03QSmsQvA%2BRwT2YdvDDTYtY8SOwr2%2Boe%2B%2FjqkbZ9USeErftEacGAoBqp%2FcuX9URVg%3D%3D--onpAB5OmcHYlENsu--05lmEoVUGEsFRqVrBK32IQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1209588681.1777574552; expires=Fri, 30 Apr 2027 18:42:32 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 18:42:32 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 1964:119E6E:3786D36:2959344:69F3A298
+
+
+web search: 
+web search: https://github.com/apache/camel/tree/camel-2.16.2/tooling/apt/src/test
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/camel/apt/2.16.2/
+web search: 
+web search: https://github.com/apache/camel
+web search: 
+web search: 
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/apt/2.16.2/apt-2.16.2-sources.jar -o /tmp/apt-2.16.2-sources.jar && jar tf /tmp/apt-2.16.2-sources.jar | sed -n '1,80p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3771-3098f2fe
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/apt/2.16.2/apt-2.16.2.pom | sed -n '1,180p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3771-3098f2fe
+ succeeded in 147ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.camel</groupId>
+    <artifactId>tooling</artifactId>
+    <version>2.16.2</version>
+  </parent>
+
+
+  <artifactId>apt</artifactId>
+  <name>Camel :: Annotation Processor</name>
+  <description>Processes Camel endpoint source code</description>
+
+  <properties>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>spi-annotations</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- testing -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+
+  <build>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <source>${jdk.version}</source>
+            <target>${jdk.version}</target>
+            <!-- Disable annotation processing for ourselves. -->
+              <proc>none</proc>
+              <verbose>false</verbose>
+<!--
+            <compilerArgument>-proc:none</compilerArgument>
+-->
+          </configuration>
+        </plugin>
+      </plugins>
+  </build>
+
+</project>
+
+ succeeded in 295ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/NOTICE
+META-INF/LICENSE
+META-INF/DEPENDENCIES
+org/
+org/apache/
+org/apache/camel/
+org/apache/camel/tools/
+org/apache/camel/tools/apt/
+org/apache/camel/tools/apt/helper/
+org/apache/camel/tools/apt/model/
+org/apache/camel/tools/apt/EndpointAnnotationProcessor.java
+org/apache/camel/tools/apt/DocumentationHelper.java
+org/apache/camel/tools/apt/Func1.java
+org/apache/camel/tools/apt/helper/JsonSchemaHelper.java
+org/apache/camel/tools/apt/helper/Strings.java
+org/apache/camel/tools/apt/helper/IOHelper.java
+org/apache/camel/tools/apt/helper/EndpointHelper.java
+org/apache/camel/tools/apt/helper/CollectionStringBuffer.java
+org/apache/camel/tools/apt/AbstractAnnotationProcessor.java
+org/apache/camel/tools/apt/model/EndpointOption.java
+org/apache/camel/tools/apt/model/EndpointPath.java
+org/apache/camel/tools/apt/model/ComponentModel.java
+org/apache/camel/tools/apt/model/ComponentOption.java
+org/apache/camel/tools/apt/EipAnnotationProcessor.java
+META-INF/services/
+META-INF/services/javax.annotation.processing.Processor
+
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/apt/2.16.2/ | sed -n '1,220p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3771-3098f2fe
+ succeeded in 142ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/camel/apt/2.16.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/camel/apt/2.16.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="apt-2.16.2-javadoc.jar" title="apt-2.16.2-javadoc.jar">apt-2.16.2-javadoc.jar</a>                            2016-01-22 19:15    119309      
+<a href="apt-2.16.2-javadoc.jar.asc" title="apt-2.16.2-javadoc.jar.asc">apt-2.16.2-javadoc.jar.asc</a>                        2016-01-22 19:15       819      
+<a href="apt-2.16.2-javadoc.jar.asc.md5" title="apt-2.16.2-javadoc.jar.asc.md5">apt-2.16.2-javadoc.jar.asc.md5</a>                    2016-01-22 19:15        32      
+<a href="apt-2.16.2-javadoc.jar.asc.sha1" title="apt-2.16.2-javadoc.jar.asc.sha1">apt-2.16.2-javadoc.jar.asc.sha1</a>                   2016-01-22 19:15        40      
+<a href="apt-2.16.2-javadoc.jar.md5" title="apt-2.16.2-javadoc.jar.md5">apt-2.16.2-javadoc.jar.md5</a>                        2016-01-22 19:15        32      
+<a href="apt-2.16.2-javadoc.jar.sha1" title="apt-2.16.2-javadoc.jar.sha1">apt-2.16.2-javadoc.jar.sha1</a>                       2016-01-22 19:15        40      
+<a href="apt-2.16.2-sources.jar" title="apt-2.16.2-sources.jar">apt-2.16.2-sources.jar</a>                            2016-01-22 19:15     42461      
+<a href="apt-2.16.2-sources.jar.asc" title="apt-2.16.2-sources.jar.asc">apt-2.16.2-sources.jar.asc</a>                        2016-01-22 19:15       819      
+<a href="apt-2.16.2-sources.jar.asc.md5" title="apt-2.16.2-sources.jar.asc.md5">apt-2.16.2-sources.jar.asc.md5</a>                    2016-01-22 19:15        32      
+<a href="apt-2.16.2-sources.jar.asc.sha1" title="apt-2.16.2-sources.jar.asc.sha1">apt-2.16.2-sources.jar.asc.sha1</a>                   2016-01-22 19:15        40      
+<a href="apt-2.16.2-sources.jar.md5" title="apt-2.16.2-sources.jar.md5">apt-2.16.2-sources.jar.md5</a>                        2016-01-22 19:15        32      
+<a href="apt-2.16.2-sources.jar.sha1" title="apt-2.16.2-sources.jar.sha1">apt-2.16.2-sources.jar.sha1</a>                       2016-01-22 19:15        40      
+<a href="apt-2.16.2.jar" title="apt-2.16.2.jar">apt-2.16.2.jar</a>                                    2016-01-22 19:15     67763      
+<a href="apt-2.16.2.jar.asc" title="apt-2.16.2.jar.asc">apt-2.16.2.jar.asc</a>                                2016-01-22 19:15       819      
+<a href="apt-2.16.2.jar.asc.md5" title="apt-2.16.2.jar.asc.md5">apt-2.16.2.jar.asc.md5</a>                            2016-01-22 19:15        32      
+<a href="apt-2.16.2.jar.asc.sha1" title="apt-2.16.2.jar.asc.sha1">apt-2.16.2.jar.asc.sha1</a>                           2016-01-22 19:15        40      
+<a href="apt-2.16.2.jar.md5" title="apt-2.16.2.jar.md5">apt-2.16.2.jar.md5</a>                                2016-01-22 19:15        32      
+<a href="apt-2.16.2.jar.sha1" title="apt-2.16.2.jar.sha1">apt-2.16.2.jar.sha1</a>                               2016-01-22 19:15        40      
+<a href="apt-2.16.2.pom" title="apt-2.16.2.pom">apt-2.16.2.pom</a>                                    2016-01-22 19:15      2506      
+<a href="apt-2.16.2.pom.asc" title="apt-2.16.2.pom.asc">apt-2.16.2.pom.asc</a>                                2016-01-22 19:15       819      
+<a href="apt-2.16.2.pom.asc.md5" title="apt-2.16.2.pom.asc.md5">apt-2.16.2.pom.asc.md5</a>                            2016-01-22 19:15        32      
+<a href="apt-2.16.2.pom.asc.sha1" title="apt-2.16.2.pom.asc.sha1">apt-2.16.2.pom.asc.sha1</a>                           2016-01-22 19:15        40      
+<a href="apt-2.16.2.pom.md5" title="apt-2.16.2.pom.md5">apt-2.16.2.pom.md5</a>                                2016-01-22 19:15        32      
+<a href="apt-2.16.2.pom.sha1" title="apt-2.16.2.pom.sha1">apt-2.16.2.pom.sha1</a>                               2016-01-22 19:15        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: "Central Repository: org/apache/camel/apt/2.16.2" "apt-2.16.2-sources.jar"
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/camel/apt/2.16.2/
+web search: 
+web search: https://github.com/apache/camel/tree/camel-2.16.2/tooling/apt/src/test
+codex
+No repository edit was needed. In [index.json](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3771-3098f2fe/metadata/org.apache.camel/apt/index.json), the `2.16.2` entry already has non-blank `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and exactly two-sentence `description`. The Maven Central directory confirms the exact `2.16.2` sources and javadocs exist, and the GitHub test URL is on the `camel-2.16.2` tag. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/camel/apt/2.16.2/))
+
+I left `language` absent because `org.apache.camel:apt` is a Java annotation processor module, not a Kotlin, Groovy, or Scala-specific library. `jq empty` passed and `git diff -- metadata/org.apache.camel/apt/index.json` is empty.
+2026-04-30T18:43:06.094741Z ERROR codex_core::session: failed to record rollout items: thread 019ddfb2-704b-7361-91a4-5319feef8ff7 not found
+tokens used
+59,502
+No repository edit was needed. In [index.json](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3771-3098f2fe/metadata/org.apache.camel/apt/index.json), the `2.16.2` entry already has non-blank `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and exactly two-sentence `description`. The Maven Central directory confirms the exact `2.16.2` sources and javadocs exist, and the GitHub test URL is on the `camel-2.16.2` tag. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/camel/apt/2.16.2/))
+
+I left `language` absent because `org.apache.camel:apt` is a Java annotation processor module, not a Kotlin, Groovy, or Scala-specific library. `jq empty` passed and `git diff -- metadata/org.apache.camel/apt/index.json` is empty.
+Ran agent for org.apache.camel:apt:2.16.2 (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3771-3098f2fe/build/agent-url-discovery-logs/org.apache.camel-apt-2.16.2.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3771-3098f2fe/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 21s
+9 actionable tasks: 1 executed, 8 up-to-date
