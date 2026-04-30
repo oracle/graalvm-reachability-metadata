@@ -11,6 +11,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.ReflectionUtils;
@@ -81,9 +82,9 @@ public class ReflectionUtilsTest {
 
     @Test
     void loadsObjectArrayTypesBySourceName() throws Exception {
-        Class<?> arrayType = ReflectionUtils.tryToLoadClass("java.lang.String[][]").get();
+        Class<?> arrayType = ReflectionUtils.tryToLoadClass("java.util.UUID[][]").get();
 
-        assertThat(arrayType).isEqualTo(String[][].class);
+        assertThat(arrayType).isEqualTo(UUID[][].class);
     }
 
     public static class InstantiatedSubject {
