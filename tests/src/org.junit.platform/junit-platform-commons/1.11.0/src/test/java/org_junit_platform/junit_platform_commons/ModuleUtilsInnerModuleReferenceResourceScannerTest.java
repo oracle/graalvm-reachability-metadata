@@ -6,16 +6,21 @@
  */
 package org_junit_platform.junit_platform_commons;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.support.Resource;
 import org.junit.platform.commons.util.ModuleUtils;
 
-import static org.assertj.core.api.Assertions.assertThatNullPointerException;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ModuleUtilsInnerModuleReferenceResourceScannerTest {
 
     @Test
-    void attemptsToLoadModuleResourcesBeforeApplyingCallerFilter() {
-        assertThatNullPointerException().isThrownBy(
-                () -> ModuleUtils.findAllResourcesInModule("java.base", resource -> false));
+    void loadsResourcesDiscoveredInNamedModule() {
+        List<Resource> resources = ModuleUtils.findAllResourcesInModule("java.base",
+                resource -> resource.getName().equals("java/lang/uniName.dat"));
+
+        assertThat(resources).extracting(Resource::getName).contains("java/lang/uniName.dat");
     }
 }
