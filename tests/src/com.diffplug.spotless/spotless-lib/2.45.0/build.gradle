@@ -14,6 +14,7 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 Provider<Directory> ktfmtFixtureResources = layout.buildDirectory.dir("generated/ktfmt-fixture-resources")
+Provider<Directory> ktlintFixtureResources = layout.buildDirectory.dir("generated/ktlint-fixture-resources")
 Provider<Directory> jsonSimpleFixtureResources = layout.buildDirectory.dir("generated/json-simple-fixture-resources")
 Provider<Directory> jsonPatchFixtureResources = layout.buildDirectory.dir("generated/json-patch-fixture-resources")
 Provider<Directory> gsonFixtureResources = layout.buildDirectory.dir("generated/gson-fixture-resources")
@@ -37,6 +38,17 @@ tasks.register("generateKtfmtFixtureJars") {
         createModernKtfmtFixture(outputDir, "0.31", "format")
         createOldKtfmtFixture(outputDir, "0.30", "old", true)
         createOldKtfmtFixture(outputDir, "0.18", "pre-field", false)
+    }
+}
+
+tasks.register("generateKtlintFixtureJar") {
+    outputs.dir(ktlintFixtureResources)
+
+    doLast {
+        File outputDir = ktlintFixtureResources.get().asFile
+        delete(outputDir)
+
+        createKtlintFixture(outputDir)
     }
 }
 
@@ -282,6 +294,43 @@ void createOldKtfmtFixture(File outputDir, String version, String prefix, boolea
             """
     ]
     createFixtureJar(outputDir, version, "ktfmt-${version}.jar", sources)
+}
+
+void createKtlintFixture(File outputDir) {
+    Map<String, String> sources = [
+        "com/diffplug/spotless/glue/ktlint/KtlintFormatterFunc.java": """
+            package com.diffplug.spotless.glue.ktlint;
+
+            import java.io.File;
+            import java.util.Map;
+
+            import com.diffplug.spotless.FileSignature;
+            import com.diffplug.spotless.FormatterFunc;
+
+            public class KtlintFormatterFunc implements FormatterFunc.NeedsFile {
+                private final String version;
+                private final FileSignature editorConfigPath;
+                private final Map<String, Object> editorConfigOverride;
+
+                public KtlintFormatterFunc(String version, FileSignature editorConfigPath,
+                        Map<String, Object> editorConfigOverride) {
+                    this.version = version;
+                    this.editorConfigPath = editorConfigPath;
+                    this.editorConfigOverride = editorConfigOverride;
+                }
+
+                public String applyWithFile(String input, File file) {
+                    String editorConfigName = editorConfigPath == null
+                            ? "no-editor-config"
+                            : editorConfigPath.getOnlyFile().getName();
+                    return "ktlint:" + version + ":" + editorConfigName + ":" + editorConfigOverride + ":"
+                            + file.getName() + ":" + input;
+                }
+            }
+            """
+    ]
+    createFixtureJar(outputDir, "ktlint-fixtures", "current", "ktlint-fixture.jar", sources,
+            sourceSets.test.compileClasspath.asPath)
 }
 
 void createJsonSimpleFixture(File outputDir) {
@@ -656,6 +705,7 @@ void createFixtureJar(File outputDir, String resourceRoot, String version, Strin
 sourceSets {
     test {
         resources.srcDir(ktfmtFixtureResources)
+        resources.srcDir(ktlintFixtureResources)
         resources.srcDir(jsonSimpleFixtureResources)
         resources.srcDir(jsonPatchFixtureResources)
         resources.srcDir(gsonFixtureResources)
@@ -672,6 +722,7 @@ sourceSets {
 
 tasks.named("processTestResources") {
     dependsOn(tasks.named("generateKtfmtFixtureJars"))
+    dependsOn(tasks.named("generateKtlintFixtureJar"))
     dependsOn(tasks.named("generateJsonSimpleFixtureJar"))
     dependsOn(tasks.named("generateJsonPatchFixtureJar"))
     dependsOn(tasks.named("generateGsonFixtureJar"))
@@ -694,7 +745,7 @@ dependencies {
 graalvmNative {
     binaries {
         test {
-            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|json-simple-fixtures|json-patch-fixtures|gson-fixtures|jackson-json-fixtures|google-java-format-fixtures|palantir-java-format-fixtures|cleanthat-fixtures|freshmark-fixtures|antlr4-formatter-fixtures|gherkin-utils-fixtures|diktat-fixtures)/.*')
+            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|ktlint-fixtures|json-simple-fixtures|json-patch-fixtures|gson-fixtures|jackson-json-fixtures|google-java-format-fixtures|palantir-java-format-fixtures|cleanthat-fixtures|freshmark-fixtures|antlr4-formatter-fixtures|gherkin-utils-fixtures|diktat-fixtures)/.*')
         }
     }
 
