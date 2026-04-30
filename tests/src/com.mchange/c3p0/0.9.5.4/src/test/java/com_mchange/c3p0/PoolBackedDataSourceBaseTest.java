@@ -9,16 +9,21 @@ package com_mchange.c3p0;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mchange.v2.c3p0.impl.PoolBackedDataSourceBase;
+import com.mchange.v2.ser.IndirectlySerialized;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.AbstractMap;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import javax.naming.Reference;
 import javax.naming.Referenceable;
@@ -54,6 +59,16 @@ public class PoolBackedDataSourceBaseTest {
         assertThat(serialized).isNotEmpty();
     }
 
+    @Test
+    void serializesReferenceableExtensionsIndirectlyAfterDeserialization() throws Exception {
+        PoolBackedDataSourceBase source = configuredBase(new SerializableConnectionPoolDataSource("direct-pool"));
+        PoolBackedDataSourceBase restored = roundTripWithIndirectExtensions(source);
+
+        byte[] serialized = serialize(restored);
+
+        assertThat(serialized).isNotEmpty();
+    }
+
     private static PoolBackedDataSourceBase configuredBase(
             ConnectionPoolDataSource connectionPoolDataSource) throws Exception {
         PoolBackedDataSourceBase source = new PoolBackedDataSourceBase(false);
@@ -80,6 +95,18 @@ public class PoolBackedDataSourceBaseTest {
             outputStream.writeObject(source);
         }
         return byteStream.toByteArray();
+    }
+
+    private static PoolBackedDataSourceBase roundTripWithIndirectExtensions(PoolBackedDataSourceBase source)
+            throws Exception {
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        try (ObjectOutputStream outputStream = new ExtensionReplacingObjectOutputStream(byteStream)) {
+            outputStream.writeObject(source);
+        }
+        byte[] serialized = byteStream.toByteArray();
+        try (ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(serialized))) {
+            return (PoolBackedDataSourceBase) inputStream.readObject();
+        }
     }
 
     private static final class SerializableConnectionPoolDataSource implements ConnectionPoolDataSource, Serializable {
@@ -122,6 +149,52 @@ public class PoolBackedDataSourceBaseTest {
         @Override
         public Logger getParentLogger() throws SQLFeatureNotSupportedException {
             throw new SQLFeatureNotSupportedException();
+        }
+    }
+
+    private static final class ExtensionReplacingObjectOutputStream extends ObjectOutputStream {
+        private boolean replacedExtensions;
+
+        private ExtensionReplacingObjectOutputStream(ByteArrayOutputStream outputStream) throws IOException {
+            super(outputStream);
+            enableReplaceObject(true);
+        }
+
+        @Override
+        protected Object replaceObject(Object object) throws IOException {
+            if (!replacedExtensions && object instanceof Map) {
+                Map<?, ?> map = (Map<?, ?>) object;
+                if ("integration-test".equals(map.get("tenant"))) {
+                    replacedExtensions = true;
+                    return new IndirectExtensions();
+                }
+            }
+            return object;
+        }
+    }
+
+    private static final class IndirectExtensions implements IndirectlySerialized, Serializable {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public Object getObject() {
+            return new NonSerializableReferenceableExtensions();
+        }
+    }
+
+    private static final class NonSerializableReferenceableExtensions extends AbstractMap<String, String>
+            implements Referenceable {
+        @Override
+        public Set<Entry<String, String>> entrySet() {
+            Entry<String, String> entry = new SimpleImmutableEntry<>("tenant", "integration-test");
+            return Collections.singleton(entry);
+        }
+
+        @Override
+        public Reference getReference() {
+            Reference reference = new Reference(NonSerializableReferenceableExtensions.class.getName());
+            reference.add(new StringRefAddr("tenant", "integration-test"));
+            return reference;
         }
     }
 
