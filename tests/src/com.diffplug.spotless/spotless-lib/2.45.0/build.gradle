@@ -20,6 +20,7 @@ Provider<Directory> googleJavaFormatFixtureResources = layout.buildDirectory.dir
 Provider<Directory> cleanthatFixtureResources = layout.buildDirectory.dir("generated/cleanthat-fixture-resources")
 Provider<Directory> freshMarkFixtureResources = layout.buildDirectory.dir("generated/freshmark-fixture-resources")
 Provider<Directory> antlr4FormatterFixtureResources = layout.buildDirectory.dir("generated/antlr4-formatter-fixture-resources")
+Provider<Directory> gherkinUtilsFixtureResources = layout.buildDirectory.dir("generated/gherkin-utils-fixture-resources")
 
 tasks.register("generateKtfmtFixtureJars") {
     outputs.dir(ktfmtFixtureResources)
@@ -98,6 +99,17 @@ tasks.register("generateAntlr4FormatterFixtureJar") {
         delete(outputDir)
 
         createAntlr4FormatterFixture(outputDir)
+    }
+}
+
+tasks.register("generateGherkinUtilsFixtureJar") {
+    outputs.dir(gherkinUtilsFixtureResources)
+
+    doLast {
+        File outputDir = gherkinUtilsFixtureResources.get().asFile
+        delete(outputDir)
+
+        createGherkinUtilsFixture(outputDir)
     }
 }
 
@@ -421,6 +433,31 @@ void createAntlr4FormatterFixture(File outputDir) {
     createFixtureJar(outputDir, "antlr4-formatter-fixtures", "current", "antlr4-formatter-fixture.jar", sources)
 }
 
+void createGherkinUtilsFixture(File outputDir) {
+    Map<String, String> sources = [
+        "com/diffplug/spotless/glue/gherkin/GherkinUtilsFormatterFunc.java": """
+            package com.diffplug.spotless.glue.gherkin;
+
+            import com.diffplug.spotless.FormatterFunc;
+            import com.diffplug.spotless.gherkin.GherkinUtilsConfig;
+
+            public class GherkinUtilsFormatterFunc implements FormatterFunc {
+                private final GherkinUtilsConfig config;
+
+                public GherkinUtilsFormatterFunc(GherkinUtilsConfig config) {
+                    this.config = config;
+                }
+
+                public String apply(String input) {
+                    return "gherkin:" + config.getIndentSpaces() + ":" + input;
+                }
+            }
+            """
+    ]
+    createFixtureJar(outputDir, "gherkin-utils-fixtures", "current", "gherkin-utils-fixture.jar", sources,
+            sourceSets.test.compileClasspath.asPath)
+}
+
 void createFixtureJar(File outputDir, String version, String jarName, Map<String, String> sources) {
     createFixtureJar(outputDir, "ktfmt-fixtures", version, jarName, sources)
 }
@@ -466,6 +503,7 @@ sourceSets {
         resources.srcDir(cleanthatFixtureResources)
         resources.srcDir(freshMarkFixtureResources)
         resources.srcDir(antlr4FormatterFixtureResources)
+        resources.srcDir(gherkinUtilsFixtureResources)
     }
 }
 
@@ -477,6 +515,7 @@ tasks.named("processTestResources") {
     dependsOn(tasks.named("generateCleanthatFixtureJar"))
     dependsOn(tasks.named("generateFreshMarkFixtureJar"))
     dependsOn(tasks.named("generateAntlr4FormatterFixtureJar"))
+    dependsOn(tasks.named("generateGherkinUtilsFixtureJar"))
 }
 
 dependencies {
@@ -488,7 +527,7 @@ dependencies {
 graalvmNative {
     binaries {
         test {
-            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|json-simple-fixtures|json-patch-fixtures|google-java-format-fixtures|cleanthat-fixtures|freshmark-fixtures|antlr4-formatter-fixtures)/.*')
+            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|json-simple-fixtures|json-patch-fixtures|google-java-format-fixtures|cleanthat-fixtures|freshmark-fixtures|antlr4-formatter-fixtures|gherkin-utils-fixtures)/.*')
         }
     }
 
