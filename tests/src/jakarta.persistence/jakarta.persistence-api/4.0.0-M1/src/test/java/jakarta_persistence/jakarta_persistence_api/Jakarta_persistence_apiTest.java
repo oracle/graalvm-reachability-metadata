@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -29,11 +30,15 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Cache;
 import jakarta.persistence.CacheRetrieveMode;
 import jakarta.persistence.CacheStoreMode;
+import jakarta.persistence.EntityAgent;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityGraph;
+import jakarta.persistence.EntityHandler;
+import jakarta.persistence.EntityListenerRegistration;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityNotFoundException;
@@ -50,23 +55,30 @@ import jakarta.persistence.PersistenceException;
 import jakarta.persistence.PersistenceUnitTransactionType;
 import jakarta.persistence.PersistenceUnitUtil;
 import jakarta.persistence.PessimisticLockException;
+import jakarta.persistence.PessimisticLockScope;
 import jakarta.persistence.Query;
 import jakarta.persistence.QueryTimeoutException;
 import jakarta.persistence.RollbackException;
 import jakarta.persistence.SchemaManager;
+import jakarta.persistence.Statement;
+import jakarta.persistence.StatementReference;
 import jakarta.persistence.SynchronizationType;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.Timeout;
 import jakarta.persistence.TransactionRequiredException;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.TypedQueryReference;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.metamodel.Metamodel;
+import jakarta.persistence.metamodel.Type;
+import jakarta.persistence.spi.ClassTransformer;
 import jakarta.persistence.spi.LoadState;
 import jakarta.persistence.spi.PersistenceProvider;
 import jakarta.persistence.spi.PersistenceProviderResolver;
 import jakarta.persistence.spi.PersistenceProviderResolverHolder;
 import jakarta.persistence.spi.PersistenceUnitInfo;
 import jakarta.persistence.spi.ProviderUtil;
+import jakarta.persistence.sql.ResultSetMapping;
 import org.junit.jupiter.api.Test;
 
 public class Jakarta_persistence_apiTest {
@@ -293,26 +305,28 @@ public class Jakarta_persistence_apiTest {
     @Test
     void queryAndTypedQueryDefaultMethodsDelegateToImplementedOperations() {
         RecordingQuery query = new RecordingQuery(List.of("alpha", "beta"));
+        TypedQuery<String> untypedQueryAsTyped = query.ofType(String.class);
         RecordingTypedQuery<String> typedQuery = new RecordingTypedQuery<>(List.of("one", "two"), "one");
-        Query rawTypedQuery = typedQuery;
         SimpleParameter<String> titleParameter = new SimpleParameter<>("title", null, String.class);
-        assertThat(query.getResultStream().toList()).containsExactly("alpha", "beta");
-        assertThat(query.getSingleResultOrNull()).isEqualTo("alpha");
-        assertThat(new RecordingQuery(List.of(), null).getSingleResultOrNull()).isNull();
+        assertThat(untypedQueryAsTyped.getResultStream().toList()).containsExactly("alpha", "beta");
+        assertThat(untypedQueryAsTyped.getSingleResultOrNull()).isEqualTo("alpha");
+        assertThat(untypedQueryAsTyped.getResultCount()).isEqualTo(2);
+        assertThat(new RecordingQuery(List.of(), null).ofType(String.class).getSingleResultOrNull()).isNull();
         assertThat(typedQuery.getResultStream().toList()).containsExactly("one", "two");
         assertThat(typedQuery.getSingleResultOrNull()).isEqualTo("one");
 
-        assertThat(rawTypedQuery.setMaxResults(25)).isSameAs(typedQuery);
-        assertThat(rawTypedQuery.setFirstResult(5)).isSameAs(typedQuery);
-        assertThat(rawTypedQuery.setHint("graph", "books")).isSameAs(typedQuery);
-        assertThat(rawTypedQuery.setParameter(titleParameter, "Jakarta Persistence")).isSameAs(typedQuery);
-        assertThat(rawTypedQuery.setParameter("createdBy", "test")).isSameAs(typedQuery);
-        assertThat(rawTypedQuery.setParameter(1, 42)).isSameAs(typedQuery);
-        assertThat(rawTypedQuery.setFlushMode(FlushModeType.COMMIT)).isSameAs(typedQuery);
-        assertThat(rawTypedQuery.setLockMode(LockModeType.PESSIMISTIC_READ)).isSameAs(typedQuery);
-        assertThat(rawTypedQuery.setCacheRetrieveMode(CacheRetrieveMode.BYPASS)).isSameAs(typedQuery);
-        assertThat(rawTypedQuery.setCacheStoreMode(CacheStoreMode.REFRESH)).isSameAs(typedQuery);
-        assertThat(rawTypedQuery.setTimeout(250)).isSameAs(typedQuery);
+        assertThat(typedQuery.setMaxResults(25)).isSameAs(typedQuery);
+        assertThat(typedQuery.setFirstResult(5)).isSameAs(typedQuery);
+        assertThat(typedQuery.setHint("graph", "books")).isSameAs(typedQuery);
+        assertThat(typedQuery.setParameter(titleParameter, "Jakarta Persistence")).isSameAs(typedQuery);
+        assertThat(typedQuery.setParameter("createdBy", "test")).isSameAs(typedQuery);
+        assertThat(typedQuery.setParameter(1, 42)).isSameAs(typedQuery);
+        assertThat(typedQuery.setFlushMode(FlushModeType.COMMIT)).isSameAs(typedQuery);
+        assertThat(typedQuery.setLockMode(LockModeType.PESSIMISTIC_READ)).isSameAs(typedQuery);
+        assertThat(typedQuery.setLockScope(PessimisticLockScope.EXTENDED)).isSameAs(typedQuery);
+        assertThat(typedQuery.setCacheRetrieveMode(CacheRetrieveMode.BYPASS)).isSameAs(typedQuery);
+        assertThat(typedQuery.setCacheStoreMode(CacheStoreMode.REFRESH)).isSameAs(typedQuery);
+        assertThat(typedQuery.setTimeout(Timeout.ms(250))).isSameAs(typedQuery);
 
         assertThat(typedQuery.getMaxResults()).isEqualTo(25);
         assertThat(typedQuery.getFirstResult()).isEqualTo(5);
@@ -322,6 +336,7 @@ public class Jakarta_persistence_apiTest {
         assertThat(typedQuery.getParameterValue(titleParameter)).isEqualTo("Jakarta Persistence");
         assertThat(typedQuery.getFlushMode()).isEqualTo(FlushModeType.COMMIT);
         assertThat(typedQuery.getLockMode()).isEqualTo(LockModeType.PESSIMISTIC_READ);
+        assertThat(typedQuery.getLockScope()).isEqualTo(PessimisticLockScope.EXTENDED);
         assertThat(typedQuery.getCacheRetrieveMode()).isEqualTo(CacheRetrieveMode.BYPASS);
         assertThat(typedQuery.getCacheStoreMode()).isEqualTo(CacheStoreMode.REFRESH);
         assertThat(typedQuery.getTimeout()).isEqualTo(250);
@@ -548,8 +563,19 @@ public class Jakarta_persistence_apiTest {
         }
 
         @Override
+        public boolean generateSchema(PersistenceConfiguration configuration) {
+            generateSchemaCalls.add(new GenerateSchemaCall(configuration.name(), configuration.properties()));
+            return generateSchemaResult;
+        }
+
+        @Override
         public ProviderUtil getProviderUtil() {
             return providerUtil;
+        }
+
+        @Override
+        public ClassTransformer getClassTransformer(PersistenceUnitInfo info, Map<?, ?> map) {
+            return null;
         }
     }
 
@@ -604,8 +630,19 @@ public class Jakarta_persistence_apiTest {
         }
 
         @Override
+        public boolean generateSchema(PersistenceConfiguration configuration) {
+            generateSchemaCalls.add(new GenerateSchemaCall(configuration.name(), configuration.properties()));
+            throw generateSchemaFailure;
+        }
+
+        @Override
         public ProviderUtil getProviderUtil() {
             return providerUtil;
+        }
+
+        @Override
+        public ClassTransformer getClassTransformer(PersistenceUnitInfo info, Map<?, ?> map) {
+            return null;
         }
     }
 
@@ -650,8 +687,18 @@ public class Jakarta_persistence_apiTest {
         }
 
         @Override
+        public boolean generateSchema(PersistenceConfiguration configuration) {
+            return false;
+        }
+
+        @Override
         public ProviderUtil getProviderUtil() {
             return new RecordingProviderUtil(LoadState.UNKNOWN, LoadState.UNKNOWN, LoadState.UNKNOWN);
+        }
+
+        @Override
+        public ClassTransformer getClassTransformer(PersistenceUnitInfo info, Map<?, ?> map) {
+            return null;
         }
     }
 
@@ -725,6 +772,7 @@ public class Jakarta_persistence_apiTest {
         }
     }
 
+    @SuppressWarnings({"deprecation", "removal"})
     private static class RecordingQuery implements Query {
         private final List<Object> results;
         private final Object singleResult;
@@ -749,6 +797,25 @@ public class Jakarta_persistence_apiTest {
         private RecordingQuery(List<?> results, Object singleResult) {
             this.results = new ArrayList<>(results);
             this.singleResult = singleResult;
+        }
+
+        @Override
+        public Statement asStatement() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public <R> TypedQuery<R> ofType(Class<R> resultType) {
+            return new RecordingTypedQuery<>(
+                    results.stream().map(resultType::cast).toList(),
+                    singleResult == null ? null : (R) resultType.cast(singleResult)
+            );
+        }
+
+        @Override
+        public <R> TypedQuery<R> withEntityGraph(EntityGraph<R> graph) {
+            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -830,6 +897,28 @@ public class Jakarta_persistence_apiTest {
         }
 
         @Override
+        public <P> Query setParameter(String name, P value, Class<P> type) {
+            parameterValuesByName.put(name, value);
+            return this;
+        }
+
+        @Override
+        public <P> Query setParameter(String name, P value, Type<P> type) {
+            parameterValuesByName.put(name, value);
+            return this;
+        }
+
+        @Override
+        public <P> Query setConvertedParameter(
+                String name,
+                P value,
+                Class<? extends AttributeConverter<P, ?>> converter
+        ) {
+            parameterValuesByName.put(name, value);
+            return this;
+        }
+
+        @Override
         public Query setParameter(String name, Calendar value, TemporalType temporalType) {
             parameterValuesByName.put(name, value);
             temporalValuesByName.put(name, temporalType);
@@ -845,6 +934,28 @@ public class Jakarta_persistence_apiTest {
 
         @Override
         public Query setParameter(int position, Object value) {
+            parameterValuesByPosition.put(position, value);
+            return this;
+        }
+
+        @Override
+        public <P> Query setParameter(int position, P value, Class<P> type) {
+            parameterValuesByPosition.put(position, value);
+            return this;
+        }
+
+        @Override
+        public <P> Query setParameter(int position, P value, Type<P> type) {
+            parameterValuesByPosition.put(position, value);
+            return this;
+        }
+
+        @Override
+        public <P> Query setConvertedParameter(
+                int position,
+                P value,
+                Class<? extends AttributeConverter<P, ?>> converter
+        ) {
             parameterValuesByPosition.put(position, value);
             return this;
         }
@@ -960,6 +1071,12 @@ public class Jakarta_persistence_apiTest {
         }
 
         @Override
+        public Query setTimeout(Timeout timeout) {
+            this.timeout = timeout == null ? null : timeout.milliseconds();
+            return this;
+        }
+
+        @Override
         public Integer getTimeout() {
             return timeout;
         }
@@ -981,9 +1098,12 @@ public class Jakarta_persistence_apiTest {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private static final class RecordingTypedQuery<T> extends RecordingQuery implements TypedQuery<T> {
         private final List<T> typedResults;
         private final T typedSingleResult;
+        private EntityGraph<? super T> entityGraph;
+        private PessimisticLockScope lockScope;
 
         private RecordingTypedQuery(List<T> results, T singleResult) {
             super(results, singleResult);
@@ -1004,6 +1124,22 @@ public class Jakarta_persistence_apiTest {
         @Override
         public T getSingleResultOrNull() {
             return typedSingleResult;
+        }
+
+        @Override
+        public long getResultCount() {
+            return typedResults.size();
+        }
+
+        @Override
+        public TypedQuery<T> setEntityGraph(EntityGraph<? super T> entityGraph) {
+            this.entityGraph = entityGraph;
+            return this;
+        }
+
+        @Override
+        public EntityGraph<? super T> getEntityGraph() {
+            return entityGraph;
         }
 
         @Override
@@ -1049,6 +1185,28 @@ public class Jakarta_persistence_apiTest {
         }
 
         @Override
+        public <P> TypedQuery<T> setParameter(String name, P value, Class<P> type) {
+            super.setParameter(name, value, type);
+            return this;
+        }
+
+        @Override
+        public <P> TypedQuery<T> setParameter(String name, P value, Type<P> type) {
+            super.setParameter(name, value, type);
+            return this;
+        }
+
+        @Override
+        public <P> TypedQuery<T> setConvertedParameter(
+                String name,
+                P value,
+                Class<? extends AttributeConverter<P, ?>> converter
+        ) {
+            super.setConvertedParameter(name, value, converter);
+            return this;
+        }
+
+        @Override
         public TypedQuery<T> setParameter(String name, Calendar value, TemporalType temporalType) {
             super.setParameter(name, value, temporalType);
             return this;
@@ -1063,6 +1221,28 @@ public class Jakarta_persistence_apiTest {
         @Override
         public TypedQuery<T> setParameter(int position, Object value) {
             super.setParameter(position, value);
+            return this;
+        }
+
+        @Override
+        public <P> TypedQuery<T> setParameter(int position, P value, Class<P> type) {
+            super.setParameter(position, value, type);
+            return this;
+        }
+
+        @Override
+        public <P> TypedQuery<T> setParameter(int position, P value, Type<P> type) {
+            super.setParameter(position, value, type);
+            return this;
+        }
+
+        @Override
+        public <P> TypedQuery<T> setConvertedParameter(
+                int position,
+                P value,
+                Class<? extends AttributeConverter<P, ?>> converter
+        ) {
+            super.setConvertedParameter(position, value, converter);
             return this;
         }
 
@@ -1091,6 +1271,17 @@ public class Jakarta_persistence_apiTest {
         }
 
         @Override
+        public TypedQuery<T> setLockScope(PessimisticLockScope lockScope) {
+            this.lockScope = lockScope;
+            return this;
+        }
+
+        @Override
+        public PessimisticLockScope getLockScope() {
+            return lockScope;
+        }
+
+        @Override
         public TypedQuery<T> setCacheRetrieveMode(CacheRetrieveMode cacheRetrieveMode) {
             super.setCacheRetrieveMode(cacheRetrieveMode);
             return this;
@@ -1104,6 +1295,12 @@ public class Jakarta_persistence_apiTest {
 
         @Override
         public TypedQuery<T> setTimeout(Integer timeout) {
+            super.setTimeout(timeout);
+            return this;
+        }
+
+        @Override
+        public TypedQuery<T> setTimeout(Timeout timeout) {
             super.setTimeout(timeout);
             return this;
         }
@@ -1127,6 +1324,16 @@ public class Jakarta_persistence_apiTest {
 
         @Override
         public EntityManager createEntityManager(SynchronizationType synchronizationType, Map map) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public EntityAgent createEntityAgent() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public EntityAgent createEntityAgent(Map<?, ?> map) {
             throw new UnsupportedOperationException();
         }
 
@@ -1185,6 +1392,16 @@ public class Jakarta_persistence_apiTest {
         }
 
         @Override
+        public <R> TypedQueryReference<R> addNamedQuery(String name, TypedQuery<R> query) {
+            throw new UnsupportedOperationException(name);
+        }
+
+        @Override
+        public StatementReference addNamedStatement(String name, Statement statement) {
+            throw new UnsupportedOperationException(name);
+        }
+
+        @Override
         public <T> T unwrap(Class<T> cls) {
             throw new IllegalArgumentException(cls.getName());
         }
@@ -1200,8 +1417,27 @@ public class Jakarta_persistence_apiTest {
         }
 
         @Override
+        public Map<String, StatementReference> getNamedStatements() {
+            return Map.of();
+        }
+
+        @Override
         public <E> Map<String, EntityGraph<? extends E>> getNamedEntityGraphs(Class<E> entityType) {
             return Map.of();
+        }
+
+        @Override
+        public <R> Map<String, ResultSetMapping<R>> getResultSetMappings(Class<R> resultType) {
+            return Map.of();
+        }
+
+        @Override
+        public <E> EntityListenerRegistration addListener(
+                Class<E> entityType,
+                Class<? extends Annotation> callbackType,
+                Consumer<? super E> listener
+        ) {
+            throw new UnsupportedOperationException(entityType.getName());
         }
 
         @Override
@@ -1212,6 +1448,16 @@ public class Jakarta_persistence_apiTest {
         @Override
         public <R> R callInTransaction(Function<EntityManager, R> work) {
             throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public <H extends EntityHandler> void runInTransaction(Class<H> handlerClass, Consumer<H> work) {
+            throw new UnsupportedOperationException(handlerClass.getName());
+        }
+
+        @Override
+        public <R, H extends EntityHandler> R callInTransaction(Class<H> handlerClass, Function<H, R> work) {
+            throw new UnsupportedOperationException(handlerClass.getName());
         }
     }
 }
