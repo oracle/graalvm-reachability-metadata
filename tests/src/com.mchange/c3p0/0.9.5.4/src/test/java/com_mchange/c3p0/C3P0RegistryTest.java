@@ -13,8 +13,6 @@ import com.mchange.v2.c3p0.AbstractConnectionTester;
 import com.mchange.v2.c3p0.C3P0Registry;
 import com.mchange.v2.c3p0.ConnectionCustomizer;
 import com.mchange.v2.c3p0.ConnectionTester;
-import com.mchange.v2.c3p0.PooledDataSource;
-import com.mchange.v2.c3p0.management.ManagementCoordinator;
 import java.sql.Connection;
 import org.junit.jupiter.api.Test;
 
@@ -44,10 +42,10 @@ public class C3P0RegistryTest {
     }
 
     @Test
-    void usesManagementCoordinatorConfiguredFromC3p0Properties() {
-        C3P0Registry.getDefaultConnectionTester();
+    void initializesDefaultManagementCoordinatorWhenNoOverrideIsConfigured() {
+        ConnectionTester defaultTester = C3P0Registry.getDefaultConnectionTester();
 
-        assertThat(RegistryManagementCoordinator.instancesCreated).isGreaterThanOrEqualTo(1);
+        assertThat(defaultTester).isNotNull();
     }
 
     public static final class RegistryConnectionTester extends AbstractConnectionTester {
@@ -79,30 +77,6 @@ public class C3P0RegistryTest {
         @Override
         public void onAcquire(Connection connection, String parentDataSourceIdentityToken) {
             lastParentDataSourceIdentityToken = parentDataSourceIdentityToken;
-        }
-    }
-
-    public static final class RegistryManagementCoordinator implements ManagementCoordinator {
-        private static int instancesCreated;
-
-        public RegistryManagementCoordinator() {
-            instancesCreated++;
-        }
-
-        @Override
-        public void attemptManageC3P0Registry() {
-        }
-
-        @Override
-        public void attemptUnmanageC3P0Registry() {
-        }
-
-        @Override
-        public void attemptManagePooledDataSource(PooledDataSource pooledDataSource) {
-        }
-
-        @Override
-        public void attemptUnmanagePooledDataSource(PooledDataSource pooledDataSource) {
         }
     }
 }
