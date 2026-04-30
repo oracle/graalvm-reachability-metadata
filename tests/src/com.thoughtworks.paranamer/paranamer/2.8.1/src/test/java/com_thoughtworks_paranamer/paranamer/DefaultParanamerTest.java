@@ -9,32 +9,21 @@ package com_thoughtworks_paranamer.paranamer;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.thoughtworks.paranamer.DefaultParanamer;
-import java.lang.reflect.Method;
+import java.lang.reflect.Constructor;
 import org.junit.jupiter.api.Test;
 
 public class DefaultParanamerTest {
     @Test
-    void readsParameterNamesFromEmbeddedParanamerDataField() throws Exception {
+    void readsParameterNamesFromReflectionMetadata() throws Exception {
         DefaultParanamer paranamer = new DefaultParanamer();
-        Method method = MethodParameterFixture.class.getDeclaredMethod("combine", String.class, int.class);
+        Constructor<ConstructorParameterFixture> constructor = ConstructorParameterFixture.class.getDeclaredConstructor(
+                String.class, int.class);
 
-        String[] parameterNames = paranamer.lookupParameterNames(method);
+        String[] parameterNames = paranamer.lookupParameterNames(constructor);
 
         assertThat(parameterNames).containsExactly("text", "repeatCount");
     }
 
-    public static final class MethodParameterFixture {
-        public static final String __PARANAMER_DATA = """
-                v1.0
-                combine java.lang.String,int text,repeatCount
-                """;
-
-        public String combine(String text, int repeatCount) {
-            StringBuilder result = new StringBuilder();
-            for (int index = 0; index < repeatCount; index++) {
-                result.append(text);
-            }
-            return result.toString();
-        }
+    public record ConstructorParameterFixture(String text, int repeatCount) {
     }
 }
