@@ -182,6 +182,18 @@ public class Smallrye_common_expressionTest {
     }
 
     @Test
+    void environmentResolverExpandsExistingRuntimeVariables() {
+        final String path = System.getenv("PATH");
+        assertThat(path).isNotBlank();
+
+        final Expression environment = Expression.compile("path=${PATH}");
+        final Expression combined = Expression.compile("path=${env.PATH}");
+
+        assertThat(environment.evaluateWithEnvironment(true)).isEqualTo("path=" + path);
+        assertThat(combined.evaluateWithPropertiesAndEnvironment(true)).isEqualTo("path=" + path);
+    }
+
+    @Test
     void miniExpressionsEscapesAndLenientSyntaxChangeParsingRules() {
         final Expression miniExpressions = Expression.compile("price=$$;close=$};colon=$:;letter=$x",
                 Expression.Flag.MINI_EXPRS);
