@@ -6,11 +6,13 @@
  */
 package org_apache_camel.spi_annotations;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -26,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class Spi_annotationsTest {
     @Test
     void endpointAnnotationExposesConfiguredValues() {
-        UriEndpoint endpoint = RichEndpoint.class.getAnnotation(UriEndpoint.class);
+        UriEndpoint endpoint = getAnnotation(RichEndpoint.class, UriEndpoint.class);
 
         assertThat(endpoint.scheme()).isEqualTo("rich");
         assertThat(endpoint.extendsScheme()).isEqualTo("base");
@@ -44,7 +46,7 @@ public class Spi_annotationsTest {
 
     @Test
     void endpointAnnotationProvidesDocumentedDefaults() {
-        UriEndpoint endpoint = MinimalEndpoint.class.getAnnotation(UriEndpoint.class);
+        UriEndpoint endpoint = getAnnotation(MinimalEndpoint.class, UriEndpoint.class);
 
         assertThat(endpoint.scheme()).isEqualTo("minimal");
         assertThat(endpoint.title()).isEqualTo("Minimal endpoint");
@@ -62,8 +64,8 @@ public class Spi_annotationsTest {
 
     @Test
     void uriParamsAndMetadataAnnotationsExposeTypeLevelValues() {
-        UriParams params = RichEndpoint.class.getAnnotation(UriParams.class);
-        Metadata metadata = RichEndpoint.class.getAnnotation(Metadata.class);
+        UriParams params = getAnnotation(RichEndpoint.class, UriParams.class);
+        Metadata metadata = getAnnotation(RichEndpoint.class, Metadata.class);
 
         assertThat(params.prefix()).isEqualTo("advanced.");
         assertThat(metadata.label()).isEqualTo("component");
@@ -75,7 +77,7 @@ public class Spi_annotationsTest {
 
     @Test
     void endpointAnnotationCanDeclareConsumerOnlyEndpoint() {
-        UriEndpoint endpoint = ConsumerEndpoint.class.getAnnotation(UriEndpoint.class);
+        UriEndpoint endpoint = getAnnotation(ConsumerEndpoint.class, UriEndpoint.class);
 
         assertThat(endpoint.scheme()).isEqualTo("consume");
         assertThat(endpoint.syntax()).isEqualTo("consume:queue");
@@ -87,7 +89,7 @@ public class Spi_annotationsTest {
     @Test
     void uriPathAnnotationExposesPathMetadata() throws NoSuchFieldException {
         Field accountField = RichEndpoint.class.getDeclaredField("account");
-        UriPath path = accountField.getAnnotation(UriPath.class);
+        UriPath path = getAnnotation(accountField, UriPath.class);
 
         assertThat(path.name()).isEqualTo("account");
         assertThat(path.defaultValue()).isEqualTo("primary");
@@ -101,7 +103,7 @@ public class Spi_annotationsTest {
     @Test
     void uriParamAnnotationExposesParameterMetadata() throws NoSuchFieldException {
         Field flagsField = RichEndpoint.class.getDeclaredField("flags");
-        UriParam param = flagsField.getAnnotation(UriParam.class);
+        UriParam param = getAnnotation(flagsField, UriParam.class);
 
         assertThat(param.name()).isEqualTo("flag");
         assertThat(param.defaultValue()).isEqualTo("fast");
@@ -119,8 +121,8 @@ public class Spi_annotationsTest {
     void fieldAndMethodMetadataAnnotationsExposeValues() throws NoSuchFieldException, NoSuchMethodException {
         Field descriptionField = RichEndpoint.class.getDeclaredField("description");
         Method buildUriMethod = RichEndpoint.class.getDeclaredMethod("buildUri");
-        Metadata fieldMetadata = descriptionField.getAnnotation(Metadata.class);
-        Metadata methodMetadata = buildUriMethod.getAnnotation(Metadata.class);
+        Metadata fieldMetadata = getAnnotation(descriptionField, Metadata.class);
+        Metadata methodMetadata = getAnnotation(buildUriMethod, Metadata.class);
 
         assertThat(fieldMetadata.label()).isEqualTo("field");
         assertThat(fieldMetadata.defaultValue()).isEqualTo("n/a");
@@ -138,12 +140,12 @@ public class Spi_annotationsTest {
     @Test
     void uriParamsAnnotationSupportsNestedConfigurationTypes() throws NoSuchFieldException {
         Field securityField = EndpointWithNestedConfiguration.class.getDeclaredField("security");
-        UriParam securityParam = securityField.getAnnotation(UriParam.class);
-        UriParams securityParams = securityField.getType().getAnnotation(UriParams.class);
+        UriParam securityParam = getAnnotation(securityField, UriParam.class);
+        UriParams securityParams = getAnnotation(securityField.getType(), UriParams.class);
         Field tokenField = securityField.getType().getDeclaredField("token");
         Field retriesField = securityField.getType().getDeclaredField("retries");
-        UriParam tokenParam = tokenField.getAnnotation(UriParam.class);
-        UriParam retriesParam = retriesField.getAnnotation(UriParam.class);
+        UriParam tokenParam = getAnnotation(tokenField, UriParam.class);
+        UriParam retriesParam = getAnnotation(retriesField, UriParam.class);
 
         assertThat(securityField.getType()).isEqualTo(SecurityConfiguration.class);
         assertThat(securityParam.name()).isEqualTo("security");
@@ -163,10 +165,10 @@ public class Spi_annotationsTest {
 
     @Test
     void optionalAnnotationsReturnEmptyDefaults() throws NoSuchFieldException {
-        UriParams params = MinimalEndpoint.class.getAnnotation(UriParams.class);
-        Metadata metadata = MinimalEndpoint.class.getAnnotation(Metadata.class);
-        UriPath path = MinimalEndpoint.class.getDeclaredField("path").getAnnotation(UriPath.class);
-        UriParam param = MinimalEndpoint.class.getDeclaredField("option").getAnnotation(UriParam.class);
+        UriParams params = getAnnotation(MinimalEndpoint.class, UriParams.class);
+        Metadata metadata = getAnnotation(MinimalEndpoint.class, Metadata.class);
+        UriPath path = getAnnotation(MinimalEndpoint.class.getDeclaredField("path"), UriPath.class);
+        UriParam param = getAnnotation(MinimalEndpoint.class.getDeclaredField("option"), UriParam.class);
 
         assertThat(params.prefix()).isEmpty();
         assertThat(metadata.label()).isEmpty();
@@ -211,9 +213,21 @@ public class Spi_annotationsTest {
         ElementType[] expectedTargets = expectedTargets(firstExpectedTarget, additionalExpectedTargets);
 
         assertThat(annotationType).isAnnotation();
-        assertThat(annotationType.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(annotationType.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(annotationType.getAnnotation(Target.class).value()).containsExactly(expectedTargets);
+        assertThat(getAnnotation(annotationType, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(isAnnotationPresent(annotationType, Documented.class)).isTrue();
+        assertThat(getAnnotation(annotationType, Target.class).value()).containsExactly(expectedTargets);
+    }
+
+    private static <A extends Annotation> A getAnnotation(
+            AnnotatedElement annotatedElementAnnotationAccess,
+            Class<A> annotationType) {
+        return annotatedElementAnnotationAccess.getAnnotation(annotationType);
+    }
+
+    private static boolean isAnnotationPresent(
+            AnnotatedElement annotatedElementAnnotationAccess,
+            Class<? extends Annotation> annotationType) {
+        return annotatedElementAnnotationAccess.isAnnotationPresent(annotationType);
     }
 
     private static ElementType[] expectedTargets(
