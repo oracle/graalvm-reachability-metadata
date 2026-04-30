@@ -4,43 +4,7 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package libcore.io {
-  final class Memory {
-    def peekLong(address: Int, swap: Boolean): Long = 0L
-
-    def peekLong(address: Long, swap: Boolean): Long = 0L
-
-    def pokeLong(address: Int, value: Long, swap: Boolean): Unit = ()
-
-    def pokeLong(address: Long, value: Long, swap: Boolean): Unit = ()
-
-    def pokeInt(address: Int, value: Int, swap: Boolean): Unit = ()
-
-    def pokeInt(address: Long, value: Int, swap: Boolean): Unit = ()
-
-    def peekInt(address: Int, swap: Boolean): Int = 0
-
-    def peekInt(address: Long, swap: Boolean): Int = 0
-
-    def pokeByte(address: Int, value: Byte): Unit = ()
-
-    def pokeByte(address: Long, value: Byte): Unit = ()
-
-    def peekByte(address: Int): Byte = 0
-
-    def peekByte(address: Long): Byte = 0
-
-    def pokeByteArray(address: Int, bytes: Array[Byte], offset: Int, count: Int): Unit = ()
-
-    def pokeByteArray(address: Long, bytes: Array[Byte], offset: Int, count: Int): Unit = ()
-
-    def peekByteArray(address: Int, bytes: Array[Byte], offset: Int, count: Int): Unit = ()
-
-    def peekByteArray(address: Long, bytes: Array[Byte], offset: Int, count: Int): Unit = ()
-  }
-}
-
-package org_apache_pekko.pekko_protobuf_v3_3 {
+package org_apache_pekko.pekko_protobuf_v3_3
 
 import java.util.Map
 
@@ -58,11 +22,11 @@ import org.junit.jupiter.api.Test
 
 import scala.annotation.static
 
-class UnsafeUtilInnerAndroid32MemoryAccessorTest {
+class UnsafeUtilInnerAndroid64MemoryAccessorTest {
   @Test
-  def readsGeneratedMapDefaultEntryThroughAndroid32StaticFieldAccessor(): Unit = {
-    val message: UnsafeUtilAndroid32MemoryAccessorCoverageMessage =
-      new UnsafeUtilAndroid32MemoryAccessorCoverageMessage()
+  def readsGeneratedMapDefaultEntryThroughAndroid64StaticFieldAccessor(): Unit = {
+    val message: UnsafeUtilAndroid64MemoryAccessorCoverageMessage =
+      new UnsafeUtilAndroid64MemoryAccessorCoverageMessage()
 
     message.mergeEmptyInput()
 
@@ -70,9 +34,9 @@ class UnsafeUtilInnerAndroid32MemoryAccessorTest {
   }
 }
 
-final class UnsafeUtilAndroid32MemoryAccessorCoverageMessage extends GeneratedMessageV3 {
+final class UnsafeUtilAndroid64MemoryAccessorCoverageMessage extends GeneratedMessageV3 {
   private var `attributes_`: MapField[String, Integer] = MapField.emptyMapField(
-    UnsafeUtilAndroid32MemoryAccessorCoverageMessage$AttributesDefaultEntryHolder.defaultEntry
+    UnsafeUtilAndroid64MemoryAccessorCoverageMessage$AttributesDefaultEntryHolder.defaultEntry
   )
 
   def mergeEmptyInput(): Unit = {
@@ -83,11 +47,11 @@ final class UnsafeUtilAndroid32MemoryAccessorCoverageMessage extends GeneratedMe
   def getAttributesMap: Map[String, Integer] = `attributes_`.getMap
 
   override protected def internalGetFieldAccessorTable(): GeneratedMessageV3.FieldAccessorTable = {
-    UnsafeUtilAndroid32MemoryAccessorCoverageMessage.FieldAccessorTable
+    UnsafeUtilAndroid64MemoryAccessorCoverageMessage.FieldAccessorTable
   }
 
   override def getDefaultInstanceForType(): Message = {
-    UnsafeUtilAndroid32MemoryAccessorCoverageMessage.getDefaultInstance()
+    UnsafeUtilAndroid64MemoryAccessorCoverageMessage.getDefaultInstance()
   }
 
   override def newBuilderForType(): Message.Builder = unsupportedBuilder()
@@ -99,29 +63,29 @@ final class UnsafeUtilAndroid32MemoryAccessorCoverageMessage extends GeneratedMe
   }
 
   private def unsupportedBuilder(): Message.Builder = {
-    throw new UnsupportedOperationException("Builder is not required for Android32 accessor coverage")
+    throw new UnsupportedOperationException("Builder is not required for Android64 accessor coverage")
   }
 }
 
-object UnsafeUtilAndroid32MemoryAccessorCoverageMessage {
-  private val DefaultInstance: UnsafeUtilAndroid32MemoryAccessorCoverageMessage =
-    new UnsafeUtilAndroid32MemoryAccessorCoverageMessage()
+object UnsafeUtilAndroid64MemoryAccessorCoverageMessage {
+  private val DefaultInstance: UnsafeUtilAndroid64MemoryAccessorCoverageMessage =
+    new UnsafeUtilAndroid64MemoryAccessorCoverageMessage()
 
   val FieldAccessorTable: GeneratedMessageV3.FieldAccessorTable = new GeneratedMessageV3.FieldAccessorTable(
-    UnsafeUtilAndroid32MemoryAccessorDescriptors.CoverageMessageDescriptor,
+    UnsafeUtilAndroid64MemoryAccessorDescriptors.CoverageMessageDescriptor,
     Array("Attributes")
   )
 
   @static
-  def getDefaultInstance(): UnsafeUtilAndroid32MemoryAccessorCoverageMessage = DefaultInstance
+  def getDefaultInstance(): UnsafeUtilAndroid64MemoryAccessorCoverageMessage = DefaultInstance
 }
 
-final class UnsafeUtilAndroid32MemoryAccessorCoverageMessage$AttributesDefaultEntryHolder
+final class UnsafeUtilAndroid64MemoryAccessorCoverageMessage$AttributesDefaultEntryHolder
 
-object UnsafeUtilAndroid32MemoryAccessorCoverageMessage$AttributesDefaultEntryHolder {
+object UnsafeUtilAndroid64MemoryAccessorCoverageMessage$AttributesDefaultEntryHolder {
   @static
   val defaultEntry: MapEntry[String, Integer] = MapEntry.newDefaultInstance(
-    UnsafeUtilAndroid32MemoryAccessorDescriptors.AttributesEntryDescriptor,
+    UnsafeUtilAndroid64MemoryAccessorDescriptors.AttributesEntryDescriptor,
     WireFormat.FieldType.STRING,
     "",
     WireFormat.FieldType.INT32,
@@ -129,7 +93,7 @@ object UnsafeUtilAndroid32MemoryAccessorCoverageMessage$AttributesDefaultEntryHo
   )
 }
 
-object UnsafeUtilAndroid32MemoryAccessorDescriptors {
+object UnsafeUtilAndroid64MemoryAccessorDescriptors {
   private val AttributesEntry: DescriptorProtos.DescriptorProto = DescriptorProtos.DescriptorProto.newBuilder()
     .setName("AttributesEntry")
     .setOptions(
@@ -156,7 +120,7 @@ object UnsafeUtilAndroid32MemoryAccessorDescriptors {
     .build()
 
   private val CoverageMessage: DescriptorProtos.DescriptorProto = DescriptorProtos.DescriptorProto.newBuilder()
-    .setName("UnsafeUtilAndroid32MemoryAccessorCoverageMessage")
+    .setName("UnsafeUtilAndroid64MemoryAccessorCoverageMessage")
     .addNestedType(AttributesEntry)
     .addField(
       DescriptorProtos.FieldDescriptorProto.newBuilder()
@@ -165,8 +129,8 @@ object UnsafeUtilAndroid32MemoryAccessorDescriptors {
         .setLabel(DescriptorProtos.FieldDescriptorProto.Label.LABEL_REPEATED)
         .setType(DescriptorProtos.FieldDescriptorProto.Type.TYPE_MESSAGE)
         .setTypeName(
-          ".unsafe_util_android32_memory_accessor_coverage." +
-            "UnsafeUtilAndroid32MemoryAccessorCoverageMessage.AttributesEntry"
+          ".unsafe_util_android64_memory_accessor_coverage." +
+            "UnsafeUtilAndroid64MemoryAccessorCoverageMessage.AttributesEntry"
         )
         .build()
     )
@@ -174,8 +138,8 @@ object UnsafeUtilAndroid32MemoryAccessorDescriptors {
 
   private val FileDescriptor: Descriptors.FileDescriptor = Descriptors.FileDescriptor.buildFrom(
     DescriptorProtos.FileDescriptorProto.newBuilder()
-      .setName("unsafe_util_android32_memory_accessor_coverage.proto")
-      .setPackage("unsafe_util_android32_memory_accessor_coverage")
+      .setName("unsafe_util_android64_memory_accessor_coverage.proto")
+      .setPackage("unsafe_util_android64_memory_accessor_coverage")
       .setSyntax("proto3")
       .addMessageType(CoverageMessage)
       .build(),
@@ -183,11 +147,10 @@ object UnsafeUtilAndroid32MemoryAccessorDescriptors {
   )
 
   val CoverageMessageDescriptor: Descriptors.Descriptor = FileDescriptor.findMessageTypeByName(
-    "UnsafeUtilAndroid32MemoryAccessorCoverageMessage"
+    "UnsafeUtilAndroid64MemoryAccessorCoverageMessage"
   )
 
   val AttributesEntryDescriptor: Descriptors.Descriptor = CoverageMessageDescriptor.findNestedTypeByName(
     "AttributesEntry"
   )
-}
 }
