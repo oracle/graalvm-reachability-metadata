@@ -81,6 +81,21 @@ public class Jetty_alpn_serverTest {
     }
 
     @Test
+    void cipherDiscriminatorUsesSslSessionWhenHandshakeSessionIsUnavailable() {
+        DiscriminatingConnectionFactory acceptedHttp2 = new DiscriminatingConnectionFactory(HTTP_2, true);
+        TestSslSession sslSession = new TestSslSession("TLSv1.2", "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256");
+        TestFixture fixture = new TestFixture(sslSession, null, acceptedHttp2, new TestConnectionFactory(HTTP_1_1));
+        ALPNServerConnection connection = fixture.newAlpnConnection(List.of(HTTP_2, HTTP_1_1), HTTP_1_1);
+
+        connection.select(List.of(HTTP_2));
+
+        assertThat(connection.getProtocol()).isEqualTo(HTTP_2);
+        assertThat(acceptedHttp2.checkedProtocols).containsExactly(HTTP_2);
+        assertThat(acceptedHttp2.checkedTlsProtocols).containsExactly("TLSv1.2");
+        assertThat(acceptedHttp2.checkedCipherSuites).containsExactly("TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256");
+    }
+
+    @Test
     void selectFailsWhenClientAndServerHaveNoProtocolInCommon() {
         TestFixture fixture = new TestFixture(new TestConnectionFactory(HTTP_2), new TestConnectionFactory(HTTP_1_1));
         ALPNServerConnection connection = fixture.newAlpnConnection(List.of(HTTP_2, HTTP_1_1), HTTP_1_1);
@@ -118,12 +133,17 @@ public class Jetty_alpn_serverTest {
         private final TestSslEngine sslEngine;
 
         private TestFixture(TestConnectionFactory... factories) {
+            this(
+                    new TestSslSession("TLSv1.2", "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"),
+                    new TestSslSession("TLSv1.3", "TLS_AES_128_GCM_SHA256"),
+                    factories);
+        }
+
+        private TestFixture(SSLSession session, SSLSession handshakeSession, TestConnectionFactory... factories) {
             Server server = new Server();
             this.connector = new ServerConnector(server, factories);
             this.endPoint = new ByteArrayEndPoint();
-            this.sslEngine = new TestSslEngine(
-                    new TestSslSession("TLSv1.2", "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"),
-                    new TestSslSession("TLSv1.3", "TLS_AES_128_GCM_SHA256"));
+            this.sslEngine = new TestSslEngine(session, handshakeSession);
         }
 
         private ALPNServerConnection newAlpnConnection(List<String> protocols, String defaultProtocol) {
