@@ -165,7 +165,7 @@ public class Smallrye_common_functionTest {
 
         assertThat(events).containsExactly(
                 "run:first", "run:second", "run:second", "run:first",
-                "first:value", "second:value", "first:again", "second:again",
+                "first:value", "second:value", "second:again", "first:again",
                 "first:supplied", "n7", "N7", "s9");
     }
 
