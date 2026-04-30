@@ -136,6 +136,32 @@ public class Spi_annotationsTest {
     }
 
     @Test
+    void uriParamsAnnotationSupportsNestedConfigurationTypes() throws NoSuchFieldException {
+        Field securityField = EndpointWithNestedConfiguration.class.getDeclaredField("security");
+        UriParam securityParam = securityField.getAnnotation(UriParam.class);
+        UriParams securityParams = securityField.getType().getAnnotation(UriParams.class);
+        Field tokenField = securityField.getType().getDeclaredField("token");
+        Field retriesField = securityField.getType().getDeclaredField("retries");
+        UriParam tokenParam = tokenField.getAnnotation(UriParam.class);
+        UriParam retriesParam = retriesField.getAnnotation(UriParam.class);
+
+        assertThat(securityField.getType()).isEqualTo(SecurityConfiguration.class);
+        assertThat(securityParam.name()).isEqualTo("security");
+        assertThat(securityParam.label()).isEqualTo("advanced,security");
+        assertThat(securityParams.prefix()).isEqualTo("security.");
+
+        assertThat(tokenParam.name()).isEqualTo("token");
+        assertThat(tokenParam.description()).isEqualTo("Authentication token sent with endpoint requests");
+        assertThat(tokenParam.label()).isEqualTo("security");
+        assertThat(tokenParam.defaultValue()).isEqualTo("anonymous");
+
+        assertThat(retriesParam.name()).isEqualTo("retries");
+        assertThat(retriesParam.defaultValue()).isEqualTo("3");
+        assertThat(retriesParam.javaType()).isEqualTo("int");
+        assertThat(retriesParam.label()).isEqualTo("advanced");
+    }
+
+    @Test
     void optionalAnnotationsReturnEmptyDefaults() throws NoSuchFieldException {
         UriParams params = MinimalEndpoint.class.getAnnotation(UriParams.class);
         Metadata metadata = MinimalEndpoint.class.getAnnotation(Metadata.class);
@@ -274,6 +300,24 @@ public class Spi_annotationsTest {
 
     @UriEndpoint(scheme = "consume", syntax = "consume:queue", title = "Consumer endpoint", consumerOnly = true)
     private static final class ConsumerEndpoint {
+    }
+
+    private static final class EndpointWithNestedConfiguration {
+        @UriParam(name = "security", label = "advanced,security")
+        private SecurityConfiguration security;
+    }
+
+    @UriParams(prefix = "security.")
+    private static final class SecurityConfiguration {
+        @UriParam(
+                name = "token",
+                defaultValue = "anonymous",
+                description = "Authentication token sent with endpoint requests",
+                label = "security")
+        private String token;
+
+        @UriParam(name = "retries", defaultValue = "3", label = "advanced", javaType = "int")
+        private int retries;
     }
 
     private static final class EndpointConsumer {
