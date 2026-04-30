@@ -21,6 +21,7 @@ import org.apache.arrow.flatbuf.CompressionType;
 import org.apache.arrow.flatbuf.Date;
 import org.apache.arrow.flatbuf.DateUnit;
 import org.apache.arrow.flatbuf.Decimal;
+import org.apache.arrow.flatbuf.DictionaryBatch;
 import org.apache.arrow.flatbuf.DictionaryEncoding;
 import org.apache.arrow.flatbuf.DictionaryKind;
 import org.apache.arrow.flatbuf.Duration;
@@ -305,6 +306,34 @@ public class Arrow_formatTest {
         assertThat(recordBatch.buffers(1).length()).isEqualTo(40L);
         assertThat(recordBatch.compression().codec()).isEqualTo(CompressionType.ZSTD);
         assertThat(recordBatch.compression().method()).isEqualTo(BodyCompressionMethod.BUFFER);
+    }
+
+    @Test
+    void dictionaryBatchMessageCarriesDictionaryIdDeltaFlagAndDataBatch() {
+        FlatBufferBuilder builder = new FlatBufferBuilder(1024);
+
+        int nodesVector = createFieldNodesVector(builder, new long[][] { { 3L, 0L } });
+        int buffersVector = createBuffersVector(builder, new long[][] { { 0L, 1L }, { 8L, 12L } });
+        int recordBatchOffset = RecordBatch.createRecordBatch(builder, 3L, nodesVector, buffersVector, 0);
+        int dictionaryBatchOffset = DictionaryBatch.createDictionaryBatch(builder, 7L, recordBatchOffset, true);
+        int messageOffset = Message.createMessage(
+                builder, MetadataVersion.V5, MessageHeader.DictionaryBatch, dictionaryBatchOffset, 20L, 0);
+        Message.finishMessageBuffer(builder, messageOffset);
+
+        Message message = Message.getRootAsMessage(builder.dataBuffer());
+
+        assertThat(message.version()).isEqualTo(MetadataVersion.V5);
+        assertThat(message.headerType()).isEqualTo(MessageHeader.DictionaryBatch);
+        assertThat(message.bodyLength()).isEqualTo(20L);
+        DictionaryBatch dictionaryBatch = (DictionaryBatch) message.header(new DictionaryBatch());
+        assertThat(dictionaryBatch.id()).isEqualTo(7L);
+        assertThat(dictionaryBatch.isDelta()).isTrue();
+        assertThat(dictionaryBatch.data().length()).isEqualTo(3L);
+        assertThat(dictionaryBatch.data().nodesLength()).isEqualTo(1);
+        assertThat(dictionaryBatch.data().nodes(0).nullCount()).isZero();
+        assertThat(dictionaryBatch.data().buffersLength()).isEqualTo(2);
+        assertThat(dictionaryBatch.data().buffers(1).offset()).isEqualTo(8L);
+        assertThat(dictionaryBatch.data().buffers(1).length()).isEqualTo(12L);
     }
 
     @Test
