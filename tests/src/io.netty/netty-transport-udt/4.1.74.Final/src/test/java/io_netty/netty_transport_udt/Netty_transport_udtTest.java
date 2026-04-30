@@ -57,6 +57,10 @@ public class Netty_transport_udtTest {
 
     private static final String RENDEZVOUS_RESPONSE = "rendezvous-response";
 
+    private static final String MESSAGE_RENDEZVOUS_REQUEST = "message-rendezvous-request";
+
+    private static final String MESSAGE_RENDEZVOUS_RESPONSE = "message-rendezvous-response";
+
     @Test
     public void udtMessageSupportsCopyDuplicateReplaceAndRetainOperations() {
         UdtMessage message = new UdtMessage(Unpooled.copiedBuffer("payload", StandardCharsets.UTF_8));
@@ -237,6 +241,68 @@ public class Netty_transport_udtTest {
             assertThat(failure.get()).as("unexpected handler failure").isNull();
             assertThat(peerOneReceived.get()).isEqualTo(RENDEZVOUS_RESPONSE);
             assertThat(peerTwoReceived.get()).isEqualTo(RENDEZVOUS_REQUEST);
+        } finally {
+            closeChannel(peerOneChannel);
+            closeChannel(peerTwoChannel);
+            shutdownGroup(peerOneGroup);
+            shutdownGroup(peerTwoGroup);
+        }
+    }
+
+    @Test
+    public void messageRendezvousPeersExchangeUdtMessagesWithoutServerAcceptor() throws Exception {
+        EventLoopGroup peerOneGroup = new NioEventLoopGroup(1, Executors.defaultThreadFactory(),
+                NioUdtProvider.MESSAGE_PROVIDER);
+        EventLoopGroup peerTwoGroup = new NioEventLoopGroup(1, Executors.defaultThreadFactory(),
+                NioUdtProvider.MESSAGE_PROVIDER);
+        Channel peerOneChannel = null;
+        Channel peerTwoChannel = null;
+        AtomicReference<String> peerOneReceived = new AtomicReference<>();
+        AtomicReference<String> peerTwoReceived = new AtomicReference<>();
+        AtomicReference<Throwable> failure = new AtomicReference<>();
+        CountDownLatch messagesReceived = new CountDownLatch(2);
+        try {
+            InetSocketAddress peerOneAddress = availableLoopbackUdtAddress();
+            InetSocketAddress peerTwoAddress = availableLoopbackUdtAddress();
+
+            Bootstrap peerOneBootstrap = new Bootstrap();
+            peerOneBootstrap.group(peerOneGroup)
+                    .channelFactory((ChannelFactory<UdtChannel>) NioUdtProvider.MESSAGE_RENDEZVOUS)
+                    .handler(new ChannelInitializer<UdtChannel>() {
+                        @Override
+                        protected void initChannel(UdtChannel channel) {
+                            channel.pipeline().addLast(new MessageRendezvousPeerHandler(MESSAGE_RENDEZVOUS_RESPONSE,
+                                    peerOneReceived, failure, messagesReceived));
+                        }
+                    });
+
+            Bootstrap peerTwoBootstrap = new Bootstrap();
+            peerTwoBootstrap.group(peerTwoGroup)
+                    .channelFactory((ChannelFactory<UdtChannel>) NioUdtProvider.MESSAGE_RENDEZVOUS)
+                    .handler(new ChannelInitializer<UdtChannel>() {
+                        @Override
+                        protected void initChannel(UdtChannel channel) {
+                            channel.pipeline().addLast(new MessageRendezvousPeerHandler(MESSAGE_RENDEZVOUS_REQUEST,
+                                    peerTwoReceived, failure, messagesReceived));
+                        }
+                    });
+
+            ChannelFuture peerOneConnect = peerOneBootstrap.connect(peerTwoAddress, peerOneAddress);
+            ChannelFuture peerTwoConnect = peerTwoBootstrap.connect(peerOneAddress, peerTwoAddress);
+            peerOneChannel = peerOneConnect.sync().channel();
+            peerTwoChannel = peerTwoConnect.sync().channel();
+
+            peerOneChannel.writeAndFlush(new UdtMessage(
+                    Unpooled.copiedBuffer(MESSAGE_RENDEZVOUS_REQUEST, StandardCharsets.UTF_8))).sync();
+            peerTwoChannel.writeAndFlush(new UdtMessage(
+                    Unpooled.copiedBuffer(MESSAGE_RENDEZVOUS_RESPONSE, StandardCharsets.UTF_8))).sync();
+
+            assertThat(messagesReceived.await(10, TimeUnit.SECONDS))
+                    .as("both message rendezvous peers received data")
+                    .isTrue();
+            assertThat(failure.get()).as("unexpected handler failure").isNull();
+            assertThat(peerOneReceived.get()).isEqualTo(MESSAGE_RENDEZVOUS_RESPONSE);
+            assertThat(peerTwoReceived.get()).isEqualTo(MESSAGE_RENDEZVOUS_REQUEST);
         } finally {
             closeChannel(peerOneChannel);
             closeChannel(peerTwoChannel);
@@ -485,6 +551,42 @@ public class Netty_transport_udtTest {
                 messagesReceived.countDown();
                 context.close();
             }
+        }
+
+        @Override
+        public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
+            failure.compareAndSet(null, cause);
+            messagesReceived.countDown();
+            context.close();
+        }
+    }
+
+    private static final class MessageRendezvousPeerHandler extends SimpleChannelInboundHandler<UdtMessage> {
+        private final String expectedMessage;
+
+        private final AtomicReference<String> receivedMessage;
+
+        private final AtomicReference<Throwable> failure;
+
+        private final CountDownLatch messagesReceived;
+
+        private MessageRendezvousPeerHandler(String expectedMessage, AtomicReference<String> receivedMessage,
+                AtomicReference<Throwable> failure, CountDownLatch messagesReceived) {
+            this.expectedMessage = expectedMessage;
+            this.receivedMessage = receivedMessage;
+            this.failure = failure;
+            this.messagesReceived = messagesReceived;
+        }
+
+        @Override
+        protected void channelRead0(ChannelHandlerContext context, UdtMessage message) {
+            String received = message.content().toString(StandardCharsets.UTF_8);
+            if (received.equals(expectedMessage)) {
+                receivedMessage.set(received);
+            } else {
+                failure.compareAndSet(null, new AssertionError("unexpected message rendezvous payload: " + received));
+            }
+            messagesReceived.countDown();
         }
 
         @Override
