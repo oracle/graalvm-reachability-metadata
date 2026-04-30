@@ -15,6 +15,7 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.Signature;
 import com.jcraft.jsch.SignatureDSA;
 import com.jcraft.jsch.SignatureECDSA;
+import com.jcraft.jsch.SignatureEdDSA;
 import com.jcraft.jsch.SignatureRSA;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
@@ -31,6 +32,7 @@ public class KeyExchangeTest {
     private static final byte[] DSA_F = {0x61, 0x62, 0x63};
     private static final byte[] ECDSA_R = {0x21, 0x22};
     private static final byte[] ECDSA_S = {0x31, 0x32};
+    private static final byte[] EDDSA_PUBLIC_KEY = {0x51, 0x52, 0x53, 0x54};
 
     @Test
     void verifySshRsaLoadsConfiguredSignature() throws Exception {
@@ -88,6 +90,25 @@ public class KeyExchangeTest {
         assertThat(RecordingEcdsaSignature.publicKeyConfigured.get()).isTrue();
         assertThat(RecordingEcdsaSignature.updated.get()).isTrue();
         assertThat(RecordingEcdsaSignature.verified.get()).isTrue();
+    }
+
+    @Test
+    void verifyEdDsaLoadsConfiguredSignature() throws Exception {
+        RecordingEdDsaSignature.reset();
+        Session session = newSession();
+        session.setConfig("ssh-ed25519", RecordingEdDsaSignature.class.getName());
+
+        TestableKeyExchange keyExchange = new TestableKeyExchange();
+        boolean verified = keyExchange.verifyHostKey("ssh-ed25519", session,
+                encodedStrings(EDDSA_PUBLIC_KEY), signatureBlob("ssh-ed25519"));
+
+        assertThat(verified).isTrue();
+        assertThat(keyExchange.getKeyType()).isEqualTo("EDDSA");
+        assertThat(keyExchange.getKeyAlgorithName()).isEqualTo("ssh-ed25519");
+        assertThat(RecordingEdDsaSignature.initialized.get()).isTrue();
+        assertThat(RecordingEdDsaSignature.publicKeyConfigured.get()).isTrue();
+        assertThat(RecordingEdDsaSignature.updated.get()).isTrue();
+        assertThat(RecordingEdDsaSignature.verified.get()).isTrue();
     }
 
     private static Session newSession() throws Exception {
@@ -267,6 +288,35 @@ public class KeyExchangeTest {
         public void setPubKey(byte[] r, byte[] s) {
             assertThat(r).containsExactly(ECDSA_R);
             assertThat(s).containsExactly(ECDSA_S);
+            publicKeyConfigured.set(true);
+        }
+
+        @Override
+        public void setPrvKey(byte[] privateKey) {
+        }
+    }
+
+    public static final class RecordingEdDsaSignature extends RecordingSignature
+            implements SignatureEdDSA {
+        private static final AtomicBoolean initialized = new AtomicBoolean();
+        private static final AtomicBoolean publicKeyConfigured = new AtomicBoolean();
+        private static final AtomicBoolean updated = new AtomicBoolean();
+        private static final AtomicBoolean verified = new AtomicBoolean();
+
+        public RecordingEdDsaSignature() {
+            super(initialized, updated, verified);
+        }
+
+        private static void reset() {
+            initialized.set(false);
+            publicKeyConfigured.set(false);
+            updated.set(false);
+            verified.set(false);
+        }
+
+        @Override
+        public void setPubKey(byte[] publicKey) {
+            assertThat(publicKey).containsExactly(EDDSA_PUBLIC_KEY);
             publicKeyConfigured.set(true);
         }
 
