@@ -168,7 +168,6 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
             coordinate=self.library,
             output_dir=output_dir,
             max_iterations=self.max_native_test_verification_iterations,
-            model_name=self.model_name,
         )
         if result.status == NATIVE_TEST_GATE_FAILED:
             log_path = result.last_native_test_log_path or "(none)"

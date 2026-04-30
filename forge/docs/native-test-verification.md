@@ -50,8 +50,9 @@ branch to its checkpoint.
 | Coordinate `group:artifact:version` | Caller | Identifies the test module. |
 | Reachability repo path | Caller | Working directory for Gradle. |
 | Output directory | Caller | Absolute path. The caller picks a path namespaced per (library, class) for the dynamic-access caller, or per coordinate for non-class-scoped callers — same convention as [native-metadata-exploration.md §4](native-metadata-exploration.md#4-output). On `PASSED`, the gate merges all accepted per-cycle trace dirs into this directory (one `mergeNativeTraceMetadata` invocation). |
-| Condition packages | Strategy parameter `trace-condition-packages` | Default `[group]`. Passed to the binary at run time as `-XX:TraceMetadataConditionPackages=...`. |
-| Outer budget | Strategy parameter `max-native-test-verification-iterations` | Default **100**. Caps the outer cycle count. Intentionally large: every cycle is cheap once a stable set of metadata accumulates. |
+| Condition packages | `condition_packages` argument to `verify_native_test_passes` | Default `[group]`. Passed to the binary at run time as `-XX:TraceMetadataConditionPackages=...`. |
+| Outer budget | Strategy parameter `max-native-test-verification-iterations` | Default **100**. In practice convergence is expected within a handful of cycles; the high default is a soft cap, not a target. Each cycle rebuilds `nativeTestCompile`, so the wall-clock cost is dominated by native-image build time. |
+| Per-cycle timeout | `cycle_timeout_seconds` argument | Default 30 minutes. Caps a single `runNativeTraceImage` invocation; on timeout the cycle is treated as a non-zero binary exit and routed to codex. |
 
 ## 3. Outputs
 
@@ -156,6 +157,7 @@ def verify_native_test_passes(
     output_dir: str,
     condition_packages: list[str] | None = None,
     max_iterations: int = 100,
+    cycle_timeout_seconds: int = 30 * 60,
 ) -> NativeTestVerificationResult: ...
 ```
 

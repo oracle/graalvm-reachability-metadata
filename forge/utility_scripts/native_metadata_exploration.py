@@ -8,13 +8,22 @@
 Implements the contract specified in
 ``forge/docs/native-metadata-exploration.md``. The phase shells out only to
 ``./gradlew``; sequencing with codex / Pi / agents is the responsibility of
-callers (today: the native test verification gate in
-``utility_scripts/native_test_verification.py`` and the
-``native_trace_collect`` post-generation intervention).
+callers.
+
+This module currently has **no production callers**. The verification gate
+in ``utility_scripts/native_test_verification.py`` drives
+``runNativeTraceImage`` directly per cycle and does not use this module.
+The intended caller is the future ``native_trace_collect`` post-generation
+intervention specified in ``forge/docs/workflow-strategies.md`` §5.3,
+which is not yet implemented; until that lands, the module is dormant
+scaffolding kept in tree because it implements a documented contract
+([native-metadata-exploration.md](../docs/native-metadata-exploration.md))
+and removing it would invalidate that spec.
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import shutil
@@ -33,6 +42,8 @@ from utility_scripts.task_logs import (
 STATUS_SUCCESS = "SUCCESS"
 STATUS_BUDGET_EXHAUSTED = "BUDGET_EXHAUSTED"
 STATUS_BUILD_FAILED = "BUILD_FAILED"
+
+DEFAULT_TRACE_STEP_TIMEOUT_SECONDS = 30 * 60
 
 _TRACE_STAGE = "native-trace"
 _LOG_TASK_TYPE = "native-trace"
@@ -69,6 +80,7 @@ def run_native_metadata_exploration(
         output_dir: str,
         condition_packages: list[str] | None = None,
         max_iterations: int = 5,
+        step_timeout_seconds: int = DEFAULT_TRACE_STEP_TIMEOUT_SECONDS,
 ) -> NativeExplorationResult:
     """Run the iterative trace loop for ``coordinate``.
 
@@ -114,7 +126,7 @@ def run_native_metadata_exploration(
             build_cmd.append(f"-PmetadataConfigDirs={','.join(run_dirs)}")
         build_log = _new_log_path(coordinate, f"build-iter-{i}")
         build_log_paths.append(build_log)
-        build_rc = _run_gradle(build_cmd, reachability_repo_path, build_log)
+        build_rc = _run_gradle(build_cmd, reachability_repo_path, build_log, step_timeout_seconds)
         if build_rc != 0:
             terminal_status = STATUS_BUILD_FAILED
             failure = NativeExplorationFailure(
@@ -141,7 +153,7 @@ def run_native_metadata_exploration(
         ]
         run_log = _new_log_path(coordinate, f"run-iter-{i}")
         run_log_paths.append(run_log)
-        _run_gradle(run_cmd, reachability_repo_path, run_log)
+        _run_gradle(run_cmd, reachability_repo_path, run_log, step_timeout_seconds)
 
         # Convergence check on raw run dirs.
         new_entries = _collect_entries(run_i)
@@ -174,7 +186,7 @@ def run_native_metadata_exploration(
             f"-PoutputDir={output_dir}",
         ]
         merge_log_path = _new_log_path(coordinate, "merge")
-        merge_rc = _run_gradle(merge_cmd, reachability_repo_path, merge_log_path)
+        merge_rc = _run_gradle(merge_cmd, reachability_repo_path, merge_log_path, step_timeout_seconds)
         if merge_rc != 0:
             log_stage(
                 _TRACE_STAGE,
@@ -212,7 +224,7 @@ def _reset_directory(path: str) -> None:
     os.makedirs(path, exist_ok=True)
 
 
-def _run_gradle(cmd: list[str], cwd: str, log_path: str) -> int:
+def _run_gradle(cmd: list[str], cwd: str, log_path: str, timeout_seconds: int) -> int:
     """Run a Gradle command, persisting combined stdout/stderr to ``log_path``."""
     log_stage(
         _TRACE_STAGE,
@@ -220,13 +232,22 @@ def _run_gradle(cmd: list[str], cwd: str, log_path: str) -> int:
         indent_level=1,
     )
     with open(log_path, "w", encoding="utf-8") as log_file:
-        result = subprocess.run(
-            cmd,
-            cwd=cwd,
-            stdout=log_file,
-            stderr=subprocess.STDOUT,
-            check=False,
-        )
+        try:
+            result = subprocess.run(
+                cmd,
+                cwd=cwd,
+                stdout=log_file,
+                stderr=subprocess.STDOUT,
+                check=False,
+                timeout=timeout_seconds,
+            )
+        except subprocess.TimeoutExpired:
+            log_stage(
+                _TRACE_STAGE,
+                f"command exceeded {timeout_seconds}s timeout",
+                indent_level=1,
+            )
+            return 1
     return result.returncode
 
 
@@ -258,13 +279,14 @@ def _collect_entries(run_dir: str) -> set[str]:
                     data = json.load(handle)
             except (OSError, json.JSONDecodeError):
                 # Non-JSON or unreadable: hash as a single opaque entry so
-                # adding/removing it counts as a delta.
+                # adding/removing it counts as a delta. Use sha256 (not
+                # Python's salted hash()) so the entry string is stable.
                 try:
                     with open(absolute, "rb") as handle:
                         opaque = handle.read()
                 except OSError:
                     continue
-                entries.add(f"{relative}::raw::{hash(opaque)}")
+                entries.add(f"{relative}::raw::{hashlib.sha256(opaque).hexdigest()}")
                 continue
             for entry in _flatten_json(data):
                 entries.add(f"{relative}::{entry}")

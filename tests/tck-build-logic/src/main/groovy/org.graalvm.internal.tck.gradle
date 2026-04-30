@@ -333,6 +333,21 @@ tasks.register("runNativeTraceImage", Exec) { Exec task ->
         task.executable = imageFile.absolutePath
         task.args = runtimeArgs
     }
+    task.doLast {
+        // When -PtraceBinaryExitFile=<absolute path> is supplied, write the
+        // binary's exit code to that file. The verification gate reads this
+        // sentinel to recover ExitStatus.MISSING_METADATA (172) without
+        // grepping Gradle's log output.
+        String exitFilePath = providers.gradleProperty("traceBinaryExitFile").getOrElse("")
+        if (!exitFilePath.isBlank()) {
+            File exitFile = file(exitFilePath)
+            File parent = exitFile.parentFile
+            if (parent != null) {
+                parent.mkdirs()
+            }
+            exitFile.text = String.valueOf(task.executionResult.get().exitValue)
+        }
+    }
 }
 
 tasks.register("mergeNativeTraceMetadata", Exec) { Exec task ->

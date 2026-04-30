@@ -83,20 +83,21 @@ class NativeTestVerificationResult:
     intervention_records: list[InterventionRecord] = field(default_factory=list)
 
 
+DEFAULT_CYCLE_TIMEOUT_SECONDS = 30 * 60
+
+
 def verify_native_test_passes(
         reachability_repo_path: str,
         coordinate: str,
         output_dir: str,
         condition_packages: list[str] | None = None,
         max_iterations: int = 100,
-        max_trace_iterations: int = 5,  # accepted for API compat; unused.
-        model_name: str | None = None,  # accepted for API compat; unused.
+        cycle_timeout_seconds: int = DEFAULT_CYCLE_TIMEOUT_SECONDS,
 ) -> NativeTestVerificationResult:
     """Iteratively run runNativeTraceImage until the binary passes or fails.
 
     See ``forge/docs/native-test-verification.md`` for the full contract.
     """
-    del max_trace_iterations, model_name  # accepted for compat; unused now.
     if max_iterations < 1:
         raise ValueError("max_iterations must be >= 1")
     if not os.path.isabs(output_dir):
@@ -145,6 +146,7 @@ def verify_native_test_passes(
             condition_packages_arg=condition_packages_arg,
             metadata_config_dirs=accepted_run_dirs,
             log_path=log_path,
+            timeout_seconds=cycle_timeout_seconds,
         )
         last_log_path = log_path
         last_binary_rc = binary_rc if binary_rc is not None else gradle_rc
@@ -234,19 +236,26 @@ def _run_native_trace_image(
         condition_packages_arg: str,
         metadata_config_dirs: list[str],
         log_path: str,
+        timeout_seconds: int = DEFAULT_CYCLE_TIMEOUT_SECONDS,
 ) -> tuple[int, int | None]:
     """Run ``runNativeTraceImage`` and surface the binary's exit code.
 
-    Returns ``(gradle_rc, binary_rc)``. ``binary_rc`` is parsed from the
-    Gradle log's "exit value N" line. It will be ``None`` when the build
-    failed before the binary ran.
+    Returns ``(gradle_rc, binary_rc)``. ``binary_rc`` is read from the
+    sentinel file written by the Gradle task (``-PexitFile=<path>``); the
+    sentinel mechanism is preferred because it is independent of Gradle's
+    log wording. When the sentinel is missing (e.g. the build failed before
+    the run task fired) we fall back to the legacy "exit value N"
+    log-scrape — see ``_parse_binary_exit_code``. ``binary_rc`` is
+    ``None`` when neither source produced a value.
     """
+    exit_file = os.path.join(run_dir, "binary-exit-code")
     cmd = [
         "./gradlew",
         "runNativeTraceImage",
         f"-Pcoordinates={coordinate}",
         f"-PtraceMetadataPath={run_dir}",
         f"-PtraceMetadataConditionPackages={condition_packages_arg}",
+        f"-PtraceBinaryExitFile={exit_file}",
     ]
     if metadata_config_dirs:
         cmd.append(f"-PmetadataConfigDirs={','.join(metadata_config_dirs)}")
@@ -256,26 +265,56 @@ def _run_native_trace_image(
         indent_level=1,
     )
     with open(log_path, "w", encoding="utf-8") as log_file:
-        result = subprocess.run(
-            cmd,
-            cwd=reachability_repo_path,
-            stdout=log_file,
-            stderr=subprocess.STDOUT,
-            check=False,
-        )
-    if result.returncode == 0:
-        # The Exec inside runNativeTraceImage uses ignoreExitValue=true, so a
-        # zero gradle exit code does not necessarily mean the binary returned
-        # 0; parse to be sure.
+        try:
+            result = subprocess.run(
+                cmd,
+                cwd=reachability_repo_path,
+                stdout=log_file,
+                stderr=subprocess.STDOUT,
+                check=False,
+                timeout=timeout_seconds,
+            )
+        except subprocess.TimeoutExpired:
+            log_stage(
+                _GATE_STAGE,
+                f"runNativeTraceImage exceeded {timeout_seconds}s timeout",
+                indent_level=1,
+            )
+            return 1, None
+    binary_rc = _read_exit_file(exit_file)
+    if binary_rc is None:
         binary_rc = _parse_binary_exit_code(log_path)
-        if binary_rc is None:
-            binary_rc = 0
-        return result.returncode, binary_rc
-    return result.returncode, _parse_binary_exit_code(log_path)
+    if binary_rc is None and result.returncode == 0:
+        # Gradle exited 0 and neither the sentinel nor the log mentions an
+        # exit value; the binary must have returned 0.
+        binary_rc = 0
+    return result.returncode, binary_rc
+
+
+def _read_exit_file(path: str) -> int | None:
+    """Read the binary exit code written by the Gradle task to ``path``."""
+    try:
+        with open(path, "r", encoding="utf-8") as handle:
+            text = handle.read().strip()
+    except OSError:
+        return None
+    if not text:
+        return None
+    try:
+        return int(text)
+    except ValueError:
+        return None
 
 
 def _parse_binary_exit_code(log_path: str) -> int | None:
-    """Recover the binary's exit code from a ``exit value N`` log line."""
+    """Fallback: recover the binary exit code from Gradle's "exit value N" line.
+
+    The sentinel file written by the Gradle task is the primary source; this
+    parser is kept for the case where the sentinel was not written (e.g. the
+    build failed before the run step). The regex matches Gradle's stable
+    failure message format; if Gradle ever changes its wording, the
+    sentinel path still works.
+    """
     try:
         with open(log_path, "r", encoding="utf-8", errors="replace") as handle:
             content = handle.read()
@@ -288,6 +327,9 @@ def _parse_binary_exit_code(log_path: str) -> int | None:
         return int(matches[-1])
     except ValueError:
         return None
+
+
+_MERGE_TIMEOUT_SECONDS = 5 * 60
 
 
 def _merge_into_output(
@@ -305,11 +347,19 @@ def _merge_into_output(
         f"-PoutputDir={output_dir}",
     ]
     log_stage(_GATE_STAGE, f"$ {' '.join(cmd)}", indent_level=1)
-    subprocess.run(
-        cmd,
-        cwd=reachability_repo_path,
-        check=False,
-    )
+    try:
+        subprocess.run(
+            cmd,
+            cwd=reachability_repo_path,
+            check=False,
+            timeout=_MERGE_TIMEOUT_SECONDS,
+        )
+    except subprocess.TimeoutExpired:
+        log_stage(
+            _GATE_STAGE,
+            f"mergeNativeTraceMetadata exceeded {_MERGE_TIMEOUT_SECONDS}s timeout",
+            indent_level=1,
+        )
 
 
 def _reset_directory(path: str) -> None:

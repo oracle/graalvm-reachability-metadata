@@ -211,7 +211,7 @@ Build a trace-enabled native test image:
 ./gradlew nativeTraceImage -Pcoordinates=<group:artifact:version>
 ```
 
-Run the trace-enabled binary once and write runtime trace metadata. The native process exit code is informational; this task is expected to complete even if tests fail, so the trace output can still be inspected or merged.
+Run the trace-enabled binary once and write runtime trace metadata. The trace binary is built with `-H:+MetadataTracingSupport`, `--exact-reachability-metadata`, and `-H:MissingRegistrationReportingMode=Exit`, so it exits with `ExitStatus.MISSING_METADATA` (172) when an access misses the supplied metadata. The Gradle Exec ignores the binary's exit code so the trace output can still be inspected or merged after a 172 exit; pass `-PtraceBinaryExitFile=<absolute-path>` to capture the exit code in a sentinel file (used by automated callers like the verification gate).
 
 ```console
 ./gradlew runNativeTraceImage \
