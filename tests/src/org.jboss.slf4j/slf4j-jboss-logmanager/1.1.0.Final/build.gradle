@@ -12,10 +12,19 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "org.jboss.slf4j:slf4j-jboss-logmanager:$libraryVersion"
+    testImplementation 'org.jboss.logmanager:jboss-logmanager:2.1.17.Final'
+    testImplementation 'org.wildfly.common:wildfly-common:1.7.0.Final'
+    testImplementation 'org.slf4j:slf4j-api:1.7.30'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--initialize-at-build-time=org.jboss.logmanager')
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
