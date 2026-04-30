@@ -154,6 +154,23 @@ public class Play_exceptionsTest {
     }
 
     @Test
+    void interestingLinesPreservesBlankLinesInSourceContext() {
+        SourceException exception = new SourceException(
+                "Source error",
+                "Blank line failed",
+                "script.conf",
+                2,
+                1,
+                "alpha\n\ngamma\ndelta");
+
+        PlayException.InterestingLines interestingLines = exception.interestingLines(1);
+
+        assertThat(interestingLines.firstLine).isEqualTo(1);
+        assertThat(interestingLines.errorLine).isEqualTo(1);
+        assertThat(interestingLines.focus).containsExactly("alpha", "", "gamma");
+    }
+
+    @Test
     void interestingLinesIsUnavailableWhenInputOrLineIsMissing() {
         SourceException withoutInput = new SourceException(
                 "Source error",
