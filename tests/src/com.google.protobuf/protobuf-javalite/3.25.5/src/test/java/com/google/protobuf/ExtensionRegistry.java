@@ -34,4 +34,7 @@ public final class ExtensionRegistry extends ExtensionRegistryLite {
     public ExtensionRegistry getUnmodifiable() {
         return new ExtensionRegistry(this);
     }
+
+    public void add(Extension<?, ?> extension) {
+    }
 }
