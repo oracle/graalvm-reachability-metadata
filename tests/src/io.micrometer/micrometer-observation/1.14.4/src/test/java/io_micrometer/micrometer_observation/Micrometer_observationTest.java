@@ -395,6 +395,30 @@ public class Micrometer_observationTest {
     }
 
     @Test
+    void lateBoundObservationConventionAppliesNameContextualNameAndKeyValuesWhenStarted() {
+        ObservationRegistry registry = ObservationRegistry.create();
+        RecordingHandler handler = new RecordingHandler("late-convention", context -> true);
+        registry.observationConfig().observationHandler(handler);
+
+        RequestContext context = new RequestContext("/late/{id}", "tenant-late");
+        Observation observation = Observation.createNotStarted("placeholder.name", () -> context, registry)
+                .observationConvention(new CustomRequestConvention())
+                .lowCardinalityKeyValue("phase", "prepared");
+
+        observation.start();
+        observation.stop();
+
+        assertThat(context.getName()).isEqualTo("request.custom");
+        assertThat(context.getContextualName()).isEqualTo("POST /late/{id}");
+        assertThat(context.getLowCardinalityKeyValue("route").getValue()).isEqualTo("/late/{id}");
+        assertThat(context.getLowCardinalityKeyValue("source").getValue()).isEqualTo("custom");
+        assertThat(context.getLowCardinalityKeyValue("phase").getValue()).isEqualTo("prepared");
+        assertThat(handler.events).containsSubsequence(
+                "late-convention:start:request.custom",
+                "late-convention:stop:request.custom");
+    }
+
+    @Test
     void globalObservationsDelegateToConfiguredRegistryAndCanReset() {
         ObservationRegistry registry = ObservationRegistry.create();
         RecordingHandler handler = new RecordingHandler("global", context -> true);
