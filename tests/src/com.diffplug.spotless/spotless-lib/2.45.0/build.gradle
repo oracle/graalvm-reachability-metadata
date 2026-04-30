@@ -23,6 +23,7 @@ Provider<Directory> googleJavaFormatFixtureResources = layout.buildDirectory.dir
 Provider<Directory> palantirJavaFormatFixtureResources = layout.buildDirectory.dir("generated/palantir-java-format-fixture-resources")
 Provider<Directory> cleanthatFixtureResources = layout.buildDirectory.dir("generated/cleanthat-fixture-resources")
 Provider<Directory> freshMarkFixtureResources = layout.buildDirectory.dir("generated/freshmark-fixture-resources")
+Provider<Directory> flexmarkFixtureResources = layout.buildDirectory.dir("generated/flexmark-fixture-resources")
 Provider<Directory> antlr4FormatterFixtureResources = layout.buildDirectory.dir("generated/antlr4-formatter-fixture-resources")
 Provider<Directory> gherkinUtilsFixtureResources = layout.buildDirectory.dir("generated/gherkin-utils-fixture-resources")
 Provider<Directory> diktatFixtureResources = layout.buildDirectory.dir("generated/diktat-fixture-resources")
@@ -137,6 +138,17 @@ tasks.register("generateFreshMarkFixtureJar") {
         delete(outputDir)
 
         createFreshMarkFixture(outputDir)
+    }
+}
+
+tasks.register("generateFlexmarkFixtureJar") {
+    outputs.dir(flexmarkFixtureResources)
+
+    doLast {
+        File outputDir = flexmarkFixtureResources.get().asFile
+        delete(outputDir)
+
+        createFlexmarkFixture(outputDir)
     }
 }
 
@@ -594,6 +606,24 @@ void createFreshMarkFixture(File outputDir) {
     createFixtureJar(outputDir, "freshmark-fixtures", "current", "freshmark-fixture.jar", sources)
 }
 
+void createFlexmarkFixture(File outputDir) {
+    Map<String, String> sources = [
+        "com/diffplug/spotless/glue/markdown/FlexmarkFormatterFunc.java": """
+            package com.diffplug.spotless.glue.markdown;
+
+            import com.diffplug.spotless.FormatterFunc;
+
+            public class FlexmarkFormatterFunc implements FormatterFunc {
+                public String apply(String input) {
+                    return "flexmark:" + input;
+                }
+            }
+            """
+    ]
+    createFixtureJar(outputDir, "flexmark-fixtures", "current", "flexmark-fixture.jar", sources,
+            sourceSets.test.compileClasspath.asPath)
+}
+
 void createAntlr4FormatterFixture(File outputDir) {
     Map<String, String> sources = [
         "com/khubla/antlr4formatter/Antlr4Formatter.java": """
@@ -714,6 +744,7 @@ sourceSets {
         resources.srcDir(palantirJavaFormatFixtureResources)
         resources.srcDir(cleanthatFixtureResources)
         resources.srcDir(freshMarkFixtureResources)
+        resources.srcDir(flexmarkFixtureResources)
         resources.srcDir(antlr4FormatterFixtureResources)
         resources.srcDir(gherkinUtilsFixtureResources)
         resources.srcDir(diktatFixtureResources)
@@ -731,6 +762,7 @@ tasks.named("processTestResources") {
     dependsOn(tasks.named("generatePalantirJavaFormatFixtureJar"))
     dependsOn(tasks.named("generateCleanthatFixtureJar"))
     dependsOn(tasks.named("generateFreshMarkFixtureJar"))
+    dependsOn(tasks.named("generateFlexmarkFixtureJar"))
     dependsOn(tasks.named("generateAntlr4FormatterFixtureJar"))
     dependsOn(tasks.named("generateGherkinUtilsFixtureJar"))
     dependsOn(tasks.named("generateDiktatFixtureJar"))
@@ -745,7 +777,7 @@ dependencies {
 graalvmNative {
     binaries {
         test {
-            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|ktlint-fixtures|json-simple-fixtures|json-patch-fixtures|gson-fixtures|jackson-json-fixtures|google-java-format-fixtures|palantir-java-format-fixtures|cleanthat-fixtures|freshmark-fixtures|antlr4-formatter-fixtures|gherkin-utils-fixtures|diktat-fixtures)/.*')
+            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|ktlint-fixtures|json-simple-fixtures|json-patch-fixtures|gson-fixtures|jackson-json-fixtures|google-java-format-fixtures|palantir-java-format-fixtures|cleanthat-fixtures|freshmark-fixtures|flexmark-fixtures|antlr4-formatter-fixtures|gherkin-utils-fixtures|diktat-fixtures)/.*')
         }
     }
 
