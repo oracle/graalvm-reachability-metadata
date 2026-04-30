@@ -1,0 +1,1006 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ddcb0-9e7d-78a0-87dd-bd8415f6e9be
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.junit.jupiter:junit-jupiter-api:5.8.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "5.8.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json
+- Set "coordinates" to "org.junit.jupiter:junit-jupiter-api:5.8.2".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven Central and the upstream JUnit tag, then patch the JSON in place.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+ succeeded in 0ms:
+{
+  "coordinates" : "org.junit.jupiter:junit-jupiter-api:5.8.2"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'org.junit.jupiter:junit-jupiter-api|junit-jupiter-api' metadata build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json:2:  "coordinates" : "org.junit.jupiter:junit-jupiter-api:5.8.2"
+
+web search: 
+web search: Maven Central org.junit.jupiter junit-jupiter-api 5.8.2 sources jar javadoc jar tests
+web search: 
+web search: https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/
+web search: 
+web search: https://central.sonatype.com/artifact/org.junit.jupiter/junit-jupiter-api/5.8.2
+codex
+Maven Central publishes both sources and javadocs for this exact artifact version. I’m checking whether a Maven test-sources artifact exists; if it does not, I’ll use the tagged upstream module test directory.
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+ succeeded in 0ms:
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-sources.jar",
+metadata/org.jctools/jctools-core/index.json:9:    "repository-url": "https://github.com/JCTools/JCTools",
+metadata/org.jctools/jctools-core/index.json:10:    "test-code-url": "https://github.com/JCTools/JCTools/tree/v2.1.2/jctools-core/src/test",
+metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:20:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:21:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/2.0.8/oro-2.0.8-sources.jar",
+metadata/oro/oro/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/jakarta/oro/",
+metadata/oro/oro/index.json:7:    "test-code-url" : "N/A",
+metadata/oro/oro/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/jakarta/oro/tags/oro-2.0.8/docs/index.html",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-3.10.8-jakarta-sources.jar",
+metadata/org.ehcache/ehcache/index.json:12:    "repository-url": "https://github.com/ehcache/ehcache3",
+metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-3.10.8-jakarta-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:6:    "repository-url" : "https://github.com/apiguardian-team/apiguardian",
+metadata/org.apiguardian/apiguardian-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apiguardian/apiguardian-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-sources.jar",
+metadata/com.itextpdf/kernel/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/kernel/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/kernel/src/test",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-sources.jar",
+metadata/com.itextpdf/forms/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/forms/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/forms/src/test",
+metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "repository-url": "https://github.com/ben-manes/caffeine/tree/v3.1.2",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:9:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:32:    "repository-url": "https://github.com/ben-manes/caffeine/tree/v2.9.3",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:34:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/0.31.1/opencensus-api-0.31.1-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:7:    "repository-url": "https://github.com/census-instrumentation/opencensus-java",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v0.31.1/api/src/test",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/0.31.1/opencensus-api-0.31.1-javadoc.jar",
+metadata/org.apache.arrow/arrow-format/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:6:    "repository-url" : "https://github.com/apache/arrow",
+metadata/org.apache.arrow/arrow-format/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.arrow/arrow-format/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-javadoc.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/2.5-20081211/servlet-api-2.5-20081211-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:6:    "repository-url" : "http://svn.codehaus.org/jetty/servlet-api",
+metadata/org.mortbay.jetty/servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/2.5-20081211/servlet-api-2.5-20081211-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:6:    "repository-url" : "https://github.com/openzipkin/zipkin",
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/2.23.2/zipkin-tests/src/test",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-javadoc.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+metadata/com.itextpdf/svg/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/8.0.3/svg-8.0.3-sources.jar",
+metadata/com.itextpdf/svg/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/svg/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/svg/src/test",
+metadata/com.itextpdf/svg/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/8.0.3/svg-8.0.3-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/junit/jupiter/junit-jupiter-api/5.8.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/junit/jupiter/junit-jupiter-api/5.8.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="junit-jupiter-api-5.8.2-javadoc.jar" title="junit-jupiter-api-5.8.2-javadoc.jar">junit-jupiter-api-5.8.2-javadoc.jar</a>               2021-11-28 15:39    724921      
+<a href="junit-jupiter-api-5.8.2-javadoc.jar.asc" title="junit-jupiter-api-5.8.2-javadoc.jar.asc">junit-jupiter-api-5.8.2-javadoc.jar.asc</a>           2021-11-28 15:39       821      
+<a href="junit-jupiter-api-5.8.2-javadoc.jar.asc.md5" title="junit-jupiter-api-5.8.2-javadoc.jar.asc.md5">junit-jupiter-api-5.8.2-javadoc.jar.asc.md5</a>       2021-11-28 15:39        32      
+<a href="junit-jupiter-api-5.8.2-javadoc.jar.asc.sha1" title="junit-jupiter-api-5.8.2-javadoc.jar.asc.sha1">junit-jupiter-api-5.8.2-javadoc.jar.asc.sha1</a>      2021-11-28 15:39        40      
+<a href="junit-jupiter-api-5.8.2-javadoc.jar.asc.sha256" title="junit-jupiter-api-5.8.2-javadoc.jar.asc.sha256">junit-jupiter-api-5.8.2-javadoc.jar.asc.sha25...</a>  2021-11-28 15:39        64      
+<a href="junit-jupiter-api-5.8.2-javadoc.jar.asc.sha512" title="junit-jupiter-api-5.8.2-javadoc.jar.asc.sha512">junit-jupiter-api-5.8.2-javadoc.jar.asc.sha51...</a>  2021-11-28 15:39       128      
+<a href="junit-jupiter-api-5.8.2-javadoc.jar.md5" title="junit-jupiter-api-5.8.2-javadoc.jar.md5">junit-jupiter-api-5.8.2-javadoc.jar.md5</a>           2021-11-28 15:39        32      
+<a href="junit-jupiter-api-5.8.2-javadoc.jar.sha1" title="junit-jupiter-api-5.8.2-javadoc.jar.sha1">junit-jupiter-api-5.8.2-javadoc.jar.sha1</a>          2021-11-28 15:39        40      
+<a href="junit-jupiter-api-5.8.2-javadoc.jar.sha256" title="junit-jupiter-api-5.8.2-javadoc.jar.sha256">junit-jupiter-api-5.8.2-javadoc.jar.sha256</a>        2021-11-28 15:39        64      
+<a href="junit-jupiter-api-5.8.2-javadoc.jar.sha512" title="junit-jupiter-api-5.8.2-javadoc.jar.sha512">junit-jupiter-api-5.8.2-javadoc.jar.sha512</a>        2021-11-28 15:39       128      
+<a href="junit-jupiter-api-5.8.2-sources.jar" title="junit-jupiter-api-5.8.2-sources.jar">junit-jupiter-api-5.8.2-sources.jar</a>               2021-11-28 15:39    187388      
+<a href="junit-jupiter-api-5.8.2-sources.jar.asc" title="junit-jupiter-api-5.8.2-sources.jar.asc">junit-jupiter-api-5.8.2-sources.jar.asc</a>           2021-11-28 15:39       821      
+<a href="junit-jupiter-api-5.8.2-sources.jar.asc.md5" title="junit-jupiter-api-5.8.2-sources.jar.asc.md5">junit-jupiter-api-5.8.2-sources.jar.asc.md5</a>       2021-11-28 15:39        32      
+<a href="junit-jupiter-api-5.8.2-sources.jar.asc.sha1" title="junit-jupiter-api-5.8.2-sources.jar.asc.sha1">junit-jupiter-api-5.8.2-sources.jar.asc.sha1</a>      2021-11-28 15:39        40      
+<a href="junit-jupiter-api-5.8.2-sources.jar.asc.sha256" title="junit-jupiter-api-5.8.2-sources.jar.asc.sha256">junit-jupiter-api-5.8.2-sources.jar.asc.sha25...</a>  2021-11-28 15:39        64      
+<a href="junit-jupiter-api-5.8.2-sources.jar.asc.sha512" title="junit-jupiter-api-5.8.2-sources.jar.asc.sha512">junit-jupiter-api-5.8.2-sources.jar.asc.sha51...</a>  2021-11-28 15:39       128      
+<a href="junit-jupiter-api-5.8.2-sources.jar.md5" title="junit-jupiter-api-5.8.2-sources.jar.md5">junit-jupiter-api-5.8.2-sources.jar.md5</a>           2021-11-28 15:39        32      
+<a href="junit-jupiter-api-5.8.2-sources.jar.sha1" title="junit-jupiter-api-5.8.2-sources.jar.sha1">junit-jupiter-api-5.8.2-sources.jar.sha1</a>          2021-11-28 15:39        40      
+<a href="junit-jupiter-api-5.8.2-sources.jar.sha256" title="junit-jupiter-api-5.8.2-sources.jar.sha256">junit-jupiter-api-5.8.2-sources.jar.sha256</a>        2021-11-28 15:39        64      
+<a href="junit-jupiter-api-5.8.2-sources.jar.sha512" title="junit-jupiter-api-5.8.2-sources.jar.sha512">junit-jupiter-api-5.8.2-sources.jar.sha512</a>        2021-11-28 15:39       128      
+<a href="junit-jupiter-api-5.8.2.jar" title="junit-jupiter-api-5.8.2.jar">junit-jupiter-api-5.8.2.jar</a>                       2021-11-28 15:39    193500      
+<a href="junit-jupiter-api-5.8.2.jar.asc" title="junit-jupiter-api-5.8.2.jar.asc">junit-jupiter-api-5.8.2.jar.asc</a>                   2021-11-28 15:39       821      
+<a href="junit-jupiter-api-5.8.2.jar.asc.md5" title="junit-jupiter-api-5.8.2.jar.asc.md5">junit-jupiter-api-5.8.2.jar.asc.md5</a>               2021-11-28 15:39        32      
+<a href="junit-jupiter-api-5.8.2.jar.asc.sha1" title="junit-jupiter-api-5.8.2.jar.asc.sha1">junit-jupiter-api-5.8.2.jar.asc.sha1</a>              2021-11-28 15:39        40      
+<a href="junit-jupiter-api-5.8.2.jar.asc.sha256" title="junit-jupiter-api-5.8.2.jar.asc.sha256">junit-jupiter-api-5.8.2.jar.asc.sha256</a>            2021-11-28 15:39        64      
+<a href="junit-jupiter-api-5.8.2.jar.asc.sha512" title="junit-jupiter-api-5.8.2.jar.asc.sha512">junit-jupiter-api-5.8.2.jar.asc.sha512</a>            2021-11-28 15:39       128      
+<a href="junit-jupiter-api-5.8.2.jar.md5" title="junit-jupiter-api-5.8.2.jar.md5">junit-jupiter-api-5.8.2.jar.md5</a>                   2021-11-28 15:39        32      
+<a href="junit-jupiter-api-5.8.2.jar.sha1" title="junit-jupiter-api-5.8.2.jar.sha1">junit-jupiter-api-5.8.2.jar.sha1</a>                  2021-11-28 15:39        40      
+<a href="junit-jupiter-api-5.8.2.jar.sha256" title="junit-jupiter-api-5.8.2.jar.sha256">junit-jupiter-api-5.8.2.jar.sha256</a>                2021-11-28 15:39        64      
+<a href="junit-jupiter-api-5.8.2.jar.sha512" title="junit-jupiter-api-5.8.2.jar.sha512">junit-jupiter-api-5.8.2.jar.sha512</a>                2021-11-28 15:39       128      
+<a href="junit-jupiter-api-5.8.2.module" title="junit-jupiter-api-5.8.2.module">junit-jupiter-api-5.8.2.module</a>                    2021-11-28 15:39      5205      
+<a href="junit-jupiter-api-5.8.2.module.asc" title="junit-jupiter-api-5.8.2.module.asc">junit-jupiter-api-5.8.2.module.asc</a>                2021-11-28 15:39       821      
+<a href="junit-jupiter-api-5.8.2.module.asc.md5" title="junit-jupiter-api-5.8.2.module.asc.md5">junit-jupiter-api-5.8.2.module.asc.md5</a>            2021-11-28 15:39        32      
+<a href="junit-jupiter-api-5.8.2.module.asc.sha1" title="junit-jupiter-api-5.8.2.module.asc.sha1">junit-jupiter-api-5.8.2.module.asc.sha1</a>           2021-11-28 15:39        40      
+<a href="junit-jupiter-api-5.8.2.module.asc.sha256" title="junit-jupiter-api-5.8.2.module.asc.sha256">junit-jupiter-api-5.8.2.module.asc.sha256</a>         2021-11-28 15:39        64      
+<a href="junit-jupiter-api-5.8.2.module.asc.sha512" title="junit-jupiter-api-5.8.2.module.asc.sha512">junit-jupiter-api-5.8.2.module.asc.sha512</a>         2021-11-28 15:39       128      
+<a href="junit-jupiter-api-5.8.2.module.md5" title="junit-jupiter-api-5.8.2.module.md5">junit-jupiter-api-5.8.2.module.md5</a>                2021-11-28 15:39        32      
+<a href="junit-jupiter-api-5.8.2.module.sha1" title="junit-jupiter-api-5.8.2.module.sha1">junit-jupiter-api-5.8.2.module.sha1</a>               2021-11-28 15:39        40      
+<a href="junit-jupiter-api-5.8.2.module.sha256" title="junit-jupiter-api-5.8.2.module.sha256">junit-jupiter-api-5.8.2.module.sha256</a>             2021-11-28 15:39        64      
+<a href="junit-jupiter-api-5.8.2.module.sha512" title="junit-jupiter-api-5.8.2.module.sha512">junit-jupiter-api-5.8.2.module.sha512</a>             2021-11-28 15:39       128      
+<a href="junit-jupiter-api-5.8.2.pom" title="junit-jupiter-api-5.8.2.pom">junit-jupiter-api-5.8.2.pom</a>                       2021-11-28 15:39      3181      
+<a href="junit-jupiter-api-5.8.2.pom.asc" title="junit-jupiter-api-5.8.2.pom.asc">junit-jupiter-api-5.8.2.pom.asc</a>                   2021-11-28 15:39       821      
+<a href="junit-jupiter-api-5.8.2.pom.asc.md5" title="junit-jupiter-api-5.8.2.pom.asc.md5">junit-jupiter-api-5.8.2.pom.asc.md5</a>               2021-11-28 15:39        32      
+<a href="junit-jupiter-api-5.8.2.pom.asc.sha1" title="junit-jupiter-api-5.8.2.pom.asc.sha1">junit-jupiter-api-5.8.2.pom.asc.sha1</a>              2021-11-28 15:39        40      
+<a href="junit-jupiter-api-5.8.2.pom.asc.sha256" title="junit-jupiter-api-5.8.2.pom.asc.sha256">junit-jupiter-api-5.8.2.pom.asc.sha256</a>            2021-11-28 15:39        64      
+<a href="junit-jupiter-api-5.8.2.pom.asc.sha512" title="junit-jupiter-api-5.8.2.pom.asc.sha512">junit-jupiter-api-5.8.2.pom.asc.sha512</a>            2021-11-28 15:39       128      
+<a href="junit-jupiter-api-5.8.2.pom.md5" title="junit-jupiter-api-5.8.2.pom.md5">junit-jupiter-api-5.8.2.pom.md5</a>                   2021-11-28 15:39        32      
+<a href="junit-jupiter-api-5.8.2.pom.sha1" title="junit-jupiter-api-5.8.2.pom.sha1">junit-jupiter-api-5.8.2.pom.sha1</a>                  2021-11-28 15:39        40      
+<a href="junit-jupiter-api-5.8.2.pom.sha256" title="junit-jupiter-api-5.8.2.pom.sha256">junit-jupiter-api-5.8.2.pom.sha256</a>                2021-11-28 15:39        64      
+<a href="junit-jupiter-api-5.8.2.pom.sha512" title="junit-jupiter-api-5.8.2.pom.sha512">junit-jupiter-api-5.8.2.pom.sha512</a>                2021-11-28 15:39       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-test-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+ exited 22 in 215ms:
+HTTP/2 404 
+date: Thu, 30 Apr 2026 04:41:19 GMT
+content-type: text/html
+cf-ray: 9f43df983e55be7f-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 257ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Thu, 30 Apr 2026 04:41:19 GMT
+content-type: text/html
+cf-ray: 9f43df980abc24c4-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: site:repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2 junit-jupiter-api-5.8.2-sources.jar
+web search: 
+web search: https://github.com/junit-team/junit5/tree/r5.8.2/junit-jupiter-api
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.junit.jupiter</groupId>
+  <artifactId>junit-jupiter-api</artifactId>
+  <version>5.8.2</version>
+  <name>JUnit Jupiter API</name>
+  <description>Module "junit-jupiter-api" of JUnit 5.</description>
+  <url>https://junit.org/junit5/</url>
+  <licenses>
+    <license>
+      <name>Eclipse Public License v2.0</name>
+      <url>https://www.eclipse.org/legal/epl-v20.html</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>bechte</id>
+      <name>Stefan Bechtold</name>
+      <email>stefan.bechtold@me.com</email>
+    </developer>
+    <developer>
+      <id>jlink</id>
+      <name>Johannes Link</name>
+      <email>business@johanneslink.net</email>
+    </developer>
+    <developer>
+      <id>marcphilipp</id>
+      <name>Marc Philipp</name>
+      <email>mail@marcphilipp.de</email>
+    </developer>
+    <developer>
+      <id>mmerdes</id>
+      <name>Matthias Merdes</name>
+      <email>matthias.merdes@heidelpay.com</email>
+    </developer>
+    <developer>
+      <id>sbrannen</id>
+      <name>Sam Brannen</name>
+      <email>sam@sambrannen.com</email>
+    </developer>
+    <developer>
+      <id>sormuras</id>
+      <name>Christian Stein</name>
+      <email>sormuras@gmail.com</email>
+    </developer>
+    <developer>
+      <id>juliette-derancourt</id>
+      <name>Juliette de Rancourt</name>
+      <email>derancourt.juliette@gmail.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/junit-team/junit5.git</connection>
+    <developerConnection>scm:git:git://github.com/junit-team/junit5.git</developerConnection>
+    <url>https://github.com/junit-team/junit5</url>
+  </scm>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>5.8.2</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.opentest4j</groupId>
+      <artifactId>opentest4j</artifactId>
+      <version>1.2.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-commons</artifactId>
+      <version>1.8.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apiguardian</groupId>
+      <artifactId>apiguardian-api</artifactId>
+      <version>1.1.2</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/junit-team/junit5/contents/junit-jupiter-api/src?ref=r5.8.2' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/junit-team/junit5/tree/r5.8.2/junit-jupiter-api/src/test' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/junit-team/junit5/tree/r5.8.2/junit-jupiter-api/src/test/java' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+ succeeded in 322ms:
+[
+  {
+    "name": "main",
+    "path": "junit-jupiter-api/src/main",
+    "sha": "f00ab656908fbb7e1b2ad95c6156438b1befae09",
+    "size": 0,
+    "url": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-jupiter-api/src/main?ref=r5.8.2",
+    "html_url": "https://github.com/junit-team/junit-framework/tree/r5.8.2/junit-jupiter-api/src/main",
+    "git_url": "https://api.github.com/repos/junit-team/junit-framework/git/trees/f00ab656908fbb7e1b2ad95c6156438b1befae09",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-jupiter-api/src/main?ref=r5.8.2",
+      "git": "https://api.github.com/repos/junit-team/junit-framework/git/trees/f00ab656908fbb7e1b2ad95c6156438b1befae09",
+      "html": "https://github.com/junit-team/junit-framework/tree/r5.8.2/junit-jupiter-api/src/main"
+    }
+  },
+  {
+    "name": "module",
+    "path": "junit-jupiter-api/src/module",
+    "sha": "3c2c93860c7875606bcaea119ac737110469b776",
+    "size": 0,
+    "url": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-jupiter-api/src/module?ref=r5.8.2",
+    "html_url": "https://github.com/junit-team/junit-framework/tree/r5.8.2/junit-jupiter-api/src/module",
+    "git_url": "https://api.github.com/repos/junit-team/junit-framework/git/trees/3c2c93860c7875606bcaea119ac737110469b776",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-jupiter-api/src/module?ref=r5.8.2",
+      "git": "https://api.github.com/repos/junit-team/junit-framework/git/trees/3c2c93860c7875606bcaea119ac737110469b776",
+      "html": "https://github.com/junit-team/junit-framework/tree/r5.8.2/junit-jupiter-api/src/module"
+    }
+  },
+  {
+    "name": "testFixtures",
+    "path": "junit-jupiter-api/src/testFixtures",
+    "sha": "7423523001ca82960b41d1535a4fe2245d16de33",
+    "size": 0,
+    "url": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-jupiter-api/src/testFixtures?ref=r5.8.2",
+    "html_url": "https://github.com/junit-team/junit-framework/tree/r5.8.2/junit-jupiter-api/src/testFixtures",
+    "git_url": "https://api.github.com/repos/junit-team/junit-framework/git/trees/7423523001ca82960b41d1535a4fe2245d16de33",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-jupiter-api/src/testFixtures?ref=r5.8.2",
+      "git": "https://api.github.com/repos/junit-team/junit-framework/git/trees/7423523001ca82960b41d1535a4fe2245d16de33",
+      "html": "https://github.com/junit-team/junit-framework/tree/r5.8.2/junit-jupiter-api/src/testFixtures"
+    }
+  }
+]
+
+ exited 22 in 541ms:
+HTTP/2 301 
+date: Thu, 30 Apr 2026 04:41:33 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/junit-team/junit-framework/tree/r5.8.2/junit-jupiter-api/src/test/java
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=V94SufXFWN99vfHBVUSaNKVUAiDNvSOtLc%2FrJOWcELjenm%2BkjvPTFIYT7xOujZVoJ5MZF4w8Gq5hFX8l0a128BcuBjbLabadtXktimBAEHN6rEvVa2QbJarEQ7XwFq8BhawmiQ9ibbNsYXmg8GkAnJINKiOljAax1T3yGgNO3VZL6l2JfRpU2e8VRBk5SNLPnQXmZ3BrSh9%2FVIHbIry9E%2FBVQfeCfQ4KOdv3zH82nc4joRFvZubAPPT%2F3soRt6Oltfolo1L%2F5QtvZ2DuBZiJ8w%3D%3D--OO7mqUUacle1tzsy--nKAbhMi%2BSOy%2BmGJGgttoXw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1359299903.1777524093; expires=Fri, 30 Apr 2027 04:41:33 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 04:41:33 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510B:2C62BE:431E037:347BD8F:69F2DD7D
+
+HTTP/2 404 
+date: Thu, 30 Apr 2026 04:41:33 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=%2FTq6LHkS0Vhwy08hSSqUSSzY7TWzv%2BEbO3xbZCaiwO1Iosxt07%2F%2BxAXtVXhxXXdcbtqDGJETRasb3o7zB4hYCZVrRKI3Y%2F0gzK3cW%2FhhqcVavpeVdHExQ8r7zQlV6gR%2FUAAoRYefUx3chWvmVSab7pXXsUPuWUlFn1HHR3d12C40P3VnPXfqElOpzFg0yriabgaWSfJcK1YmwTVX7knSG3Q9OhpeWZUTarc26w5tlXpB5PKR4jQSuwgOo%2BlomzZJspCMpKzG7CYxXE3aODXH%2FA%3D%3D--gKq9bQw2GPBVozW4--vr4zEaVs54opqR%2FQt7syPQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1400912574.1777524093; expires=Fri, 30 Apr 2027 04:41:33 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 04:41:33 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510B:2C62BE:431E15B:347BE6E:69F2DD7D
+
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 653ms:
+HTTP/2 301 
+date: Thu, 30 Apr 2026 04:41:33 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/junit-team/junit-framework/tree/r5.8.2/junit-jupiter-api/src/test
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=lcGjDEZr3gwiz7Cjz%2FSNySO4C0zlByqNkPAgE1LpIwdFhV%2F9xaE7JCF4cgr9L5IG4i8nqSjBiBVvdGuRJLPBfn6cMUdI%2FWsz5VtV9M8JsBm6XAYB%2BSmVMt0rz7VuKbsHDivnxsGyO%2Fg36%2B4Qd4NmAZ6DXlQl3IqOeos2EfSzQW%2Fpst0DyXngryu0XuTmzUI874LEbiqsk3FeHm6UlgxiUZbpBE04d3xBHlcTr%2B3IX42McCX8gJI5v1%2FlMnRol0ooa%2F4G9ZjdrMmguhs6mCkt0A%3D%3D--77aT0jAsEdm2jjuL--%2FgMmoY6vQ95BzUynrw%2Be6A%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1974659339.1777524093; expires=Fri, 30 Apr 2027 04:41:33 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 04:41:33 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5109:13509A:432F90F:346655C:69F2DD7D
+
+HTTP/2 404 
+date: Thu, 30 Apr 2026 04:41:33 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=k0sO65sn0929ww991lchD9fBmH47YIgKkcf11IeUGTEKwyUFmm7SFibsk87uZYrEy%2BobXRBNGgbzTis3SuVRUmMA1%2BGRJSXpKXisxcjQARktu92bvTnRNuTZVlDCATe7AhzBdOoiQMgEabpObocx%2Bq2PbqJd8xgWjun25UO%2F%2F9rDaXU97xIa1VrMbW8u3KZw8Dd%2Bk1bRmDOOlKHKHwfDtKic%2BIDENfR7Rd5tphBTo1l7dO%2BQWMTyRTFz7aHyTOAVVvyL6mLIocVur0vcu5eckg%3D%3D--5yBKdjsrgSnIhbAK--TYa2GCUjHuNMHkU3L23UrA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.815928748.1777524093; expires=Fri, 30 Apr 2027 04:41:33 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 04:41:33 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5109:13509A:432FA04:346660A:69F2DD7D
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/junit-team/junit5/tree/r5.8.2/junit-jupiter-api/src/testFixtures' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 04:41:39 GMT
+content-type: application/java-archive
+content-length: 187388
+cf-ray: 9f43e0154e24343e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1571476
+etag: "422160dffa26f03e106804b6304098c4"
+last-modified: Sun, 28 Nov 2021 15:39:09 GMT
+x-checksum-md5: 422160dffa26f03e106804b6304098c4
+x-checksum-sha1: 429d353563c5fb35a3d47076bedbf75161e976c2
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Thu, 30 Apr 2026 04:41:39 GMT
+content-type: application/java-archive
+content-length: 724921
+cf-ray: 9f43e015ae142ff1-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 975124
+etag: "b5718a69cc6f99902fe5c40bb691cce5"
+last-modified: Sun, 28 Nov 2021 15:39:07 GMT
+x-checksum-md5: b5718a69cc6f99902fe5c40bb691cce5
+x-checksum-sha1: a75d6242107e80c00a86574b2b5de89c904724e1
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/junit-team/junit5/git/trees/r5.8.2?recursive=1' | rg 'junit-jupiter-api/src/(test|testFixtures)|junit-jupiter-api/src/main' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+ succeeded in 597ms:
+      "path": "junit-jupiter-api/src/main",
+      "path": "junit-jupiter-api/src/main/java",
+      "path": "junit-jupiter-api/src/main/java/org",
+      "path": "junit-jupiter-api/src/main/java/org/junit",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AfterAll.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AfterEach.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AssertAll.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AssertArrayEquals.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AssertDoesNotThrow.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AssertEquals.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AssertFalse.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AssertInstanceOf.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AssertIterableEquals.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AssertLinesMatch.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AssertNotEquals.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AssertNotNull.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AssertNotSame.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AssertNull.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AssertSame.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AssertThrows.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AssertThrowsExactly.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AssertTimeout.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AssertTrue.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/AssertionUtils.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/Assertions.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/Assumptions.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/BeforeAll.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/BeforeEach.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/ClassDescriptor.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/ClassOrderer.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/ClassOrdererContext.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/Disabled.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/DisplayName.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/DisplayNameGeneration.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/DisplayNameGenerator.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/DynamicContainer.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/DynamicNode.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/DynamicTest.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/IndicativeSentencesGeneration.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/MethodDescriptor.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/MethodOrderer.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/MethodOrdererContext.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/Named.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/Nested.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/Order.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/RepeatedTest.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/RepetitionInfo.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/Tag.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/Tags.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/Test.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/TestClassOrder.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/TestFactory.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/TestInfo.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/TestInstance.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/TestMethodOrder.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/TestReporter.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/TestTemplate.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/Timeout.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition/AbstractRepeatableAnnotationCondition.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition/BooleanExecutionCondition.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition/DisabledForJreRange.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition/DisabledForJreRangeCondition.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition/DisabledIf.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition/DisabledIfCondition.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition/DisabledIfEnvironmentVariable.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition/DisabledIfEnvironmentVariableCondition.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition/DisabledIfEnvironmentVariables.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition/DisabledIfSystemProperties.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition/DisabledIfSystemProperty.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition/DisabledIfSystemPropertyCondition.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition/DisabledOnJre.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition/DisabledOnJreCondition.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition/DisabledOnOs.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition/DisabledOnOsCondition.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition/EnabledForJreRange.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition/EnabledForJreRangeCondition.java",
+      "path": "junit-jupiter-api/src/main/java/org/junit/jupiter/api/condition/EnabledIf.java",
+
+ succeeded in 632ms:
+HTTP/2 301 
+date: Thu, 30 Apr 2026 04:41:39 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/junit-team/junit-framework/tree/r5.8.2/junit-jupiter-api/src/testFixtures
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=ISVRzXQLRvhn3wKHnpYbc8R6aAjYFU8LJ5uTzBC5o4W11tQ57UY9sN178hVlghEMD0GNiK%2Fi2bO1u6q1LpbnGoZ01XzZ%2BU7Vv5H069IuJqEC%2FK8Ph9jSnQVHCMyfPX%2BgJeePDYLdreUgtccd4zHzD%2FF3M6C6Xwv9%2Bx9UV8O52VmCovX7DMUV%2BBEnpNb4G7V5okBcdU8OVlm8B9Qor9VSaG8mUem%2F5DzyuzE4upWrrnP0VDLKxHKf5pqkT%2BJH95%2Fwz%2BgucZfKko9%2FMvmaxWZXsg%3D%3D--zbAN1MOrZinuIud1--KNY9Bd3KkJAVI8yu7kxxVw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.943793843.1777524099; expires=Fri, 30 Apr 2027 04:41:39 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 04:41:39 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FD:248DF0:4156FC7:330CBF9:69F2DD83
+
+HTTP/2 200 
+date: Thu, 30 Apr 2026 04:41:39 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"4bd91923e5d8eba53eb68f4d1e293817"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=qT%2B2FDIj9JFBANfO1%2FTq8a6hn0xMLK9b2yhfBnrU75ckfIdBfITtEyDF3CyradNaUdsdLAzAxeSGQuKdbsG2DduZlK3EB%2Bcky%2FA9VgOAWPSBCOo%2FFO2JLEw0RcQ9tBzu16UOLm8nDgLZEUT6VZw7qH92lm1jze8Y1GvlZlFxgURqjDQExq8BiElyAy3vkh7d9kFRkaawpmQgb%2Bifpc5utZX%2FQBTHX%2F%2BI1rTQ02Flu%2B5K0OJZKiYk95wLEfuzyuzPydQpDTcMyWTmSfrGJ%2BJIZA%3D%3D--bJzi%2FLoCPjYqA0SK--HOb3fZvZxQboaeEJB4RbNA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.30280075.1777524099; expires=Fri, 30 Apr 2027 04:41:39 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 04:41:39 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FD:248DF0:41570EF:330CCE7:69F2DD83
+
+
+codex
+There is no `tests.jar` or `test-sources.jar` for this Maven artifact, and the tagged module does not have a `src/test` directory. The tagged repository does expose `junit-jupiter-api/src/testFixtures`, so I’m checking whether that is the best concrete test-related URL or whether this should be marked `N/A`.
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/junit-team/junit5/contents/junit-jupiter-api/src/testFixtures?ref=r5.8.2'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/junit-team/junit5/contents/junit-jupiter-api?ref=r5.8.2'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/junit-team/junit5/git/trees/r5.8.2?recursive=1' | rg 'AssertionsTests|Assert.*Tests|junit-jupiter-api/.*/test|junit-jupiter-api/src/testFixtures' | head -160" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+ succeeded in 240ms:
+      "path": "junit-jupiter-api/src/testFixtures",
+      "path": "junit-jupiter-api/src/testFixtures/java",
+      "path": "junit-jupiter-api/src/testFixtures/java/org",
+      "path": "junit-jupiter-api/src/testFixtures/java/org/junit",
+      "path": "junit-jupiter-api/src/testFixtures/java/org/junit/jupiter",
+      "path": "junit-jupiter-api/src/testFixtures/java/org/junit/jupiter/api",
+      "path": "junit-jupiter-api/src/testFixtures/java/org/junit/jupiter/api/extension",
+      "path": "junit-jupiter-api/src/testFixtures/java/org/junit/jupiter/api/extension/ExtensionContextParameterResolver.java",
+      "path": "junit-jupiter-api/src/testFixtures/java/org/junit/jupiter/api/fixtures",
+      "path": "junit-jupiter-api/src/testFixtures/java/org/junit/jupiter/api/fixtures/TrackLogRecords.java",
+      "path": "junit-jupiter-engine/src/test/groovy/org/junit/jupiter/api/GroovyAssertEqualsTests.groovy",
+      "path": "junit-jupiter-engine/src/test/groovy/org/junit/jupiter/api/GroovyAssertNotEqualsTests.groovy",
+      "path": "junit-jupiter-engine/src/test/java/org/junit/jupiter/api/AssertAllAssertionsTests.java",
+      "path": "junit-jupiter-engine/src/test/java/org/junit/jupiter/api/AssertArrayEqualsAssertionsTests.java",
+      "path": "junit-jupiter-engine/src/test/java/org/junit/jupiter/api/AssertDoesNotThrowAssertionsTests.java",
+      "path": "junit-jupiter-engine/src/test/java/org/junit/jupiter/api/AssertEqualsAssertionsTests.java",
+      "path": "junit-jupiter-engine/src/test/java/org/junit/jupiter/api/AssertFalseAssertionsTests.java",
+      "path": "junit-jupiter-engine/src/test/java/org/junit/jupiter/api/AssertInstanceOfAssertionsTests.java",
+      "path": "junit-jupiter-engine/src/test/java/org/junit/jupiter/api/AssertIterableEqualsAssertionsTests.java",
+      "path": "junit-jupiter-engine/src/test/java/org/junit/jupiter/api/AssertLinesMatchAssertionsTests.java",
+      "path": "junit-jupiter-engine/src/test/java/org/junit/jupiter/api/AssertNotEqualsAssertionsTests.java",
+      "path": "junit-jupiter-engine/src/test/java/org/junit/jupiter/api/AssertNotNullAssertionsTests.java",
+      "path": "junit-jupiter-engine/src/test/java/org/junit/jupiter/api/AssertNotSameAssertionsTests.java",
+      "path": "junit-jupiter-engine/src/test/java/org/junit/jupiter/api/AssertNullAssertionsTests.java",
+      "path": "junit-jupiter-engine/src/test/java/org/junit/jupiter/api/AssertSameAssertionsTests.java",
+      "path": "junit-jupiter-engine/src/test/java/org/junit/jupiter/api/AssertThrowsAssertionsTests.java",
+      "path": "junit-jupiter-engine/src/test/java/org/junit/jupiter/api/AssertThrowsExactlyAssertionsTests.java",
+      "path": "junit-jupiter-engine/src/test/java/org/junit/jupiter/api/AssertTimeoutAssertionsTests.java",
+      "path": "junit-jupiter-engine/src/test/java/org/junit/jupiter/api/AssertTrueAssertionsTests.java",
+      "path": "junit-jupiter-engine/src/test/java/org/junit/jupiter/api/FailAssertionsTests.java",
+      "path": "junit-jupiter-engine/src/test/java/org/junit/jupiter/api/subpackage/SubclassedAssertionsTests.java",
+      "path": "junit-jupiter-engine/src/test/kotlin/org/junit/jupiter/api/KotlinAssertTimeoutAssertionsTests.kt",
+      "path": "junit-jupiter-engine/src/test/kotlin/org/junit/jupiter/api/KotlinAssertionsTests.kt",
+      "path": "junit-jupiter-engine/src/test/kotlin/org/junit/jupiter/api/KotlinFailAssertionsTests.kt",
+
+ succeeded in 299ms:
+[
+  {
+    "name": "java",
+    "path": "junit-jupiter-api/src/testFixtures/java",
+    "sha": "c301b7512e73b0b9b26d9b64ab75fa83369a8bd4",
+    "size": 0,
+    "url": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-jupiter-api/src/testFixtures/java?ref=r5.8.2",
+    "html_url": "https://github.com/junit-team/junit-framework/tree/r5.8.2/junit-jupiter-api/src/testFixtures/java",
+    "git_url": "https://api.github.com/repos/junit-team/junit-framework/git/trees/c301b7512e73b0b9b26d9b64ab75fa83369a8bd4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-jupiter-api/src/testFixtures/java?ref=r5.8.2",
+      "git": "https://api.github.com/repos/junit-team/junit-framework/git/trees/c301b7512e73b0b9b26d9b64ab75fa83369a8bd4",
+      "html": "https://github.com/junit-team/junit-framework/tree/r5.8.2/junit-jupiter-api/src/testFixtures/java"
+    }
+  }
+]
+
+ succeeded in 325ms:
+[
+  {
+    "name": "junit-jupiter-api.gradle.kts",
+    "path": "junit-jupiter-api/junit-jupiter-api.gradle.kts",
+    "sha": "a356601ca00be0ce25cc98030c15247c97884557",
+    "size": 276,
+    "url": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-jupiter-api/junit-jupiter-api.gradle.kts?ref=r5.8.2",
+    "html_url": "https://github.com/junit-team/junit-framework/blob/r5.8.2/junit-jupiter-api/junit-jupiter-api.gradle.kts",
+    "git_url": "https://api.github.com/repos/junit-team/junit-framework/git/blobs/a356601ca00be0ce25cc98030c15247c97884557",
+    "download_url": "https://raw.githubusercontent.com/junit-team/junit-framework/r5.8.2/junit-jupiter-api/junit-jupiter-api.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-jupiter-api/junit-jupiter-api.gradle.kts?ref=r5.8.2",
+      "git": "https://api.github.com/repos/junit-team/junit-framework/git/blobs/a356601ca00be0ce25cc98030c15247c97884557",
+      "html": "https://github.com/junit-team/junit-framework/blob/r5.8.2/junit-jupiter-api/junit-jupiter-api.gradle.kts"
+    }
+  },
+  {
+    "name": "src",
+    "path": "junit-jupiter-api/src",
+    "sha": "abe263856ebdff2ad4917b0ff83274d7d2f04211",
+    "size": 0,
+    "url": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-jupiter-api/src?ref=r5.8.2",
+    "html_url": "https://github.com/junit-team/junit-framework/tree/r5.8.2/junit-jupiter-api/src",
+    "git_url": "https://api.github.com/repos/junit-team/junit-framework/git/trees/abe263856ebdff2ad4917b0ff83274d7d2f04211",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-jupiter-api/src?ref=r5.8.2",
+      "git": "https://api.github.com/repos/junit-team/junit-framework/git/trees/abe263856ebdff2ad4917b0ff83274d7d2f04211",
+      "html": "https://github.com/junit-team/junit-framework/tree/r5.8.2/junit-jupiter-api/src"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/junit-team/junit5/r5.8.2/junit-jupiter-api/junit-jupiter-api.gradle.kts' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/junit-team/junit5/tree/r5.8.2/junit-jupiter-engine/src/test/java/org/junit/jupiter/api' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/junit-team/junit5/tree/r5.8.2/junit-jupiter-engine/src/test' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+ succeeded in 191ms:
+plugins {
+	`kotlin-library-conventions`
+	`java-test-fixtures`
+}
+
+description = "JUnit Jupiter API"
+
+dependencies {
+	api(platform(projects.junitBom))
+	api(libs.opentest4j)
+	api(projects.junitPlatformCommons)
+
+	compileOnlyApi(libs.apiguardian)
+
+	compileOnly(kotlin("stdlib"))
+}
+
+ succeeded in 674ms:
+HTTP/2 301 
+date: Thu, 30 Apr 2026 04:42:03 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/junit-team/junit-framework/tree/r5.8.2/junit-jupiter-engine/src/test
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=3G8%2FqEDirDzQ6BkuCatJ2KZSeYdWAuVphQeOF%2FkTPEgAcDUkcC5qQa6ro%2FyUNGrpHQdz1CgVLJel%2BKjQMUt3MjipQ95SJ8Cd1iRAqmbR8G%2FCB7oOteYbQ%2BU%2BYJvx7WjEUthvpts0nouwi6F9rZaKYj2o89ZtBfZhMu8gyAEVNNxTQWLzQ5LL0cmrTU1edxwRXLzu6V%2BN%2Bkw7NBXB83y5Xd5C5PzkSc7dnV4LaX5ct940OTieuq53CaN2vGuwL%2BH8Q6930Sy%2BaiLleNYuq68tNA%3D%3D--9iYHMtD%2BxdUtG6jf--axKYQW2LqP7ITOwRK7A1cg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1930259009.1777524123; expires=Fri, 30 Apr 2027 04:42:03 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 04:42:03 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5109:13509A:433E4F9:34714D9:69F2DD9B
+
+HTTP/2 200 
+date: Thu, 30 Apr 2026 04:42:03 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"9c72d3933fa3cf8d9eda6b7b311300da"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=NONTtBFhmuZH7KkqLNX24j5%2Fem2mfQ%2FN7awRK4X%2Fi%2BflACXSeuUW0%2FZWh8hBuIBnQ3AtXB03UiGxgbtIaFP0i1eQK%2Bc2rkibEuBMhLPkraqtV27tAmKWq7%2BxmHN4wVDgUrsHhnwSUtesM17btveHUVXVCkfkREk1yb%2FQ0OXtJJvsRH8XuUOU5VdfWam7ZZ0uagpzt%2BImQAiBPf%2FrXTcyfdBFrzXfLk0x%2FV49VndBtC9tiNU4QAV4kLj6BNxI3rXBgF3jdmbL0s0sduECp8tfNQ%3D%3D--6LPv1KsEPc3SIFBg--BqWvb6wF5Gaq9jffMz0qaw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.463791686.1777524123; expires=Fri, 30 Apr 2027 04:42:03 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 04:42:03 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5109:13509A:433E68D:3471602:69F2DD9B
+
+
+ succeeded in 861ms:
+HTTP/2 301 
+date: Thu, 30 Apr 2026 04:42:03 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/junit-team/junit-framework/tree/r5.8.2/junit-jupiter-engine/src/test/java/org/junit/jupiter/api
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=nrlZXdpap027rOZ3GOZiUnwS1UdCwCYY6r7LuSpiF%2BeQFDkxj0U652jCMnGLntyEeE74%2FPpm4NfFbaObWtq8BHnVcwe1DyS%2BYVZJMrZa7uDt5rJ38jI%2FOb9NXvbLGrRGH5X9M8%2B6BDldjM9uwri9iOwqJozo6xnD%2BbD%2BWjrseGkQghqj4Ao%2F%2BGnBACLelNjOOovImenF2kfiW3WiEBKnBMhMUYxRJgNAY7t4R8dOb0wjaCIXuY4F%2BTKp1J0UGIcnBxpHsz8KalrorAylcavj8w%3D%3D--Xgv9wgTLPKFpnxtH--aJ8tWq%2FHfsrrAwIjliWO7w%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.709490044.1777524123; expires=Fri, 30 Apr 2027 04:42:03 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 04:42:03 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FD:248DF0:41626EA:331558F:69F2DD9B
+
+HTTP/2 200 
+date: Thu, 30 Apr 2026 04:42:03 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"ade6dcd1f183dfc2c2d80089266b40ab"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=fzDunb0unXfqWQZanyjCpgecXSHJrj3CLdpCBjY2d8U13QRR5qbnrGvL17qLOSRSzIlN3cfLQgitr2J3Qxrj9GSvANsmw1hsSTqxluGr8JBLRFv3RPbDQarT%2FWCoD7%2BjbRNdb1spe8twgkKAyJYt66W3N2jIzyP2i88FS1MataY60j75lqNaZz75BIQzhHCwnoTLp0T%2Ba8CGiln88IRyc0%2F7vuWU%2BaLhYri3E1m0KVtRNrJ5pK03zWlBRySA1YJ0%2BgiY64jwmJsCMjDb3AKXEA%3D%3D--SIb4Ln1x33MDdbeQ--C1jvr%2FnNp9xyeC8UltT5YQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.600589469.1777524123; expires=Fri, 30 Apr 2027 04:42:03 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 04:42:03 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FD:248DF0:4162828:3315691:69F2DD9B
+
+
+codex
+I found enough to update the metadata: Maven Central has exact `5.8.2` sources and javadocs, the POM gives the repository, and the tagged upstream tests that exercise the Jupiter API live under `junit-jupiter-engine/src/test`. I’m applying the JSON update now, with no `language` field because this artifact is not a Kotlin, Groovy, or Scala-specific library.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json
+diff --git a/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json b/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json
+index 96b31fb2f71b45c391e1258dbe9b030447de60be..63764e2100e07bd398a4d8f8698dcd86f4bc1555
+--- a/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json
++++ b/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.junit.jupiter:junit-jupiter-api:5.8.2"
++  "coordinates" : "org.junit.jupiter:junit-jupiter-api:5.8.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-sources.jar",
++  "repository-url" : "https://github.com/junit-team/junit5",
++  "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.8.2/junit-jupiter-engine/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-javadoc.jar",
++  "description" : "JUnit Jupiter API provides annotations, assertions, assumptions, and extension APIs for writing tests on the JUnit 5 platform. It is the public programming model used by test classes, while test discovery and execution are provided by companion JUnit Jupiter engine and platform modules."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json b/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json
+index 96b31fb2f71b45c391e1258dbe9b030447de60be..63764e2100e07bd398a4d8f8698dcd86f4bc1555
+--- a/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json
++++ b/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.junit.jupiter:junit-jupiter-api:5.8.2"
++  "coordinates" : "org.junit.jupiter:junit-jupiter-api:5.8.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-sources.jar",
++  "repository-url" : "https://github.com/junit-team/junit5",
++  "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.8.2/junit-jupiter-engine/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-javadoc.jar",
++  "description" : "JUnit Jupiter API provides annotations, assertions, assumptions, and extension APIs for writing tests on the JUnit 5 platform. It is the public programming model used by test classes, while test discovery and execution are provided by companion JUnit Jupiter engine and platform modules."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+ succeeded in 0ms:
+{
+  "coordinates": "org.junit.jupiter:junit-jupiter-api:5.8.2",
+  "source-code-url": "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-sources.jar",
+  "repository-url": "https://github.com/junit-team/junit5",
+  "test-code-url": "https://github.com/junit-team/junit5/tree/r5.8.2/junit-jupiter-engine/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-javadoc.jar",
+  "description": "JUnit Jupiter API provides annotations, assertions, assumptions, and extension APIs for writing tests on the JUnit 5 platform. It is the public programming model used by test classes, while test discovery and execution are provided by companion JUnit Jupiter engine and platform modules."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json b/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json
+index 96b31fb2f71b45c391e1258dbe9b030447de60be..63764e2100e07bd398a4d8f8698dcd86f4bc1555
+--- a/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json
++++ b/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.junit.jupiter:junit-jupiter-api:5.8.2"
++  "coordinates" : "org.junit.jupiter:junit-jupiter-api:5.8.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-sources.jar",
++  "repository-url" : "https://github.com/junit-team/junit5",
++  "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.8.2/junit-jupiter-engine/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-javadoc.jar",
++  "description" : "JUnit Jupiter API provides annotations, assertions, assumptions, and extension APIs for writing tests on the JUnit 5 platform. It is the public programming model used by test classes, while test discovery and execution are provided by companion JUnit Jupiter engine and platform modules."
+ }
+
+codex
+The JSON parses cleanly with `jq`. I’m doing one last file/status check because this path is under `build/`, so it may not appear in a normal `git diff`.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+ succeeded in 0ms:
+{
+  "coordinates" : "org.junit.jupiter:junit-jupiter-api:5.8.2",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-sources.jar",
+  "repository-url" : "https://github.com/junit-team/junit5",
+  "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.8.2/junit-jupiter-engine/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-javadoc.jar",
+  "description" : "JUnit Jupiter API provides annotations, assertions, assumptions, and extension APIs for writing tests on the JUnit 5 platform. It is the public programming model used by test classes, while test discovery and execution are provided by companion JUnit Jupiter engine and platform modules."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd
+ succeeded in 0ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json b/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json
+index 96b31fb2f71b45c391e1258dbe9b030447de60be..63764e2100e07bd398a4d8f8698dcd86f4bc1555
+--- a/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json
++++ b/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.junit.jupiter:junit-jupiter-api:5.8.2"
++  "coordinates" : "org.junit.jupiter:junit-jupiter-api:5.8.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-sources.jar",
++  "repository-url" : "https://github.com/junit-team/junit5",
++  "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.8.2/junit-jupiter-engine/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-javadoc.jar",
++  "description" : "JUnit Jupiter API provides annotations, assertions, assumptions, and extension APIs for writing tests on the JUnit 5 platform. It is the public programming model used by test classes, while test discovery and execution are provided by companion JUnit Jupiter engine and platform modules."
+ }
+
+codex
+Updated [org.junit.jupiter-junit-jupiter-api-5.8.2.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json) with the discovered URLs and two-sentence description. No `language` field was added.
+
+Validated the file with `jq`. Note: `git status --short --ignored` shows this path under ignored `build/`.
+diff --git a/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json b/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json
+index 96b31fb2f71b45c391e1258dbe9b030447de60be..63764e2100e07bd398a4d8f8698dcd86f4bc1555
+--- a/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json
++++ b/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.junit.jupiter:junit-jupiter-api:5.8.2"
++  "coordinates" : "org.junit.jupiter:junit-jupiter-api:5.8.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-sources.jar",
++  "repository-url" : "https://github.com/junit-team/junit5",
++  "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.8.2/junit-jupiter-engine/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2-javadoc.jar",
++  "description" : "JUnit Jupiter API provides annotations, assertions, assumptions, and extension APIs for writing tests on the JUnit 5 platform. It is the public programming model used by test classes, while test discovery and execution are provided by companion JUnit Jupiter engine and platform modules."
+ }
+
+2026-04-30T04:42:27.861063Z ERROR codex_core::session: failed to record rollout items: thread 019ddcb0-9e7d-78a0-87dd-bd8415f6e9be not found
+tokens used
+71,822
+Updated [org.junit.jupiter-junit-jupiter-api-5.8.2.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd/build/discovered-artifact-metadata/org.junit.jupiter-junit-jupiter-api-5.8.2.json) with the discovered URLs and two-sentence description. No `language` field was added.
+
+Validated the file with `jq`. Note: `git status --short --ignored` shows this path under ignored `build/`.
+Ran agent for org.junit.jupiter:junit-jupiter-api:5.8.2 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd/build/agent-artifact-discovery-logs/org.junit.jupiter-junit-jupiter-api-5.8.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2155-1cb615fd/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 32s
+9 actionable tasks: 4 executed, 5 from cache
