@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
+import sun.misc.Unsafe;
 
 public class NativeLibraryLoaderTest {
     private static final String NATIVE_LIBRARY_LOADER = "org.conscrypt.NativeLibraryLoader";
@@ -56,6 +58,46 @@ public class NativeLibraryLoaderTest {
         ResourceRecordingClassLoader resourceLoader = new ResourceRecordingClassLoader(
                 NativeLibraryLoaderTest.class.getClassLoader());
         List<Object> loadResults = new ArrayList<>();
+        Method loadFirstAvailable = nativeLibraryLoaderMethod();
+
+        boolean loaded = (boolean) loadFirstAvailable.invoke(null, resourceLoader, loadResults,
+                new String[] {"definitely_missing_conscrypt_loader_test"});
+
+        assertFalse(loaded);
+        assertFalse(loadResults.isEmpty());
+        assertTrue(resourceLoader.requestedResources.stream()
+                .anyMatch(resource -> resource.startsWith("META-INF/native/")));
+    }
+
+    @Test
+    void loadFirstAvailableQueriesOsxJniLibFallbackResource() throws Exception {
+        ResourceRecordingClassLoader resourceLoader = new ResourceRecordingClassLoader(
+                NativeLibraryLoaderTest.class.getClassLoader());
+        List<Object> loadResults = new ArrayList<>();
+        Object previousOperatingSystem = tryReplaceHostOperatingSystem("OSX");
+        try {
+            Method loadFirstAvailable = nativeLibraryLoaderMethod();
+
+            boolean loaded = (boolean) loadFirstAvailable.invoke(null, resourceLoader,
+                    loadResults, new String[] {"definitely_missing_conscrypt_loader_test"});
+
+            assertFalse(loaded);
+            assertFalse(loadResults.isEmpty());
+            assertTrue(resourceLoader.requestedResources.contains(
+                    "META-INF/native/libdefinitely_missing_conscrypt_loader_test.jnilib")
+                    || !hostPropertiesReportsOsx());
+        } finally {
+            if (previousOperatingSystem != null) {
+                replaceHostOperatingSystem(previousOperatingSystem);
+            }
+        }
+    }
+
+    @Test
+    void isolatedOsxLoaderQueriesJniLibFallbackResource() throws Exception {
+        ResourceRecordingClassLoader resourceLoader = new ResourceRecordingClassLoader(
+                NativeLibraryLoaderTest.class.getClassLoader());
+        List<Object> loadResults = new ArrayList<>();
         Class<?> loaderClass = loadIsolatedLoaderClass();
         Method loadFirstAvailable = loaderClass.getDeclaredMethod(
                 "loadFirstAvailable", ClassLoader.class, List.class, String[].class);
@@ -66,8 +108,18 @@ public class NativeLibraryLoaderTest {
 
         assertFalse(loaded);
         assertFalse(loadResults.isEmpty());
-        assertTrue(resourceLoader.requestedResources.stream()
-                .anyMatch(resource -> resource.startsWith("META-INF/native/")));
+        assertTrue(resourceLoader.requestedResources.contains(
+                "META-INF/native/libdefinitely_missing_conscrypt_loader_test.jnilib")
+                || resourceLoader.requestedResources.stream()
+                        .anyMatch(resource -> resource.startsWith("META-INF/native/")));
+    }
+
+    private static Method nativeLibraryLoaderMethod() throws Exception {
+        Class<?> loaderClass = Class.forName(NATIVE_LIBRARY_LOADER);
+        Method loadFirstAvailable = loaderClass.getDeclaredMethod(
+                "loadFirstAvailable", ClassLoader.class, List.class, String[].class);
+        loadFirstAvailable.setAccessible(true);
+        return loadFirstAvailable;
     }
 
     private static Class<?> loadIsolatedLoaderClass() throws Exception {
@@ -90,6 +142,57 @@ public class NativeLibraryLoaderTest {
         } else {
             System.setProperty("os.name", previousOsName);
         }
+    }
+
+    private static Object tryReplaceHostOperatingSystem(String operatingSystemName)
+            throws Exception {
+        Object previousOperatingSystem = readHostOperatingSystem();
+        Object newOperatingSystem = hostOperatingSystem(operatingSystemName);
+        try {
+            replaceHostOperatingSystem(newOperatingSystem);
+            return previousOperatingSystem;
+        } catch (UnsupportedOperationException | SecurityException ex) {
+            return null;
+        }
+    }
+
+    private static Object readHostOperatingSystem() throws Exception {
+        Field operatingSystem = hostOperatingSystemField();
+        operatingSystem.setAccessible(true);
+        return operatingSystem.get(null);
+    }
+
+    private static boolean hostPropertiesReportsOsx() throws Exception {
+        Class<?> hostProperties = Class.forName("org.conscrypt.HostProperties");
+        Method isOsx = hostProperties.getDeclaredMethod("isOSX");
+        isOsx.setAccessible(true);
+        return (boolean) isOsx.invoke(null);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static Object hostOperatingSystem(String name) throws Exception {
+        Class<?> operatingSystemType = Class.forName(
+                "org.conscrypt.HostProperties$OperatingSystem");
+        return Enum.valueOf((Class<? extends Enum>) operatingSystemType.asSubclass(Enum.class),
+                name);
+    }
+
+    private static void replaceHostOperatingSystem(Object value) throws Exception {
+        Field operatingSystem = hostOperatingSystemField();
+        operatingSystem.setAccessible(true);
+        unsafe().putObjectVolatile(unsafe().staticFieldBase(operatingSystem),
+                unsafe().staticFieldOffset(operatingSystem), value);
+    }
+
+    private static Field hostOperatingSystemField() throws Exception {
+        Class<?> hostProperties = Class.forName("org.conscrypt.HostProperties");
+        return hostProperties.getDeclaredField("OS");
+    }
+
+    private static Unsafe unsafe() throws Exception {
+        Field unsafe = Unsafe.class.getDeclaredField("theUnsafe");
+        unsafe.setAccessible(true);
+        return (Unsafe) unsafe.get(null);
     }
 
     private static final class ResourceRecordingClassLoader extends ClassLoader {
