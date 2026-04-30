@@ -18,13 +18,17 @@ import static org.objectweb.asm.Opcodes.ACC_SUPER;
 import static org.objectweb.asm.Opcodes.ACC_SYNTHETIC;
 import static org.objectweb.asm.Opcodes.ACC_TRANSITIVE;
 import static org.objectweb.asm.Opcodes.ALOAD;
+import static org.objectweb.asm.Opcodes.ARETURN;
+import static org.objectweb.asm.Opcodes.DUP;
 import static org.objectweb.asm.Opcodes.GETSTATIC;
+import static org.objectweb.asm.Opcodes.GOTO;
 import static org.objectweb.asm.Opcodes.ICONST_5;
 import static org.objectweb.asm.Opcodes.IF_ICMPLT;
 import static org.objectweb.asm.Opcodes.ILOAD;
 import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
 import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 import static org.objectweb.asm.Opcodes.IRETURN;
+import static org.objectweb.asm.Opcodes.NEW;
 import static org.objectweb.asm.Opcodes.PUTFIELD;
 import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Opcodes.V17;
@@ -49,12 +53,14 @@ import org.objectweb.asm.signature.SignatureReader;
 import org.objectweb.asm.util.ASMifier;
 import org.objectweb.asm.util.CheckAnnotationAdapter;
 import org.objectweb.asm.util.CheckClassAdapter;
+import org.objectweb.asm.util.CheckMethodAdapter;
 import org.objectweb.asm.util.CheckRecordComponentAdapter;
 import org.objectweb.asm.util.CheckSignatureAdapter;
 import org.objectweb.asm.util.Printer;
 import org.objectweb.asm.util.Textifier;
 import org.objectweb.asm.util.TraceAnnotationVisitor;
 import org.objectweb.asm.util.TraceClassVisitor;
+import org.objectweb.asm.util.TraceMethodVisitor;
 import org.objectweb.asm.util.TraceRecordComponentVisitor;
 import org.objectweb.asm.util.TraceSignatureVisitor;
 
@@ -201,6 +207,52 @@ public class Asm_utilTest {
         CheckRecordComponentAdapter invalidTargetChecker = new CheckRecordComponentAdapter(null);
         assertThatThrownBy(() -> invalidTargetChecker.visitTypeAnnotation(
                         TypeReference.newSuperTypeReference(-1).getValue(), null, "Ljava/lang/Deprecated;", true))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void checkMethodAdapterValidatesAndTracesMethodInstructions() {
+        Printer printer = new Textifier();
+        MethodVisitor methodVisitor = new CheckMethodAdapter(new TraceMethodVisitor(printer));
+        Label defaultLabel = new Label();
+        Label zeroLabel = new Label();
+        Label endLabel = new Label();
+
+        methodVisitor.visitCode();
+        methodVisitor.visitVarInsn(ILOAD, 0);
+        methodVisitor.visitTableSwitchInsn(0, 1, defaultLabel, zeroLabel, defaultLabel);
+        methodVisitor.visitLabel(zeroLabel);
+        methodVisitor.visitTypeInsn(NEW, "java/lang/StringBuilder");
+        methodVisitor.visitInsn(DUP);
+        methodVisitor.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "()V", false);
+        methodVisitor.visitLdcInsn("zero");
+        methodVisitor.visitMethodInsn(
+                INVOKEVIRTUAL,
+                "java/lang/StringBuilder",
+                "append",
+                "(Ljava/lang/String;)Ljava/lang/StringBuilder;",
+                false);
+        methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false);
+        methodVisitor.visitJumpInsn(GOTO, endLabel);
+        methodVisitor.visitLabel(defaultLabel);
+        methodVisitor.visitLdcInsn("other");
+        methodVisitor.visitLabel(endLabel);
+        methodVisitor.visitInsn(ARETURN);
+        methodVisitor.visitMaxs(2, 1);
+        methodVisitor.visitEnd();
+
+        StringWriter output = new StringWriter();
+        printer.print(new PrintWriter(output));
+        assertThat(output.toString())
+                .contains("TABLESWITCH")
+                .contains("NEW java/lang/StringBuilder")
+                .contains("INVOKEVIRTUAL java/lang/StringBuilder.append")
+                .contains("GOTO")
+                .contains("ARETURN");
+
+        MethodVisitor invalidMethodVisitor = new CheckMethodAdapter(null);
+        invalidMethodVisitor.visitCode();
+        assertThatThrownBy(() -> invalidMethodVisitor.visitVarInsn(ILOAD, -1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
