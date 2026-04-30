@@ -15,8 +15,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -32,7 +35,6 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLEngineResult;
-import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import org.conscrypt.Conscrypt;
@@ -61,14 +63,16 @@ public class DuckTypedPSKKeyManagerTest {
                 clientContext.createSSLEngine().getSupportedCipherSuites());
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        try (SSLServerSocket serverSocket = (SSLServerSocket) serverContext.getServerSocketFactory()
-                .createServerSocket(0, 1, InetAddress.getLoopbackAddress())) {
-            serverSocket.setEnabledProtocols(new String[] {PROTOCOL});
-            serverSocket.setEnabledCipherSuites(new String[] {cipherSuite});
-            Future<byte[]> serverResult = executor.submit(() -> runPskSocketServer(serverSocket));
+        try (ServerSocketChannel serverChannel = ServerSocketChannel.open()) {
+            serverChannel.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), 0));
+            int port = ((InetSocketAddress) serverChannel.getLocalAddress()).getPort();
+            Future<byte[]> serverResult = executor.submit(
+                    () -> runPskSocketServer(serverContext, serverChannel, cipherSuite));
 
-            try (SSLSocket clientSocket = (SSLSocket) clientContext.getSocketFactory()
-                    .createSocket(InetAddress.getLoopbackAddress(), serverSocket.getLocalPort())) {
+            try (SocketChannel clientChannel = SocketChannel.open(
+                         new InetSocketAddress(InetAddress.getLoopbackAddress(), port));
+                    SSLSocket clientSocket = (SSLSocket) clientContext.getSocketFactory()
+                            .createSocket(clientChannel.socket(), "localhost", port, true)) {
                 clientSocket.setEnabledProtocols(new String[] {PROTOCOL});
                 clientSocket.setEnabledCipherSuites(new String[] {cipherSuite});
                 clientSocket.startHandshake();
@@ -123,8 +127,15 @@ public class DuckTypedPSKKeyManagerTest {
         return context;
     }
 
-    private static byte[] runPskSocketServer(SSLServerSocket serverSocket) throws Exception {
-        try (SSLSocket server = (SSLSocket) serverSocket.accept()) {
+    private static byte[] runPskSocketServer(SSLContext serverContext,
+            ServerSocketChannel serverChannel, String cipherSuite) throws Exception {
+        try (SocketChannel acceptedChannel = serverChannel.accept();
+                SSLSocket server = (SSLSocket) serverContext.getSocketFactory().createSocket(
+                        acceptedChannel.socket(), "localhost", acceptedChannel.socket().getPort(),
+                        true)) {
+            server.setUseClientMode(false);
+            server.setEnabledProtocols(new String[] {PROTOCOL});
+            server.setEnabledCipherSuites(new String[] {cipherSuite});
             server.startHandshake();
             InputStream input = server.getInputStream();
             int received = input.read();
