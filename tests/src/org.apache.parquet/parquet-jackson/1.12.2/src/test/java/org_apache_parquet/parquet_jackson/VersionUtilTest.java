@@ -30,12 +30,12 @@ public class VersionUtilTest {
     void mavenVersionForReadsPomPropertiesFromRuntimeClasspath() {
         ClassLoader classLoader = VersionUtilTest.class.getClassLoader();
 
-        Version version = VersionUtil.mavenVersionFor(classLoader, "com.fasterxml.jackson.core", "jackson-core");
+        Version version = VersionUtil.mavenVersionFor(classLoader, "com.example.versionutil", "versionutil-fixture");
 
         assertThat(version).isNotNull();
         assertThat(version.isUnknownVersion()).isFalse();
-        assertThat(version.getGroupId()).isEqualTo("com.fasterxml.jackson.core");
-        assertThat(version.getArtifactId()).isEqualTo("jackson-core");
-        assertThat(version.getMajorVersion()).isGreaterThan(0);
+        assertThat(version.toString()).isEqualTo("4.5.6-test");
+        assertThat(version.getGroupId()).isEqualTo("com.example.versionutil");
+        assertThat(version.getArtifactId()).isEqualTo("versionutil-fixture");
     }
 }
