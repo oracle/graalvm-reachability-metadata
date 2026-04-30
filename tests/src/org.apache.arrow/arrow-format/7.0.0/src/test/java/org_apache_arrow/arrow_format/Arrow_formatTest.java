@@ -50,6 +50,7 @@ import org.apache.arrow.flatbuf.RecordBatch;
 import org.apache.arrow.flatbuf.Schema;
 import org.apache.arrow.flatbuf.SparseTensor;
 import org.apache.arrow.flatbuf.SparseTensorIndex;
+import org.apache.arrow.flatbuf.SparseTensorIndexCSF;
 import org.apache.arrow.flatbuf.SparseTensorIndexCOO;
 import org.apache.arrow.flatbuf.Struct_;
 import org.apache.arrow.flatbuf.Tensor;
@@ -398,6 +399,50 @@ public class Arrow_formatTest {
     }
 
     @Test
+    void sparseTensorCsfIndexRoundTripsAxisOrderAndIndexBuffers() {
+        FlatBufferBuilder builder = new FlatBufferBuilder(1024);
+        int sparseTensorOffset = createCsfSparseTensor(builder);
+        SparseTensor.finishSparseTensorBuffer(builder, sparseTensorOffset);
+
+        SparseTensor sparseTensor = SparseTensor.getRootAsSparseTensor(builder.dataBuffer());
+
+        assertThat(sparseTensor.typeType()).isEqualTo(Type.Int);
+        assertThat(((Int) sparseTensor.type(new Int())).bitWidth()).isEqualTo(64);
+        assertThat(sparseTensor.shapeLength()).isEqualTo(3);
+        assertThat(sparseTensor.shape(0).name()).isEqualTo("batch");
+        assertThat(sparseTensor.shape(0).size()).isEqualTo(2L);
+        assertThat(sparseTensor.shape(1).name()).isEqualTo("rows");
+        assertThat(sparseTensor.shape(1).size()).isEqualTo(3L);
+        assertThat(sparseTensor.shape(2).name()).isEqualTo("columns");
+        assertThat(sparseTensor.shape(2).size()).isEqualTo(4L);
+        assertThat(sparseTensor.nonZeroLength()).isEqualTo(4L);
+        assertThat(sparseTensor.sparseIndexType()).isEqualTo(SparseTensorIndex.SparseTensorIndexCSF);
+
+        SparseTensorIndexCSF csfIndex = (SparseTensorIndexCSF) sparseTensor.sparseIndex(new SparseTensorIndexCSF());
+        assertThat(csfIndex.indptrType().bitWidth()).isEqualTo(32);
+        assertThat(csfIndex.indptrType().isSigned()).isFalse();
+        assertThat(csfIndex.indptrBuffersLength()).isEqualTo(2);
+        assertThat(csfIndex.indptrBuffersVector()).isNotNull();
+        assertThat(csfIndex.indptrBuffers(0).offset()).isEqualTo(0L);
+        assertThat(csfIndex.indptrBuffers(0).length()).isEqualTo(12L);
+        assertThat(csfIndex.indptrBuffers(1).offset()).isEqualTo(12L);
+        assertThat(csfIndex.indptrBuffers(1).length()).isEqualTo(16L);
+        assertThat(csfIndex.indicesType().bitWidth()).isEqualTo(64);
+        assertThat(csfIndex.indicesType().isSigned()).isTrue();
+        assertThat(csfIndex.indicesBuffersLength()).isEqualTo(3);
+        assertThat(csfIndex.indicesBuffersVector()).isNotNull();
+        assertThat(csfIndex.indicesBuffers(2).offset()).isEqualTo(64L);
+        assertThat(csfIndex.indicesBuffers(2).length()).isEqualTo(32L);
+        assertThat(csfIndex.axisOrderLength()).isEqualTo(3);
+        assertThat(csfIndex.axisOrder(0)).isEqualTo(1);
+        assertThat(csfIndex.axisOrder(1)).isEqualTo(2);
+        assertThat(csfIndex.axisOrder(2)).isZero();
+        assertThat(csfIndex.axisOrderVector()).isNotNull();
+        assertThat(sparseTensor.data().offset()).isEqualTo(96L);
+        assertThat(sparseTensor.data().length()).isEqualTo(32L);
+    }
+
+    @Test
     void enumNameLookupsExposeArrowFormatVocabulary() {
         assertThat(Type.name(Type.Int)).isEqualTo("Int");
         assertThat(Type.name(Type.Struct_)).isEqualTo("Struct_");
@@ -529,6 +574,47 @@ public class Arrow_formatTest {
         SparseTensor.addSparseIndex(builder, sparseIndex);
         SparseTensor.addData(builder, Buffer.createBuffer(builder, 48L, 12L));
         return SparseTensor.endSparseTensor(builder);
+    }
+
+    private static int createCsfSparseTensor(FlatBufferBuilder builder) {
+        int batch = TensorDim.createTensorDim(builder, 2L, builder.createString("batch"));
+        int rows = TensorDim.createTensorDim(builder, 3L, builder.createString("rows"));
+        int columns = TensorDim.createTensorDim(builder, 4L, builder.createString("columns"));
+        int shape = SparseTensor.createShapeVector(builder, new int[] { batch, rows, columns });
+        int valueType = Int.createInt(builder, 64, true);
+        int indptrType = Int.createInt(builder, 32, false);
+        int indptrBuffers = createCsfIndptrBuffersVector(builder, new long[][] { { 0L, 12L }, { 12L, 16L } });
+        int indicesType = Int.createInt(builder, 64, true);
+        int indicesBuffers = createCsfIndicesBuffersVector(
+                builder, new long[][] { { 28L, 16L }, { 44L, 20L }, { 64L, 32L } });
+        int axisOrder = SparseTensorIndexCSF.createAxisOrderVector(builder, new int[] { 1, 2, 0 });
+        int sparseIndex = SparseTensorIndexCSF.createSparseTensorIndexCSF(
+                builder, indptrType, indptrBuffers, indicesType, indicesBuffers, axisOrder);
+        SparseTensor.startSparseTensor(builder);
+        SparseTensor.addTypeType(builder, Type.Int);
+        SparseTensor.addType(builder, valueType);
+        SparseTensor.addShape(builder, shape);
+        SparseTensor.addNonZeroLength(builder, 4L);
+        SparseTensor.addSparseIndexType(builder, SparseTensorIndex.SparseTensorIndexCSF);
+        SparseTensor.addSparseIndex(builder, sparseIndex);
+        SparseTensor.addData(builder, Buffer.createBuffer(builder, 96L, 32L));
+        return SparseTensor.endSparseTensor(builder);
+    }
+
+    private static int createCsfIndptrBuffersVector(FlatBufferBuilder builder, long[][] buffers) {
+        SparseTensorIndexCSF.startIndptrBuffersVector(builder, buffers.length);
+        for (int i = buffers.length - 1; i >= 0; i--) {
+            Buffer.createBuffer(builder, buffers[i][0], buffers[i][1]);
+        }
+        return builder.endVector();
+    }
+
+    private static int createCsfIndicesBuffersVector(FlatBufferBuilder builder, long[][] buffers) {
+        SparseTensorIndexCSF.startIndicesBuffersVector(builder, buffers.length);
+        for (int i = buffers.length - 1; i >= 0; i--) {
+            Buffer.createBuffer(builder, buffers[i][0], buffers[i][1]);
+        }
+        return builder.endVector();
     }
 
     private static String readUtf8(ByteBuffer byteBuffer) {
