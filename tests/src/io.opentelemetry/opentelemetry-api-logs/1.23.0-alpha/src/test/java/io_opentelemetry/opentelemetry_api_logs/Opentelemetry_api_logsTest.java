@@ -11,7 +11,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
-import io.opentelemetry.api.logs.EventBuilder;
 import io.opentelemetry.api.logs.GlobalLoggerProvider;
 import io.opentelemetry.api.logs.LogRecordBuilder;
 import io.opentelemetry.api.logs.Logger;
@@ -47,10 +46,9 @@ public class Opentelemetry_api_logsTest {
     }
 
     @Test
-    void noopProviderAcceptsCompleteLogAndEventConfiguration() {
+    void noopProviderAcceptsCompleteLogConfiguration() {
         LoggerProvider provider = LoggerProvider.noop();
         Logger logger = provider.loggerBuilder("noop-instrumentation")
-                .setEventDomain("audit")
                 .setSchemaUrl("https://opentelemetry.io/schemas/1.19.0")
                 .setInstrumentationVersion("1.2.3")
                 .build();
@@ -68,11 +66,11 @@ public class Opentelemetry_api_logsTest {
         assertThat(logRecordBuilder.setAttribute(RETRYABLE_KEY, false)).isSameAs(logRecordBuilder);
         logRecordBuilder.emit();
 
-        EventBuilder eventBuilder = logger.eventBuilder("process.started");
-        assertThat(eventBuilder.setSeverity(Severity.INFO)).isSameAs(eventBuilder);
-        assertThat(eventBuilder.setBody("event body")).isSameAs(eventBuilder);
-        assertThat(eventBuilder.setAttribute(COMPONENT_KEY, "events")).isSameAs(eventBuilder);
-        eventBuilder.emit();
+        LogRecordBuilder secondLogRecordBuilder = logger.logRecordBuilder();
+        assertThat(secondLogRecordBuilder.setSeverity(Severity.INFO)).isSameAs(secondLogRecordBuilder);
+        assertThat(secondLogRecordBuilder.setBody("second message")).isSameAs(secondLogRecordBuilder);
+        assertThat(secondLogRecordBuilder.setAttribute(COMPONENT_KEY, "second-logger")).isSameAs(secondLogRecordBuilder);
+        secondLogRecordBuilder.emit();
     }
 
     @Test
@@ -91,7 +89,6 @@ public class Opentelemetry_api_logsTest {
     void loggerBuilderConfigurationAndLogRecordBuilderCaptureEmittedRecords() {
         RecordingLoggerProvider provider = new RecordingLoggerProvider();
         RecordingLogger logger = (RecordingLogger) provider.loggerBuilder("payments")
-                .setEventDomain("business-events")
                 .setSchemaUrl("https://opentelemetry.io/schemas/1.19.0")
                 .setInstrumentationVersion("2.5.0")
                 .build();
@@ -109,12 +106,10 @@ public class Opentelemetry_api_logsTest {
         builder.setAttribute(RETRYABLE_KEY, true).emit();
 
         assertThat(logger.configuration.instrumentationName).isEqualTo("payments");
-        assertThat(logger.configuration.eventDomain).isEqualTo("business-events");
         assertThat(logger.configuration.schemaUrl).isEqualTo("https://opentelemetry.io/schemas/1.19.0");
         assertThat(logger.configuration.instrumentationVersion).isEqualTo("2.5.0");
         assertThat(logger.records).hasSize(1);
         RecordingLogRecord record = logger.records.get(0);
-        assertThat(record.eventName).isNull();
         assertThat(record.epochNanos).isEqualTo(1_664_627_696_123_456_789L);
         assertThat(record.context).isSameAs(context);
         assertThat(record.severity).isEqualTo(Severity.ERROR3);
@@ -127,24 +122,23 @@ public class Opentelemetry_api_logsTest {
     }
 
     @Test
-    void eventBuilderCapturesEventNameAndUsesTimeUnitEpochs() {
+    void logRecordBuilderCapturesTimeUnitEpochs() {
         RecordingLogger logger = new RecordingLogger(new RecordingLoggerConfiguration("orders"));
 
-        logger.eventBuilder("order.created")
+        logger.logRecordBuilder()
                 .setEpoch(123, TimeUnit.MILLISECONDS)
                 .setSeverity(Severity.INFO2)
                 .setSeverityText("INFO")
-                .setBody("order event")
+                .setBody("order log")
                 .setAttribute(COMPONENT_KEY, "orders")
                 .emit();
 
         assertThat(logger.records).hasSize(1);
         RecordingLogRecord event = logger.records.get(0);
-        assertThat(event.eventName).isEqualTo("order.created");
         assertThat(event.epochNanos).isEqualTo(123_000_000L);
         assertThat(event.severity).isEqualTo(Severity.INFO2);
         assertThat(event.severityText).isEqualTo("INFO");
-        assertThat(event.body).isEqualTo("order event");
+        assertThat(event.body).isEqualTo("order log");
         assertThat(event.attributes).containsEntry(COMPONENT_KEY, "orders");
     }
 
@@ -247,7 +241,6 @@ public class Opentelemetry_api_logsTest {
     private static final class RecordingLoggerBuilder implements LoggerBuilder {
         private final String instrumentationName;
         private final List<RecordingLogger> loggers;
-        private String eventDomain;
         private String schemaUrl;
         private String instrumentationVersion;
         private boolean built;
@@ -255,12 +248,6 @@ public class Opentelemetry_api_logsTest {
         private RecordingLoggerBuilder(String instrumentationName, List<RecordingLogger> loggers) {
             this.instrumentationName = instrumentationName;
             this.loggers = loggers;
-        }
-
-        @Override
-        public LoggerBuilder setEventDomain(String eventDomain) {
-            this.eventDomain = eventDomain;
-            return this;
         }
 
         @Override
@@ -278,8 +265,8 @@ public class Opentelemetry_api_logsTest {
         @Override
         public Logger build() {
             built = true;
-            RecordingLogger logger = new RecordingLogger(new RecordingLoggerConfiguration(
-                    instrumentationName, eventDomain, schemaUrl, instrumentationVersion));
+            RecordingLogger logger = new RecordingLogger(
+                    new RecordingLoggerConfiguration(instrumentationName, schemaUrl, instrumentationVersion));
             loggers.add(logger);
             return logger;
         }
@@ -294,42 +281,35 @@ public class Opentelemetry_api_logsTest {
         }
 
         @Override
-        public EventBuilder eventBuilder(String eventName) {
-            return new RecordingLogRecordBuilder(records, eventName);
-        }
-
-        @Override
         public LogRecordBuilder logRecordBuilder() {
-            return new RecordingLogRecordBuilder(records, null);
+            return new RecordingLogRecordBuilder(records);
         }
     }
 
     private static final class RecordingLoggerConfiguration {
         private final String instrumentationName;
-        private final String eventDomain;
         private final String schemaUrl;
         private final String instrumentationVersion;
 
         private RecordingLoggerConfiguration(String instrumentationName) {
-            this(instrumentationName, null, null, null);
+            this(instrumentationName, null, null);
         }
 
         private RecordingLoggerConfiguration(
-                String instrumentationName, String eventDomain, String schemaUrl, String instrumentationVersion) {
+                String instrumentationName, String schemaUrl, String instrumentationVersion) {
             this.instrumentationName = instrumentationName;
-            this.eventDomain = eventDomain;
             this.schemaUrl = schemaUrl;
             this.instrumentationVersion = instrumentationVersion;
         }
     }
 
-    private static final class RecordingLogRecordBuilder implements EventBuilder {
+    private static final class RecordingLogRecordBuilder implements LogRecordBuilder {
         private final List<RecordingLogRecord> records;
         private final RecordingLogRecord record;
 
-        private RecordingLogRecordBuilder(List<RecordingLogRecord> records, String eventName) {
+        private RecordingLogRecordBuilder(List<RecordingLogRecord> records) {
             this.records = records;
-            this.record = new RecordingLogRecord(eventName);
+            this.record = new RecordingLogRecord();
         }
 
         @Override
@@ -381,16 +361,11 @@ public class Opentelemetry_api_logsTest {
     }
 
     private static final class RecordingLogRecord {
-        private final String eventName;
         private final Map<AttributeKey<?>, Object> attributes = new LinkedHashMap<>();
         private Long epochNanos;
         private Context context;
         private Severity severity;
         private String severityText;
         private String body;
-
-        private RecordingLogRecord(String eventName) {
-            this.eventName = eventName;
-        }
     }
 }
