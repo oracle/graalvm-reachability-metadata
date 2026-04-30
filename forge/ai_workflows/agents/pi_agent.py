@@ -64,6 +64,20 @@ class PiAgent(Agent):
     def cached_input_tokens_used(self) -> int:
         return self._cached_input_tokens_used
 
+    def graphify(self, source_dirs: list[str]) -> str:
+        """Send /skill:graphify to the Pi session to build a merged knowledge graph context."""
+        from utility_scripts.stage_logger import log_stage
+        from utility_scripts.task_logs import display_log_path
+        if not source_dirs:
+            return ""
+        log_stage("graphify", f"Initializing knowledge graph context for {len(source_dirs)} source(s)")
+        result = self.send_prompt(f"/skill:graphify {source_dirs[0]}")
+        for extra_dir in source_dirs[1:]:
+            log_stage("graphify", f"Merging graph from {display_log_path(extra_dir)}")
+            result = self.send_prompt(f"/skill:graphify {extra_dir} --update")
+        log_stage("graphify", "Knowledge graph context initialized")
+        return result
+
     def send_prompt(self, prompt: str) -> str:
         original_session_path = self._session_path
         try:

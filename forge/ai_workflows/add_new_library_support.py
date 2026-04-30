@@ -285,6 +285,13 @@ def init_agent(
     )
 
 
+def _build_benchmark_metrics_entry(run_metrics: dict) -> dict:
+    """Return a benchmark metrics entry without workflow artifact paths."""
+    benchmark_entry = dict(run_metrics)
+    benchmark_entry.pop("artifacts", None)
+    return benchmark_entry
+
+
 def write_add_new_library_support_metrics(run_metrics, metrics_json, is_benchmark_mode, package, artifact,
                                           library_version, metrics_repo_root=None):
     """Write or update add_new_library_support metrics depending on the execution mode."""
@@ -303,24 +310,9 @@ def write_add_new_library_support_metrics(run_metrics, metrics_json, is_benchmar
         library_id = f"{package}:{artifact}:{library_version}"
 
         updated = False
-        for item in metrics_array:
+        for index, item in enumerate(metrics_array):
             if item.get("library") == library_id:
-                metrics_block = run_metrics.get("metrics")
-                item["status"] = run_metrics.get("status")
-                item["input_tokens_used"] = metrics_block.get("input_tokens_used")
-                if "cached_input_tokens_used" in metrics_block:
-                    item["cached_input_tokens_used"] = metrics_block.get("cached_input_tokens_used")
-                if run_metrics.get("starting_commit") is not None:
-                    item["starting_commit"] = run_metrics.get("starting_commit")
-                if run_metrics.get("ending_commit") is not None:
-                    item["ending_commit"] = run_metrics.get("ending_commit")
-                item["output_tokens_used"] = metrics_block.get("output_tokens_used")
-                item["iterations"] = metrics_block.get("iterations")
-                item["cost_usd"] = metrics_block.get("cost_usd")
-                item["generated_loc"] = metrics_block.get("generated_loc")
-                item["tested_library_loc"] = metrics_block.get("tested_library_loc")
-                item["code_coverage_percent"] = metrics_block.get("code_coverage_percent")
-                item["metadata_entries"] = metrics_block.get("metadata_entries")
+                metrics_array[index] = _build_benchmark_metrics_entry(run_metrics)
                 updated = True
                 break
 
@@ -460,6 +452,16 @@ def main(argv=None):
         model_name=model_name,
     )
 
+    # Requires the graphify skill to be installed for the selected agent backend.
+    # Install docs: https://github.com/safishamsi/graphify#install
+    if strategy.get("parameters", {}).get("graphify-context"):
+        graphify_dirs = [
+            os.path.join(a.local_dir, "extracted")
+            for a in prepared_source_context.artifacts
+            if a.available and a.local_dir and os.path.isdir(os.path.join(a.local_dir, "extracted"))
+        ]
+        agent.graphify(graphify_dirs)
+
     workflow_status, global_iterations, unittest_number = strategy_obj.run(
         agent=agent,
         checkpoint_commit_hash=checkpoint_commit_hash,
@@ -489,12 +491,18 @@ def main(argv=None):
 
     if workflow_status == RUN_STATUS_SUCCESS:
         if is_benchmark_mode:
-            log_stage("generate-metadata", f"Benchmark mode: running generateMetadata only for {library}")
+            log_stage("generate-metadata", f"Benchmark mode: running generateMetadata and generateLibraryStats for {library}")
             if not strategy_obj._run_gradle_command([
                 "./gradlew",
                 "generateMetadata",
                 f"-Pcoordinates={library}",
                 "--agentAllowedPackages=fromJar",
+            ]):
+                workflow_status = RUN_STATUS_FAILURE
+            elif not strategy_obj._run_gradle_command([
+                "./gradlew",
+                "generateLibraryStats",
+                f"-Pcoordinates={library}",
             ]):
                 workflow_status = RUN_STATUS_FAILURE
             elif not strategy_obj._commit_library_iteration():

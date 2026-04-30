@@ -8,6 +8,7 @@ import os
 import shutil
 import tempfile
 
+from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import display_log_path, resolve_task_log_dir
 
 
@@ -130,3 +131,15 @@ class Agent(ABC):
     @abstractmethod
     def run_test_command(self, test_cmd: str) -> str:
         """Execute a shell test command via the agent and return its combined stdout/stderr."""
+
+    def graphify(self, source_dirs: list[str]) -> str:
+        """Send graphify prompts to the agent session to build a merged knowledge graph context."""
+        if not source_dirs:
+            return ""
+        log_stage("graphify", f"Initializing knowledge graph context for {len(source_dirs)} source(s)")
+        result = self.send_prompt(f"/graphify {source_dirs[0]} --include-local")
+        for extra_dir in source_dirs[1:]:
+            log_stage("graphify", f"Merging graph from {display_log_path(extra_dir)}")
+            result = self.send_prompt(f"/graphify {extra_dir} --update")
+        log_stage("graphify", "Knowledge graph context initialized")
+        return result

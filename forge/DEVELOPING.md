@@ -23,6 +23,7 @@ Forge is located inside `graalvm-reachability-metadata/forge`. The parent checko
   - Either export GRAALVM_HOME and JAVA_HOME, or pass explicit paths to scripts.
   - JAVA_HOME should point to a GraalVM distribution; if omitted, the scripts fall back to GRAALVM_HOME or the current environment.
 - Python 3 and the tooling required by the agent strategy you plan to run.
+- Strategies with `"graphify-context": true` require graphify to be installed for the selected agent backend. Install docs: https://github.com/safishamsi/graphify#install
 - Set `PYTHONPATH` so cross-package imports work (run from the `forge/` directory):
   ```bash
   export PYTHONPATH=$PWD

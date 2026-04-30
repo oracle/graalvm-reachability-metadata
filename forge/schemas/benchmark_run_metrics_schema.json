@@ -2,6 +2,359 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Benchmark Run Metrics Schema",
   "description": "JSON Schema for benchmark-level metrics produced by Metadata Forge benchmarking.",
+  "$defs": {
+    "dynamicAccessEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coveredCalls",
+        "totalCalls",
+        "coverageRatio"
+      ],
+      "properties": {
+        "coveredCalls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "totalCalls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "coverageRatio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "libraryCoverageEntry": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "covered",
+            "total",
+            "ratio"
+          ],
+          "properties": {
+            "covered": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "missed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "ratio": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        },
+        {
+          "type": "string",
+          "const": "N/A"
+        }
+      ]
+    },
+    "statsSnapshot": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "version"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dynamicAccess": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "coveredCalls",
+            "totalCalls",
+            "coverageRatio",
+            "breakdown"
+          ],
+          "properties": {
+            "coveredCalls": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "totalCalls": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "coverageRatio": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "breakdown": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/dynamicAccessEntry"
+              }
+            }
+          }
+        },
+        "libraryCoverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "instruction": {
+              "$ref": "#/$defs/libraryCoverageEntry"
+            },
+            "line": {
+              "$ref": "#/$defs/libraryCoverageEntry"
+            },
+            "method": {
+              "$ref": "#/$defs/libraryCoverageEntry"
+            }
+          }
+        }
+      }
+    },
+    "metricsBlock": {
+      "type": "object",
+      "description": "Collected run metrics.",
+      "additionalProperties": false,
+      "required": [
+        "input_tokens_used",
+        "output_tokens_used",
+        "iterations",
+        "cost_usd",
+        "tested_library_loc",
+        "code_coverage_percent",
+        "metadata_entries"
+      ],
+      "properties": {
+        "input_tokens_used": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cached_input_tokens_used": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "output_tokens_used": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "iterations": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cost_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "generated_loc": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "tested_library_loc": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "metadata_entries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "code_coverage_percent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "artifactsBlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "test_file",
+        "metadata_file"
+      ],
+      "properties": {
+        "test_file": {
+          "type": "string",
+          "minLength": 1
+        },
+        "metadata_file": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "runMetricsEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "timestamp",
+        "library",
+        "strategy_name",
+        "status",
+        "metrics"
+      ],
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "library": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[^:]+$"
+        },
+        "starting_commit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ending_commit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "strategy_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "agent": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "failure",
+            "success_with_intervention"
+          ]
+        },
+        "post_generation_intervention": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "stage",
+            "intervention_file",
+            "analysis_markdown"
+          ],
+          "properties": {
+            "stage": {
+              "type": "string",
+              "minLength": 1
+            },
+            "intervention_file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "analysis_markdown": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "stats": {
+          "$ref": "#/$defs/statsSnapshot"
+        },
+        "metrics": {
+          "$ref": "#/$defs/metricsBlock"
+        },
+        "artifacts": {
+          "$ref": "#/$defs/artifactsBlock"
+        }
+      }
+    },
+    "legacyBenchmarkEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "library",
+        "status",
+        "input_tokens_used",
+        "output_tokens_used",
+        "iterations",
+        "cost_usd",
+        "generated_loc",
+        "tested_library_loc",
+        "code_coverage_percent",
+        "metadata_entries",
+        "original_metadata_entry_count"
+      ],
+      "properties": {
+        "library": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[^:]+$"
+        },
+        "starting_commit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ending_commit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "failure",
+            "success_with_intervention"
+          ]
+        },
+        "input_tokens_used": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cached_input_tokens_used": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "output_tokens_used": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "iterations": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cost_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "generated_loc": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "tested_library_loc": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "code_coverage_percent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "metadata_entries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "original_metadata_entry_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  },
   "type": "array",
   "items": {
     "type": "object",
@@ -26,98 +379,14 @@
         "type": "array",
         "description": "Per-library metrics collected during this benchmark run.",
         "items": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "library",
-            "status",
-            "input_tokens_used",
-            "output_tokens_used",
-            "iterations",
-            "cost_usd",
-            "generated_loc",
-            "tested_library_loc",
-            "code_coverage_percent",
-            "metadata_entries",
-            "original_metadata_entry_count"
-          ],
-          "properties": {
-            "library": {
-              "type": "string",
-              "pattern": "^[^:]+:[^:]+:[^:]+$",
-              "description": "Dependency coordinate in the form group:artifact:version."
+          "oneOf": [
+            {
+              "$ref": "#/$defs/runMetricsEntry"
             },
-            "starting_commit": {
-              "type": "string",
-              "minLength": 1,
-              "description": "Git commit hash at the start of the generation workflow for this library."
-            },
-            "ending_commit": {
-              "type": "string",
-              "minLength": 1,
-              "description": "Git commit hash at the end of the generation workflow for this library."
-            },
-            "status": {
-              "type": "string",
-              "enum": [
-                "success",
-                "failure",
-                "success_with_intervention"
-              ],
-              "description": "Outcome of the workflow run for this library."
-            },
-            "input_tokens_used": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Total LLM input tokens consumed for this library."
-            },
-            "cached_input_tokens_used": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Subset of input tokens served from cache when reported by the agent."
-            },
-            "output_tokens_used": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Total LLM output tokens consumed for this library."
-            },
-            "iterations": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Number of iterations performed by the strategy for this library."
-            },
-            "cost_usd": {
-              "type": "number",
-              "minimum": 0,
-              "description": "Estimated cost in USD for this library run."
-            },
-            "generated_loc": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Lines of code generated by the agent for this library."
-            },
-            "tested_library_loc": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Lines of code covered within the target library during this benchmark."
-            },
-            "code_coverage_percent": {
-              "type": "number",
-              "minimum": 0,
-              "maximum": 100,
-              "description": "Code coverage percentage (0–100) for this library."
-            },
-            "metadata_entries": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Number of metadata entries produced for this library during the run."
-            },
-            "original_metadata_entry_count": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Number of metadata entries that existed for this library before the benchmark run."
+            {
+              "$ref": "#/$defs/legacyBenchmarkEntry"
             }
-          }
+          ]
         }
       }
     }
@@ -129,20 +398,29 @@
         "timestamp": "2026-02-20T16:00:00Z",
         "metrics": [
           {
+            "timestamp": "2026-02-20T16:05:00Z",
             "library": "com.hazelcast:hazelcast:5.5.0",
             "starting_commit": "6d9a591c",
             "ending_commit": "7f2c13aa",
+            "strategy_name": "dynamic_access_main_sources_pi_gpt-5.4",
+            "agent": "pi",
+            "model": "oca/gpt-5.4",
             "status": "success",
-            "input_tokens_used": 78628,
-            "cached_input_tokens_used": 52412,
-            "output_tokens_used": 19305,
-            "iterations": 7,
-            "cost_usd": 0.3682,
-            "generated_loc": 319,
-            "tested_library_loc": 13397,
-            "code_coverage_percent": 10.9,
-            "metadata_entries": 975,
-            "original_metadata_entry_count": 1325
+            "metrics": {
+              "input_tokens_used": 78628,
+              "cached_input_tokens_used": 52412,
+              "output_tokens_used": 19305,
+              "iterations": 7,
+              "cost_usd": 0.3682,
+              "generated_loc": 319,
+              "tested_library_loc": 13397,
+              "code_coverage_percent": 10.9,
+              "metadata_entries": 975
+            },
+            "artifacts": {
+              "test_file": "tests/src/com.hazelcast/hazelcast/5.5.0/src/test/java/com_hazelcast/hazelcast/HazelcastTest.java",
+              "metadata_file": "metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json"
+            }
           }
         ]
       }

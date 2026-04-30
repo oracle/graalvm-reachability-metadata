@@ -470,5 +470,257 @@
       ]
     },
     "mcps": []
+  },
+  {
+    "name": "basic_iterative_codex_gpt-5.4",
+    "description": "Basic iterative add-new-library workflow for the Codex agent.",
+    "agent": "codex",
+    "workflow": "basic_iterative",
+    "model": "gpt-5.4",
+    "prompts": {
+      "initial": "prompt_templates/initial/basic_initial.md",
+      "after-successful-iteration": "prompt_templates/after-successful-iteration/codex_after_success.md",
+      "after-failed-iteration": "prompt_templates/after-failed-iteration/basic_after_fail.md"
+    },
+    "parameters": {
+      "max-test-iterations": 5,
+      "max-failed-generations": 2,
+      "max-successful-generations": 3
+    },
+    "mcps": []
+  },
+  {
+    "name": "basic_iterative_codex_gpt-5.5",
+    "description": "Basic iterative add-new-library workflow for the Codex agent using gpt-5.5.",
+    "agent": "codex",
+    "workflow": "basic_iterative",
+    "model": "gpt-5.5",
+    "prompts": {
+      "initial": "prompt_templates/initial/basic_initial.md",
+      "after-successful-iteration": "prompt_templates/after-successful-iteration/codex_after_success.md",
+      "after-failed-iteration": "prompt_templates/after-failed-iteration/basic_after_fail.md"
+    },
+    "parameters": {
+      "max-test-iterations": 5,
+      "max-failed-generations": 2,
+      "max-successful-generations": 3
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_bulk_pi_gpt-5.5",
+    "description": "Pi bulk dynamic-access strategy. Unlike the regular dynamic-access strategy, which iterates through uncovered classes and refines coverage class by class, this strategy gives the agent the full dynamic-access report in one prompt and asks it to cover the missing accesses in a single broad pass.",
+    "agent": "pi",
+    "workflow": "optimistic_dynamic_access",
+    "model": "oca/gpt-5.5",
+    "prompts": {
+      "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-test-iterations": 3,
+      "source-context-types": [
+        "main"
+      ],
+      "max-optimistic-iterations": 3
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_bulk_codex_gpt-5.5",
+    "description": "Codex bulk dynamic-access strategy. Unlike the regular dynamic-access strategy, which iterates through uncovered classes and refines coverage class by class, this strategy gives the agent the full dynamic-access report in one prompt and asks it to cover the missing accesses in a single broad pass.",
+    "agent": "codex",
+    "workflow": "optimistic_dynamic_access",
+    "model": "gpt-5.5",
+    "prompts": {
+      "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-test-iterations": 3,
+      "source-context-types": [
+        "main"
+      ],
+      "max-optimistic-iterations": 3
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_graphify_bulk_pi_gpt-5.5",
+    "description": "Pi graphify-assisted bulk dynamic-access strategy. It first builds graphify context from downloaded source artifacts, then gives the agent the full dynamic-access report in one broad pass. Unlike the regular dynamic-access strategy, it does not run the class-by-class refinement loop.",
+    "agent": "pi",
+    "workflow": "optimistic_dynamic_access",
+    "model": "oca/gpt-5.5",
+    "prompts": {
+      "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-test-iterations": 3,
+      "graphify-context": true,
+      "source-context-types": [
+        "main"
+      ],
+      "max-optimistic-iterations": 3
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_graphify_bulk_codex_gpt-5.5",
+    "description": "Codex graphify-assisted bulk dynamic-access strategy. It first builds graphify context from downloaded source artifacts, then gives the agent the full dynamic-access report in one broad pass. Unlike the regular dynamic-access strategy, it does not run the class-by-class refinement loop.",
+    "agent": "codex",
+    "workflow": "optimistic_dynamic_access",
+    "model": "gpt-5.5",
+    "prompts": {
+      "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-test-iterations": 3,
+      "graphify-context": true,
+      "source-context-types": [
+        "main"
+      ],
+      "max-optimistic-iterations": 3
+    },
+    "mcps": []
+  },
+  {
+    "name": "optimistic_dynamic_access_iterative_pi_gpt-5.3",
+    "description": "Composite strategy: optimistic bulk DA coverage, then per-class DA refinement.",
+    "agent": "pi",
+    "workflow": "increase_dynamic_access_coverage",
+    "primary-workflow": "optimistic_dynamic_access",
+    "model": "oca/gpt-5.3-codex",
+    "prompts": {
+      "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration.md",
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 2,
+      "max-test-iterations": 3,
+      "max-class-test-iterations": 2,
+      "source-context-types": [
+        "main"
+      ],
+      "max-optimistic-iterations": 3
+    },
+    "mcps": []
+  },
+  {
+    "name": "optimistic_dynamic_access_iterative_pi_gpt-5.5",
+    "description": "Composite strategy: optimistic bulk DA coverage, then per-class DA refinement using gpt-5.5.",
+    "agent": "pi",
+    "workflow": "increase_dynamic_access_coverage",
+    "primary-workflow": "optimistic_dynamic_access",
+    "model": "oca/gpt-5.5",
+    "prompts": {
+      "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration.md",
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 2,
+      "max-test-iterations": 3,
+      "max-class-test-iterations": 2,
+      "source-context-types": [
+        "main"
+      ],
+      "max-optimistic-iterations": 3
+    },
+    "mcps": []
+  },
+  {
+    "name": "optimistic_dynamic_access_iterative_codex_gpt-5.4",
+    "description": "Composite Codex strategy: optimistic bulk DA coverage, then per-class DA refinement.",
+    "agent": "codex",
+    "workflow": "increase_dynamic_access_coverage",
+    "primary-workflow": "optimistic_dynamic_access",
+    "model": "gpt-5.4",
+    "prompts": {
+      "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration.md",
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 2,
+      "max-test-iterations": 3,
+      "max-class-test-iterations": 2,
+      "source-context-types": [
+        "main"
+      ],
+      "max-optimistic-iterations": 3
+    },
+    "mcps": []
+  },
+  {
+    "name": "optimistic_dynamic_access_iterative_codex_gpt-5.5",
+    "description": "Composite Codex strategy: optimistic bulk DA coverage, then per-class DA refinement using gpt-5.5.",
+    "agent": "codex",
+    "workflow": "increase_dynamic_access_coverage",
+    "primary-workflow": "optimistic_dynamic_access",
+    "model": "gpt-5.5",
+    "prompts": {
+      "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration.md",
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 2,
+      "max-test-iterations": 3,
+      "max-class-test-iterations": 2,
+      "source-context-types": [
+        "main"
+      ],
+      "max-optimistic-iterations": 3
+    },
+    "mcps": []
+  },
+  {
+    "name": "basic_iterative_pi_gpt-5.5",
+    "description": "Same configuration as basic_iterative, but uses gpt-5.5 instead.",
+    "agent": "pi",
+    "workflow": "basic_iterative",
+    "model": "oca/gpt-5.5",
+    "prompts": {
+      "initial": "prompt_templates/initial/basic_initial.md",
+      "after-successful-iteration": "prompt_templates/after-successful-iteration/basic_after_success.md",
+      "after-failed-iteration": "prompt_templates/after-failed-iteration/basic_after_fail.md"
+    },
+    "parameters": {
+      "max-test-iterations": 5,
+      "max-failed-generations": 2,
+      "max-successful-generations": 3
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_main_sources_codex_gpt-5.5",
+    "description": "Dynamic-access-guided Codex workflow using downloaded main library sources as read-only context. Uses gpt-5.5.",
+    "agent": "codex",
+    "workflow": "dynamic_access_iterative",
+    "model": "gpt-5.5",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_documentation_sources_codex_gpt-5.5",
+    "description": "Dynamic-access-guided Codex workflow using downloaded documentation artifacts as read-only context. Uses gpt-5.5.",
+    "agent": "codex",
+    "workflow": "dynamic_access_iterative",
+    "model": "gpt-5.5",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "documentation"
+      ]
+    },
+    "mcps": []
   }
 ]
