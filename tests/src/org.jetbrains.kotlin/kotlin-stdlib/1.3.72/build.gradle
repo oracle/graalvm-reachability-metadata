@@ -25,6 +25,11 @@ compileTestKotlin {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            configurationFileDirectories.from(tck.metadataRoot.dir("org.jetbrains.kotlin/kotlin-stdlib/1.3.72"))
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
