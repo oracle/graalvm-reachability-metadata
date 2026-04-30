@@ -1,0 +1,1100 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ddbbf-9d24-75b1-b534-ef18e4ea578b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.robolectric:android-all:10-robolectric-5803371
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "10-robolectric-5803371".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
+- Set "coordinates" to "org.robolectric:android-all:10-robolectric-5803371".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify this against Maven Central first, then fall back to upstream Robolectric/AOSP tags only where Maven metadata is insufficient. After that I’ll patch the JSON directly.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 0ms:
+{
+  "coordinates" : "org.robolectric:android-all:10-robolectric-5803371"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.robolectric-android-all-10-robolectric-5803371\\.json"'$'"'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.robolectric</groupId>
+    <artifactId>android-all</artifactId>
+    <version>10-robolectric-5803371</version>
+    <packaging>jar</packaging>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>9</version>
+    </parent>
+    <name>Google Android android-all Library</name>
+    <description>
+        A library jar that provides APIs for Applications written for the Google Android Platform.
+    </description>
+    <url>http://source.android.com/</url>
+    <inceptionYear>2008</inceptionYear>
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <comments>
+                While the EULA for the Android SDK restricts distribution of those binaries, the source code is licensed under Apache 2.0 which allows compiling binaries from source and then distributing those versions.
+            </comments>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://android.git.kernel.org/</url>
+        <connection>git://android.git.kernel.org/platform/manifest.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <name>The Android Open Source Projects</name>
+        </developer>
+    </developers>
+</project>
+web search: 
+web search: Maven org.robolectric android-all 10-robolectric-5803371 sources jar
+codex
+Maven Central has the exact artifact, including `-sources.jar` and `-javadoc.jar`. I’m checking local metadata conventions and whether there is a corresponding tests artifact before deciding whether the test URL should be upstream AOSP or `N/A`.
+exec
+/usr/bin/bash -lc "rg -n 'org\\.robolectric:android-all|android-all' metadata build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json:2:  "coordinates" : "org.robolectric:android-all:10-robolectric-5803371"
+
+exec
+/usr/bin/bash -lc "find . -path '*org.robolectric*android-all*.json' -print" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 0ms:
+./build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/robolectric/android-all/10-robolectric-5803371/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/robolectric/android-all/10-robolectric-5803371</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/robolectric/android-all/10-robolectric-5803371</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="android-all-10-robolectric-5803371-javadoc.jar" title="android-all-10-robolectric-5803371-javadoc.jar">android-all-10-robolectric-5803371-javadoc.ja...</a>  2019-10-10 18:20       342      
+<a href="android-all-10-robolectric-5803371-javadoc.jar.asc" title="android-all-10-robolectric-5803371-javadoc.jar.asc">android-all-10-robolectric-5803371-javadoc.ja...</a>  2019-10-10 18:20       488      
+<a href="android-all-10-robolectric-5803371-javadoc.jar.asc.md5" title="android-all-10-robolectric-5803371-javadoc.jar.asc.md5">android-all-10-robolectric-5803371-javadoc.ja...</a>  2019-10-10 18:20        32      
+<a href="android-all-10-robolectric-5803371-javadoc.jar.asc.sha1" title="android-all-10-robolectric-5803371-javadoc.jar.asc.sha1">android-all-10-robolectric-5803371-javadoc.ja...</a>  2019-10-10 18:20        40      
+<a href="android-all-10-robolectric-5803371-javadoc.jar.md5" title="android-all-10-robolectric-5803371-javadoc.jar.md5">android-all-10-robolectric-5803371-javadoc.ja...</a>  2019-10-10 18:20        32      
+<a href="android-all-10-robolectric-5803371-javadoc.jar.sha1" title="android-all-10-robolectric-5803371-javadoc.jar.sha1">android-all-10-robolectric-5803371-javadoc.ja...</a>  2019-10-10 18:20        40      
+<a href="android-all-10-robolectric-5803371-sources.jar" title="android-all-10-robolectric-5803371-sources.jar">android-all-10-robolectric-5803371-sources.ja...</a>  2019-10-10 18:20  39460658      
+<a href="android-all-10-robolectric-5803371-sources.jar.asc" title="android-all-10-robolectric-5803371-sources.jar.asc">android-all-10-robolectric-5803371-sources.ja...</a>  2019-10-10 18:20       488      
+<a href="android-all-10-robolectric-5803371-sources.jar.asc.md5" title="android-all-10-robolectric-5803371-sources.jar.asc.md5">android-all-10-robolectric-5803371-sources.ja...</a>  2019-10-10 18:20        32      
+<a href="android-all-10-robolectric-5803371-sources.jar.asc.sha1" title="android-all-10-robolectric-5803371-sources.jar.asc.sha1">android-all-10-robolectric-5803371-sources.ja...</a>  2019-10-10 18:20        40      
+<a href="android-all-10-robolectric-5803371-sources.jar.md5" title="android-all-10-robolectric-5803371-sources.jar.md5">android-all-10-robolectric-5803371-sources.ja...</a>  2019-10-10 18:20        32      
+<a href="android-all-10-robolectric-5803371-sources.jar.sha1" title="android-all-10-robolectric-5803371-sources.jar.sha1">android-all-10-robolectric-5803371-sources.ja...</a>  2019-10-10 18:20        40      
+<a href="android-all-10-robolectric-5803371.jar" title="android-all-10-robolectric-5803371.jar">android-all-10-robolectric-5803371.jar</a>            2019-10-10 18:20 131412304      
+<a href="android-all-10-robolectric-5803371.jar.asc" title="android-all-10-robolectric-5803371.jar.asc">android-all-10-robolectric-5803371.jar.asc</a>        2019-10-10 18:20       488      
+<a href="android-all-10-robolectric-5803371.jar.asc.md5" title="android-all-10-robolectric-5803371.jar.asc.md5">android-all-10-robolectric-5803371.jar.asc.md...</a>  2019-10-10 18:20        32      
+<a href="android-all-10-robolectric-5803371.jar.asc.sha1" title="android-all-10-robolectric-5803371.jar.asc.sha1">android-all-10-robolectric-5803371.jar.asc.sh...</a>  2019-10-10 18:20        40      
+<a href="android-all-10-robolectric-5803371.jar.md5" title="android-all-10-robolectric-5803371.jar.md5">android-all-10-robolectric-5803371.jar.md5</a>        2019-10-10 18:20        32      
+<a href="android-all-10-robolectric-5803371.jar.sha1" title="android-all-10-robolectric-5803371.jar.sha1">android-all-10-robolectric-5803371.jar.sha1</a>       2019-10-10 18:20        40      
+<a href="android-all-10-robolectric-5803371.pom" title="android-all-10-robolectric-5803371.pom">android-all-10-robolectric-5803371.pom</a>            2019-10-10 18:20      1634      
+<a href="android-all-10-robolectric-5803371.pom.asc" title="android-all-10-robolectric-5803371.pom.asc">android-all-10-robolectric-5803371.pom.asc</a>        2019-10-10 18:20       488      
+<a href="android-all-10-robolectric-5803371.pom.asc.md5" title="android-all-10-robolectric-5803371.pom.asc.md5">android-all-10-robolectric-5803371.pom.asc.md...</a>  2019-10-10 18:20        32      
+<a href="android-all-10-robolectric-5803371.pom.asc.sha1" title="android-all-10-robolectric-5803371.pom.asc.sha1">android-all-10-robolectric-5803371.pom.asc.sh...</a>  2019-10-10 18:20        40      
+<a href="android-all-10-robolectric-5803371.pom.md5" title="android-all-10-robolectric-5803371.pom.md5">android-all-10-robolectric-5803371.pom.md5</a>        2019-10-10 18:20        32      
+<a href="android-all-10-robolectric-5803371.pom.sha1" title="android-all-10-robolectric-5803371.pom.sha1">android-all-10-robolectric-5803371.pom.sha1</a>       2019-10-10 18:20        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-tests.jar || true' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 215ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Thu, 30 Apr 2026 00:18:03 GMT
+content-type: text/html
+cf-ray: 9f425df07aff70cb-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: 
+web search: 
+web search: Maven Central org.robolectric android-all 10-robolectric-5803371
+web search: 
+web search: https://repo1.maven.org/maven2/org/robolectric/android-all/10-robolectric-5803371
+web search: 
+web search: "5803371" "android-10.0.0"
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -name '*.json' | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 0ms:
+{
+  "coordinates" : "org.robolectric:android-all:10-robolectric-5803371"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 0ms:
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/5.12.0/amqp-client-5.12.0-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v5.12.0/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/5.12.0/amqp-client-5.12.0-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/5.3.31/spring-instrument-5.3.31-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/5.3.31/spring-instrument-5.3.31-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-sources.jar",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-sources.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-tests.jar",
+metadata/org.awaitility/awaitility/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:21:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.9/jetty-core/jetty-util/src/test",
+metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:8:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.1.5/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:25:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.0/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:62:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:64:    "test-code-url" : "https://github.com/eclipse/jetty.project/tree/jetty-11.0.12/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:65:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/com.squareup.okio/okio/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-sources.jar",
+metadata/com.squareup.okio/okio/index.json:7:    "test-code-url" : "https://github.com/square/okio/tree/okio-parent-1.17.2/okio/src/test",
+metadata/com.squareup.okio/okio/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-javadoc.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/2.0.0.Final/jboss-interceptor-spi-2.0.0.Final-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:8:    "documentation-url" : "N/A",
+metadata/org.apache.zookeeper/zookeeper/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-sources.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-tests.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-javadoc.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/3.8.1/zookeeper-jute-3.8.1-sources.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/3.8.1/zookeeper-jute-3.8.1-tests.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:8:    "documentation-url" : "https://zookeeper.apache.org/doc/r3.8.1/index.html",
+metadata/org.eclipse.jetty/jetty-server/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.1.3/jetty-core/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:27:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.1/jetty-core/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:28:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:55:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:57:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-11.0.12/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:58:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.32/snakeyaml-1.32-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml/src/snakeyaml-1.32/src/test/",
+metadata/org.yaml/snakeyaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.32/snakeyaml-1.32-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/3.0.7/istack-commons-runtime-3.0.7-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:6:    "test-code-url" : "https://github.com/javaee/jaxb-istack-commons/tree/3.0.7-RELEASE/istack-commons/test",
+metadata/com.sun.istack/istack-commons-runtime/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/3.0.7/istack-commons-runtime-3.0.7-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/4.0.0/istack-commons-runtime-4.0.0-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:21:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.0.0/istack-commons/runtime/src/test",
+metadata/com.sun.istack/istack-commons-runtime/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/4.0.0/istack-commons-runtime-4.0.0-javadoc.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/2.0.1/mail/src/test",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-sources.jar.sha1 && printf '\\n' && curl -fsSL https://repo1.maven.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-javadoc.jar.sha1" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-sources.jar -o /tmp/android-all-10-robolectric-5803371-sources.jar && jar tf /tmp/android-all-10-robolectric-5803371-sources.jar | head -80' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 629ms:
+57e76f265f1cb1746fd9c9f52888fb426e0f57a2
+5e43f6a8732736cd4fc856230d03fdec59619b41
+ succeeded in 2413ms:
+src/
+src/source.properties
+src/google/
+src/google/ProtobufJavaService.java
+src/mypackage/
+src/mypackage/MockFileSystemProvider.java
+src/mypackage/package-info.java
+src/mypackage/MockFileSystem.java
+src/com/
+src/com/example/
+src/com/example/photoviewersample/
+src/com/example/photoviewersample/MainActivity.java
+src/com/example/photoviewersample/SampleProvider.java
+src/com/example/bitmapsample/
+src/com/example/bitmapsample/MainActivity.java
+src/com/example/bitmapsample/BitmapRequestKeyImpl.java
+src/com/example/bitmapsample/BitmapView.java
+src/com/sun/
+src/com/sun/security/
+src/com/sun/security/cert/
+src/com/sun/security/cert/internal/
+src/com/sun/security/cert/internal/x509/
+src/com/sun/security/cert/internal/x509/X509V1CertImpl.java
+src/com/sun/nio/
+src/com/sun/nio/file/
+src/com/sun/nio/file/ExtendedCopyOption.java
+src/com/sun/nio/file/ExtendedOpenOption.java
+src/com/sun/nio/file/SensitivityWatchEventModifier.java
+src/com/sun/nio/file/ExtendedWatchEventModifier.java
+src/com/sun/net/
+src/com/sun/net/ssl/
+src/com/sun/net/ssl/internal/
+src/com/sun/net/ssl/internal/ssl/
+src/com/sun/net/ssl/internal/ssl/X509ExtendedTrustManager.java
+src/com/android/
+src/com/android/dynsystem/
+src/com/android/dynsystem/InstallationAsyncTask.java
+src/com/android/dynsystem/BootCompletedReceiver.java
+src/com/android/dynsystem/VerificationActivity.java
+src/com/android/dynsystem/DynamicSystemInstallationService.java
+src/com/android/systemui/
+src/com/android/systemui/ForegroundServiceNotificationListener.java
+src/com/android/systemui/ForegroundServicesUserState.java
+src/com/android/systemui/Dependency.java
+src/com/android/systemui/SystemBars.java
+src/com/android/systemui/Interpolators.java
+src/com/android/systemui/SystemUIService.java
+src/com/android/systemui/SysUiServiceProvider.java
+src/com/android/systemui/InitController.java
+src/com/android/systemui/DessertCase.java
+src/com/android/systemui/theme/
+src/com/android/systemui/theme/ThemeOverlayManager.java
+src/com/android/systemui/theme/ThemeOverlayController.java
+src/com/android/systemui/charging/
+src/com/android/systemui/charging/WirelessChargingLayout.java
+src/com/android/systemui/charging/WirelessChargingAnimation.java
+src/com/android/systemui/DessertCaseDream.java
+src/com/android/systemui/car/
+src/com/android/systemui/car/CarNotificationInterruptionStateProvider.java
+src/com/android/systemui/car/CarNotificationEntryManager.java
+src/com/android/systemui/FontSizeUtils.java
+src/com/android/systemui/SystemUIFactory.java
+src/com/android/systemui/HardwareUiLayout.java
+src/com/android/systemui/SysUIToast.java
+src/com/android/systemui/Somnambulator.java
+src/com/android/systemui/settings/
+src/com/android/systemui/settings/ToggleSlider.java
+src/com/android/systemui/settings/CurrentUserObservable.java
+src/com/android/systemui/settings/BrightnessDialog.java
+src/com/android/systemui/settings/CurrentUserTracker.java
+src/com/android/systemui/settings/ToggleSliderView.java
+src/com/android/systemui/settings/ToggleSeekBar.java
+src/com/android/systemui/settings/BrightnessController.java
+src/com/android/systemui/assist/
+src/com/android/systemui/assist/AssistHandleReminderExpBehavior.java
+src/com/android/systemui/assist/ui/
+src/com/android/systemui/assist/ui/PerimeterPathGuide.java
+src/com/android/systemui/assist/ui/DefaultUiController.java
+src/com/android/systemui/assist/ui/CornerPathRenderer.java
+src/com/android/systemui/assist/ui/EdgeLight.java
+
+exec
+/usr/bin/bash -lc "unzip -p /tmp/android-all-10-robolectric-5803371-sources.jar src/source.properties | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 0ms:
+Pkg.UserSrc=false
+Pkg.Revision=1
+AndroidVersion.ApiLevel=29
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/robolectric/android-all/maven-metadata.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.robolectric</groupId>
+  <artifactId>android-all</artifactId>
+  <versioning>
+    <latest>16-robolectric-13921718</latest>
+    <release>16-robolectric-13921718</release>
+    <versions>
+      <version>o-preview-1-robolectric-0</version>
+      <version>o-preview-2-robolectric-0</version>
+      <version>o-preview-4-robolectric-0</version>
+      <version>P-robolectric-4614665</version>
+      <version>P-robolectric-4651975</version>
+      <version>P-robolectric-4758566</version>
+      <version>Q-robolectric-5283294</version>
+      <version>Q-robolectric-5415296</version>
+      <version>4.1.2_r1-robolectric-0</version>
+      <version>4.1.2_r1-robolectric-r1</version>
+      <version>4.2.2_r1.2-robolectric-r1</version>
+      <version>4.2.2_r1.2-robolectric-0</version>
+      <version>4.3_r2-robolectric-0</version>
+      <version>4.3_r2-robolectric-r1</version>
+      <version>4.4_r1-robolectric-1</version>
+      <version>4.4_r1-robolectric-0</version>
+      <version>4.4_r1-robolectric-r2</version>
+      <version>5.0.0_r2-robolectric-1</version>
+      <version>5.0.0_r2-robolectric-0</version>
+      <version>5.0.2_r3-robolectric-r0</version>
+      <version>5.1.1_r9-robolectric-1</version>
+      <version>5.1.1_r9-robolectric-r2</version>
+      <version>5.1.1_r9-robolectric-0</version>
+      <version>6.0.0_r1-robolectric-0</version>
+      <version>6.0.1_r3-robolectric-r1</version>
+      <version>6.0.1_r3-robolectric-0</version>
+      <version>7.0.0_r1-robolectric-0</version>
+      <version>7.0.0_r1-robolectric-r1</version>
+      <version>7.1.0_r7-robolectric-0</version>
+      <version>7.1.0_r7-robolectric-r1</version>
+      <version>8.0.0_r4-robolectric-0</version>
+      <version>8.0.0_r4-robolectric-r1</version>
+      <version>8.1.0-robolectric-r4402310</version>
+      <version>8.1.0-robolectric-r4458339</version>
+      <version>8.1.0-robolectric-4402310</version>
+      <version>8.1.0-robolectric-4514284</version>
+      <version>8.1.0-robolectric-4611349</version>
+      <version>9-robolectric-4799589</version>
+      <version>9-robolectric-4913185</version>
+      <version>9-robolectric-4913185-2</version>
+      <version>9plus-robolectric-5616371</version>
+      <version>10-robolectric-5803371</version>
+      <version>11-robolectric-6757853</version>
+      <version>12-robolectric-7732740</version>
+      <version>12.1-robolectric-8229987</version>
+      <version>13-robolectric-9030017</version>
+      <version>14-robolectric-10818077</version>
+      <version>15-robolectric-12468137</version>
+      <version>15-robolectric-12543294</version>
+      <version>15-robolectric-12650502</version>
+      <version>15-robolectric-12714715</version>
+      <version>15-robolectric-13954326</version>
+      <version>16-robolectric-13785805</version>
+      <version>16-robolectric-13921718</version>
+    </versions>
+    <lastUpdated>20250822210953</lastUpdated>
+  </versioning>
+</metadata>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371.jar -o /tmp/android-all-10-robolectric-5803371.jar && jar tf /tmp/android-all-10-robolectric-5803371.jar | head -80' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://android.googlesource.com/platform/manifest/+refs?format=TEXT' | base64 -d | rg '5803371|android-10|q-' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 133ms:
+base64: invalid input
+curl: (23) Failure writing output to destination
+
+ succeeded in 5705ms:
+META-INF/
+META-INF/MANIFEST.MF
+res/
+res/layout-notround-watch-v23/
+res/layout-notround-watch-v23/alert_dialog_title_material.xml
+res/raw-es/
+res/raw-es/loaderror.html
+res/raw-es/nodomain.html
+res/drawable-land-xhdpi-v4/
+res/drawable-land-xhdpi-v4/btn_lock_normal.9.png
+res/drawable-en-hdpi-v4/
+res/drawable-en-hdpi-v4/sym_keyboard_delete.png
+res/drawable-sw720dp-nodpi-v13/
+res/drawable-sw720dp-nodpi-v13/default_wallpaper.png
+res/drawable/
+res/drawable/ic_media_route_connecting_holo_dark.xml
+res/drawable/ratingbar_full_holo_dark.xml
+res/drawable/pointer_all_scroll_large_icon.xml
+res/drawable/item_background.xml
+res/drawable/ic_corp_icon.xml
+res/drawable/btn_default_holo_light.xml
+res/drawable/ic_chevron_start.xml
+res/drawable/sym_def_app_icon_background.xml
+res/drawable/list_selector_holo_dark.xml
+res/drawable/ic_doc_presentation.xml
+res/drawable/chooser_content_preview_rounded.xml
+res/drawable/ic_settings_24dp.xml
+res/drawable/btn_radio_off_mtrl.xml
+res/drawable/ic_clear_holo_light.xml
+res/drawable/ic_corp_badge_no_background.xml
+res/drawable/ic_content_copy_gm2.xml
+res/drawable/btn_search_dialog.xml
+res/drawable/notification_material_action_background.xml
+res/drawable/ic_menu_search_material.xml
+res/drawable/jog_tab_right_decline.xml
+res/drawable/ic_signal_location.xml
+res/drawable/action_bar_divider.xml
+res/drawable/ic_signal_cellular_0_5_bar.xml
+res/drawable/spinner_background_holo_dark.xml
+res/drawable/decor_caption_title.xml
+res/drawable/ic_voice_search_api_material.xml
+res/drawable/gallery_thumb.xml
+res/drawable/dialog_background_material.xml
+res/drawable/decor_close_button_dark.xml
+res/drawable/ratingbar.xml
+res/drawable/ic_instant_icon_badge_bolt.xml
+res/drawable/quickcontact_badge_overlay_focused_light.xml
+res/drawable/perm_group_camera.xml
+res/drawable/spinner_ab_default_holo_light.xml
+res/drawable/chooser_direct_share_icon_placeholder.xml
+res/drawable/ic_settings_bluetooth.xml
+res/drawable/ic_menu_moreoverflow_material_dark.xml
+res/drawable/btn_radio.xml
+res/drawable/popup_inline_error.xml
+res/drawable/btn_check.xml
+res/drawable/textfield_searchview_holo_dark.xml
+res/drawable/switch_track_material.xml
+res/drawable/pointer_horizontal_double_arrow_icon.xml
+res/drawable/btn_checkbox_unchecked_mtrl.xml
+res/drawable/ic_doc_folder.xml
+res/drawable/btn_group_holo_light.xml
+res/drawable/ic_doc_audio.xml
+res/drawable/quickcontact_badge_overlay_pressed_dark.xml
+res/drawable/popup_inline_error_above_holo_light.xml
+res/drawable/ic_corp_icon_badge_color.xml
+res/drawable/jog_tab_bar_right_generic.xml
+res/drawable/keyboard_key_feedback.xml
+res/drawable/stat_notify_wifi_in_range.xml
+res/drawable/list_selector_background_transition.xml
+res/drawable/seekbar_thumb_material_anim.xml
+res/drawable/$$chooser_direct_share_icon_placeholder__0__0.xml
+res/drawable/fastscroll_track_material.xml
+res/drawable/fastscroll_track_holo_light.xml
+res/drawable/app_icon_background.xml
+res/drawable/ic_input_extract_action_search.xml
+res/drawable/list_selected_background_light.xml
+res/drawable/indicator_check_mark_light.xml
+res/drawable/edit_text.xml
+res/drawable/tab_indicator.xml
+res/drawable/background_holo_dark.xml
+
+web search: 
+web search: "10-robolectric-5803371"
+web search: 
+web search: "5803371" "AndroidVersion.ApiLevel=29"
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://android.googlesource.com/platform/manifest/+refs?format=TEXT' | sed -n '1,40p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 1061ms:
+6dc9af1b583e5c6a4ab9c38e3f5646efd8079b7d HEAD
+134496cc297ee092629d6c6bf91aff60aca89afa refs/backups/main-throttled
+7ab911e6257668959d3657a7dee9b1c3240924e3 refs/cache-automerge/00/0060b8109e8853a650c3e6cf677aaba4f5f16d
+49cb0f2c8b780a75679e39f4ace571eed2cac05a refs/cache-automerge/00/00e83e9586033f988813e2ee916512c61978b6
+057c60d5d0af3eb144639953e6a7d22f1c63e67f refs/cache-automerge/00/02762f832bc05929157d02126800b38f57bc8e
+34712fc036a198529db6da872b924be7c8f86029 refs/cache-automerge/00/04ed4ca869e547db62c7936ca651a19eff2edd
+f1fa4bd8485c76c9f01fb840e6d9b915d2fa9ba4 refs/cache-automerge/00/0c26a7cdcf35e55e7769857ee9200431fcd0ea
+c3695a07d1cf01bff71de8f3c5bcb80360d2f29d refs/cache-automerge/00/13ad6d990ae9fb0cccda31eb3c62a8a418fa41
+940eedd270af9c3795fa8a76511ba36fb169fc92 refs/cache-automerge/00/13dc32ca81f2c84c5a053bc5636cc1de5b7319
+d6ad291c5191a906f63d622cf66a24967a219566 refs/cache-automerge/00/164c26e6356e883aec3a2c35811673e6bb22ad
+f51cc37a39c80e14d4f057cc372e4113b40774b7 refs/cache-automerge/00/17242f0437f84ca4a49012850c5242af49fa7a
+6a89a3ab13530a6081ed9789fe3becbf7f83fe99 refs/cache-automerge/00/191150126ca3aa8685d72edab5a20e56750ee7
+0c835374acb33713f1df155ec0257237ec1549a7 refs/cache-automerge/00/1920b68c34d66027f76934c1c9ab40a7d5f714
+a7ea6f6371c7f142b08ffb6dbfc7c382afc2a1a4 refs/cache-automerge/00/1a5cff89509596f2867b386773b563e84607dd
+81134857a0f27ef8175bd1fed00b077daf355351 refs/cache-automerge/00/1b9a8fab2f8a7b15d4e53a479b52e6eadf9e02
+c25840749c0a59278b0c817dfb887e4ade41980b refs/cache-automerge/00/1d7fa29dd0f236e2d72f9c37336c1f4c35635f
+6d5a94d8af18974080ad00442268c7dc23d18aea refs/cache-automerge/00/1f03b22270e588ca92404f11154b071f197695
+a43a893d160b573689298c94bb45032961c04ee3 refs/cache-automerge/00/21640a6f98a09b4d1b3b77cbec055d9fe2190f
+94e38aee7fd08f2f7687aa9825c763600fc39a59 refs/cache-automerge/00/216665cd5573b0a922953cf3120f07b75584d3
+8f9bdd22d33e5a4fe411c2435d6c581d46592fb5 refs/cache-automerge/00/216cd1cea47147f6d2e4576a91213648a4593a
+9c1d1b07f0f1c3a7f74d4d94b1c95bad030b1945 refs/cache-automerge/00/2323582ece6398c62094d0ecbec79f70320efd
+48aa05e4ac94f7d927ce22b27d242c44e5688169 refs/cache-automerge/00/23bdcb3205e34e9eb01e521ee8f1df3917e227
+91b93fa9e12e6e861214dc85fdf27dc178110920 refs/cache-automerge/00/24d460ed6dda36f0aff4a95afe57186cc2c79d
+b8df12841c432b1266c830f5d9c12caee812827e refs/cache-automerge/00/24fb87ff72bc81f90bc4688dda0a865fb6902c
+ab982c2a7556fefa0a7da1294a582743b21ce051 refs/cache-automerge/00/268f7e68c0615fec38646be1ed3241eb02d2ec
+8e08d0c23961a74d1af1875c7e92dd21a1a96873 refs/cache-automerge/00/293c42293ba899d1b2b14dca2106357ec0a2e2
+28cb8181cf5f88368eaae4f2f940f841b5b33044 refs/cache-automerge/00/2991389e635fc98407c8ca2f7210f4129cccf3
+10fe096cf748689cb48f84a5ba3b8fd57431902f refs/cache-automerge/00/2b4102577ac6b37e6c28d71442f038022e9601
+35e0c5719efd06f2298f3af01179f8e39f8b25fd refs/cache-automerge/00/2cd3fec9c9398f8bea8e17899d834be74443c7
+b276b1d59cc9ff7ee0336c4f7b6f90d9c7eba0f9 refs/cache-automerge/00/2f5ef24b59eec1d50ef539b63e9c6eaeba0531
+f7a0b5df1b1fbee336ad0511f892cebe6a64077d refs/cache-automerge/00/30d540407b1fe55b58374ec435a43fc35ca17d
+6311a7432d586486d167f0966fe5e730687f6373 refs/cache-automerge/00/323880074e79b518223c9b1d45fb6cd7842caf
+56274054e51906622dcd527ae37241502b0434be refs/cache-automerge/00/34152039f161bb3a68a99f4d982b58b09505eb
+c6d471906709a280774fb1e1457e04661bdb7971 refs/cache-automerge/00/35aa931d6d1accdc677bebf22d42210352c720
+2c864a53861e59ef85c9ed90a9e2bbcd8f20e6ac refs/cache-automerge/00/3671485881b066e514b2f3fe9862303c1e27ea
+c234283c0d02a1539ec89a629d3b6c3865498547 refs/cache-automerge/00/3bc9e1c21c887636c4bcfcdd9d2c31c95526e9
+4affa708798fb3d87b1d23d9e313e9cb777c7e8b refs/cache-automerge/00/3c5fd586b4a6dce09af8529042cfe698a52303
+c0ac2c79ce6a9dde56566cf7616bde39aad0d8af refs/cache-automerge/00/3d648ab9d4cbd56357dac3af5676bc2c5173a0
+5eb55ab07ddc7b60dd3bb1ce18482015fd47441a refs/cache-automerge/00/47b85623b6d55ac91aa3dd821a67f2a398e4f0
+f2ee409524e55e2ab052aac96f74e44a311a6b03 refs/cache-automerge/00/47c5587c7370d97743daf8b9ad73d1b9734d6b
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://android.googlesource.com/platform/manifest/+refs?format=TEXT' | rg 'refs/tags/android-10|refs/tags/q|5803371|refs/tags/QP1A' | head -200" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 890ms:
+85d94cf3bef1b141fd7305db18edd5e68fa93022 refs/tags/android-10.0.0_r1
+151c2f06174ef1fc0cd05f4df6fa359c0138a63c refs/tags/android-10.0.0_r1^{}
+528029fda05c4bf9f8690012d5eaffeb689f4a2b refs/tags/android-10.0.0_r10
+e3bacc7b4929ace0fc60ea4b3f8376ef1c375ab6 refs/tags/android-10.0.0_r10^{}
+d10a95e16f5cc883cadd400524ce8cbfe5acc1dc refs/tags/android-10.0.0_r11
+9cad8fc720c0216fc86b9c37109c7588a2091907 refs/tags/android-10.0.0_r11^{}
+810349005664d4487171ab6e76a4cc74c3c6961b refs/tags/android-10.0.0_r12
+425389bddad34a5fd6419ac2f7c4c958ff514e61 refs/tags/android-10.0.0_r12^{}
+f9896239b609722a34ae26997450d4c96adfcf02 refs/tags/android-10.0.0_r13
+0ad853a1fafd612b11a0dc77c806f05421558e88 refs/tags/android-10.0.0_r13^{}
+5466130b445efa2efbacefd99684f671df55747d refs/tags/android-10.0.0_r14
+84db7086ce4dea8f94518229a72c837e899b0bf7 refs/tags/android-10.0.0_r14^{}
+8e19fea9a7b90420a542429bea17a63712ba9e8a refs/tags/android-10.0.0_r15
+a8f7b982e05855cee2dd539f551a3dafac968e87 refs/tags/android-10.0.0_r15^{}
+dcb8a5918cf9f469f9b8fa361a57b70256cf585c refs/tags/android-10.0.0_r16
+115d198a6c1d83e29bf5d1ef7cae7e539b820500 refs/tags/android-10.0.0_r16^{}
+085e5da3a079c1dfa63595d8cc8dd80c88080662 refs/tags/android-10.0.0_r17
+4531c2f30a224a7782a4dd245f5d90ce84e2941d refs/tags/android-10.0.0_r17^{}
+23d6381738b0a9e0e2d0c4d2cecf9a1a30d1f584 refs/tags/android-10.0.0_r18
+75d21f0a18f95b63896490a210849f8f17882b4f refs/tags/android-10.0.0_r18^{}
+903599c3adf5432cc295120dc10f53b444a12124 refs/tags/android-10.0.0_r19
+78bc3f2ce53ce7d937894e29b5b14de87337789e refs/tags/android-10.0.0_r19^{}
+8d71520267be03bf6ca1604abc843b2804096fc0 refs/tags/android-10.0.0_r2
+a82892e6db3fb7b478037c9e4187a526f7a4ec12 refs/tags/android-10.0.0_r2^{}
+2d100b3674af00374d1886f9c02135cf84bed490 refs/tags/android-10.0.0_r20
+6e14d653e69cb161f6cf57ef69e9838ebd29d36c refs/tags/android-10.0.0_r20^{}
+fbb6416e663de17b2f3fe7322d7e067c146854a6 refs/tags/android-10.0.0_r21
+ea39c2bd2bdcbe1f331f8bbbb653d5fedeed72b7 refs/tags/android-10.0.0_r21^{}
+e0d9973d66ddf4f9e79cd5db9c13e79b01ab8899 refs/tags/android-10.0.0_r22
+f0dce1a862da2a31deab50081f033149d88e9551 refs/tags/android-10.0.0_r22^{}
+1f9dc304cfac4f28e12406555330a67feb3a6d8c refs/tags/android-10.0.0_r23
+23abf893cdcc2ae33fada6ef28975bf9e16f2b5b refs/tags/android-10.0.0_r23^{}
+97d3015470e5f1e6c6f0d30a9eb0a70c4d3e7584 refs/tags/android-10.0.0_r24
+6344ebef9eae814b5838c3bd080653972ffb6ff7 refs/tags/android-10.0.0_r24^{}
+8d9d1ac11cb3855f38dc34110fe7540cd3097afe refs/tags/android-10.0.0_r25
+e683c5c74b25255d250d9e55526fc3f7c2cde893 refs/tags/android-10.0.0_r25^{}
+6487d6e4cad58c48ec252c3893c2be2226db8bc1 refs/tags/android-10.0.0_r26
+7696dbcc93cfadbb81295ee43d75ed1ab6b34767 refs/tags/android-10.0.0_r26^{}
+dfcbb2784b501fa1999fac15259dcd4e7bc3a247 refs/tags/android-10.0.0_r27
+a7193f244d398aa37345776460fc296168226f5a refs/tags/android-10.0.0_r27^{}
+7a640f3f09ae97fad7da73498e657982f377bcc9 refs/tags/android-10.0.0_r28
+b1d0a65f7b5d1c3b71ebada7825e828c944347c4 refs/tags/android-10.0.0_r28^{}
+b4468ee599639dac3629678f065a145297047a20 refs/tags/android-10.0.0_r29
+7887224259a2119e35770503305531bf1265dfcd refs/tags/android-10.0.0_r29^{}
+0f3a636df57830f2b93ebc4aec3d1d703642785c refs/tags/android-10.0.0_r3
+47083502f9c0288124f53fb28ece4052c8a6895f refs/tags/android-10.0.0_r3^{}
+0bbd7ee1a9759240d2670335beac73947c1d4aa4 refs/tags/android-10.0.0_r30
+720bca61b1ab16637aa070e83b0c2fd47ae4d847 refs/tags/android-10.0.0_r30^{}
+fa6cf2e319a13e028a1b61f311900d97b5b94f5a refs/tags/android-10.0.0_r31
+349b5dc525fae47f5f28c91841062e6bfb417257 refs/tags/android-10.0.0_r31^{}
+0aac2b692f89f2233210a0c485a65ac55597e30f refs/tags/android-10.0.0_r32
+b4907723d4fe0fa2ce5b8fe98982b4cf307b52b0 refs/tags/android-10.0.0_r32^{}
+975f1b95f37d80f42950a9a384af5169e7d8af3f refs/tags/android-10.0.0_r33
+daad1b423923efc11601763cbba05d0df4efbaa7 refs/tags/android-10.0.0_r33^{}
+5cda99f2c6db3397fa5dfc61d47be180ee045695 refs/tags/android-10.0.0_r34
+3900458cb0fd6442177a355ecd0a7e7fc0e97678 refs/tags/android-10.0.0_r34^{}
+64d336ce50dbf6fe39513796a46c37a2acff41e7 refs/tags/android-10.0.0_r35
+d8bc74ec20567402afa51d7d7c36f1e4ecba87cc refs/tags/android-10.0.0_r35^{}
+6057cb0649e734f6d18bc625315e5b5ddc42a291 refs/tags/android-10.0.0_r36
+0d9c753ca43e799dac807aa15f92a725bae7aaec refs/tags/android-10.0.0_r36^{}
+a1198d79067c1860b3fc4c5a4684fcf35f4202f4 refs/tags/android-10.0.0_r37
+fea4547810e0d8355440ba4e76bdeb7eea067bbc refs/tags/android-10.0.0_r37^{}
+763d06c864054889a2ec0aafb277af2db8d9b2f4 refs/tags/android-10.0.0_r38
+887567fae8eaa8ad3e386036d6c16b20403bdb09 refs/tags/android-10.0.0_r38^{}
+6291cda133a184bd223d034f13d4209aead55783 refs/tags/android-10.0.0_r39
+8b7c29ae2fd9ef10dd27abf824c4fc80def521d7 refs/tags/android-10.0.0_r39^{}
+caec20fce432ccd3b6c871f4793cd21414c96fa6 refs/tags/android-10.0.0_r4
+7d88aca535f97fee8422de38cc9f77cd6323f0d9 refs/tags/android-10.0.0_r4^{}
+84a3be846b3bdbc6484d1bb45a552ef53752ee3d refs/tags/android-10.0.0_r40
+5383244f18cbc76f7a56042c0a305c59c1f7c687 refs/tags/android-10.0.0_r40^{}
+066a31cd81a4e44acdf9876f2df0beec2f4c5a84 refs/tags/android-10.0.0_r41
+458a84154e391e7d0cd4f87ab17955bcfb3b4310 refs/tags/android-10.0.0_r41^{}
+e3445e2224cf9d0df74e5c65dae7ba130ff27f00 refs/tags/android-10.0.0_r42
+abc3f6b765442aadf957b54db661b0a72157ec3d refs/tags/android-10.0.0_r42^{}
+6bdc95af37c647b6c10912593c8a074f58b72a0a refs/tags/android-10.0.0_r43
+52043b4f2952a699deecd4d0819eeefb60c3b60d refs/tags/android-10.0.0_r43^{}
+2143777d3469d51bc6fb39cc46c92a1985dbc785 refs/tags/android-10.0.0_r44
+095562c19aaffe3a1f5240dcaf05ff986db8c63a refs/tags/android-10.0.0_r44^{}
+af148747ea3a6eba8fbe061ac09ab40211d204a0 refs/tags/android-10.0.0_r45
+be9f2a9fa3c4be6b915f94e8206c28c548189005 refs/tags/android-10.0.0_r45^{}
+83b2d03727c2793994b31914ad9bd5b5df64d8e3 refs/tags/android-10.0.0_r46
+2e47d4762383951129b1c8a9d50af7cc6fafda60 refs/tags/android-10.0.0_r46^{}
+99137970cc410abc42a4e39d61667c5c85ddd980 refs/tags/android-10.0.0_r47
+aaf063a1ac9b5dd39b891350c5a4bf06b905a7f6 refs/tags/android-10.0.0_r47^{}
+9a75777583b5f8ba44cab7ee7e84d80cfa64b94a refs/tags/android-10.0.0_r5
+a51fd59c9970d479d36a7f7df2174b1fd5d0ef70 refs/tags/android-10.0.0_r5^{}
+31797805ddfea7023e051a2a08497c40e7b268e3 refs/tags/android-10.0.0_r6
+88747dd65adf40871ce8ad1215ac2ca41d43ef8a refs/tags/android-10.0.0_r6^{}
+9ef7b4beb540d37dd26b07b3155b8f4a432d06b4 refs/tags/android-10.0.0_r7
+4825b179e340d11091d1e5a7de885e6e6931ad34 refs/tags/android-10.0.0_r7^{}
+2d6abddc5db32abc08ee87711d2d51b3a75b818d refs/tags/android-10.0.0_r8
+8b8d24ca2cd0baf9d3e5faf6c14a972fef6c7e8f refs/tags/android-10.0.0_r8^{}
+2b67d39cb972298a5e5a1349564519ababacefb5 refs/tags/android-10.0.0_r9
+c721ef17f331d103d76ca4e8025d98218736fd13 refs/tags/android-10.0.0_r9^{}
+4b839d9b25f7cbd68e306883c40ca55d1a1131b7 refs/tags/q_tzdata_aml_294400310
+aa3a15c65b2c37c1c6dbd8dde5510f7119186273 refs/tags/q_tzdata_aml_294400310^{}
+b8d6464bc49e0ec2c1e6b8c9021d6cc7c79fa768 refs/tags/q_tzdata_aml_295500001
+a787e887b4340e928e7880ff792d928b90170ec9 refs/tags/q_tzdata_aml_295500001^{}
+c29a9945e0046c4abb3424fbb7b1a3c5aed9e07a refs/tags/q_tzdata_aml_295500002
+c5aacc3770bb1eedf920e85ad6e05c080808cec1 refs/tags/q_tzdata_aml_295500002^{}
+5a95db0a7cb8392dc3b68bd30bab9161ccdbd05f refs/tags/q_tzdata_aml_295600110
+33b568a53b3faf335c614422f7f568a08edd2d68 refs/tags/q_tzdata_aml_295600110^{}
+2759c0bb51a82b52bc59d66b68747674bc3aea4d refs/tags/q_tzdata_aml_295600118
+6568e7f054874e025709867d74143aa067b37121 refs/tags/q_tzdata_aml_295600118^{}
+6391a4a966dbdb21b8f91a06dc992be8f990ba09 refs/tags/q_tzdata_aml_296200000
+283ce0d5d982e34412598d03646f6515496ed4d5 refs/tags/q_tzdata_aml_296200000^{}
+6dc614e60be6b820d2ade7fb7846c1509ef60fae refs/tags/q_tzdata_aml_297100000
+57715961094a59866735cc9ea9c3548dac729efc refs/tags/q_tzdata_aml_297100000^{}
+9bcdc6b7b541f52200e590bd897923d6d6f1b9f1 refs/tags/q_tzdata_aml_297100300
+6240c9c8a1421d3ad1ea9df662e745c9aa2e85eb refs/tags/q_tzdata_aml_297100300^{}
+b0d67877adb418073f069deb29dc259e9f2bc2ce refs/tags/q_tzdata_aml_297100400
+5acc10b8a802fbbf5a39321ec965110ec0ad293f refs/tags/q_tzdata_aml_297100400^{}
+67b1fdd9f655a75264ecd6e410e1cdc24cf67cf9 refs/tags/q_tzdata_aml_297100800
+737b2d9143b0ea3767248a479e8d60aad654ae3b refs/tags/q_tzdata_aml_297100800^{}
+48bcf4ba9154b125ca17b9780bdd25e981efbaea refs/tags/q_tzdata_aml_297701000
+69a0f86d5907271c96545bf60abf51f913776601 refs/tags/q_tzdata_aml_297701000^{}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://source.android.com/docs/setup/reference/build-numbers | rg -n 'QP1A\\.190711\\.020|5803371|android-10\\.0\\.0_r1|Android 10' -C 2" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+exec
+/usr/bin/bash -lc "curl -fsSL https://android.googlesource.com/platform/build/+/refs/tags/android-10.0.0_r1/core/build_id.mk?format=TEXT | base64 -d | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+exec
+/usr/bin/bash -lc "curl -fsSL https://android.googlesource.com/platform/build/+/refs/tags/android-10.0.0_r2/core/build_id.mk?format=TEXT | base64 -d | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+exec
+/usr/bin/bash -lc "curl -fsSL https://android.googlesource.com/platform/build/+/refs/tags/android-10.0.0_r3/core/build_id.mk?format=TEXT | base64 -d | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 344ms:
+#
+# Copyright (C) 2008 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# BUILD_ID is usually used to specify the branch name
+# (like "MAIN") or a branch name and a release candidate
+# (like "CRB01").  It must be a single word, and is
+# capitalized by convention.
+
+BUILD_ID=QP1A.190711.019
+
+ succeeded in 342ms:
+#
+# Copyright (C) 2008 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# BUILD_ID is usually used to specify the branch name
+# (like "MAIN") or a branch name and a release candidate
+# (like "CRB01").  It must be a single word, and is
+# capitalized by convention.
+
+BUILD_ID=QP1A.190711.020.C3
+
+ succeeded in 1081ms:
+8458-    <tr>
+8459-      <td>QQ1B.191205.012.A1</td>
+8460:      <td>android-10.0.0_r19</td>
+8461-      <td>Android10</td>
+8462-      <td>Pixel 4 XL, Pixel 4</td>
+--
+8465-    <tr>
+8466-      <td>QQ1B.191205.011</td>
+8467:      <td>android-10.0.0_r18</td>
+8468-      <td>Android10</td>
+8469-      <td>Pixel 4 XL, Pixel 4</td>
+--
+8472-    <tr>
+8473-      <td>QP1A.191005.007.A3</td>
+8474:      <td>android-10.0.0_r17</td>
+8475-      <td>Android10</td>
+8476-      <td>Pixel XL, Pixel</td>
+--
+8479-    <tr>
+8480-      <td>QQ1A.191205.011</td>
+8481:      <td>android-10.0.0_r16</td>
+8482-      <td>Android10</td>
+8483-      <td>Pixel 3a XL, Pixel 3a</td>
+--
+8486-    <tr>
+8487-      <td>QQ1A.191205.008</td>
+8488:      <td>android-10.0.0_r15</td>
+8489-      <td>Android10</td>
+8490-      <td>Pixel 3 XL, Pixel 3, Pixel 2 XL, Pixel 2</td>
+--
+8493-    <tr>
+8494-      <td>QD1A.190821.014.C2</td>
+8495:      <td>android-10.0.0_r14</td>
+8496-      <td>Android10</td>
+8497-      <td>Pixel 4 XL, Pixel 4</td>
+--
+8500-    <tr>
+8501-      <td>QD1A.190821.014</td>
+8502:      <td>android-10.0.0_r13</td>
+8503-      <td>Android10</td>
+8504-      <td>Pixel 4 XL, Pixel 4</td>
+--
+8507-    <tr>
+8508-      <td>QD1A.190821.007.A3</td>
+8509:      <td>android-10.0.0_r12</td>
+8510-      <td>Android10</td>
+8511-      <td>Pixel 4 XL, Pixel 4</td>
+--
+8514-    <tr>
+8515-      <td>QP1A.191105.004</td>
+8516:      <td>android-10.0.0_r11</td>
+8517-      <td>Android10</td>
+8518-      <td>Pixel 2 XL, Pixel 2</td>
+--
+8521-    <tr>
+8522-      <td>QP1A.191105.003</td>
+8523:      <td>android-10.0.0_r10</td>
+8524-      <td>Android10</td>
+8525-      <td>Pixel 3a XL, Pixel 3a, Pixel 3 XL, Pixel 3</td>
+--
+8569-    </tr>
+8570-    <tr>
+8571:      <td>QP1A.190711.020.C3</td>
+8572-      <td>android-10.0.0_r3</td>
+8573-      <td>Android10</td>
+--
+8576-    </tr>
+8577-    <tr>
+8578:      <td>QP1A.190711.020</td>
+8579-      <td>android-10.0.0_r2</td>
+8580-      <td>Android10</td>
+--
+8584-    <tr>
+8585-      <td>QP1A.190711.019</td>
+8586:      <td>android-10.0.0_r1</td>
+8587-      <td>Android10</td>
+8588-      <td>Pixel 3a XL, Pixel 3a, Pixel 3 XL, Pixel 3, Pixel 2 XL, Pixel 2, Pixel XL, Pixel</td>
+--
+12127-<ul>
+12128-<li><strong>P</strong> represents the first letter of the codename of the platform release,
+12129:for example, <strong>O</strong> is Oreo. For Android 10 and later codenames, the letter
+12130:equivalent is used, such as <strong>Q</strong> for Android 10 and <strong>R</strong> for Android 11.</li>
+12131-<li><strong>V</strong> represents a supported vertical. By convention, <strong>P</strong> represents the
+12132-primary platform branch.</li>
+
+ succeeded in 1520ms:
+#
+# Copyright (C) 2008 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# BUILD_ID is usually used to specify the branch name
+# (like "MAIN") or a branch name and a release candidate
+# (like "CRB01").  It must be a single word, and is
+# capitalized by convention.
+
+BUILD_ID=QP1A.190711.020
+
+web search: 
+web search: "10-robolectric-5803371" "android-10.0.0_r2"
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/search/code?q=%2210-robolectric-5803371%22' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/robolectric/robolectric/master/annotations/src/main/java/org/robolectric/versioning/AndroidVersions.java | rg -n '5803371|QP1A|android-all|Q' -C 3" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/robolectric/robolectric/master/robolectric/src/main/java/org/robolectric/plugins/DefaultSdkProvider.java | rg -n '5803371|AndroidVersions|Android 10|Q' -C 3" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/search/code?q=%225803371%22+repo:robolectric/robolectric' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 109ms:
+curl: (22) The requested URL returned error: 401
+
+ succeeded in 120ms:
+curl: (22) The requested URL returned error: 401
+
+ succeeded in 184ms:
+17-import org.robolectric.pluginapi.Sdk;
+18-import org.robolectric.pluginapi.SdkProvider;
+19-import org.robolectric.util.Util;
+20:import org.robolectric.versioning.AndroidVersions.Baklava;
+21:import org.robolectric.versioning.AndroidVersions.M;
+22:import org.robolectric.versioning.AndroidVersions.N;
+23:import org.robolectric.versioning.AndroidVersions.NMR1;
+24:import org.robolectric.versioning.AndroidVersions.O;
+25:import org.robolectric.versioning.AndroidVersions.OMR1;
+26:import org.robolectric.versioning.AndroidVersions.P;
+27:import org.robolectric.versioning.AndroidVersions.Q;
+28:import org.robolectric.versioning.AndroidVersions.R;
+29:import org.robolectric.versioning.AndroidVersions.S;
+30:import org.robolectric.versioning.AndroidVersions.Sv2;
+31:import org.robolectric.versioning.AndroidVersions.T;
+32:import org.robolectric.versioning.AndroidVersions.U;
+33:import org.robolectric.versioning.AndroidVersions.V;
+34-
+35-/**
+36- * Robolectric's default {@link SdkProvider}.
+--
+67-    knownSdks.put(O.SDK_INT, new DefaultSdk(O.SDK_INT, "8.0.0_r4", "r1", "REL", 8));
+68-    knownSdks.put(OMR1.SDK_INT, new DefaultSdk(OMR1.SDK_INT, "8.1.0", "4611349", "REL", 8));
+69-    knownSdks.put(P.SDK_INT, new DefaultSdk(P.SDK_INT, "9", "4913185-2", "REL", 8));
+70:    knownSdks.put(Q.SDK_INT, new DefaultSdk(Q.SDK_INT, "10", "5803371", "REL", 9));
+71-    knownSdks.put(R.SDK_INT, new DefaultSdk(R.SDK_INT, "11", "6757853", "REL", 9));
+72-    knownSdks.put(S.SDK_INT, new DefaultSdk(S.SDK_INT, "12", "7732740", "REL", 9));
+73-    knownSdks.put(Sv2.SDK_INT, new DefaultSdk(Sv2.SDK_INT, "12.1", "8229987", "REL", 9));
+
+ succeeded in 291ms:
+572-
+573-  /**
+574-   * Version: 10 <br>
+575:   * ShortCode: Q <br>
+576-   * SDK API Level: 29 <br>
+577-   * release: true <br>
+578-   *
+579-   * @deprecated use android.os.Build.VERSION_CODES instead
+580-   */
+581-  @Deprecated
+582:  public static final class Q extends AndroidReleased {
+583-
+584:    public static final int SDK_INT = VERSION_CODES.Q;
+585-
+586:    public static final String SHORT_CODE = "Q";
+587-
+588-    public static final String VERSION = "10";
+589-
+
+codex
+I found no Maven `-tests.jar` for this version, while Maven does provide exact `-sources.jar` and `-javadoc.jar` artifacts. I’m going to use those exact Maven URLs, use the Android platform manifest as the repository URL from the artifact POM’s SCM, and set the test URL to `N/A` because there is no exact published test suite I can identify with confidence.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
+diff --git a/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json b/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
+index 377552278cbc2f64c05aff93c46bc3495094fd18..f8158dfa1de185ad8f6ec38326eb448f24ea0b2a
+--- a/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
++++ b/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.robolectric:android-all:10-robolectric-5803371"
++  "coordinates" : "org.robolectric:android-all:10-robolectric-5803371",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-sources.jar",
++  "repository-url" : "https://android.googlesource.com/platform/manifest",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-javadoc.jar",
++  "description" : "android-all is Robolectric's repackaged Android 10 framework API jar for supplying Android platform classes and resources to JVM tests. It lets Robolectric run code compiled against API level 29 without a device or emulator by providing the matching Android framework implementation."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json b/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
+index 377552278cbc2f64c05aff93c46bc3495094fd18..f8158dfa1de185ad8f6ec38326eb448f24ea0b2a
+--- a/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
++++ b/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.robolectric:android-all:10-robolectric-5803371"
++  "coordinates" : "org.robolectric:android-all:10-robolectric-5803371",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-sources.jar",
++  "repository-url" : "https://android.googlesource.com/platform/manifest",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-javadoc.jar",
++  "description" : "android-all is Robolectric's repackaged Android 10 framework API jar for supplying Android platform classes and resources to JVM tests. It lets Robolectric run code compiled against API level 29 without a device or emulator by providing the matching Android framework implementation."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 0ms:
+{
+  "coordinates": "org.robolectric:android-all:10-robolectric-5803371",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-sources.jar",
+  "repository-url": "https://android.googlesource.com/platform/manifest",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-javadoc.jar",
+  "description": "android-all is Robolectric's repackaged Android 10 framework API jar for supplying Android platform classes and resources to JVM tests. It lets Robolectric run code compiled against API level 29 without a device or emulator by providing the matching Android framework implementation."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json b/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
+index 377552278cbc2f64c05aff93c46bc3495094fd18..f8158dfa1de185ad8f6ec38326eb448f24ea0b2a
+--- a/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
++++ b/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.robolectric:android-all:10-robolectric-5803371"
++  "coordinates" : "org.robolectric:android-all:10-robolectric-5803371",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-sources.jar",
++  "repository-url" : "https://android.googlesource.com/platform/manifest",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-javadoc.jar",
++  "description" : "android-all is Robolectric's repackaged Android 10 framework API jar for supplying Android platform classes and resources to JVM tests. It lets Robolectric run code compiled against API level 29 without a device or emulator by providing the matching Android framework implementation."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json && git ls-files --stage build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json b/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
+index 377552278cbc2f64c05aff93c46bc3495094fd18..f8158dfa1de185ad8f6ec38326eb448f24ea0b2a
+--- a/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
++++ b/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.robolectric:android-all:10-robolectric-5803371"
++  "coordinates" : "org.robolectric:android-all:10-robolectric-5803371",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-sources.jar",
++  "repository-url" : "https://android.googlesource.com/platform/manifest",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-javadoc.jar",
++  "description" : "android-all is Robolectric's repackaged Android 10 framework API jar for supplying Android platform classes and resources to JVM tests. It lets Robolectric run code compiled against API level 29 without a device or emulator by providing the matching Android framework implementation."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 0ms:
+{
+  "coordinates" : "org.robolectric:android-all:10-robolectric-5803371",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-sources.jar",
+  "repository-url" : "https://android.googlesource.com/platform/manifest",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-javadoc.jar",
+  "description" : "android-all is Robolectric's repackaged Android 10 framework API jar for supplying Android platform classes and resources to JVM tests. It lets Robolectric run code compiled against API level 29 without a device or emulator by providing the matching Android framework implementation."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json b/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
+index 377552278cbc2f64c05aff93c46bc3495094fd18..f8158dfa1de185ad8f6ec38326eb448f24ea0b2a
+--- a/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
++++ b/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.robolectric:android-all:10-robolectric-5803371"
++  "coordinates" : "org.robolectric:android-all:10-robolectric-5803371",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-sources.jar",
++  "repository-url" : "https://android.googlesource.com/platform/manifest",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-javadoc.jar",
++  "description" : "android-all is Robolectric's repackaged Android 10 framework API jar for supplying Android platform classes and resources to JVM tests. It lets Robolectric run code compiled against API level 29 without a device or emulator by providing the matching Android framework implementation."
+ }
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 org robolectric android-all 10-robolectric-5803371 sources javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/org.robolectric/android-all/10-robolectric-5803371
+web search: 
+web search: https://repo1.maven.org/maven2/org/robolectric/android-all/10-robolectric-5803371/
+codex
+Updated [org.robolectric-android-all-10-robolectric-5803371.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json).
+
+I used the exact Maven Central `sources` and `javadoc` artifacts, and set `test-code-url` to `N/A` because no tests artifact is published for that exact version. The POM identifies Android source control for the artifact, so `repository-url` points to the Android platform manifest repository. ([repo1.maven.org](https://repo1.maven.org/maven2/org/robolectric/android-all/10-robolectric-5803371/))
+
+Validation: `jq` parsed the JSON successfully. No `language` field was added because this is not a Kotlin, Groovy, or Scala-specific library.
+diff --git a/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json b/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
+index 377552278cbc2f64c05aff93c46bc3495094fd18..f8158dfa1de185ad8f6ec38326eb448f24ea0b2a
+--- a/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
++++ b/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.robolectric:android-all:10-robolectric-5803371"
++  "coordinates" : "org.robolectric:android-all:10-robolectric-5803371",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-sources.jar",
++  "repository-url" : "https://android.googlesource.com/platform/manifest",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-javadoc.jar",
++  "description" : "android-all is Robolectric's repackaged Android 10 framework API jar for supplying Android platform classes and resources to JVM tests. It lets Robolectric run code compiled against API level 29 without a device or emulator by providing the matching Android framework implementation."
+ }
+
+2026-04-30T00:20:04.901737Z ERROR codex_core::session: failed to record rollout items: thread 019ddbbf-9d24-75b1-b534-ef18e4ea578b not found
+tokens used
+76,239
+Updated [org.robolectric-android-all-10-robolectric-5803371.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b/build/discovered-artifact-metadata/org.robolectric-android-all-10-robolectric-5803371.json).
+
+I used the exact Maven Central `sources` and `javadoc` artifacts, and set `test-code-url` to `N/A` because no tests artifact is published for that exact version. The POM identifies Android source control for the artifact, so `repository-url` points to the Android platform manifest repository. ([repo1.maven.org](https://repo1.maven.org/maven2/org/robolectric/android-all/10-robolectric-5803371/))
+
+Validation: `jq` parsed the JSON successfully. No `language` field was added because this is not a Kotlin, Groovy, or Scala-specific library.
+Ran agent for org.robolectric:android-all:10-robolectric-5803371 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b/build/agent-artifact-discovery-logs/org.robolectric-android-all-10-robolectric-5803371.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 25s
+9 actionable tasks: 4 executed, 5 from cache

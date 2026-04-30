@@ -1,0 +1,215 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ddbc1-ffd2-74b3-b1e8-fb5c0c16d261
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.robolectric:android-all:10-robolectric-5803371
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "10-robolectric-5803371".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b/metadata/org.robolectric/android-all/index.json
+- Entry selector: "metadata-version" = "10-robolectric-5803371"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "10-robolectric-5803371".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-sources.jar
+- repository-url: https://android.googlesource.com/platform/manifest
+- test-code-url: N/A
+- documentation-url: https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-javadoc.jar
+- description: android-all is Robolectric's repackaged Android 10 framework API jar for supplying Android platform classes and resources to JVM tests. It lets Robolectric run code compiled against API level 29 without a device or emulator by providing the matching Android framework implementation.
+- language: <missing>
+
+Context:
+- Coordinate version: 10-robolectric-5803371
+- Entry test-version: 10-robolectric-5803371
+codex
+I’ll verify the exact Maven/AOSP artifact context, then inspect the JSON entry and only edit it if a field is actually missing under your rules.
+web search: 
+web search: org.robolectric android-all 10-robolectric-5803371 maven sources javadoc
+codex
+The artifact exists on Maven Central with version-specific source and javadoc jars, and the current values already reflect that. I’m checking the local entry now to confirm whether `language` is the only absent field and whether it should remain absent.
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"10-robolectric-5803371\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.robolectric/android-all/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 0ms:
+4:    "metadata-version" : "10-robolectric-5803371",
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-sources.jar",
+6:    "repository-url" : "https://android.googlesource.com/platform/manifest",
+7:    "test-code-url" : "N/A",
+8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-javadoc.jar",
+9:    "description" : "android-all is Robolectric's repackaged Android 10 framework API jar for supplying Android platform classes and resources to JVM tests. It lets Robolectric run code compiled against API level 29 without a device or emulator by providing the matching Android framework implementation.",
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 0ms:
+?? metadata/org.robolectric/
+?? tests/src/org.robolectric/
+
+web search: 
+web search: org.robolectric android-all 10-robolectric-5803371 maven sources javadoc
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/
+codex
+The selected entry already has non-blank values for the source jar, repository root, test URL placeholder, javadoc jar, and two-sentence description. Since `android-all` is an Android platform API jar rather than a Kotlin/Groovy/Scala-specific artifact, I’m leaving `language` absent as requested.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"10-robolectric-5803371\")' metadata/org.robolectric/android-all/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "10-robolectric-5803371",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-sources.jar",
+  "repository-url": "https://android.googlesource.com/platform/manifest",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-javadoc.jar",
+  "description": "android-all is Robolectric's repackaged Android 10 framework API jar for supplying Android platform classes and resources to JVM tests. It lets Robolectric run code compiled against API level 29 without a device or emulator by providing the matching Android framework implementation.",
+  "tested-versions": [
+    "10-robolectric-5803371"
+  ],
+  "allowed-packages": [
+    "android",
+    "com.android",
+    "com.google.android",
+    "dalvik.annotation",
+    "dalvik.bytecode",
+    "dalvik.system",
+    "gov.nist.core",
+    "gov.nist.javax.sip",
+    "java.lang",
+    "java.math",
+    "java.net",
+    "java.nio",
+    "javax.microedition.khronos",
+    "javax.sip",
+    "javax.xml",
+    "junit.framework",
+    "libcore.api",
+    "libcore.icu",
+    "libcore.internal",
+    "libcore.io",
+    "libcore.math",
+    "libcore.net",
+    "libcore.reflect",
+    "libcore.timezone",
+    "libcore.util",
+    "org.apache",
+    "org.ccil.cowan.tagsoup",
+    "org.chromium.arc",
+    "org.json",
+    "org.w3c.dom",
+    "org.xml.sax",
+    "org.xmlpull.v1"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.robolectric/android-all/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b
+ succeeded in 0ms:
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/
+web search: 
+web search: https://repo1.maven.org/maven2/org/robolectric/android-all/
+web search: 
+web search: https://repo1.maven.org/maven2/org/robolectric/android-all/10-robolectric-5803371/
+web search: 
+web search: android.googlesource.com platform manifest AOSP manifest repository
+codex
+No file changes were needed in [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b/metadata/org.robolectric/android-all/index.json:4). All requested fields are already non-blank except `language`, and `org.robolectric:android-all` is not a Kotlin, Groovy, or Scala-specific library, so `language` should remain absent.
+
+Selected values remain:
+
+```json
+{
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-sources.jar",
+  "repository-url": "https://android.googlesource.com/platform/manifest",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-javadoc.jar",
+  "description": "android-all is Robolectric's repackaged Android 10 framework API jar for supplying Android platform classes and resources to JVM tests. It lets Robolectric run code compiled against API level 29 without a device or emulator by providing the matching Android framework implementation."
+}
+```
+
+Maven Central lists the exact `10-robolectric-5803371` version and contains the version-specific sources and javadoc jars; the artifact POM describes it as an Android platform API jar. ([repo1.maven.org](https://repo1.maven.org/maven2/org/robolectric/android-all/)) The repository root is the AOSP manifest repository at `android.googlesource.com/platform/manifest`, which is already stored without a tag or branch path. ([android.googlesource.com](https://android.googlesource.com/platform/manifest?utm_source=openai))
+
+Validation run: `jq` successfully parsed the target entry.
+2026-04-30T00:21:01.269021Z ERROR codex_core::session: failed to record rollout items: thread 019ddbc1-ffd2-74b3-b1e8-fb5c0c16d261 not found
+tokens used
+37,394
+No file changes were needed in [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b/metadata/org.robolectric/android-all/index.json:4). All requested fields are already non-blank except `language`, and `org.robolectric:android-all` is not a Kotlin, Groovy, or Scala-specific library, so `language` should remain absent.
+
+Selected values remain:
+
+```json
+{
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-sources.jar",
+  "repository-url": "https://android.googlesource.com/platform/manifest",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/robolectric/android-all/10-robolectric-5803371/android-all-10-robolectric-5803371-javadoc.jar",
+  "description": "android-all is Robolectric's repackaged Android 10 framework API jar for supplying Android platform classes and resources to JVM tests. It lets Robolectric run code compiled against API level 29 without a device or emulator by providing the matching Android framework implementation."
+}
+```
+
+Maven Central lists the exact `10-robolectric-5803371` version and contains the version-specific sources and javadoc jars; the artifact POM describes it as an Android platform API jar. ([repo1.maven.org](https://repo1.maven.org/maven2/org/robolectric/android-all/)) The repository root is the AOSP manifest repository at `android.googlesource.com/platform/manifest`, which is already stored without a tag or branch path. ([android.googlesource.com](https://android.googlesource.com/platform/manifest?utm_source=openai))
+
+Validation run: `jq` successfully parsed the target entry.
+Ran agent for org.robolectric:android-all:10-robolectric-5803371 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b/build/agent-url-discovery-logs/org.robolectric-android-all-10-robolectric-5803371.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1463-26bc010b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 44s
+9 actionable tasks: 1 executed, 8 up-to-date
