@@ -182,6 +182,30 @@ public class Jakarta_interceptor_apiTest {
     }
 
     @Test
+    void aroundInvokeInterceptorCanRecoverFromProceedException() throws Exception {
+        FailingService target = new FailingService();
+        Method fetch = declaredMethod(FailingService.class, "fetch", String.class);
+        RecordingInvocationContext context = RecordingInvocationContext.forMethod(
+                target,
+                fetch,
+                null,
+                new Object[]{"missing-record"},
+                parameters -> target.fetch((String) parameters[0]));
+
+        Object result = new RecoveryInterceptor().aroundInvoke(context);
+
+        assertThat(result).isEqualTo("fallback[missing-record]");
+        assertThat(context.getTarget()).isSameAs(target);
+        assertThat(context.getMethod()).isEqualTo(fetch);
+        assertThat(context.getParameters()).containsExactly("missing-record");
+        assertThat(context.getContextData())
+                .containsEntry("phase", "recovery")
+                .containsEntry("failedToken", "missing-record")
+                .containsEntry("exceptionType", ServiceFailure.class.getName())
+                .containsEntry("exceptionMessage", "Unable to fetch missing-record");
+    }
+
+    @Test
     void aroundConstructInterceptorCanMutateConstructorParametersAndExposeConstructedTarget() throws Exception {
         Constructor<TargetAwareComponent> constructor = declaredConstructor(TargetAwareComponent.class, String.class);
         RecordingInvocationContext context = RecordingInvocationContext.forConstructorUpdatingTarget(
@@ -329,6 +353,18 @@ public class Jakarta_interceptor_apiTest {
         }
     }
 
+    private static final class FailingService {
+        private String fetch(String token) throws ServiceFailure {
+            throw new ServiceFailure("Unable to fetch " + token);
+        }
+    }
+
+    private static final class ServiceFailure extends Exception {
+        private ServiceFailure(String message) {
+            super(message);
+        }
+    }
+
     private static final class TimerMetadata {
         private final String name;
         private final long delayMillis;
@@ -393,6 +429,23 @@ public class Jakarta_interceptor_apiTest {
             Object constructed = context.proceed();
             context.getContextData().put("constructedType", context.getTarget().getClass().getName());
             return constructed;
+        }
+    }
+
+    @Interceptor
+    private static final class RecoveryInterceptor {
+        @AroundInvoke
+        private Object aroundInvoke(InvocationContext context) throws Exception {
+            try {
+                return context.proceed();
+            } catch (ServiceFailure failure) {
+                String failedToken = (String) context.getParameters()[0];
+                context.getContextData().put("phase", "recovery");
+                context.getContextData().put("failedToken", failedToken);
+                context.getContextData().put("exceptionType", failure.getClass().getName());
+                context.getContextData().put("exceptionMessage", failure.getMessage());
+                return "fallback[" + failedToken + "]";
+            }
         }
     }
 
