@@ -89,6 +89,21 @@ final class Silencer_lib_2_13Test {
     assertThat(AnnotatedHelpers.aliasSummary(aliases)).isEqualTo("left/right")
   }
 
+  @Test
+  def annotatedMutableVariablesKeepReadWriteSemantics(): Unit = {
+    @silent("local mutable variable")
+    var runningTotal: Int = 0
+
+    val counter: AnnotatedCounter = new AnnotatedCounter
+    List(2, 3, 5).foreach { value =>
+      runningTotal += value
+      counter.add(value)
+    }
+
+    assertThat(runningTotal).isEqualTo(10)
+    assertThat(counter.current).isEqualTo(10)
+  }
+
   private def annotationNames(annotations: List[Annotation]): java.util.List[String] = {
     val names: java.util.ArrayList[String] = new java.util.ArrayList[String]()
     annotations.foreach {
@@ -141,5 +156,16 @@ final class Silencer_lib_2_13Test {
     @silent("generic method annotation")
     def map[B](@silent("generic function parameter") transform: A => B): AnnotatedHolder[B] =
       AnnotatedHolder(transform(value))
+  }
+
+  private final class AnnotatedCounter {
+    @silent("mutable field annotation")
+    private var total: Int = 0
+
+    def add(value: Int): Unit = {
+      total += value
+    }
+
+    def current: Int = total
   }
 }
