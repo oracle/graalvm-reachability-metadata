@@ -11,11 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -98,7 +100,7 @@ public class NativeLibraryLoaderTest {
         ResourceRecordingClassLoader resourceLoader = new ResourceRecordingClassLoader(
                 NativeLibraryLoaderTest.class.getClassLoader());
         List<Object> loadResults = new ArrayList<>();
-        Class<?> loaderClass = loadIsolatedLoaderClass();
+        Class<?> loaderClass = loadIsolatedLoaderClass(false);
         Method loadFirstAvailable = loaderClass.getDeclaredMethod(
                 "loadFirstAvailable", ClassLoader.class, List.class, String[].class);
         loadFirstAvailable.setAccessible(true);
@@ -114,6 +116,25 @@ public class NativeLibraryLoaderTest {
                         .anyMatch(resource -> resource.startsWith("META-INF/native/")));
     }
 
+    @Test
+    void isolatedOsxLoaderQueriesDynlibFallbackResource() throws Exception {
+        ResourceRecordingClassLoader resourceLoader = new ResourceRecordingClassLoader(
+                NativeLibraryLoaderTest.class.getClassLoader());
+        List<Object> loadResults = new ArrayList<>();
+        Class<?> loaderClass = loadIsolatedLoaderClass(true);
+        Method loadFirstAvailable = loaderClass.getDeclaredMethod(
+                "loadFirstAvailable", ClassLoader.class, List.class, String[].class);
+        loadFirstAvailable.setAccessible(true);
+
+        boolean loaded = (boolean) loadFirstAvailable.invoke(null, resourceLoader, loadResults,
+                new String[] {"definitely_missing_conscrypt_loader_test"});
+
+        assertFalse(loaded);
+        assertFalse(loadResults.isEmpty());
+        assertTrue(resourceLoader.requestedResources.contains(
+                "META-INF/native/libdefinitely_missing_conscrypt_loader_test.dynlib"));
+    }
+
     private static Method nativeLibraryLoaderMethod() throws Exception {
         Class<?> loaderClass = Class.forName(NATIVE_LIBRARY_LOADER);
         Method loadFirstAvailable = loaderClass.getDeclaredMethod(
@@ -122,10 +143,10 @@ public class NativeLibraryLoaderTest {
         return loadFirstAvailable;
     }
 
-    private static Class<?> loadIsolatedLoaderClass() throws Exception {
+    private static Class<?> loadIsolatedLoaderClass(boolean rewriteJniLibSuffix) throws Exception {
         String previousOsName = System.getProperty("os.name");
         IsolatedConscryptClassLoader classLoader = new IsolatedConscryptClassLoader(
-                NativeLibraryLoaderTest.class.getClassLoader());
+                NativeLibraryLoaderTest.class.getClassLoader(), rewriteJniLibSuffix);
         try {
             System.setProperty("os.name", "Mac OS X");
             return Class.forName(NATIVE_LIBRARY_LOADER, true, classLoader);
@@ -211,9 +232,11 @@ public class NativeLibraryLoaderTest {
 
     private static final class IsolatedConscryptClassLoader extends ClassLoader {
         private final Set<String> definedClasses = new HashSet<>();
+        private final boolean rewriteJniLibSuffix;
 
-        private IsolatedConscryptClassLoader(ClassLoader parent) {
+        private IsolatedConscryptClassLoader(ClassLoader parent, boolean rewriteJniLibSuffix) {
             super(parent);
+            this.rewriteJniLibSuffix = rewriteJniLibSuffix;
         }
 
         @Override
@@ -239,6 +262,9 @@ public class NativeLibraryLoaderTest {
             String resourceName = name.replace('.', '/') + ".class";
             try {
                 byte[] classBytes = readResourceBytes(resourceName);
+                if (rewriteJniLibSuffix && NATIVE_LIBRARY_LOADER.equals(name)) {
+                    classBytes = replaceUtf8Constant(classBytes, ".jnilib", ".so");
+                }
                 return defineClass(name, classBytes, 0, classBytes.length);
             } catch (IOException ex) {
                 throw new ClassNotFoundException(name, ex);
@@ -257,6 +283,70 @@ public class NativeLibraryLoaderTest {
                 }
                 return output.toByteArray();
             }
+        }
+
+        private byte[] replaceUtf8Constant(byte[] classBytes, String source, String target)
+                throws IOException {
+            ByteArrayOutputStream output = new ByteArrayOutputStream(classBytes.length);
+            DataOutputStream dataOutput = new DataOutputStream(output);
+            dataOutput.write(classBytes, 0, 8);
+            int constantPoolCount = unsignedShort(classBytes, 8);
+            dataOutput.writeShort(constantPoolCount);
+            int offset = 10;
+            for (int index = 1; index < constantPoolCount; index++) {
+                int tag = classBytes[offset++] & 0xFF;
+                dataOutput.writeByte(tag);
+                if (tag == 1) {
+                    int length = unsignedShort(classBytes, offset);
+                    offset += 2;
+                    String value = new String(classBytes, offset, length, StandardCharsets.UTF_8);
+                    byte[] replacement = (source.equals(value) ? target : value)
+                            .getBytes(StandardCharsets.UTF_8);
+                    dataOutput.writeShort(replacement.length);
+                    dataOutput.write(replacement);
+                    offset += length;
+                } else {
+                    int entryLength = constantPoolEntryLength(tag);
+                    dataOutput.write(classBytes, offset, entryLength);
+                    offset += entryLength;
+                    if (tag == 5 || tag == 6) {
+                        index++;
+                    }
+                }
+            }
+            dataOutput.write(classBytes, offset, classBytes.length - offset);
+            return output.toByteArray();
+        }
+
+        private static int constantPoolEntryLength(int tag) {
+            switch (tag) {
+                case 3:
+                case 4:
+                case 9:
+                case 10:
+                case 11:
+                case 12:
+                case 17:
+                case 18:
+                    return 4;
+                case 5:
+                case 6:
+                    return 8;
+                case 7:
+                case 8:
+                case 16:
+                case 19:
+                case 20:
+                    return 2;
+                case 15:
+                    return 3;
+                default:
+                    throw new IllegalArgumentException("Unsupported constant pool tag: " + tag);
+            }
+        }
+
+        private static int unsignedShort(byte[] bytes, int offset) {
+            return ((bytes[offset] & 0xFF) << 8) | (bytes[offset + 1] & 0xFF);
         }
     }
 }
