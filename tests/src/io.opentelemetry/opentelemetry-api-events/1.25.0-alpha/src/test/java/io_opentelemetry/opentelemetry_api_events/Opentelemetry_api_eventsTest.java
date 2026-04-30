@@ -114,6 +114,21 @@ public class Opentelemetry_api_eventsTest {
     }
 
     @Test
+    void globalNoopRegistrationDoesNotClaimOrReplaceProvider() {
+        EventEmitterProvider noopProvider = EventEmitterProvider.noop();
+        RecordingEventEmitterProvider realProvider = new RecordingEventEmitterProvider();
+
+        assertThatCode(() -> GlobalEventEmitterProvider.set(noopProvider)).doesNotThrowAnyException();
+        assertThat(GlobalEventEmitterProvider.get()).isSameAs(noopProvider);
+
+        GlobalEventEmitterProvider.set(realProvider);
+        assertThat(GlobalEventEmitterProvider.get()).isSameAs(realProvider);
+
+        assertThatCode(() -> GlobalEventEmitterProvider.set(noopProvider)).doesNotThrowAnyException();
+        assertThat(GlobalEventEmitterProvider.get()).isSameAs(realProvider);
+    }
+
+    @Test
     void globalProviderRejectsSecondNonNoopRegistration() {
         RecordingEventEmitterProvider firstProvider = new RecordingEventEmitterProvider();
         RecordingEventEmitterProvider secondProvider = new RecordingEventEmitterProvider();
