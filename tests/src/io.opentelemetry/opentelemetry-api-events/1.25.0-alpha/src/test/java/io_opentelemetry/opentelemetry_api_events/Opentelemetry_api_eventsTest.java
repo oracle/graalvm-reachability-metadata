@@ -142,6 +142,26 @@ public class Opentelemetry_api_eventsTest {
         assertThat(GlobalEventEmitterProvider.get()).isSameAs(firstProvider);
     }
 
+    @Test
+    void resetForTestAllowsAnotherProviderToBeRegistered() {
+        RecordingEventEmitterProvider firstProvider = new RecordingEventEmitterProvider();
+        RecordingEventEmitterProvider secondProvider = new RecordingEventEmitterProvider();
+
+        GlobalEventEmitterProvider.set(firstProvider);
+        GlobalEventEmitterProvider.resetForTest();
+
+        assertThatCode(() -> GlobalEventEmitterProvider.set(secondProvider)).doesNotThrowAnyException();
+        assertThat(GlobalEventEmitterProvider.get()).isSameAs(secondProvider);
+
+        RecordingEventEmitter emitter = (RecordingEventEmitter) GlobalEventEmitterProvider.get()
+                .get("io.example.reconfigured");
+        emitter.emit("provider.reconfigured", Attributes.empty());
+
+        assertThat(secondProvider.builders).hasSize(1);
+        assertThat(secondProvider.builders.get(0).instrumentationScopeName).isEqualTo("io.example.reconfigured");
+        assertThat(emitter.events).extracting(event -> event.name).containsExactly("provider.reconfigured");
+    }
+
     private static final class RecordingEventEmitterProvider implements EventEmitterProvider {
         private final List<RecordingEventEmitterBuilder> builders = new ArrayList<>();
 
