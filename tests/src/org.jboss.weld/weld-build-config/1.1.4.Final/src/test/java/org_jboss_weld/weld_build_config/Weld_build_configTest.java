@@ -39,6 +39,7 @@ public class Weld_build_configTest {
             "META-INF/maven/org.jboss.weld/weld-build-config/pom.properties";
     private static final String POM_RESOURCE = "META-INF/maven/org.jboss.weld/weld-build-config/pom.xml";
     private static final String MANIFEST_RESOURCE = "META-INF/MANIFEST.MF";
+    private static final String DEPENDENCIES_RESOURCE = "META-INF/DEPENDENCIES.txt";
     private static final String MAVEN_NAMESPACE = "http://maven.apache.org/POM/4.0.0";
 
     @Test
@@ -153,8 +154,39 @@ public class Weld_build_configTest {
         assertThat(buildInformation.getValue("SCM")).isNotBlank();
     }
 
+    @Test
+    void dependencyReportDocumentsThatBuildConfigurationAddsNoTransitiveDependencies() throws Exception {
+        Element project = parseXml(readResource(POM_RESOURCE), true).getDocumentElement();
+        String projectName = directChildText(project, "name");
+        String dependencyReport = readResourceContaining(DEPENDENCIES_RESOURCE, projectName);
+
+        assertThat(project.getElementsByTagNameNS(MAVEN_NAMESPACE, "dependencies").getLength()).isZero();
+        assertThat(dependencyReport)
+                .contains("Transitive dependencies of this project")
+                .contains("maven pom organized by organization");
+        assertThat(significantDependencyReportLines(dependencyReport)).containsExactly(projectName);
+    }
+
     private static String readResource(String resourceName) throws IOException {
         try (InputStream inputStream = resourceStream(resourceName)) {
+            return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        }
+    }
+
+    private static String readResourceContaining(String resourceName, String content) throws IOException {
+        Enumeration<URL> resources = Weld_build_configTest.class.getClassLoader().getResources(resourceName);
+        while (resources.hasMoreElements()) {
+            URL resource = resources.nextElement();
+            String resourceContent = readUrl(resource);
+            if (resourceContent.contains(content)) {
+                return resourceContent;
+            }
+        }
+        throw new AssertionError("No resource named " + resourceName + " containing " + content);
+    }
+
+    private static String readUrl(URL resource) throws IOException {
+        try (InputStream inputStream = resource.openStream()) {
             return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         }
     }
@@ -227,6 +259,18 @@ public class Weld_build_configTest {
             }
         }
         throw new AssertionError("No property named " + propertyName + " in " + module.getAttribute("name"));
+    }
+
+    private static List<String> significantDependencyReportLines(String dependencyReport) {
+        List<String> lines = new ArrayList<>();
+        String[] reportLines = dependencyReport.split("\\R");
+        for (String line : reportLines) {
+            String trimmed = line.trim();
+            if (!trimmed.isEmpty() && !trimmed.startsWith("//")) {
+                lines.add(trimmed);
+            }
+        }
+        return lines;
     }
 
     private static Element directChildElement(Element parent, String localName) {
