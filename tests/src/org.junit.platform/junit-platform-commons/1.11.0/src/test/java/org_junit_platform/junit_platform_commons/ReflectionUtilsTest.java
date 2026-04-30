@@ -82,6 +82,19 @@ public class ReflectionUtilsTest {
     }
 
     @Test
+    void resolvesPublicImplementationMethodToInterfaceMethod() {
+        Method implementationMethod = ReflectionUtils.tryToGetMethod(InterfaceImplementationSubject.class,
+                "implementedContractMethod", String.class).get();
+
+        Method interfaceMethod = ReflectionUtils.getInterfaceMethodIfPossible(implementationMethod,
+                InterfaceImplementationSubject.class);
+
+        assertThat(interfaceMethod.getDeclaringClass()).isEqualTo(MethodContract.class);
+        assertThat(interfaceMethod.getName()).isEqualTo("implementedContractMethod");
+        assertThat(interfaceMethod.getParameterTypes()).containsExactly(String.class);
+    }
+
+    @Test
     void loadsObjectArrayTypesBySourceName() throws Exception {
         Class<?> arrayType = ReflectionUtils.tryToLoadClass("java.util.UUID[][]").get();
 
@@ -153,5 +166,18 @@ public class ReflectionUtilsTest {
     public interface InterfaceMethodSubject {
 
         void interfaceMethod();
+    }
+
+    public interface MethodContract {
+
+        String implementedContractMethod(String value);
+    }
+
+    public static class InterfaceImplementationSubject implements MethodContract {
+
+        @Override
+        public String implementedContractMethod(String value) {
+            return value;
+        }
     }
 }
