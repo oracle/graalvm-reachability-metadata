@@ -15,6 +15,7 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 Provider<Directory> ktfmtFixtureResources = layout.buildDirectory.dir("generated/ktfmt-fixture-resources")
 Provider<Directory> jsonSimpleFixtureResources = layout.buildDirectory.dir("generated/json-simple-fixture-resources")
+Provider<Directory> jsonPatchFixtureResources = layout.buildDirectory.dir("generated/json-patch-fixture-resources")
 Provider<Directory> googleJavaFormatFixtureResources = layout.buildDirectory.dir("generated/google-java-format-fixture-resources")
 Provider<Directory> cleanthatFixtureResources = layout.buildDirectory.dir("generated/cleanthat-fixture-resources")
 
@@ -40,6 +41,17 @@ tasks.register("generateJsonSimpleFixtureJar") {
         delete(outputDir)
 
         createJsonSimpleFixture(outputDir)
+    }
+}
+
+tasks.register("generateJsonPatchFixtureJar") {
+    outputs.dir(jsonPatchFixtureResources)
+
+    doLast {
+        File outputDir = jsonPatchFixtureResources.get().asFile
+        delete(outputDir)
+
+        createJsonPatchFixture(outputDir)
     }
 }
 
@@ -224,6 +236,43 @@ void createJsonSimpleFixture(File outputDir) {
     createFixtureJar(outputDir, "json-simple-fixtures", "org-json", "org-json-fixture.jar", sources)
 }
 
+void createJsonPatchFixture(File outputDir) {
+    Map<String, String> sources = [
+        "com/diffplug/spotless/glue/json/JsonPatchFormatterFunc.java": """
+            package com.diffplug.spotless.glue.json;
+
+            import java.util.List;
+            import java.util.Map;
+
+            import com.diffplug.spotless.FormatterFunc;
+
+            public class JsonPatchFormatterFunc implements FormatterFunc {
+                private final List<Map<String, Object>> patch;
+                private final String patchString;
+
+                public JsonPatchFormatterFunc(List<Map<String, Object>> patch) {
+                    this.patch = patch;
+                    this.patchString = null;
+                }
+
+                public JsonPatchFormatterFunc(String patchString) {
+                    this.patch = null;
+                    this.patchString = patchString;
+                }
+
+                public String apply(String input) {
+                    if (patch != null) {
+                        return "patch-list:" + patch + ":" + input;
+                    }
+                    return "patch-string:" + patchString + ":" + input;
+                }
+            }
+            """
+    ]
+    createFixtureJar(outputDir, "json-patch-fixtures", "current", "json-patch-fixture.jar", sources,
+            sourceSets.test.compileClasspath.asPath)
+}
+
 void createCleanthatFixture(File outputDir) {
     Map<String, String> sources = [
         "com/diffplug/spotless/glue/java/JavaCleanthatRefactorerFunc.java": """
@@ -346,6 +395,7 @@ sourceSets {
     test {
         resources.srcDir(ktfmtFixtureResources)
         resources.srcDir(jsonSimpleFixtureResources)
+        resources.srcDir(jsonPatchFixtureResources)
         resources.srcDir(googleJavaFormatFixtureResources)
         resources.srcDir(cleanthatFixtureResources)
     }
@@ -354,6 +404,7 @@ sourceSets {
 tasks.named("processTestResources") {
     dependsOn(tasks.named("generateKtfmtFixtureJars"))
     dependsOn(tasks.named("generateJsonSimpleFixtureJar"))
+    dependsOn(tasks.named("generateJsonPatchFixtureJar"))
     dependsOn(tasks.named("generateGoogleJavaFormatFixtureJar"))
     dependsOn(tasks.named("generateCleanthatFixtureJar"))
 }
@@ -367,7 +418,7 @@ dependencies {
 graalvmNative {
     binaries {
         test {
-            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|json-simple-fixtures|google-java-format-fixtures|cleanthat-fixtures)/.*')
+            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|json-simple-fixtures|json-patch-fixtures|google-java-format-fixtures|cleanthat-fixtures)/.*')
         }
     }
 
