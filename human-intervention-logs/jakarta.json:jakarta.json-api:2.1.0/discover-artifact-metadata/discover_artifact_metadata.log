@@ -1,0 +1,1091 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ddd0e-0286-7fe2-b848-74844e555591
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: jakarta.json:jakarta.json-api:2.1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
+- Set "coordinates" to "jakarta.json:jakarta.json-api:2.1.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream project pages, then update the JSON in place with exact-version URLs where available.
+exec
+/usr/bin/zsh -lc 'pwd && ls -l build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+exec
+/usr/bin/zsh -lc "sed -n '1,200p' build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+ succeeded in 0ms:
+/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+-rw-rw-r-- 1 mihailo mihailo 60 Apr 30 08:22 build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
+
+ succeeded in 0ms:
+{
+  "coordinates" : "jakarta.json:jakarta.json-api:2.1.0"
+}
+
+web search: 
+web search: jakarta.json jakarta.json-api 2.1.0 Maven Central sources javadoc tests
+web search: 
+web search: https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/
+web search: 
+web search: jakarta.json jakarta.json-tck-tests 2.1.0 Maven Central
+web search: 
+web search: 
+web search: 
+web search: site:repo1.maven.org/maven2/jakarta/json/jakarta.json-tck-tests/2.1.0 jakarta.json-tck-tests-2.1.0-sources.jar
+codex
+The API artifact has versioned sources and Javadocs on Maven Central. I’m checking whether the matching 2.1.0 TCK test sources are also published so the test URL can prefer Maven rather than a GitHub tree.
+exec
+/usr/bin/zsh -lc "rg -n '\"test-code-url\"|\"documentation-url\"|\"source-code-url\"' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc 'curl -I -fsSL https://repo1.maven.org/maven2/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0-sources.jar' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0.pom | sed -n '1,220p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/json/jakarta.json-tck-tests/2.1.0/ | sed -n '1,120p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+ succeeded in 142ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2011, 2022 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.7</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>jakarta.json</groupId>
+    <artifactId>jakarta.json-api</artifactId>
+
+    <version>2.1.0</version>
+    <name>Jakarta JSON Processing API</name>
+    <description>Jakarta JSON Processing defines a Java(R) based framework for parsing, generating, transforming, and querying JSON documents.</description>
+    <url>https://github.com/eclipse-ee4j/jsonp</url>
+
+    <scm>
+        <connection>scm:git:git://github.com/eclipse-ee4j/jsonp.git</connection>
+        <developerConnection>scm:git:git@github.com:eclipse-ee4j/jsonp.git</developerConnection>
+        <url>https://github.com/eclipse-ee4j/jsonp</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>Eclipse Public License 2.0</name>
+            <url>https://projects.eclipse.org/license/epl-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>GNU General Public License, version 2 with the GNU Classpath Exception</name>
+            <url>https://projects.eclipse.org/license/secondary-gpl-2.0-cp</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>m0mus</id>
+            <name>Dmitry Kornilov</name>
+            <organization>Oracle</organization>
+            <roles>
+                <role>project lead</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>lukasj</id>
+            <name>Lukas Jungmann</name>
+            <organization>Oracle</organization>
+            <roles>
+                <role>dev lead</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <properties>
+        <copyright.exclude>${project.basedir}/../etc/copyright-exclude</copyright.exclude>
+        <copyright.templatefile>${project.basedir}/../etc/copyright.txt</copyright.templatefile>
+        <copyright.ignoreyear>true</copyright.ignoreyear>
+        <copyright.scmonly>true</copyright.scmonly>
+        <copyright.update>false</copyright.update>
+        <spotbugs.exclude>${project.basedir}/../etc/spotbugs-exclude.xml</spotbugs.exclude>
+        <spotbugs.skip>false</spotbugs.skip>
+        <spotbugs.threshold>Low</spotbugs.threshold>
+        <spotbugs.version>4.3.0</spotbugs.version>
+
+        <non.final>false</non.final>
+        <extension.name>jakarta.json</extension.name>
+        <spec.version>2.1</spec.version>
+        <legal.doc.source>${project.basedir}/..</legal.doc.source>
+        <vendor.name>Eclipse Foundation</vendor.name>
+    </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.commonjava.maven.plugins</groupId>
+                    <artifactId>directory-maven-plugin</artifactId>
+                    <version>0.3.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>1.4</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.copyright</groupId>
+                    <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.build</groupId>
+                    <artifactId>spec-version-maven-plugin</artifactId>
+                    <version>2.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>5.1.1</version>
+                    <configuration>
+                        <instructions>
+                            <_noextraheaders>true</_noextraheaders>
+                        </instructions>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.2.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs.version}</version>
+                    <configuration>
+                        <skip>${spotbugs.skip}</skip>
+                        <threshold>${spotbugs.threshold}</threshold>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>[11,)</version>
+                                </requireJavaVersion>
+                                <requireMavenVersion>
+                                    <version>[3.6.0,)</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <!-- e.g. mvn validate glassfish-copyright:repair -->
+                <groupId>org.glassfish.copyright</groupId>
+                <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                <configuration>
+                    <excludeFile>${copyright.exclude}</excludeFile>
+                    <scmOnly>${copyright.scmonly}</scmOnly>
+                    <update>${copyright.update}</update>
+                    <ignoreYear>${copyright.ignoreyear}</ignoreYear>
+                    <quiet>false</quiet>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+
+ succeeded in 159ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jakarta/json/jakarta.json-tck-tests/2.1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jakarta/json/jakarta.json-tck-tests/2.1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.json-tck-tests-2.1.0-javadoc.jar" title="jakarta.json-tck-tests-2.1.0-javadoc.jar">jakarta.json-tck-tests-2.1.0-javadoc.jar</a>          2022-04-26 08:37   1020038      
+<a href="jakarta.json-tck-tests-2.1.0-javadoc.jar.asc" title="jakarta.json-tck-tests-2.1.0-javadoc.jar.asc">jakarta.json-tck-tests-2.1.0-javadoc.jar.asc</a>      2022-04-26 08:37       833      
+<a href="jakarta.json-tck-tests-2.1.0-javadoc.jar.asc.md5" title="jakarta.json-tck-tests-2.1.0-javadoc.jar.asc.md5">jakarta.json-tck-tests-2.1.0-javadoc.jar.asc....</a>  2022-04-26 08:37        32      
+<a href="jakarta.json-tck-tests-2.1.0-javadoc.jar.asc.sha1" title="jakarta.json-tck-tests-2.1.0-javadoc.jar.asc.sha1">jakarta.json-tck-tests-2.1.0-javadoc.jar.asc....</a>  2022-04-26 08:37        40      
+<a href="jakarta.json-tck-tests-2.1.0-javadoc.jar.md5" title="jakarta.json-tck-tests-2.1.0-javadoc.jar.md5">jakarta.json-tck-tests-2.1.0-javadoc.jar.md5</a>      2022-04-26 08:37        32      
+<a href="jakarta.json-tck-tests-2.1.0-javadoc.jar.sha1" title="jakarta.json-tck-tests-2.1.0-javadoc.jar.sha1">jakarta.json-tck-tests-2.1.0-javadoc.jar.sha1</a>     2022-04-26 08:37        40      
+<a href="jakarta.json-tck-tests-2.1.0-sources.jar" title="jakarta.json-tck-tests-2.1.0-sources.jar">jakarta.json-tck-tests-2.1.0-sources.jar</a>          2022-04-26 08:37    229591      
+<a href="jakarta.json-tck-tests-2.1.0-sources.jar.asc" title="jakarta.json-tck-tests-2.1.0-sources.jar.asc">jakarta.json-tck-tests-2.1.0-sources.jar.asc</a>      2022-04-26 08:37       833      
+<a href="jakarta.json-tck-tests-2.1.0-sources.jar.asc.md5" title="jakarta.json-tck-tests-2.1.0-sources.jar.asc.md5">jakarta.json-tck-tests-2.1.0-sources.jar.asc....</a>  2022-04-26 08:37        32      
+<a href="jakarta.json-tck-tests-2.1.0-sources.jar.asc.sha1" title="jakarta.json-tck-tests-2.1.0-sources.jar.asc.sha1">jakarta.json-tck-tests-2.1.0-sources.jar.asc....</a>  2022-04-26 08:37        40      
+<a href="jakarta.json-tck-tests-2.1.0-sources.jar.md5" title="jakarta.json-tck-tests-2.1.0-sources.jar.md5">jakarta.json-tck-tests-2.1.0-sources.jar.md5</a>      2022-04-26 08:37        32      
+<a href="jakarta.json-tck-tests-2.1.0-sources.jar.sha1" title="jakarta.json-tck-tests-2.1.0-sources.jar.sha1">jakarta.json-tck-tests-2.1.0-sources.jar.sha1</a>     2022-04-26 08:37        40      
+<a href="jakarta.json-tck-tests-2.1.0.jar" title="jakarta.json-tck-tests-2.1.0.jar">jakarta.json-tck-tests-2.1.0.jar</a>                  2022-04-26 08:37    341736      
+<a href="jakarta.json-tck-tests-2.1.0.jar.asc" title="jakarta.json-tck-tests-2.1.0.jar.asc">jakarta.json-tck-tests-2.1.0.jar.asc</a>              2022-04-26 08:37       833      
+<a href="jakarta.json-tck-tests-2.1.0.jar.asc.md5" title="jakarta.json-tck-tests-2.1.0.jar.asc.md5">jakarta.json-tck-tests-2.1.0.jar.asc.md5</a>          2022-04-26 08:37        32      
+<a href="jakarta.json-tck-tests-2.1.0.jar.asc.sha1" title="jakarta.json-tck-tests-2.1.0.jar.asc.sha1">jakarta.json-tck-tests-2.1.0.jar.asc.sha1</a>         2022-04-26 08:37        40      
+<a href="jakarta.json-tck-tests-2.1.0.jar.md5" title="jakarta.json-tck-tests-2.1.0.jar.md5">jakarta.json-tck-tests-2.1.0.jar.md5</a>              2022-04-26 08:37        32      
+<a href="jakarta.json-tck-tests-2.1.0.jar.sha1" title="jakarta.json-tck-tests-2.1.0.jar.sha1">jakarta.json-tck-tests-2.1.0.jar.sha1</a>             2022-04-26 08:37        40      
+<a href="jakarta.json-tck-tests-2.1.0.pom" title="jakarta.json-tck-tests-2.1.0.pom">jakarta.json-tck-tests-2.1.0.pom</a>                  2022-04-26 08:37      2269      
+<a href="jakarta.json-tck-tests-2.1.0.pom.asc" title="jakarta.json-tck-tests-2.1.0.pom.asc">jakarta.json-tck-tests-2.1.0.pom.asc</a>              2022-04-26 08:37       833      
+<a href="jakarta.json-tck-tests-2.1.0.pom.asc.md5" title="jakarta.json-tck-tests-2.1.0.pom.asc.md5">jakarta.json-tck-tests-2.1.0.pom.asc.md5</a>          2022-04-26 08:37        32      
+<a href="jakarta.json-tck-tests-2.1.0.pom.asc.sha1" title="jakarta.json-tck-tests-2.1.0.pom.asc.sha1">jakarta.json-tck-tests-2.1.0.pom.asc.sha1</a>         2022-04-26 08:37        40      
+<a href="jakarta.json-tck-tests-2.1.0.pom.md5" title="jakarta.json-tck-tests-2.1.0.pom.md5">jakarta.json-tck-tests-2.1.0.pom.md5</a>              2022-04-26 08:37        32      
+<a href="jakarta.json-tck-tests-2.1.0.pom.sha1" title="jakarta.json-tck-tests-2.1.0.pom.sha1">jakarta.json-tck-tests-2.1.0.pom.sha1</a>             2022-04-26 08:37        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 453ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 06:23:30 GMT
+content-type: application/java-archive
+content-length: 229591
+cf-ray: 9f447546d9e85165-BEG
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "a1fdf46ae7268ec713d1d098863cbad0"
+last-modified: Tue, 26 Apr 2022 08:37:45 GMT
+x-checksum-md5: a1fdf46ae7268ec713d1d098863cbad0
+x-checksum-sha1: 5d3f273ef90c8b2568dd5f2e672ccea4f884b3f5
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/ | sed -n '1,160p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+exec
+/usr/bin/zsh -lc 'curl -I -fsSL https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0-javadoc.jar' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+exec
+/usr/bin/zsh -lc 'git status --short' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0.pom | sed -n '1,160p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+ succeeded in 136ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jakarta/json/jakarta.json-api/2.1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jakarta/json/jakarta.json-api/2.1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.json-api-2.1.0-javadoc.jar" title="jakarta.json-api-2.1.0-javadoc.jar">jakarta.json-api-2.1.0-javadoc.jar</a>                2022-03-09 13:12    677403      
+<a href="jakarta.json-api-2.1.0-javadoc.jar.asc" title="jakarta.json-api-2.1.0-javadoc.jar.asc">jakarta.json-api-2.1.0-javadoc.jar.asc</a>            2022-03-09 13:12       833      
+<a href="jakarta.json-api-2.1.0-javadoc.jar.md5" title="jakarta.json-api-2.1.0-javadoc.jar.md5">jakarta.json-api-2.1.0-javadoc.jar.md5</a>            2022-03-09 13:12        32      
+<a href="jakarta.json-api-2.1.0-javadoc.jar.sha1" title="jakarta.json-api-2.1.0-javadoc.jar.sha1">jakarta.json-api-2.1.0-javadoc.jar.sha1</a>           2022-03-09 13:12        40      
+<a href="jakarta.json-api-2.1.0-sources.jar" title="jakarta.json-api-2.1.0-sources.jar">jakarta.json-api-2.1.0-sources.jar</a>                2022-03-09 13:12     77234      
+<a href="jakarta.json-api-2.1.0-sources.jar.asc" title="jakarta.json-api-2.1.0-sources.jar.asc">jakarta.json-api-2.1.0-sources.jar.asc</a>            2022-03-09 13:12       833      
+<a href="jakarta.json-api-2.1.0-sources.jar.md5" title="jakarta.json-api-2.1.0-sources.jar.md5">jakarta.json-api-2.1.0-sources.jar.md5</a>            2022-03-09 13:12        32      
+<a href="jakarta.json-api-2.1.0-sources.jar.sha1" title="jakarta.json-api-2.1.0-sources.jar.sha1">jakarta.json-api-2.1.0-sources.jar.sha1</a>           2022-03-09 13:12        40      
+<a href="jakarta.json-api-2.1.0.jar" title="jakarta.json-api-2.1.0.jar">jakarta.json-api-2.1.0.jar</a>                        2022-03-09 13:12     49299      
+<a href="jakarta.json-api-2.1.0.jar.asc" title="jakarta.json-api-2.1.0.jar.asc">jakarta.json-api-2.1.0.jar.asc</a>                    2022-03-09 13:12       833      
+<a href="jakarta.json-api-2.1.0.jar.md5" title="jakarta.json-api-2.1.0.jar.md5">jakarta.json-api-2.1.0.jar.md5</a>                    2022-03-09 13:12        32      
+<a href="jakarta.json-api-2.1.0.jar.sha1" title="jakarta.json-api-2.1.0.jar.sha1">jakarta.json-api-2.1.0.jar.sha1</a>                   2022-03-09 13:12        40      
+<a href="jakarta.json-api-2.1.0.pom" title="jakarta.json-api-2.1.0.pom">jakarta.json-api-2.1.0.pom</a>                        2022-03-09 13:12     18264      
+<a href="jakarta.json-api-2.1.0.pom.asc" title="jakarta.json-api-2.1.0.pom.asc">jakarta.json-api-2.1.0.pom.asc</a>                    2022-03-09 13:12       833      
+<a href="jakarta.json-api-2.1.0.pom.md5" title="jakarta.json-api-2.1.0.pom.md5">jakarta.json-api-2.1.0.pom.md5</a>                    2022-03-09 13:12        32      
+<a href="jakarta.json-api-2.1.0.pom.sha1" title="jakarta.json-api-2.1.0.pom.sha1">jakarta.json-api-2.1.0.pom.sha1</a>                   2022-03-09 13:12        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 247ms:
+ succeeded in 250ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 06:23:37 GMT
+content-type: application/java-archive
+content-length: 77234
+cf-ray: 9f4475707ffdb30c-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1312585
+etag: "d1e6bf8807f7d9a791cb5f9f1832370e"
+last-modified: Wed, 09 Mar 2022 13:12:30 GMT
+x-checksum-md5: d1e6bf8807f7d9a791cb5f9f1832370e
+x-checksum-sha1: 7296812f3e24ef0c493373a0ad45bc52bcb50979
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Thu, 30 Apr 2026 06:23:37 GMT
+content-type: application/java-archive
+content-length: 677403
+cf-ray: 9f4475711f13e296-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 697032
+etag: "9e01e341c2be0494908656935e519665"
+last-modified: Wed, 09 Mar 2022 13:12:31 GMT
+x-checksum-md5: 9e01e341c2be0494908656935e519665
+x-checksum-sha1: b42f16e3eb811fc3679aa48e5c711f8ce569f42c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 326ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2020, 2022 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>jakarta.json</groupId>
+        <artifactId>jakarta.json-tck</artifactId>
+        <version>2.1.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+
+    <artifactId>jakarta.json-tck-tests</artifactId>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.json</groupId>
+            <artifactId>jakarta.json-tck-common</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <doclint>none</doclint>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+              </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/zsh -lc 'find build/discovered-artifact-metadata -type f | head -20' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+ succeeded in 0ms:
+build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
+
+exec
+/usr/bin/zsh -lc "rg -n '\"source-code-url\"|\"documentation-url\"|\"test-code-url\"' -g '*.json' . | head -100" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+ succeeded in 0ms:
+./metadata/aopalliance/aopalliance/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar",
+./metadata/aopalliance/aopalliance/index.json:7:    "test-code-url" : "N/A",
+./metadata/aopalliance/aopalliance/index.json:8:    "documentation-url" : "https://sourceforge.net/projects/aopalliance/files/aopalliance/1.0/aopalliance.zip/download",
+./metadata/com.ecwid.consul/consul-api/index.json:11:    "source-code-url": "https://repo1.maven.org/maven2/com/ecwid/consul/consul-api/1.4.5/consul-api-1.4.5-sources.jar",
+./metadata/com.ecwid.consul/consul-api/index.json:13:    "test-code-url": "https://github.com/Ecwid/consul-api/tree/v1.4.5/src/test",
+./metadata/com.ecwid.consul/consul-api/index.json:14:    "documentation-url": "https://repo1.maven.org/maven2/com/ecwid/consul/consul-api/1.4.5/consul-api-1.4.5-javadoc.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-sources.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-tests.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-javadoc.jar",
+./metadata/jakarta.inject/jakarta.inject-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/inject/jakarta.inject-api/2.0.0/jakarta.inject-api-2.0.0-sources.jar",
+./metadata/jakarta.inject/jakarta.inject-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/jakarta.inject/jakarta.inject-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/inject/jakarta.inject-api/2.0.0/jakarta.inject-api-2.0.0-javadoc.jar",
+./metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/paho/org.eclipse.paho.mqttv5.client/1.2.5/org.eclipse.paho.mqttv5.client-1.2.5-sources.jar",
+./metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:10:    "test-code-url": "https://github.com/eclipse-paho/paho.mqtt.java/tree/v1.2.5/org.eclipse.paho.mqttv5.client.test/src/test",
+./metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:11:    "documentation-url": "https://github.com/eclipse-paho/paho.mqtt.java/blob/v1.2.5/MQTTv5.md",
+./metadata/io.smallrye.common/smallrye-common-ref/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-ref/2.2.0/smallrye-common-ref-2.2.0-sources.jar",
+./metadata/io.smallrye.common/smallrye-common-ref/index.json:7:    "test-code-url" : "N/A",
+./metadata/io.smallrye.common/smallrye-common-ref/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-ref/2.2.0/smallrye-common-ref-2.2.0-javadoc.jar",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.3/paranamer-2.3-sources.jar",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:7:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-2.3/paranamer/src/test",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.3/paranamer-2.3-javadoc.jar",
+./metadata/org.checkerframework/checker-compat-qual/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/checkerframework/checker-compat-qual/2.5.5/checker-compat-qual-2.5.5-sources.jar",
+./metadata/org.checkerframework/checker-compat-qual/index.json:7:    "test-code-url" : "https://github.com/typetools/checker-framework/tree/checker-framework-2.5.5/checker/tests/nullness-extra/compat",
+./metadata/org.checkerframework/checker-compat-qual/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/checkerframework/checker-compat-qual/2.5.5/checker-compat-qual-2.5.5-javadoc.jar",
+./metadata/info.picocli/picocli/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-sources.jar",
+./metadata/info.picocli/picocli/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-test-sources.jar",
+./metadata/info.picocli/picocli/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-javadoc.jar",
+./metadata/org.eclipse.paho/org.eclipse.paho.client.mqttv3/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/paho/org.eclipse.paho.client.mqttv3/1.2.5/org.eclipse.paho.client.mqttv3-1.2.5-sources.jar",
+./metadata/org.eclipse.paho/org.eclipse.paho.client.mqttv3/index.json:10:    "test-code-url": "https://github.com/eclipse-paho/paho.mqtt.java/tree/v1.2.5/org.eclipse.paho.client.mqttv3.test",
+./metadata/org.eclipse.paho/org.eclipse.paho.client.mqttv3/index.json:11:    "documentation-url": "https://github.com/eclipse-paho/paho.mqtt.java/blob/v1.2.5/MQTTv3.md",
+./metadata/io.smallrye.common/smallrye-common-os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-os/2.2.0/smallrye-common-os-2.2.0-sources.jar",
+./metadata/io.smallrye.common/smallrye-common-os/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.2.0/os/src/test/java",
+./metadata/io.smallrye.common/smallrye-common-os/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-os/2.2.0/smallrye-common-os-2.2.0-javadoc.jar",
+./metadata/software.amazon.awssdk/s3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-sources.jar",
+./metadata/software.amazon.awssdk/s3/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/2.25.3/services/s3/src/test",
+./metadata/software.amazon.awssdk/s3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-javadoc.jar",
+./metadata/org.checkerframework/checker-qual/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.5.0/checker-qual-3.5.0-sources.jar",
+./metadata/org.checkerframework/checker-qual/index.json:6:    "test-code-url" : "N/A",
+./metadata/org.checkerframework/checker-qual/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.5.0/checker-qual-3.5.0-javadoc.jar",
+./metadata/org.checkerframework/checker-qual/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.12.0/checker-qual-3.12.0-sources.jar",
+./metadata/org.checkerframework/checker-qual/index.json:21:    "test-code-url" : "N/A",
+./metadata/org.checkerframework/checker-qual/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.12.0/checker-qual-3.12.0-javadoc.jar",
+./metadata/com.esotericsoftware/minlog/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/1.3.0/minlog-1.3.0-sources.jar",
+./metadata/com.esotericsoftware/minlog/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/1.3.0/minlog-1.3.0-tests.jar",
+./metadata/com.esotericsoftware/minlog/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/1.3.0/minlog-1.3.0-javadoc.jar",
+./metadata/io.undertow/undertow-parser-generator/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/undertow/undertow-parser-generator/2.2.19.Final/undertow-parser-generator-2.2.19.Final-sources.jar",
+./metadata/io.undertow/undertow-parser-generator/index.json:7:    "test-code-url" : "N/A",
+./metadata/io.undertow/undertow-parser-generator/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/undertow/undertow-parser-generator/2.2.19.Final/undertow-parser-generator-2.2.19.Final-javadoc.jar",
+./metadata/org.reactivestreams/reactive-streams/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-sources.jar",
+./metadata/org.reactivestreams/reactive-streams/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams-tck/1.0.3/reactive-streams-tck-1.0.3-sources.jar",
+./metadata/org.reactivestreams/reactive-streams/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-javadoc.jar",
+./metadata/io.smallrye.common/smallrye-common-cpu/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/2.10.0/smallrye-common-cpu-2.10.0-sources.jar",
+./metadata/io.smallrye.common/smallrye-common-cpu/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.10.0/cpu/src/test/java/io/smallrye/common/cpu",
+./metadata/io.smallrye.common/smallrye-common-cpu/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/2.10.0/smallrye-common-cpu-2.10.0-javadoc.jar",
+./metadata/io.smallrye.common/smallrye-common-cpu/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/2.2.0/smallrye-common-cpu-2.2.0-sources.jar",
+./metadata/io.smallrye.common/smallrye-common-cpu/index.json:21:    "test-code-url" : "N/A",
+./metadata/io.smallrye.common/smallrye-common-cpu/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/2.2.0/smallrye-common-cpu-2.2.0-javadoc.jar",
+./metadata/io.projectreactor/reactor-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/3.5.1/reactor-core-3.5.1-sources.jar",
+./metadata/io.projectreactor/reactor-core/index.json:7:    "test-code-url" : "https://github.com/reactor/reactor-core/tree/v3.5.1/reactor-core/src/test/java",
+./metadata/io.projectreactor/reactor-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/3.5.1/reactor-core-3.5.1-docs.zip",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0-sources.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0-javadoc.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/1.5.0/jackrabbit-jcr-commons-1.5.0-sources.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/1.5.0/jackrabbit-jcr-commons/src/test/java",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/1.5.0/jackrabbit-jcr-commons/README.txt",
+./metadata/io.smallrye.common/smallrye-common-expression/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/2.2.0/smallrye-common-expression-2.2.0-sources.jar",
+./metadata/io.smallrye.common/smallrye-common-expression/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.2.0/expression/src/test/java",
+./metadata/io.smallrye.common/smallrye-common-expression/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/2.2.0/smallrye-common-expression-2.2.0-javadoc.jar",
+./metadata/org.apache.xbean/xbean-asm7-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm7-shaded/4.15/xbean-asm7-shaded-4.15-sources.jar",
+./metadata/org.apache.xbean/xbean-asm7-shaded/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.xbean/xbean-asm7-shaded/index.json:8:    "documentation-url" : "N/A",
+./metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/1.0.3/compress-lzf-1.0.3-sources.jar",
+./metadata/com.ning/compress-lzf/index.json:7:    "test-code-url" : "https://github.com/ning/compress/tree/compress-lzf-1.0.3/src/test",
+./metadata/com.ning/compress-lzf/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/1.0.3/compress-lzf-1.0.3-javadoc.jar",
+./metadata/io.undertow/undertow-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/undertow/undertow-core/2.3.0.Final/undertow-core-2.3.0.Final-sources.jar",
+./metadata/io.undertow/undertow-core/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/io/undertow/undertow-core/2.3.0.Final/undertow-core-2.3.0.Final-tests.jar",
+./metadata/io.undertow/undertow-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/undertow/undertow-core/2.3.0.Final/undertow-core-2.3.0.Final-javadoc.jar",
+./metadata/io.undertow/undertow-core/index.json:43:    "source-code-url" : "https://repo1.maven.org/maven2/io/undertow/undertow-core/2.2.19.Final/undertow-core-2.2.19.Final-sources.jar",
+./metadata/io.undertow/undertow-core/index.json:45:    "test-code-url" : "https://repo1.maven.org/maven2/io/undertow/undertow-core/2.2.19.Final/undertow-core-2.2.19.Final-tests.jar",
+./metadata/io.undertow/undertow-core/index.json:46:    "documentation-url" : "https://repo1.maven.org/maven2/io/undertow/undertow-core/2.2.19.Final/undertow-core-2.2.19.Final-javadoc.jar",
+./metadata/org.iq80.leveldb/leveldb-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/iq80/leveldb/leveldb-api/0.6/leveldb-api-0.6-sources.jar",
+./metadata/org.iq80.leveldb/leveldb-api/index.json:7:    "test-code-url" : "https://github.com/dain/leveldb/tree/0.6/leveldb/src/test",
+./metadata/org.iq80.leveldb/leveldb-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/iq80/leveldb/leveldb-api/0.6/leveldb-api-0.6-javadoc.jar",
+./metadata/com.graphql-java/graphql-java/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/19.2/graphql-java-19.2-sources.jar",
+./metadata/com.graphql-java/graphql-java/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java/tree/v19.2/src/test",
+./metadata/com.graphql-java/graphql-java/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/19.2/graphql-java-19.2-javadoc.jar",
+./metadata/io.smallrye.common/smallrye-common-net/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-net/2.2.0/smallrye-common-net-2.2.0-sources.jar",
+./metadata/io.smallrye.common/smallrye-common-net/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.2.0/net/src/test/java",
+./metadata/io.smallrye.common/smallrye-common-net/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-net/2.2.0/smallrye-common-net-2.2.0-javadoc.jar",
+./metadata/org.freemarker/freemarker/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/freemarker/freemarker/2.3.31/freemarker-2.3.31-sources.jar",
+./metadata/org.freemarker/freemarker/index.json:11:    "test-code-url": "https://github.com/apache/freemarker/tree/v2.3.31/src/test",
+./metadata/org.freemarker/freemarker/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/freemarker/freemarker/2.3.31/freemarker-2.3.31-javadoc.jar",
+./metadata/jline/jline/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/jline/jline/2.14.6/jline-2.14.6-sources.jar",
+./metadata/jline/jline/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/jline/jline/2.14.6/jline-2.14.6-tests.jar",
+./metadata/jline/jline/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/jline/jline/2.14.6/jline-2.14.6-javadoc.jar",
+./metadata/com.graphql-java/graphql-java-extended-validation/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/19.1/graphql-java-extended-validation-19.1-sources.jar",
+./metadata/com.graphql-java/graphql-java-extended-validation/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java-extended-validation/tree/v19.1/src/test",
+./metadata/com.graphql-java/graphql-java-extended-validation/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/19.1/graphql-java-extended-validation-19.1-javadoc.jar",
+./metadata/io.smallrye.common/smallrye-common-function/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-function/2.2.0/smallrye-common-function-2.2.0-sources.jar",
+
+exec
+/usr/bin/zsh -lc "rg -n 'javadoc\\.jar|javadoc\\.io|sources\\.jar|repo1\\.maven\\.org|github\\.com/.*/tree/.*/test' -g '*.json' . | head -100" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+ succeeded in 0ms:
+./metadata/io.smallrye.common/smallrye-common-ref/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-ref/2.2.0/smallrye-common-ref-2.2.0-sources.jar",
+./metadata/io.smallrye.common/smallrye-common-ref/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-ref/2.2.0/smallrye-common-ref-2.2.0-javadoc.jar",
+./metadata/io.smallrye.common/smallrye-common-os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-os/2.2.0/smallrye-common-os-2.2.0-sources.jar",
+./metadata/io.smallrye.common/smallrye-common-os/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.2.0/os/src/test/java",
+./metadata/io.smallrye.common/smallrye-common-os/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-os/2.2.0/smallrye-common-os-2.2.0-javadoc.jar",
+./metadata/io.smallrye.common/smallrye-common-cpu/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/2.10.0/smallrye-common-cpu-2.10.0-sources.jar",
+./metadata/io.smallrye.common/smallrye-common-cpu/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.10.0/cpu/src/test/java/io/smallrye/common/cpu",
+./metadata/io.smallrye.common/smallrye-common-cpu/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/2.10.0/smallrye-common-cpu-2.10.0-javadoc.jar",
+./metadata/io.smallrye.common/smallrye-common-cpu/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/2.2.0/smallrye-common-cpu-2.2.0-sources.jar",
+./metadata/io.smallrye.common/smallrye-common-cpu/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/2.2.0/smallrye-common-cpu-2.2.0-javadoc.jar",
+./metadata/io.smallrye.common/smallrye-common-expression/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/2.2.0/smallrye-common-expression-2.2.0-sources.jar",
+./metadata/io.smallrye.common/smallrye-common-expression/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.2.0/expression/src/test/java",
+./metadata/io.smallrye.common/smallrye-common-expression/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/2.2.0/smallrye-common-expression-2.2.0-javadoc.jar",
+./metadata/io.smallrye.common/smallrye-common-net/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-net/2.2.0/smallrye-common-net-2.2.0-sources.jar",
+./metadata/io.smallrye.common/smallrye-common-net/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.2.0/net/src/test/java",
+./metadata/io.smallrye.common/smallrye-common-net/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-net/2.2.0/smallrye-common-net-2.2.0-javadoc.jar",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.3/paranamer-2.3-sources.jar",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:7:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-2.3/paranamer/src/test",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.3/paranamer-2.3-javadoc.jar",
+./metadata/io.smallrye.common/smallrye-common-function/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-function/2.2.0/smallrye-common-function-2.2.0-sources.jar",
+./metadata/io.smallrye.common/smallrye-common-function/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.smallrye.common/smallrye-common-function/2.2.0/",
+./metadata/software.amazon.awssdk/s3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-sources.jar",
+./metadata/software.amazon.awssdk/s3/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/2.25.3/services/s3/src/test",
+./metadata/software.amazon.awssdk/s3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-javadoc.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/1.5.0/jackrabbit-jcr-commons-1.5.0-sources.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/1.5.0/jackrabbit-jcr-commons/src/test/java",
+./metadata/io.smallrye.common/smallrye-common-constraint/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-constraint/2.2.0/smallrye-common-constraint-2.2.0-sources.jar",
+./metadata/io.smallrye.common/smallrye-common-constraint/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-constraint/2.2.0/smallrye-common-constraint-2.2.0-javadoc.jar",
+./metadata/org.iq80.leveldb/leveldb-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/iq80/leveldb/leveldb-api/0.6/leveldb-api-0.6-sources.jar",
+./metadata/org.iq80.leveldb/leveldb-api/index.json:7:    "test-code-url" : "https://github.com/dain/leveldb/tree/0.6/leveldb/src/test",
+./metadata/org.iq80.leveldb/leveldb-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/iq80/leveldb/leveldb-api/0.6/leveldb-api-0.6-javadoc.jar",
+./metadata/com.esotericsoftware/minlog/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/1.3.0/minlog-1.3.0-sources.jar",
+./metadata/com.esotericsoftware/minlog/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/1.3.0/minlog-1.3.0-javadoc.jar",
+./metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/thymeleaf/extras/thymeleaf-extras-springsecurity6/3.1.0.RELEASE/thymeleaf-extras-springsecurity6-3.1.0.RELEASE-sources.jar",
+./metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:7:    "test-code-url" : "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-3.1.0.RELEASE/tests/thymeleaf-tests-springsecurity6",
+./metadata/com.mysema.commons/mysema-commons-lang/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/mysema/commons/mysema-commons-lang/0.2.4/mysema-commons-lang-0.2.4-sources.jar",
+./metadata/com.mysema.commons/mysema-commons-lang/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/mysema/commons/mysema-commons-lang/0.2.4/mysema-commons-lang-0.2.4-javadoc.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0-sources.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0-javadoc.jar",
+./metadata/javax.interceptor/javax.interceptor-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/1.2/javax.interceptor-api-1.2-sources.jar",
+./metadata/javax.interceptor/javax.interceptor-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/1.2/javax.interceptor-api-1.2-javadoc.jar",
+./metadata/org.antlr/antlr4-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-sources.jar",
+./metadata/org.antlr/antlr4-runtime/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr4/tree/4.10/runtime-testsuite/test/org/antlr/v4/test/runtime/java",
+./metadata/org.antlr/antlr4-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-javadoc.jar",
+./metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/1.0.3/compress-lzf-1.0.3-sources.jar",
+./metadata/com.ning/compress-lzf/index.json:7:    "test-code-url" : "https://github.com/ning/compress/tree/compress-lzf-1.0.3/src/test",
+./metadata/com.ning/compress-lzf/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/1.0.3/compress-lzf-1.0.3-javadoc.jar",
+./metadata/com.mysql/mysql-connector-j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.31/mysql-connector-j-8.0.31-sources.jar",
+./metadata/com.mysql/mysql-connector-j/index.json:7:    "test-code-url" : "https://github.com/mysql/mysql-connector-j/tree/8.0.31/src/test",
+./metadata/com.mysql/mysql-connector-j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.31/mysql-connector-j-8.0.31-javadoc.jar",
+./metadata/jline/jline/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/jline/jline/2.14.6/jline-2.14.6-sources.jar",
+./metadata/jline/jline/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/jline/jline/2.14.6/jline-2.14.6-tests.jar",
+./metadata/jline/jline/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/jline/jline/2.14.6/jline-2.14.6-javadoc.jar",
+./metadata/org.mockito/mockito-core/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/5.0.0/mockito-core-5.0.0-sources.jar",
+./metadata/org.mockito/mockito-core/index.json:10:    "test-code-url": "https://github.com/mockito/mockito/tree/v5.0.0/src/test",
+./metadata/org.mockito/mockito-core/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/5.0.0/mockito-core-5.0.0-javadoc.jar",
+./metadata/org.mockito/mockito-core/index.json:50:    "source-code-url": "https://repo1.maven.org/maven2/org/mockito/mockito-core/4.8.1/mockito-core-4.8.1-sources.jar",
+./metadata/org.mockito/mockito-core/index.json:52:    "test-code-url": "https://github.com/mockito/mockito/tree/v4.8.1/src/test",
+./metadata/org.glassfish.hk2.external/javax.inject/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/external/javax.inject/2.5.0-b05/javax.inject-2.5.0-b05-sources.jar",
+./metadata/org.glassfish.hk2.external/javax.inject/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/external/javax.inject/2.5.0-b05/javax.inject-2.5.0-b05-javadoc.jar",
+./metadata/org.sonatype.aether/aether-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-sources.jar",
+./metadata/org.sonatype.aether/aether-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-javadoc.jar",
+./metadata/javax.transaction/transaction-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/transaction/transaction-api/1.1/transaction-api-1.1-sources.jar",
+./metadata/org.glassfish.hk2.external/jakarta.inject/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/hk2/external/jakarta.inject/2.6.1/jakarta.inject-2.6.1-sources.jar",
+./metadata/org.glassfish.hk2.external/jakarta.inject/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/hk2/external/jakarta.inject/2.6.1/jakarta.inject-2.6.1-javadoc.jar",
+./metadata/javax.transaction/jta/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/transaction/jta/1.1/jta-1.1-sources.jar",
+./metadata/org.apache.kafka/kafka-clients/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/3.5.1/kafka-clients-3.5.1-sources.jar",
+./metadata/org.apache.kafka/kafka-clients/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/3.5.1/kafka-clients-3.5.1-test-sources.jar",
+./metadata/org.apache.kafka/kafka-clients/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/3.5.1/kafka-clients-3.5.1-javadoc.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-sources.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:6:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.0.6/src/test",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-javadoc.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:40:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-sources.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:42:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.5.2/src/test",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:43:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-javadoc.jar",
+./metadata/org.sonatype.aether/aether-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/1.7/aether-util-1.7-sources.jar",
+./metadata/org.sonatype.aether/aether-util/index.json:7:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-util/src/test/java",
+./metadata/org.sonatype.aether/aether-util/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/1.7/aether-util-1.7-javadoc.jar",
+./metadata/org.apache.kafka/kafka-streams/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/kafka/kafka-streams/3.5.1/kafka-streams-3.5.1-sources.jar",
+./metadata/org.apache.kafka/kafka-streams/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/kafka/kafka-streams/3.5.1/kafka-streams-3.5.1-test-sources.jar",
+./metadata/org.apache.kafka/kafka-streams/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kafka/kafka-streams/3.5.1/kafka-streams-3.5.1-javadoc.jar",
+./metadata/com.vaadin.external.google/android-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1-sources.jar",
+./metadata/com.vaadin.external.google/android-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1-javadoc.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.9/aether-api-1.9-sources.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:7:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.9/aether-api/src/test/java",
+./metadata/org.sonatype.aether/aether-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.9/aether-api-1.9-javadoc.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-sources.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:21:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-api/src/test/java",
+./metadata/org.sonatype.aether/aether-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-javadoc.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.7/aether-api-1.7-sources.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:35:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-api/src/test/java",
+./metadata/org.sonatype.aether/aether-api/index.json:36:    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.7/aether-api-1.7-javadoc.jar",
+./metadata/schemas/metadata-library-index-schema-v2.0.1.json:183:        "test-code-url": "https://github.com/example/project/tree/main/tests/src/org.example/library/0.0.1",
+./metadata/com.google.cloud.tools/jib-build-plan/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/cloud/tools/jib-build-plan/0.4.0/jib-build-plan-0.4.0-sources.jar",
+./metadata/com.google.cloud.tools/jib-build-plan/index.json:8:    "test-code-url": "https://github.com/GoogleContainerTools/jib/tree/v0.4.0-build-plan/jib-build-plan/src/test",
+./metadata/com.google.cloud.tools/jib-build-plan/index.json:9:    "documentation-url": "https://javadoc.io/doc/com.google.cloud.tools/jib-build-plan/0.4.0",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+./metadata/org.flywaydb/flyway-core/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/12.3.0/flyway-core-12.3.0-sources.jar",
+
+web search: 
+web search: https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/
+web search: 
+web search: repo1.maven.org/maven2/jakarta/json/jakarta.json-tck-tests/2.1.0/
+web search: 
+web search: https://repo1.maven.org/maven2/jakarta/json/
+web search: 
+web search: https://repo1.maven.org/maven2/jakarta/json/jakarta.json-tck-tests/
+web search: 
+web search: https://repo1.maven.org/maven2/jakarta/json/jakarta.json-tck-tests/2.1.0/
+web search: 
+web search: https://github.com/jakartaee/jsonp-api
+web search: 
+web search: https://github.com/eclipse-ee4j/jsonp
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0.pom | rg -n '<url>|<description>|<scm>|<tag>|<name>'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+exec
+/usr/bin/zsh -lc "git ls-remote --tags https://github.com/jakartaee/jsonp-api.git | rg '2\\.1\\.0|2\\.1|jsonp'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+exec
+/usr/bin/zsh -lc "git ls-remote --tags https://github.com/eclipse-ee4j/jsonp.git | rg '2\\.1\\.0|2\\.1'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+ succeeded in 121ms:
+34:    <name>Jakarta JSON Processing API</name>
+35:    <description>Jakarta JSON Processing defines a Java(R) based framework for parsing, generating, transforming, and querying JSON documents.</description>
+36:    <url>https://github.com/eclipse-ee4j/jsonp</url>
+38:    <scm>
+41:        <url>https://github.com/eclipse-ee4j/jsonp</url>
+42:        <tag>HEAD</tag>
+47:            <name>Eclipse Public License 2.0</name>
+48:            <url>https://projects.eclipse.org/license/epl-2.0</url>
+52:            <name>GNU General Public License, version 2 with the GNU Classpath Exception</name>
+53:            <url>https://projects.eclipse.org/license/secondary-gpl-2.0-cp</url>
+61:            <name>Dmitry Kornilov</name>
+69:            <name>Lukas Jungmann</name>
+261:                            <name>current.year</name>
+388:                    <description>JSON Processing API documentation</description>
+
+ succeeded in 518ms:
+3183db938956ff0de0ce6a67a088e53941fb0d22	refs/tags/2.1.0-RC1-RELEASE
+f2e920e0dc23fe88c0e16cef77efabff11153c4d	refs/tags/2.1.0-RC1-RELEASE^{}
+99d58fe247a99ed3ce88311c3f4fa5c30b73defd	refs/tags/2.1.0-RELEASE
+51bc5eb459b1fbe17ea3d0a676f7451ba028cbb4	refs/tags/2.1.0-RELEASE^{}
+9dfcdb31b18e786457d8d1185c4357d099547521	refs/tags/2.1.0-tck
+bb7a2529e72fddb081276c7431e3b1ae5f6bbb2e	refs/tags/2.1.0-tck^{}
+7ef29f449d6712f08c6ddb1b0f1f59f578aa3464	refs/tags/2.1.1-RELEASE
+a359856b15dd8d045a15fca5f217d6a18a88533d	refs/tags/2.1.1-RELEASE^{}
+6f71377f0753941367c3e584baf6f22388db4110	refs/tags/2.1.1-tck
+a069fcebfdccbf066c30bc32a72312e91478d43a	refs/tags/2.1.1-tck^{}
+2d2b10162612c6ce64f3eabf0dbad34af458d432	refs/tags/2.1.2-RELEASE
+190d5ff7c923b49b45bbde42cffe97829e3d1382	refs/tags/2.1.2-RELEASE^{}
+3dfcf6f6851b421f98bc9b7f6cbed730068896c4	refs/tags/2.1.3-RELEASE
+b7f9d851b854686ccbc1495ad8c71615265f6b71	refs/tags/2.1.3-RELEASE^{}
+
+ succeeded in 520ms:
+3183db938956ff0de0ce6a67a088e53941fb0d22	refs/tags/2.1.0-RC1-RELEASE
+f2e920e0dc23fe88c0e16cef77efabff11153c4d	refs/tags/2.1.0-RC1-RELEASE^{}
+99d58fe247a99ed3ce88311c3f4fa5c30b73defd	refs/tags/2.1.0-RELEASE
+51bc5eb459b1fbe17ea3d0a676f7451ba028cbb4	refs/tags/2.1.0-RELEASE^{}
+9dfcdb31b18e786457d8d1185c4357d099547521	refs/tags/2.1.0-tck
+bb7a2529e72fddb081276c7431e3b1ae5f6bbb2e	refs/tags/2.1.0-tck^{}
+7ef29f449d6712f08c6ddb1b0f1f59f578aa3464	refs/tags/2.1.1-RELEASE
+a359856b15dd8d045a15fca5f217d6a18a88533d	refs/tags/2.1.1-RELEASE^{}
+6f71377f0753941367c3e584baf6f22388db4110	refs/tags/2.1.1-tck
+a069fcebfdccbf066c30bc32a72312e91478d43a	refs/tags/2.1.1-tck^{}
+2d2b10162612c6ce64f3eabf0dbad34af458d432	refs/tags/2.1.2-RELEASE
+190d5ff7c923b49b45bbde42cffe97829e3d1382	refs/tags/2.1.2-RELEASE^{}
+3dfcf6f6851b421f98bc9b7f6cbed730068896c4	refs/tags/2.1.3-RELEASE
+b7f9d851b854686ccbc1495ad8c71615265f6b71	refs/tags/2.1.3-RELEASE^{}
+
+codex
+I found Maven-published sources, Javadocs, and TCK test sources for version 2.1.0, plus the repository URL declared by the artifact POM. I’m updating the discovered metadata now; no `language` field is needed because this is not one of the Kotlin/Groovy/Scala language-specific libraries requested by the schema.
+apply patch
+patch: completed
+/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
+diff --git a/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json b/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
+index 39b12e23de84aa20f9e5dda6bf72260e9a7c8e46..d712d13f02be723da0983f2201a783947dac691f
+--- a/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
++++ b/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.json:jakarta.json-api:2.1.0"
++  "coordinates" : "jakarta.json:jakarta.json-api:2.1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jsonp",
++  "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0-javadoc.jar",
++  "description" : "Jakarta JSON Processing API defines the standard Jakarta EE API for parsing, generating, transforming, and querying JSON documents. The jakarta.json-api artifact provides the interfaces and core types used by implementations and applications that work with JSON-P."
+ }
+
+diff --git a/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json b/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
+index 39b12e23de84aa20f9e5dda6bf72260e9a7c8e46..d712d13f02be723da0983f2201a783947dac691f
+--- a/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
++++ b/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.json:jakarta.json-api:2.1.0"
++  "coordinates" : "jakarta.json:jakarta.json-api:2.1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jsonp",
++  "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0-javadoc.jar",
++  "description" : "Jakarta JSON Processing API defines the standard Jakarta EE API for parsing, generating, transforming, and querying JSON documents. The jakarta.json-api artifact provides the interfaces and core types used by implementations and applications that work with JSON-P."
+ }
+
+exec
+/usr/bin/zsh -lc 'jq . build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+ succeeded in 0ms:
+{
+  "coordinates": "jakarta.json:jakarta.json-api:2.1.0",
+  "source-code-url": "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0-sources.jar",
+  "repository-url": "https://github.com/eclipse-ee4j/jsonp",
+  "test-code-url": "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0-sources.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0-javadoc.jar",
+  "description": "Jakarta JSON Processing API defines the standard Jakarta EE API for parsing, generating, transforming, and querying JSON documents. The jakarta.json-api artifact provides the interfaces and core types used by implementations and applications that work with JSON-P."
+}
+
+exec
+/usr/bin/zsh -lc 'git diff -- build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json b/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
+index 39b12e23de84aa20f9e5dda6bf72260e9a7c8e46..d712d13f02be723da0983f2201a783947dac691f
+--- a/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
++++ b/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.json:jakarta.json-api:2.1.0"
++  "coordinates" : "jakarta.json:jakarta.json-api:2.1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jsonp",
++  "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0-javadoc.jar",
++  "description" : "Jakarta JSON Processing API defines the standard Jakarta EE API for parsing, generating, transforming, and querying JSON documents. The jakarta.json-api artifact provides the interfaces and core types used by implementations and applications that work with JSON-P."
+ }
+
+exec
+/usr/bin/zsh -lc "sed -n '1,120p' build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+ succeeded in 0ms:
+{
+  "coordinates" : "jakarta.json:jakarta.json-api:2.1.0",
+  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0-sources.jar",
+  "repository-url" : "https://github.com/eclipse-ee4j/jsonp",
+  "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0-sources.jar",
+  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0-javadoc.jar",
+  "description" : "Jakarta JSON Processing API defines the standard Jakarta EE API for parsing, generating, transforming, and querying JSON documents. The jakarta.json-api artifact provides the interfaces and core types used by implementations and applications that work with JSON-P."
+}
+
+exec
+/usr/bin/zsh -lc 'git status --short build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json b/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
+index 39b12e23de84aa20f9e5dda6bf72260e9a7c8e46..d712d13f02be723da0983f2201a783947dac691f
+--- a/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
++++ b/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.json:jakarta.json-api:2.1.0"
++  "coordinates" : "jakarta.json:jakarta.json-api:2.1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jsonp",
++  "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0-javadoc.jar",
++  "description" : "Jakarta JSON Processing API defines the standard Jakarta EE API for parsing, generating, transforming, and querying JSON documents. The jakarta.json-api artifact provides the interfaces and core types used by implementations and applications that work with JSON-P."
+ }
+
+web search: 
+web search: Jakarta JSON Processing API Maven Central 2.1.0
+web search: 
+web search: Central Repository jakarta/json/jakarta.json-tck-tests/2.1.0 jakarta.json-tck-tests-2.1.0-sources.jar
+web search: 
+web search: central.sonatype.com artifact jakarta.json jakarta.json-api 2.1.0 repository url github eclipse-ee4j jsonp
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/json/jakarta.json-tck-dist-epl/2.1.0/ | sed -n '1,120p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/json/jakarta.json-tck/2.1.0/ | sed -n '1,120p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/json/jakarta.json-tck-tests-pluggability/2.1.0/ | sed -n '1,100p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520
+ succeeded in 154ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jakarta/json/jakarta.json-tck/2.1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jakarta/json/jakarta.json-tck/2.1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.json-tck-2.1.0.pom" title="jakarta.json-tck-2.1.0.pom">jakarta.json-tck-2.1.0.pom</a>                        2022-05-02 12:50      5497      
+<a href="jakarta.json-tck-2.1.0.pom.asc" title="jakarta.json-tck-2.1.0.pom.asc">jakarta.json-tck-2.1.0.pom.asc</a>                    2022-05-02 12:50       833      
+<a href="jakarta.json-tck-2.1.0.pom.asc.asc" title="jakarta.json-tck-2.1.0.pom.asc.asc">jakarta.json-tck-2.1.0.pom.asc.asc</a>                2022-05-02 12:50       833      
+<a href="jakarta.json-tck-2.1.0.pom.asc.asc.md5" title="jakarta.json-tck-2.1.0.pom.asc.asc.md5">jakarta.json-tck-2.1.0.pom.asc.asc.md5</a>            2022-05-02 12:50        32      
+<a href="jakarta.json-tck-2.1.0.pom.asc.asc.sha1" title="jakarta.json-tck-2.1.0.pom.asc.asc.sha1">jakarta.json-tck-2.1.0.pom.asc.asc.sha1</a>           2022-05-02 12:50        40      
+<a href="jakarta.json-tck-2.1.0.pom.md5" title="jakarta.json-tck-2.1.0.pom.md5">jakarta.json-tck-2.1.0.pom.md5</a>                    2022-05-02 12:50        32      
+<a href="jakarta.json-tck-2.1.0.pom.sha1" title="jakarta.json-tck-2.1.0.pom.sha1">jakarta.json-tck-2.1.0.pom.sha1</a>                   2022-05-02 12:50        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 131ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jakarta/json/jakarta.json-tck-tests-pluggability/2.1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jakarta/json/jakarta.json-tck-tests-pluggability/2.1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.json-tck-tests-pluggability-2.1.0-javadoc.jar" title="jakarta.json-tck-tests-pluggability-2.1.0-javadoc.jar">jakarta.json-tck-tests-pluggability-2.1.0-jav...</a>  2022-04-26 08:37    464494      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0-javadoc.jar.asc" title="jakarta.json-tck-tests-pluggability-2.1.0-javadoc.jar.asc">jakarta.json-tck-tests-pluggability-2.1.0-jav...</a>  2022-04-26 08:37       833      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0-javadoc.jar.asc.md5" title="jakarta.json-tck-tests-pluggability-2.1.0-javadoc.jar.asc.md5">jakarta.json-tck-tests-pluggability-2.1.0-jav...</a>  2022-04-26 08:37        32      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0-javadoc.jar.asc.sha1" title="jakarta.json-tck-tests-pluggability-2.1.0-javadoc.jar.asc.sha1">jakarta.json-tck-tests-pluggability-2.1.0-jav...</a>  2022-04-26 08:37        40      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0-javadoc.jar.md5" title="jakarta.json-tck-tests-pluggability-2.1.0-javadoc.jar.md5">jakarta.json-tck-tests-pluggability-2.1.0-jav...</a>  2022-04-26 08:37        32      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0-javadoc.jar.sha1" title="jakarta.json-tck-tests-pluggability-2.1.0-javadoc.jar.sha1">jakarta.json-tck-tests-pluggability-2.1.0-jav...</a>  2022-04-26 08:37        40      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0-sources.jar" title="jakarta.json-tck-tests-pluggability-2.1.0-sources.jar">jakarta.json-tck-tests-pluggability-2.1.0-sou...</a>  2022-04-26 08:37     17024      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0-sources.jar.asc" title="jakarta.json-tck-tests-pluggability-2.1.0-sources.jar.asc">jakarta.json-tck-tests-pluggability-2.1.0-sou...</a>  2022-04-26 08:37       833      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0-sources.jar.asc.md5" title="jakarta.json-tck-tests-pluggability-2.1.0-sources.jar.asc.md5">jakarta.json-tck-tests-pluggability-2.1.0-sou...</a>  2022-04-26 08:37        32      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0-sources.jar.asc.sha1" title="jakarta.json-tck-tests-pluggability-2.1.0-sources.jar.asc.sha1">jakarta.json-tck-tests-pluggability-2.1.0-sou...</a>  2022-04-26 08:37        40      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0-sources.jar.md5" title="jakarta.json-tck-tests-pluggability-2.1.0-sources.jar.md5">jakarta.json-tck-tests-pluggability-2.1.0-sou...</a>  2022-04-26 08:37        32      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0-sources.jar.sha1" title="jakarta.json-tck-tests-pluggability-2.1.0-sources.jar.sha1">jakarta.json-tck-tests-pluggability-2.1.0-sou...</a>  2022-04-26 08:37        40      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0.jar" title="jakarta.json-tck-tests-pluggability-2.1.0.jar">jakarta.json-tck-tests-pluggability-2.1.0.jar</a>     2022-04-26 08:37     23695      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0.jar.asc" title="jakarta.json-tck-tests-pluggability-2.1.0.jar.asc">jakarta.json-tck-tests-pluggability-2.1.0.jar...</a>  2022-04-26 08:37       833      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0.jar.asc.md5" title="jakarta.json-tck-tests-pluggability-2.1.0.jar.asc.md5">jakarta.json-tck-tests-pluggability-2.1.0.jar...</a>  2022-04-26 08:37        32      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0.jar.asc.sha1" title="jakarta.json-tck-tests-pluggability-2.1.0.jar.asc.sha1">jakarta.json-tck-tests-pluggability-2.1.0.jar...</a>  2022-04-26 08:37        40      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0.jar.md5" title="jakarta.json-tck-tests-pluggability-2.1.0.jar.md5">jakarta.json-tck-tests-pluggability-2.1.0.jar...</a>  2022-04-26 08:37        32      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0.jar.sha1" title="jakarta.json-tck-tests-pluggability-2.1.0.jar.sha1">jakarta.json-tck-tests-pluggability-2.1.0.jar...</a>  2022-04-26 08:37        40      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0.pom" title="jakarta.json-tck-tests-pluggability-2.1.0.pom">jakarta.json-tck-tests-pluggability-2.1.0.pom</a>     2022-04-26 08:37      2282      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0.pom.asc" title="jakarta.json-tck-tests-pluggability-2.1.0.pom.asc">jakarta.json-tck-tests-pluggability-2.1.0.pom...</a>  2022-04-26 08:37       833      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0.pom.asc.md5" title="jakarta.json-tck-tests-pluggability-2.1.0.pom.asc.md5">jakarta.json-tck-tests-pluggability-2.1.0.pom...</a>  2022-04-26 08:37        32      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0.pom.asc.sha1" title="jakarta.json-tck-tests-pluggability-2.1.0.pom.asc.sha1">jakarta.json-tck-tests-pluggability-2.1.0.pom...</a>  2022-04-26 08:37        40      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0.pom.md5" title="jakarta.json-tck-tests-pluggability-2.1.0.pom.md5">jakarta.json-tck-tests-pluggability-2.1.0.pom...</a>  2022-04-26 08:37        32      
+<a href="jakarta.json-tck-tests-pluggability-2.1.0.pom.sha1" title="jakarta.json-tck-tests-pluggability-2.1.0.pom.sha1">jakarta.json-tck-tests-pluggability-2.1.0.pom...</a>  2022-04-26 08:37        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+diff --git a/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json b/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
+index 39b12e23de84aa20f9e5dda6bf72260e9a7c8e46..d712d13f02be723da0983f2201a783947dac691f
+--- a/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
++++ b/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.json:jakarta.json-api:2.1.0"
++  "coordinates" : "jakarta.json:jakarta.json-api:2.1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jsonp",
++  "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0-javadoc.jar",
++  "description" : "Jakarta JSON Processing API defines the standard Jakarta EE API for parsing, generating, transforming, and querying JSON documents. The jakarta.json-api artifact provides the interfaces and core types used by implementations and applications that work with JSON-P."
+ }
+
+ succeeded in 320ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jakarta/json/jakarta.json-tck-dist-epl/2.1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jakarta/json/jakarta.json-tck-dist-epl/2.1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.json-tck-dist-epl-2.1.0.pom" title="jakarta.json-tck-dist-epl-2.1.0.pom">jakarta.json-tck-dist-epl-2.1.0.pom</a>               2022-02-28 12:13      6622      
+<a href="jakarta.json-tck-dist-epl-2.1.0.pom.asc" title="jakarta.json-tck-dist-epl-2.1.0.pom.asc">jakarta.json-tck-dist-epl-2.1.0.pom.asc</a>           2022-02-28 12:13       833      
+<a href="jakarta.json-tck-dist-epl-2.1.0.pom.asc.md5" title="jakarta.json-tck-dist-epl-2.1.0.pom.asc.md5">jakarta.json-tck-dist-epl-2.1.0.pom.asc.md5</a>       2022-02-28 12:13        32      
+<a href="jakarta.json-tck-dist-epl-2.1.0.pom.asc.sha1" title="jakarta.json-tck-dist-epl-2.1.0.pom.asc.sha1">jakarta.json-tck-dist-epl-2.1.0.pom.asc.sha1</a>      2022-02-28 12:13        40      
+<a href="jakarta.json-tck-dist-epl-2.1.0.pom.md5" title="jakarta.json-tck-dist-epl-2.1.0.pom.md5">jakarta.json-tck-dist-epl-2.1.0.pom.md5</a>           2022-02-28 12:13        32      
+<a href="jakarta.json-tck-dist-epl-2.1.0.pom.sha1" title="jakarta.json-tck-dist-epl-2.1.0.pom.sha1">jakarta.json-tck-dist-epl-2.1.0.pom.sha1</a>          2022-02-28 12:13        40      
+<a href="jakarta.json-tck-dist-epl-2.1.0.zip" title="jakarta.json-tck-dist-epl-2.1.0.zip">jakarta.json-tck-dist-epl-2.1.0.zip</a>               2022-02-28 12:13    795787      
+<a href="jakarta.json-tck-dist-epl-2.1.0.zip.asc" title="jakarta.json-tck-dist-epl-2.1.0.zip.asc">jakarta.json-tck-dist-epl-2.1.0.zip.asc</a>           2022-02-28 12:13       833      
+<a href="jakarta.json-tck-dist-epl-2.1.0.zip.asc.md5" title="jakarta.json-tck-dist-epl-2.1.0.zip.asc.md5">jakarta.json-tck-dist-epl-2.1.0.zip.asc.md5</a>       2022-02-28 12:13        32      
+<a href="jakarta.json-tck-dist-epl-2.1.0.zip.asc.sha1" title="jakarta.json-tck-dist-epl-2.1.0.zip.asc.sha1">jakarta.json-tck-dist-epl-2.1.0.zip.asc.sha1</a>      2022-02-28 12:13        40      
+<a href="jakarta.json-tck-dist-epl-2.1.0.zip.md5" title="jakarta.json-tck-dist-epl-2.1.0.zip.md5">jakarta.json-tck-dist-epl-2.1.0.zip.md5</a>           2022-02-28 12:13        32      
+<a href="jakarta.json-tck-dist-epl-2.1.0.zip.sha1" title="jakarta.json-tck-dist-epl-2.1.0.zip.sha1">jakarta.json-tck-dist-epl-2.1.0.zip.sha1</a>          2022-02-28 12:13        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+codex
+Updated [jakarta.json-jakarta.json-api-2.1.0.json](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json) with the discovered repository, Maven sources, Maven TCK test sources, Maven Javadocs, and a two-sentence description.
+
+I validated the file with `jq`; no `language` field was added because this is not a Kotlin, Groovy, or Scala-specific library.
+diff --git a/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json b/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
+index 39b12e23de84aa20f9e5dda6bf72260e9a7c8e46..d712d13f02be723da0983f2201a783947dac691f
+--- a/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
++++ b/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.json:jakarta.json-api:2.1.0"
++  "coordinates" : "jakarta.json:jakarta.json-api:2.1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jsonp",
++  "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0-javadoc.jar",
++  "description" : "Jakarta JSON Processing API defines the standard Jakarta EE API for parsing, generating, transforming, and querying JSON documents. The jakarta.json-api artifact provides the interfaces and core types used by implementations and applications that work with JSON-P."
+ }
+
+2026-04-30T06:25:04.777249Z ERROR codex_core::session: failed to record rollout items: thread 019ddd0e-0286-7fe2-b848-74844e555591 not found
+tokens used
+97,482
+Updated [jakarta.json-jakarta.json-api-2.1.0.json](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520/build/discovered-artifact-metadata/jakarta.json-jakarta.json-api-2.1.0.json) with the discovered repository, Maven sources, Maven TCK test sources, Maven Javadocs, and a two-sentence description.
+
+I validated the file with `jq`; no `language` field was added because this is not a Kotlin, Groovy, or Scala-specific library.
+Ran agent for jakarta.json:jakarta.json-api:2.1.0 (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520/build/agent-artifact-discovery-logs/jakarta.json-jakarta.json-api-2.1.0.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2820-39d1d520/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 11s
+9 actionable tasks: 4 executed, 5 from cache
