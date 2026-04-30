@@ -344,9 +344,9 @@ public final class Opentelemetry_sdk_logsTest {
         }
 
         @Override
-        public void onEmit(ReadWriteLogRecord logRecord) {
+        public void onEmit(Context context, ReadWriteLogRecord logRecord) {
             logRecord.setAttribute(PROCESSOR_MARK, "enriched");
-            delegate.onEmit(logRecord);
+            delegate.onEmit(context, logRecord);
         }
 
         @Override
@@ -366,7 +366,7 @@ public final class Opentelemetry_sdk_logsTest {
         private boolean shutdown;
 
         @Override
-        public void onEmit(ReadWriteLogRecord logRecord) {
+        public void onEmit(Context context, ReadWriteLogRecord logRecord) {
             records.add(logRecord.toLogRecordData());
         }
 
