@@ -231,6 +231,41 @@ public class Slf4j_jboss_logmanagerTest {
     }
 
     @Test
+    void markerLoggingOverloadsIgnoreMarkersAndReachJbossLogManager() {
+        String loggerName = Slf4j_jboss_logmanagerTest.class.getName() + ".markerLogging";
+        org.jboss.logmanager.Logger jbossLogger = LogContext.getLogContext().getLogger(loggerName);
+        CapturingHandler handler = new CapturingHandler();
+        try (LoggerScope scope = new LoggerScope(jbossLogger, handler, org.jboss.logmanager.Level.INFO)) {
+            Logger logger = LoggerFactory.getLogger(loggerName);
+            Marker marker = MarkerFactory.getMarker("audit-event");
+            RuntimeException failure = new RuntimeException("marker failure");
+
+            assertThat(logger.isDebugEnabled(marker)).isFalse();
+            assertThat(logger.isInfoEnabled(marker)).isTrue();
+            assertThat(logger.isWarnEnabled(marker)).isTrue();
+            assertThat(logger.isErrorEnabled(marker)).isTrue();
+
+            logger.debug(marker, "filtered marker debug");
+            logger.info(marker, "marker {} {}", "order", 7);
+            logger.warn(marker, "marker warning", failure);
+            logger.error(marker, "marker {} failed", "payment", failure);
+
+            assertThat(handler.records()).hasSize(3);
+            assertThat(handler.record(0).getLevel()).isEqualTo(org.jboss.logmanager.Level.INFO);
+            assertThat(handler.record(0).getMessage()).isEqualTo("marker order 7");
+            assertThat(handler.record(0).getParameters()).containsExactly("order", 7);
+
+            assertThat(handler.record(1).getLevel()).isEqualTo(org.jboss.logmanager.Level.WARN);
+            assertThat(handler.record(1).getMessage()).isEqualTo("marker warning");
+            assertThat(handler.record(1).getThrown()).isSameAs(failure);
+
+            assertThat(handler.record(2).getLevel()).isEqualTo(org.jboss.logmanager.Level.ERROR);
+            assertThat(handler.record(2).getMessage()).isEqualTo("marker payment failed");
+            assertThat(handler.record(2).getThrown()).isSameAs(failure);
+        }
+    }
+
+    @Test
     void markerBinderProvidesBasicMarkerFactory() {
         StaticMarkerBinder binder = StaticMarkerBinder.SINGLETON;
         IMarkerFactory markerFactory = binder.getMarkerFactory();
