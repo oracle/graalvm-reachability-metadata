@@ -100,6 +100,27 @@ public class Commons_fileupload2_coreTest {
     }
 
     @Test
+    void decodesRfc2231EncodedDispositionParameters() throws Exception {
+        String boundary = "encoded-parameters";
+        byte[] body = multipart(boundary,
+                part("Content-Disposition: form-data; name*=UTF-8''caf%C3%A9; filename*=UTF-8''r%C3%A9sum%C3%A9.txt",
+                        "Content-Type: text/plain; charset=UTF-8",
+                        "",
+                        "contents"));
+        Upload upload = newUpload(DiskFileItemFactory.DEFAULT_THRESHOLD);
+
+        List<DiskFileItem> items = upload.parseRequest(request(boundary, body));
+
+        assertThat(items).singleElement().satisfies(item -> {
+            assertThat(item.getFieldName()).isEqualTo("café");
+            assertThat(item.isFormField()).isFalse();
+            assertThat(item.getName()).isEqualTo("résumé.txt");
+            assertThat(item.getContentType()).isEqualTo("text/plain; charset=UTF-8");
+            assertThat(item.getString()).isEqualTo("contents");
+        });
+    }
+
+    @Test
     void groupsRepeatedFormFieldsInParameterMap() throws Exception {
         String boundary = "grouped";
         byte[] body = multipart(boundary,
