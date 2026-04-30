@@ -19,6 +19,7 @@ Provider<Directory> jsonSimpleFixtureResources = layout.buildDirectory.dir("gene
 Provider<Directory> jsonPatchFixtureResources = layout.buildDirectory.dir("generated/json-patch-fixture-resources")
 Provider<Directory> gsonFixtureResources = layout.buildDirectory.dir("generated/gson-fixture-resources")
 Provider<Directory> jacksonJsonFixtureResources = layout.buildDirectory.dir("generated/jackson-json-fixture-resources")
+Provider<Directory> jacksonYamlFixtureResources = layout.buildDirectory.dir("generated/jackson-yaml-fixture-resources")
 Provider<Directory> googleJavaFormatFixtureResources = layout.buildDirectory.dir("generated/google-java-format-fixture-resources")
 Provider<Directory> palantirJavaFormatFixtureResources = layout.buildDirectory.dir("generated/palantir-java-format-fixture-resources")
 Provider<Directory> cleanthatFixtureResources = layout.buildDirectory.dir("generated/cleanthat-fixture-resources")
@@ -96,6 +97,17 @@ tasks.register("generateJacksonJsonFixtureJar") {
         delete(outputDir)
 
         createJacksonJsonFixture(outputDir)
+    }
+}
+
+tasks.register("generateJacksonYamlFixtureJar") {
+    outputs.dir(jacksonYamlFixtureResources)
+
+    doLast {
+        File outputDir = jacksonYamlFixtureResources.get().asFile
+        delete(outputDir)
+
+        createJacksonYamlFixture(outputDir)
     }
 }
 
@@ -495,6 +507,32 @@ void createJacksonJsonFixture(File outputDir) {
             sourceSets.test.compileClasspath.asPath)
 }
 
+void createJacksonYamlFixture(File outputDir) {
+    Map<String, String> sources = [
+        "com/diffplug/spotless/glue/yaml/JacksonYamlFormatterFunc.java": """
+            package com.diffplug.spotless.glue.yaml;
+
+            import com.diffplug.spotless.FormatterFunc;
+            import com.diffplug.spotless.yaml.JacksonYamlConfig;
+
+            public class JacksonYamlFormatterFunc implements FormatterFunc {
+                private final JacksonYamlConfig config;
+
+                public JacksonYamlFormatterFunc(JacksonYamlConfig config) {
+                    this.config = config;
+                }
+
+                public String apply(String input) {
+                    return "jackson-yaml:" + config.getFeatureToToggle() + ":"
+                            + config.getYamlFeatureToToggle() + ":" + input;
+                }
+            }
+            """
+    ]
+    createFixtureJar(outputDir, "jackson-yaml-fixtures", "current", "jackson-yaml-fixture.jar", sources,
+            sourceSets.test.compileClasspath.asPath)
+}
+
 void createCleanthatFixture(File outputDir) {
     Map<String, String> sources = [
         "com/diffplug/spotless/glue/java/JavaCleanthatRefactorerFunc.java": """
@@ -819,6 +857,7 @@ sourceSets {
         resources.srcDir(jsonPatchFixtureResources)
         resources.srcDir(gsonFixtureResources)
         resources.srcDir(jacksonJsonFixtureResources)
+        resources.srcDir(jacksonYamlFixtureResources)
         resources.srcDir(googleJavaFormatFixtureResources)
         resources.srcDir(palantirJavaFormatFixtureResources)
         resources.srcDir(cleanthatFixtureResources)
@@ -839,6 +878,7 @@ tasks.named("processTestResources") {
     dependsOn(tasks.named("generateJsonPatchFixtureJar"))
     dependsOn(tasks.named("generateGsonFixtureJar"))
     dependsOn(tasks.named("generateJacksonJsonFixtureJar"))
+    dependsOn(tasks.named("generateJacksonYamlFixtureJar"))
     dependsOn(tasks.named("generateGoogleJavaFormatFixtureJar"))
     dependsOn(tasks.named("generatePalantirJavaFormatFixtureJar"))
     dependsOn(tasks.named("generateCleanthatFixtureJar"))
@@ -860,7 +900,7 @@ dependencies {
 graalvmNative {
     binaries {
         test {
-            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|ktlint-fixtures|json-simple-fixtures|json-patch-fixtures|gson-fixtures|jackson-json-fixtures|google-java-format-fixtures|palantir-java-format-fixtures|cleanthat-fixtures|freshmark-fixtures|flexmark-fixtures|antlr4-formatter-fixtures|gherkin-utils-fixtures|diktat-fixtures|sortpom-fixtures|scalafmt-fixtures)/.*')
+            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|ktlint-fixtures|json-simple-fixtures|json-patch-fixtures|gson-fixtures|jackson-json-fixtures|jackson-yaml-fixtures|google-java-format-fixtures|palantir-java-format-fixtures|cleanthat-fixtures|freshmark-fixtures|flexmark-fixtures|antlr4-formatter-fixtures|gherkin-utils-fixtures|diktat-fixtures|sortpom-fixtures|scalafmt-fixtures)/.*')
         }
     }
 
