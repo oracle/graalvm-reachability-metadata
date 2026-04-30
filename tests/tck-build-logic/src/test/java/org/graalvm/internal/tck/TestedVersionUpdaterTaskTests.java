@@ -7,6 +7,7 @@
 package org.graalvm.internal.tck;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.graalvm.internal.tck.stats.LibraryStatsSupport;
 import org.gradle.testfixtures.ProjectBuilder;
@@ -69,6 +70,28 @@ class TestedVersionUpdaterTaskTests {
                 """,
                 StandardCharsets.UTF_8
         );
+        Files.writeString(
+                tempDir.resolve("stats/com.example/demo/1.0.0-RC1/execution-metrics.json"),
+                """
+                {
+                  "add_new_library_support:2026-04-30": {
+                    "library": "com.example:demo:1.0.0-RC1",
+                    "previous_library": "com.example:demo:1.0.0-RC1",
+                    "stats": {
+                      "version": "1.0.0-RC1"
+                    },
+                    "previous_library_stats": {
+                      "version": "1.0.0-RC1"
+                    },
+                    "artifacts": {
+                      "test_file": "tests/src/com.example/demo/1.0.0-RC1/src/test/java/com/example/DemoTest.java",
+                      "metadata_file": "metadata/com.example/demo/1.0.0-RC1/reachability-metadata.json"
+                    }
+                  }
+                }
+                """,
+                StandardCharsets.UTF_8
+        );
 
         TestTestedVersionUpdaterTask task = createTask();
         task.setCoordinates(group + ":" + artifact + ":" + newVersion);
@@ -94,6 +117,19 @@ class TestedVersionUpdaterTaskTests {
         assertThat(LibraryStatsSupport.loadMetadataVersionStats(newStatsFile).versions())
                 .extracting(version -> version.version())
                 .containsExactly("1.0.0");
+
+        Path newMetricsFile = tempDir.resolve("stats/com.example/demo/1.0.0/execution-metrics.json");
+        assertThat(newMetricsFile).exists();
+        assertThat(tempDir.resolve("stats/com.example/demo/1.0.0-RC1/execution-metrics.json")).doesNotExist();
+        JsonNode runMetrics = OBJECT_MAPPER.readTree(newMetricsFile.toFile()).get("add_new_library_support:2026-04-30");
+        assertThat(runMetrics.get("library").asText()).isEqualTo("com.example:demo:1.0.0");
+        assertThat(runMetrics.get("previous_library").asText()).isEqualTo("com.example:demo:1.0.0");
+        assertThat(runMetrics.get("stats").get("version").asText()).isEqualTo("1.0.0");
+        assertThat(runMetrics.get("previous_library_stats").get("version").asText()).isEqualTo("1.0.0");
+        assertThat(runMetrics.get("artifacts").get("test_file").asText())
+                .isEqualTo("tests/src/com.example/demo/1.0.0/src/test/java/com/example/DemoTest.java");
+        assertThat(runMetrics.get("artifacts").get("metadata_file").asText())
+                .isEqualTo("metadata/com.example/demo/1.0.0/reachability-metadata.json");
 
         List<Map<String, Object>> indexEntries = OBJECT_MAPPER.readValue(
                 tempDir.resolve("metadata/com.example/demo/index.json").toFile(),

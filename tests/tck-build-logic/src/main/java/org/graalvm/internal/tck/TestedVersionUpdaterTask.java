@@ -10,8 +10,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.graalvm.internal.tck.stats.LibraryStatsModels;
 import org.graalvm.internal.tck.stats.LibraryStatsSupport;
@@ -244,28 +246,107 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
         String group = metadataBaseDir.getParent().getFileName().toString();
         Path repositoryRoot = metadataBaseDir.getParent().getParent().getParent();
         Path statsRoot = repositoryRoot.resolve("stats");
+        Path oldStatsDir = statsRoot.resolve(group).resolve(artifact).resolve(oldVersion);
+        Path newStatsDir = statsRoot.resolve(group).resolve(artifact).resolve(newVersion);
+
         Path oldStatsFile = LibraryStatsSupport.repositoryStatsFile(statsRoot, group, artifact, oldVersion);
-        if (!Files.exists(oldStatsFile)) return;
+        if (Files.exists(oldStatsFile)) {
+            LibraryStatsModels.MetadataVersionStats metadataVersionStats = LibraryStatsSupport.loadMetadataVersionStats(oldStatsFile);
+            LibraryStatsModels.MetadataVersionStats updatedStats = new LibraryStatsModels.MetadataVersionStats(
+                    metadataVersionStats.versions().stream()
+                            .map(versionStats -> oldVersion.equals(versionStats.version())
+                                    ? new LibraryStatsModels.VersionStats(newVersion, versionStats.dynamicAccess(), versionStats.libraryCoverage())
+                                    : versionStats)
+                            .toList()
+            );
 
-        LibraryStatsModels.MetadataVersionStats metadataVersionStats = LibraryStatsSupport.loadMetadataVersionStats(oldStatsFile);
-        LibraryStatsModels.MetadataVersionStats updatedStats = new LibraryStatsModels.MetadataVersionStats(
-                metadataVersionStats.versions().stream()
-                        .map(versionStats -> oldVersion.equals(versionStats.version())
-                                ? new LibraryStatsModels.VersionStats(newVersion, versionStats.dynamicAccess(), versionStats.libraryCoverage())
-                                : versionStats)
-                        .toList()
-        );
+            Path newStatsFile = LibraryStatsSupport.repositoryStatsFile(statsRoot, group, artifact, newVersion);
+            LibraryStatsSupport.writeMetadataVersionStats(newStatsFile, updatedStats);
+            if (!oldStatsFile.equals(newStatsFile)) {
+                Files.deleteIfExists(oldStatsFile);
+            }
+        }
+        updateExecutionMetrics(oldStatsDir, newStatsDir, group, artifact, oldVersion, newVersion);
 
-        Path newStatsFile = LibraryStatsSupport.repositoryStatsFile(statsRoot, group, artifact, newVersion);
-        LibraryStatsSupport.writeMetadataVersionStats(newStatsFile, updatedStats);
-        if (!oldStatsFile.equals(newStatsFile)) {
-            Files.deleteIfExists(oldStatsFile);
+        if (!oldStatsDir.equals(newStatsDir)) {
             try {
-                Files.deleteIfExists(oldStatsFile.getParent());
+                Files.deleteIfExists(oldStatsDir);
             } catch (DirectoryNotEmptyException ignored) {
                 // Keep the old directory when other stats artifacts still exist in it.
             }
         }
+    }
+
+    /**
+     * Updates committed Forge execution metrics when the metadata-version directory is promoted.
+     */
+    private void updateExecutionMetrics(Path oldStatsDir, Path newStatsDir, String group, String artifact, String oldVersion, String newVersion) throws IOException {
+        Path oldMetricsFile = oldStatsDir.resolve("execution-metrics.json");
+        if (!Files.exists(oldMetricsFile)) return;
+
+        ObjectMapper objectMapper = new ObjectMapper()
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        ObjectNode executionMetrics = (ObjectNode) objectMapper.readTree(oldMetricsFile.toFile());
+        executionMetrics.properties().forEach(entry -> updateRunMetrics(entry.getValue(), group, artifact, oldVersion, newVersion));
+
+        Files.createDirectories(newStatsDir);
+        Path newMetricsFile = newStatsDir.resolve("execution-metrics.json");
+        writeJsonWithTrailingNewline(objectMapper, newMetricsFile, executionMetrics);
+        if (!oldMetricsFile.equals(newMetricsFile)) {
+            Files.deleteIfExists(oldMetricsFile);
+        }
+    }
+
+    private void updateRunMetrics(JsonNode runMetrics, String group, String artifact, String oldVersion, String newVersion) {
+        if (!(runMetrics instanceof ObjectNode objectNode)) return;
+
+        updateCoordinateField(objectNode, "library", group, artifact, oldVersion, newVersion);
+        updateCoordinateField(objectNode, "previous_library", group, artifact, oldVersion, newVersion);
+        updateStatsVersion(objectNode.get("stats"), oldVersion, newVersion);
+        updateStatsVersion(objectNode.get("previous_library_stats"), oldVersion, newVersion);
+        updateArtifactPaths(objectNode.get("artifacts"), oldVersion, newVersion);
+    }
+
+    private void updateCoordinateField(ObjectNode runMetrics, String fieldName, String group, String artifact, String oldVersion, String newVersion) {
+        JsonNode coordinateNode = runMetrics.get(fieldName);
+        if (coordinateNode == null || !coordinateNode.isTextual()) return;
+
+        String oldCoordinate = group + ":" + artifact + ":" + oldVersion;
+        if (oldCoordinate.equals(coordinateNode.asText())) {
+            runMetrics.put(fieldName, group + ":" + artifact + ":" + newVersion);
+        }
+    }
+
+    private void updateStatsVersion(JsonNode stats, String oldVersion, String newVersion) {
+        if (!(stats instanceof ObjectNode statsObject)) return;
+
+        JsonNode versionNode = statsObject.get("version");
+        if (versionNode != null && versionNode.isTextual() && oldVersion.equals(versionNode.asText())) {
+            statsObject.put("version", newVersion);
+        }
+    }
+
+    private void updateArtifactPaths(JsonNode artifacts, String oldVersion, String newVersion) {
+        if (!(artifacts instanceof ObjectNode artifactsObject)) return;
+
+        artifactsObject.properties().forEach(entry -> {
+            JsonNode value = entry.getValue();
+            if (value != null && value.isTextual()) {
+                artifactsObject.put(entry.getKey(), value.asText().replace("/" + oldVersion + "/", "/" + newVersion + "/"));
+            }
+        });
+    }
+
+    private void writeJsonWithTrailingNewline(ObjectMapper objectMapper, Path path, JsonNode jsonNode) throws IOException {
+        DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
+        prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+
+        String json = objectMapper.writer(prettyPrinter).writeValueAsString(jsonNode);
+        if (!json.endsWith("\n")) {
+            json = json + System.lineSeparator();
+        }
+        Files.writeString(path, json, java.nio.charset.StandardCharsets.UTF_8);
     }
 
     /**
