@@ -6,6 +6,7 @@
  */
 package org_eclipse_jetty.jetty_util_ajax;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,6 +53,30 @@ public class JSONPojoConvertorInnerSetterTest {
     }
 
     @Test
+    void fallsBackToOriginalNumericWrapperArrayWhenElementCannotBeConverted() {
+        SetterTarget target = new SetterTarget();
+        JSONPojoConvertor convertor = new JSONPojoConvertor(SetterTarget.class);
+        Integer[] values = new Integer[]{1, null, 3};
+
+        int updated = convertor.setProps(target, properties("boxedQuantities", values));
+
+        assertThat(updated).isOne();
+        assertThat(target.boxedQuantities).isSameAs(values).containsExactly(1, null, 3);
+    }
+
+    @Test
+    void fallsBackToOriginalObjectArrayWhenCopyCannotStoreValues() {
+        SetterTarget target = new SetterTarget();
+        JSONPojoConvertor convertor = new CopyFailureConvertor(SetterTarget.class);
+        Object[] values = new Object[]{"plain-text"};
+
+        int updated = convertor.setProps(target, properties("objects", values));
+
+        assertThat(updated).isOne();
+        assertThat(target.objects).isSameAs(values).containsExactly("plain-text");
+    }
+
+    @Test
     void ignoresArrayValuesThatCannotBeAdaptedToPojoArrayTypes() {
         SetterTarget target = new SetterTarget();
         JSONPojoConvertor convertor = new JSONPojoConvertor(SetterTarget.class);
@@ -82,6 +107,8 @@ public class JSONPojoConvertorInnerSetterTest {
         private String label;
         private String[] names;
         private int[] quantities;
+        private Integer[] boxedQuantities;
+        private Object[] objects;
 
         public void setNullableText(String nullableText) {
             this.nullableText = nullableText;
@@ -115,9 +142,39 @@ public class JSONPojoConvertorInnerSetterTest {
             this.quantities = quantities;
         }
 
+        public void setBoxedQuantities(Integer[] boxedQuantities) {
+            this.boxedQuantities = boxedQuantities;
+        }
+
+        public void setObjects(Object[] objects) {
+            this.objects = objects;
+        }
+
         public enum Status {
             STARTED,
             STOPPED
+        }
+    }
+
+    public static class CopyFailureConvertor extends JSONPojoConvertor {
+        public CopyFailureConvertor(Class<?> pojoClass) {
+            super(pojoClass);
+        }
+
+        @Override
+        protected void addSetter(String name, Method method) {
+            if ("objects".equals(name)) {
+                _setters.put(name, new CopyFailureSetter(name, method));
+                return;
+            }
+            super.addSetter(name, method);
+        }
+    }
+
+    public static class CopyFailureSetter extends JSONPojoConvertor.Setter {
+        public CopyFailureSetter(String propertyName, Method method) {
+            super(propertyName, method);
+            _componentType = StringBuilder.class;
         }
     }
 }
