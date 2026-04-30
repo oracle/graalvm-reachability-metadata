@@ -43,11 +43,10 @@ public class JSONPojoConvertorTest {
 
         assertThat(parsed).isInstanceOf(Map.class);
         Map<?, ?> properties = (Map<?, ?>)parsed;
-        assertThat(properties)
-                .containsEntry("class", RoundTripWidget.class.getName())
-                .containsEntry("name", "ajax")
-                .containsEntry("count", Long.valueOf(11L))
-                .containsEntry("enabled", Boolean.TRUE);
+        assertThat(properties.get("class")).isEqualTo(RoundTripWidget.class.getName());
+        assertThat(properties.get("name")).isEqualTo("ajax");
+        assertThat(properties.get("count")).isEqualTo(Long.valueOf(11L));
+        assertThat(properties.get("enabled")).isEqualTo(Boolean.TRUE);
     }
 
     public static class RoundTripWidget {
