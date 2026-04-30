@@ -16,6 +16,9 @@ import java.lang.instrument.UnmodifiableClassException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.jar.JarFile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
@@ -54,6 +57,24 @@ public class Quarkus_class_change_agentTest {
         ClassChangeAgent.premain("no-instrumentation", null);
 
         assertThat(ClassChangeAgent.getInstrumentation()).isNull();
+    }
+
+    @Test
+    void storedInstrumentationIsAvailableToApplicationThreads() throws InterruptedException {
+        RecordingInstrumentation instrumentation = new RecordingInstrumentation();
+        CountDownLatch readCompleted = new CountDownLatch(1);
+        AtomicReference<Instrumentation> observedInstrumentation = new AtomicReference<>();
+        Thread reader = new Thread(() -> {
+            observedInstrumentation.set(ClassChangeAgent.getInstrumentation());
+            readCompleted.countDown();
+        });
+
+        ClassChangeAgent.premain(null, instrumentation);
+        reader.start();
+
+        assertThat(readCompleted.await(5, TimeUnit.SECONDS)).isTrue();
+        reader.join();
+        assertThat(observedInstrumentation).hasValue(instrumentation);
     }
 
     private static final class RecordingInstrumentation implements Instrumentation {
