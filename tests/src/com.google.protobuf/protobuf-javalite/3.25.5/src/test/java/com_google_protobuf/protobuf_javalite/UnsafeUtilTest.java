@@ -17,14 +17,14 @@ import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
 public class UnsafeUtilTest {
-    private static final String SAMPLE_TEXT = "protobuf unsafe utility coverage π 🚀";
+    private static final String SAMPLE_TEXT = "protobuf unsafe utility coverage \u03c0 \ud83d\ude80";
 
     @Test
     public void protobufOperationsExerciseUnsafeUtilDynamicAccess() {
         byte[] encoded = SAMPLE_TEXT.getBytes(StandardCharsets.UTF_8);
         ByteString bytes = ByteString.copyFrom(encoded);
 
-        ByteString changedBytes = ByteString.copyFromUtf8("protobuf unsafe utility coverage π 🧪");
+        ByteString changedBytes = ByteString.copyFromUtf8("protobuf unsafe utility coverage \u03c0 \ud83e\uddea");
 
         assertTrue(bytes.isValidUtf8());
         assertEquals(SAMPLE_TEXT, bytes.toStringUtf8());
