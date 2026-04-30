@@ -1,0 +1,993 @@
+Starting a Gradle Daemon, 2 busy and 2 incompatible and 15 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de095-5f01-7242-bea1-21773d904052
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jboss.slf4j:slf4j-jboss-logmanager:1.1.0.Final
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.1.0.Final".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json
+- Set "coordinates" to "org.jboss.slf4j:slf4j-jboss-logmanager:1.1.0.Final".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream sources, then update the JSON in place with exact-version URLs where they’re supported.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jboss.slf4j:slf4j-jboss-logmanager:1.1.0.Final"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "slf4j-jboss-logmanager|org.jboss.slf4j" build/discovered-artifact-metadata metadata tests || true' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json:2:  "coordinates" : "org.jboss.slf4j:slf4j-jboss-logmanager:1.1.0.Final"
+
+web search: 
+web search: org.jboss.slf4j slf4j-jboss-logmanager 1.1.0.Final maven sources
+web search: 
+web search: https://github.com/jboss-logging/slf4j-jboss-logmanager
+web search: 
+web search: https://repo1.maven.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/
+web search: 
+web search: 
+codex
+Maven Central has the release artifacts for this exact version, including `source-release.zip`, `sources.jar`, and `javadoc.jar`. I’m checking the POM and release archive now so the source/test URLs reflect what is actually published for `1.1.0.Final`.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/slf4j-jboss-logmanager-1.1.0.Final.pom' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+ succeeded in 0ms:
+<!--
+  ~ JBoss, Home of Professional Open Source.
+  ~
+  ~ Copyright 2014 Red Hat, Inc., and individual contributors
+  ~ as indicated by the @author tags.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.jboss.slf4j</groupId>
+    <artifactId>slf4j-jboss-logmanager</artifactId>
+    <packaging>jar</packaging>
+    <version>1.1.0.Final</version>
+
+    <name>SLF4J: JBoss Log Manager</name>
+
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>37</version>
+    </parent>
+
+    <properties>
+        <version.org.jboss.logmanager>2.1.17.Final</version.org.jboss.logmanager>
+        <version.org.slf4j>1.7.30</version.org.slf4j>
+    </properties>
+
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>http://repository.jboss.org/licenses/apache-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.logmanager</groupId>
+            <artifactId>jboss-logmanager</artifactId>
+            <version>${version.org.jboss.logmanager}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${version.org.slf4j}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/slf4j-jboss-logmanager-1.1.0.Final-sources.jar -o /tmp/slf4j-jboss-logmanager-1.1.0.Final-sources.jar && jar tf /tmp/slf4j-jboss-logmanager-1.1.0.Final-sources.jar | sed -n '1,200p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+ succeeded in 0ms:
+META-INF/MANIFEST.MF
+META-INF/
+org/
+org/slf4j/
+org/slf4j/impl/
+META-INF/maven/
+META-INF/maven/org.jboss.slf4j/
+META-INF/maven/org.jboss.slf4j/slf4j-jboss-logmanager/
+org/slf4j/impl/Slf4jLogger.java
+org/slf4j/impl/Slf4jMDCAdapter.java
+org/slf4j/impl/StaticMarkerBinder.java
+org/slf4j/impl/StaticLoggerBinder.java
+org/slf4j/impl/Slf4jLoggerFactory.java
+org/slf4j/impl/StaticMDCBinder.java
+META-INF/maven/org.jboss.slf4j/slf4j-jboss-logmanager/pom.xml
+META-INF/maven/org.jboss.slf4j/slf4j-jboss-logmanager/pom.properties
+META-INF/INDEX.LIST
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/slf4j-jboss-logmanager-1.1.0.Final-source-release.zip -o /tmp/slf4j-jboss-logmanager-1.1.0.Final-source-release.zip && unzip -l /tmp/slf4j-jboss-logmanager-1.1.0.Final-source-release.zip | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+ succeeded in 193ms:
+Archive:  /tmp/slf4j-jboss-logmanager-1.1.0.Final-source-release.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2020-10-13 13:42   slf4j-jboss-logmanager-1.1.0.Final/
+        0  2012-10-16 17:03   slf4j-jboss-logmanager-1.1.0.Final/src/
+        0  2012-10-16 17:03   slf4j-jboss-logmanager-1.1.0.Final/src/main/
+        0  2012-10-16 17:03   slf4j-jboss-logmanager-1.1.0.Final/src/main/java/
+        0  2012-10-16 17:03   slf4j-jboss-logmanager-1.1.0.Final/src/main/java/org/
+        0  2012-10-16 17:03   slf4j-jboss-logmanager-1.1.0.Final/src/main/java/org/slf4j/
+        0  2020-10-12 11:00   slf4j-jboss-logmanager-1.1.0.Final/src/main/java/org/slf4j/impl/
+    11357  2019-04-17 08:14   slf4j-jboss-logmanager-1.1.0.Final/LICENSE.txt
+    12470  2020-10-12 11:00   slf4j-jboss-logmanager-1.1.0.Final/src/main/java/org/slf4j/impl/Slf4jLogger.java
+     1661  2020-10-12 11:00   slf4j-jboss-logmanager-1.1.0.Final/src/main/java/org/slf4j/impl/Slf4jMDCAdapter.java
+     1319  2014-09-04 14:25   slf4j-jboss-logmanager-1.1.0.Final/src/main/java/org/slf4j/impl/StaticMarkerBinder.java
+     1565  2014-09-04 14:25   slf4j-jboss-logmanager-1.1.0.Final/src/main/java/org/slf4j/impl/StaticLoggerBinder.java
+     1780  2014-09-04 14:25   slf4j-jboss-logmanager-1.1.0.Final/src/main/java/org/slf4j/impl/Slf4jLoggerFactory.java
+     1102  2014-09-04 14:25   slf4j-jboss-logmanager-1.1.0.Final/src/main/java/org/slf4j/impl/StaticMDCBinder.java
+     2532  2020-10-13 13:42   slf4j-jboss-logmanager-1.1.0.Final/pom.xml
+---------                     -------
+    33786                     15 files
+
+web search: 
+web search: "slf4j-jboss-logmanager" "1.1.0.Final" "github"
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="slf4j-jboss-logmanager-1.1.0.Final-javadoc.jar" title="slf4j-jboss-logmanager-1.1.0.Final-javadoc.jar">slf4j-jboss-logmanager-1.1.0.Final-javadoc.ja...</a>  2020-10-13 20:43     54436      
+<a href="slf4j-jboss-logmanager-1.1.0.Final-javadoc.jar.md5" title="slf4j-jboss-logmanager-1.1.0.Final-javadoc.jar.md5">slf4j-jboss-logmanager-1.1.0.Final-javadoc.ja...</a>  2020-10-13 20:43        32      
+<a href="slf4j-jboss-logmanager-1.1.0.Final-javadoc.jar.sha1" title="slf4j-jboss-logmanager-1.1.0.Final-javadoc.jar.sha1">slf4j-jboss-logmanager-1.1.0.Final-javadoc.ja...</a>  2020-10-13 20:43        40      
+<a href="slf4j-jboss-logmanager-1.1.0.Final-source-release.zip" title="slf4j-jboss-logmanager-1.1.0.Final-source-release.zip">slf4j-jboss-logmanager-1.1.0.Final-source-rel...</a>  2020-10-13 20:43     13247      
+<a href="slf4j-jboss-logmanager-1.1.0.Final-source-release.zip.md5" title="slf4j-jboss-logmanager-1.1.0.Final-source-release.zip.md5">slf4j-jboss-logmanager-1.1.0.Final-source-rel...</a>  2020-10-13 20:43        32      
+<a href="slf4j-jboss-logmanager-1.1.0.Final-source-release.zip.sha1" title="slf4j-jboss-logmanager-1.1.0.Final-source-release.zip.sha1">slf4j-jboss-logmanager-1.1.0.Final-source-rel...</a>  2020-10-13 20:43        40      
+<a href="slf4j-jboss-logmanager-1.1.0.Final-sources.jar" title="slf4j-jboss-logmanager-1.1.0.Final-sources.jar">slf4j-jboss-logmanager-1.1.0.Final-sources.ja...</a>  2020-10-13 20:43      9179      
+<a href="slf4j-jboss-logmanager-1.1.0.Final-sources.jar.md5" title="slf4j-jboss-logmanager-1.1.0.Final-sources.jar.md5">slf4j-jboss-logmanager-1.1.0.Final-sources.ja...</a>  2020-10-13 20:43        32      
+<a href="slf4j-jboss-logmanager-1.1.0.Final-sources.jar.sha1" title="slf4j-jboss-logmanager-1.1.0.Final-sources.jar.sha1">slf4j-jboss-logmanager-1.1.0.Final-sources.ja...</a>  2020-10-13 20:43        40      
+<a href="slf4j-jboss-logmanager-1.1.0.Final.jar" title="slf4j-jboss-logmanager-1.1.0.Final.jar">slf4j-jboss-logmanager-1.1.0.Final.jar</a>            2020-10-13 20:43     10679      
+<a href="slf4j-jboss-logmanager-1.1.0.Final.jar.md5" title="slf4j-jboss-logmanager-1.1.0.Final.jar.md5">slf4j-jboss-logmanager-1.1.0.Final.jar.md5</a>        2020-10-13 20:43        32      
+<a href="slf4j-jboss-logmanager-1.1.0.Final.jar.sha1" title="slf4j-jboss-logmanager-1.1.0.Final.jar.sha1">slf4j-jboss-logmanager-1.1.0.Final.jar.sha1</a>       2020-10-13 20:43        40      
+<a href="slf4j-jboss-logmanager-1.1.0.Final.pom" title="slf4j-jboss-logmanager-1.1.0.Final.pom">slf4j-jboss-logmanager-1.1.0.Final.pom</a>            2020-10-13 20:43      2532      
+<a href="slf4j-jboss-logmanager-1.1.0.Final.pom.md5" title="slf4j-jboss-logmanager-1.1.0.Final.pom.md5">slf4j-jboss-logmanager-1.1.0.Final.pom.md5</a>        2020-10-13 20:43        32      
+<a href="slf4j-jboss-logmanager-1.1.0.Final.pom.sha1" title="slf4j-jboss-logmanager-1.1.0.Final.pom.sha1">slf4j-jboss-logmanager-1.1.0.Final.pom.sha1</a>       2020-10-13 20:43        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/jboss-logging/slf4j-jboss-logmanager.git | rg \"refs/tags/(1\\.1\\.0\\.Final|slf4j-jboss-logmanager-1\\.1\\.0\\.Final)\"" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/slf4j-jboss-logmanager-1.1.0.Final-javadoc.jar -o /tmp/slf4j-jboss-logmanager-1.1.0.Final-javadoc.jar && jar tf /tmp/slf4j-jboss-logmanager-1.1.0.Final-javadoc.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+ succeeded in 217ms:
+META-INF/MANIFEST.MF
+META-INF/
+org/
+org/slf4j/
+org/slf4j/impl/
+org/slf4j/impl/class-use/
+META-INF/maven/
+META-INF/maven/org.jboss.slf4j/
+META-INF/maven/org.jboss.slf4j/slf4j-jboss-logmanager/
+index.html
+org/slf4j/impl/class-use/StaticMarkerBinder.html
+index-all.html
+org/slf4j/impl/class-use/Slf4jLoggerFactory.html
+org/slf4j/impl/StaticMDCBinder.html
+META-INF/INDEX.LIST
+allclasses-frame.html
+org/slf4j/impl/class-use/Slf4jLogger.html
+allclasses-noframe.html
+constant-values.html
+org/slf4j/impl/class-use/Slf4jMDCAdapter.html
+org/slf4j/impl/StaticMarkerBinder.html
+org/slf4j/impl/package-summary.html
+package-list
+script.js
+org/slf4j/impl/Slf4jMDCAdapter.html
+deprecated-list.html
+overview-tree.html
+org/slf4j/impl/package-frame.html
+META-INF/maven/org.jboss.slf4j/slf4j-jboss-logmanager/pom.xml
+help-doc.html
+stylesheet.css
+serialized-form.html
+org/slf4j/impl/Slf4jLogger.html
+org/slf4j/impl/package-use.html
+org/slf4j/impl/package-tree.html
+org/slf4j/impl/class-use/StaticLoggerBinder.html
+org/slf4j/impl/Slf4jLoggerFactory.html
+org/slf4j/impl/class-use/StaticMDCBinder.html
+org/slf4j/impl/StaticLoggerBinder.html
+META-INF/maven/org.jboss.slf4j/slf4j-jboss-logmanager/pom.properties
+
+ succeeded in 405ms:
+3805863eaecab34e4d67f9e485cddbab91534345	refs/tags/1.1.0.Final
+
+codex
+The source release archive for `1.1.0.Final` contains only `src/main/java` plus the POM and license, so I’m checking the matching upstream Git tag before deciding whether there is a real test-suite URL or whether that field should be `N/A`.
+exec
+/usr/bin/bash -lc "rm -rf /tmp/slf4j-jboss-logmanager-tag && git clone --depth 1 --branch 1.1.0.Final https://github.com/jboss-logging/slf4j-jboss-logmanager.git /tmp/slf4j-jboss-logmanager-tag && find /tmp/slf4j-jboss-logmanager-tag -maxdepth 4 -type f | sort | sed -n '1,200p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/jboss-logging/slf4j-jboss-logmanager/1.1.0.Final/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/jboss-logging/slf4j-jboss-logmanager/1.1.0.Final/README.md | sed -n '1,200p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+ succeeded in 134ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 175ms:
+<!--
+  ~ JBoss, Home of Professional Open Source.
+  ~
+  ~ Copyright 2014 Red Hat, Inc., and individual contributors
+  ~ as indicated by the @author tags.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.jboss.slf4j</groupId>
+    <artifactId>slf4j-jboss-logmanager</artifactId>
+    <packaging>jar</packaging>
+    <version>1.1.0.Final</version>
+
+    <name>SLF4J: JBoss Log Manager</name>
+
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>37</version>
+    </parent>
+
+    <properties>
+        <version.org.jboss.logmanager>2.1.17.Final</version.org.jboss.logmanager>
+        <version.org.slf4j>1.7.30</version.org.slf4j>
+    </properties>
+
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>http://repository.jboss.org/licenses/apache-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.logmanager</groupId>
+            <artifactId>jboss-logmanager</artifactId>
+            <version>${version.org.jboss.logmanager}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${version.org.slf4j}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
+
+ succeeded in 645ms:
+Note: switching to '3805863eaecab34e4d67f9e485cddbab91534345'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+/tmp/slf4j-jboss-logmanager-tag/.git/HEAD
+/tmp/slf4j-jboss-logmanager-tag/.git/config
+/tmp/slf4j-jboss-logmanager-tag/.git/description
+/tmp/slf4j-jboss-logmanager-tag/.git/hooks/applypatch-msg.sample
+/tmp/slf4j-jboss-logmanager-tag/.git/hooks/commit-msg.sample
+/tmp/slf4j-jboss-logmanager-tag/.git/hooks/fsmonitor-watchman.sample
+/tmp/slf4j-jboss-logmanager-tag/.git/hooks/post-update.sample
+/tmp/slf4j-jboss-logmanager-tag/.git/hooks/pre-applypatch.sample
+/tmp/slf4j-jboss-logmanager-tag/.git/hooks/pre-commit.sample
+/tmp/slf4j-jboss-logmanager-tag/.git/hooks/pre-merge-commit.sample
+/tmp/slf4j-jboss-logmanager-tag/.git/hooks/pre-push.sample
+/tmp/slf4j-jboss-logmanager-tag/.git/hooks/pre-rebase.sample
+/tmp/slf4j-jboss-logmanager-tag/.git/hooks/pre-receive.sample
+/tmp/slf4j-jboss-logmanager-tag/.git/hooks/prepare-commit-msg.sample
+/tmp/slf4j-jboss-logmanager-tag/.git/hooks/push-to-checkout.sample
+/tmp/slf4j-jboss-logmanager-tag/.git/hooks/sendemail-validate.sample
+/tmp/slf4j-jboss-logmanager-tag/.git/hooks/update.sample
+/tmp/slf4j-jboss-logmanager-tag/.git/index
+/tmp/slf4j-jboss-logmanager-tag/.git/info/exclude
+/tmp/slf4j-jboss-logmanager-tag/.git/logs/HEAD
+/tmp/slf4j-jboss-logmanager-tag/.git/objects/pack/pack-247d7409260ea0c67a3b1eed517b0fe7ee589ac0.idx
+/tmp/slf4j-jboss-logmanager-tag/.git/objects/pack/pack-247d7409260ea0c67a3b1eed517b0fe7ee589ac0.pack
+/tmp/slf4j-jboss-logmanager-tag/.git/objects/pack/pack-247d7409260ea0c67a3b1eed517b0fe7ee589ac0.rev
+/tmp/slf4j-jboss-logmanager-tag/.git/packed-refs
+/tmp/slf4j-jboss-logmanager-tag/.git/shallow
+/tmp/slf4j-jboss-logmanager-tag/.gitignore
+/tmp/slf4j-jboss-logmanager-tag/LICENSE.txt
+/tmp/slf4j-jboss-logmanager-tag/pom.xml
+
+exec
+/usr/bin/bash -lc 'find /tmp/slf4j-jboss-logmanager-tag -path /tmp/slf4j-jboss-logmanager-tag/.git -prune -o -type f -print | sort' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+ succeeded in 0ms:
+/tmp/slf4j-jboss-logmanager-tag/.gitignore
+/tmp/slf4j-jboss-logmanager-tag/LICENSE.txt
+/tmp/slf4j-jboss-logmanager-tag/pom.xml
+/tmp/slf4j-jboss-logmanager-tag/src/main/java/org/slf4j/impl/Slf4jLogger.java
+/tmp/slf4j-jboss-logmanager-tag/src/main/java/org/slf4j/impl/Slf4jLoggerFactory.java
+/tmp/slf4j-jboss-logmanager-tag/src/main/java/org/slf4j/impl/Slf4jMDCAdapter.java
+/tmp/slf4j-jboss-logmanager-tag/src/main/java/org/slf4j/impl/StaticLoggerBinder.java
+/tmp/slf4j-jboss-logmanager-tag/src/main/java/org/slf4j/impl/StaticMDCBinder.java
+/tmp/slf4j-jboss-logmanager-tag/src/main/java/org/slf4j/impl/StaticMarkerBinder.java
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' /tmp/slf4j-jboss-logmanager-tag/src/main/java/org/slf4j/impl/StaticLoggerBinder.java && sed -n '1,220p' /tmp/slf4j-jboss-logmanager-tag/src/main/java/org/slf4j/impl/Slf4jLoggerFactory.java && sed -n '1,160p' /tmp/slf4j-jboss-logmanager-tag/src/main/java/org/slf4j/impl/Slf4jLogger.java" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+exec
+/usr/bin/bash -lc "git -C /tmp/slf4j-jboss-logmanager-tag remote -v && git -C /tmp/slf4j-jboss-logmanager-tag show -s --format='%H%n%D%n%ci%n%s' HEAD" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+ succeeded in 0ms:
+/*
+ * JBoss, Home of Professional Open Source.
+ *
+ * Copyright 2014 Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.slf4j.impl;
+
+import org.slf4j.ILoggerFactory;
+import org.slf4j.spi.LoggerFactoryBinder;
+
+public final class StaticLoggerBinder implements LoggerFactoryBinder {
+
+    public static final StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
+
+    /**
+     * Declare the version of the SLF4J API this implementation is compiled against.
+     * The value of this field is usually modified with each release.
+     */
+    // to avoid constant folding by the compiler, this field must *not* be final
+    public static String REQUESTED_API_VERSION = "1.7.2";
+
+    public ILoggerFactory getLoggerFactory() {
+        return new Slf4jLoggerFactory();
+    }
+
+    public String getLoggerFactoryClassStr() {
+        return Slf4jLoggerFactory.class.getName();
+    }
+
+    public static StaticLoggerBinder getSingleton() {
+        return SINGLETON;
+    }
+}
+/*
+ * JBoss, Home of Professional Open Source.
+ *
+ * Copyright 2014 Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.slf4j.impl;
+
+import java.security.PrivilegedAction;
+import org.slf4j.ILoggerFactory;
+import org.slf4j.Logger;
+import org.jboss.logmanager.LogContext;
+
+import static java.security.AccessController.doPrivileged;
+
+public final class Slf4jLoggerFactory implements ILoggerFactory {
+
+    private static final org.jboss.logmanager.Logger.AttachmentKey<Logger> key = new org.jboss.logmanager.Logger.AttachmentKey<Logger>();
+
+    public Logger getLogger(final String name) {
+        final org.jboss.logmanager.Logger lmLogger = LogContext.getLogContext().getLogger(name);
+        final Logger logger = lmLogger.getAttachment(key);
+        if (logger != null) {
+            return logger;
+        }
+        return doPrivileged(new PrivilegedAction<Logger>() {
+            public Logger run() {
+                final Slf4jLogger newLogger = new Slf4jLogger(lmLogger);
+                final Logger appearingLogger = lmLogger.attachIfAbsent(key, newLogger);
+                return appearingLogger != null ? appearingLogger : newLogger;
+            }
+        });
+    }
+}
+/*
+ * JBoss, Home of Professional Open Source.
+ *
+ * Copyright 2014 Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.slf4j.impl;
+
+import org.slf4j.Marker;
+import org.slf4j.helpers.FormattingTuple;
+import org.slf4j.helpers.MarkerIgnoringBase;
+import org.slf4j.helpers.MessageFormatter;
+import org.slf4j.spi.LocationAwareLogger;
+import org.jboss.logmanager.Logger;
+import org.jboss.logmanager.ExtLogRecord;
+import org.jboss.logmanager.Level;
+
+import java.io.Serializable;
+import java.io.ObjectStreamException;
+
+public final class Slf4jLogger extends MarkerIgnoringBase implements Serializable, LocationAwareLogger {
+    private final Logger logger;
+    private static final String LOGGER_CLASS_NAME = Slf4jLogger.class.getName();
+    private static final long serialVersionUID = -8422185592693034532L;
+
+    private static final int ALT_ERROR_INT = org.jboss.logmanager.Level.ERROR.intValue();
+    private static final int ALT_WARN_INT = org.jboss.logmanager.Level.WARN.intValue();
+    private static final int ALT_INFO_INT = org.jboss.logmanager.Level.INFO.intValue();
+    private static final int ALT_DEBUG_INT = org.jboss.logmanager.Level.DEBUG.intValue();
+    private static final int ALT_TRACE_INT = org.jboss.logmanager.Level.TRACE.intValue();
+
+    public Slf4jLogger(final Logger logger) {
+        this.logger = logger;
+    }
+
+    public String getName() {
+        return logger.getName();
+    }
+
+    @Override
+    public void log(final Marker marker, final String fqcn, final int levelVal, final String fmt, final Object[] argArray, final Throwable t) {
+        final String message = MessageFormatter.arrayFormat(fmt, argArray).getMessage();
+        // ignore marker
+        final java.util.logging.Level level;
+        switch (levelVal) {
+            case LocationAwareLogger.TRACE_INT: level = org.jboss.logmanager.Level.TRACE; break;
+            case LocationAwareLogger.DEBUG_INT: level = org.jboss.logmanager.Level.DEBUG; break;
+            case LocationAwareLogger.INFO_INT: level = org.jboss.logmanager.Level.INFO; break;
+            case LocationAwareLogger.WARN_INT: level = org.jboss.logmanager.Level.WARN; break;
+            case LocationAwareLogger.ERROR_INT: level = org.jboss.logmanager.Level.ERROR; break;
+            default: level = org.jboss.logmanager.Level.DEBUG; break;
+        }
+        if (logger.isLoggable(level)) {
+            log(level, fqcn, message, t, argArray);
+        }
+    }
+
+    @Override
+    public boolean isTraceEnabled() {
+        return logger.isLoggable(Level.TRACE);
+    }
+
+    @Override
+    public void trace(final String msg) {
+        if (ALT_TRACE_INT < logger.getEffectiveLevel()) {
+            return;
+        }
+        log(org.jboss.logmanager.Level.TRACE, msg, null);
+    }
+
+    @Override
+    public void trace(final String format, final Object arg) {
+        if (ALT_TRACE_INT < logger.getEffectiveLevel()) {
+            return;
+        }
+        final FormattingTuple formattingTuple = MessageFormatter.format(format, arg);
+        log(org.jboss.logmanager.Level.TRACE, formattingTuple.getMessage(), formattingTuple.getThrowable(), arg);
+    }
+
+    @Override
+    public void trace(final String format, final Object arg1, final Object arg2) {
+        if (ALT_TRACE_INT < logger.getEffectiveLevel()) {
+            return;
+        }
+        final FormattingTuple formattingTuple = MessageFormatter.format(format, arg1, arg2);
+        log(org.jboss.logmanager.Level.TRACE, formattingTuple.getMessage(), formattingTuple.getThrowable(), arg1, arg2);
+    }
+
+    @Override
+    public void trace(final String format, final Object... arguments) {
+        if (ALT_TRACE_INT < logger.getEffectiveLevel()) {
+            return;
+        }
+        final FormattingTuple formattingTuple = MessageFormatter.arrayFormat(format, arguments);
+        log(org.jboss.logmanager.Level.TRACE, formattingTuple.getMessage(), formattingTuple.getThrowable(), arguments);
+    }
+
+    @Override
+    public void trace(final String msg, final Throwable t) {
+        if (ALT_TRACE_INT < logger.getEffectiveLevel()) {
+            return;
+        }
+        log(org.jboss.logmanager.Level.TRACE, msg, t);
+    }
+
+    @Override
+    public boolean isDebugEnabled() {
+        return logger.isLoggable(Level.DEBUG);
+    }
+
+    @Override
+    public void debug(final String msg) {
+        if (ALT_DEBUG_INT < logger.getEffectiveLevel()) {
+            return;
+        }
+        log(org.jboss.logmanager.Level.DEBUG, msg, null);
+    }
+
+    @Override
+    public void debug(final String format, final Object arg) {
+        if (ALT_DEBUG_INT < logger.getEffectiveLevel()) {
+            return;
+        }
+        final FormattingTuple formattingTuple = MessageFormatter.format(format, arg);
+        log(org.jboss.logmanager.Level.DEBUG, formattingTuple.getMessage(), formattingTuple.getThrowable(), arg);
+    }
+
+    @Override
+    public void debug(final String format, final Object arg1, final Object arg2) {
+        if (ALT_DEBUG_INT < logger.getEffectiveLevel()) {
+            return;
+        }
+        final FormattingTuple formattingTuple = MessageFormatter.format(format, arg1, arg2);
+        log(org.jboss.logmanager.Level.DEBUG, formattingTuple.getMessage(), formattingTuple.getThrowable(), arg1, arg2);
+    }
+
+    @Override
+    public void debug(final String format, final Object... arguments) {
+        if (ALT_DEBUG_INT < logger.getEffectiveLevel()) {
+            return;
+        }
+        final FormattingTuple formattingTuple = MessageFormatter.arrayFormat(format, arguments);
+        log(org.jboss.logmanager.Level.DEBUG, formattingTuple.getMessage(), formattingTuple.getThrowable(), arguments);
+    }
+
+    @Override
+    public void debug(final String msg, final Throwable t) {
+
+ succeeded in 0ms:
+origin	https://github.com/jboss-logging/slf4j-jboss-logmanager.git (fetch)
+origin	https://github.com/jboss-logging/slf4j-jboss-logmanager.git (push)
+3805863eaecab34e4d67f9e485cddbab91534345
+grafted, HEAD, tag: 1.1.0.Final
+2020-10-13 13:42:27 -0700
+Prepare for 1.1.0.Final release
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f | head -n 20 | xargs -r sed -n '1,120p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jboss.slf4j:slf4j-jboss-logmanager:1.1.0.Final"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://javadoc.io' build/discovered-artifact-metadata | head -n 20" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\" : \"https://repo1.maven.org|\"documentation-url\" : \"https://repo1.maven.org|\"test-code-url\" : \"N/A\"' build/discovered-artifact-metadata | head -n 60" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"repository-url\"|\"test-code-url\"|\"documentation-url\"|\"description\"' . --glob '*.json' | head -n 120" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+ succeeded in 0ms:
+./forge/schemas/benchmark_run_metrics_schema.json:4:  "description": "JSON Schema for benchmark-level metrics produced by Metadata Forge benchmarking.",
+./forge/schemas/benchmark_run_metrics_schema.json:127:      "description": "Collected run metrics.",
+./forge/schemas/benchmark_run_metrics_schema.json:379:        "description": "Name of the benchmark suite that was executed."
+./forge/schemas/benchmark_run_metrics_schema.json:384:        "description": "ISO-8601 timestamp marking when this benchmark record was created."
+./forge/schemas/benchmark_run_metrics_schema.json:388:        "description": "Per-library metrics collected during this benchmark run.",
+./forge/schemas/benchmark_suite_schema.json:4:  "description": "Strict JSON Schema (Draft 2020-12) for defining a Benchmark Suite in Metadata Forge.",
+./forge/schemas/benchmark_suite_schema.json:11:      "description",
+./forge/schemas/benchmark_suite_schema.json:19:        "description": "Human-readable benchmark suite name."
+./forge/schemas/benchmark_suite_schema.json:21:      "description": {
+./forge/schemas/benchmark_suite_schema.json:24:        "description": "Description of the benchmark suite."
+./forge/schemas/benchmark_suite_schema.json:29:        "description": "List of library coordinates included in this suite.",
+./forge/schemas/benchmark_suite_schema.json:33:          "description": "Dependency coordinate in the form group:artifact:version."
+./forge/schemas/benchmark_suite_schema.json:39:        "description": "Reference to a strategy name defined elsewhere."
+./forge/schemas/benchmark_suite_schema.json:47:        "description": "Benchmark suite for core libraries using baseline strategy.",
+./forge/schemas/strategy_schema.json:4:  "description": "Strict JSON Schema (Draft 2020-12) for strategy configurations used in Metadata Forge benchmarking and evaluation.",
+./forge/schemas/strategy_schema.json:11:      "description",
+./forge/schemas/strategy_schema.json:21:        "description": "Human-readable strategy name. May include a version suffix (e.g., 'Basic Iterative v1.0') to distinguish minor workflow updates or logic refinements while preserving the base strategy identity."
+./forge/schemas/strategy_schema.json:23:      "description": {
+./forge/schemas/strategy_schema.json:26:        "description": "Description of the strategy workflow and behavior."
+./forge/schemas/strategy_schema.json:31:        "description": "Name of the agent."
+./forge/schemas/strategy_schema.json:36:        "description": "Workflow strategy implementation name."
+./forge/schemas/strategy_schema.json:41:        "description": "Primary workflow to run first in composite strategies (e.g., increase_dynamic_access_coverage)."
+./forge/schemas/strategy_schema.json:46:        "description": "Model identifier to run for this strategy."
+./forge/schemas/strategy_schema.json:51:        "description": "Optional LLM provider identifier for agent backends that support provider selection."
+./forge/schemas/strategy_schema.json:55:        "description": "Prompt templates used by the workflow.",
+./forge/schemas/strategy_schema.json:66:        "description": "Optional tunable parameters for the strategy.",
+./forge/schemas/strategy_schema.json:91:        "description": "List of MCP configuration identifiers to enable for this strategy.",
+./forge/schemas/strategy_schema.json:103:        "description": "Baseline Codex-driven iterative workflow.",
+./forge/benchmarks/benchmark_suite.json:4:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `basic_iterative_pi_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:12:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `basic_iterative_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:20:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `basic_iterative_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:28:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `basic_iterative_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:36:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_main_sources_pi_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:44:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_main_sources_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:52:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_main_sources_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:60:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_documentation_sources_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:68:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_main_sources_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:76:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_documentation_sources_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:84:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `optimistic_dynamic_access_iterative_pi_gpt-5.3` strategy.",
+./forge/benchmarks/benchmark_suite.json:92:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `optimistic_dynamic_access_iterative_pi_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:100:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `optimistic_dynamic_access_iterative_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:108:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `optimistic_dynamic_access_iterative_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:116:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `optimistic_dynamic_access_iterative_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:124:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_bulk_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:132:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_graphify_bulk_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:140:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_graphify_bulk_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:148:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `basic_iterative_pi_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:156:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `basic_iterative_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:164:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_main_sources_pi_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:172:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_main_sources_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:180:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_main_sources_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:188:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_documentation_sources_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:196:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_main_sources_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:204:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_documentation_sources_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:212:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `optimistic_dynamic_access_iterative_pi_gpt-5.3` strategy.",
+./forge/benchmarks/benchmark_suite.json:220:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `optimistic_dynamic_access_iterative_pi_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:228:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `optimistic_dynamic_access_iterative_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:236:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_bulk_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:244:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_bulk_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:252:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_graphify_bulk_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:260:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_graphify_bulk_codex_gpt-5.5` strategy.",
+./forge/strategies/predefined_strategies.json:4:    "description": "Same configuration as basic_iterative, but uses gpt-5.4 instead.",
+./forge/strategies/predefined_strategies.json:22:    "description": "Iterative add-new-library workflow for the Codex agent.",
+./forge/strategies/predefined_strategies.json:40:    "description": "Strategy for fix_javac_fail.py with downloaded main library sources as read-only context. Runs gradle test first, feeds the error into the initial prompt, then iteratively repairs.",
+./forge/strategies/predefined_strategies.json:57:    "description": "Dynamic-access-guided Codex workflow using downloaded main library sources as read-only context.",
+./forge/strategies/predefined_strategies.json:75:    "description": "Same configuration as dynamic_access_main_sources_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:93:    "description": "Dynamic-access-guided Pi workflow using downloaded main library sources as read-only context.",
+./forge/strategies/predefined_strategies.json:111:    "description": "Same configuration as dynamic_access_main_sources_pi_gpt-5.4, but uses gpt-5.5 instead.",
+./forge/strategies/predefined_strategies.json:129:    "description": "Dynamic-access-guided Pi workflow using downloaded main library sources as read-only context.",
+./forge/strategies/predefined_strategies.json:148:    "description": "Dynamic-access-guided Codex workflow using downloaded upstream test sources as read-only context.",
+./forge/strategies/predefined_strategies.json:166:    "description": "Same configuration as dynamic_access_test_sources_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:184:    "description": "Dynamic-access-guided Codex workflow using downloaded documentation artifacts as read-only context.",
+./forge/strategies/predefined_strategies.json:202:    "description": "Same configuration as dynamic_access_documentation_sources_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:220:    "description": "Dynamic-access-guided Codex workflow using main sources plus upstream test sources.",
+./forge/strategies/predefined_strategies.json:239:    "description": "Same configuration as dynamic_access_main_sources_with_tests_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:258:    "description": "Dynamic-access-guided Codex workflow using main sources plus documentation artifacts.",
+./forge/strategies/predefined_strategies.json:277:    "description": "Same configuration as dynamic_access_main_sources_with_documentation_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:296:    "description": "Dynamic-access-guided Codex workflow using main sources, upstream test sources, and documentation artifacts.",
+./forge/strategies/predefined_strategies.json:316:    "description": "Same configuration as dynamic_access_main_sources_with_tests_and_documentation_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:336:    "description": "Dynamic-access-guided Codex workflow using upstream test sources plus documentation artifacts.",
+./forge/strategies/predefined_strategies.json:355:    "description": "Same configuration as dynamic_access_test_sources_with_documentation_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:374:    "description": "Composite strategy: runs javac_iterative to fix compilation, then improves dynamic-access coverage.",
+./forge/strategies/predefined_strategies.json:395:    "description": "Same configuration as javac_iterative_with_coverage_sources_pi_gpt-5.4, but uses gpt-5.5 instead.",
+./forge/strategies/predefined_strategies.json:416:    "description": "Composite strategy: optimistic bulk DA coverage, then per-class DA refinement.",
+./forge/strategies/predefined_strategies.json:438:    "description": "Strategy for fix_java_run_fail.py with downloaded main library sources as read-only context. Runs gradle test first, feeds the runtime error into the initial prompt, then iteratively repairs.",
+./forge/strategies/predefined_strategies.json:455:    "description": "Composite strategy: runs java_run_iterative to fix runtime failures, then improves dynamic-access coverage.",
+./forge/strategies/predefined_strategies.json:476:    "description": "Basic iterative add-new-library workflow for the Codex agent.",
+./forge/strategies/predefined_strategies.json:494:    "description": "Basic iterative add-new-library workflow for the Codex agent using gpt-5.5.",
+./forge/strategies/predefined_strategies.json:512:    "description": "Pi bulk dynamic-access strategy. Unlike the regular dynamic-access strategy, which iterates through uncovered classes and refines coverage class by class, this strategy gives the agent the full dynamic-access report in one prompt and asks it to cover the missing accesses in a single broad pass.",
+./forge/strategies/predefined_strategies.json:530:    "description": "Codex bulk dynamic-access strategy. Unlike the regular dynamic-access strategy, which iterates through uncovered classes and refines coverage class by class, this strategy gives the agent the full dynamic-access report in one prompt and asks it to cover the missing accesses in a single broad pass.",
+./forge/strategies/predefined_strategies.json:548:    "description": "Pi graphify-assisted bulk dynamic-access strategy. It first builds graphify context from downloaded source artifacts, then gives the agent the full dynamic-access report in one broad pass. Unlike the regular dynamic-access strategy, it does not run the class-by-class refinement loop.",
+./forge/strategies/predefined_strategies.json:567:    "description": "Codex graphify-assisted bulk dynamic-access strategy. It first builds graphify context from downloaded source artifacts, then gives the agent the full dynamic-access report in one broad pass. Unlike the regular dynamic-access strategy, it does not run the class-by-class refinement loop.",
+./forge/strategies/predefined_strategies.json:586:    "description": "Composite strategy: optimistic bulk DA coverage, then per-class DA refinement.",
+./forge/strategies/predefined_strategies.json:608:    "description": "Composite strategy: optimistic bulk DA coverage, then per-class DA refinement using gpt-5.5.",
+./forge/strategies/predefined_strategies.json:630:    "description": "Composite Codex strategy: optimistic bulk DA coverage, then per-class DA refinement.",
+./forge/strategies/predefined_strategies.json:652:    "description": "Composite Codex strategy: optimistic bulk DA coverage, then per-class DA refinement using gpt-5.5.",
+./forge/strategies/predefined_strategies.json:674:    "description": "Same configuration as basic_iterative, but uses gpt-5.5 instead.",
+./forge/strategies/predefined_strategies.json:692:    "description": "Dynamic-access-guided Codex workflow using downloaded main library sources as read-only context. Uses gpt-5.5.",
+./forge/strategies/predefined_strategies.json:710:    "description": "Dynamic-access-guided Codex workflow using downloaded documentation artifacts as read-only context. Uses gpt-5.5.",
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:9:    "description" : "Apache Yetus Audience Annotations provides Java annotations for declaring intended API audience and stability, such as public, limited-private, private, stable, evolving, and unstable. It also includes doclet tooling that can include or exclude annotated elements when generating audience-specific Javadocs.",
+./metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:26:    "description" : "Apache Yetus Audience Annotations provides Java annotations for marking intended API audience boundaries such as public, limited-private, and private. It also includes doclet support for generating Javadocs filtered to the intended audience.",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.15.2",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.15.2/src/test",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:9:    "description" : "Jackson Databind provides general-purpose data binding and tree-model APIs for Jackson on top of the core streaming API. It converts between JSON and Java objects and can also work with other data formats when compatible parsers and generators are available.",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-annotations",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:9:    "description" : "Jackson Annotations provides core Java annotation types used by Jackson data-binding and related modules to configure JSON serialization, deserialization, type handling, and property naming. It is a small companion artifact that contains annotation APIs rather than runtime data-binding logic.",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg -n 'slf4j-jboss-logmanager|SLF4J: JBoss Log Manager' . --glob '"'!build/**'"' --glob '"'!**/.git/**'"' | head -n 80" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+ succeeded in 0ms:
+codex
+There does not appear to be an upstream test suite for this release: the Maven source release and the `1.1.0.Final` Git tag both contain only production sources. I’m going to use the Maven Central `sources.jar` and `javadoc.jar`, set tests to `N/A`, and omit `language` because this is not Kotlin/Groovy/Scala-specific.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json
+diff --git a/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json b/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json
+index 89324bd33d82484e42f5b953b41208125b6b6195..7a04be5d2e79cbfed5da22cb90665b7c57fe4bea
+--- a/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.slf4j:slf4j-jboss-logmanager:1.1.0.Final"
++  "coordinates" : "org.jboss.slf4j:slf4j-jboss-logmanager:1.1.0.Final",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/slf4j-jboss-logmanager-1.1.0.Final-sources.jar",
++  "repository-url" : "https://github.com/jboss-logging/slf4j-jboss-logmanager",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/slf4j-jboss-logmanager-1.1.0.Final-javadoc.jar",
++  "description" : "SLF4J JBoss Log Manager is an SLF4J binding that routes SLF4J logger calls to JBoss Log Manager. It supplies the SLF4J binder, logger factory, logger, marker, and MDC adapter classes needed for applications using SLF4J to run on the JBoss Log Manager backend."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json b/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json
+index 89324bd33d82484e42f5b953b41208125b6b6195..7a04be5d2e79cbfed5da22cb90665b7c57fe4bea
+--- a/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.slf4j:slf4j-jboss-logmanager:1.1.0.Final"
++  "coordinates" : "org.jboss.slf4j:slf4j-jboss-logmanager:1.1.0.Final",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/slf4j-jboss-logmanager-1.1.0.Final-sources.jar",
++  "repository-url" : "https://github.com/jboss-logging/slf4j-jboss-logmanager",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/slf4j-jboss-logmanager-1.1.0.Final-javadoc.jar",
++  "description" : "SLF4J JBoss Log Manager is an SLF4J binding that routes SLF4J logger calls to JBoss Log Manager. It supplies the SLF4J binder, logger factory, logger, marker, and MDC adapter classes needed for applications using SLF4J to run on the JBoss Log Manager backend."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+ succeeded in 0ms:
+{
+  "coordinates": "org.jboss.slf4j:slf4j-jboss-logmanager:1.1.0.Final",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/slf4j-jboss-logmanager-1.1.0.Final-sources.jar",
+  "repository-url": "https://github.com/jboss-logging/slf4j-jboss-logmanager",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/slf4j-jboss-logmanager-1.1.0.Final-javadoc.jar",
+  "description": "SLF4J JBoss Log Manager is an SLF4J binding that routes SLF4J logger calls to JBoss Log Manager. It supplies the SLF4J binder, logger factory, logger, marker, and MDC adapter classes needed for applications using SLF4J to run on the JBoss Log Manager backend."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json b/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json
+index 89324bd33d82484e42f5b953b41208125b6b6195..7a04be5d2e79cbfed5da22cb90665b7c57fe4bea
+--- a/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.slf4j:slf4j-jboss-logmanager:1.1.0.Final"
++  "coordinates" : "org.jboss.slf4j:slf4j-jboss-logmanager:1.1.0.Final",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/slf4j-jboss-logmanager-1.1.0.Final-sources.jar",
++  "repository-url" : "https://github.com/jboss-logging/slf4j-jboss-logmanager",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/slf4j-jboss-logmanager-1.1.0.Final-javadoc.jar",
++  "description" : "SLF4J JBoss Log Manager is an SLF4J binding that routes SLF4J logger calls to JBoss Log Manager. It supplies the SLF4J binder, logger factory, logger, marker, and MDC adapter classes needed for applications using SLF4J to run on the JBoss Log Manager backend."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jboss.slf4j:slf4j-jboss-logmanager:1.1.0.Final",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/slf4j-jboss-logmanager-1.1.0.Final-sources.jar",
+  "repository-url" : "https://github.com/jboss-logging/slf4j-jboss-logmanager",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/slf4j-jboss-logmanager-1.1.0.Final-javadoc.jar",
+  "description" : "SLF4J JBoss Log Manager is an SLF4J binding that routes SLF4J logger calls to JBoss Log Manager. It supplies the SLF4J binder, logger factory, logger, marker, and MDC adapter classes needed for applications using SLF4J to run on the JBoss Log Manager backend."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json b/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json
+index 89324bd33d82484e42f5b953b41208125b6b6195..7a04be5d2e79cbfed5da22cb90665b7c57fe4bea
+--- a/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.slf4j:slf4j-jboss-logmanager:1.1.0.Final"
++  "coordinates" : "org.jboss.slf4j:slf4j-jboss-logmanager:1.1.0.Final",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/slf4j-jboss-logmanager-1.1.0.Final-sources.jar",
++  "repository-url" : "https://github.com/jboss-logging/slf4j-jboss-logmanager",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/slf4j-jboss-logmanager-1.1.0.Final-javadoc.jar",
++  "description" : "SLF4J JBoss Log Manager is an SLF4J binding that routes SLF4J logger calls to JBoss Log Manager. It supplies the SLF4J binder, logger factory, logger, marker, and MDC adapter classes needed for applications using SLF4J to run on the JBoss Log Manager backend."
+ }
+
+web search: 
+web search: https://github.com/jboss-logging/slf4j-jboss-logmanager/tree/1.1.0.Final
+web search: 
+web search: repo.maven.apache.org org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final slf4j-jboss-logmanager-1.1.0.Final-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/
+codex
+Updated [org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json).
+
+I used the exact `1.1.0.Final` Maven Central `sources.jar` and `javadoc.jar`; Maven Central lists both for that version. The matching GitHub tag exists, but it exposes only `src/main/java` and no test tree, so `test-code-url` is `N/A`; I also omitted `language` because this is a Java library, not Kotlin/Groovy/Scala-specific. ([repo1.maven.org](https://repo1.maven.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/))
+
+Validation: `jq` parsed the updated JSON successfully.
+diff --git a/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json b/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json
+index 89324bd33d82484e42f5b953b41208125b6b6195..7a04be5d2e79cbfed5da22cb90665b7c57fe4bea
+--- a/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.slf4j:slf4j-jboss-logmanager:1.1.0.Final"
++  "coordinates" : "org.jboss.slf4j:slf4j-jboss-logmanager:1.1.0.Final",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/slf4j-jboss-logmanager-1.1.0.Final-sources.jar",
++  "repository-url" : "https://github.com/jboss-logging/slf4j-jboss-logmanager",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/slf4j-jboss-logmanager-1.1.0.Final-javadoc.jar",
++  "description" : "SLF4J JBoss Log Manager is an SLF4J binding that routes SLF4J logger calls to JBoss Log Manager. It supplies the SLF4J binder, logger factory, logger, marker, and MDC adapter classes needed for applications using SLF4J to run on the JBoss Log Manager backend."
+ }
+
+2026-04-30T22:51:11.027470Z ERROR codex_core::session: failed to record rollout items: thread 019de095-5f01-7242-bea1-21773d904052 not found
+tokens used
+59,717
+Updated [org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7/build/discovered-artifact-metadata/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.json).
+
+I used the exact `1.1.0.Final` Maven Central `sources.jar` and `javadoc.jar`; Maven Central lists both for that version. The matching GitHub tag exists, but it exposes only `src/main/java` and no test tree, so `test-code-url` is `N/A`; I also omitted `language` because this is a Java library, not Kotlin/Groovy/Scala-specific. ([repo1.maven.org](https://repo1.maven.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/1.1.0.Final/))
+
+Validation: `jq` parsed the updated JSON successfully.
+Ran agent for org.jboss.slf4j:slf4j-jboss-logmanager:1.1.0.Final (exit 0). Log: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7/build/agent-artifact-discovery-logs/org.jboss.slf4j-slf4j-jboss-logmanager-1.1.0.Final.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3817-060b03c7/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 36s
+9 actionable tasks: 4 executed, 5 from cache
