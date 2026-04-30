@@ -8,6 +8,9 @@ package io_opentelemetry.opentelemetry_sdk;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.opentelemetry.api.baggage.Baggage;
+import io.opentelemetry.api.baggage.BaggageEntryMetadata;
+import io.opentelemetry.api.baggage.propagation.W3CBaggagePropagator;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.metrics.DoubleHistogram;
@@ -21,8 +24,13 @@ import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.TraceFlags;
 import io.opentelemetry.api.trace.TraceState;
 import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
+import io.opentelemetry.context.propagation.ContextPropagators;
+import io.opentelemetry.context.propagation.TextMapGetter;
+import io.opentelemetry.context.propagation.TextMapPropagator;
+import io.opentelemetry.context.propagation.TextMapSetter;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.metrics.Aggregation;
@@ -49,7 +57,9 @@ import io.opentelemetry.sdk.trace.samplers.Sampler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
@@ -62,6 +72,19 @@ public class Opentelemetry_sdkTest {
     private static final AttributeKey<Long> STATUS = AttributeKey.longKey("http.status_code");
     private static final AttributeKey<String> ENDPOINT = AttributeKey.stringKey("endpoint");
     private static final AttributeKey<String> WORKER = AttributeKey.stringKey("worker");
+    private static final TextMapSetter<Map<String, String>> MAP_SETTER =
+            (carrier, key, value) -> carrier.put(key, value);
+    private static final TextMapGetter<Map<String, String>> MAP_GETTER = new TextMapGetter<>() {
+        @Override
+        public Iterable<String> keys(Map<String, String> carrier) {
+            return carrier.keySet();
+        }
+
+        @Override
+        public String get(Map<String, String> carrier, String key) {
+            return carrier.get(key);
+        }
+    };
 
     @Test
     void sdkBuilderUsesConfiguredTracerAndMeterProviders() {
@@ -88,6 +111,41 @@ public class Opentelemetry_sdkTest {
 
         assertThat(tracerProvider.shutdown().join(5, TimeUnit.SECONDS).isSuccess()).isTrue();
         assertThat(meterProvider.shutdown().join(5, TimeUnit.SECONDS).isSuccess()).isTrue();
+    }
+
+    @Test
+    void configuredTextMapPropagatorsInjectAndExtractTraceContextAndBaggage() {
+        OpenTelemetrySdk sdk = OpenTelemetrySdk.builder()
+                .setPropagators(ContextPropagators.create(TextMapPropagator.composite(
+                        W3CTraceContextPropagator.getInstance(),
+                        W3CBaggagePropagator.getInstance())))
+                .build();
+        SpanContext spanContext = SpanContext.create(
+                "00000000000000000000000000000055",
+                "0000000000000066",
+                TraceFlags.getSampled(),
+                TraceState.builder().put("vendor", "value").build());
+        Baggage baggage = Baggage.builder()
+                .put("tenant", "acme", BaggageEntryMetadata.create("source=synthetic"))
+                .put("workflow", "checkout")
+                .build();
+        Context context = baggage.storeInContext(Context.root().with(Span.wrap(spanContext)));
+        Map<String, String> carrier = new LinkedHashMap<>();
+
+        sdk.getPropagators().getTextMapPropagator().inject(context, carrier, MAP_SETTER);
+        Context extracted = sdk.getPropagators().getTextMapPropagator().extract(Context.root(), carrier, MAP_GETTER);
+
+        assertThat(carrier).containsKeys("traceparent", "tracestate", "baggage");
+        SpanContext extractedSpanContext = Span.fromContext(extracted).getSpanContext();
+        assertThat(extractedSpanContext.getTraceId()).isEqualTo(spanContext.getTraceId());
+        assertThat(extractedSpanContext.getSpanId()).isEqualTo(spanContext.getSpanId());
+        assertThat(extractedSpanContext.isSampled()).isTrue();
+        assertThat(extractedSpanContext.isRemote()).isTrue();
+        assertThat(extractedSpanContext.getTraceState().get("vendor")).isEqualTo("value");
+        Baggage extractedBaggage = Baggage.fromContext(extracted);
+        assertThat(extractedBaggage.getEntryValue("tenant")).isEqualTo("acme");
+        assertThat(extractedBaggage.asMap().get("tenant").getMetadata().getValue()).isEqualTo("source=synthetic");
+        assertThat(extractedBaggage.getEntryValue("workflow")).isEqualTo("checkout");
     }
 
     @Test
