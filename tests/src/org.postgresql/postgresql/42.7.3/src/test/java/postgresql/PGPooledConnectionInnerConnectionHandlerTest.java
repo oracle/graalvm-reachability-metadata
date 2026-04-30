@@ -7,6 +7,9 @@
 package postgresql;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -66,13 +69,18 @@ public class PGPooledConnectionInnerConnectionHandlerTest {
     }
 
     @Test
-    void pooledConnectionHandleWrapsCreatedStatementsAndDelegatesConnectionMethods() throws Exception {
+    void pooledConnectionHandleWrapsCreatedStatementsAndDelegatesConnectionMethods() throws Throwable {
         PGConnectionPoolDataSource dataSource = openDataSource();
 
         PooledConnection pooledConnection = dataSource.getPooledConnection();
         try (Connection connection = pooledConnection.getConnection()) {
             assertThat(connection.getAutoCommit()).isTrue();
             assertThat(connection.unwrap(PGConnection.class).getBackendPID()).isPositive();
+
+            InvocationHandler handler = Proxy.getInvocationHandler(connection);
+            Method getClassMethod = Object.class.getMethod("getClass");
+            Object delegatedClass = handler.invoke(connection, getClassMethod, null);
+            assertThat(Connection.class.isAssignableFrom((Class<?>) delegatedClass)).isTrue();
 
             try (Statement statement = connection.createStatement();
                     ResultSet resultSet = statement.executeQuery("SELECT 1")) {
