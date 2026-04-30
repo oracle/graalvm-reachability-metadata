@@ -6,22 +6,26 @@
  */
 package org_apache_pekko.pekko_protobuf_v3_3
 
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertInstanceOf
-import org.junit.jupiter.api.Assertions.assertNotNull
+import java.lang.reflect.Constructor
+import java.lang.reflect.Field
+import java.lang.reflect.Method
+
+import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
 
 class UnsafeUtilInnerAndroid64MemoryAccessorTest {
   @Test
-  def readsGeneratedMapDefaultEntryThroughAndroid64Accessor(): Unit = {
-    assertNotNull(classOf[libcore.io.Memory])
-    assertNotNull(SchemaUtilMapFieldHost.initializedMapDefaultEntryForTests())
+  def readsStaticFieldThroughAndroid64Accessor(): Unit = {
+    val accessorClass: Class[?] = Class.forName(
+      "org.apache.pekko.protobufv3.internal.UnsafeUtil$Android64MemoryAccessor"
+    )
+    val constructor: Constructor[?] = accessorClass.getDeclaredConstructor(classOf[sun.misc.Unsafe])
+    constructor.setAccessible(true)
+    val accessor: Object = constructor.newInstance(null.asInstanceOf[sun.misc.Unsafe])
+    val getStaticObject: Method = accessorClass.getDeclaredMethod("getStaticObject", classOf[Field])
+    getStaticObject.setAccessible(true)
+    val systemOut: Field = classOf[System].getField("out")
 
-    try {
-      SchemaUtilMapFieldHost.newMutable().parseEmptyInputWithGeneratedMessageSchema()
-    } catch {
-      case thrown: NullPointerException => assertEquals("mapDefaultEntry", thrown.getMessage)
-      case thrown: RuntimeException => assertInstanceOf(classOf[NullPointerException], thrown.getCause)
-    }
+    assertSame(System.out, getStaticObject.invoke(accessor, systemOut))
   }
 }
