@@ -199,6 +199,35 @@ public class Micrometer_commonsTest {
     }
 
     @Test
+    void internalLoggerFactoryCreatesClassAndStringNamedLoggers() {
+        InternalLoggerFactory previousFactory = InternalLoggerFactory.getDefaultFactory();
+        RecordingLoggerFactory factory = new RecordingLoggerFactory(true);
+
+        try {
+            InternalLoggerFactory.setDefaultFactory(factory);
+
+            InternalLogger classLogger = InternalLoggerFactory.getInstance(Micrometer_commonsTest.class);
+            classLogger.info("class logger created");
+
+            assertThat(classLogger.name()).isEqualTo(Micrometer_commonsTest.class.getName());
+            assertThat(factory.logger.events).hasSize(1);
+            assertThat(factory.logger.events.get(0).level).isEqualTo(InternalLogLevel.INFO);
+            assertThat(factory.logger.events.get(0).message).isEqualTo("class logger created");
+
+            InternalLogger namedLogger = InternalLoggerFactory.getInstance("micrometer.named");
+            namedLogger.error("named logger created");
+
+            assertThat(namedLogger.name()).isEqualTo("micrometer.named");
+            assertThat(factory.logger.events).hasSize(2);
+            assertThat(factory.logger.events.get(1).level).isEqualTo(InternalLogLevel.ERROR);
+            assertThat(factory.logger.events.get(1).message).isEqualTo("named logger created");
+            assertThatNullPointerException().isThrownBy(() -> InternalLoggerFactory.setDefaultFactory(null));
+        } finally {
+            InternalLoggerFactory.setDefaultFactory(previousFactory);
+        }
+    }
+
+    @Test
     void warnThenDebugLoggerLogsInitialWarningAndSubsequentDebugMessages() {
         InternalLoggerFactory previousFactory = InternalLoggerFactory.getDefaultFactory();
         RecordingLoggerFactory factory = new RecordingLoggerFactory(true);
