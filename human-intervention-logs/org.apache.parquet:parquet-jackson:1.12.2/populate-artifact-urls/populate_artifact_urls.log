@@ -1,0 +1,276 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-086b22c6
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019ddc2d-9666-71f0-b50f-76d3ac054d9b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.parquet:parquet-jackson:1.12.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.12.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-086b22c6/metadata/org.apache.parquet/parquet-jackson/index.json
+- Entry selector: "metadata-version" = "1.12.2"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.12.2".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2-sources.jar
+- repository-url: https://github.com/apache/parquet-java
+- test-code-url: N/A
+- documentation-url: https://github.com/apache/parquet-java/blob/apache-parquet-1.12.2/parquet-jackson/README.md
+- description: Apache Parquet Jackson is a helper module that packages Jackson classes shaded under Parquet's namespace for internal use by Apache Parquet. It lets Parquet modules depend on a shared relocated Jackson artifact to avoid dependency conflicts with applications or frameworks that use different Jackson versions.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.12.2
+- Entry test-version: 1.12.2
+codex
+I’ll verify the versioned Maven and repository URLs, then update only the missing `language` field if the existing values are already populated and correct.
+exec
+/bin/bash -lc "sed -n '1,220p' metadata/org.apache.parquet/parquet-jackson/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-086b22c6
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.12.2",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2-sources.jar",
+    "repository-url" : "https://github.com/apache/parquet-java",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/apache/parquet-java/blob/apache-parquet-1.12.2/parquet-jackson/README.md",
+    "description" : "Apache Parquet Jackson is a helper module that packages Jackson classes shaded under Parquet's namespace for internal use by Apache Parquet. It lets Parquet modules depend on a shared relocated Jackson artifact to avoid dependency conflicts with applications or frameworks that use different Jackson versions.",
+    "tested-versions" : [
+      "1.12.2"
+    ],
+    "allowed-packages" : [
+      "shaded.parquet.com.fasterxml.jackson"
+    ]
+  }
+]
+
+exec
+/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"1\\.12\\.2\"|\"language\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"|\"description\"' metadata/org.apache.parquet/parquet-jackson/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-086b22c6
+ succeeded in 0ms:
+4:    "metadata-version" : "1.12.2",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2-sources.jar",
+6:    "repository-url" : "https://github.com/apache/parquet-java",
+7:    "test-code-url" : "N/A",
+8:    "documentation-url" : "https://github.com/apache/parquet-java/blob/apache-parquet-1.12.2/parquet-jackson/README.md",
+9:    "description" : "Apache Parquet Jackson is a helper module that packages Jackson classes shaded under Parquet's namespace for internal use by Apache Parquet. It lets Parquet modules depend on a shared relocated Jackson artifact to avoid dependency conflicts with applications or frameworks that use different Jackson versions.",
+
+web search: 
+web search: Maven org.apache.parquet parquet-jackson 1.12.2 sources jar tests jar
+codex
+The target entry already has non-blank values for every requested URL and the description. I’m checking Maven Central for a test artifact and the tagged project files now; because `test-code-url` is already `N/A`, I’ll leave it unchanged unless the file treats it as blank, which it does not.
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-086b22c6
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/parquet/parquet-jackson/1.12.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/parquet/parquet-jackson/1.12.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="parquet-jackson-1.12.2-sources.jar" title="parquet-jackson-1.12.2-sources.jar">parquet-jackson-1.12.2-sources.jar</a>                2021-09-30 12:14      4190      
+<a href="parquet-jackson-1.12.2-sources.jar.asc" title="parquet-jackson-1.12.2-sources.jar.asc">parquet-jackson-1.12.2-sources.jar.asc</a>            2021-09-30 12:14       833      
+<a href="parquet-jackson-1.12.2-sources.jar.md5" title="parquet-jackson-1.12.2-sources.jar.md5">parquet-jackson-1.12.2-sources.jar.md5</a>            2021-09-30 12:14        32      
+<a href="parquet-jackson-1.12.2-sources.jar.sha1" title="parquet-jackson-1.12.2-sources.jar.sha1">parquet-jackson-1.12.2-sources.jar.sha1</a>           2021-09-30 12:14        40      
+<a href="parquet-jackson-1.12.2-tests.jar" title="parquet-jackson-1.12.2-tests.jar">parquet-jackson-1.12.2-tests.jar</a>                  2021-09-30 12:14      2602      
+<a href="parquet-jackson-1.12.2-tests.jar.asc" title="parquet-jackson-1.12.2-tests.jar.asc">parquet-jackson-1.12.2-tests.jar.asc</a>              2021-09-30 12:14       833      
+<a href="parquet-jackson-1.12.2-tests.jar.md5" title="parquet-jackson-1.12.2-tests.jar.md5">parquet-jackson-1.12.2-tests.jar.md5</a>              2021-09-30 12:14        32      
+<a href="parquet-jackson-1.12.2-tests.jar.sha1" title="parquet-jackson-1.12.2-tests.jar.sha1">parquet-jackson-1.12.2-tests.jar.sha1</a>             2021-09-30 12:14        40      
+<a href="parquet-jackson-1.12.2.jar" title="parquet-jackson-1.12.2.jar">parquet-jackson-1.12.2.jar</a>                        2021-09-30 12:14   1879996      
+<a href="parquet-jackson-1.12.2.jar.asc" title="parquet-jackson-1.12.2.jar.asc">parquet-jackson-1.12.2.jar.asc</a>                    2021-09-30 12:14       833      
+<a href="parquet-jackson-1.12.2.jar.md5" title="parquet-jackson-1.12.2.jar.md5">parquet-jackson-1.12.2.jar.md5</a>                    2021-09-30 12:14        32      
+<a href="parquet-jackson-1.12.2.jar.sha1" title="parquet-jackson-1.12.2.jar.sha1">parquet-jackson-1.12.2.jar.sha1</a>                   2021-09-30 12:14        40      
+<a href="parquet-jackson-1.12.2.pom" title="parquet-jackson-1.12.2.pom">parquet-jackson-1.12.2.pom</a>                        2021-09-30 12:14      2897      
+<a href="parquet-jackson-1.12.2.pom.asc" title="parquet-jackson-1.12.2.pom.asc">parquet-jackson-1.12.2.pom.asc</a>                    2021-09-30 12:14       833      
+<a href="parquet-jackson-1.12.2.pom.md5" title="parquet-jackson-1.12.2.pom.md5">parquet-jackson-1.12.2.pom.md5</a>                    2021-09-30 12:14        32      
+<a href="parquet-jackson-1.12.2.pom.sha1" title="parquet-jackson-1.12.2.pom.sha1">parquet-jackson-1.12.2.pom.sha1</a>                   2021-09-30 12:14        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/bin/bash -lc 'curl -I -fsSL https://github.com/apache/parquet-java/blob/apache-parquet-1.12.2/parquet-jackson/README.md' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-086b22c6
+exec
+/bin/bash -lc 'curl -I -fsSL https://github.com/apache/parquet-java/tree/apache-parquet-1.12.2/parquet-jackson/src/test' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-086b22c6
+ exited 22 in 551ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Thu, 30 Apr 2026 02:18:03 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=IYvHBPUmYR2Kc%2Fcb4qRCdLzx2Q%2BPhoQ0FZ1px0vop%2B1LMnVgk8jTWvwlSdSd70abE07aTQq3MnY20WHzx6qT3t27CO%2Fq4MLhGl192wqeKJdqANOwoBiLuOpvqKFCTTM%2FZisVXyqkPK002vC13ySB2cXtYmw2DmL3D%2F%2BQ%2FSZCp1aA6Uhqls0Rtm6okJBYf0%2Ff4pAZupMgkXubk2mMqBvm2vx%2BmIZ4LTJLm70gu4OzLCb1EmjRZdENR5iz2bpgjQ38LkzEA0D92tkV1tAfuUkSPw%3D%3D--ZHLsYDarE%2FuphCZz--VPxljDYKaZFXqcZRj%2B49UQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1194235473.1777515483; expires=Fri, 30 Apr 2027 02:18:03 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 02:18:03 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 8E1C:BA27B:34A2FF5:2933402:69F2BBDB
+
+
+ succeeded in 664ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 02:18:03 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+x-repository-download: git clone https://github.com/apache/parquet-java.git
+x-raw-download: https://raw.githubusercontent.com/apache/parquet-java/apache-parquet-1.12.2/parquet-jackson/README.md
+etag: W/"83c7a7bf25dbe95a6ed22499d1ddf6c3"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=qzE3BwfecNi6%2BFmG4meJHdz866g3ZRAz8%2BerImsGQCOM0vZKvyrGCpZxOuYKx%2BZFys%2FAsH%2Bue2trwbBk27TEhX6eqAT0%2BUqiWElqoUOnjAD%2F8LrgZxN1GF2pqFh9W98zAn1DAFtQpxHN6yt71agE7AQdLyjTEX%2B3v%2BOY7Ntb8luHGPn2Tr4FsJ4dRf3OoO%2FUw4UeUU15gBXVqO8gW2xU%2F14IgQ2EWktX1WLZeN6qnFa9zo2V4sCO1Sc9eFBI8roIEK3qt00UWR7DoIwCGQZVpw%3D%3D--HgNCHLz6ZRBjlThO--UnHksa8goHoeEFV4Vz8iLg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.382741053.1777515483; expires=Fri, 30 Apr 2027 02:18:03 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 02:18:03 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 8E18:96432:33CE22D:2882FC2:69F2BBDB
+
+
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org org/apache/parquet/parquet-jackson/1.12.2 parquet-jackson-1.12.2-tests.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/
+codex
+Maven Central has both the `1.12.2` sources jar and a `1.12.2` tests jar. The requested `language` field should remain absent because this artifact is not Kotlin, Groovy, or Scala-specific.
+exec
+/bin/bash -lc 'git diff -- metadata/org.apache.parquet/parquet-jackson/index.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-086b22c6
+ succeeded in 0ms:
+exec
+/bin/bash -lc 'python -m json.tool metadata/org.apache.parquet/parquet-jackson/index.json >/dev/null' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-086b22c6
+ succeeded in 0ms:
+web search: 
+web search: Maven Central org.apache.parquet parquet-jackson 1.12.2 tests jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/
+web search: 
+web search: https://github.com/apache/parquet-java/blob/apache-parquet-1.12.2/parquet-jackson/README.md
+codex
+No file changes were required in [index.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-086b22c6/metadata/org.apache.parquet/parquet-jackson/index.json:1). All requested fields were already non-blank except `language`, and `parquet-jackson` is not Kotlin, Groovy, or Scala-specific, so `language` correctly remains absent.
+
+Verified values:
+```json
+{
+  "source-code-url": "https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2-sources.jar",
+  "repository-url": "https://github.com/apache/parquet-java",
+  "test-code-url": "N/A",
+  "documentation-url": "https://github.com/apache/parquet-java/blob/apache-parquet-1.12.2/parquet-jackson/README.md"
+}
+```
+
+Maven Central does have a `parquet-jackson-1.12.2-tests.jar`, but `test-code-url` was already `N/A`, which is non-blank under your rule, so I left it unchanged. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/))
+
+The description already matches the tagged README’s explanation that this module shades Jackson artifacts and relocates Jackson classes under Parquet’s namespace. ([github.com](https://github.com/apache/parquet-java/blob/apache-parquet-1.12.2/parquet-jackson/README.md))
+
+Validation run: `python -m json.tool metadata/org.apache.parquet/parquet-jackson/index.json >/dev/null`.
+2026-04-30T02:18:33.833148Z ERROR codex_core::session: failed to record rollout items: thread 019ddc2d-9666-71f0-b50f-76d3ac054d9b not found
+tokens used
+42,562
+No file changes were required in [index.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-086b22c6/metadata/org.apache.parquet/parquet-jackson/index.json:1). All requested fields were already non-blank except `language`, and `parquet-jackson` is not Kotlin, Groovy, or Scala-specific, so `language` correctly remains absent.
+
+Verified values:
+```json
+{
+  "source-code-url": "https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/parquet-jackson-1.12.2-sources.jar",
+  "repository-url": "https://github.com/apache/parquet-java",
+  "test-code-url": "N/A",
+  "documentation-url": "https://github.com/apache/parquet-java/blob/apache-parquet-1.12.2/parquet-jackson/README.md"
+}
+```
+
+Maven Central does have a `parquet-jackson-1.12.2-tests.jar`, but `test-code-url` was already `N/A`, which is non-blank under your rule, so I left it unchanged. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/parquet/parquet-jackson/1.12.2/))
+
+The description already matches the tagged README’s explanation that this module shades Jackson artifacts and relocates Jackson classes under Parquet’s namespace. ([github.com](https://github.com/apache/parquet-java/blob/apache-parquet-1.12.2/parquet-jackson/README.md))
+
+Validation run: `python -m json.tool metadata/org.apache.parquet/parquet-jackson/index.json >/dev/null`.
+Ran agent for org.apache.parquet:parquet-jackson:1.12.2 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-086b22c6/build/agent-url-discovery-logs/org.apache.parquet-parquet-jackson-1.12.2.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3007-086b22c6/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 49s
+9 actionable tasks: 1 executed, 8 up-to-date
