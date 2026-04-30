@@ -29,7 +29,7 @@ public final class GeneratedMessageDynamicAccessMessage extends GeneratedMessage
     public static final FieldDescriptor countField = messageDescriptor.findFieldByName("count");
     private static final FieldAccessorTable FIELD_ACCESSOR_TABLE = new FieldAccessorTable(
             messageDescriptor,
-            new String[] { FIELD_NAME },
+            new String[] {FIELD_NAME },
             GeneratedMessageDynamicAccessMessage.class,
             Builder.class);
 
