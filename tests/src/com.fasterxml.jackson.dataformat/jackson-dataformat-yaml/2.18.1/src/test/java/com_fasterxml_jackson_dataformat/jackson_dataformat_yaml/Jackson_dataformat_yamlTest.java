@@ -290,4 +290,60 @@ public class Jackson_dataformat_yamlTest {
             assertThat(allDocuments.get(1).path("priority").asInt()).isEqualTo(2);
         }
     }
+
+    @Test
+    void generatorAndParserSupportNativeYamlObjectIds() throws Exception {
+        YAMLFactory factory = YAMLFactory.builder()
+                .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
+                .enable(YAMLGenerator.Feature.USE_NATIVE_OBJECT_ID)
+                .build();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        try (JsonGenerator generator = factory.createGenerator(output)) {
+            generator.writeStartObject();
+            generator.writeFieldName("base");
+            generator.writeObjectId("shared-settings");
+            generator.writeStartObject();
+            generator.writeStringField("host", "localhost");
+            generator.writeNumberField("port", 8080);
+            generator.writeEndObject();
+            generator.writeFieldName("alias");
+            generator.writeObjectRef("shared-settings");
+            generator.writeEndObject();
+        }
+
+        byte[] serialized = output.toByteArray();
+        String yaml = output.toString(StandardCharsets.UTF_8);
+
+        assertThat(yaml)
+                .contains("base: &shared-settings")
+                .contains("alias: *shared-settings");
+
+        try (YAMLParser parser = (YAMLParser) factory.createParser(serialized)) {
+            assertThat(parser.canReadObjectId()).isTrue();
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.START_OBJECT);
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.FIELD_NAME);
+            assertThat(parser.currentName()).isEqualTo("base");
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.START_OBJECT);
+            assertThat(parser.getObjectId()).isEqualTo("shared-settings");
+
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.FIELD_NAME);
+            assertThat(parser.currentName()).isEqualTo("host");
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.VALUE_STRING);
+            assertThat(parser.getText()).isEqualTo("localhost");
+
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.FIELD_NAME);
+            assertThat(parser.currentName()).isEqualTo("port");
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.VALUE_NUMBER_INT);
+            assertThat(parser.getIntValue()).isEqualTo(8080);
+
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.END_OBJECT);
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.FIELD_NAME);
+            assertThat(parser.currentName()).isEqualTo("alias");
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.VALUE_STRING);
+            assertThat(parser.getText()).isEqualTo("shared-settings");
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.END_OBJECT);
+            assertThat(parser.nextToken()).isNull();
+        }
+    }
 }
