@@ -280,6 +280,18 @@ public class AnnotationsTest {
     }
 
     @Test
+    public void magicConstantSupportsWideLongValuesAndFlags() {
+        long allowedValue = selectWideValue(WideConstants.LARGE_VALUE);
+        long selectedFlags = selectWideFlags(WideConstants.READ | WideConstants.EXPORT);
+
+        assertThat(allowedValue).isEqualTo(WideConstants.LARGE_VALUE);
+        assertThat(selectedFlags).isEqualTo(WideConstants.READ | WideConstants.EXPORT);
+        assertThat(hasWideFlag(selectedFlags, WideConstants.READ)).isTrue();
+        assertThat(hasWideFlag(selectedFlags, WideConstants.WRITE)).isFalse();
+        assertThat(hasWideFlag(selectedFlags, WideConstants.EXPORT)).isTrue();
+    }
+
+    @Test
     public void jdkConstantCursorAndInputEventMaskAliasesDescribeAwtInputValues() {
         int cursorType = selectCursorTypeAlias(Cursor.CROSSHAIR_CURSOR);
         int mouseAndKeyboardMask = selectInputEventMaskAlias(
@@ -410,6 +422,24 @@ public class AnnotationsTest {
     private static int selectFeatureFlags(
             @MagicConstant(flags = {FeatureFlags.READ, FeatureFlags.WRITE, FeatureFlags.EXECUTE}) int flags) {
         return flags;
+    }
+
+    @MagicConstant(intValues = {WideConstants.SMALL_VALUE, WideConstants.LARGE_VALUE})
+    private static long selectWideValue(
+            @MagicConstant(intValues = {WideConstants.SMALL_VALUE, WideConstants.LARGE_VALUE}) long value) {
+        return value;
+    }
+
+    @MagicConstant(flags = {WideConstants.READ, WideConstants.WRITE, WideConstants.EXPORT})
+    private static long selectWideFlags(
+            @MagicConstant(flags = {WideConstants.READ, WideConstants.WRITE, WideConstants.EXPORT}) long flags) {
+        return flags;
+    }
+
+    private static boolean hasWideFlag(
+            @MagicConstant(flags = {WideConstants.READ, WideConstants.WRITE, WideConstants.EXPORT}) long flags,
+            @MagicConstant(flags = {WideConstants.READ, WideConstants.WRITE, WideConstants.EXPORT}) long expectedFlag) {
+        return (flags & expectedFlag) == expectedFlag;
     }
 
     @MagicConstant(valuesFromClass = Cursor.class)
@@ -552,6 +582,17 @@ public class AnnotationsTest {
         private static final int EXECUTE = 4;
 
         private FeatureFlags() {
+        }
+    }
+
+    private static final class WideConstants {
+        private static final long SMALL_VALUE = 7L;
+        private static final long LARGE_VALUE = 1L << 40;
+        private static final long READ = 1L << 32;
+        private static final long WRITE = 1L << 33;
+        private static final long EXPORT = 1L << 34;
+
+        private WideConstants() {
         }
     }
 }
