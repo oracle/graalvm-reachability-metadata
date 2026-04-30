@@ -101,6 +101,23 @@ public class SmallryeCommonIoTest {
     }
 
     @Test
+    void directoryStreamDeleteRemovesEntriesWithoutDeletingOpenedDirectory() throws IOException {
+        Path root = newWorkspace("delete-stream-root");
+        Path nested = root.resolve("nested");
+        Files.createDirectories(nested.resolve("deep"));
+        Files.writeString(root.resolve("top.txt"), "top", StandardCharsets.UTF_8);
+        Files.writeString(nested.resolve("nested.txt"), "nested", StandardCharsets.UTF_8);
+        Files.writeString(nested.resolve("deep").resolve("leaf.txt"), "leaf", StandardCharsets.UTF_8);
+
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(root)) {
+            Files2.deleteRecursivelyEvenIfInsecure(stream);
+        }
+
+        assertThat(root).isDirectory();
+        assertThat(listDirectory(root)).isEmpty();
+    }
+
+    @Test
     void cleanRecursivelyKeepsDirectoryButRemovesChildren() throws IOException {
         Path root = newWorkspace("clean-root");
         Files.createDirectories(root.resolve("left"));
