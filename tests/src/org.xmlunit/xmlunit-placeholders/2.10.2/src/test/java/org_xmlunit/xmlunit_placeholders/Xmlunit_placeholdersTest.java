@@ -125,6 +125,24 @@ public class Xmlunit_placeholdersTest {
     }
 
     @Test
+    void dateTimePlaceholdersAcceptExplicitDateFormatArguments() {
+        String control = """
+                <audit>
+                    <timestamp>${xmlunit.isDateTime(dd/MM/yyyy HH:mm:ss)}</timestamp>
+                </audit>
+                """;
+        String test = """
+                <audit>
+                    <timestamp>30/04/2026 14:35:21</timestamp>
+                </audit>
+                """;
+
+        Diff diff = buildDefaultDiff(control, test);
+
+        assertFalse(diff.hasDifferences(), diff::fullDescription);
+    }
+
+    @Test
     void customPlaceholderDelimitersAllowNonDefaultMarkerSyntax() {
         String control = """
                 <metrics>
