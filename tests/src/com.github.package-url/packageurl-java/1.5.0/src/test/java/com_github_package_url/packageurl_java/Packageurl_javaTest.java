@@ -56,6 +56,18 @@ public class Packageurl_javaTest {
     }
 
     @Test
+    void parsesQualifierValuesContainingEqualsSignsWithoutTruncatingThem() throws Exception {
+        PackageURL packageURL = new PackageURL(
+                "pkg:generic/acme/tokenized-package?checksum=sha256:abc=def=&signature=key=value==");
+
+        assertThat(packageURL.getQualifiers()).containsExactly(
+                entry("checksum", "sha256:abc=def="),
+                entry("signature", "key=value=="));
+        assertThat(packageURL.canonicalize()).isEqualTo(
+                "pkg:generic/acme/tokenized-package?checksum=sha256%3Aabc%3Ddef%3D&signature=key%3Dvalue%3D%3D");
+    }
+
+    @Test
     void builderCreatesPackageUrlsAndExposesDefensiveQualifierCopies() throws Exception {
         PackageURLBuilder builder = PackageURLBuilder.aPackageURL()
                 .withType(PackageURL.StandardTypes.DOCKER)
