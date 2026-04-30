@@ -1,4 +1,11 @@
-# Native Metadata Exploration Phase — Specification
+# Native Metadata Exploration — Specification
+
+> Implementation backing the
+> [`native_trace_collect`](workflow-strategies.md#53-native_trace_collect)
+> post-generation intervention. Strategies opt in by setting
+> `"post-generation-intervention": { "name": "native_trace_collect" }` in
+> their predefined-strategy entry; this document defines the underlying
+> trace loop the intervention runs.
 
 At a glance:
 
@@ -30,22 +37,30 @@ At a glance:
               (every status, including BUILD_FAILED)
 ```
 
-> **See also:** [Project overview](overview.md) ·
+> **See also:** [Functional spec](functional-spec.md) ·
+> [Architecture](architecture.md) ·
+> [Workflow strategies & interventions](workflow-strategies.md) ·
 > [Dynamic-access workflow](dynamic-access-workflow.md) ·
 > [Java fail-fix workflow](fix-java-run-fail.md)
 
 ## 1. Purpose
 
-This phase produces reachability metadata for the target library by **running a
-native image with metadata tracing enabled** rather than by static analysis or
-agent inference. The traced metadata is written to a caller-supplied output
-directory (see §4) and is then available to downstream steps — notably the
-codex metadata fixup — as additional, ground-truth context.
+This document specifies the iterative native-image metadata-tracing loop
+that produces reachability metadata for the target library by **running a
+native image with metadata tracing enabled** rather than by static analysis
+or agent inference. The traced metadata is written to a caller-supplied
+output directory (see §4) and is then available to downstream steps —
+notably the codex metadata fixup — as additional, ground-truth context.
 
-The phase is reusable and self-contained: it has no knowledge of which
-workflow invokes it. Callers are responsible for sequencing it with their own
-steps; this spec only describes the phase contract. Integration is documented
-in the calling specs (linked above and listed in §8).
+The loop is reusable and self-contained: it has no knowledge of which
+intervention or workflow invokes it. The single caller in production is the
+[`native_trace_collect`](workflow-strategies.md#53-native_trace_collect)
+post-generation intervention, which wraps this driver, runs codex with the
+result, and falls back to Pi when codex cannot recover (mirroring
+`codex_then_pi`). Strategies that want trace-driven recovery activate it by
+configuring `"post-generation-intervention": { "name": "native_trace_collect" }`
+in their predefined-strategy entry; nothing else changes inside the
+strategy.
 
 ## 2. Execution Model
 
@@ -156,7 +171,7 @@ committed as a metadata release. It is a build artifact consumed by:
 The canonical metadata under `metadata/<group>/<artifact>/<version>/` continues
 to be produced by `generateMetadata`.
 
-## 5. Phase Workflow
+## 5. Loop Workflow
 
 ```mermaid
 flowchart TD
@@ -226,13 +241,15 @@ diagnostics become part of codex's input — see §9 for the contract.
 
 ## 6. Reusable Implementation Surface
 
-A new module owns this phase:
+A deterministic, side-effect-free Python module owns the loop and is the
+sole non-Gradle implementation surface:
 
 ```text
 utility_scripts/native_metadata_exploration.py
 ```
 
-Public entry:
+The `native_trace_collect` intervention imports this module; it is not
+called from anywhere else. Public entry:
 
 ```python
 def run_native_metadata_exploration(
@@ -273,9 +290,10 @@ Even when `status == BUILD_FAILED`, `output_dir` is still populated
 whenever earlier iterations produced accepted traces; callers must inspect
 both `failure` and `output_dir`.
 
-The module must not depend on any workflow strategy. Sequencing with
-`generateMetadata`, codex fixup, agent hand-off, etc. is the caller's
-responsibility and is documented in the calling specs (see §8).
+The module must not depend on any workflow strategy or intervention.
+Sequencing with `generateMetadata`, codex fixup, agent hand-off, etc. is
+the responsibility of the `native_trace_collect` intervention that wraps
+it (see §8 and §9).
 
 ## 7. Required Gradle Support
 
@@ -368,16 +386,28 @@ for implementation.
 
 ## 8. Callers
 
-This phase is invoked from the following workflows. Each calling spec owns
-its own sequencing diagram and its own rules for what to do with each
-status; this list is informational only.
+The sole production caller is the
+[`native_trace_collect`](workflow-strategies.md#53-native_trace_collect)
+post-generation intervention. Strategies do not invoke this loop directly;
+they enable it by setting `post-generation-intervention.name` to
+`native_trace_collect` in their `predefined_strategies.json` entry. The
+intervention is responsible for sequencing the trace loop with codex
+fixup and the Pi fall-through; this spec only defines the loop contract.
 
-| Caller | Where the integration is specified |
+Workflow-specific guidance on when to choose `native_trace_collect` over
+`codex_then_pi` lives with each strategy spec:
+
+| Strategy / workflow | Where the routing decision is documented |
 | --- | --- |
-| Dynamic-access workflow — after every per-class iteration, and as a precondition for codex fixup inside finalization | [dynamic-access-workflow.md §6.4 and §6.6](dynamic-access-workflow.md) |
-| Native-run failure fix workflow — first corrective action when `nativeTest` fails | [fix-java-run-fail.md](fix-java-run-fail.md) |
+| Dynamic-access workflow | [dynamic-access-workflow.md](dynamic-access-workflow.md) |
+| Native-run failure fix workflow | [fix-java-run-fail.md](fix-java-run-fail.md) |
 
 ## 9. Failure Handoff to Codex Fixup
+
+> The hand-off is owned by the `native_trace_collect` intervention. This
+> section specifies what diagnostics the loop must surface and how the
+> intervention is required to use them; it does **not** mean the trace
+> loop itself shells out to codex (see §10).
 
 A failed exploration is **not** evidence that the problem is purely a
 metadata gap. The Gradle tasks fail for a wide range of reasons:
@@ -395,10 +425,10 @@ Therefore the phase produces a **diagnostic-rich result on every status**
 and the calling specs must treat every status as eligible for codex
 fixup.
 
-### 9.1 Phase responsibilities
+### 9.1 Loop responsibilities
 
-The phase itself never invokes codex (this remains a hard rule — see
-§10). On any non-`SUCCESS` outcome it must:
+The trace loop itself never invokes codex (this remains a hard rule —
+see §10). On any non-`SUCCESS` outcome it must:
 
 1. Persist the full Gradle stdout/stderr of the failing task to a stable
    absolute path under the runs directory.
@@ -408,10 +438,13 @@ The phase itself never invokes codex (this remains a hard rule — see
    `result.output_dir` carries whatever partial signal exists.
 4. Return; the caller decides how to use the result.
 
-### 9.2 Caller responsibilities
+### 9.2 Intervention responsibilities
 
-When a caller routes the result to `run_codex_metadata_fix(...)`, the
-codex invocation must receive, at minimum:
+The `native_trace_collect` intervention routes the result to
+`run_codex_metadata_fix(...)` for **every** status — including `SUCCESS`,
+where the merged trace dir becomes ground-truth context for codex, and
+`BUILD_FAILED`, where it becomes diagnostics. The codex invocation must
+receive, at minimum:
 
 - The coordinate.
 - `result.output_dir` (added to read-only context, even if empty or
@@ -452,6 +485,11 @@ task; this spec defines the contract.
 
 ### 9.3 Routing rule
 
+The intervention always chains: trace loop → codex fixup → Pi fall-through
+(when codex cannot recover). The only reason this chain does not run is
+that the post-iteration `./gradlew test` already passed, in which case
+`_run_test_with_retry` does not invoke any intervention.
+
 ```mermaid
 flowchart LR
     Explore[run_native_metadata_exploration] --> Status{status}
@@ -459,11 +497,12 @@ flowchart LR
     Status -- "SUCCESS_UNVERIFIED" --> CodexCtx2[codex fixup with output_dir + verifier_output]
     Status -- "BUDGET_EXHAUSTED" --> CodexCtx3[codex fixup with partial output_dir + budget note]
     Status -- "BUILD_FAILED" --> CodexFail[codex fixup with partial output_dir + failure diagnostics<br/>see §9.2]
+    CodexCtx --> PiFall[Pi fall-through if tests still fail]
+    CodexCtx2 --> PiFall
+    CodexCtx3 --> PiFall
+    CodexFail --> PiFall
+    PiFall --> Result[InterventionResult: passed / passed_with_intervention / failed]
 ```
-
-There is no longer a "skip codex" branch. The only reason for a caller
-not to call codex is that the test already passed without intervention
-(in which case the exploration phase is not invoked in the first place).
 
 ## 10. Acceptance Criteria
 
@@ -509,6 +548,7 @@ A `run_native_metadata_exploration(...)` invocation is correct iff:
 11. The function returns the status enum, the absolute output directory,
     the absolute per-run directory, and (on failure) the diagnostic
     fields described in §6 and §9.
-12. No code path inside the phase shells out to the codex fixup, the
-    agent, or any LLM. The phase is purely deterministic. Routing the
-    result to codex is the caller's responsibility.
+12. No code path inside the loop shells out to codex fixup, the agent,
+    or any LLM. The loop is purely deterministic. Routing the result to
+    codex (and the Pi fall-through) is the responsibility of the
+    `native_trace_collect` intervention that wraps it.

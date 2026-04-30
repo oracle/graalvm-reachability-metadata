@@ -62,9 +62,10 @@ flowchart TB
         Codex["codex (CodexAgent + AppServer)"]
     end
 
-    subgraph PostGen["Post-Generation Intervention"]
-        CodexFix["fix_metadata_codex"]
-        PiFix["fix_post_generation_pi"]
+    subgraph PostGen["PostGenerationIntervention (registry)"]
+        IntNoop["noop"]
+        IntCodex["codex_then_pi (default)<br/>fix_metadata_codex → fix_post_generation_pi"]
+        IntTrace["native_trace_collect<br/>native_metadata_exploration → codex"]
     end
 
     subgraph ReviewPRs["PR Review Queues (by label)"]
@@ -110,7 +111,7 @@ flowchart TB
     Strategies --> Agents
     Strategies --> Repo
     Strategies --> DynRpt
-    Strategies --> PostGen
+    Strategies -->|dispatch by name<br/>per strategy config| PostGen
 
     Workflows --> Shared
     PostGen --> Repo
@@ -200,16 +201,30 @@ intervention hook.
 | `increase_dynamic_access_coverage` | [increase_dynamic_access_coverage_strategy.py](../ai_workflows/workflow_strategies/increase_dynamic_access_coverage_strategy.py) | Composite: chain a primary workflow with a coverage-improvement phase. |
 | `javac_iterative`, `java_run_iterative` | [java_fix_iterative_strategy.py](../ai_workflows/workflow_strategies/java_fix_iterative_strategy.py) | Specializations of a shared base for compile vs. runtime fixes. |
 
-### 3.5 Post-Generation Intervention
+### 3.5 Post-Generation Interventions
 
-Triggered when the strategy declares a `post_generation_intervention` and the
-primary loop succeeded but downstream gates (e.g. native test) still fail.
+> Detailed reference: [workflow-strategies.md §5](workflow-strategies.md#5-post-generation-interventions) ·
+> Trace-loop spec: [native-metadata-exploration.md](native-metadata-exploration.md).
 
-- **[fix_metadata_codex.py](../ai_workflows/fix_metadata_codex.py)** — runs
-  the `codex exec` skill to patch missing reachability metadata entries.
-- **[fix_post_generation_pi.py](../ai_workflows/fix_post_generation_pi.py)**
-  — fallback when Codex cannot converge: Pi removes the failing tests and
-  writes an intervention report. Yields `SUCCESS_WITH_INTERVENTION_STATUS`.
+`PostGenerationIntervention` is a separate plug-in registry from
+`WorkflowStrategy`. The base class `_run_test_with_retry` dispatches to the
+intervention named in each predefined strategy's
+`post-generation-intervention` block. Default: `codex_then_pi` (preserves
+historical behaviour). Concrete interventions:
+
+| Name | Implementation | Role |
+| --- | --- | --- |
+| `codex_then_pi` | wraps [`fix_metadata_codex`](../ai_workflows/fix_metadata_codex.py) and [`fix_post_generation_pi`](../ai_workflows/fix_post_generation_pi.py) | Run Codex on missing metadata; if tests still fail, run Pi to remove failing tests and emit an intervention report. Yields `SUCCESS_WITH_INTERVENTION_STATUS` on the Pi path. |
+| `native_trace_collect` | wraps [`utility_scripts/native_metadata_exploration.py`](../utility_scripts/native_metadata_exploration.py) plus the codex/pi cascade | Build with `MetadataTracingSupport`, run, merge, optionally verify with `--exact-reachability-metadata`, then route the result (every status, including `BUILD_FAILED`) into Codex with the trace dir as context, falling back to Pi. |
+| `noop` | — | Skip recovery; treat any test failure as hard failure. |
+
+The intervention contract (`InterventionContext` → `InterventionResult`)
+and concrete sub-step semantics are documented in
+[workflow-strategies.md §5.1](workflow-strategies.md#51-interface). The
+shared trace-loop primitive used by `native_trace_collect` is fully
+specified in [native-metadata-exploration.md](native-metadata-exploration.md)
+— including the convergence rule, status enum, Gradle task surface, and the
+codex hand-off contract for non-`SUCCESS` outcomes.
 
 ### 3.6 Shared Utilities (`utility_scripts/`)
 

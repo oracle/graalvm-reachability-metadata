@@ -46,6 +46,7 @@ supporting tests for the reachability repo.
 | **Agent** | LLM-driven code editor (Aider, Codex, or Pi) registered through [ai_workflows/agents/](../ai_workflows/agents/). Each implements `send_prompt`, `run_test_command`, `clear_context`. |
 | **Workflow strategy** | A registered control loop in [ai_workflows/workflow_strategies/](../ai_workflows/workflow_strategies/) (e.g. `basic_iterative`, `dynamic_access_iterative`). |
 | **Predefined strategy** | Named, fully parameterized combination of agent + workflow strategy + prompts + parameters in [strategies/predefined_strategies.json](../strategies/predefined_strategies.json). Selected via `--strategy-name`. |
+| **Post-generation intervention** | Recovery step a strategy invokes when the post-iteration `./gradlew test` still fails. Pluggable via the `PostGenerationIntervention` registry. Configured per predefined strategy (`post-generation-intervention.name`). Concrete implementations: `noop`, `codex_then_pi` (default), `native_trace_collect`. See [workflow-strategies.md §5](workflow-strategies.md#5-post-generation-interventions). |
 | **Dynamic access** | Reflection, JNI, resource access, serialization, or proxy use that GraalVM `native-image` cannot determine statically. |
 | **Dynamic-access report** | JSON written by Gradle task `generateDynamicAccessCoverageReport` to `tests/src/<group>/<artifact>/<version>/build/reports/dynamic-access/dynamic-access-coverage.json`, listing classes and per-class call sites that require dynamic-access metadata, marked covered/uncovered. |
 | **Source context** | Read-only files supplied to the agent. Types: `main` (library source), `test` (upstream tests), `documentation` (Javadoc). Selected by the strategy parameter `source-context-types`. |
@@ -81,6 +82,11 @@ Each entry in `strategies/predefined_strategies.json` must provide:
 - `parameters` — workflow-specific parameters (iteration limits,
   `source-context-types`, etc.).
 - `mcps` — optional list of MCP server names.
+- `post-generation-intervention` — optional. Selects the recovery step
+  invoked when the post-iteration `./gradlew test` fails. Shape:
+  `{ "name": "<registered intervention>", "parameters": { … } }`. Omitted
+  entries default to `codex_then_pi`. See
+  [workflow-strategies.md §5](workflow-strategies.md#5-post-generation-interventions).
 
 ### 4.3 Environment
 
@@ -108,22 +114,25 @@ Every workflow returns one of three statuses:
 | Status | Meaning |
 | --- | --- |
 | `RUN_STATUS_SUCCESS` | All gates passed; metadata and tests committed. |
-| `SUCCESS_WITH_INTERVENTION_STATUS` | Tests succeeded after a post-generation manual or scripted intervention; PR-eligible. |
+| `SUCCESS_WITH_INTERVENTION_STATUS` | Tests succeeded after the configured `PostGenerationIntervention` modified the working tree (e.g. `codex_then_pi` removing failing tests via Pi). The intervention's record is included in the run-metrics and PR description. PR-eligible. |
 | `RUN_STATUS_FAILURE` | The workflow could not converge or a quality gate failed; the feature branch is reset to the scaffold checkpoint and no PR is opened. |
 
 The exit code is `0` for the first two and `1` for failure.
 
 ## 7. Workflow Specifications
 
+- [Workflow strategies](workflow-strategies.md) — registry of strategies
+  and post-generation interventions, including the
+  [`native_trace_collect`](workflow-strategies.md#53-native_trace_collect)
+  intervention that drives the trace loop.
 - [Dynamic access workflow](dynamic-access-workflow.md) — guided test
   generation driven by the dynamic-access coverage report.
-- [Native metadata exploration phase](native-metadata-exploration.md) —
-  reusable phase that traces the test binary with `MetadataTracingSupport`
-  and writes its results to a caller-supplied output directory. Used by the
-  dynamic-access workflow after every iteration and by the native-run
-  failure fix workflow.
+- [Native metadata exploration](native-metadata-exploration.md) —
+  specification for the iterative trace loop (Gradle task contract,
+  convergence rule, status enum, codex hand-off). Implements the
+  `native_trace_collect` intervention.
 - [Java compilation / runtime failure fix workflow](fix-java-run-fail.md)
   — version-bump fix workflow shared by `fix_javac_fail` and
-  `fix_java_run_fail`. Integrates with the metadata exploration phase when
-  the failure surfaces under `nativeTest`.
+  `fix_java_run_fail`. Strategies in this family route through the
+  configured post-generation intervention when `nativeTest` still fails.
 - (Future) Basic iterative workflow.

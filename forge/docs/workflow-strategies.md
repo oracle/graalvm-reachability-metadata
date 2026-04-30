@@ -20,7 +20,7 @@ flowchart TB
     subgraph Base["WorkflowStrategy (abstract base)"]
         Reg["@register(name) registry"]
         Validate["REQUIRED_PROMPTS<br/>REQUIRED_PARAMS validation"]
-        TestRetry["_run_test_with_retry<br/>(post-gen hook)"]
+        TestRetry["_run_test_with_retry<br/>(dispatches to configured intervention)"]
         Finalize["_finalize_successful_iteration<br/>(generateMetadata + commit)"]
         AllowedPkg["_run_check_metadata_files_<br/>with_allowed_packages_fix"]
     end
@@ -50,7 +50,12 @@ flowchart TB
     subgraph Collaborators["Collaborators"]
         Agent["Agent<br/>(pi / codex)"]
         Repo[("Reachability repo<br/>./gradlew test, generateMetadata,<br/>checkMetadataFiles, splitTestOnlyMetadata")]
-        PostGen["Post-generation:<br/>fix_metadata_codex<br/>fix_post_generation_pi"]
+    end
+
+    subgraph Interventions["PostGenerationIntervention (registry)"]
+        Noop["noop<br/>(skip post-gen)"]
+        Codex["codex_then_pi<br/>(default)<br/>fix_metadata_codex → fix_post_generation_pi"]
+        Trace["native_trace_collect<br/>iterative trace loop → codex"]
     end
 
     subgraph Finalization["Library Finalization (utility_scripts/library_finalization)"]
@@ -71,8 +76,9 @@ flowchart TB
 
     Concrete --> Agent
     Concrete --> Repo
-    TestRetry --> PostGen
-    PostGen --> Repo
+    TestRetry -->|dispatch by name| Interventions
+    Interventions --> Repo
+    Trace -.->|gradlew nativeTraceImage,<br/>runNativeTraceImage,<br/>mergeNativeTraceMetadata| Repo
     Finalize --> Finalization
     Finalization --> Repo
 
@@ -85,7 +91,7 @@ flowchart TB
     Concrete --> Status
     Concrete --> Iters
     Concrete --> Checkpoint
-    TestRetry --> Intervention
+    Interventions -->|record| Intervention
 ```
 
 ## 2. Base Class Contract
@@ -102,14 +108,15 @@ provides:
   context (`library`, `version`, …) plus per-iteration extras into templates
   loaded by [`strategy_loader`](../utility_scripts/strategy_loader.py).
 - **Post-generation hook**: `_run_test_with_retry(library)` runs
-  `./gradlew test`. On failure it invokes
-  [`fix_metadata_codex`](../ai_workflows/fix_metadata_codex.py); if Codex
-  doesn't converge, it falls back to
-  [`fix_post_generation_pi`](../ai_workflows/fix_post_generation_pi.py),
-  which removes failing tests and writes an intervention report. Returns
-  `RUN_STATUS_SUCCESS`, `RUN_STATUS_FAILURE`, or
-  `SUCCESS_WITH_INTERVENTION_STATUS` and populates
-  `self.post_generation_intervention`.
+  `./gradlew test`. On failure it dispatches to the
+  [`PostGenerationIntervention`](#5-post-generation-interventions) named in
+  the strategy config's `post-generation-intervention` block (default
+  [`codex_then_pi`](#52-codex_then_pi-default), preserving historical
+  behaviour). The intervention returns one of `passed`,
+  `passed_with_intervention`, `skipped`, or `failed`, which the base maps to
+  `RUN_STATUS_SUCCESS`, `SUCCESS_WITH_INTERVENTION_STATUS`,
+  `RUN_STATUS_FAILURE`, and populates `self.post_generation_intervention`
+  with the intervention's record.
 - **Iteration finalization**: `_finalize_successful_iteration` runs
   `generateMetadata` (with `--agentAllowedPackages=fromJar`),
   `_run_test_with_retry`, then delegates to
@@ -234,7 +241,104 @@ Naming convention: `<workflow>_<source-context>_<agent>_<model>`. The
 `source-context` segment selects which JARs (main / tests / documentation /
 combinations) `source_context` materializes for the agent.
 
-## 5. Adding a New Strategy
+## 5. Post-Generation Interventions
+
+A *post-generation intervention* is the recovery step that runs whenever
+`_run_test_with_retry` observes a failing `./gradlew test`. Interventions are
+a separate plug-in registry from workflow strategies — same lifecycle as
+`Agent` and `WorkflowStrategy`. The active intervention is selected per
+predefined-strategy entry; today's behaviour is preserved by defaulting to
+[`codex_then_pi`](#52-codex_then_pi-default) when no entry is set.
+
+### 5.1 Interface
+
+```python
+class PostGenerationIntervention(ABC):
+    _registry: dict[str, type["PostGenerationIntervention"]]
+
+    @classmethod
+    def register(cls, name): ...        # decorator
+    @classmethod
+    def get_class(cls, name): ...
+
+    def __init__(self, config: dict | None = None): ...
+
+    @abstractmethod
+    def run(self, ctx: InterventionContext) -> InterventionResult: ...
+```
+
+`InterventionContext` carries `library`, `reachability_repo_path`,
+`test_output`, `failed_task`, and `model_name`. `InterventionResult` carries
+a status (`passed` / `passed_with_intervention` / `skipped` / `failed`) and
+an optional `record` dict serialized into the run-metrics
+`post_generation_intervention` field and the PR description.
+
+Selection in `predefined_strategies.json`:
+
+```json
+"post-generation-intervention": {
+  "name": "codex_then_pi",
+  "parameters": { "post-generation-timeout-seconds": 600 }
+}
+```
+
+Strategies that should never run a recovery step pin
+`{"name": "noop"}`. Strategies that want trace-driven recovery pin
+`{"name": "native_trace_collect"}` (see §5.3).
+
+### 5.2 `codex_then_pi` (default)
+
+Mirrors the historical cascade. Runs
+[`run_codex_metadata_fix(repo, library)`](../ai_workflows/fix_metadata_codex.py);
+if Codex passes and tests now pass, returns `passed`. Otherwise runs
+[`run_pi_post_generation_fix(...)`](../ai_workflows/fix_post_generation_pi.py)
+which removes failing tests and writes an intervention report; the result is
+`passed_with_intervention` (record = `{stage, intervention_file,
+analysis_markdown}`) when the rerun finally passes, `failed` otherwise.
+
+Configurable parameters:
+
+- `post-generation-timeout-seconds` (default 600)
+- `post-generation-test-output-chars` (default 12000)
+
+### 5.3 `native_trace_collect`
+
+Runs the native-image metadata-tracing loop specified in
+[native-metadata-exploration.md](native-metadata-exploration.md), then hands
+the result to Codex. Sequence:
+
+1. Invoke the reusable trace driver
+   ([`utility_scripts/native_metadata_exploration.py`](../utility_scripts/native_metadata_exploration.py))
+   with the failing library's coordinate. The driver iterates
+   `nativeTraceImage` → `runNativeTraceImage` → optional
+   `mergeNativeTraceMetadata` until convergence, build failure, or the
+   iteration budget is exhausted.
+2. Run `run_codex_metadata_fix` with the merged trace dir as additional
+   read-only context (the diagnostic-rich result follows the contract in
+   [native-metadata-exploration.md §9](native-metadata-exploration.md#9-failure-handoff-to-codex-fixup)).
+3. If tests still fail, fall through to `run_pi_post_generation_fix` exactly
+   like `codex_then_pi`. This guarantees the codex fall-back behaviour the
+   strategy contract relies on, regardless of whether the trace loop
+   converged.
+
+The record dict additionally carries `trace_status`,
+`trace_iterations_used`, and `trace_output_dir` so the PR body and metrics
+can show what tracing produced.
+
+Configurable parameters:
+
+- `max-trace-iterations` (default 5)
+- `trace-condition-packages` (default = `[group]`)
+- `verify-exact-after-merge` (default true)
+- `post-generation-timeout-seconds`,
+  `post-generation-test-output-chars` — forwarded to the codex/pi sub-steps.
+
+### 5.4 `noop`
+
+Returns `skipped` immediately. Used when the strategy should treat any
+test failure as a hard failure without invoking codex or pi.
+
+## 6. Adding a New Strategy
 
 1. Subclass `WorkflowStrategy` under
    [`ai_workflows/workflow_strategies/`](../ai_workflows/workflow_strategies/).
