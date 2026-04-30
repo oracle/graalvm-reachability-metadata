@@ -146,7 +146,7 @@ public class Slf4j_jboss_logmanagerTest {
                     Slf4j_jboss_logmanagerTest.class.getName(),
                     LocationAwareLogger.ERROR_INT,
                     "location aware {}",
-                    new Object[] { "message" },
+                    new Object[] {"message" },
                     failure
             );
             ((LocationAwareLogger) logger).log(
@@ -154,7 +154,7 @@ public class Slf4j_jboss_logmanagerTest {
                     Slf4j_jboss_logmanagerTest.class.getName(),
                     12345,
                     "unknown level falls back to {}",
-                    new Object[] { "debug" },
+                    new Object[] {"debug" },
                     null
             );
 
