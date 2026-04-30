@@ -8,7 +8,7 @@ package com_ethlo_time.itu;
 
 import org.junit.jupiter.api.Test;
 
-class ItuTest {
+public class ItuTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
