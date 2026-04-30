@@ -42,6 +42,10 @@ import io.lettuce.core.cluster.models.slots.ClusterSlotsParser;
 import io.lettuce.core.codec.ByteArrayCodec;
 import io.lettuce.core.codec.RedisCodec;
 import io.lettuce.core.codec.StringCodec;
+import io.lettuce.core.event.DefaultEventBus;
+import io.lettuce.core.event.Event;
+import io.lettuce.core.event.connection.ConnectedEvent;
+import io.lettuce.core.event.connection.ConnectEvent;
 import io.lettuce.core.models.role.RedisInstance;
 import io.lettuce.core.models.stream.PendingMessage;
 import io.lettuce.core.output.IntegerOutput;
@@ -54,9 +58,12 @@ import io.lettuce.core.protocol.ProtocolVersion;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.ssl.SslProvider;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -65,6 +72,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
+import reactor.core.Disposable;
+import reactor.core.scheduler.Schedulers;
 
 public class Lettuce_coreTest {
     @Test
@@ -203,6 +212,30 @@ public class Lettuce_coreTest {
             assertThat(client.getResources()).isNotNull();
         } finally {
             client.shutdown(Duration.ZERO, Duration.ZERO);
+        }
+    }
+
+    @Test
+    void publishesConnectionLifecycleEventsOnEventBus() {
+        DefaultEventBus eventBus = new DefaultEventBus(Schedulers.immediate());
+        List<Event> receivedEvents = new ArrayList<>();
+        Disposable subscription = eventBus.get().subscribe(receivedEvents::add);
+        try {
+            SocketAddress localAddress = InetSocketAddress.createUnresolved("client.example.test", 55000);
+            SocketAddress remoteAddress = InetSocketAddress.createUnresolved("redis.example.test", 6379);
+            ConnectEvent connectEvent = new ConnectEvent("redis://redis.example.test:6379/0", "endpoint-1");
+            ConnectedEvent connectedEvent = new ConnectedEvent(localAddress, remoteAddress);
+
+            eventBus.publish(connectEvent);
+            eventBus.publish(connectedEvent);
+
+            assertThat(receivedEvents).containsExactly(connectEvent, connectedEvent);
+            assertThat(connectEvent.getRedisUri()).isEqualTo("redis://redis.example.test:6379/0");
+            assertThat(connectEvent.getEpId()).isEqualTo("endpoint-1");
+            assertThat(connectedEvent.localAddress()).isEqualTo(localAddress);
+            assertThat(connectedEvent.remoteAddress()).isEqualTo(remoteAddress);
+        } finally {
+            subscription.dispose();
         }
     }
 
