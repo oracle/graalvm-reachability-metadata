@@ -29,7 +29,7 @@ public class Flatbuffers_javaTest {
     @Test
     void flatBufferBuilderCreatesReadableTablesStringsAndVectors() throws IOException {
         FlatBufferBuilder builder = new FlatBufferBuilder(1);
-        int nameOffset = builder.createString("Åda Lovelace");
+        int nameOffset = builder.createString("\u00c5da Lovelace");
         int payloadOffset = builder.createByteVector(new byte[] {10, 20, 30, 40});
 
         builder.startVector(Integer.BYTES, 3, Integer.BYTES);
@@ -52,7 +52,7 @@ public class Flatbuffers_javaTest {
 
         assertThat(fileIdentifier(buffer)).isEqualTo("PERS");
         assertThat(readIntField(buffer, table, 0)).isEqualTo(42);
-        assertThat(readStringField(buffer, table, 1)).isEqualTo("Åda Lovelace");
+        assertThat(readStringField(buffer, table, 1)).isEqualTo("\u00c5da Lovelace");
         assertThat(readIntVectorField(buffer, table, 2)).containsExactly(100, 200, 300);
         assertThat(readBooleanField(buffer, table, 3)).isTrue();
         assertThat(readByteVectorField(buffer, table, 4)).containsExactly((byte) 10, (byte) 20, (byte) 30, (byte) 40);
