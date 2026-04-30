@@ -170,6 +170,32 @@ public final class Opentelemetry_sdk_logsTest {
     }
 
     @Test
+    void logRecordBuilderUsesTimeUnitEpochAndDefaultFields() {
+        InMemoryLogRecordExporter exporter = InMemoryLogRecordExporter.create();
+        SdkLoggerProvider loggerProvider = SdkLoggerProvider.builder()
+                .addLogRecordProcessor(SimpleLogRecordProcessor.create(exporter))
+                .build();
+
+        try {
+            loggerProvider.get("defaults.logger")
+                    .logRecordBuilder()
+                    .setEpoch(1_234L, TimeUnit.MILLISECONDS)
+                    .setAttribute(USER_ID, "dave")
+                    .emit();
+
+            LogRecordData record = singleExportedRecord(exporter);
+            assertThat(record.getEpochNanos()).isEqualTo(TimeUnit.MILLISECONDS.toNanos(1_234L));
+            assertThat(record.getSpanContext()).isEqualTo(SpanContext.getInvalid());
+            assertThat(record.getSeverity()).isEqualTo(Severity.UNDEFINED_SEVERITY_NUMBER);
+            assertThat(record.getSeverityText()).isNull();
+            assertThat(record.getBody().getType()).isEqualTo(Body.Type.EMPTY);
+            assertThat(record.getAttributes().get(USER_ID)).isEqualTo("dave");
+        } finally {
+            loggerProvider.shutdown().join(10, TimeUnit.SECONDS);
+        }
+    }
+
+    @Test
     void logLimitsCapAttributesAndTruncateStringValues() {
         InMemoryLogRecordExporter exporter = InMemoryLogRecordExporter.create();
         LogLimits limits = LogLimits.builder()
