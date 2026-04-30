@@ -8,7 +8,7 @@ package io_quarkus.quarkus_development_mode_spi;
 
 import org.junit.jupiter.api.Test;
 
-class Quarkus_development_mode_spiTest {
+public class Quarkus_development_mode_spiTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
