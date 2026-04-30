@@ -62,7 +62,7 @@ public class Async_http_client_netty_utilsTest {
 
     @Test
     void decodesSingleUtf8ByteBufToStringAndChars() {
-        String text = "ASCII, accents éà, CJK 東京, emoji 🚀";
+        String text = "ASCII, accents \u00E9\u00E0, CJK \u6771\u4EAC, emoji \uD83D\uDE80";
         ByteBuf buffer = utf8Buffer(text);
 
         assertThat(ByteBufUtils.byteBuf2String(StandardCharsets.UTF_8, buffer)).isEqualTo(text);
@@ -86,7 +86,7 @@ public class Async_http_client_netty_utilsTest {
     @Test
     void decodesNonUtf8CharsetFromSingleAndMultipleBuffers() {
         Charset charset = StandardCharsets.UTF_16BE;
-        String text = "Netty buffers ✓ and Ω";
+        String text = "Netty buffers \u2713 and \u03A9";
         byte[] encoded = text.getBytes(charset);
         ByteBuf single = Unpooled.wrappedBuffer(encoded);
         ByteBuf first = Unpooled.wrappedBuffer(Arrays.copyOfRange(encoded, 0, 12));
@@ -101,7 +101,7 @@ public class Async_http_client_netty_utilsTest {
     @Test
     void decodesIso88591Characters() {
         Charset charset = StandardCharsets.ISO_8859_1;
-        String text = "café déjà vu £";
+        String text = "caf\u00E9 d\u00E9j\u00E0 vu \u00A3";
         ByteBuf buffer = Unpooled.wrappedBuffer(text.getBytes(charset));
 
         assertThat(ByteBufUtils.byteBuf2String(charset, buffer)).isEqualTo(text);
@@ -110,7 +110,7 @@ public class Async_http_client_netty_utilsTest {
 
     @Test
     void decodesUtf8CharactersSplitAcrossByteBufBoundaries() {
-        String text = "prefix € middle 😀 suffix";
+        String text = "prefix \u20AC middle \uD83D\uDE00 suffix";
         byte[] encoded = text.getBytes(StandardCharsets.UTF_8);
         int euroLeadByte = indexOf(encoded, (byte) 0xE2);
         int emojiLeadByte = indexOf(encoded, (byte) 0xF0);
@@ -127,7 +127,7 @@ public class Async_http_client_netty_utilsTest {
 
     @Test
     void decodesCompositeHeapBufferWithSeveralNioBuffers() {
-        String text = "alpha € beta 😀 gamma";
+        String text = "alpha \u20AC beta \uD83D\uDE00 gamma";
         byte[] encoded = text.getBytes(StandardCharsets.UTF_8);
         int split = indexOf(encoded, (byte) 0xE2) + 1;
         ByteBuf first = Unpooled.wrappedBuffer(Arrays.copyOfRange(encoded, 0, split));
@@ -147,7 +147,7 @@ public class Async_http_client_netty_utilsTest {
 
     @Test
     void decodesDirectByteBufs() {
-        String text = "direct buffer: Ω and 🚀";
+        String text = "direct buffer: \u03A9 and \uD83D\uDE80";
         ByteBuf direct = ByteBufAllocator.DEFAULT.directBuffer();
         direct.writeBytes(text.getBytes(StandardCharsets.UTF_8));
 
@@ -164,7 +164,7 @@ public class Async_http_client_netty_utilsTest {
 
     @Test
     void decodesUtf8AcrossMixedHeapAndDirectBuffers() {
-        String text = "mixed heap and direct 😀 buffers";
+        String text = "mixed heap and direct \uD83D\uDE00 buffers";
         byte[] encoded = text.getBytes(StandardCharsets.UTF_8);
         int emojiLeadByte = indexOf(encoded, (byte) 0xF0);
         ByteBuf heap = Unpooled.wrappedBuffer(Arrays.copyOfRange(encoded, 0, emojiLeadByte + 2));
@@ -188,22 +188,22 @@ public class Async_http_client_netty_utilsTest {
     void replacesMalformedUtf8Input() {
         ByteBuf invalid = Unpooled.wrappedBuffer(new byte[] {(byte) 0xE2, 0x28, (byte) 0xA1});
 
-        assertThat(Utf8ByteBufCharsetDecoder.decodeUtf8(invalid)).isEqualTo("�(�");
-        assertThat(Utf8ByteBufCharsetDecoder.decodeUtf8Chars(invalid)).containsExactly('�', '(', '�');
-        assertThat(ByteBufUtils.byteBuf2String(StandardCharsets.UTF_8, invalid)).isEqualTo("�(�");
+        assertThat(Utf8ByteBufCharsetDecoder.decodeUtf8(invalid)).isEqualTo("\uFFFD(\uFFFD");
+        assertThat(Utf8ByteBufCharsetDecoder.decodeUtf8Chars(invalid)).containsExactly('\uFFFD', '(', '\uFFFD');
+        assertThat(ByteBufUtils.byteBuf2String(StandardCharsets.UTF_8, invalid)).isEqualTo("\uFFFD(\uFFFD");
     }
 
     @Test
     void reusableDecoderCanBeResetBetweenIndependentDecodes() {
         Utf8ByteBufCharsetDecoder decoder = new Utf8ByteBufCharsetDecoder();
-        ByteBuf first = utf8Buffer("first €");
-        ByteBuf second = utf8Buffer("second 😀");
+        ByteBuf first = utf8Buffer("first \u20AC");
+        ByteBuf second = utf8Buffer("second \uD83D\uDE00");
 
-        assertThat(decoder.decode(first)).isEqualTo("first €");
+        assertThat(decoder.decode(first)).isEqualTo("first \u20AC");
         decoder.reset();
-        assertThat(decoder.decode(second)).isEqualTo("second 😀");
+        assertThat(decoder.decode(second)).isEqualTo("second \uD83D\uDE00");
         decoder.reset();
-        assertThat(decoder.decodeChars(second)).containsExactly("second 😀".toCharArray());
+        assertThat(decoder.decodeChars(second)).containsExactly("second \uD83D\uDE00".toCharArray());
     }
 
     @Test
