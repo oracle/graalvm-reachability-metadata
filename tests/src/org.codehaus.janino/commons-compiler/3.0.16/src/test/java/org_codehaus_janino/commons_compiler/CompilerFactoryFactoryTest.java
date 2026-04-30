@@ -7,6 +7,7 @@
 package org_codehaus_janino.commons_compiler;
 
 import org.codehaus.commons.compiler.AbstractCompilerFactory;
+import org.codehaus.commons.compiler.AbstractJavaSourceClassLoader;
 import org.codehaus.commons.compiler.CompilerFactoryFactory;
 import org.codehaus.commons.compiler.ICompiler;
 import org.codehaus.commons.compiler.ICompilerFactory;
@@ -49,5 +50,10 @@ public class CompilerFactoryFactoryTest extends AbstractCompilerFactory {
     @Override
     public ICompiler newCompiler() {
         throw new UnsupportedOperationException(FACTORY_ID + ": newCompiler");
+    }
+
+    @Override
+    public AbstractJavaSourceClassLoader newJavaSourceClassLoader() {
+        return new TestJavaSourceClassLoader();
     }
 }
