@@ -10,6 +10,7 @@ import com.typesafe.netty.CancelledSubscriber;
 import com.typesafe.netty.HandlerPublisher;
 import com.typesafe.netty.HandlerSubscriber;
 import io.netty.channel.embedded.EmbeddedChannel;
+import io.netty.util.ReferenceCounted;
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -166,6 +167,30 @@ public class Netty_reactive_streamsTest {
     }
 
     @Test
+    void handlerPublisherReleasesBufferedMessagesWhenSubscriptionIsCancelled() {
+        EmbeddedChannel channel = new EmbeddedChannel();
+        HandlerPublisher<TestReferenceCountedMessage> publisher =
+                new HandlerPublisher<>(channel.eventLoop(), TestReferenceCountedMessage.class);
+        TestSubscriber<TestReferenceCountedMessage> subscriber = new TestSubscriber<>();
+        TestReferenceCountedMessage bufferedMessage = new TestReferenceCountedMessage();
+        channel.pipeline().addLast(publisher);
+        publisher.subscribe(subscriber);
+        channel.runPendingTasks();
+
+        channel.writeInbound(bufferedMessage);
+        assertThat(bufferedMessage.refCnt()).isEqualTo(1);
+        assertThat(subscriber.values).isEmpty();
+
+        subscriber.subscription.cancel();
+        channel.runPendingTasks();
+
+        assertThat(bufferedMessage.refCnt()).isZero();
+        assertThat(subscriber.values).isEmpty();
+        assertThat(subscriber.errors).isEmpty();
+        assertThat(subscriber.completed).isFalse();
+    }
+
+    @Test
     void handlerSubscriberRequestsInitialDemandAndWritesReceivedElements() {
         EmbeddedChannel channel = new EmbeddedChannel();
         HandlerSubscriber<String> subscriber = new HandlerSubscriber<>(channel.eventLoop(), 1, 3);
@@ -247,6 +272,48 @@ public class Netty_reactive_streamsTest {
 
         assertThat(channel.<String>readOutbound()).isEqualTo("last");
         assertThat(channel.isOpen()).isFalse();
+    }
+
+    private static final class TestReferenceCountedMessage implements ReferenceCounted {
+        private int references = 1;
+
+        @Override
+        public int refCnt() {
+            return references;
+        }
+
+        @Override
+        public TestReferenceCountedMessage retain() {
+            references++;
+            return this;
+        }
+
+        @Override
+        public TestReferenceCountedMessage retain(int increment) {
+            references += increment;
+            return this;
+        }
+
+        @Override
+        public TestReferenceCountedMessage touch() {
+            return this;
+        }
+
+        @Override
+        public TestReferenceCountedMessage touch(Object hint) {
+            return this;
+        }
+
+        @Override
+        public boolean release() {
+            return release(1);
+        }
+
+        @Override
+        public boolean release(int decrement) {
+            references -= decrement;
+            return references == 0;
+        }
     }
 
     private static final class TestSubscriber<T> implements Subscriber<T> {
