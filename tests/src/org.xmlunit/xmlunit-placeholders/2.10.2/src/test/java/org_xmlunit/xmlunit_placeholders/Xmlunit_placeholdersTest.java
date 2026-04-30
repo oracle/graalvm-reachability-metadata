@@ -92,6 +92,39 @@ public class Xmlunit_placeholdersTest {
     }
 
     @Test
+    void placeholdersMatchXsiTypeLocalPartsWhenNamespaceUriIsUnchanged() {
+        String control = """
+                <document xmlns:doc="urn:document-types" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:type="doc:${xmlunit.matchesRegex([A-Z][A-Za-z]+Document)}"/>
+                """;
+        String test = """
+                <document xmlns:doc="urn:document-types" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:type="doc:InvoiceDocument"/>
+                """;
+
+        Diff diff = buildDefaultDiff(control, test);
+
+        assertFalse(diff.hasDifferences(), diff::fullDescription);
+    }
+
+    @Test
+    void placeholdersInXsiTypeDoNotMaskNamespaceUriDifferences() {
+        String control = """
+                <document xmlns:doc="urn:expected-document-types" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:type="doc:${xmlunit.ignore}"/>
+                """;
+        String test = """
+                <document xmlns:doc="urn:actual-document-types" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:type="doc:InvoiceDocument"/>
+                """;
+
+        Diff diff = buildDefaultDiff(control, test);
+
+        assertTrue(diff.hasDifferences());
+        assertTrue(diff.fullDescription().contains("urn:actual-document-types"), diff::fullDescription);
+    }
+
+    @Test
     void customPlaceholderDelimitersAllowNonDefaultMarkerSyntax() {
         String control = """
                 <metrics>
