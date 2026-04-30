@@ -1005,16 +1005,7 @@ def review_pull_request(
     if pr_url is None:
         pr_url = get_pull_request_url(pr_number)
     review_worktree_path = create_review_workspace(reachability_metadata_path, pr_number)
-    prompt = (
-        f"Review pull request #{pr_number} in the current GitHub repository. "
-        f"Submit the review directly on GitHub for exactly PR #{pr_number}. "
-        "Use the GitHub CLI from this isolated review worktree. "
-        "The pull request is already checked out in detached HEAD. "
-        "Do not run `gh pr checkout`, `git checkout`, or `git switch`. "
-        "Do not write any files. "
-        "If you find blocking issues, submit a review that requests changes with a concise summary. "
-        "If there are no blocking issues, submit an approval review summarizing the check and stating that you found no blocking issues."
-    )
+    prompt = build_review_prompt(pr_number)
     cmd = [
         "codex", "exec",
         "--dangerously-bypass-approvals-and-sandbox",
@@ -1075,6 +1066,24 @@ def review_pull_request(
         return True
     finally:
         cleanup_review_workspace(reachability_metadata_path, review_worktree_path, pr_number)
+
+
+def build_review_prompt(pr_number: int) -> str:
+    """Build the Codex prompt for an isolated pull-request review."""
+    return (
+        f"Review pull request #{pr_number} in the current GitHub repository. "
+        f"Submit the review directly on GitHub for exactly PR #{pr_number}. "
+        "Use the GitHub CLI from this isolated review worktree. "
+        "The pull request is already checked out in detached HEAD. "
+        f"Use `gh pr diff {pr_number} --name-only` and `gh pr diff {pr_number} --patch` as the authoritative "
+        "source for the pull request's changed files and patch content. "
+        "A fresh `origin/master` ref was fetched before checkout, so local `git diff origin/master...HEAD` "
+        "may be used for convenience, but if local git output disagrees with `gh pr diff`, trust `gh pr diff`. "
+        "Do not run `gh pr checkout`, `git checkout`, or `git switch`. "
+        "Do not write any files. "
+        "If you find blocking issues, submit a review that requests changes with a concise summary. "
+        "If there are no blocking issues, submit an approval review summarizing the check and stating that you found no blocking issues."
+    )
 
 
 def process_pull_requests_with_label(
@@ -2512,6 +2521,32 @@ def create_detached_worktree(
         raise
 
 
+def fetch_review_base_ref(repo_path: str) -> None:
+    """Refresh the upstream PR base ref used by local review diffs."""
+    remote_tracking_ref = f"refs/remotes/origin/{DEFAULT_WORKTREE_BASE_REF}"
+    try:
+        subprocess.run(
+            [
+                "git",
+                "fetch",
+                "--quiet",
+                "origin",
+                f"+{DEFAULT_WORKTREE_BASE_REF}:{remote_tracking_ref}",
+            ],
+            cwd=repo_path,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
+    except subprocess.CalledProcessError as exc:
+        print(
+            f"ERROR: Failed to fetch origin/{DEFAULT_WORKTREE_BASE_REF} before PR review: {exc.stdout}",
+            file=sys.stderr,
+        )
+        raise
+
+
 def remove_worktree(repo_path: str, worktree_path: str) -> None:
     """Remove a detached worktree when it exists."""
     subprocess.run(
@@ -2532,6 +2567,7 @@ def create_review_workspace(base_reachability_metadata_path: str, pr_number: int
 
     review_run_id = build_review_run_id(pr_number)
     review_worktree_path = os.path.join(review_worktrees_root, review_run_id)
+    fetch_review_base_ref(base_reachability_metadata_path)
     create_detached_worktree(
         base_reachability_metadata_path,
         review_worktree_path,

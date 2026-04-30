@@ -944,5 +944,37 @@ class InterruptHandlingTests(unittest.TestCase):
         add_issue_label.assert_not_called()
 
 
+class PullRequestReviewTests(unittest.TestCase):
+    def test_fetch_review_base_ref_updates_origin_master_without_pull(self) -> None:
+        completed_process = subprocess.CompletedProcess(args=[], returncode=0, stdout="")
+
+        with patch.object(forge_metadata.subprocess, "run", return_value=completed_process) as run:
+            forge_metadata.fetch_review_base_ref("/repo")
+
+        run.assert_called_once_with(
+            [
+                "git",
+                "fetch",
+                "--quiet",
+                "origin",
+                "+master:refs/remotes/origin/master",
+            ],
+            cwd="/repo",
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
+
+    def test_review_prompt_makes_github_pr_diff_authoritative(self) -> None:
+        prompt = forge_metadata.build_review_prompt(3513)
+
+        self.assertIn("gh pr diff 3513 --name-only", prompt)
+        self.assertIn("gh pr diff 3513 --patch", prompt)
+        self.assertIn("authoritative", prompt)
+        self.assertIn("if local git output disagrees with `gh pr diff`, trust `gh pr diff`", prompt)
+        self.assertIn("A fresh `origin/master` ref was fetched before checkout", prompt)
+
+
 if __name__ == "__main__":
     unittest.main()
