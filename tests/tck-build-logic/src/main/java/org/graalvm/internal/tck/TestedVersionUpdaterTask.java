@@ -36,8 +36,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unused")
 public abstract class TestedVersionUpdaterTask extends DefaultTask {
@@ -267,6 +269,7 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
             }
         }
         updateExecutionMetrics(oldStatsDir, newStatsDir, group, artifact, oldVersion, newVersion);
+        updateExecutionMetricReferences(statsRoot.resolve(group).resolve(artifact), group, artifact, oldVersion, newVersion);
 
         if (!oldStatsDir.equals(newStatsDir)) {
             try {
@@ -298,44 +301,84 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
         }
     }
 
-    private void updateRunMetrics(JsonNode runMetrics, String group, String artifact, String oldVersion, String newVersion) {
-        if (!(runMetrics instanceof ObjectNode objectNode)) return;
+    /**
+     * Updates committed Forge execution metrics in other versions for the same library.
+     */
+    private void updateExecutionMetricReferences(Path libraryStatsRoot, String group, String artifact, String oldVersion, String newVersion) throws IOException {
+        if (!Files.exists(libraryStatsRoot)) return;
 
-        updateCoordinateField(objectNode, "library", group, artifact, oldVersion, newVersion);
-        updateCoordinateField(objectNode, "previous_library", group, artifact, oldVersion, newVersion);
-        updateStatsVersion(objectNode.get("stats"), oldVersion, newVersion);
-        updateStatsVersion(objectNode.get("previous_library_stats"), oldVersion, newVersion);
-        updateArtifactPaths(objectNode.get("artifacts"), oldVersion, newVersion);
+        ObjectMapper objectMapper = new ObjectMapper()
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        try (Stream<Path> paths = Files.find(
+                libraryStatsRoot,
+                2,
+                (path, attributes) -> attributes.isRegularFile() && "execution-metrics.json".equals(path.getFileName().toString())
+        )) {
+            for (Path metricsFile : paths.toList()) {
+                ObjectNode executionMetrics = (ObjectNode) objectMapper.readTree(metricsFile.toFile());
+                boolean changed = false;
+                for (Map.Entry<String, JsonNode> entry : executionMetrics.properties()) {
+                    changed |= updateRunMetrics(entry.getValue(), group, artifact, oldVersion, newVersion);
+                }
+                if (changed) {
+                    writeJsonWithTrailingNewline(objectMapper, metricsFile, executionMetrics);
+                }
+            }
+        }
     }
 
-    private void updateCoordinateField(ObjectNode runMetrics, String fieldName, String group, String artifact, String oldVersion, String newVersion) {
+    private boolean updateRunMetrics(JsonNode runMetrics, String group, String artifact, String oldVersion, String newVersion) {
+        if (!(runMetrics instanceof ObjectNode objectNode)) return false;
+
+        boolean changed = false;
+        changed |= updateCoordinateField(objectNode, "library", group, artifact, oldVersion, newVersion);
+        changed |= updateCoordinateField(objectNode, "previous_library", group, artifact, oldVersion, newVersion);
+        changed |= updateStatsVersion(objectNode.get("stats"), oldVersion, newVersion);
+        changed |= updateStatsVersion(objectNode.get("previous_library_stats"), oldVersion, newVersion);
+        changed |= updateArtifactPaths(objectNode.get("artifacts"), oldVersion, newVersion);
+        return changed;
+    }
+
+    private boolean updateCoordinateField(ObjectNode runMetrics, String fieldName, String group, String artifact, String oldVersion, String newVersion) {
         JsonNode coordinateNode = runMetrics.get(fieldName);
-        if (coordinateNode == null || !coordinateNode.isTextual()) return;
+        if (coordinateNode == null || !coordinateNode.isTextual()) return false;
 
         String oldCoordinate = group + ":" + artifact + ":" + oldVersion;
         if (oldCoordinate.equals(coordinateNode.asText())) {
             runMetrics.put(fieldName, group + ":" + artifact + ":" + newVersion);
+            return true;
         }
+        return false;
     }
 
-    private void updateStatsVersion(JsonNode stats, String oldVersion, String newVersion) {
-        if (!(stats instanceof ObjectNode statsObject)) return;
+    private boolean updateStatsVersion(JsonNode stats, String oldVersion, String newVersion) {
+        if (!(stats instanceof ObjectNode statsObject)) return false;
 
         JsonNode versionNode = statsObject.get("version");
         if (versionNode != null && versionNode.isTextual() && oldVersion.equals(versionNode.asText())) {
             statsObject.put("version", newVersion);
+            return true;
         }
+        return false;
     }
 
-    private void updateArtifactPaths(JsonNode artifacts, String oldVersion, String newVersion) {
-        if (!(artifacts instanceof ObjectNode artifactsObject)) return;
+    private boolean updateArtifactPaths(JsonNode artifacts, String oldVersion, String newVersion) {
+        if (!(artifacts instanceof ObjectNode artifactsObject)) return false;
 
-        artifactsObject.properties().forEach(entry -> {
+        boolean changed = false;
+        for (Map.Entry<String, JsonNode> entry : artifactsObject.properties()) {
             JsonNode value = entry.getValue();
             if (value != null && value.isTextual()) {
-                artifactsObject.put(entry.getKey(), value.asText().replace("/" + oldVersion + "/", "/" + newVersion + "/"));
+                String updatedValue = value.asText().replace("/" + oldVersion + "/", "/" + newVersion + "/");
+                if (!updatedValue.equals(value.asText())) {
+                    artifactsObject.put(entry.getKey(), updatedValue);
+                    changed = true;
+                }
             }
-        });
+        }
+        return changed;
     }
 
     private void writeJsonWithTrailingNewline(ObjectMapper objectMapper, Path path, JsonNode jsonNode) throws IOException {

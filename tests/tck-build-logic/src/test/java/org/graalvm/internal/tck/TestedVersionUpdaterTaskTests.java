@@ -92,6 +92,25 @@ class TestedVersionUpdaterTaskTests {
                 """,
                 StandardCharsets.UTF_8
         );
+        Files.createDirectories(tempDir.resolve("stats/com.example/demo/2.0.0"));
+        Files.writeString(
+                tempDir.resolve("stats/com.example/demo/2.0.0/execution-metrics.json"),
+                """
+                {
+                  "fix_javac_fail:2026-04-30": {
+                    "library": "com.example:demo:2.0.0",
+                    "previous_library": "com.example:demo:1.0.0-RC1",
+                    "stats": {
+                      "version": "2.0.0"
+                    },
+                    "previous_library_stats": {
+                      "version": "1.0.0-RC1"
+                    }
+                  }
+                }
+                """,
+                StandardCharsets.UTF_8
+        );
 
         TestTestedVersionUpdaterTask task = createTask();
         task.setCoordinates(group + ":" + artifact + ":" + newVersion);
@@ -130,6 +149,13 @@ class TestedVersionUpdaterTaskTests {
                 .isEqualTo("tests/src/com.example/demo/1.0.0/src/test/java/com/example/DemoTest.java");
         assertThat(runMetrics.get("artifacts").get("metadata_file").asText())
                 .isEqualTo("metadata/com.example/demo/1.0.0/reachability-metadata.json");
+
+        Path newerMetricsFile = tempDir.resolve("stats/com.example/demo/2.0.0/execution-metrics.json");
+        JsonNode newerRunMetrics = OBJECT_MAPPER.readTree(newerMetricsFile.toFile()).get("fix_javac_fail:2026-04-30");
+        assertThat(newerRunMetrics.get("library").asText()).isEqualTo("com.example:demo:2.0.0");
+        assertThat(newerRunMetrics.get("previous_library").asText()).isEqualTo("com.example:demo:1.0.0");
+        assertThat(newerRunMetrics.get("stats").get("version").asText()).isEqualTo("2.0.0");
+        assertThat(newerRunMetrics.get("previous_library_stats").get("version").asText()).isEqualTo("1.0.0");
 
         List<Map<String, Object>> indexEntries = OBJECT_MAPPER.readValue(
                 tempDir.resolve("metadata/com.example/demo/index.json").toFile(),
