@@ -67,7 +67,7 @@ public class KtfmtStepInnerStateTest {
 
     @Test
     void formatsWithFallbackFormattingOptionFieldsFromBothLegacyFormatterPackages() throws Exception {
-        assertThat(format("0.31", Style.DROPBOX, null)).isEqualTo("format-options:" + SOURCE);
+        assertThat(format("0.31", Style.DROPBOX, null)).isEqualTo("format:" + SOURCE);
         assertThat(format("0.30", Style.DROPBOX, null)).isEqualTo("old-options:" + SOURCE);
     }
 
