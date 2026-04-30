@@ -14,6 +14,7 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 Provider<Directory> ktfmtFixtureResources = layout.buildDirectory.dir("generated/ktfmt-fixture-resources")
+Provider<Directory> jsonSimpleFixtureResources = layout.buildDirectory.dir("generated/json-simple-fixture-resources")
 
 tasks.register("generateKtfmtFixtureJars") {
     outputs.dir(ktfmtFixtureResources)
@@ -26,6 +27,17 @@ tasks.register("generateKtfmtFixtureJars") {
         createModernKtfmtFixture(outputDir, "0.31", "format")
         createOldKtfmtFixture(outputDir, "0.30", "old", true)
         createOldKtfmtFixture(outputDir, "0.18", "pre-field", false)
+    }
+}
+
+tasks.register("generateJsonSimpleFixtureJar") {
+    outputs.dir(jsonSimpleFixtureResources)
+
+    doLast {
+        File outputDir = jsonSimpleFixtureResources.get().asFile
+        delete(outputDir)
+
+        createJsonSimpleFixture(outputDir)
     }
 }
 
@@ -152,7 +164,47 @@ void createOldKtfmtFixture(File outputDir, String version, String prefix, boolea
     createFixtureJar(outputDir, version, "ktfmt-${version}.jar", sources)
 }
 
+void createJsonSimpleFixture(File outputDir) {
+    Map<String, String> sources = [
+        "org/json/JSONObject.java": """
+            package org.json;
+
+            public class JSONObject {
+                private final String input;
+
+                public JSONObject(String input) {
+                    this.input = input;
+                }
+
+                public String toString(int indentFactor) {
+                    return "object:" + indentFactor + ":" + input;
+                }
+            }
+            """,
+        "org/json/JSONArray.java": """
+            package org.json;
+
+            public class JSONArray {
+                private final String input;
+
+                public JSONArray(String input) {
+                    this.input = input;
+                }
+
+                public String toString(int indentFactor) {
+                    return "array:" + indentFactor + ":" + input;
+                }
+            }
+            """
+    ]
+    createFixtureJar(outputDir, "json-simple-fixtures", "org-json", "org-json-fixture.jar", sources)
+}
+
 void createFixtureJar(File outputDir, String version, String jarName, Map<String, String> sources) {
+    createFixtureJar(outputDir, "ktfmt-fixtures", version, jarName, sources)
+}
+
+void createFixtureJar(File outputDir, String resourceRoot, String version, String jarName, Map<String, String> sources) {
     File workDir = new File(outputDir, "work/${version}")
     File sourceDir = new File(workDir, "src")
     File classesDir = new File(workDir, "classes")
@@ -164,13 +216,13 @@ void createFixtureJar(File outputDir, String version, String jarName, Map<String
     classesDir.mkdirs()
     ant.javac(srcdir: sourceDir, destdir: classesDir, includeantruntime: false, source: "8", target: "8")
 
-    File resourceDir = new File(outputDir, "ktfmt-fixtures/${version}")
+    File resourceDir = new File(outputDir, "${resourceRoot}/${version}")
     resourceDir.mkdirs()
     ant.jar(destfile: new File(resourceDir, jarName), basedir: classesDir)
 
-    File indexFile = new File(outputDir, "ktfmt-fixtures/${version}.classpath")
+    File indexFile = new File(outputDir, "${resourceRoot}/${version}.classpath")
     indexFile.parentFile.mkdirs()
-    indexFile.text = "ktfmt-fixtures/${version}/${jarName}\n"
+    indexFile.text = "${resourceRoot}/${version}/${jarName}\n"
 
     delete(workDir)
 }
@@ -178,11 +230,13 @@ void createFixtureJar(File outputDir, String version, String jarName, Map<String
 sourceSets {
     test {
         resources.srcDir(ktfmtFixtureResources)
+        resources.srcDir(jsonSimpleFixtureResources)
     }
 }
 
 tasks.named("processTestResources") {
     dependsOn(tasks.named("generateKtfmtFixtureJars"))
+    dependsOn(tasks.named("generateJsonSimpleFixtureJar"))
 }
 
 dependencies {
@@ -194,7 +248,7 @@ dependencies {
 graalvmNative {
     binaries {
         test {
-            buildArgs.add('-H:IncludeResources=ktfmt-fixtures/.*')
+            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|json-simple-fixtures)/.*')
         }
     }
 
