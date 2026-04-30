@@ -12,10 +12,11 @@ import com.sun.jna.NativeLibrary;
 import com.sun.jna.Platform;
 import com.sun.jna.platform.win32.Ddeml;
 import com.sun.jna.platform.win32.DdemlUtil.DdemlException;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -42,11 +43,30 @@ public class DdemlUtilInnerDdemlExceptionTest {
         }
 
         Path user32Alias = tempDirectory.resolve(System.mapLibraryName("user32"));
-        File cLibraryFile = NativeLibrary.getInstance(Platform.C_LIBRARY_NAME).getFile();
-        assertThat(cLibraryFile).isNotNull();
+        Path loadableLibrary = findLoadableNativeLibrary();
 
-        createNativeLibraryAlias(cLibraryFile.toPath(), user32Alias);
+        createNativeLibraryAlias(loadableLibrary, user32Alias);
         NativeLibrary.addSearchPath("user32", tempDirectory.toString());
+    }
+
+    private static Path findLoadableNativeLibrary() throws IOException {
+        String javaHome = System.getProperty("java.home", "");
+        List<Path> candidates = List.of(
+            Paths.get(javaHome, "lib", System.mapLibraryName("java")),
+            Paths.get(javaHome, "lib", "server", System.mapLibraryName("jvm")),
+            Paths.get("/lib/x86_64-linux-gnu/libc.so.6"),
+            Paths.get("/usr/lib/x86_64-linux-gnu/libc.so.6"),
+            Paths.get("/lib/aarch64-linux-gnu/libc.so.6"),
+            Paths.get("/usr/lib/aarch64-linux-gnu/libc.so.6"),
+            Paths.get("/lib64/libc.so.6"),
+            Paths.get("/usr/lib64/libc.so.6")
+        );
+        for (Path candidate : candidates) {
+            if (Files.isRegularFile(candidate)) {
+                return candidate;
+            }
+        }
+        throw new IOException("Unable to find a native library for the user32 test alias");
     }
 
     private static void createNativeLibraryAlias(Path library, Path alias) throws IOException {
