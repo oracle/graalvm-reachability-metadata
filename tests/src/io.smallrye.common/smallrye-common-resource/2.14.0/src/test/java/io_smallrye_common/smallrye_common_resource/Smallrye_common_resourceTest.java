@@ -13,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
@@ -23,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
@@ -222,6 +224,28 @@ public class Smallrye_common_resourceTest {
         assertThat(resource.size()).isEqualTo(bytes("url content").length);
         assertThat(resource.modifiedTime()).isNotNull();
         assertThat(resource.asString(StandardCharsets.UTF_8)).isEqualTo("url content");
+    }
+
+    @Test
+    void resourceReadStreamTransformsContentClosesStreamAndUnwrapsIoFailures() throws IOException {
+        MemoryResource resource = new MemoryResource("stream/data.txt", bytes("stream content"));
+        MemoryInputStream[] openedStreams = new MemoryInputStream[1];
+
+        String value = resource.readStream(inputStream -> {
+            openedStreams[0] = (MemoryInputStream) inputStream;
+            try {
+                return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8).toUpperCase(Locale.ROOT);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        });
+
+        assertThat(value).isEqualTo("STREAM CONTENT");
+        assertThatThrownBy(() -> openedStreams[0].read()).isInstanceOf(IOException.class)
+                .hasMessage("Stream closed");
+        assertThatThrownBy(() -> resource.readStream(inputStream -> {
+            throw new UncheckedIOException(new IOException("reader failed"));
+        })).isInstanceOf(IOException.class).hasMessage("reader failed");
     }
 
     @Test
