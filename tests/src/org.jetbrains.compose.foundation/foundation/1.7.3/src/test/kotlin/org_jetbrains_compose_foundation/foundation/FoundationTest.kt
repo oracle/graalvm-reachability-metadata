@@ -7,6 +7,7 @@
 package org_jetbrains_compose_foundation.foundation
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.gestures.TransformableState
 import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.interaction.FocusInteraction
 import androidx.compose.foundation.interaction.HoverInteraction
@@ -16,6 +17,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -73,5 +75,37 @@ public class FoundationTest {
         assertThat(source.tryEmit(dragStop)).isTrue()
         assertThat(source.tryEmit(focus)).isTrue()
         assertThat(source.tryEmit(unfocus)).isTrue()
+    }
+
+    @Test
+    fun transformableStateAppliesZoomPanAndRotationChangesFromTransformScope() {
+        runBlocking {
+            var zoomProduct = 1f
+            var accumulatedPan = Offset.Zero
+            var accumulatedRotation = 0f
+            val state = TransformableState { zoomChange, panChange, rotationChange ->
+                zoomProduct *= zoomChange
+                accumulatedPan += panChange
+                accumulatedRotation += rotationChange
+            }
+
+            assertThat(state.isTransformInProgress).isFalse()
+
+            state.transform {
+                assertThat(state.isTransformInProgress).isTrue()
+
+                transformBy(
+                    zoomChange = 2f,
+                    panChange = Offset(3f, -4f),
+                    rotationChange = 45f,
+                )
+                transformBy(panChange = Offset(-1f, 6f))
+            }
+
+            assertThat(state.isTransformInProgress).isFalse()
+            assertThat(zoomProduct).isEqualTo(2f)
+            assertThat(accumulatedPan).isEqualTo(Offset(2f, 2f))
+            assertThat(accumulatedRotation).isEqualTo(45f)
+        }
     }
 }
