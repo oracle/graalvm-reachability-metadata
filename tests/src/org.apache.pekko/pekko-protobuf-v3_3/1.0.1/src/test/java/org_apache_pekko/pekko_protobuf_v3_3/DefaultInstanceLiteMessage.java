@@ -7,7 +7,6 @@
 package org_apache_pekko.pekko_protobuf_v3_3;
 
 import org.apache.pekko.protobufv3.internal.GeneratedMessageLite;
-import org.apache.pekko.protobufv3.internal.GeneratedMessageLite.DefaultInstanceBasedParser;
 import org.apache.pekko.protobufv3.internal.GeneratedMessageLite.MethodToInvoke;
 import org.apache.pekko.protobufv3.internal.Parser;
 
