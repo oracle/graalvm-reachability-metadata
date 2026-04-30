@@ -31,13 +31,9 @@ public class ClassUtilInnerEnumTypeLocatorTest {
     }
 
     private static void assertResolvedEnumType(EnumTypeLookup lookup) {
-        try {
-            Class<? extends Enum<?>> enumType = lookup.findEnumType();
+        Class<? extends Enum<?>> enumType = lookup.findEnumType();
 
-            assertThat(enumType).isSameAs(EncodingMode.class);
-        } catch (IllegalArgumentException ex) {
-            assertThat(ex).hasCauseInstanceOf(IllegalAccessException.class);
-        }
+        assertThat(enumType).isSameAs(EncodingMode.class);
     }
 
     private enum EncodingMode {
