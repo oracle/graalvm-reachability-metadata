@@ -11,15 +11,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.util.Loader;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.Set;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LoaderTest {
     private static final String LOGBACK_CONTEXT_CLASS_NAME = ContextBase.class.getName();
     private static final String MISSING_RESOURCE_NAME = "ch/qos/logback/core/util/missing-test-resource.properties";
 
     @Test
+    @Order(1)
     void returnsEmptySetWhenResourceIsAbsentFromSuppliedClassLoader() throws IOException {
         ClassLoader classLoader = LoaderTest.class.getClassLoader();
 
@@ -29,6 +35,7 @@ public class LoaderTest {
     }
 
     @Test
+    @Order(2)
     void returnsNullWhenResourceIsAbsentFromSuppliedClassLoader() {
         ClassLoader classLoader = LoaderTest.class.getClassLoader();
 
@@ -38,6 +45,7 @@ public class LoaderTest {
     }
 
     @Test
+    @Order(3)
     void loadsClassUsingContextObjectClassLoader() throws ClassNotFoundException {
         ContextBase context = new ContextBase();
 
@@ -47,6 +55,7 @@ public class LoaderTest {
     }
 
     @Test
+    @Order(4)
     void loadsClassUsingThreadContextClassLoader() throws ClassNotFoundException {
         Thread currentThread = Thread.currentThread();
         ClassLoader originalClassLoader = currentThread.getContextClassLoader();
@@ -61,6 +70,7 @@ public class LoaderTest {
     }
 
     @Test
+    @Order(5)
     void fallsBackToClassForNameWhenThreadContextClassLoaderCannotLoadClass() throws ClassNotFoundException {
         Thread currentThread = Thread.currentThread();
         ClassLoader originalClassLoader = currentThread.getContextClassLoader();
@@ -72,6 +82,22 @@ public class LoaderTest {
             assertThat(loadedClass).isEqualTo(ContextBase.class);
         } finally {
             currentThread.setContextClassLoader(originalClassLoader);
+        }
+    }
+
+    @Test
+    @Order(6)
+    void loadsClassWithClassForNameWhenThreadContextClassLoaderIsIgnored() throws Exception {
+        Field ignoreTclField = Loader.class.getDeclaredField("ignoreTCL");
+        ignoreTclField.setAccessible(true);
+        boolean previousIgnoreTcl = ignoreTclField.getBoolean(null);
+        ignoreTclField.setBoolean(null, true);
+        try {
+            Class<?> loadedClass = Loader.loadClass(LOGBACK_CONTEXT_CLASS_NAME);
+
+            assertThat(loadedClass).isEqualTo(ContextBase.class);
+        } finally {
+            ignoreTclField.setBoolean(null, previousIgnoreTcl);
         }
     }
 
