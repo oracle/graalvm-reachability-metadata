@@ -150,6 +150,32 @@ public class Google_closure_libraryTest {
     }
 
     @Test
+    void soyTemplateRenderingModulesArePackagedWithSanitizedContentApis() throws Exception {
+        Map<String, Dependency> dependenciesByProvide = dependenciesByProvide();
+
+        assertDependency(dependenciesByProvide, "goog.soy.data.SanitizedContent", "soy/data.js",
+                "goog.html.SafeHtml", "goog.html.uncheckedconversions", "goog.string.Const");
+        assertDependency(dependenciesByProvide, "goog.soy", "soy/soy.js", "goog.asserts", "goog.dom",
+                "goog.dom.NodeType", "goog.dom.TagName", "goog.soy.data.SanitizedContent",
+                "goog.soy.data.SanitizedContentKind", "goog.string");
+        assertDependency(dependenciesByProvide, "goog.soy.Renderer", "soy/renderer.js", "goog.asserts", "goog.dom",
+                "goog.soy", "goog.soy.data.SanitizedContent", "goog.soy.data.SanitizedContentKind");
+
+        assertResourceContains("goog/soy/data.js", "goog.provide('goog.soy.data.SanitizedContentKind');",
+                "goog.soy.data.SanitizedContent = function", "goog.soy.data.SanitizedContent.prototype.getContent = function",
+                "goog.soy.data.SanitizedContent.prototype.toString = function",
+                "goog.soy.data.SanitizedContent.prototype.toSafeHtml = function");
+        assertResourceContains("goog/soy/soy.js", "goog.soy.renderElement = function",
+                "goog.soy.renderAsFragment = function", "goog.soy.renderAsElement = function");
+        assertResourceContains("goog/soy/renderer.js", "goog.provide('goog.soy.InjectedDataSupplier');",
+                "goog.soy.Renderer = function", "goog.soy.Renderer.prototype.renderAsFragment = function",
+                "goog.soy.Renderer.prototype.renderAsElement = function",
+                "goog.soy.Renderer.prototype.renderElement = function", "goog.soy.Renderer.prototype.render = function",
+                "goog.soy.Renderer.prototype.renderText = function",
+                "goog.soy.Renderer.prototype.renderSafeHtml = function");
+    }
+
+    @Test
     void packagedClosureTestsAndDemosRemainAvailableAsResources() throws Exception {
         assertResourceContains("goog/base_test.html", "goog.require('goog.baseTest');");
         assertResourceContains("goog/base_test.js", "goog.provide('goog.baseTest');",
