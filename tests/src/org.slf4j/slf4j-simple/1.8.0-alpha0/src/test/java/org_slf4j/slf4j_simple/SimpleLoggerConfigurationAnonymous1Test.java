@@ -14,9 +14,9 @@ import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
-import org.slf4j.impl.SimpleLogger;
-import org.slf4j.impl.SimpleLoggerConfiguration;
-import org.slf4j.impl.SimpleLoggerFactory;
+import org.slf4j.simple.SimpleLogger;
+import org.slf4j.simple.SimpleLoggerConfiguration;
+import org.slf4j.simple.SimpleLoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -55,8 +55,10 @@ public class SimpleLoggerConfigurationAnonymous1Test {
         initialized.setBoolean(null, false);
 
         SimpleLoggerConfiguration configParams = getConfigParams();
-        clearConfigurationProperties(configParams);
-        resetDefaultLogLevel(configParams);
+        if (configParams != null) {
+            clearConfigurationProperties(configParams);
+            resetDefaultLogLevel(configParams);
+        }
     }
 
     private static SimpleLoggerConfiguration getConfigParams() throws Exception {
