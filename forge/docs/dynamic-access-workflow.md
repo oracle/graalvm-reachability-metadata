@@ -1,6 +1,6 @@
 # Dynamic-Access Workflow Specification
 
-> **See also:** [Project overview](overview.md) ·
+> **See also:** [Architecture](architecture.md) ·
 > [Native metadata exploration phase](native-metadata-exploration.md) ·
 > [Java fail-fix workflow](fix-java-run-fail.md)
 

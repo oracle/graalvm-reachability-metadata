@@ -19,7 +19,7 @@ Reachability metadata describes reflection, JNI, resource access, serialization,
 | **Application developer** using GraalVM Native Image | Build a native image of an application that depends on third-party libraries without writing reachability metadata by hand; check whether a given library is supported; request support for a missing library. | Consumes metadata indirectly — the GraalVM Gradle/Maven plugin downloads it from this repository at build time. Checks support via `curl … check-library-support.sh \| bash -s "<group>:<artifact>:<version>"` or by browsing [the libraries-and-frameworks page](https://www.graalvm.org/native-image/libraries-and-frameworks/). Requests a new library by filing a [`01_support_new_library`](../.github/ISSUE_TEMPLATE/01_support_new_library.yml) issue, or updates an existing one via [`02_update_existing_library`](../.github/ISSUE_TEMPLATE/02_update_existing_library.yml). |
 | **Community contributor** | Add support for a missing library or update an existing entry to a newer library version. | Files a "library-new-request" or "update existing library" issue; the automation picks it up, optionally guided by custom instructions the contributor supplies. |
 | **Reviewer / Maintainer** of this repo | Sign off on PRs after automated review has enforced licensing, security, and metadata quality rules. | Agents run the review skills under [skills/](../skills/) (e.g. `review-library-new-request`, `review-fixes-javac-fail`, `review-fixes-java-run-fail`, `review-fixes-native-image-run-fail`, `review-library-bulk-update`, `close-new-library-support-pr`) against the [REVIEWING.md](REVIEWING.md) checklist; CI runs the same gates. The reviewer does the final human check before merge. |
-| **Repository automation (Metadata Forge)** | Generate or repair metadata using LLM-driven pipelines. | Per coordinate, the toolkit can: (1) **add support for a new library** — generate a JUnit / Kotlin / Scala test suite, scaffold metadata, and iterate until JVM-mode tests pass and dynamic-access is collected ([`add_new_library_support.py`](../forge/ai_workflows/add_new_library_support.py)); (2) **fix a Java compilation (`javac`) failure** raised by a library version bump ([`fix_javac_fail.py`](../forge/ai_workflows/fix_javac_fail.py)); (3) **fix a JVM-mode (`javaTest`) runtime failure** raised by a version bump ([`fix_java_run_fail.py`](../forge/ai_workflows/fix_java_run_fail.py)); (4) **fix a `native-image` runtime failure** raised by a version bump ([`fix_ni_run.py`](../forge/ai_workflows/fix_ni_run.py)); (5) **improve dynamic-access coverage** of already-supported libraries by targeting uncovered call sites; (6) **post-generation repair** of the metadata produced by a previous run ([`fix_post_generation_pi.py`](../forge/ai_workflows/fix_post_generation_pi.py), [`fix_metadata_codex.py`](../forge/ai_workflows/fix_metadata_codex.py)). Each task runs Gradle tasks against a worktree of this repo, appends a schema-validated metrics record, and — when invoked through [`forge/git_scripts/make_pr_*.py`](../forge/git_scripts/) — opens a PR for human review. See [forge/docs/overview.md](../forge/docs/overview.md). |
+| **Repository automation (Metadata Forge)** | Generate or repair metadata using LLM-driven pipelines. | Per coordinate, the toolkit can: (1) **add support for a new library** — generate a JUnit / Kotlin / Scala test suite, scaffold metadata, and iterate until JVM-mode tests pass and dynamic-access is collected ([`add_new_library_support.py`](../forge/ai_workflows/add_new_library_support.py)); (2) **fix a Java compilation (`javac`) failure** raised by a library version bump ([`fix_javac_fail.py`](../forge/ai_workflows/fix_javac_fail.py)); (3) **fix a JVM-mode (`javaTest`) runtime failure** raised by a version bump ([`fix_java_run_fail.py`](../forge/ai_workflows/fix_java_run_fail.py)); (4) **fix a `native-image` runtime failure** raised by a version bump ([`fix_ni_run.py`](../forge/ai_workflows/fix_ni_run.py)); (5) **improve dynamic-access coverage** of already-supported libraries by targeting uncovered call sites; (6) **post-generation repair** of the metadata produced by a previous run ([`fix_post_generation_pi.py`](../forge/ai_workflows/fix_post_generation_pi.py), [`fix_metadata_codex.py`](../forge/ai_workflows/fix_metadata_codex.py)). Each task runs Gradle tasks against a worktree of this repo, appends a schema-validated metrics record, and — when invoked through [`forge/git_scripts/make_pr_*.py`](../forge/git_scripts/) — opens a PR for human review. See [forge/docs/architecture.md](../forge/docs/architecture.md). |
 
 ## 3. Hard Constraints
 
@@ -27,7 +27,7 @@ Application developers consume this repository indirectly: native-build-tools re
 
 > **Adding this repository to a user's build must never change how the user's code runs.** The metadata is purely additive — it can only fill in registrations `native-image` would otherwise miss; it cannot alter class initialization, replace user bytecode, or execute code at image-build time.
 
-Two properties make this achievable: the reachability-metadata schema is itself additive (every entry is gated on `typeReachable`, FR-M-2), and `native-image` defaults to runtime initialization when no build-time directives are supplied. The hard constraints below preserve that additivity — they are not editorial scope choices but direct consequences of the invariant. See [ADR 0002](adr/0002-metadata-must-not-break-user-code.md) for the full rationale.
+Two properties make this achievable: the reachability-metadata schema is itself additive (every entry is gated on `typeReachable`, FR-M-2), and `native-image` defaults to runtime initialization when no build-time directives are supplied. The hard constraints below preserve that additivity — they are not editorial scope choices but direct consequences of the invariant.
 
 - **HC-1 No build-time-initialization tweaks.** Metadata bundles must not ship `native-image.properties` or any other directive that moves class `<clinit>` execution into the image builder. Build-time initialization captures state from a non-user environment into the image and breaks additivity. Every library is runtime-initialized by default (FR-M-1).
 - **HC-2 No library patching.** No substitutions, bytecode rewrites, or shaded forks of upstream libraries. Patching ships a different version than the one the user resolved through Maven Central, is invisible at the dependency-resolution layer, and is unstable across upstream releases.
@@ -86,7 +86,7 @@ The `forge/` toolkit composes LLM agents (Aider, Codex, Pi) with deterministic G
 3. **Fix native-image runtime failures** raised by a library version bump.
 4. **Improve coverage** of already-supported libraries by targeting uncovered dynamic-access call sites.
 
-Each Forge run produces a schema-validated metrics record (under `metrics_repo/...`) and, when invoked through `complete_pipelines/` or `git_scripts/make_pr_*.py`, opens a PR ready for human review. See [forge/README.md](../forge/README.md) and [forge/docs/overview.md](../forge/docs/overview.md).
+Each Forge run produces a schema-validated metrics record (under `metrics_repo/...`) and, when invoked through `complete_pipelines/` or `git_scripts/make_pr_*.py`, opens a PR ready for human review. See [forge/README.md](../forge/README.md) and [forge/docs/architecture.md](../forge/docs/architecture.md).
 
 ### 4.7 Consumption by native-build-tools
 
@@ -207,7 +207,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - **FR-CI-2** Docker images used in tests are pre-pulled from `allowed-docker-images`, after which the runner disables Docker networking for deterministic, isolated test runs.
 - **FR-CI-3** The release workflow runs `spotlessCheck` before packaging.
 - **FR-CI-4** The Spring AOT smoke matrix runs only when `metadata/` changes affect a Spring AOT project.
-- **FR-CI-5** `verify-new-library-version-compatibility` caps each scheduled run at a fixed library budget and at most 30 newer versions per library (see [ADR 0001](adr/0001-cap-newer-versions-per-library.md)), expanding across the configured GraalVM JDK/OS combinations, and creates one aggregated GitHub issue per failed `(library, version)` pair.
+- **FR-CI-5** `verify-new-library-version-compatibility` caps each scheduled run at a fixed library budget and at most 30 newer versions per library, expanding across the configured GraalVM JDK/OS combinations, and creates one aggregated GitHub issue per failed `(library, version)` pair.
 - **FR-CI-6** Dependabot updates to `allowed-docker-images` trigger `sync-docker-tags.yml`, which back-commits the synchronized tags into the Dependabot PR.
 
 ### 5.5 Native-image modes (FR-NI)
@@ -217,7 +217,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 
 ### 5.6 Metadata Forge (FR-F)
 
-Forge's functional requirements are specified in [forge/docs/overview.md §10](../forge/docs/overview.md#10-functional-requirements-fr-f).
+Forge's functional requirements are specified in [forge/docs/functional-spec.md](../forge/docs/functional-spec.md).
 
 ## 6. Non-Functional Requirements
 
@@ -258,4 +258,4 @@ Forge's functional requirements are specified in [forge/docs/overview.md §10](.
 - [CollectingMetadata.md](CollectingMetadata.md) — using the Native Image Agent to collect metadata.
 - [SECURITY.md](SECURITY.md) — vulnerability disclosure.
 - [forge/README.md](../forge/README.md) — Metadata Forge user manual.
-- [forge/docs/overview.md](../forge/docs/overview.md) — Forge architecture and contracts.
+- [forge/docs/architecture.md](../forge/docs/architecture.md) — Forge architecture and contracts.

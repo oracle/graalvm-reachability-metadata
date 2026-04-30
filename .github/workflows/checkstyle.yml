@@ -68,6 +68,23 @@ jobs:
       - name: "Run Spotless"
         run: ./gradlew spotlessCheck --console=plain
 
+  doc-links:
+    name: "🔗 Check documentation links"
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 5
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: "🔧 Setup java"
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+
+      - name: "Verify repo-local Markdown links"
+        run: ./gradlew checkDocLinks --console=plain
+
   checkstyle-coordinates:
     name: "📋 Checkstyle ${{ matrix.coordinates }}"
     if: needs.detect-relevant-changes.outputs.relevant-files-changed == 'true' && needs.detect-relevant-changes.outputs.changed-empty != 'true'
@@ -97,6 +114,7 @@ jobs:
       - detect-relevant-changes
       - spotless
       - checkstyle-coordinates
+      - doc-links
     runs-on: "ubuntu-22.04"
     timeout-minutes: 1
     steps:
@@ -104,7 +122,8 @@ jobs:
         if: |
           needs.detect-relevant-changes.result == 'success' &&
           (needs.spotless.result == 'success' || needs.spotless.result == 'skipped') &&
-          (needs.checkstyle-coordinates.result == 'success' || needs.checkstyle-coordinates.result == 'skipped')
+          (needs.checkstyle-coordinates.result == 'success' || needs.checkstyle-coordinates.result == 'skipped') &&
+          needs.doc-links.result == 'success'
         run: exit 0
 
       - name: "Style checks failed"
@@ -112,5 +131,6 @@ jobs:
           needs.detect-relevant-changes.result == 'failure' ||
           needs.detect-relevant-changes.result == 'cancelled' ||
           needs.spotless.result == 'failure' || needs.spotless.result == 'cancelled' ||
-          needs.checkstyle-coordinates.result == 'failure' || needs.checkstyle-coordinates.result == 'cancelled'
+          needs.checkstyle-coordinates.result == 'failure' || needs.checkstyle-coordinates.result == 'cancelled' ||
+          needs.doc-links.result == 'failure' || needs.doc-links.result == 'cancelled'
         run: exit 1

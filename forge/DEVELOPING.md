@@ -88,7 +88,7 @@ Purpose:
 - Iteratively generate a meaningful, cohesive JUnit test suite for library using AI.
 - Keep indices up to date and create the versioned metadata directory.
 - Generates metadata for the new library.
-- Script results are written in the [`output/results.json`](output/results.json:1).
+- Script results are written in `output/results.json`.
 
 Usage:
 ```bash

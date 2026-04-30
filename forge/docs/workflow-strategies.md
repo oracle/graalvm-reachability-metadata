@@ -308,7 +308,7 @@ Runs the native-image metadata-tracing loop specified in
 the result to Codex. Sequence:
 
 1. Invoke the reusable trace driver
-   ([`utility_scripts/native_metadata_exploration.py`](../utility_scripts/native_metadata_exploration.py))
+   (`utility_scripts/native_metadata_exploration.py`)
    with the failing library's coordinate. The driver iterates
    `nativeTraceImage` → `runNativeTraceImage` → optional
    `mergeNativeTraceMetadata` until convergence, build failure, or the

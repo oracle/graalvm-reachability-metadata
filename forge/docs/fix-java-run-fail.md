@@ -1,6 +1,6 @@
 # fix-java-fails
 
-> **See also:** [Project overview](../docs/overview.md) ·
+> **See also:** [Architecture](architecture.md) ·
 > [Dynamic-access workflow](../docs/dynamic-access-workflow.md) ·
 > [Native metadata exploration phase](../docs/native-metadata-exploration.md)
 

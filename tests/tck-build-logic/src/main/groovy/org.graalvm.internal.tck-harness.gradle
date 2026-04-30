@@ -10,6 +10,7 @@ plugins {
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import org.graalvm.internal.tck.CheckDocLinksTask
 import org.graalvm.internal.tck.ContributionTask
 import org.graalvm.internal.tck.DockerTask
 import org.graalvm.internal.tck.MetadataFilesCheckerTask
@@ -341,6 +342,12 @@ tasks.register("generateReadmeBadgeSummary", GenerateReadmeBadgeSummaryTask.clas
 tasks.register("validateLibraryStats", ValidateLibraryStatsTask.class) { task ->
     task.setDescription("Validates exploded stats/*.json files against the committed JSON schema")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+}
+
+tasks.register("checkDocLinks", CheckDocLinksTask.class) { task ->
+    task.setDescription("Verifies that every repo-local link in Markdown documentation resolves")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+    task.getRepoRoot().set(tck.repoRoot)
 }
 
 tasks.register("analyzeExternalLibraryDynamicAccess", AnalyzeExternalLibraryDynamicAccessTask.class) { task ->

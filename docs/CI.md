@@ -24,16 +24,16 @@ Workflows testing metadata using [ci.json](../ci.json):
   - Triggers: manual (workflow_dispatch) and PRs that touch [ci.json](../ci.json).
   - Uses: generateMatrixBatchedCoordinates to build a matrix (java + os). Runs full tests, pulls only allowed Docker images, then disables Docker networking for deterministic runs.
 - Test changed metadata ([.github/workflows/test-changed-metadata.yml](../.github/workflows/test-changed-metadata.yml))
-  - Triggers: PRs to master touching [metadata/](metadata/) or [tests/src/](tests/src/).
+  - Triggers: PRs to master touching [metadata/](../metadata/) or [tests/src/](../tests/src/).
   - Uses: [`generateChangedMetadataTestMatrix`](../tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle) with base/head SHAs to test only what changed. It batches each changed metadata version's [`tested-versions`](../metadata/com.google.protobuf/protobuf-java-util/index.json) into chunks of up to 30 versions per job, then pulls allowed images, disables Docker networking, validates config, and runs only that batch.
 - Test new library versions ([.github/workflows/test-new-library-versions.yml](../.github/workflows/test-new-library-versions.yml))
   - Triggers: PRs to master touching artifact-level [metadata/**/index.json](../metadata/).
   - Uses: [`generateChangedTestedVersionsMatrix`](../tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle) to compute only newly added [`tested-versions`](../metadata/com.google.protobuf/protobuf-java-util/index.json) from the base/head diff and pairs them with the matching [`metadata-version`](../metadata/com.google.protobuf/protobuf-java-util/index.json), then runs [`run-consecutive-tests.sh`](../.github/workflows/scripts/run-consecutive-tests.sh) only for those added versions.
 - Test changed build logic ([.github/workflows/test-changed-infrastructure.yml](../.github/workflows/test-changed-infrastructure.yml))
-  - Triggers: PRs to master touching [tests/tck-build-logic/](tests/tck-build-logic/), [gradle/](gradle/), [build.gradle](../build.gradle), [settings.gradle](../settings.gradle), or [gradle.properties](../gradle.properties).
+  - Triggers: PRs to master touching [tests/tck-build-logic/](../tests/tck-build-logic/), [gradle/](../gradle/), [build.gradle](../build.gradle), [settings.gradle](../settings.gradle), or [gradle.properties](../gradle.properties).
   - Uses: generateInfrastructureChangedCoordinatesMatrix. Pulls allowed images, disables Docker networking, validates config, then runs tests.
 - Test affected Spring AOT smoke tests ([.github/workflows/test-affected-spring-aot-main.yml](../.github/workflows/test-affected-spring-aot-main.yml))
-  - Triggers: PRs to master touching [metadata/](metadata/).
+  - Triggers: PRs to master touching [metadata/](../metadata/).
   - Uses: generateAffectedSpringTestMatrix to compute impacted Spring AOT projects and produce a matrix; runs triaged native tests via [.github/workflows/scripts/run-spring-aot-triaged-test.sh](../.github/workflows/scripts/run-spring-aot-triaged-test.sh).
 - Validate library stats ([.github/workflows/library-stats-validation.yml](../.github/workflows/library-stats-validation.yml))
   - Triggers: PRs to master that change exploded stats files under [stats/](../stats/), [stats/schemas/library-stats-schema-v1.0.2.json](../stats/schemas/library-stats-schema-v1.0.2.json), or mirrored files under [metadata/](../metadata/).
@@ -48,7 +48,7 @@ Workflows for style and security:
 - [.github/workflows/library-stats-validation.yml](../.github/workflows/library-stats-validation.yml): validates and sorts mirrored stats files under [stats/](../stats/), checks schema.
 - [.github/workflows/publish-scheduled-coverage.yml](../.github/workflows/publish-scheduled-coverage.yml): scheduled/manual workflow that generates repository coverage badges and the coverage dashboard from exploded stats files under [stats/](../stats/) and repository [metadata/**/index.json](../metadata/), then force-pushes the published artifacts to the `stats/coverage` branch. The published branch only keeps `latest/badges.json`, `latest/metrics-over-time.svg`, and `history/history.json`.
 - [.github/workflows/scan-docker-images.yml](../.github/workflows/scan-docker-images.yml): scans allowed Docker images on PR/schedule.
-- [.github/workflows/sync-docker-tags.yml](../.github/workflows/sync-docker-tags.yml): automatically synchronizes Docker image tags across the repository when Dependabot updates `allowed-docker-images`. Commits replacements directly into the Dependabot PR, making it merge-ready.
+- [.github/workflows/sync-docker-images.yml](../.github/workflows/sync-docker-images.yml): automatically synchronizes Docker image tags across the repository when Dependabot updates `allowed-docker-images`. Commits replacements directly into the Dependabot PR, making it merge-ready.
 
 ## Native Build Tools snapshot setup
 

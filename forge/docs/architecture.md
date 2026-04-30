@@ -215,7 +215,7 @@ historical behaviour). Concrete interventions:
 | Name | Implementation | Role |
 | --- | --- | --- |
 | `codex_then_pi` | wraps [`fix_metadata_codex`](../ai_workflows/fix_metadata_codex.py) and [`fix_post_generation_pi`](../ai_workflows/fix_post_generation_pi.py) | Run Codex on missing metadata; if tests still fail, run Pi to remove failing tests and emit an intervention report. Yields `SUCCESS_WITH_INTERVENTION_STATUS` on the Pi path. |
-| `native_trace_collect` | wraps [`utility_scripts/native_metadata_exploration.py`](../utility_scripts/native_metadata_exploration.py) plus the codex/pi cascade | Build with `MetadataTracingSupport`, run, merge, optionally verify with `--exact-reachability-metadata`, then route the result (every status, including `BUILD_FAILED`) into Codex with the trace dir as context, falling back to Pi. |
+| `native_trace_collect` | wraps `utility_scripts/native_metadata_exploration.py` plus the codex/pi cascade | Build with `MetadataTracingSupport`, run, merge, optionally verify with `--exact-reachability-metadata`, then route the result (every status, including `BUILD_FAILED`) into Codex with the trace dir as context, falling back to Pi. |
 | `noop` | — | Skip recovery; treat any test failure as hard failure. |
 
 The intervention contract (`InterventionContext` → `InterventionResult`)
