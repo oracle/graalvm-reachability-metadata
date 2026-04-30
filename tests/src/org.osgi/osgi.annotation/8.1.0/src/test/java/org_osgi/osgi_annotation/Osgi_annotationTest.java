@@ -48,9 +48,9 @@ public class Osgi_annotationTest {
                 "osgi.extender",
                 "sample.extender",
                 "1.2.3",
-                new Class<?>[] { ConsumerService.class, ProviderService.class },
+                new Class<?>[] {ConsumerService.class, ProviderService.class },
                 "active",
-                new String[] { "service=sample", "ranking:Long=10", "uses:=org.example" });
+                new String[] {"service=sample", "ranking:Long=10", "uses:=org.example" });
 
         assertThat(capability.annotationType()).isSameAs(Capability.class);
         assertThat(capability.namespace()).isEqualTo("osgi.extender");
@@ -70,7 +70,7 @@ public class Osgi_annotationTest {
                 "2.0.0",
                 "(&(objectClass=org.example.Service)(mode=test))",
                 "resolve",
-                new String[] { "target=test", "priority:Integer=5" },
+                new String[] {"target=test", "priority:Integer=5" },
                 Requirement.Cardinality.MULTIPLE,
                 Requirement.Resolution.OPTIONAL);
 
@@ -102,12 +102,12 @@ public class Osgi_annotationTest {
     void repeatableContainerAnnotationsRetainOrderedAnnotationValues() {
         Capability firstCapability = new FixedCapability("alpha", "one", "1.0.0", new Class<?>[0], "resolve",
                 new String[0]);
-        Capability secondCapability = new FixedCapability("beta", "two", "2.0.0", new Class<?>[] { String.class },
-                "active", new String[] { "mode=test" });
+        Capability secondCapability = new FixedCapability("beta", "two", "2.0.0", new Class<?>[] {String.class },
+                "active", new String[] {"mode=test" });
         Requirement firstRequirement = new FixedRequirement("service", "one", "1.0.0", "", "resolve", new String[0],
                 Requirement.Cardinality.SINGLE, Requirement.Resolution.MANDATORY);
         Requirement secondRequirement = new FixedRequirement("bundle", "two", "2.0.0", "(bundle=true)", "active",
-                new String[] { "visibility:=reexport" }, Requirement.Cardinality.MULTIPLE,
+                new String[] {"visibility:=reexport" }, Requirement.Cardinality.MULTIPLE,
                 Requirement.Resolution.OPTIONAL);
         Header firstHeader = new FixedHeader("Bundle-Category", "integration-test");
         Header secondHeader = new FixedHeader("Bundle-Vendor", "OSGi Alliance");
@@ -130,8 +130,8 @@ public class Osgi_annotationTest {
         Attribute attribute = new FixedAttribute("typed-name");
         Directive directive = new FixedDirective("effective");
         Export export = new FixedExport(
-                new String[] { "org.example.api", "org.example.spi" },
-                new String[] { "mandatory:=version", "status=stable" },
+                new String[] {"org.example.api", "org.example.spi" },
+                new String[] {"mandatory:=version", "status=stable" },
                 Export.Substitution.PROVIDER);
         Referenced referenced = new FixedReferenced(ConsumerService.class, ProviderServiceImplementation.class);
 
