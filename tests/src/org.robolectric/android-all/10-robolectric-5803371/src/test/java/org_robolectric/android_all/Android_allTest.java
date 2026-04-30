@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -27,6 +28,7 @@ import android.util.Size;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -173,6 +175,44 @@ public class Android_allTest {
         assertThat(copy.removeAll(Arrays.asList("three", "five"))).isTrue();
         assertThat(copy.keySet()).containsExactlyInAnyOrder("two", "four");
         assertThat(map.keySet()).containsExactlyInAnyOrder("two", "three");
+    }
+
+    @Test
+    void intentCarriesActionsDataCategoriesFlagsPackagesAndExtras() throws URISyntaxException {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.parse("https://developer.android.com/reference"), "text/html");
+        intent.addCategory(Intent.CATEGORY_BROWSABLE);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setPackage("com.example.browser");
+        intent.putExtra("query", "android APIs");
+        intent.putExtra("count", 3);
+
+        assertThat(intent.getAction()).isEqualTo(Intent.ACTION_VIEW);
+        assertThat(intent.getDataString()).isEqualTo("https://developer.android.com/reference");
+        assertThat(intent.getType()).isEqualTo("text/html");
+        assertThat(intent.hasCategory(Intent.CATEGORY_BROWSABLE)).isTrue();
+        assertThat(intent.getFlags()).isEqualTo(Intent.FLAG_ACTIVITY_NEW_TASK);
+        assertThat(intent.getPackage()).isEqualTo("com.example.browser");
+        assertThat(intent.hasExtra("query")).isTrue();
+        assertThat(intent.getStringExtra("query")).isEqualTo("android APIs");
+        assertThat(intent.getIntExtra("count", -1)).isEqualTo(3);
+
+        Intent copy = new Intent(intent);
+        intent.removeExtra("query");
+        intent.replaceExtras(new Bundle());
+
+        assertThat(intent.hasExtra("query")).isFalse();
+        assertThat(intent.hasExtra("count")).isFalse();
+        assertThat(copy.getStringExtra("query")).isEqualTo("android APIs");
+        assertThat(copy.getIntExtra("count", -1)).isEqualTo(3);
+
+        Intent roundTripped = Intent.parseUri(copy.toUri(Intent.URI_INTENT_SCHEME), Intent.URI_INTENT_SCHEME);
+        assertThat(roundTripped.getAction()).isEqualTo(Intent.ACTION_VIEW);
+        assertThat(roundTripped.getDataString()).isEqualTo("https://developer.android.com/reference");
+        assertThat(roundTripped.getType()).isEqualTo("text/html");
+        assertThat(roundTripped.hasCategory(Intent.CATEGORY_BROWSABLE)).isTrue();
+        assertThat(roundTripped.getStringExtra("query")).isEqualTo("android APIs");
+        assertThat(roundTripped.getIntExtra("count", -1)).isEqualTo(3);
     }
 
     @Test
