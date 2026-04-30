@@ -1,0 +1,451 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1451-7522a068
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ddbeb-c7e8-7a81-a868-df76abb1663f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: jakarta.el:jakarta.el-api:3.0.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.0.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1451-7522a068/metadata/jakarta.el/jakarta.el-api/index.json
+- Entry selector: "metadata-version" = "3.0.2"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "3.0.2".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/jakarta/el/jakarta.el-api/3.0.2/jakarta.el-api-3.0.2-sources.jar
+- repository-url: https://github.com/jakartaee/expression-language
+- test-code-url: https://github.com/jakartaee/expression-language/tree/3.0.2-RI-COMB-RELEASE/src/test
+- documentation-url: https://repo1.maven.org/maven2/jakarta/el/jakarta.el-api/3.0.2/jakarta.el-api-3.0.2-javadoc.jar
+- description: Jakarta Expression Language API defines the standard interfaces and classes for evaluating expression strings against Java objects, including property access, method invocation, type conversion, functions, and resolvers. Version 3.0.2 publishes the API types in the javax.el package for Java and Jakarta EE applications that use an EL implementation at runtime.
+- language: <missing>
+
+Context:
+- Coordinate version: 3.0.2
+- Entry test-version: 3.0.2
+codex
+I’ll verify the exact-version artifacts and tag first, then inspect the JSON entry so I only touch fields that are actually missing. Since `language` is missing, the main decision is whether this artifact is specifically Kotlin, Groovy, or Scala; Jakarta EL API is not one of those, but I’ll confirm from the published metadata.
+web search: 
+web search: jakarta.el jakarta.el-api 3.0.2 Maven sources javadoc POM repository
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/jakarta.el/jakarta.el-api/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1451-7522a068
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.0.2",
+    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/el/jakarta.el-api/3.0.2/jakarta.el-api-3.0.2-sources.jar",
+    "repository-url" : "https://github.com/jakartaee/expression-language",
+    "test-code-url" : "https://github.com/jakartaee/expression-language/tree/3.0.2-RI-COMB-RELEASE/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/el/jakarta.el-api/3.0.2/jakarta.el-api-3.0.2-javadoc.jar",
+    "description" : "Jakarta Expression Language API defines the standard interfaces and classes for evaluating expression strings against Java objects, including property access, method invocation, type conversion, functions, and resolvers. Version 3.0.2 publishes the API types in the javax.el package for Java and Jakarta EE applications that use an EL implementation at runtime.",
+    "tested-versions" : [
+      "3.0.2"
+    ],
+    "allowed-packages" : [
+      "javax.el"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1451-7522a068
+ succeeded in 0ms:
+?? metadata/jakarta.el/
+?? tests/src/jakarta.el/
+
+web search: 
+web search: https://github.com/jakartaee/expression-language/tree/3.0.2-RI-COMB-RELEASE/src/test
+codex
+The JSON entry already has non-blank values for all URL and description fields. I’m checking the published POM/metadata now; if it confirms this is a plain Java/Jakarta API artifact, I’ll leave `language` absent and avoid changing the file.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/el/jakarta.el-api/3.0.2/jakarta.el-api-3.0.2.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1451-7522a068
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates and others.
+    All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.5</version>
+        <relativePath/>
+    </parent>
+    
+    <groupId>jakarta.el</groupId>
+    <artifactId>jakarta.el-api</artifactId>
+    <version>3.0.2</version>
+    
+    <name>Expression Language 3.0 API</name>
+
+    <properties>
+        <!-- Make sure the two versions are in sync with the maven version -->
+        <spec.version>3.0</spec.version>
+        <bundle.version>3.0.2</bundle.version>
+        <extensionName>javax.el</extensionName>
+        <bundle.symbolicName>javax.el-api</bundle.symbolicName>
+        <vendorName>Oracle Corporation</vendorName>
+        <findbugs.version>2.4.0</findbugs.version>
+        <findbugs.exclude />
+        <findbugs.threshold>High</findbugs.threshold>
+    </properties>
+
+    <url>https://projects.eclipse.org/projects/ee4j.el</url>
+
+    <licenses>
+        <license>
+            <name>EPL 2.0</name>
+            <url>http://www.eclipse.org/legal/epl-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>GPL2 w/ CPE</name>
+            <url>https://www.gnu.org/software/classpath/license.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/eclipse-ee4j/el-ri/issues</url>
+    </issueManagement>
+    
+    <mailingLists>
+        <mailingList>
+            <name>EL mailing list</name>
+            <post>el-dev@eclipse.org</post>
+            <subscribe>https://dev.eclipse.org/mailman/listinfo/el-dev</subscribe>
+            <unsubscribe>https://dev.eclipse.org/mailman/listinfo/el-dev</unsubscribe>
+            <archive>https://dev.eclipse.org/mhonarc/lists/el-dev</archive>
+        </mailingList>
+    </mailingLists>
+    
+    <scm>
+        <connection>scm:git:https://github.com/eclipse-ee4j/el-ri.git</connection>
+        <developerConnection>scm:git:git@github.com:eclipse-ee4j/el-ri.git</developerConnection>
+        <url>https://github.com/eclipse-ee4j/el-ri</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>yaminikb</id>
+            <name>Yamini K B</name>
+            <organization>Oracle Corporation</organization>
+            <organizationUrl>http://www.oracle.com/</organizationUrl>
+        </developer>
+    </developers>
+
+    <contributors>
+        <contributor>
+            <name>Kin-man Chung</name>
+        </contributor>
+    </contributors>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/..</directory>
+                <includes>
+                    <include>LICENSE.md</include>
+                    <include>NOTICE.md</include>
+                </includes>
+                <targetPath>META-INF</targetPath>
+            </resource>
+        </resources>
+    
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>1.4.3</version>
+                <configuration>
+                    <supportedProjectTypes>
+                        <supportedProjectType>jar</supportedProjectType>
+                    </supportedProjectTypes>
+                    <instructions>
+                        <Bundle-Description>Expression Language ${spec.version} API</Bundle-Description>
+                        <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+                        <Bundle-Version>${bundle.version}</Bundle-Version>
+                        <Extension-Name>${extensionName}</Extension-Name>
+                        <Specification-Version>${spec.version}</Specification-Version>
+                        <Specification-Vendor>${vendorName}</Specification-Vendor>
+                        <Implementation-Version>${project.version}</Implementation-Version>
+                        <Implementation-Vendor>${vendorName}</Implementation-Vendor>
+                        <Export-Package>javax.el</Export-Package>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                    <excludes>
+                        <exclude>**/*.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <compilerArgument>-Xlint:unchecked</compilerArgument>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M2</version>
+            </plugin>               
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>          
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>${findbugs.version}</version>
+                <configuration>
+                    <threshold>${findbugs.threshold}</threshold>
+                    <excludeFilterFile>${findbugs.exclude}</excludeFilterFile>
+                    <findbugsXmlOutput>true</findbugsXmlOutput>
+                    <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <mavenExecutorId>forked-path</mavenExecutorId>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <arguments>${release.arguments}</arguments>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/jakarta/el/jakarta.el-api/3.0.2/jakarta.el-api-3.0.2-sources.jar && curl -fsI https://repo1.maven.org/maven2/jakarta/el/jakarta.el-api/3.0.2/jakarta.el-api-3.0.2-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1451-7522a068
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 01:06:14 GMT
+content-type: application/java-archive
+content-length: 101817
+cf-ray: 9f42a4866b32bc12-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 859105
+etag: "4f718deac97a6e500ef89cc585898d3b"
+last-modified: Fri, 21 Dec 2018 11:27:38 GMT
+x-checksum-md5: 4f718deac97a6e500ef89cc585898d3b
+x-checksum-sha1: 969258e7f3e58e2463b2538e25df985653a5e2ed
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Thu, 30 Apr 2026 01:06:14 GMT
+content-type: application/java-archive
+content-length: 244728
+cf-ray: 9f42a486b87c039d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 339729
+etag: "b4dc158a80d8ac5b6a74469f32c9ec66"
+last-modified: Fri, 21 Dec 2018 11:27:40 GMT
+x-checksum-md5: b4dc158a80d8ac5b6a74469f32c9ec66
+x-checksum-sha1: 3d4f120ca70de5626462c04b83b93cca0df1d79b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/jakartaee/expression-language/tree/3.0.2-RI-COMB-RELEASE/src/test && curl -fsI https://github.com/jakartaee/expression-language' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1451-7522a068
+ succeeded in 1124ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 01:06:14 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"4eca0d77743ba25856a35b5f9d154513"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=v9eGrVma7Y%2B2V0HZRi0Q3jM8iq17kvWHPPU6aUqa3bcy2ntJRub8bibQQl0aVZhyTAmFyfXiC1Eajc0lyboBljgQBFmIgx9iL1qCP77vtMn5UVaF471OVEgG%2BlTTHNxAClTvcj5Px9YKYtzwL6u7y85bQH4%2FRMPAJAdNY4LGVNtPBn1CAwgUYJvE26TRpleMMOV6d7v8uLI0QtLkTIOOrh9HFk%2Fk%2FmOIDd1%2BzgDErPzbciO2EdZL9uwrwd4bflOPVPTEfqSbvNxYeCHXxCFLTw%3D%3D--UCkMtZzaAQxtXyby--x2XqczXeNtRBApk2qsvypw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1971222583.1777511174; expires=Fri, 30 Apr 2027 01:06:14 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 01:06:14 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5103:2C62BE:2DB7ECD:23712A9:69F2AB06
+
+HTTP/2 200 
+date: Thu, 30 Apr 2026 01:06:15 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"01fcec69fa33eaf7346738b80f7f3775"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=VFnHryRWia6MeW6OeaP8rHiILKil47vkx%2BOw8hCUZV928KK06maYccXpJd8hBNqDR7Kpsf6wQIa1BQTQtz8c3ZhYuDGtG8QYIbODBSPblkiDLUTDZh4ba%2B8GIcgtHOa0iX6jIWXw8oO4w45cOSVmiX9n5k5sVLw7T76adESfJ61wyt3o49C8ub2l%2Bxq5C7CtorrBvSbT9OPDCOkOO%2FWzfXIlAFfEOmXt40C0XOjJ6%2FJZgDkVQ5%2Fhqmd0106dj6tzOCwq5KAmZyfpks5TqaKodQ%3D%3D--oETDVR5QBRZ6zKRO--2DWpJSmt6ZCb%2BUsYGPkMlg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.988074327.1777511174; expires=Fri, 30 Apr 2027 01:06:14 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 01:06:14 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5109:13509A:2DCF131:236DF0D:69F2AB06
+
+
+web search: 
+web search: Maven Central jakarta.el-api 3.0.2 sources jar javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/jakarta/el/jakarta.el-api/3.0.2/
+codex
+The Maven directory contains both the exact `3.0.2` sources JAR and Javadoc JAR, and there is no test-sources artifact listed there. The GitHub tag path for `src/test` resolves, so the current test URL is already the best exact-version test-suite URL among the fields I’m allowed to touch.
+exec
+/usr/bin/bash -lc "jq '.' metadata/jakarta.el/jakarta.el-api/index.json >/dev/null" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1451-7522a068
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/jakarta.el/jakarta.el-api/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1451-7522a068
+ succeeded in 0ms:
+web search: 
+web search: https://repo1.maven.org/maven2/jakarta/el/jakarta.el-api/3.0.2/
+web search: 
+web search: https://github.com/jakartaee/expression-language
+codex
+Verified exact-version sources/Javadoc on Maven Central and the tagged GitHub test path. The repository README identifies Jakarta Expression Language as Java-oriented, not Kotlin/Groovy/Scala-specific, so `language` should remain absent. ([repo1.maven.org](https://repo1.maven.org/maven2/jakarta/el/jakarta.el-api/3.0.2/))
+
+No edit was needed in [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1451-7522a068/metadata/jakarta.el/jakarta.el-api/index.json): all requested URL and description fields were already non-blank, and the missing `language` field is intentionally not applicable.
+
+Validation run: `jq '.' metadata/jakarta.el/jakarta.el-api/index.json >/dev/null`.
+2026-04-30T01:06:46.665735Z ERROR codex_core::session: failed to record rollout items: thread 019ddbeb-c7e8-7a81-a868-df76abb1663f not found
+tokens used
+46,699
+Verified exact-version sources/Javadoc on Maven Central and the tagged GitHub test path. The repository README identifies Jakarta Expression Language as Java-oriented, not Kotlin/Groovy/Scala-specific, so `language` should remain absent. ([repo1.maven.org](https://repo1.maven.org/maven2/jakarta/el/jakarta.el-api/3.0.2/))
+
+No edit was needed in [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1451-7522a068/metadata/jakarta.el/jakarta.el-api/index.json): all requested URL and description fields were already non-blank, and the missing `language` field is intentionally not applicable.
+
+Validation run: `jq '.' metadata/jakarta.el/jakarta.el-api/index.json >/dev/null`.
+Ran agent for jakarta.el:jakarta.el-api:3.0.2 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1451-7522a068/build/agent-url-discovery-logs/jakarta.el-jakarta.el-api-3.0.2.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1451-7522a068/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 51s
+9 actionable tasks: 1 executed, 8 up-to-date
