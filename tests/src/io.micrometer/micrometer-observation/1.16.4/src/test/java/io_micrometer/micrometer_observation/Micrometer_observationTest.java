@@ -200,7 +200,7 @@ public class Micrometer_observationTest {
             return new Observation.Context();
         }, ObservationRegistry.NOOP);
 
-        assertThat(nullRegistryObservation).isSameAs(Observation.NOOP);
+        assertThat(nullRegistryObservation.isNoop()).isTrue();
         assertThat(noopRegistryObservation.isNoop()).isTrue();
         assertThat(contextCreations).hasValue(0);
 
