@@ -244,6 +244,29 @@ public class Jakarta_websocket_apiTest {
         assertThat(endpoint.events()).containsExactly("open:alpha", "message:alpha:hello", "close:alpha:1000");
     }
 
+    @Test
+    void closeReasonsResolveStandardAndApplicationDefinedCodesAndValidateReasonPhrase() {
+        CloseReason normalReason = new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "finished");
+        CloseReason.CloseCode applicationCode = CloseReason.CloseCodes.getCloseCode(4001);
+        CloseReason applicationReason = new CloseReason(applicationCode, "application restart");
+        String oversizedReasonPhrase = "\u00fc".repeat(62);
+
+        assertThat(normalReason.getCloseCode()).isSameAs(CloseReason.CloseCodes.NORMAL_CLOSURE);
+        assertThat(normalReason.getReasonPhrase()).isEqualTo("finished");
+        assertThat(normalReason).hasToString("CloseReason[1000,finished]");
+        assertThat(CloseReason.CloseCodes.getCloseCode(1008)).isSameAs(CloseReason.CloseCodes.VIOLATED_POLICY);
+        assertThat(applicationCode.getCode()).isEqualTo(4001);
+        assertThat(applicationReason.getCloseCode()).isSameAs(applicationCode);
+        assertThat(applicationReason.getReasonPhrase()).isEqualTo("application restart");
+        assertThat(applicationReason).hasToString("CloseReason[4001,application restart]");
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> CloseReason.CloseCodes.getCloseCode(999));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> CloseReason.CloseCodes.getCloseCode(5000));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> new CloseReason(CloseReason.CloseCodes.TOO_BIG, oversizedReasonPhrase));
+    }
+
     @ServerEndpoint(
             value = "/annotated/{room}",
             subprotocols = {"json", "cbor"},
