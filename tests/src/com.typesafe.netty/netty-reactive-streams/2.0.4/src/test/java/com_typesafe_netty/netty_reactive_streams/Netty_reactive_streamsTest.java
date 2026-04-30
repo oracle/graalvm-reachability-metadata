@@ -64,6 +64,29 @@ public class Netty_reactive_streamsTest {
     }
 
     @Test
+    void handlerPublisherBuffersInboundMessagesUntilSubscriberArrivesAndRequestsThem() {
+        EmbeddedChannel channel = new EmbeddedChannel();
+        HandlerPublisher<String> publisher = new HandlerPublisher<>(channel.eventLoop(), String.class);
+        channel.pipeline().addLast(publisher);
+
+        channel.writeInbound("early-first");
+        channel.writeInbound("early-second");
+
+        TestSubscriber<String> subscriber = new TestSubscriber<>();
+        publisher.subscribe(subscriber);
+        channel.runPendingTasks();
+        assertThat(subscriber.subscription).isNotNull();
+        assertThat(subscriber.values).isEmpty();
+
+        subscriber.subscription.request(2);
+        channel.runPendingTasks();
+
+        assertThat(subscriber.values).containsExactly("early-first", "early-second");
+        assertThat(subscriber.errors).isEmpty();
+        assertThat(subscriber.completed).isFalse();
+    }
+
+    @Test
     void handlerPublisherForwardsMessagesWithDifferentTypesDownstream() {
         EmbeddedChannel channel = new EmbeddedChannel();
         HandlerPublisher<String> publisher = new HandlerPublisher<>(channel.eventLoop(), String.class);
