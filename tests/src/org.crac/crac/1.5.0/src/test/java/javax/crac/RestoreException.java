@@ -4,13 +4,8 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package org_crac.crac;
+package javax.crac;
 
-import org.junit.jupiter.api.Test;
-
-class CracTest {
-    @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
-    }
+public class RestoreException extends Exception {
+    private static final long serialVersionUID = 1L;
 }
