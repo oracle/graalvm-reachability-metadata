@@ -115,10 +115,20 @@ def create_pull_request(
     cached_input_tokens_used = int(metrics.get("cached_input_tokens_used", 0) or 0)
     output_tokens_used = int(metrics.get("output_tokens_used", 0))
     entries_found = int(metrics.get("metadata_entries", 0))
+    test_only_metadata_entries = int(metrics.get("test_only_metadata_entries", 0) or 0)
     iterations = int(metrics.get("iterations", 0))
     code_coverage_percent = metrics.get("code_coverage_percent", 0)
     previous_library_metadata_entries = int(metrics.get("previous_library_metadata_entries", 0))
+    previous_library_test_only_metadata_entries = int(metrics.get("previous_library_test_only_metadata_entries", 0) or 0)
     previous_library_coverage_percent = metrics.get("previous_library_coverage_percent", 0)
+    test_only_metadata_entries_line = ""
+    if test_only_metadata_entries > 0:
+        test_only_metadata_entries_line = f"- Test-only metadata entries: {test_only_metadata_entries}\n"
+    previous_test_only_metadata_entries_line = ""
+    if previous_library_test_only_metadata_entries > 0:
+        previous_test_only_metadata_entries_line = (
+            f"- Previous library version test-only metadata entries: {previous_library_test_only_metadata_entries}\n"
+        )
 
     diff_text = generate_diff_text(group, artifact, old_version, new_version, repo_path)
     stats_section = format_stats_diff(repo_path, old_coordinates, new_coordinates)
@@ -136,10 +146,12 @@ Summary:
 - Input tokens: {input_tokens_used}
 - Cached input tokens: {cached_input_tokens_used}
 - Output tokens: {output_tokens_used}
-- Entries found: {entries_found}
+- Metadata entries: {entries_found}
+{test_only_metadata_entries_line}\
 - Iterations: {iterations}
 - Library coverage percentage: {code_coverage_percent}
 - Previous library version metadata entries: {previous_library_metadata_entries}
+{previous_test_only_metadata_entries_line}\
 - Previous library version coverage percentage: {previous_library_coverage_percent}
 
 {format_forge_revision_section()}

@@ -76,7 +76,7 @@ public final class LibraryStatsSchemaValidator {
         JsonSchema runMetricsSchema;
         try {
             schema = JSON_SCHEMA_FACTORY.getSchema(schemaFile.toUri());
-            runMetricsSchema = JSON_SCHEMA_FACTORY.getSchema(statsRoot.resolve("schemas").resolve("run_metrics_output_schema.json").toUri());
+            runMetricsSchema = JSON_SCHEMA_FACTORY.getSchema(statsRoot.resolve("schemas").resolve("run-metrics-output-schema-v1.0.1.json").toUri());
         } catch (Exception e) {
             throw new GradleException("Failed to load library stats schema from " + schemaFile, e);
         }

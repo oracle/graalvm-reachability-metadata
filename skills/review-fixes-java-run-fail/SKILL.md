@@ -18,7 +18,7 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
 - Do not accept changes that remove meaningful test coverage just to make `java` pass.
 - Treat dynamic-access coverage preservation as the main quality gate. The new version should not report lower dynamic-access coverage than the previously tested version unless the PR gives a concrete, credible reason.
 - For numeric gates, compare the reported evidence as-is. Do not inspect generation filters, agent configuration, or metadata contents to second-guess why dynamic-access or metadata-count numbers are what they are.
-- Compare total metadata entry counts between the previous metadata version and the new metadata version only as a severe-drop guardrail, using the counts reported in the PR description. Report metadata entry count issues only when the PR-reported new total metadata entry count has fewer than 25% as many entries as the PR-reported original count.
+- Compare total metadata entry counts between the previous metadata version and the new metadata version only as a severe-drop guardrail, using the counts reported in the PR description. When the PR reports both library metadata entries and test-only metadata entries, sum them for that version's total. Report metadata entry count issues only when the PR-reported new total metadata entry count has fewer than 25% as many entries as the PR-reported original count.
 - Accept only `reachability-metadata.json` files as metadata files. Reject legacy native-image metadata config files such as `reflect-config.json`, `resource-config.json`, `proxy-config.json`, `serialization-config.json`, `jni-config.json`, or `predefined-classes-config.json`.
 - Prefer small, targeted review comments. This label is for JVM runtime repair work, not a full redesign of historical tests.
 
@@ -60,7 +60,8 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
    - If stats are missing or stale, ask for `generateLibraryStats` or the relevant CI stats job before approving.
 
 5. Compare metadata entry counts.
-   - Compare total metadata entry counts for the previous metadata version and the new metadata version from the PR description, matching summary fields such as `Entries found` and `Previous library version metadata entries`.
+   - Compare total metadata entry counts for the previous metadata version and the new metadata version from the PR description, matching summary fields such as `Metadata entries`, legacy `Entries` or `Entries found`, `Test-only metadata entries`, `Metadata entries (new ...)`, `Test-only metadata entries (new ...)`, `Previous library version metadata entries`, and `Previous library version test-only metadata entries`.
+   - Treat each version's total as library metadata entries plus test-only metadata entries when both are reported.
    - Do not manually count entries from metadata files.
    - Do not use metadata file contents to argue that passing reported entry counts are incomplete.
    - Do not require an exact match. Differences are normal when upstream APIs move, generated metadata is cleaned up, or dynamic-access totals change.

@@ -21,7 +21,7 @@ Treat the following as hard review rules unless the PR provides a strong reason 
 - Require at least 50% reported dynamic-access coverage when there are dynamic-access calls to cover. Use the exploded stats files under `stats/<group>/<artifact>/<metadata-version>/stats.json` when available, and block the PR when dynamic-access coverage is below 50% or the PR provides no credible dynamic-access coverage evidence for non-zero dynamic-access calls.
 - Treat dynamic-access coverage counts as a minimum gate, not complete metadata evidence. They can miss metadata required through downstream libraries, so do not use high coverage alone to prove that the submitted metadata is complete or necessary.
 - Treat `0/0` dynamic-access coverage as a valid no-calls case, not as failed coverage. Do not reject a PR only because the exploded stats report `0/0` dynamic-access calls while the PR adds metadata; those stats can miss metadata required through downstream libraries.
-- Do not explicitly read or review individual metadata entries. Use the metadata entry count reported in the PR description for the metadata/dynamic-access mismatch check; do not manually count entries from metadata files. Only request investigation when the covered dynamic-access call count is at least 75% higher than the PR-reported metadata entry count.
+- Do not explicitly read or review individual metadata entries. Use the metadata entry count reported in the PR description for the metadata/dynamic-access mismatch check; do not manually count entries from metadata files. When the PR reports both library metadata entries and test-only metadata entries, use their sum as the PR-reported metadata entry count. Only request investigation when the covered dynamic-access call count is at least 75% higher than that PR-reported total.
 - Accept only `reachability-metadata.json` files as metadata files. Reject legacy native-image metadata config files such as `reflect-config.json`, `resource-config.json`, `proxy-config.json`, `serialization-config.json`, `jni-config.json`, or `predefined-classes-config.json`.
 
 ## Workflow
@@ -53,7 +53,7 @@ Treat the following as hard review rules unless the PR provides a strong reason 
 4. Review the metadata files only for presence and scope.
    - Confirm the expected metadata files exist for the single target coordinate.
    - Do not read, list, or reason from individual entries inside `reachability-metadata.json`.
-   - For metadata/dynamic-access mismatch checks, use only the metadata entry count reported in the PR description, such as `Entries` or `Entries found`; do not manually count metadata entries from files.
+   - For metadata/dynamic-access mismatch checks, use only the metadata entry count reported in the PR description, such as `Metadata entries`, or legacy fields such as `Entries` and `Entries found` in older PRs; add `Test-only metadata entries` when the PR reports it; do not manually count metadata entries from files.
    - Treat `reachability-metadata.json` containing `{}` as acceptable when the rest of the PR is coherent and validation passes.
    - Do not use the exploded stats files under `stats/<group>/<artifact>/<metadata-version>/stats.json` alone to argue that the submitted metadata is unnecessary.
 
@@ -63,7 +63,7 @@ Treat the following as hard review rules unless the PR provides a strong reason 
    - If the PR reports zero dynamic-access calls and `reachability-metadata.json` is `{}`, that is acceptable as long as the test is library-specific and the scope is otherwise correct.
    - If the PR reports zero dynamic-access calls while adding metadata, do not reject it on that basis alone; dynamic-access stats can miss metadata required through downstream libraries.
    - If the stats report less than 50% coverage for non-zero dynamic-access calls, or no usable coverage signal for claimed dynamic-access behavior, ask for stronger tests or refreshed coverage evidence.
-   - Ask for metadata/coverage mismatch investigation only when the covered dynamic-access call count is at least 75% higher than the PR-reported metadata entry count.
+   - Ask for metadata/coverage mismatch investigation only when the covered dynamic-access call count is at least 75% higher than the PR-reported metadata entry count, where the reported count is `Metadata entries` plus `Test-only metadata entries` when both are present. For older PRs, use legacy `Entries` or `Entries found` as the metadata entry count.
    - If the PR description does not report a usable metadata entry count, do not infer one from metadata files; ask for refreshed PR summary evidence when that count is needed for the mismatch check.
    - Prefer concrete test quality issues over speculation about whether specific metadata entries are needed.
 
@@ -98,7 +98,7 @@ Match the concise review style already used in this repository:
 - For multiple-library PRs: say that `library-new-request` PRs must push only one library and ask for the unrelated library additions to be removed.
 - For insufficient dynamic-access coverage: say that new-library PRs need at least 50% dynamic-access coverage when there are dynamic-access calls to cover, and ask for stronger tests or refreshed coverage evidence.
 - For unsupported coverage claims: ask for refreshed coverage evidence when the PR makes concrete coverage claims that are not supported by the diff.
-- For metadata/dynamic-access entry mismatch: ask for investigation only when covered dynamic-access calls are at least 75% higher than the PR-reported metadata entry count. Do not manually count or argue from metadata contents.
+- For metadata/dynamic-access entry mismatch: ask for investigation only when covered dynamic-access calls are at least 75% higher than the PR-reported metadata entry count, summing library and test-only metadata entries when both are reported. Do not manually count or argue from metadata contents.
 - For legacy metadata files: say that metadata must use `reachability-metadata.json` and ask for old config files such as `reflect-config.json` or `resource-config.json` to be replaced.
 
 Keep comments short, factual, and blocking. Focus on the concrete defect, not a long explanation.

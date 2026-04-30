@@ -234,6 +234,30 @@ def count_metadata_entries(repo_path: str, package: str, artifact: str, library_
     return total
 
 
+def count_test_only_metadata_entries(repo_path: str, package: str, artifact: str, library_version: str) -> int:
+    """Count test-only reachability metadata entries for a library version."""
+    test_version = _resolve_test_version_dir(repo_path, package, artifact, library_version)
+    reach_json = os.path.join(
+        repo_path,
+        "tests",
+        "src",
+        package,
+        artifact,
+        test_version,
+        "src",
+        "test",
+        "resources",
+        "META-INF",
+        "native-image",
+        "reachability-metadata.json",
+    )
+    if not os.path.isfile(reach_json):
+        return 0
+
+    counts = reachability_metadata_count.count_reachability_file(reach_json)
+    return int(counts.get("total", 0))
+
+
 def _get_repo_root() -> str:
     # repo root is two directories up from this file
     return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -325,13 +349,18 @@ def collect_and_print_metrics(
 
     # Calculating generated metadata entries
     total_entries = count_metadata_entries(repo_path, package, artifact, library_version)
+    test_only_metadata_entries = count_test_only_metadata_entries(repo_path, package, artifact, library_version)
 
     cached_tokens_suffix = ""
     if cached_input_tokens_used is not None:
         cached_tokens_suffix = f" Cached Input Tokens: {cached_input_tokens_used}"
 
+    test_metadata_suffix = ""
+    if test_only_metadata_entries > 0:
+        test_metadata_suffix = f" Test-Only Metadata Entries: {test_only_metadata_entries}"
+
     print(
-        f"Iterations: {global_iterations}  Input Tokens: {input_tokens_used}{cached_tokens_suffix} Output Tokens: {output_tokens_used} Total Entries: {total_entries} Coverage: {coverage_percent:.2f}% Generated LOC: {generated_loc} Cost: {total_cost_usd:.4f} Library lines covered: {lines_covered}")
+        f"Iterations: {global_iterations}  Input Tokens: {input_tokens_used}{cached_tokens_suffix} Output Tokens: {output_tokens_used} Metadata Entries: {total_entries}{test_metadata_suffix} Coverage: {coverage_percent:.2f}% Generated LOC: {generated_loc} Cost: {total_cost_usd:.4f} Library lines covered: {lines_covered}")
 
     metrics = {
         "coverage_percent": coverage_percent,
@@ -345,6 +374,8 @@ def collect_and_print_metrics(
         "total_entries": total_entries,
         "cost_usd": total_cost_usd,
     }
+    if test_only_metadata_entries > 0:
+        metrics["test_only_metadata_entries"] = test_only_metadata_entries
     if cached_input_tokens_used is not None:
         metrics["cached_input_tokens_used"] = cached_input_tokens_used
     return metrics
@@ -365,12 +396,14 @@ def build_run_metrics_dict(
         total_entries: int,
         test_file: str,
         metadata_file: str,
+        test_only_metadata_entries: int = 0,
         generated_loc: int | None = None,
         cached_input_tokens_used: int | None = None,
         starting_commit: str | None = None,
         ending_commit: str | None = None,
         previous_library: str | None = None,
         previous_library_metadata_entries: int | None = None,
+        previous_library_test_only_metadata_entries: int | None = None,
         previous_library_coverage_percent: float | None = None,
         agent_name: str | None = None,
         model_name: str | None = None,
@@ -391,8 +424,12 @@ def build_run_metrics_dict(
         metrics["generated_loc"] = generated_loc
     metrics["tested_library_loc"] = lines_covered
     metrics["metadata_entries"] = total_entries
+    if test_only_metadata_entries > 0:
+        metrics["test_only_metadata_entries"] = test_only_metadata_entries
     if previous_library_metadata_entries is not None:
         metrics["previous_library_metadata_entries"] = previous_library_metadata_entries
+    if previous_library_test_only_metadata_entries is not None and previous_library_test_only_metadata_entries > 0:
+        metrics["previous_library_test_only_metadata_entries"] = previous_library_test_only_metadata_entries
     metrics["code_coverage_percent"] = round(coverage_percent, 2)
     if previous_library_coverage_percent is not None:
         metrics["previous_library_coverage_percent"] = round(previous_library_coverage_percent, 2)
@@ -512,6 +549,7 @@ def create_run_metrics_output_json(
         lines_covered=metrics.get("lines_covered", 0),
         coverage_percent=metrics.get("coverage_percent", 0.0),
         total_entries=metrics.get("total_entries", 0),
+        test_only_metadata_entries=metrics.get("test_only_metadata_entries", 0),
         test_file=test_file,
         metadata_file=metadata_file,
         stats=stats,
@@ -546,6 +584,7 @@ def create_javac_fix_run_metrics_output_json(
         library_version=previous_library_version,
     )
     previous_entries = count_metadata_entries(repo_path, package, artifact, previous_library_version)
+    previous_test_entries = count_test_only_metadata_entries(repo_path, package, artifact, previous_library_version)
     agent_name = resolve_agent(strategy_name)
     stats = load_library_stats_snapshot(repo_path, package, artifact, new_library_version)
     previous_stats = load_library_stats_snapshot(repo_path, package, artifact, previous_library_version)
@@ -568,10 +607,12 @@ def create_javac_fix_run_metrics_output_json(
         lines_covered=metrics.get("lines_covered", 0),
         coverage_percent=metrics.get("coverage_percent", 0.0),
         total_entries=metrics.get("total_entries", 0),
+        test_only_metadata_entries=metrics.get("test_only_metadata_entries", 0),
         test_file=test_file,
         metadata_file=metadata_file,
         previous_library=f"{package}:{artifact}:{previous_library_version}",
         previous_library_metadata_entries=previous_entries,
+        previous_library_test_only_metadata_entries=previous_test_entries,
         previous_library_coverage_percent=previous_coverage_percent,
         stats=stats,
         previous_library_stats=previous_stats,

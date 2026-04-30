@@ -108,6 +108,7 @@ Inspect at least these fields:
 - `metrics.tested_library_loc`
 - `metrics.code_coverage_percent`
 - `metrics.metadata_entries`
+- `metrics.test_only_metadata_entries` when test-only metadata exists
 - `artifacts.test_file`
 - `artifacts.metadata_file`
 

@@ -13,6 +13,7 @@ from ai_workflows.add_new_library_support import (
     write_add_new_library_support_metrics,
 )
 from ai_workflows.java_fail_workflow import JAVAC_CONFIG, resolve_fix_metrics_json, write_fix_metrics
+from utility_scripts.metrics_writer import count_test_only_metadata_entries, create_run_metrics_output_json
 
 
 def _minimal_run_metrics(library: str = "org.example:demo:1.0.0") -> dict:
@@ -53,7 +54,130 @@ def _public_execution_metrics(run_metrics: dict) -> dict:
     return run_metrics
 
 
+class DummyAgent:
+    total_tokens_sent = 1
+    total_tokens_received = 2
+    cached_input_tokens_used = 0
+
+
 class MetricsPathTests(unittest.TestCase):
+    def test_count_test_only_metadata_entries_counts_direct_native_image_reachability_file(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            test_metadata_dir = os.path.join(
+                temp_dir,
+                "tests",
+                "src",
+                "org.example",
+                "demo",
+                "1.0.0",
+                "src",
+                "test",
+                "resources",
+                "META-INF",
+                "native-image",
+            )
+            os.makedirs(test_metadata_dir)
+            with open(os.path.join(test_metadata_dir, "reachability-metadata.json"), "w", encoding="utf-8") as file:
+                json.dump(
+                    {
+                        "reflection": [
+                            {
+                                "condition": {"typeReached": "org.example.Demo"},
+                                "type": "org.example.TestFixture",
+                                "methods": [{"name": "create"}, {"name": "read"}],
+                            }
+                        ]
+                    },
+                    file,
+                )
+
+            self.assertEqual(count_test_only_metadata_entries(temp_dir, "org.example", "demo", "1.0.0"), 3)
+
+    def test_create_run_metrics_includes_test_only_metadata_entries_only_when_positive(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tests_root = os.path.join(
+                temp_dir,
+                "tests",
+                "src",
+                "org.example",
+                "demo",
+                "1.0.0",
+                "src",
+                "test",
+                "java",
+            )
+            metadata_dir = os.path.join(temp_dir, "metadata", "org.example", "demo", "1.0.0")
+            metadata_index_dir = os.path.join(temp_dir, "metadata", "org.example", "demo")
+            stats_dir = os.path.join(temp_dir, "stats", "org.example", "demo", "1.0.0")
+            test_metadata_dir = os.path.join(
+                temp_dir,
+                "tests",
+                "src",
+                "org.example",
+                "demo",
+                "1.0.0",
+                "src",
+                "test",
+                "resources",
+                "META-INF",
+                "native-image",
+            )
+            os.makedirs(tests_root)
+            os.makedirs(metadata_dir)
+            os.makedirs(stats_dir)
+            os.makedirs(test_metadata_dir)
+            with open(os.path.join(tests_root, "DemoTest.java"), "w", encoding="utf-8") as file:
+                file.write("class DemoTest {}\n")
+            with open(os.path.join(metadata_dir, "reachability-metadata.json"), "w", encoding="utf-8") as file:
+                json.dump({"reflection": [{"type": "org.example.Demo"}]}, file)
+            with open(os.path.join(metadata_index_dir, "index.json"), "w", encoding="utf-8") as file:
+                json.dump(
+                    [
+                        {
+                            "metadata-version": "1.0.0",
+                            "tested-versions": ["1.0.0"],
+                        }
+                    ],
+                    file,
+                )
+            with open(os.path.join(test_metadata_dir, "reachability-metadata.json"), "w", encoding="utf-8") as file:
+                json.dump({"reflection": [{"type": "org.example.TestFixture"}]}, file)
+            with open(os.path.join(stats_dir, "stats.json"), "w", encoding="utf-8") as file:
+                json.dump(
+                    {
+                        "versions": [
+                            {
+                                "version": "1.0.0",
+                                "libraryCoverage": {
+                                    "line": {
+                                        "covered": 1,
+                                        "missed": 0,
+                                        "total": 1,
+                                        "ratio": 1.0,
+                                    }
+                                },
+                            }
+                        ]
+                    },
+                    file,
+                )
+
+            run_metrics = create_run_metrics_output_json(
+                repo_path=temp_dir,
+                package="org.example",
+                artifact="demo",
+                library_version="1.0.0",
+                agent=DummyAgent(),
+                model_name="oca/gpt-5.4",
+                global_iterations=1,
+                tests_root=tests_root,
+                strategy_name="basic_iterative_pi_gpt-5.4",
+                status="success",
+            )
+
+            self.assertEqual(run_metrics["metrics"]["metadata_entries"], 1)
+            self.assertEqual(run_metrics["metrics"]["test_only_metadata_entries"], 1)
+
     def test_in_repo_add_new_library_support_metrics_resolves_to_stats_path(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             reachability_repo = os.path.join(temp_dir, "graalvm-reachability-metadata")

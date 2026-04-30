@@ -658,9 +658,9 @@ class ValidateLibraryStatsTaskTests {
                 StandardCharsets.UTF_8
         );
         Files.writeString(
-                tempDir.resolve("stats/schemas/run_metrics_output_schema.json"),
+                tempDir.resolve("stats/schemas/run-metrics-output-schema-v1.0.1.json"),
                 Files.readString(
-                        locateRepoFile("stats/schemas/run_metrics_output_schema.json"),
+                        locateRepoFile("stats/schemas/run-metrics-output-schema-v1.0.1.json"),
                         StandardCharsets.UTF_8
                 ),
                 StandardCharsets.UTF_8

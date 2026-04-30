@@ -308,7 +308,7 @@ Workflow-local logs are grouped by library first as `logs/<group>:<artifact>:<ve
   ```bash
     python3 utility_scripts/schema_validator.py <schema_name> <file_path>`)
   ```
-  - `run_metrics_output` validates run metrics output files using `../stats/schemas/run_metrics_output_schema.json`:
+  - `run_metrics_output` validates run metrics output files using `../stats/schemas/run-metrics-output-schema-v1.0.1.json`:
     ```bash
     python3 utility_scripts/schema_validator.py run_metrics_output output/results.json
     ```

@@ -59,10 +59,14 @@ def build_pull_request_body(
     output_tokens_used = metrics.get("output_tokens_used", 0)
     cached_input_tokens_used = metrics.get("cached_input_tokens_used", 0)
     entries_found = metrics.get("metadata_entries", 0)
+    test_only_metadata_entries = int(metrics.get("test_only_metadata_entries", 0) or 0)
     iterations = metrics.get("iterations", 0)
     code_coverage_percent = metrics.get("code_coverage_percent", 0)
     generated_loc = metrics.get("generated_loc", 0)
     tested_library_loc = metrics.get("tested_library_loc", 0)
+    test_only_metadata_entries_line = ""
+    if test_only_metadata_entries > 0:
+        test_only_metadata_entries_line = f"- Test-only metadata entries: {test_only_metadata_entries}\n"
 
     body = f"""
 ## What does this PR do?
@@ -78,7 +82,8 @@ Summary:
 - Input tokens: {input_tokens_used}
 - Cached input tokens: {cached_input_tokens_used}
 - Output tokens: {output_tokens_used}
-- Entries: {entries_found}
+- Metadata entries: {entries_found}
+{test_only_metadata_entries_line}\
 - Iterations: {iterations}
 - Library coverage percentage: {code_coverage_percent}
 - Generated lines of code: {generated_loc}

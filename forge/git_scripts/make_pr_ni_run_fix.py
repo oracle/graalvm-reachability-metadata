@@ -22,6 +22,7 @@ from git_scripts.common_git import (
 )
 from utility_scripts.metrics_writer import (
     count_metadata_entries,
+    count_test_only_metadata_entries,
     collect_version_coverage_metrics,
 )
 from utility_scripts.library_stats import stats_artifact_dir
@@ -100,15 +101,28 @@ def create_pull_request(
 
     new_entries = count_metadata_entries(repo_path, group, artifact, new_version)
     previous_entries = count_metadata_entries(repo_path, group, artifact, old_version)
+    new_test_entries = count_test_only_metadata_entries(repo_path, group, artifact, new_version)
+    previous_test_entries = count_test_only_metadata_entries(repo_path, group, artifact, old_version)
     previous_coverage, _ = collect_version_coverage_metrics(repo_path, group, artifact, old_version)
     new_coverage, _ = collect_version_coverage_metrics(repo_path, group, artifact, new_version)
 
     stats_section = format_stats_diff(repo_path, old_coordinates, new_coordinates)
 
+    previous_test_entries_line = ""
+    if previous_test_entries > 0:
+        previous_test_entries_line = (
+            f"- Test-only metadata entries (previous `{old_coordinates}`): {previous_test_entries}\n"
+        )
+    new_test_entries_line = ""
+    if new_test_entries > 0:
+        new_test_entries_line = f"- Test-only metadata entries (new `{new_coordinates}`): {new_test_entries}\n"
+
     metrics_section = (
         f"\n\n"
         f"- Metadata entries (previous `{old_coordinates}`): {previous_entries}\n"
+        f"{previous_test_entries_line}"
         f"- Metadata entries (new `{new_coordinates}`): {new_entries}\n"
+        f"{new_test_entries_line}"
         f"- Library coverage (previous): {previous_coverage:.2f}%\n"
         f"- Library coverage (new): {new_coverage:.2f}%"
     )
