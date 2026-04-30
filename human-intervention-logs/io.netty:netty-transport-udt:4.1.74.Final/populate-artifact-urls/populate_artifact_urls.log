@@ -1,0 +1,294 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3161-652a6094
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de091-f27f-7ba1-8e14-7232558a40f1
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.netty:netty-transport-udt:4.1.74.Final
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "4.1.74.Final".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3161-652a6094/metadata/io.netty/netty-transport-udt/index.json
+- Entry selector: "metadata-version" = "4.1.74.Final"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "4.1.74.Final".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-sources.jar
+- repository-url: https://github.com/netty/netty
+- test-code-url: https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-test-sources.jar
+- documentation-url: https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-javadoc.jar
+- description: Netty Transport UDT provides Netty channel implementations and bootstrapping support for the UDP-based Data Transfer Protocol through the barchart UDT native bindings. It lets Java applications use Netty's asynchronous event-driven networking APIs with UDT datagram and byte-stream transports for high-throughput data transfer.
+- language: <missing>
+
+Context:
+- Coordinate version: 4.1.74.Final
+- Entry test-version: 4.1.74.Final
+codex
+I’ll inspect the existing metadata entry first, then verify the versioned Maven artifacts and only patch fields that are actually missing.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"4.1.74.Final\")' metadata/io.netty/netty-transport-udt/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3161-652a6094
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "4.1.74.Final",
+  "source-code-url": "https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-sources.jar",
+  "repository-url": "https://github.com/netty/netty",
+  "test-code-url": "https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-test-sources.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-javadoc.jar",
+  "description": "Netty Transport UDT provides Netty channel implementations and bootstrapping support for the UDP-based Data Transfer Protocol through the barchart UDT native bindings. It lets Java applications use Netty's asynchronous event-driven networking APIs with UDT datagram and byte-stream transports for high-throughput data transfer.",
+  "tested-versions": [
+    "4.1.74.Final"
+  ],
+  "allowed-packages": [
+    "io.netty.channel.udt"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/io.netty/netty-transport-udt/index.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3161-652a6094
+ succeeded in 0ms:
+?? metadata/io.netty/netty-transport-udt/index.json
+
+codex
+The target entry already has non-blank URL and description values. I’m checking the Maven artifacts now; if the only absent field is `language` and this is plain Java Netty code, the correct repository update is to leave that field absent.
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-sources.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3161-652a6094
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-test-sources.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3161-652a6094
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-javadoc.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3161-652a6094
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final.pom | sed -n '1,140p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3161-652a6094
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 The Netty Project
+  ~
+  ~ The Netty Project licenses this file to you under the Apache License,
+  ~ version 2.0 (the "License"); you may not use this file except in compliance
+  ~ with the License. You may obtain a copy of the License at:
+  ~
+  ~   https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+  ~ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.netty</groupId>
+    <artifactId>netty-parent</artifactId>
+    <version>4.1.74.Final</version>
+  </parent>
+
+  <artifactId>netty-transport-udt</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Netty/Transport/UDT</name>
+
+  <properties>
+    <javaModuleName>io.netty.transport.udt</javaModuleName>
+  </properties>
+
+  <dependencies>
+
+    <!-- MAIN -->
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-buffer</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-transport</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.barchart.udt</groupId>
+      <artifactId>barchart-udt-bundle</artifactId>
+    </dependency>
+
+    <!-- TEST -->
+
+    <!-- see https://github.com/netty/netty/issues/874 -->
+    <dependency>
+      <groupId>com.yammer.metrics</groupId>
+      <artifactId>metrics-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.caliper</groupId>
+      <artifactId>caliper</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- run each test in separate JVM -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <reuseForks>false</reuseForks>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+ succeeded in 196ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 22:46:10 GMT
+content-type: application/java-archive
+content-length: 25367
+cf-ray: 9f4a14bc4c69be84-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "199f050fc728065d5575d5065a038af5"
+
+ succeeded in 170ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 22:46:10 GMT
+content-type: application/java-archive
+content-length: 137235
+cf-ray: 9f4a14bcc9a9be5e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "3a6a17597f363ae08ef129583fbda646"
+
+ succeeded in 311ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 22:46:10 GMT
+content-type: application/java-archive
+content-length: 33444
+cf-ray: 9f4a14bc7c46baae-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "1ff3798226bac159b55074c94e4e5c74"
+
+codex
+The Maven `sources`, `test-sources`, and `javadoc` artifacts all return `200`, and the POM identifies this as the Java Netty UDT transport module. Since Java is not one of the requested language-specific classifications, there is no `language` value to add.
+exec
+/usr/bin/bash -lc "nl -ba metadata/io.netty/netty-transport-udt/index.json | sed -n '1,40p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3161-652a6094
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "4.1.74.Final",
+     5	    "source-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-sources.jar",
+     6	    "repository-url" : "https://github.com/netty/netty",
+     7	    "test-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-test-sources.jar",
+     8	    "documentation-url" : "https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-javadoc.jar",
+     9	    "description" : "Netty Transport UDT provides Netty channel implementations and bootstrapping support for the UDP-based Data Transfer Protocol through the barchart UDT native bindings. It lets Java applications use Netty's asynchronous event-driven networking APIs with UDT datagram and byte-stream transports for high-throughput data transfer.",
+    10	    "tested-versions" : [
+    11	      "4.1.74.Final"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "io.netty.channel.udt"
+    15	    ]
+    16	  }
+    17	]
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/io.netty/netty-transport-udt/index.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3161-652a6094
+ succeeded in 0ms:
+codex
+No repository edit was needed in [index.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3161-652a6094/metadata/io.netty/netty-transport-udt/index.json:4). The `4.1.74.Final` entry already has non-blank values for `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description`; `language` should remain absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+Verified selected values:
+- `source-code-url`: Maven Central `netty-transport-udt-4.1.74.Final-sources.jar`
+- `repository-url`: `https://github.com/netty/netty`
+- `test-code-url`: Maven Central `netty-transport-udt-4.1.74.Final-test-sources.jar`
+- `documentation-url`: Maven Central `netty-transport-udt-4.1.74.Final-javadoc.jar`
+- `description`: already exactly two sentences
+
+I verified the Maven source, test-source, and javadoc artifacts return `200`. No tests were run because no file content changed.
+2026-04-30T22:46:24.729059Z ERROR codex_core::session: failed to record rollout items: thread 019de091-f27f-7ba1-8e14-7232558a40f1 not found
+tokens used
+10,789
+No repository edit was needed in [index.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3161-652a6094/metadata/io.netty/netty-transport-udt/index.json:4). The `4.1.74.Final` entry already has non-blank values for `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description`; `language` should remain absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+Verified selected values:
+- `source-code-url`: Maven Central `netty-transport-udt-4.1.74.Final-sources.jar`
+- `repository-url`: `https://github.com/netty/netty`
+- `test-code-url`: Maven Central `netty-transport-udt-4.1.74.Final-test-sources.jar`
+- `documentation-url`: Maven Central `netty-transport-udt-4.1.74.Final-javadoc.jar`
+- `description`: already exactly two sentences
+
+I verified the Maven source, test-source, and javadoc artifacts return `200`. No tests were run because no file content changed.
+Ran agent for io.netty:netty-transport-udt:4.1.74.Final (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3161-652a6094/build/agent-url-discovery-logs/io.netty-netty-transport-udt-4.1.74.Final.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3161-652a6094/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 31s
+9 actionable tasks: 1 executed, 8 up-to-date
