@@ -6,6 +6,7 @@
  */
 package org_apache_kafka.kafka_clients;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -21,6 +22,79 @@ public class MessageSchemaTest {
                 BrokenGeneratedFieldMessage.getDefaultInstance()::getSerializedSize);
 
         assertTrue(exception.getMessage().contains("missingField_"));
+    }
+
+    @Test
+    void buildsLiteSchemaForAvailableGeneratedField() {
+        int serializedSize = ValidGeneratedFieldMessage.getDefaultInstance().getSerializedSize();
+
+        assertEquals(0, serializedSize);
+    }
+
+    public static final class ValidGeneratedFieldMessage extends GeneratedMessageLite<
+            ValidGeneratedFieldMessage,
+            ValidGeneratedFieldMessage.Builder> {
+        private static final ValidGeneratedFieldMessage DEFAULT_INSTANCE = new ValidGeneratedFieldMessage();
+        private static volatile Parser<ValidGeneratedFieldMessage> parser;
+
+        @SuppressWarnings("java:S116")
+        private int presentField_;
+
+        static {
+            registerDefaultInstance(ValidGeneratedFieldMessage.class, DEFAULT_INSTANCE);
+        }
+
+        private ValidGeneratedFieldMessage() {
+        }
+
+        static ValidGeneratedFieldMessage getDefaultInstance() {
+            return DEFAULT_INSTANCE;
+        }
+
+        @Override
+        protected Object dynamicMethod(MethodToInvoke method, Object arg0, Object arg1) {
+            switch (method) {
+                case NEW_MUTABLE_INSTANCE:
+                    return new ValidGeneratedFieldMessage();
+                case NEW_BUILDER:
+                    return new Builder();
+                case BUILD_MESSAGE_INFO:
+                    return newMessageInfo(
+                            DEFAULT_INSTANCE,
+                            "\u0000\u0001\u0000\u0000\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0004",
+                            new Object[] {"presentField_"});
+                case GET_DEFAULT_INSTANCE:
+                    return DEFAULT_INSTANCE;
+                case GET_PARSER:
+                    return parser();
+                case GET_MEMOIZED_IS_INITIALIZED:
+                    return (byte) 1;
+                case SET_MEMOIZED_IS_INITIALIZED:
+                    return null;
+                default:
+                    throw new UnsupportedOperationException("Unknown method: " + method);
+            }
+        }
+
+        private static Parser<ValidGeneratedFieldMessage> parser() {
+            Parser<ValidGeneratedFieldMessage> localParser = parser;
+            if (localParser == null) {
+                synchronized (ValidGeneratedFieldMessage.class) {
+                    localParser = parser;
+                    if (localParser == null) {
+                        localParser = new DefaultInstanceBasedParser<>(DEFAULT_INSTANCE);
+                        parser = localParser;
+                    }
+                }
+            }
+            return localParser;
+        }
+
+        public static final class Builder extends GeneratedMessageLite.Builder<ValidGeneratedFieldMessage, Builder> {
+            private Builder() {
+                super(DEFAULT_INSTANCE);
+            }
+        }
     }
 
     public static final class BrokenGeneratedFieldMessage extends GeneratedMessageLite<
