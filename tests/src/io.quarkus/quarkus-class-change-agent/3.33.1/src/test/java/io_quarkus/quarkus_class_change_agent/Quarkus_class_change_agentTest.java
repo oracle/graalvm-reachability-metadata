@@ -77,7 +77,37 @@ public class Quarkus_class_change_agentTest {
         assertThat(observedInstrumentation).hasValue(instrumentation);
     }
 
+    @Test
+    void retrievedInstrumentationCanBeUsedForClassChangeCapabilityQueries() {
+        Class<?>[] loadedClasses = { ClassChangeAgent.class, Quarkus_class_change_agentTest.class };
+        RecordingInstrumentation instrumentation = new RecordingInstrumentation(
+                true, Set.of(ClassChangeAgent.class), loadedClasses);
+
+        ClassChangeAgent.premain("class-change-capabilities", instrumentation);
+        Instrumentation retrievedInstrumentation = ClassChangeAgent.getInstrumentation();
+
+        assertThat(retrievedInstrumentation.isRedefineClassesSupported()).isTrue();
+        assertThat(retrievedInstrumentation.isModifiableClass(ClassChangeAgent.class)).isTrue();
+        assertThat(retrievedInstrumentation.isModifiableClass(String.class)).isFalse();
+        assertThat(retrievedInstrumentation.getAllLoadedClasses()).containsExactly(loadedClasses);
+    }
+
     private static final class RecordingInstrumentation implements Instrumentation {
+        private final boolean redefineClassesSupported;
+        private final Set<Class<?>> modifiableClasses;
+        private final Class<?>[] allLoadedClasses;
+
+        private RecordingInstrumentation() {
+            this(false, Set.of(), new Class<?>[0]);
+        }
+
+        private RecordingInstrumentation(
+                boolean redefineClassesSupported, Set<Class<?>> modifiableClasses, Class<?>[] allLoadedClasses) {
+            this.redefineClassesSupported = redefineClassesSupported;
+            this.modifiableClasses = modifiableClasses;
+            this.allLoadedClasses = allLoadedClasses;
+        }
+
         @Override
         public void addTransformer(ClassFileTransformer transformer, boolean canRetransform) {
             throw new UnsupportedOperationException("Not needed for ClassChangeAgent storage tests");
@@ -105,7 +135,7 @@ public class Quarkus_class_change_agentTest {
 
         @Override
         public boolean isRedefineClassesSupported() {
-            return false;
+            return redefineClassesSupported;
         }
 
         @Override
@@ -116,12 +146,12 @@ public class Quarkus_class_change_agentTest {
 
         @Override
         public boolean isModifiableClass(Class<?> theClass) {
-            return false;
+            return modifiableClasses.contains(theClass);
         }
 
         @Override
         public Class<?>[] getAllLoadedClasses() {
-            return new Class<?>[0];
+            return allLoadedClasses;
         }
 
         @Override
