@@ -11,12 +11,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 
 public class Google_closure_libraryTest {
@@ -116,6 +121,35 @@ public class Google_closure_libraryTest {
     }
 
     @Test
+    void internationalizationModulesArePackagedWithFormattingApis() throws Exception {
+        Map<String, Dependency> dependenciesByProvide = dependenciesByProvide();
+
+        assertDependency(dependenciesByProvide, "goog.i18n.NumberFormat", "i18n/numberformat.js", "goog.asserts",
+                "goog.i18n.NumberFormatSymbols", "goog.i18n.currency", "goog.math");
+        assertDependency(dependenciesByProvide, "goog.i18n.MessageFormat", "i18n/messageformat.js", "goog.asserts",
+                "goog.i18n.NumberFormat", "goog.i18n.ordinalRules", "goog.i18n.pluralRules");
+        assertDependency(dependenciesByProvide, "goog.i18n.DateTimeFormat", "i18n/datetimeformat.js", "goog.date",
+                "goog.i18n.DateTimeSymbols", "goog.i18n.TimeZone", "goog.string");
+        assertDependency(dependenciesByProvide, "goog.i18n.BidiFormatter", "i18n/bidiformatter.js",
+                "goog.html.SafeHtml", "goog.i18n.bidi", "goog.i18n.bidi.Dir", "goog.i18n.bidi.Format");
+
+        assertResourceContains("goog/i18n/numberformat.js", "goog.provide('goog.i18n.NumberFormat');",
+                "goog.provide('goog.i18n.NumberFormat.Format');", "goog.i18n.NumberFormat = function",
+                "goog.i18n.NumberFormat.prototype.format = function",
+                "goog.i18n.NumberFormat.prototype.parse = function",
+                "goog.i18n.NumberFormat.prototype.setMinimumFractionDigits = function");
+        assertResourceContains("goog/i18n/messageformat.js", "goog.provide('goog.i18n.MessageFormat');",
+                "goog.i18n.MessageFormat = function", "goog.i18n.MessageFormat.prototype.format = function",
+                "goog.i18n.MessageFormat.prototype.formatIgnoringPound =");
+        assertResourceContains("goog/i18n/datetimeformat.js", "goog.provide('goog.i18n.DateTimeFormat');",
+                "goog.provide('goog.i18n.DateTimeFormat.Format');", "goog.i18n.DateTimeFormat = function",
+                "goog.i18n.DateTimeFormat.prototype.format = function");
+        assertResourceContains("goog/i18n/bidiformatter.js", "goog.provide('goog.i18n.BidiFormatter');",
+                "goog.i18n.BidiFormatter = function", "goog.i18n.BidiFormatter.prototype.estimateDirection =",
+                "goog.i18n.BidiFormatter.prototype.setAlwaysSpan = function");
+    }
+
+    @Test
     void packagedClosureTestsAndDemosRemainAvailableAsResources() throws Exception {
         assertResourceContains("goog/base_test.html", "goog.require('goog.baseTest');");
         assertResourceContains("goog/base_test.js", "goog.provide('goog.baseTest');",
@@ -180,8 +214,39 @@ public class Google_closure_libraryTest {
     private static String readResource(String resourcePath) throws IOException {
         ClassLoader classLoader = Google_closure_libraryTest.class.getClassLoader();
         try (InputStream inputStream = classLoader.getResourceAsStream(resourcePath)) {
-            assertThat(inputStream).as(resourcePath).isNotNull();
-            return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            if (inputStream != null) {
+                return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            }
+        }
+
+        Path libraryJar = libraryJarPath();
+        try (JarFile jarFile = new JarFile(libraryJar.toFile())) {
+            assertThat(jarFile.getEntry(resourcePath)).as(resourcePath).isNotNull();
+            try (InputStream inputStream = jarFile.getInputStream(jarFile.getEntry(resourcePath))) {
+                return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            }
+        }
+    }
+
+    private static Path libraryJarPath() throws IOException {
+        Properties properties = new Properties();
+        try (InputStream inputStream = Files.newInputStream(Path.of("gradle.properties"))) {
+            properties.load(inputStream);
+        }
+
+        String[] coordinates = properties.getProperty("library.coordinates").split(":");
+        assertThat(coordinates).hasSize(3);
+        Path cacheDirectory = Path.of(System.getProperty("user.home"), ".gradle", "caches", "modules-2", "files-2.1",
+                coordinates[0], coordinates[1], coordinates[2]);
+        String jarFileName = coordinates[1] + "-" + coordinates[2] + ".jar";
+
+        try (Stream<Path> paths = Files.walk(cacheDirectory)) {
+            Path jarPath = paths.filter(Files::isRegularFile)
+                    .filter(path -> path.getFileName().toString().equals(jarFileName))
+                    .findFirst()
+                    .orElse(null);
+            assertThat(jarPath).as(jarFileName).isNotNull();
+            return jarPath;
         }
     }
 
