@@ -12,6 +12,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -59,6 +60,21 @@ public class Arquillian_test_apiTest {
         assertThat(defaultParameter.isAnnotationPresent(ArquillianResource.class)).isTrue();
         assertThat(defaultResource.value()).isEqualTo(ArquillianResource.class);
         assertThat(uriResource.value()).isEqualTo(URI.class);
+    }
+
+    @Test
+    void constructorParametersCanDeclareArquillianResources() throws Exception {
+        Constructor<ResourceConsumer> constructor = ResourceConsumer.class.getDeclaredConstructor(Object.class, URL.class);
+        Parameter defaultParameter = constructor.getParameters()[0];
+        Parameter urlParameter = constructor.getParameters()[1];
+
+        ArquillianResource defaultResource = defaultParameter.getAnnotation(ArquillianResource.class);
+        ArquillianResource urlResource = urlParameter.getAnnotation(ArquillianResource.class);
+
+        assertThat(defaultResource).isNotNull();
+        assertThat(defaultResource.value()).isEqualTo(ArquillianResource.class);
+        assertThat(urlResource).isNotNull();
+        assertThat(urlResource.value()).isEqualTo(URL.class);
     }
 
     @Test
@@ -132,6 +148,9 @@ public class Arquillian_test_apiTest {
         private URI uriResource;
 
         private Object plainResource;
+
+        private ResourceConsumer(@ArquillianResource Object defaultValue, @ArquillianResource(URL.class) URL url) {
+        }
 
         private void acceptResources(@ArquillianResource String defaultValue, @ArquillianResource(URI.class) URI uri) {
         }
