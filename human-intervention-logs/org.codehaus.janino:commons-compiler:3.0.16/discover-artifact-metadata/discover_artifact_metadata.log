@@ -1,0 +1,1058 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019ddc02-5956-7fb0-94e2-2559a8f0e71d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.codehaus.janino:commons-compiler:3.0.16
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.0.16".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json
+- Set "coordinates" to "org.codehaus.janino:commons-compiler:3.0.16".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream tags first, then update the JSON in place with the exact-version URLs.
+web search: 
+web search: org.codehaus.janino commons-compiler 3.0.16 Maven sources jar
+codex
+Maven Central has versioned source and javadoc artifacts for `commons-compiler:3.0.16`, and there is also a separate `commons-compiler-tests` artifact at the same version. I’m checking whether those test sources are published, since the request prefers Maven-hosted sources/tests when available.
+exec
+/bin/bash -lc "pwd && sed -n '1,220p' build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7
+{
+  "coordinates" : "org.codehaus.janino:commons-compiler:3.0.16"
+}
+
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler-tests/3.0.16/' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16/commons-compiler-3.0.16.pom' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7
+ succeeded in 0ms:
+<?xml version="1.0"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.codehaus.janino</groupId>
+    <artifactId>janino-parent</artifactId>
+    <version>3.0.16</version>
+    <relativePath>../janino-parent</relativePath>
+  </parent>
+
+  <artifactId>commons-compiler</artifactId>
+
+  <name>commons-compiler</name>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Export-Package>org.codehaus.commons.compiler, org.codehaus.commons.compiler.samples</Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <description>The &quot;commons-compiler&quot; API, including the &quot;IExpressionEvaluator&quot;, &quot;IScriptEvaluator&quot;, &quot;IClassBodyEvaluator&quot; and &quot;ISimpleCompiler&quot; interfaces.</description>
+</project>
+
+
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/codehaus/janino/commons-compiler-tests/3.0.16</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/codehaus/janino/commons-compiler-tests/3.0.16</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="commons-compiler-tests-3.0.16.jar" title="commons-compiler-tests-3.0.16.jar">commons-compiler-tests-3.0.16.jar</a>                 2020-03-18 12:21      3821      
+<a href="commons-compiler-tests-3.0.16.jar.asc" title="commons-compiler-tests-3.0.16.jar.asc">commons-compiler-tests-3.0.16.jar.asc</a>             2020-03-18 12:21       455      
+<a href="commons-compiler-tests-3.0.16.jar.asc.md5" title="commons-compiler-tests-3.0.16.jar.asc.md5">commons-compiler-tests-3.0.16.jar.asc.md5</a>         2020-03-18 12:21        32      
+<a href="commons-compiler-tests-3.0.16.jar.asc.sha1" title="commons-compiler-tests-3.0.16.jar.asc.sha1">commons-compiler-tests-3.0.16.jar.asc.sha1</a>        2020-03-18 12:21        40      
+<a href="commons-compiler-tests-3.0.16.jar.md5" title="commons-compiler-tests-3.0.16.jar.md5">commons-compiler-tests-3.0.16.jar.md5</a>             2020-03-18 12:21        32      
+<a href="commons-compiler-tests-3.0.16.jar.sha1" title="commons-compiler-tests-3.0.16.jar.sha1">commons-compiler-tests-3.0.16.jar.sha1</a>            2020-03-18 12:21        40      
+<a href="commons-compiler-tests-3.0.16.pom" title="commons-compiler-tests-3.0.16.pom">commons-compiler-tests-3.0.16.pom</a>                 2020-03-18 12:21      2096      
+<a href="commons-compiler-tests-3.0.16.pom.asc" title="commons-compiler-tests-3.0.16.pom.asc">commons-compiler-tests-3.0.16.pom.asc</a>             2020-03-18 12:21       455      
+<a href="commons-compiler-tests-3.0.16.pom.asc.md5" title="commons-compiler-tests-3.0.16.pom.asc.md5">commons-compiler-tests-3.0.16.pom.asc.md5</a>         2020-03-18 12:21        32      
+<a href="commons-compiler-tests-3.0.16.pom.asc.sha1" title="commons-compiler-tests-3.0.16.pom.asc.sha1">commons-compiler-tests-3.0.16.pom.asc.sha1</a>        2020-03-18 12:21        40      
+<a href="commons-compiler-tests-3.0.16.pom.md5" title="commons-compiler-tests-3.0.16.pom.md5">commons-compiler-tests-3.0.16.pom.md5</a>             2020-03-18 12:21        32      
+<a href="commons-compiler-tests-3.0.16.pom.sha1" title="commons-compiler-tests-3.0.16.pom.sha1">commons-compiler-tests-3.0.16.pom.sha1</a>            2020-03-18 12:21        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: 
+web search: 
+web search: site:repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16 commons-compiler-3.0.16-sources.jar
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/codehaus/janino/janino-parent/3.0.16/janino-parent-3.0.16.pom' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7
+ succeeded in 0ms:
+<?xml version="1.0"?>
+
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Set the following in "Run/Run Configurations.../Maven build/Main/Parameter name":
+        jdk16 = C:\Program Files\Java\jdk1.6.0_43   (or wherever a JDK 1.6 is installed)
+  -->
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <jdk16>C:/dev/Java/jdk1.6.0_45</jdk16>
+    <maven.compiler.executable>${jdk16}\bin\javac.exe</maven.compiler.executable>
+    <JAVA_HOME>${jdk16}</JAVA_HOME>
+  </properties>
+
+  <artifactId>janino-parent</artifactId>
+
+  <name>janino-parent</name>
+
+  <groupId>org.codehaus.janino</groupId>
+  <packaging>pom</packaging>
+  <version>3.0.16</version>
+  <dependencyManagement>
+  	<dependencies>
+  		<dependency>
+  			<groupId>junit</groupId>
+  			<artifactId>junit</artifactId>
+  			<version>4.12</version>
+  		</dependency>
+  	</dependencies>
+  </dependencyManagement>
+
+  <developers>
+    <developer>
+      <id>aunkrig</id>
+      <name>Arno Unkrig</name>
+      <roles>
+        <role>Despot</role>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>oontvo</id>
+      <name>Vy Nguyen</name>
+      <roles>
+        <role>Despot</role>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <modules>
+  	<module>../commons-compiler</module>
+  	<module>../commons-compiler-jdk</module>
+  	<module>../janino</module>
+  	<module>../commons-compiler-tests</module>
+  </modules>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.19.1</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.0.2</version>
+        <configuration>
+          <archive>  
+
+            <!-- This line is required, otherwise the maven-bundle-plugin doesn't add the OSGi lines. -->
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive> 
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.5.4</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals><goal>manifest</goal></goals>   
+          </execution>
+        </executions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId};singleton:=true</Bundle-SymbolicName>
+            <Bundle-Name>${project.artifactId}</Bundle-Name>
+            <Bundle-Version>${project.version}</Bundle-Version>
+            <Bundle-License>https://raw.githubusercontent.com/janino-compiler/janino/master/LICENSE</Bundle-License>
+            <Bundle-Description>Janino is a super-small, super-fast Java compiler.</Bundle-Description>
+          </instructions>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jarsigner-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <id>sign</id>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <keystore>../janino-parent/dummy-keystore</keystore>
+          <alias>dummy</alias>
+          <storepass>storepass</storepass>
+          <keypass>keypass</keypass>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.4</version>
+        <configuration>
+          <quiet>true</quiet>
+          <additionalparam>-Xdoclint:none</additionalparam>
+        </configuration>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.4</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+          <compilerVersion>1.6</compilerVersion>
+          <fork>true</fork>
+          <forceJavacCompilerUse>true</forceJavacCompilerUse>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.7</version>
+        <extensions>true</extensions>
+        <configuration>
+           <serverId>ossrh</serverId>
+           <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+           <autoReleaseAfterClose>true</autoReleaseAfterClose>
+        </configuration>
+      </plugin>
+    </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.5</version>
+          <executions>
+            <execution>
+              <id>sign-artifacts</id>
+              <phase>verify</phase>
+              <goals><goal>sign</goal></goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+
+    <!-- Signs all artifacts with GPG (oss.sonatype.org requires that). -->
+    <profile>
+      <id>have_gpg</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <description>Janino is a super-small, super-fast Java compiler.</description>
+  <url>http://janino-compiler.github.io/janino/</url>
+  <licenses>
+    <license>
+      <name>New BSD License</name>
+      <url>https://raw.githubusercontent.com/janino-compiler/janino/master/LICENSE</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+  	<developerConnection>scm:git:https://github.com/janino-compiler/janino</developerConnection>
+  	<url>https://github.com/janino-compiler/janino</url>
+  </scm>
+</project>
+
+exec
+/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16/commons-compiler-3.0.16-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16/commons-compiler-3.0.16-javadoc.jar && curl -I -fsSL https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler-tests/3.0.16/commons-compiler-tests-3.0.16.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7
+exec
+/bin/bash -lc 'curl -fsSL https://api.github.com/repos/janino-compiler/janino/git/ref/tags/janino-parent-3.0.16' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7
+ succeeded in 216ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 01:30:53 GMT
+content-type: application/java-archive
+content-length: 349939
+cf-ray: 9f42c8a14a2b1778-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1012560
+etag: "a82bc68d31d11e3be3b969c2c2dd5dde"
+last-modified: Wed, 18 Mar 2020 12:21:20 GMT
+x-checksum-md5: a82bc68d31d11e3be3b969c2c2dd5dde
+x-checksum-sha1: 44b9ed9f94b96d70a19f89b4024263f6f2b6640e
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Thu, 30 Apr 2026 01:30:53 GMT
+content-type: application/java-archive
+content-length: 3821
+cf-ray: 9f42c8a1cba996e0-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 103612
+etag: "dd0b2368fa7a14bef7078546b5bf4f57"
+last-modified: Wed, 18 Mar 2020 12:21:13 GMT
+x-checksum-md5: dd0b2368fa7a14bef7078546b5bf4f57
+x-checksum-sha1: a4af52d93b4609d733498e2821f06a811e2b101d
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 235ms:
+curl: (22) The requested URL returned error: 404
+
+codex
+The upstream parent POM confirms the repository is `janino-compiler/janino`, while Maven Central confirms source, javadoc, and tests JARs exist for `3.0.16`. The Git tag name isn’t the parent artifact string, so I’m resolving the exact tag naming before choosing any GitHub fallback URL.
+web search: 
+web search: github janino tags 3.0.16 janino
+web search: 
+web search: https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16/
+web search: 
+web search: https://github.com/janino-compiler/janino
+exec
+/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/janino-compiler/janino/tags?per_page=100' | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7
+ succeeded in 276ms:
+[
+  {
+    "name": "v3.1.12",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.1.12",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.1.12",
+    "commit": {
+      "sha": "bc44da6fc90340221de28a68d2a71603358e5104",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/bc44da6fc90340221de28a68d2a71603358e5104"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjEuMTI="
+  },
+  {
+    "name": "v3.1.11",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.1.11",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.1.11",
+    "commit": {
+      "sha": "7b69754847b87b7f55fb2bddc6380f61c804ce4a",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/7b69754847b87b7f55fb2bddc6380f61c804ce4a"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjEuMTE="
+  },
+  {
+    "name": "v3.1.10",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.1.10",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.1.10",
+    "commit": {
+      "sha": "225d34bcf1dcfa0e966a645d6312cb6dc8309509",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/225d34bcf1dcfa0e966a645d6312cb6dc8309509"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjEuMTA="
+  },
+  {
+    "name": "v3.1.9",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.1.9",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.1.9",
+    "commit": {
+      "sha": "553dbd9ca4bd4838de0ea7c8de07ead28f64b6e1",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/553dbd9ca4bd4838de0ea7c8de07ead28f64b6e1"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjEuOQ=="
+  },
+  {
+    "name": "v3.1.8",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.1.8",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.1.8",
+    "commit": {
+      "sha": "5a872b094477477360c14eb8b168baf220602653",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/5a872b094477477360c14eb8b168baf220602653"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjEuOA=="
+  },
+  {
+    "name": "v3.1.7",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.1.7",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.1.7",
+    "commit": {
+      "sha": "3c05045a382449343d7391afdb388c57b220d187",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/3c05045a382449343d7391afdb388c57b220d187"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjEuNw=="
+  },
+  {
+    "name": "v3.1.6",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.1.6",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.1.6",
+    "commit": {
+      "sha": "c92c504594f3d1a09d4f38dc8d72d5c81532cb44",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/c92c504594f3d1a09d4f38dc8d72d5c81532cb44"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjEuNg=="
+  },
+  {
+    "name": "v3.1.4",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.1.4",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.1.4",
+    "commit": {
+      "sha": "c64dc074b2437a8399f5d7d16ab199c300ccff87",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/c64dc074b2437a8399f5d7d16ab199c300ccff87"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjEuNA=="
+  },
+  {
+    "name": "v3.1.2",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.1.2",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.1.2",
+    "commit": {
+      "sha": "78893b891b17cb08d7470cdd719e1098047b50ed",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/78893b891b17cb08d7470cdd719e1098047b50ed"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjEuMg=="
+  },
+  {
+    "name": "v3.1.1",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.1.1",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.1.1",
+    "commit": {
+      "sha": "b6520b1b4c482d21436215dd81bea0b57c2e4c0b",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/b6520b1b4c482d21436215dd81bea0b57c2e4c0b"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjEuMQ=="
+  },
+  {
+    "name": "v3.1.0",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.1.0",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.1.0",
+    "commit": {
+      "sha": "cea3df3224081f6398b161ee90802d02af48ec2f",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/cea3df3224081f6398b161ee90802d02af48ec2f"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjEuMA=="
+  },
+  {
+    "name": "v3.0.16",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.0.16",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.0.16",
+    "commit": {
+      "sha": "3db03d0d42823ef3c2a9f58172fbf7ecb9e51bf7",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/3db03d0d42823ef3c2a9f58172fbf7ecb9e51bf7"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjAuMTY="
+  },
+  {
+    "name": "v3.0.15",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.0.15",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.0.15",
+    "commit": {
+      "sha": "ccb4931fd605ed8081839f962b57ac3734db78ee",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/ccb4931fd605ed8081839f962b57ac3734db78ee"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjAuMTU="
+  },
+  {
+    "name": "v3.0.14",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.0.14",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.0.14",
+    "commit": {
+      "sha": "19e8345a28f101f3c697c15a7d0f7d7dda95614e",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/19e8345a28f101f3c697c15a7d0f7d7dda95614e"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjAuMTQ="
+  },
+  {
+    "name": "v3.0.13",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.0.13",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.0.13",
+    "commit": {
+      "sha": "64f620df96d5fee19ff2c9c601d0dcf0df2549e0",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/64f620df96d5fee19ff2c9c601d0dcf0df2549e0"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjAuMTM="
+  },
+  {
+    "name": "v3.0.12",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.0.12",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.0.12",
+    "commit": {
+      "sha": "84ed282387ddb934f631e4565bbca9fd914dd97e",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/84ed282387ddb934f631e4565bbca9fd914dd97e"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjAuMTI="
+  },
+  {
+    "name": "v3.0.11",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.0.11",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.0.11",
+    "commit": {
+      "sha": "4b98b5b44ee329685503e264751067fab259f7b7",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/4b98b5b44ee329685503e264751067fab259f7b7"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjAuMTE="
+  },
+  {
+    "name": "v3.0.10",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.0.10",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.0.10",
+    "commit": {
+      "sha": "ca418d7e1075992c25cfc11727287e208ac72916",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/ca418d7e1075992c25cfc11727287e208ac72916"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjAuMTA="
+  },
+  {
+    "name": "v3.0.9",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.0.9",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.0.9",
+    "commit": {
+      "sha": "e434143dc4387e94e7a6291c18d65c271a369ee4",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/e434143dc4387e94e7a6291c18d65c271a369ee4"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjAuOQ=="
+  },
+  {
+    "name": "v3.0.8",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.0.8",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.0.8",
+    "commit": {
+      "sha": "91aa95686d1e4ca3b16a984a03a38686572331b2",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/91aa95686d1e4ca3b16a984a03a38686572331b2"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjAuOA=="
+  },
+  {
+    "name": "v3.0.7",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.0.7",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.0.7",
+    "commit": {
+      "sha": "6fa05ea19323f46a4f2611671d2ad453c0866564",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/6fa05ea19323f46a4f2611671d2ad453c0866564"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjAuNw=="
+  },
+  {
+    "name": "v3.0.6",
+    "zipball_url": "https://api.github.com/repos/janino-compiler/janino/zipball/refs/tags/v3.0.6",
+    "tarball_url": "https://api.github.com/repos/janino-compiler/janino/tarball/refs/tags/v3.0.6",
+    "commit": {
+      "sha": "9c1d4a8586fa8b2c3c55ddd6c3f0dc2da589a247",
+      "url": "https://api.github.com/repos/janino-compiler/janino/commits/9c1d4a8586fa8b2c3c55ddd6c3f0dc2da589a247"
+    },
+    "node_id": "MDM6UmVmNjA5Nzc5MjQ6cmVmcy90YWdzL3YzLjAuNg=="
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16/
+web search: 
+web search: repo1.maven.org/maven2/org/codehaus/janino/commons-compiler-tests/3.0.16/ commons-compiler-tests-3.0.16.jar
+exec
+/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/janino-compiler/janino/v3.0.16/commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/CommonsCompilerTestSuite.java | sed -n '1,80p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7
+exec
+/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler-tests/3.0.16/commons-compiler-tests-3.0.16.jar -o "$tmp/tests.jar"; jar tf "$tmp/tests.jar" | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7
+exec
+/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler-tests/3.0.16/commons-compiler-tests-3.0.16-sources.jar || true' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7
+ succeeded in 145ms:
+META-INF/MANIFEST.MF
+META-INF/DUMMY.SF
+META-INF/DUMMY.DSA
+META-INF/
+META-INF/maven/
+META-INF/maven/org.codehaus.janino/
+META-INF/maven/org.codehaus.janino/commons-compiler-tests/
+META-INF/maven/org.codehaus.janino/commons-compiler-tests/pom.xml
+META-INF/maven/org.codehaus.janino/commons-compiler-tests/pom.properties
+
+ succeeded in 247ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 289ms:
+HTTP/2 404 
+date: Thu, 30 Apr 2026 01:31:14 GMT
+content-type: text/html
+cf-ray: 9f42c925ca20e293-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/codehaus/janino/commons-compiler-tests/3.0.16/commons-compiler-tests-3.0.16-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+codex
+The Maven test artifact is present but contains only Maven metadata, not actual test classes or sources, and there is no `commons-compiler-tests-3.0.16-sources.jar`. I’m using the upstream `v3.0.16` tag for the test-suite URL so the field points to the real versioned tests.
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/janino-compiler/janino/git/trees/v3.0.16?recursive=1 | rg 'commons-compiler-tests|commons-compiler/src|javadoc|site|apidocs|README|src/test'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7
+ succeeded in 423ms:
+      "path": "README.md",
+      "path": "commons-compiler-tests",
+      "path": "commons-compiler-tests/.checkstyle",
+      "path": "commons-compiler-tests/.classpath",
+      "path": "commons-compiler-tests/.gitignore",
+      "path": "commons-compiler-tests/.project",
+      "path": "commons-compiler-tests/.settings",
+      "path": "commons-compiler-tests/.settings/org.eclipse.core.resources.prefs",
+      "path": "commons-compiler-tests/.settings/org.eclipse.jdt.core.prefs",
+      "path": "commons-compiler-tests/.settings/org.eclipse.jdt.ui.prefs",
+      "path": "commons-compiler-tests/.settings/org.eclipse.m2e.core.prefs",
+      "path": "commons-compiler-tests/launch",
+      "path": "commons-compiler-tests/launch/commons-compiler-tests (janino+jdk, JavaSE-1.6).launch",
+      "path": "commons-compiler-tests/launch/commons-compiler-tests (janino, JavaSE-1.6).launch",
+      "path": "commons-compiler-tests/launch/commons-compiler-tests (janino, JavaSE-1.7).launch",
+      "path": "commons-compiler-tests/launch/commons-compiler-tests (janino, JavaSE-1.8).launch",
+      "path": "commons-compiler-tests/launch/commons-compiler-tests (janino, JavaSE-10).launch",
+      "path": "commons-compiler-tests/launch/commons-compiler-tests (janino, JavaSE-11).launch",
+      "path": "commons-compiler-tests/launch/commons-compiler-tests (janino, JavaSE-9).launch",
+      "path": "commons-compiler-tests/launch/commons-compiler-tests (jdk, JavaSE-1.6).launch",
+      "path": "commons-compiler-tests/launch/commons-compiler-tests (jdk, JavaSE-1.7).launch",
+      "path": "commons-compiler-tests/launch/commons-compiler-tests (jdk, JavaSE-1.8).launch",
+      "path": "commons-compiler-tests/launch/commons-compiler-tests (jdk, JavaSE-10).launch",
+      "path": "commons-compiler-tests/launch/commons-compiler-tests (jdk, JavaSE-11).launch",
+      "path": "commons-compiler-tests/launch/commons-compiler-tests (jdk, JavaSE-9).launch",
+      "path": "commons-compiler-tests/launch/commons-compiler-tests (jdk-11-ea+26).launch",
+      "path": "commons-compiler-tests/pom.xml",
+      "path": "commons-compiler-tests/src",
+      "path": "commons-compiler-tests/src/test",
+      "path": "commons-compiler-tests/src/test/java",
+      "path": "commons-compiler-tests/src/test/java/for_sandbox_tests",
+      "path": "commons-compiler-tests/src/test/java/for_sandbox_tests/BaseOfBaseOfExternalClass.java",
+      "path": "commons-compiler-tests/src/test/java/for_sandbox_tests/BaseOfExternalClass.java",
+      "path": "commons-compiler-tests/src/test/java/for_sandbox_tests/ClassWithFields.java",
+      "path": "commons-compiler-tests/src/test/java/for_sandbox_tests/ExternalClass.java",
+      "path": "commons-compiler-tests/src/test/java/for_sandbox_tests/InterfaceOfBaseOfExternalClass.java",
+      "path": "commons-compiler-tests/src/test/java/for_sandbox_tests/InterfaceOfExternalClass.java",
+      "path": "commons-compiler-tests/src/test/java/for_sandbox_tests/OtherExternalClass.java",
+      "path": "commons-compiler-tests/src/test/java/for_sandbox_tests/ProtectedVariable.java",
+      "path": "commons-compiler-tests/src/test/java/for_sandbox_tests/package-info.java",
+      "path": "commons-compiler-tests/src/test/java/org",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/EvaluatorTest.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/ExternalClassesTest.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/JavaSourceClassLoaderTest.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/JlsTest.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/JlsWithDifferentJresTest.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/ReportedBugsTest.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/SandboxTest.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/ScopingTest.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/SerializationTest.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/annotation",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/annotation/RuntimeRetainedAnnotation1.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/annotation/RuntimeRetainedAnnotation2.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/annotation/RuntimeRetainedAnnotation3.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/annotation/RuntimeRetainedAnnotation4.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/annotation/RuntimeRetainedAnnotation4Enum.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/annotation/package-info.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/bug172",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/bug172/First.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/bug172/package-info.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/bug180",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/bug180/UnaryDoubleFunction.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/bug180/package-info.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/bug63",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/bug63/IPred.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/bug63/Pred.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/bug63/package-info.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/issue32",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/issue32/Issue32Test.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/issue32/package-info.java",
+      "path": "commons-compiler-tests/src/test/java/org/codehaus/commons/compiler/tests/package-info.java",
+      "path": "commons-compiler-tests/src/test/java/other_package",
+      "path": "commons-compiler-tests/src/test/java/other_package/Base.java",
+      "path": "commons-compiler-tests/src/test/java/other_package/Foo.java",
+      "path": "commons-compiler-tests/src/test/java/other_package/ScopingRules.java",
+      "path": "commons-compiler-tests/src/test/java/other_package/package-info.java",
+      "path": "commons-compiler-tests/src/test/java/util",
+      "path": "commons-compiler-tests/src/test/java/util/CommonsCompilerTestSuite.java",
+      "path": "commons-compiler-tests/src/test/java/util/TestUtil.java",
+      "path": "commons-compiler-tests/src/test/java/util/package-info.java",
+      "path": "commons-compiler-tests/src/test/resources",
+      "path": "commons-compiler-tests/src/test/resources/Bug 106",
+      "path": "commons-compiler-tests/src/test/resources/Bug 106/a",
+      "path": "commons-compiler-tests/src/test/resources/Bug 106/a/C2.java",
+      "path": "commons-compiler-tests/src/test/resources/Bug 106/b",
+      "path": "commons-compiler-tests/src/test/resources/Bug 106/b/C1.java",
+      "path": "commons-compiler-tests/src/test/resources/Bug 106/b/C3.java",
+      "path": "commons-compiler-tests/src/test/resources/issue53",
+      "path": "commons-compiler-tests/src/test/resources/issue53/pkg1",
+      "path": "commons-compiler-tests/src/test/resources/issue53/pkg1/Enum1.java",
+      "path": "commons-compiler-tests/src/test/resources/issue53/pkg2",
+      "path": "commons-compiler-tests/src/test/resources/issue53/pkg2/Enum1.java",
+      "path": "commons-compiler-tests/src/test/resources/testCircularSingleTypeImports",
+      "path": "commons-compiler-tests/src/test/resources/testCircularSingleTypeImports/test",
+      "path": "commons-compiler-tests/src/test/resources/testCircularSingleTypeImports/test/Func1.java",
+      "path": "commons-compiler-tests/src/test/resources/testCircularSingleTypeImports/test/Func2.java",
+      "path": "commons-compiler-tests/src/test/resources/testCircularStaticImports",
+      "path": "commons-compiler-tests/src/test/resources/testCircularStaticImports/test",
+      "path": "commons-compiler-tests/src/test/resources/testCircularStaticImports/test/Func1.java",
+      "path": "commons-compiler-tests/src/test/resources/testCircularStaticImports/test/Func2.java",
+      "path": "commons-compiler-tests/src/test/resources/testOverloadedStaticImports",
+      "path": "commons-compiler-tests/src/test/resources/testOverloadedStaticImports/test",
+      "path": "commons-compiler-tests/src/test/resources/testOverloadedStaticImports/test/C1.java",
+      "path": "commons-compiler-tests/src/test/resources/testOverloadedStaticImports/test/C2.java",
+      "path": "commons-compiler-tests/src/test/resources/testOverloadedStaticImports/test/SingleStaticImport.java",
+      "path": "commons-compiler-tests/src/test/resources/testOverloadedStaticImports/test/StaticImports.java",
+      "path": "commons-compiler/src",
+      "path": "commons-compiler/src/main",
+      "path": "commons-compiler/src/main/java",
+      "path": "commons-compiler/src/main/java/org",
+      "path": "commons-compiler/src/main/java/org/codehaus",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/AbstractCompilerFactory.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/AbstractJavaSourceClassLoader.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/CompileException.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/CompilerFactoryFactory.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/Cookable.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/ErrorHandler.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/IClassBodyEvaluator.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/ICompiler.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/ICompilerFactory.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/ICookable.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/IExpressionEvaluator.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/IScriptEvaluator.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/ISimpleCompiler.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/LocatedException.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/Location.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/Sandbox.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/WarningHandler.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java8",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java8/java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java8/java/util",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java8/java/util/Optional.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java8/java/util/function",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java8/java/util/function/Consumer.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java8/java/util/function/Consumers.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java8/java/util/function/package-info.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java8/java/util/package-info.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java8/java/util/stream",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java8/java/util/stream/Stream.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java8/java/util/stream/package-info.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java9",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java9/java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java9/java/lang",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java9/java/lang/module",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java9/java/lang/module/ModuleFinder.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java9/java/lang/module/ModuleReader.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java9/java/lang/module/ModuleReference.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/java9/java/lang/module/package-info.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/package-info.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/samples",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/samples/ClassBodyDemo.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/samples/CompilerDemo.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/samples/DemoBase.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/samples/ExpressionDemo.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/samples/ScriptDemo.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/samples/ShippingCost.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/samples/package-info.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util/Disassembler.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util/StringUtil.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util/package-info.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util/reflect",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util/reflect/Classes.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util/reflect/Methods.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util/reflect/NoException.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util/reflect/Proxies.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util/reflect/package-info.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util/resource",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util/resource/DirectoryResourceCreator.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util/resource/DirectoryResourceFinder.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util/resource/FileResource.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util/resource/FileResourceCreator.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util/resource/FileResourceFinder.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util/resource/Resource.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util/resource/ResourceCreator.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util/resource/ResourceFinder.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/compiler/util/resource/package-info.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/nullanalysis",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/nullanalysis/NotNull.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/nullanalysis/NotNullByDefault.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/nullanalysis/Nullable.java",
+      "path": "commons-compiler/src/main/java/org/codehaus/commons/nullanalysis/package-info.java",
+      "path": "janino/src/main/javadoc",
+      "path": "janino/src/main/javadoc/overview.html",
+      "path": "janino/src/test",
+      "path": "janino/src/test/java",
+      "path": "janino/src/test/java/org.codehaus.commons.compiler.tests.properties",
+      "path": "janino/src/test/java/org",
+      "path": "janino/src/test/java/org/codehaus",
+      "path": "janino/src/test/java/org/codehaus/janino",
+      "path": "janino/src/test/java/org/codehaus/janino/tests",
+      "path": "janino/src/test/java/org/codehaus/janino/tests/AstTest.java",
+      "path": "janino/src/test/java/org/codehaus/janino/tests/BaseClassTest.java",
+      "path": "janino/src/test/java/org/codehaus/janino/tests/CompilerTest.java",
+      "path": "janino/src/test/java/org/codehaus/janino/tests/ExpressionEvaluatorTest.java",
+      "path": "janino/src/test/java/org/codehaus/janino/tests/GithubIssuesTest.java",
+      "path": "janino/src/test/java/org/codehaus/janino/tests/GithubPullRequestsTest.java",
+      "path": "janino/src/test/java/org/codehaus/janino/tests/NumbersTest.java",
+      "path": "janino/src/test/java/org/codehaus/janino/tests/OptionsTest.java",
+      "path": "janino/src/test/java/org/codehaus/janino/tests/ScriptEvaluatorTest.java",
+      "path": "janino/src/test/java/org/codehaus/janino/tests/UnparserTest.java",
+      "path": "janino/src/test/java/org/codehaus/janino/tests/package-info.java",
+      "path": "janino/src/test/java/other_package2",
+      "path": "janino/src/test/java/other_package2/ScopingRules.java",
+      "path": "janino/src/test/java/other_package2/package-info.java",
+      "path": "janino/src/test/resources",
+      "path": "janino/src/test/resources/a",
+      "path": "janino/src/test/resources/a/Test.java",
+      "path": "janino/src/test/resources/a/TestLocalVarTable.java",
+
+codex
+I have the fields now. I’m updating only the requested JSON file, omitting `language` because this is not a Kotlin, Groovy, or Scala-version-specific library.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json
+diff --git a/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json b/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json
+index 07ef0b275e4f917786aeeb7a36e0b370e3a3d06d..c75fba15ae286ff13e327cb1e2a72ff6a400af93
+--- a/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json
++++ b/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.codehaus.janino:commons-compiler:3.0.16"
++  "coordinates" : "org.codehaus.janino:commons-compiler:3.0.16",
++  "repository-url" : "https://github.com/janino-compiler/janino",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16/commons-compiler-3.0.16-sources.jar",
++  "test-code-url" : "https://github.com/janino-compiler/janino/tree/v3.0.16/commons-compiler-tests/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16/commons-compiler-3.0.16-javadoc.jar",
++  "description" : "Commons Compiler is Janino's shared compiler API, defining interfaces such as expression, script, class-body, and simple compiler evaluators. It provides common exceptions, factories, resource utilities, and helper types used by Janino compiler implementations."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json b/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json
+index 07ef0b275e4f917786aeeb7a36e0b370e3a3d06d..c75fba15ae286ff13e327cb1e2a72ff6a400af93
+--- a/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json
++++ b/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.codehaus.janino:commons-compiler:3.0.16"
++  "coordinates" : "org.codehaus.janino:commons-compiler:3.0.16",
++  "repository-url" : "https://github.com/janino-compiler/janino",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16/commons-compiler-3.0.16-sources.jar",
++  "test-code-url" : "https://github.com/janino-compiler/janino/tree/v3.0.16/commons-compiler-tests/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16/commons-compiler-3.0.16-javadoc.jar",
++  "description" : "Commons Compiler is Janino's shared compiler API, defining interfaces such as expression, script, class-body, and simple compiler evaluators. It provides common exceptions, factories, resource utilities, and helper types used by Janino compiler implementations."
+ }
+
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7
+ succeeded in 0ms:
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7
+ succeeded in 0ms:
+{
+  "coordinates": "org.codehaus.janino:commons-compiler:3.0.16",
+  "repository-url": "https://github.com/janino-compiler/janino",
+  "source-code-url": "https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16/commons-compiler-3.0.16-sources.jar",
+  "test-code-url": "https://github.com/janino-compiler/janino/tree/v3.0.16/commons-compiler-tests/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16/commons-compiler-3.0.16-javadoc.jar",
+  "description": "Commons Compiler is Janino's shared compiler API, defining interfaces such as expression, script, class-body, and simple compiler evaluators. It provides common exceptions, factories, resource utilities, and helper types used by Janino compiler implementations."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json b/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json
+index 07ef0b275e4f917786aeeb7a36e0b370e3a3d06d..c75fba15ae286ff13e327cb1e2a72ff6a400af93
+--- a/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json
++++ b/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.codehaus.janino:commons-compiler:3.0.16"
++  "coordinates" : "org.codehaus.janino:commons-compiler:3.0.16",
++  "repository-url" : "https://github.com/janino-compiler/janino",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16/commons-compiler-3.0.16-sources.jar",
++  "test-code-url" : "https://github.com/janino-compiler/janino/tree/v3.0.16/commons-compiler-tests/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16/commons-compiler-3.0.16-javadoc.jar",
++  "description" : "Commons Compiler is Janino's shared compiler API, defining interfaces such as expression, script, class-body, and simple compiler evaluators. It provides common exceptions, factories, resource utilities, and helper types used by Janino compiler implementations."
+ }
+
+web search: 
+web search: Maven Central org.codehaus.janino commons-compiler 3.0.16 sources javadoc jar
+web search: 
+web search: https://github.com/janino-compiler/janino/tree/v3.0.16/commons-compiler-tests/src/test
+exec
+/bin/bash -lc "sed -n '1,120p' /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7
+ succeeded in 0ms:
+{
+  "coordinates" : "org.codehaus.janino:commons-compiler:3.0.16",
+  "repository-url" : "https://github.com/janino-compiler/janino",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16/commons-compiler-3.0.16-sources.jar",
+  "test-code-url" : "https://github.com/janino-compiler/janino/tree/v3.0.16/commons-compiler-tests/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16/commons-compiler-3.0.16-javadoc.jar",
+  "description" : "Commons Compiler is Janino's shared compiler API, defining interfaces such as expression, script, class-body, and simple compiler evaluators. It provides common exceptions, factories, resource utilities, and helper types used by Janino compiler implementations."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json b/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json
+index 07ef0b275e4f917786aeeb7a36e0b370e3a3d06d..c75fba15ae286ff13e327cb1e2a72ff6a400af93
+--- a/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json
++++ b/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.codehaus.janino:commons-compiler:3.0.16"
++  "coordinates" : "org.codehaus.janino:commons-compiler:3.0.16",
++  "repository-url" : "https://github.com/janino-compiler/janino",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16/commons-compiler-3.0.16-sources.jar",
++  "test-code-url" : "https://github.com/janino-compiler/janino/tree/v3.0.16/commons-compiler-tests/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16/commons-compiler-3.0.16-javadoc.jar",
++  "description" : "Commons Compiler is Janino's shared compiler API, defining interfaces such as expression, script, class-body, and simple compiler evaluators. It provides common exceptions, factories, resource utilities, and helper types used by Janino compiler implementations."
+ }
+
+codex
+Updated [org.codehaus.janino-commons-compiler-3.0.16.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json:1).
+
+I used Maven Central for the versioned source and javadoc artifacts, and the upstream `v3.0.16` tag for the real test suite because the Maven test artifact exists but contains only Maven metadata, not test sources/classes. I also validated the JSON with `jq`.
+diff --git a/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json b/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json
+index 07ef0b275e4f917786aeeb7a36e0b370e3a3d06d..c75fba15ae286ff13e327cb1e2a72ff6a400af93
+--- a/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json
++++ b/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.codehaus.janino:commons-compiler:3.0.16"
++  "coordinates" : "org.codehaus.janino:commons-compiler:3.0.16",
++  "repository-url" : "https://github.com/janino-compiler/janino",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16/commons-compiler-3.0.16-sources.jar",
++  "test-code-url" : "https://github.com/janino-compiler/janino/tree/v3.0.16/commons-compiler-tests/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/3.0.16/commons-compiler-3.0.16-javadoc.jar",
++  "description" : "Commons Compiler is Janino's shared compiler API, defining interfaces such as expression, script, class-body, and simple compiler evaluators. It provides common exceptions, factories, resource utilities, and helper types used by Janino compiler implementations."
+ }
+
+2026-04-30T01:31:49.896155Z ERROR codex_core::session: failed to record rollout items: thread 019ddc02-5956-7fb0-94e2-2559a8f0e71d not found
+tokens used
+69,164
+Updated [org.codehaus.janino-commons-compiler-3.0.16.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7/build/discovered-artifact-metadata/org.codehaus.janino-commons-compiler-3.0.16.json:1).
+
+I used Maven Central for the versioned source and javadoc artifacts, and the upstream `v3.0.16` tag for the real test suite because the Maven test artifact exists but contains only Maven metadata, not test sources/classes. I also validated the JSON with `jq`.
+Ran agent for org.codehaus.janino:commons-compiler:3.0.16 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7/build/agent-artifact-discovery-logs/org.codehaus.janino-commons-compiler-3.0.16.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3011-c79d88a7/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 22s
+9 actionable tasks: 4 executed, 5 from cache
