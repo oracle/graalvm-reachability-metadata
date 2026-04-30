@@ -10,6 +10,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.kafka.shaded.com.google.protobuf.CodedOutputStream;
+import org.apache.kafka.shaded.com.google.protobuf.GeneratedMessageLite;
+import org.apache.kafka.shaded.com.google.protobuf.GeneratedMessageLite.DefaultInstanceBasedParser;
+import org.apache.kafka.shaded.com.google.protobuf.GeneratedMessageLite.MethodToInvoke;
+import org.apache.kafka.shaded.com.google.protobuf.Parser;
 import org.junit.jupiter.api.Test;
 
 public class UnsafeUtilTest {
@@ -30,6 +34,65 @@ public class UnsafeUtilTest {
                 + CodedOutputStream.computeByteArraySizeNoTag(payload);
         assertEquals(expectedSize, output.getTotalBytesWritten());
         assertTrue(output.spaceLeft() > 0);
+    }
+
+    @Test
+    void buildsSchemaForUnregisteredGeneratedMessageLite() {
+        MinimalLiteMessage message = MinimalLiteMessage.getDefaultInstance();
+
+        assertEquals(0, message.getSerializedSize());
+        assertEquals(0, message.toByteArray().length);
+    }
+
+    private static final class MinimalLiteMessage
+            extends GeneratedMessageLite<MinimalLiteMessage, MinimalLiteMessage.Builder> {
+        private static final MinimalLiteMessage DEFAULT_INSTANCE = new MinimalLiteMessage();
+        private static volatile Parser<MinimalLiteMessage> parser;
+
+        private MinimalLiteMessage() {
+        }
+
+        private static MinimalLiteMessage getDefaultInstance() {
+            return DEFAULT_INSTANCE;
+        }
+
+        @Override
+        protected Object dynamicMethod(MethodToInvoke method, Object firstArgument, Object secondArgument) {
+            switch (method) {
+                case NEW_MUTABLE_INSTANCE:
+                    return new MinimalLiteMessage();
+                case NEW_BUILDER:
+                    return new Builder();
+                case BUILD_MESSAGE_INFO:
+                    return newMessageInfo(DEFAULT_INSTANCE, "\u0000\u0000", new Object[0]);
+                case GET_DEFAULT_INSTANCE:
+                    return DEFAULT_INSTANCE;
+                case GET_PARSER:
+                    Parser<MinimalLiteMessage> localParser = parser;
+                    if (localParser == null) {
+                        synchronized (MinimalLiteMessage.class) {
+                            localParser = parser;
+                            if (localParser == null) {
+                                localParser = new DefaultInstanceBasedParser<>(DEFAULT_INSTANCE);
+                                parser = localParser;
+                            }
+                        }
+                    }
+                    return localParser;
+                case GET_MEMOIZED_IS_INITIALIZED:
+                    return (byte) 1;
+                case SET_MEMOIZED_IS_INITIALIZED:
+                    return null;
+                default:
+                    throw new UnsupportedOperationException("Unsupported method: " + method);
+            }
+        }
+
+        private static final class Builder extends GeneratedMessageLite.Builder<MinimalLiteMessage, Builder> {
+            private Builder() {
+                super(DEFAULT_INSTANCE);
+            }
+        }
     }
 }
 
