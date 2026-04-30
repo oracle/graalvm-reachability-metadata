@@ -8,7 +8,7 @@ package org_eclipse_jetty.jetty_security;
 
 import org.junit.jupiter.api.Test;
 
-class Jetty_securityTest {
+public class Jetty_securityTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
