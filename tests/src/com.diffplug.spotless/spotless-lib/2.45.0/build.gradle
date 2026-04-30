@@ -19,6 +19,7 @@ Provider<Directory> jsonPatchFixtureResources = layout.buildDirectory.dir("gener
 Provider<Directory> googleJavaFormatFixtureResources = layout.buildDirectory.dir("generated/google-java-format-fixture-resources")
 Provider<Directory> cleanthatFixtureResources = layout.buildDirectory.dir("generated/cleanthat-fixture-resources")
 Provider<Directory> freshMarkFixtureResources = layout.buildDirectory.dir("generated/freshmark-fixture-resources")
+Provider<Directory> antlr4FormatterFixtureResources = layout.buildDirectory.dir("generated/antlr4-formatter-fixture-resources")
 
 tasks.register("generateKtfmtFixtureJars") {
     outputs.dir(ktfmtFixtureResources)
@@ -86,6 +87,17 @@ tasks.register("generateFreshMarkFixtureJar") {
         delete(outputDir)
 
         createFreshMarkFixture(outputDir)
+    }
+}
+
+tasks.register("generateAntlr4FormatterFixtureJar") {
+    outputs.dir(antlr4FormatterFixtureResources)
+
+    doLast {
+        File outputDir = antlr4FormatterFixtureResources.get().asFile
+        delete(outputDir)
+
+        createAntlr4FormatterFixture(outputDir)
     }
 }
 
@@ -394,6 +406,21 @@ void createFreshMarkFixture(File outputDir) {
     createFixtureJar(outputDir, "freshmark-fixtures", "current", "freshmark-fixture.jar", sources)
 }
 
+void createAntlr4FormatterFixture(File outputDir) {
+    Map<String, String> sources = [
+        "com/khubla/antlr4formatter/Antlr4Formatter.java": """
+            package com.khubla.antlr4formatter;
+
+            public class Antlr4Formatter {
+                public static String format(String input) {
+                    return "antlr4:" + input;
+                }
+            }
+            """
+    ]
+    createFixtureJar(outputDir, "antlr4-formatter-fixtures", "current", "antlr4-formatter-fixture.jar", sources)
+}
+
 void createFixtureJar(File outputDir, String version, String jarName, Map<String, String> sources) {
     createFixtureJar(outputDir, "ktfmt-fixtures", version, jarName, sources)
 }
@@ -438,6 +465,7 @@ sourceSets {
         resources.srcDir(googleJavaFormatFixtureResources)
         resources.srcDir(cleanthatFixtureResources)
         resources.srcDir(freshMarkFixtureResources)
+        resources.srcDir(antlr4FormatterFixtureResources)
     }
 }
 
@@ -448,6 +476,7 @@ tasks.named("processTestResources") {
     dependsOn(tasks.named("generateGoogleJavaFormatFixtureJar"))
     dependsOn(tasks.named("generateCleanthatFixtureJar"))
     dependsOn(tasks.named("generateFreshMarkFixtureJar"))
+    dependsOn(tasks.named("generateAntlr4FormatterFixtureJar"))
 }
 
 dependencies {
@@ -459,7 +488,7 @@ dependencies {
 graalvmNative {
     binaries {
         test {
-            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|json-simple-fixtures|json-patch-fixtures|google-java-format-fixtures|cleanthat-fixtures|freshmark-fixtures)/.*')
+            buildArgs.add('-H:IncludeResources=(ktfmt-fixtures|json-simple-fixtures|json-patch-fixtures|google-java-format-fixtures|cleanthat-fixtures|freshmark-fixtures|antlr4-formatter-fixtures)/.*')
         }
     }
 
