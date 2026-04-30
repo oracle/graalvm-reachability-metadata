@@ -1,0 +1,1019 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019de080-6ff4-77a0-b131-75bae5ea54a5
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.quarkus:quarkus-development-mode-spi:3.33.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.33.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json
+- Set "coordinates" to "io.quarkus:quarkus-development-mode-spi:3.33.1".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the Quarkus repository tags, then update the JSON in place with only the discovered fields.
+exec
+/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+ succeeded in 0ms:
+{
+  "coordinates" : "io.quarkus:quarkus-development-mode-spi:3.33.1"
+}
+
+exec
+/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'io\\.quarkus-quarkus-development-mode-spi-3\\.33\\.1\\.json"'$'"'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json
+
+web search: 
+web search: Maven io.quarkus quarkus-development-mode-spi 3.33.1 sources jar tests jar
+codex
+The artifact exists on Maven Central. I’m checking whether Maven also publishes source and test artifacts for this exact version before falling back to the tagged upstream repository.
+exec
+/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/quarkus/quarkus-development-mode-spi/3.33.1/ | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+exec
+/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/quarkus/quarkus-development-mode-spi/3.33.1/quarkus-development-mode-spi-3.33.1.pom | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>quarkus-build-parent</artifactId>
+        <groupId>io.quarkus</groupId>
+        <version>3.33.1</version>
+        <relativePath>../../build-parent/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>quarkus-development-mode-spi</artifactId>
+    <name>Quarkus - Development mode - SPI</name>
+    <description>SPI classes for Quarkus Development mode.</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.smallrye.common</groupId>
+            <artifactId>smallrye-common-os</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
+
+ succeeded in 362ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/quarkus/quarkus-development-mode-spi/3.33.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/quarkus/quarkus-development-mode-spi/3.33.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="quarkus-development-mode-spi-3.33.1-javadoc.jar" title="quarkus-development-mode-spi-3.33.1-javadoc.jar">quarkus-development-mode-spi-3.33.1-javadoc.j...</a>  2026-03-25 09:37    333442      
+<a href="quarkus-development-mode-spi-3.33.1-javadoc.jar.asc" title="quarkus-development-mode-spi-3.33.1-javadoc.jar.asc">quarkus-development-mode-spi-3.33.1-javadoc.j...</a>  2026-03-25 09:37       853      
+<a href="quarkus-development-mode-spi-3.33.1-javadoc.jar.md5" title="quarkus-development-mode-spi-3.33.1-javadoc.jar.md5">quarkus-development-mode-spi-3.33.1-javadoc.j...</a>  2026-03-25 09:37        32      
+<a href="quarkus-development-mode-spi-3.33.1-javadoc.jar.sha1" title="quarkus-development-mode-spi-3.33.1-javadoc.jar.sha1">quarkus-development-mode-spi-3.33.1-javadoc.j...</a>  2026-03-25 09:37        40      
+<a href="quarkus-development-mode-spi-3.33.1-javadoc.jar.sha256" title="quarkus-development-mode-spi-3.33.1-javadoc.jar.sha256">quarkus-development-mode-spi-3.33.1-javadoc.j...</a>  2026-03-25 09:37        64      
+<a href="quarkus-development-mode-spi-3.33.1-javadoc.jar.sha512" title="quarkus-development-mode-spi-3.33.1-javadoc.jar.sha512">quarkus-development-mode-spi-3.33.1-javadoc.j...</a>  2026-03-25 09:37       128      
+<a href="quarkus-development-mode-spi-3.33.1-sources.jar" title="quarkus-development-mode-spi-3.33.1-sources.jar">quarkus-development-mode-spi-3.33.1-sources.j...</a>  2026-03-25 09:37     26775      
+<a href="quarkus-development-mode-spi-3.33.1-sources.jar.asc" title="quarkus-development-mode-spi-3.33.1-sources.jar.asc">quarkus-development-mode-spi-3.33.1-sources.j...</a>  2026-03-25 09:37       853      
+<a href="quarkus-development-mode-spi-3.33.1-sources.jar.md5" title="quarkus-development-mode-spi-3.33.1-sources.jar.md5">quarkus-development-mode-spi-3.33.1-sources.j...</a>  2026-03-25 09:37        32      
+<a href="quarkus-development-mode-spi-3.33.1-sources.jar.sha1" title="quarkus-development-mode-spi-3.33.1-sources.jar.sha1">quarkus-development-mode-spi-3.33.1-sources.j...</a>  2026-03-25 09:37        40      
+<a href="quarkus-development-mode-spi-3.33.1-sources.jar.sha256" title="quarkus-development-mode-spi-3.33.1-sources.jar.sha256">quarkus-development-mode-spi-3.33.1-sources.j...</a>  2026-03-25 09:37        64      
+<a href="quarkus-development-mode-spi-3.33.1-sources.jar.sha512" title="quarkus-development-mode-spi-3.33.1-sources.jar.sha512">quarkus-development-mode-spi-3.33.1-sources.j...</a>  2026-03-25 09:37       128      
+<a href="quarkus-development-mode-spi-3.33.1.jar" title="quarkus-development-mode-spi-3.33.1.jar">quarkus-development-mode-spi-3.33.1.jar</a>           2026-03-25 09:37     53992      
+<a href="quarkus-development-mode-spi-3.33.1.jar.asc" title="quarkus-development-mode-spi-3.33.1.jar.asc">quarkus-development-mode-spi-3.33.1.jar.asc</a>       2026-03-25 09:37       853      
+<a href="quarkus-development-mode-spi-3.33.1.jar.md5" title="quarkus-development-mode-spi-3.33.1.jar.md5">quarkus-development-mode-spi-3.33.1.jar.md5</a>       2026-03-25 09:37        32      
+<a href="quarkus-development-mode-spi-3.33.1.jar.sha1" title="quarkus-development-mode-spi-3.33.1.jar.sha1">quarkus-development-mode-spi-3.33.1.jar.sha1</a>      2026-03-25 09:37        40      
+<a href="quarkus-development-mode-spi-3.33.1.jar.sha256" title="quarkus-development-mode-spi-3.33.1.jar.sha256">quarkus-development-mode-spi-3.33.1.jar.sha25...</a>  2026-03-25 09:37        64      
+<a href="quarkus-development-mode-spi-3.33.1.jar.sha512" title="quarkus-development-mode-spi-3.33.1.jar.sha512">quarkus-development-mode-spi-3.33.1.jar.sha51...</a>  2026-03-25 09:37       128      
+<a href="quarkus-development-mode-spi-3.33.1.pom" title="quarkus-development-mode-spi-3.33.1.pom">quarkus-development-mode-spi-3.33.1.pom</a>           2026-03-25 09:37      1045      
+<a href="quarkus-development-mode-spi-3.33.1.pom.asc" title="quarkus-development-mode-spi-3.33.1.pom.asc">quarkus-development-mode-spi-3.33.1.pom.asc</a>       2026-03-25 09:37       853      
+<a href="quarkus-development-mode-spi-3.33.1.pom.md5" title="quarkus-development-mode-spi-3.33.1.pom.md5">quarkus-development-mode-spi-3.33.1.pom.md5</a>       2026-03-25 09:37        32      
+<a href="quarkus-development-mode-spi-3.33.1.pom.sha1" title="quarkus-development-mode-spi-3.33.1.pom.sha1">quarkus-development-mode-spi-3.33.1.pom.sha1</a>      2026-03-25 09:37        40      
+<a href="quarkus-development-mode-spi-3.33.1.pom.sha256" title="quarkus-development-mode-spi-3.33.1.pom.sha256">quarkus-development-mode-spi-3.33.1.pom.sha25...</a>  2026-03-25 09:37        64      
+<a href="quarkus-development-mode-spi-3.33.1.pom.sha512" title="quarkus-development-mode-spi-3.33.1.pom.sha512">quarkus-development-mode-spi-3.33.1.pom.sha51...</a>  2026-03-25 09:37       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/bin/bash -lc "rg 'repo.maven.apache.org.*sources.jar|javadoc.jar|test-code-url|documentation-url' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+ succeeded in 0ms:
+exec
+/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/quarkus/quarkus-build-parent/3.33.1/quarkus-build-parent-3.33.1.pom | sed -n '1,260p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-project</artifactId>
+        <version>3.33.1</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>quarkus-build-parent</artifactId>
+    <name>Quarkus - Build Parent</name>
+    <description>Build parent to bring in required dependencies</description>
+    <packaging>pom</packaging>
+
+    <properties>
+        <!-- Maven plugin versions -->
+
+        <!-- These properties are needed in order for them to be resolvable by the generated projects -->
+        <compiler-plugin.version>${version.compiler.plugin}</compiler-plugin.version>
+        <kotlin.version>2.3.10</kotlin.version>
+        <ksp-gradle-plugin.version>2.2.10-2.0.2</ksp-gradle-plugin.version> <!-- Kotlin Symbol Processing plugin used in a test -->
+        <dokka.version>2.1.0</dokka.version>
+        <scala.version>2.13.12</scala.version>
+        <scala-maven-plugin.version>4.9.9</scala-maven-plugin.version>
+        <!-- not pretty but this is used in the codestarts and we don't want to break compatibility -->
+        <scala-plugin.version>${scala-maven-plugin.version}</scala-plugin.version>
+        <jboss-bridger-plugin.version>1.6.Final</jboss-bridger-plugin.version>
+
+        <!-- Jandex versions -->
+        <jandex.version>3.5.3</jandex.version>
+        <jandex-gradle-plugin.version>2.3.0</jandex-gradle-plugin.version>
+
+        <asciidoctorj.version>3.0.0</asciidoctorj.version>
+        <htmlunit.version>4.21.0</htmlunit.version>
+        <javaparser-core.version>3.28.0</javaparser-core.version>
+        <jdeparser.version>2.1.0</jdeparser.version>
+        <subethasmtp.version>6.0.1</subethasmtp.version>
+
+        <!-- Dev tools -->
+        <freemarker.version>2.3.34</freemarker.version>
+        <commonmark.version>0.27.1</commonmark.version>
+        <jgit.version>7.5.0.202512021534-r</jgit.version>
+
+        <!-- Arquillian BOM -->
+        <arquillian.version>1.7.0.Final</arquillian.version>
+
+        <!-- Enable APT by default for Eclipse -->
+        <m2e.apt.activation>jdt_apt</m2e.apt.activation>
+
+        <!-- These 2 properties are used in catalog-overrides.json -->
+        <minimum-java-version>${maven.compiler.release}</minimum-java-version>
+        <recommended-java-version>25</recommended-java-version>
+
+        <!--
+        Supported Maven versions, interpreted as a version range (Also defined in quarkus-enforcer-rules)
+         -->
+        <!-- This version is more permissive than ${maven.min.version} as we usually have more requirements for the Quarkus build itself than for Quarkus projects -->
+        <supported-maven-versions>[3.9.0,)</supported-maven-versions>
+
+        <!-- These 2 properties are used by CreateProjectMojo to add the Maven Wrapper -->
+        <proposed-maven-version>3.9.12</proposed-maven-version>
+        <maven-wrapper.version>3.3.4</maven-wrapper.version>
+        <gradle-wrapper.version>9.3.1</gradle-wrapper.version>
+        <quarkus-gradle-plugin.version>${project.version}</quarkus-gradle-plugin.version>
+        <quarkus-maven-plugin.version>${project.version}</quarkus-maven-plugin.version>
+        <maven-plugin-plugin.version>3.8.1</maven-plugin-plugin.version>
+
+        <!-- MicroProfile TCK versions used to be defined here but have moved to the concrete tck modules -->
+
+        <!-- SELinux access label, used when mounting local volumes into containers in tests -->
+        <volume.access.modifier>:Z</volume.access.modifier>
+
+        <!-- Defaults for integration tests -->
+        <elasticsearch-server.version>9.2.2</elasticsearch-server.version>
+        <elasticsearch.image>docker.io/elastic/elasticsearch:${elasticsearch-server.version}</elasticsearch.image>
+        <logstash.image>docker.io/elastic/logstash:${elasticsearch-server.version}</logstash.image>
+        <kibana.image>docker.io/elastic/kibana:${elasticsearch-server.version}</kibana.image>
+        <elasticsearch.protocol>http</elasticsearch.protocol>
+        <opensearch-server.version>3.4.0</opensearch-server.version>
+        <opensearch.image>docker.io/opensearchproject/opensearch:${opensearch-server.version}</opensearch.image>
+        <opensearch.protocol>http</opensearch.protocol>
+        <junit-pioneer.version>2.3.0</junit-pioneer.version>
+
+        <!-- Database images for JDBC/Reactive/Hibernate tests and devservices -->
+        <postgres.image>docker.io/library/postgres:18</postgres.image>
+        <postgis.image>docker.io/postgis/postgis:18-3.6</postgis.image>
+        <mariadb.image>docker.io/library/mariadb:12.1</mariadb.image>
+        <db2.image>icr.io/db2_community/db2:12.1.0.0</db2.image>
+        <mssql.image>mcr.microsoft.com/mssql/server:2022-latest</mssql.image>
+        <mysql.image>docker.io/library/mysql:9.5</mysql.image>
+        <oracle.image>docker.io/gvenzl/oracle-free:23-slim-faststart</oracle.image>
+        <mongo.image>docker.io/library/mongo:7.0</mongo.image>
+
+        <!-- Align various dependencies that are not really part of the bom-->
+        <junit4.version>4.13.2</junit4.version>
+
+        <!-- The image to use for tests that run Keycloak -->
+        <keycloak.server.version>26.5.4</keycloak.server.version>
+        <keycloak.docker.image>quay.io/keycloak/keycloak:${keycloak.server.version}</keycloak.docker.image>
+
+        <unboundid-ldap.version>7.0.4</unboundid-ldap.version>
+
+        <assertj.version>3.27.7</assertj.version>
+
+        <wiremock.version>3.13.2</wiremock.version>
+        <wiremock-maven-plugin.version>7.3.0</wiremock-maven-plugin.version>
+
+        <!-- Artemis test dependencies -->
+        <artemis.version>2.44.0</artemis.version>
+
+        <!-- Dev Services Images -->
+        <!-- TODO switch to apache/activemq-artemis to match the artemis version-->
+        <amqp.image>quay.io/artemiscloud/activemq-artemis-broker:1.0.25</amqp.image>
+        <apicurio-registry.image>quay.io/apicurio/apicurio-registry:3.1.7</apicurio-registry.image>
+        <narayana-lra.image>quay.io/jbosstm/lra-coordinator:latest</narayana-lra.image>
+        <rabbitmq.image>docker.io/library/rabbitmq:3.12-management</rabbitmq.image>
+        <pulsar.image>docker.io/apachepulsar/pulsar:3.2.4</pulsar.image>
+        <redis.image>docker.io/library/redis:7</redis.image>
+        <infinispan.image>quay.io/infinispan/server:latest</infinispan.image>
+
+        <!-- Code Coverage Properties-->
+        <jacoco.agent.argLine></jacoco.agent.argLine>
+
+        <asciidoctor-maven-plugin.version>2.0.0</asciidoctor-maven-plugin.version>
+        <docker-maven-plugin.version>0.48.1</docker-maven-plugin.version>
+        <maven-invoker-plugin.version>3.9.1</maven-invoker-plugin.version>
+
+        <!-- revapi API check -->
+        <revapi-maven-plugin.version>0.14.7</revapi-maven-plugin.version>
+        <revapi-java-plugin.version>0.26.1</revapi-java-plugin.version>
+        <build-helper-plugin.version>3.6.1</build-helper-plugin.version>
+        <revapi-reporter-text.version>0.14.5</revapi-reporter-text.version>
+        <revapi-reporter-json.version>0.4.5</revapi-reporter-json.version>
+        <!-- Latest release to be used by api-compatibility-check to check backwards compatibility of the Quarkus API. -->
+        <revapi.oldVersion>1.6.0.Final</revapi.oldVersion>
+        <revapi.newVersion>${project.version}</revapi.newVersion>
+        <!-- severity Possible values: equivalent, nonBreaking, potentiallyBreaking, breaking -->
+        <revapi.reportSeverity>nonBreaking</revapi.reportSeverity>
+        <!-- Skip the API checks by default. Let the modules opt in. -->
+        <revapi.skip>true</revapi.skip>
+        <!-- By default don't check dependencies -->
+        <revapi.checkdeps>true</revapi.checkdeps>
+        <!-- The message that is appended to the end of the plugin error output when the API problems fail the build -->
+        <revapi.buildFailureMessage>Run "jbang revapi-update" to update api-changes.xml file and also add the justification for those changes in that file.</revapi.buildFailureMessage>
+
+        <!-- platform properties - this is a floating tag -->
+        <platform.quarkus.native.builder-image>mandrel</platform.quarkus.native.builder-image>
+
+        <script.extension>sh</script.extension>
+        <docker-prune.location>${maven.multiModuleProjectDirectory}/.github/docker-prune.${script.extension}</docker-prune.location>
+
+        <surefire.argLine.additional></surefire.argLine.additional>
+        <failsafe.argLine.additional>${surefire.argLine.additional}</failsafe.argLine.additional>
+
+        <!-- google cloud functions invoker-->
+        <gcf-invoker.version>2.0.0</gcf-invoker.version>
+        <!-- Jakarta JMS API -->
+        <jakarta.jms-api.version>3.1.0</jakarta.jms-api.version>
+
+        <!-- Quarkus Analytics -->
+        <properties-maven-plugin.version>1.3.0</properties-maven-plugin.version>
+        <quarkus.analytics.disabled>true</quarkus.analytics.disabled>
+
+        <!-- If PTS is enabled at the global level  -->
+        <develocity.pts.enabled>false</develocity.pts.enabled>
+        <!-- If PTS is active for specific modules -->
+        <develocity.pts.active>false</develocity.pts.active>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- Quarkus Extensions Dependencies are coming from quarkus-bom-deployment (that also imports quarkus-bom) -->
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Dev tools -->
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-devmode-test-utils</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>${freemarker.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.commonmark</groupId>
+                <artifactId>commonmark</artifactId>
+                <version>${commonmark.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jgit</groupId>
+                <artifactId>org.eclipse.jgit</artifactId>
+                <version>${jgit.version}</version>
+            </dependency>
+
+            <!-- Extension processor -->
+            <dependency>
+                <groupId>org.jboss.jdeparser</groupId>
+                <artifactId>jdeparser</artifactId>
+                <version>${jdeparser.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.javaparser</groupId>
+                <artifactId>javaparser-core</artifactId>
+                <version>${javaparser-core.version}</version>
+            </dependency>
+
+            <!-- Miscellaneous -->
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-bootstrap-core</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-reactive-datasource-deployment</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+                <type>test-jar</type>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-rest-deployment</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+                <type>test-jar</type>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-war-launcher-runner</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-legacy-launcher</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.unboundid</groupId>
+                <artifactId>unboundid-ldapsdk</artifactId>
+                <version>${unboundid-ldap.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wiremock</groupId>
+                <artifactId>wiremock-standalone</artifactId>
+                <version>${wiremock.version}</version>
+            </dependency>
+
+exec
+/bin/bash -lc 'git status --short' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+ succeeded in 142ms:
+exec
+/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/quarkus/quarkus-project/3.33.1/quarkus-project-3.33.1.pom | rg -n '<url>|<scm>|<connection>|<developerConnection>|<tag>' -C 2" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+ succeeded in 0ms:
+18-
+19-    <description>Quarkus - Kubernetes Native Java stack tailored for OpenJDK HotSpot and GraalVM</description>
+20:    <url>https://github.com/quarkusio/quarkus</url>
+21-
+22-    <developers>
+--
+32-        <license>
+33-            <name>The Apache Software License, Version 2.0</name>
+34:            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+35-            <distribution>repo</distribution>
+36-        </license>
+--
+40-         child.scm.developerConnection.inherit.append.path="false"
+41-         child.scm.url.inherit.append.path="false">
+42:        <url>https://github.com/quarkusio/quarkus</url>
+43:        <connection>scm:git:git@github.com:quarkusio/quarkus.git</connection>
+44:        <developerConnection>scm:git:git@github.com:quarkusio/quarkus.git</developerConnection>
+45:        <tag>HEAD</tag>
+46-    </scm>
+47-
+48-    <issueManagement>
+49-        <system>GitHub</system>
+50:        <url>https://github.com/quarkusio/quarkus/issues/</url>
+51-    </issueManagement>
+52-
+--
+148-            <id>central</id>
+149-            <name>Maven Repository Switchboard</name>
+150:            <url>https://repo.maven.apache.org/maven2</url>
+151-            <snapshots>
+152-                <enabled>false</enabled>
+
+exec
+/bin/bash -lc "curl -fsSI https://github.com/quarkusio/quarkus/tree/3.33.1 | sed -n '1,20p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+exec
+/bin/bash -lc "curl -fsSI https://github.com/quarkusio/quarkus/tree/3.33.1/core/deployment | sed -n '1,20p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+ succeeded in 661ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 22:27:14 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"2ee573e13c9beee995dca68d121b6db4"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=3p0YN%2B6M0Q7%2BccX834RbPeTuubI7GHRlPJhn%2BudqPvt4UXGaJ8dcKgRepa%2BTjjFRlvAaUizXHtrHi%2BeNMH%2Flmui%2Bb3InxJ8D%2B%2Bx8n3r9dEmdSikq6f4QL22e9cZV9Vk1xBlLiWRTdFwBRWcl63h8LEwoxnWNhEZ6U%2B%2FgQGsBVdbQxzS1xpnxmSs6VZW0Bhxjl2Q8rn2NXfUGnJPhqWjUUZhv%2B8jAoLVh26qgyrJU6AYZQZidSoeOttSYXOcvlBM5Iu%2BMsURtmtWS4GgBui9sLw%3D%3D--Ge19K9FgMBu2qo0V--2%2FcZOOhv6vx6nGBxrdmafg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1717995918.1777588033; expires=Fri, 30 Apr 2027 22:27:13 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 22:27:13 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 86B8:2E6651:626763:4B4D2A:69F3D741
+
+
+ succeeded in 966ms:
+HTTP/2 200 
+date: Thu, 30 Apr 2026 22:27:14 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"1902abe8d8c2b2f23f47d5a09c618b97"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=fLVWWLcCgof7%2FOpKUF7oyVl0wjM7CwLtT1%2Fm%2BeDG0noHfOghgJtb0azCu2fOFy%2BBXO7GqAg9hmmXEwn16uQwFwaQa0oaD40xy9I1VzOdrwJD9JPkcJiScWnaSp3pS6ckGQ%2BmhjXu3xarzIBQycmR2nRRi8Kvcc%2F%2B1uZ2%2FBuBFjUBFfn3tzqJ0QP1y40ywxzP19FZf72ZEZwk%2FLsa0y1UUJHbuF4hQHYEY5et9dnu621eX1d%2FLwDsD5%2FbnYGnjsEiT2zLqODvmymbSGeu4PSHwA%3D%3D--QdnP7lNaof491A%2Fb--sA2ae1fd5kwmggJYspDdBw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.733430903.1777588033; expires=Fri, 30 Apr 2027 22:27:13 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 22:27:13 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 86B6:14EDFA:628982:4B8796:69F3D741
+
+
+exec
+/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo.maven.apache.org/maven2/io/quarkus/quarkus-development-mode-spi/3.33.1/quarkus-development-mode-spi-3.33.1-sources.jar -o "$tmp/sources.jar"; jar tf "$tmp/sources.jar" | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/quarkusio/quarkus/git/trees/3.33.1?recursive=1 | rg 'quarkus-development-mode-spi|DevelopmentMode' | sed -n '1,160p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+exec
+/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/io/quarkus/quarkus-development-mode-spi/3.33.1/quarkus-development-mode-spi-3.33.1-tests.jar | sed -n '1,20p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+ succeeded in 265ms:
+META-INF/
+META-INF/MANIFEST.MF
+io/
+io/quarkus/
+io/quarkus/dev/
+io/quarkus/dev/appstate/
+io/quarkus/dev/config/
+io/quarkus/dev/console/
+io/quarkus/dev/io/
+io/quarkus/dev/spi/
+io/quarkus/dev/testing/
+io/quarkus/dev/testing/results/
+META-INF/maven/
+META-INF/maven/io.quarkus/
+META-INF/maven/io.quarkus/quarkus-development-mode-spi/
+io/quarkus/dev/ErrorPageGenerators.java
+io/quarkus/dev/appstate/ApplicationStartException.java
+io/quarkus/dev/appstate/ApplicationStateNotification.java
+io/quarkus/dev/config/ConfigurationProblem.java
+io/quarkus/dev/config/CurrentConfig.java
+io/quarkus/dev/console/BasicConsole.java
+io/quarkus/dev/console/CurrentAppExceptionHighlighter.java
+io/quarkus/dev/console/DeploymentLinker.java
+io/quarkus/dev/console/DevConsoleManager.java
+io/quarkus/dev/console/DevConsoleRequest.java
+io/quarkus/dev/console/DevConsoleResponse.java
+io/quarkus/dev/console/QuarkusConsole.java
+io/quarkus/dev/console/RedirectPrintStream.java
+io/quarkus/dev/console/StatusLine.java
+io/quarkus/dev/console/TempSystemProperties.java
+io/quarkus/dev/console/TerminalUtils.java
+io/quarkus/dev/io/NioThreadPoolThreadFactory.java
+io/quarkus/dev/spi/DeploymentFailedStartHandler.java
+io/quarkus/dev/spi/DevModeType.java
+io/quarkus/dev/spi/HotReplacementContext.java
+io/quarkus/dev/spi/HotReplacementSetup.java
+io/quarkus/dev/spi/RemoteDevState.java
+io/quarkus/dev/testing/ContinuousTestingSharedStateManager.java
+io/quarkus/dev/testing/ExceptionReporting.java
+io/quarkus/dev/testing/GrpcWebSocketProxy.java
+io/quarkus/dev/testing/KnownTags.java
+io/quarkus/dev/testing/TestScanningLock.java
+io/quarkus/dev/testing/TestWatchedFiles.java
+io/quarkus/dev/testing/TracingHandler.java
+io/quarkus/dev/testing/results/TestClassResultInterface.java
+io/quarkus/dev/testing/results/TestResultInterface.java
+io/quarkus/dev/testing/results/TestRunResultsInterface.java
+META-INF/maven/io.quarkus/quarkus-development-mode-spi/pom.xml
+META-INF/maven/io.quarkus/quarkus-development-mode-spi/pom.properties
+
+ succeeded in 253ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Thu, 30 Apr 2026 22:27:20 GMT
+content-type: text/html
+cf-ray: 9f49f921bbac0a8e-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/quarkus/quarkus-development-mode-spi/3.33.1/quarkus-development-mode-spi-3.33.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 2220ms:
+codex
+Maven Central has the exact sources and Javadocs for `3.33.1`, but no `tests.jar` for this artifact. I’m locating the corresponding test path in the `3.33.1` Quarkus tag now.
+exec
+/bin/bash -lc "git ls-remote --tags https://github.com/quarkusio/quarkus.git 'refs/tags/3.33.1'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/quarkusio/quarkus/contents?ref=3.33.1 | rg '\"name\"|\"path\"|\"html_url\"' | sed -n '1,160p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/quarkusio/quarkus/contents/core?ref=3.33.1 | rg '\"name\"|\"path\"|\"html_url\"' | sed -n '1,200p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+ succeeded in 226ms:
+    "name": "builder",
+    "path": "core/builder",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/core/builder",
+    "name": "class-change-agent",
+    "path": "core/class-change-agent",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/core/class-change-agent",
+    "name": "deployment",
+    "path": "core/deployment",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/core/deployment",
+    "name": "devmode-spi",
+    "path": "core/devmode-spi",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/core/devmode-spi",
+    "name": "launcher",
+    "path": "core/launcher",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/core/launcher",
+    "name": "pom.xml",
+    "path": "core/pom.xml",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/core/pom.xml",
+    "name": "processor",
+    "path": "core/processor",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/core/processor",
+    "name": "runtime",
+    "path": "core/runtime",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/core/runtime",
+
+ succeeded in 285ms:
+    "name": ".devcontainer",
+    "path": ".devcontainer",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/.devcontainer",
+    "name": ".forbiddenapis",
+    "path": ".forbiddenapis",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/.forbiddenapis",
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/.gitattributes",
+    "name": ".github",
+    "path": ".github",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/.github",
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/.gitignore",
+    "name": ".gitpod.yml",
+    "path": ".gitpod.yml",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/.gitpod.yml",
+    "name": ".gitpod",
+    "path": ".gitpod",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/.gitpod",
+    "name": ".idea",
+    "path": ".idea",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/.idea",
+    "name": ".jbang",
+    "path": ".jbang",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/.jbang",
+    "name": ".justfile",
+    "path": ".justfile",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/.justfile",
+    "name": ".mvn",
+    "path": ".mvn",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/.mvn",
+    "name": ".sdkmanrc",
+    "path": ".sdkmanrc",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/.sdkmanrc",
+    "name": "ACTIONS.md",
+    "path": "ACTIONS.md",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/ACTIONS.md",
+    "name": "ADOPTERS.md",
+    "path": "ADOPTERS.md",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/ADOPTERS.md",
+    "name": "COMMITTERS.adoc",
+    "path": "COMMITTERS.adoc",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/COMMITTERS.adoc",
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/CONTRIBUTING.md",
+    "name": "DECISIONS.adoc",
+    "path": "DECISIONS.adoc",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/DECISIONS.adoc",
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/LICENSE",
+    "name": "MAINTAINERS.adoc",
+    "path": "MAINTAINERS.adoc",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/MAINTAINERS.adoc",
+    "name": "README.md",
+    "path": "README.md",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/README.md",
+    "name": "SECURITY.md",
+    "path": "SECURITY.md",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/SECURITY.md",
+    "name": "TROUBLESHOOTING.md",
+    "path": "TROUBLESHOOTING.md",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/TROUBLESHOOTING.md",
+    "name": "adr",
+    "path": "adr",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/adr",
+    "name": "bom",
+    "path": "bom",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/bom",
+    "name": "build-parent",
+    "path": "build-parent",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/build-parent",
+    "name": "build.scenario",
+    "path": "build.scenario",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/build.scenario",
+    "name": "core",
+    "path": "core",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/core",
+    "name": "coverage-report",
+    "path": "coverage-report",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/coverage-report",
+    "name": "dco.txt",
+    "path": "dco.txt",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/dco.txt",
+    "name": "devtools",
+    "path": "devtools",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/devtools",
+    "name": "docs",
+    "path": "docs",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/docs",
+    "name": "extensions",
+    "path": "extensions",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/extensions",
+    "name": "independent-projects",
+    "path": "independent-projects",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/independent-projects",
+    "name": "integration-tests",
+    "path": "integration-tests",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/integration-tests",
+    "name": "mvnw",
+    "path": "mvnw",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/mvnw",
+    "name": "mvnw.cmd",
+    "path": "mvnw.cmd",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/mvnw.cmd",
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/pom.xml",
+    "name": "relocations",
+    "path": "relocations",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/relocations",
+    "name": "tcks",
+    "path": "tcks",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/tcks",
+    "name": "test-framework",
+    "path": "test-framework",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework",
+    "name": "update-extension-dependencies.sh",
+    "path": "update-extension-dependencies.sh",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/update-extension-dependencies.sh",
+    "name": "update-version.sh",
+    "path": "update-version.sh",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/update-version.sh",
+
+ succeeded in 525ms:
+e90677489babe9cb36ac9e5ae70da037745cd7f8	refs/tags/3.33.1
+
+exec
+/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/core/devmode-spi/pom.xml | sed -n '1,160p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+exec
+/bin/bash -lc "curl -fsSI https://github.com/quarkusio/quarkus/tree/3.33.1/core/devmode-spi/src/test | sed -n '1,20p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/quarkusio/quarkus/contents/core/devmode-spi?ref=3.33.1 | rg '\"name\"|\"path\"|\"html_url\"' | sed -n '1,200p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+ succeeded in 226ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>quarkus-build-parent</artifactId>
+        <groupId>io.quarkus</groupId>
+        <version>3.33.1</version>
+        <relativePath>../../build-parent/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>quarkus-development-mode-spi</artifactId>
+    <name>Quarkus - Development mode - SPI</name>
+    <description>SPI classes for Quarkus Development mode.</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.smallrye.common</groupId>
+            <artifactId>smallrye-common-os</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
+
+ succeeded in 242ms:
+    "name": "pom.xml",
+    "path": "core/devmode-spi/pom.xml",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/core/devmode-spi/pom.xml",
+    "name": "src",
+    "path": "core/devmode-spi/src",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/core/devmode-spi/src",
+
+ succeeded in 632ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Thu, 30 Apr 2026 22:27:37 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=6vbRIk0J1BdQBInX%2FRJ4RY%2Bh7E6wYldbD7Vp4PX5BlMZbDccixzzMX8RfY632b%2BL2%2BXcWB8M2fudocU3quuipoEsoJ%2BAA%2BJGsdFjFRL75QN%2FXctjBDsFjZ0VMcQBYmU3eSb7THlhAcqGzFUlTDhid4Pw%2Bw40foRW7zTTYYrVPL3Pi59OipDGfRuNq2QKSmLB45ht6GCNwuQ9pUvwKD%2BN9gEVwLwBeCT21Eo%2B3pXfwXM5GiWKPGUf23XAHdB%2BCJQ0wsXj82LrmnGBZpx8wJ96oQ%3D%3D--ljiWcwC7n9Sr5IWc--ZFgBUVdkO0XscR73ZZev6Q%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1501990258.1777588057; expires=Fri, 30 Apr 2027 22:27:37 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 30 Apr 2027 22:27:37 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 8FB0:37BA98:178686B9:120535B8:69F3D759
+
+
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/quarkusio/quarkus/contents/core/devmode-spi/src?ref=3.33.1 | rg '\"name\"|\"path\"|\"html_url\"' | sed -n '1,160p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/quarkusio/quarkus/tarball/3.33.1 | tar -tz | rg 'core/devmode-spi/.*/test|core/devmode-spi/src' | sed -n '1,200p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/quarkusio/quarkus/tarball/3.33.1 | tar -tz | rg 'devmode-spi|DevelopmentMode|HotReplacementContext|DevConsoleManager' | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+ succeeded in 229ms:
+    "name": "main",
+    "path": "core/devmode-spi/src/main",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/core/devmode-spi/src/main",
+
+ succeeded in 4116ms:
+quarkusio-quarkus-e906774/core/devmode-spi/
+quarkusio-quarkus-e906774/core/devmode-spi/pom.xml
+quarkusio-quarkus-e906774/core/devmode-spi/src/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/ErrorPageGenerators.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/appstate/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/appstate/ApplicationStartException.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/appstate/ApplicationStateNotification.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/config/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/config/ConfigurationProblem.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/config/CurrentConfig.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/BasicConsole.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/CurrentAppExceptionHighlighter.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/DeploymentLinker.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/DevConsoleManager.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/DevConsoleRequest.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/DevConsoleResponse.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/QuarkusConsole.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/RedirectPrintStream.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/StatusLine.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/TempSystemProperties.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/TerminalUtils.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/io/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/io/NioThreadPoolThreadFactory.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/spi/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/spi/DeploymentFailedStartHandler.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/spi/DevModeType.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/spi/HotReplacementContext.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/spi/HotReplacementSetup.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/spi/RemoteDevState.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/ContinuousTestingSharedStateManager.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/ExceptionReporting.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/GrpcWebSocketProxy.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/KnownTags.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/TestScanningLock.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/TestWatchedFiles.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/TracingHandler.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/results/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/results/TestClassResultInterface.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/results/TestResultInterface.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/results/TestRunResultsInterface.java
+
+ succeeded in 4978ms:
+quarkusio-quarkus-e906774/core/devmode-spi/src/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/ErrorPageGenerators.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/appstate/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/appstate/ApplicationStartException.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/appstate/ApplicationStateNotification.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/config/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/config/ConfigurationProblem.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/config/CurrentConfig.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/BasicConsole.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/CurrentAppExceptionHighlighter.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/DeploymentLinker.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/DevConsoleManager.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/DevConsoleRequest.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/DevConsoleResponse.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/QuarkusConsole.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/RedirectPrintStream.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/StatusLine.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/TempSystemProperties.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/console/TerminalUtils.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/io/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/io/NioThreadPoolThreadFactory.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/spi/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/spi/DeploymentFailedStartHandler.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/spi/DevModeType.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/spi/HotReplacementContext.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/spi/HotReplacementSetup.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/spi/RemoteDevState.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/ContinuousTestingSharedStateManager.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/ExceptionReporting.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/GrpcWebSocketProxy.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/KnownTags.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/TestScanningLock.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/TestWatchedFiles.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/TracingHandler.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/results/
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/results/TestClassResultInterface.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/results/TestResultInterface.java
+quarkusio-quarkus-e906774/core/devmode-spi/src/main/java/io/quarkus/dev/testing/results/TestRunResultsInterface.java
+
+codex
+I found the module at `core/devmode-spi` in the `3.33.1` tag and confirmed it only has `src/main`; there is no Maven test artifact and no module-local `src/test` in the tag. I’m updating the JSON with Maven source/Javadoc URLs, the tagged Quarkus repository URL, and `N/A` for the unavailable test suite URL.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json
+index 839a444f8887fb3daff4e67be4ad1beeaf4c4751..77bf9cd4bfbd246671f95a29ddcd00766c76020c
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-development-mode-spi:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-development-mode-spi:3.33.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-development-mode-spi/3.33.1/quarkus-development-mode-spi-3.33.1-sources.jar",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-development-mode-spi/3.33.1/quarkus-development-mode-spi-3.33.1-javadoc.jar",
++  "description" : "Quarkus Development Mode SPI provides service provider interfaces and shared support classes used by Quarkus dev mode, including hot replacement, dev console integration, app-state notifications, and continuous testing state. It lets Quarkus core and extensions coordinate development-time behavior without depending on implementation-specific development mode internals."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json
+index 839a444f8887fb3daff4e67be4ad1beeaf4c4751..77bf9cd4bfbd246671f95a29ddcd00766c76020c
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-development-mode-spi:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-development-mode-spi:3.33.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-development-mode-spi/3.33.1/quarkus-development-mode-spi-3.33.1-sources.jar",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-development-mode-spi/3.33.1/quarkus-development-mode-spi-3.33.1-javadoc.jar",
++  "description" : "Quarkus Development Mode SPI provides service provider interfaces and shared support classes used by Quarkus dev mode, including hot replacement, dev console integration, app-state notifications, and continuous testing state. It lets Quarkus core and extensions coordinate development-time behavior without depending on implementation-specific development mode internals."
+ }
+
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+ succeeded in 0ms:
+{
+  "coordinates": "io.quarkus:quarkus-development-mode-spi:3.33.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-development-mode-spi/3.33.1/quarkus-development-mode-spi-3.33.1-sources.jar",
+  "repository-url": "https://github.com/quarkusio/quarkus",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-development-mode-spi/3.33.1/quarkus-development-mode-spi-3.33.1-javadoc.jar",
+  "description": "Quarkus Development Mode SPI provides service provider interfaces and shared support classes used by Quarkus dev mode, including hot replacement, dev console integration, app-state notifications, and continuous testing state. It lets Quarkus core and extensions coordinate development-time behavior without depending on implementation-specific development mode internals."
+}
+
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json
+index 839a444f8887fb3daff4e67be4ad1beeaf4c4751..77bf9cd4bfbd246671f95a29ddcd00766c76020c
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-development-mode-spi:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-development-mode-spi:3.33.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-development-mode-spi/3.33.1/quarkus-development-mode-spi-3.33.1-sources.jar",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-development-mode-spi/3.33.1/quarkus-development-mode-spi-3.33.1-javadoc.jar",
++  "description" : "Quarkus Development Mode SPI provides service provider interfaces and shared support classes used by Quarkus dev mode, including hot replacement, dev console integration, app-state notifications, and continuous testing state. It lets Quarkus core and extensions coordinate development-time behavior without depending on implementation-specific development mode internals."
+ }
+
+web search: 
+web search: https://github.com/quarkusio/quarkus/tree/3.33.1/core/devmode-spi
+web search: 
+web search: repo.maven.apache.org io/quarkus/quarkus-development-mode-spi/3.33.1 quarkus-development-mode-spi-3.33.1-sources.jar javadoc.jar
+codex
+Updated [io.quarkus-quarkus-development-mode-spi-3.33.1.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json).
+
+Set Maven Central sources and Javadocs for `3.33.1`, repository URL to Quarkus, `test-code-url` to `N/A`, and left `language` absent because this is not Kotlin/Groovy/Scala-specific. Validated the JSON with `jq`.
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json
+index 839a444f8887fb3daff4e67be4ad1beeaf4c4751..77bf9cd4bfbd246671f95a29ddcd00766c76020c
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-development-mode-spi:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-development-mode-spi:3.33.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-development-mode-spi/3.33.1/quarkus-development-mode-spi-3.33.1-sources.jar",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-development-mode-spi/3.33.1/quarkus-development-mode-spi-3.33.1-javadoc.jar",
++  "description" : "Quarkus Development Mode SPI provides service provider interfaces and shared support classes used by Quarkus dev mode, including hot replacement, dev console integration, app-state notifications, and continuous testing state. It lets Quarkus core and extensions coordinate development-time behavior without depending on implementation-specific development mode internals."
+ }
+
+2026-04-30T22:28:15.391771Z ERROR codex_core::session: failed to record rollout items: thread 019de080-6ff4-77a0-b131-75bae5ea54a5 not found
+tokens used
+46,863
+Updated [io.quarkus-quarkus-development-mode-spi-3.33.1.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e/build/discovered-artifact-metadata/io.quarkus-quarkus-development-mode-spi-3.33.1.json).
+
+Set Maven Central sources and Javadocs for `3.33.1`, repository URL to Quarkus, `test-code-url` to `N/A`, and left `language` absent because this is not Kotlin/Groovy/Scala-specific. Validated the JSON with `jq`.
+Ran agent for io.quarkus:quarkus-development-mode-spi:3.33.1 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e/build/agent-artifact-discovery-logs/io.quarkus-quarkus-development-mode-spi-3.33.1.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3816-5d8fb29e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 35s
+9 actionable tasks: 4 executed, 5 from cache
