@@ -22,6 +22,7 @@ import io.quarkus.bootstrap.json.JsonString;
 import io.quarkus.bootstrap.json.JsonTransform;
 import io.quarkus.bootstrap.json.JsonValue;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -242,6 +243,42 @@ public class Quarkus_bootstrap_jsonTest {
         assertThat(parsedArray.value()).hasSize(2);
         assertThat(((JsonInteger) parsedArray.value().get(0)).intValue()).isEqualTo(1);
         assertThat((JsonValue) ((JsonObject) parsedArray.value().get(1)).get("password")).isNull();
+    }
+
+    @Test
+    void directForEachVisitsObjectMembersAndArrayValues() {
+        JsonObject object = JsonReader.of("""
+                {
+                  "first": "alpha",
+                  "nested": {"enabled": true},
+                  "items": [1, 2]
+                }
+                """).read();
+        Map<String, JsonValue> visitedMembers = new LinkedHashMap<>();
+        List<Json.JsonBuilder<?>> objectCallbackBuilders = new ArrayList<>();
+
+        object.forEach((builder, value) -> {
+            objectCallbackBuilders.add(builder);
+            JsonMember member = (JsonMember) value;
+            visitedMembers.put(member.attribute().value(), member.value());
+        });
+
+        assertThat(objectCallbackBuilders).hasSize(3).allSatisfy(builder -> assertThat(builder).isNull());
+        assertThat(visitedMembers.keySet()).containsExactlyInAnyOrder("first", "nested", "items");
+        assertThat(((JsonString) visitedMembers.get("first")).value()).isEqualTo("alpha");
+        JsonObject nested = (JsonObject) visitedMembers.get("nested");
+        assertThat(((JsonBoolean) nested.get("enabled")).value()).isTrue();
+
+        JsonArray items = (JsonArray) visitedMembers.get("items");
+        List<Integer> visitedNumbers = new ArrayList<>();
+        List<Json.JsonBuilder<?>> arrayCallbackBuilders = new ArrayList<>();
+        items.forEach((builder, value) -> {
+            arrayCallbackBuilders.add(builder);
+            visitedNumbers.add(((JsonInteger) value).intValue());
+        });
+
+        assertThat(arrayCallbackBuilders).hasSize(2).allSatisfy(builder -> assertThat(builder).isNull());
+        assertThat(visitedNumbers).containsExactly(1, 2);
     }
 
     @Test
