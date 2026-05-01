@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.postgresql.ssl.BouncyCastlePrivateKeyFactory;
 
 import java.security.PrivateKey;
+import java.security.Provider;
 import java.util.Base64;
 
 import javax.security.auth.callback.PasswordCallback;
@@ -33,6 +34,14 @@ public class BouncyCastlePrivateKeyFactoryTest {
             z9G9/RaObFX19cUl53eFeZ6ADd9/zl3O8Tp3j64K4TKQYjft8JgLYg/2XkjGEE9nxDqgf92PlwAa
             0XkE4Qa46uo61blDZ+cEpc24EVGdz44Tcrvl93SLDirzFSPbbzBZrPtzSLoPkeC3h27AHrE=
             """;
+
+    @Test
+    void createsBouncyCastleProvider() throws Exception {
+        Provider provider = BouncyCastlePrivateKeyFactory.initBouncyCastleProvider();
+
+        assertThat(provider).isNotNull();
+        assertThat(provider.getName()).isEqualTo("BC");
+    }
 
     @Test
     void decryptsOpenSslPkcs8PrivateKeyWithBouncyCastle() throws Exception {
