@@ -1,0 +1,1964 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de2d4-6191-7001-95f6-aeb8a85780bb
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.android.tools.jill:jill-api:0.9.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "0.9.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json
+- Set "coordinates" to "com.android.tools.jill:jill-api:0.9.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven and upstream Android sources, then patch the JSON in place with only the fields requested.
+web search: 
+web search: com.android.tools.jill jill-api 0.9.0 maven sources jar
+exec
+/usr/bin/bash -lc "pwd && ls build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json && sed -n '1,160p' build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json
+{
+  "coordinates" : "com.android.tools.jill:jill-api:0.9.0"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "jill-api|com.android.tools.jill|toolchain/jill" .' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ exited 1 in 0ms:
+web search: 
+web search: com.android.tools.jill jill-api 0.9.0 maven sources jar
+codex
+The artifact is old and appears to come from the Android build tools distribution. I’m checking whether Google Maven has versioned source or javadoc artifacts first, because the requested metadata prefers Maven-hosted sources/tests when available.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://dl.google.com/dl/android/maven2/com/android/tools/jill/jill-api/0.9.0/' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ exited 22 in 0ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/android/tools/jill/jill-api/0.9.0/' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+exec
+/usr/bin/bash -lc 'curl -fsSL https://maven.google.com/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0.pom' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+exec
+/usr/bin/bash -lc 'curl -I -L https://maven.google.com/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-sources.jar && curl -I -L https://maven.google.com/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-javadoc.jar && curl -I -L https://maven.google.com/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-tests.jar' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ exited 22 in 195ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 256ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/android/tools/jill/jill-api/0.9.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/android/tools/jill/jill-api/0.9.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jill-api-0.9.0-javadoc.jar" title="jill-api-0.9.0-javadoc.jar">jill-api-0.9.0-javadoc.jar</a>                        2015-07-30 18:14     44509      
+<a href="jill-api-0.9.0-javadoc.jar.asc" title="jill-api-0.9.0-javadoc.jar.asc">jill-api-0.9.0-javadoc.jar.asc</a>                    2015-07-30 18:14       821      
+<a href="jill-api-0.9.0-javadoc.jar.md5" title="jill-api-0.9.0-javadoc.jar.md5">jill-api-0.9.0-javadoc.jar.md5</a>                    2015-07-30 18:14        32      
+<a href="jill-api-0.9.0-javadoc.jar.sha1" title="jill-api-0.9.0-javadoc.jar.sha1">jill-api-0.9.0-javadoc.jar.sha1</a>                   2015-07-30 18:14        40      
+<a href="jill-api-0.9.0-sources.jar" title="jill-api-0.9.0-sources.jar">jill-api-0.9.0-sources.jar</a>                        2015-07-30 18:14      6994      
+<a href="jill-api-0.9.0-sources.jar.asc" title="jill-api-0.9.0-sources.jar.asc">jill-api-0.9.0-sources.jar.asc</a>                    2015-07-30 18:14       821      
+<a href="jill-api-0.9.0-sources.jar.md5" title="jill-api-0.9.0-sources.jar.md5">jill-api-0.9.0-sources.jar.md5</a>                    2015-07-30 18:14        32      
+<a href="jill-api-0.9.0-sources.jar.sha1" title="jill-api-0.9.0-sources.jar.sha1">jill-api-0.9.0-sources.jar.sha1</a>                   2015-07-30 18:14        40      
+<a href="jill-api-0.9.0.jar" title="jill-api-0.9.0.jar">jill-api-0.9.0.jar</a>                                2015-07-30 18:14      5499      
+<a href="jill-api-0.9.0.jar.asc" title="jill-api-0.9.0.jar.asc">jill-api-0.9.0.jar.asc</a>                            2015-07-30 18:14       821      
+<a href="jill-api-0.9.0.jar.md5" title="jill-api-0.9.0.jar.md5">jill-api-0.9.0.jar.md5</a>                            2015-07-30 18:14        32      
+<a href="jill-api-0.9.0.jar.sha1" title="jill-api-0.9.0.jar.sha1">jill-api-0.9.0.jar.sha1</a>                           2015-07-30 18:14        40      
+<a href="jill-api-0.9.0.pom" title="jill-api-0.9.0.pom">jill-api-0.9.0.pom</a>                                2015-07-30 18:14      1047      
+<a href="jill-api-0.9.0.pom.asc" title="jill-api-0.9.0.pom.asc">jill-api-0.9.0.pom.asc</a>                            2015-07-30 18:14       821      
+<a href="jill-api-0.9.0.pom.md5" title="jill-api-0.9.0.pom.md5">jill-api-0.9.0.pom.md5</a>                            2015-07-30 18:14        32      
+<a href="jill-api-0.9.0.pom.sha1" title="jill-api-0.9.0.pom.sha1">jill-api-0.9.0.pom.sha1</a>                           2015-07-30 18:14        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 423ms:
+HTTP/2 301 
+location: https://dl.google.com/dl/android/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-sources.jar
+cross-origin-resource-policy: cross-origin
+content-type: text/html; charset=UTF-8
+x-content-type-options: nosniff
+date: Fri, 01 May 2026 09:17:56 GMT
+expires: Fri, 01 May 2026 09:47:56 GMT
+cache-control: public, max-age=1800
+server: sffe
+content-length: 301
+x-xss-protection: 0
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+HTTP/2 404 
+content-length: 1449
+content-type: text/html; charset=utf-8
+server: downloads
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 0
+date: Fri, 01 May 2026 09:17:56 GMT
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+
+  0  1449    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0   301    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0   301    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+  0  1449    0     0    0     0    HTTP/2 301 
+location: https://dl.google.com/dl/android/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-javadoc.jar
+cross-origin-resource-policy: cross-origin
+content-type: text/html; charset=UTF-8
+x-content-type-options: nosniff
+date: Fri, 01 May 2026 09:17:56 GMT
+expires: Fri, 01 May 2026 09:47:56 GMT
+cache-control: public, max-age=1800
+server: sffe
+content-length: 301
+x-xss-protection: 0
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+HTTP/2 404 
+content-length: 1449
+content-type: text/html; charset=utf-8
+server: downloads
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 0
+date: Fri, 01 May 2026 09:17:56 GMT
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+  0      0 --:--:-- --:--:-- --:--:--     0
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0   299    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+  0  1449    0     0    0     0      0      0 --:--:-HTTP/2 301 
+location: https://dl.google.com/dl/android/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-tests.jar
+cross-origin-resource-policy: cross-origin
+content-type: text/html; charset=UTF-8
+x-content-type-options: nosniff
+date: Fri, 01 May 2026 09:17:56 GMT
+expires: Fri, 01 May 2026 09:47:56 GMT
+cache-control: public, max-age=1800
+server: sffe
+content-length: 299
+x-xss-protection: 0
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+HTTP/2 404 
+content-length: 1449
+content-type: text/html; charset=utf-8
+server: downloads
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 0
+date: Fri, 01 May 2026 09:17:56 GMT
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+- --:--:-- --:--:--     0
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0.pom' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.android.tools.jill</groupId>
+  <artifactId>jill-api</artifactId>
+  <version>0.9.0</version>
+  <description>API to dynamically load Jill</description>
+  <url>http://tools.android.com/</url>
+  <name>com.android.tools.jill.jill-api</name>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>The Android Open Source Project</name>
+    </developer>
+  </developers>
+  <scm>
+    <connection>git://android.googlesource.com/platform/tools/base.git</connection>
+    <url>https://android.googlesource.com/platform/tools/base</url>
+  </scm>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-sources.jar -o /tmp/jill-api-0.9.0-sources.jar && jar tf /tmp/jill-api-0.9.0-sources.jar' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/android/
+com/android/jill/
+com/android/jill/api/
+com/android/jill/api/ConfigNotSupportedException.java
+com/android/jill/api/JillConfig.java
+com/android/jill/api/JillProvider.java
+com/android/jill/api/v01/
+com/android/jill/api/v01/Api01Config.java
+com/android/jill/api/v01/Api01TranslationTask.java
+com/android/jill/api/v01/ConfigurationException.java
+com/android/jill/api/v01/TranslationException.java
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-javadoc.jar -o /tmp/jill-api-0.9.0-javadoc.jar && jar tf /tmp/jill-api-0.9.0-javadoc.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+exec
+/usr/bin/bash -lc 'curl -I -L https://repo1.maven.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-tests.jar' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 218ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 404 
+date: Fri, 01 May 2026 09:18:02 GMT
+content-type: text/html
+cf-ray: 9f4db24d9ddcbb16-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 337ms:
+META-INF/
+META-INF/MANIFEST.MF
+allclasses-frame.html
+allclasses-noframe.html
+constant-values.html
+deprecated-list.html
+help-doc.html
+index-all.html
+index.html
+overview-frame.html
+overview-summary.html
+overview-tree.html
+package-list
+serialized-form.html
+stylesheet.css
+com/
+com/android/
+com/android/jill/
+com/android/jill/api/
+com/android/jill/api/ConfigNotSupportedException.html
+com/android/jill/api/JillConfig.html
+com/android/jill/api/JillProvider.SubReleaseKind.html
+com/android/jill/api/JillProvider.html
+com/android/jill/api/package-frame.html
+com/android/jill/api/package-summary.html
+com/android/jill/api/package-tree.html
+com/android/jill/api/v01/
+com/android/jill/api/v01/Api01Config.html
+com/android/jill/api/v01/Api01TranslationTask.html
+com/android/jill/api/v01/ConfigurationException.html
+com/android/jill/api/v01/TranslationException.html
+com/android/jill/api/v01/package-frame.html
+com/android/jill/api/v01/package-summary.html
+com/android/jill/api/v01/package-tree.html
+resources/
+resources/inherit.gif
+
+codex
+Maven Central has the 0.9.0 source and javadoc jars, but no `tests` classifier. I’m now mapping the artifact back to the Android Open Source Project tag so the test URL, if present, can point at the same released source state.
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://android.googlesource.com/platform/tools/base/+refs?format=TEXT' | base64 -d | rg '0\\.9|jill|studio|tools' | sed -n '1,200p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+base64: invalid input
+curl: (23) Failure writing output to destination
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://android.googlesource.com/platform/tools/base | rg '0\\.9|jill|gradle|studio|android|tools' | sed -n '1,200p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://android.googlesource.com/platform/tools/base/+/refs/tags/gradle_1.3.0/jill/api/src/main/java/com/android/jill/api/JillProvider.java?format=TEXT' | base64 -d | sed -n '1,120p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 176ms:
+64667e8fa1569704cb928bb9639139c70a989259	refs/tags/android-10.0.0_r1
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r1^{}
+937988398c8060b33fa6724a8888191af985adfd	refs/tags/android-10.0.0_r10
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r10^{}
+8ee0da118f558d627326aa81870fe1d6c598fd37	refs/tags/android-10.0.0_r11
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r11^{}
+aa35dbc70018be27d53c1d72b0ed52b86ec66d3e	refs/tags/android-10.0.0_r12
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r12^{}
+881bbfc77a260b6bdda4484a9747186ed66bf30a	refs/tags/android-10.0.0_r13
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r13^{}
+695f7e431a1bada53d2ca10e7ecffca2d6991a08	refs/tags/android-10.0.0_r14
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r14^{}
+cc36864060c80d5ad04ee069b24b90c4408d124d	refs/tags/android-10.0.0_r15
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r15^{}
+b47c708363c17b4df63a51eba40d07de8865f383	refs/tags/android-10.0.0_r16
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r16^{}
+6156ef3e2eb593e0731832a688645a09f1ea773a	refs/tags/android-10.0.0_r17
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r17^{}
+c24111ee229bcea505ccbeca2a96b4e55affe601	refs/tags/android-10.0.0_r18
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r18^{}
+2e9a314204e6f768ba2a39cbcd3b38f06de7a9ca	refs/tags/android-10.0.0_r19
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r19^{}
+eafec38c5ed3f1b45b2c4284c78528cbdc2c0792	refs/tags/android-10.0.0_r2
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r2^{}
+88eec77e778dbb554458ac8dd5da50901c6e3a8c	refs/tags/android-10.0.0_r20
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r20^{}
+77e1ad769b7d4b59fa4db3266c84f0ffb9e56d03	refs/tags/android-10.0.0_r21
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r21^{}
+4e8e26fed75b09855bed8fc3dcd3d2f6d7461c74	refs/tags/android-10.0.0_r22
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r22^{}
+64846bfbeca3789d1670454626924d745d3d5791	refs/tags/android-10.0.0_r23
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r23^{}
+4d1c54ba659976164028dc4a6caa5f293962cf66	refs/tags/android-10.0.0_r24
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r24^{}
+b88ea7fedfde2d15e65467c15fa53c88a40ee19b	refs/tags/android-10.0.0_r25
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r25^{}
+673f202968e8feaa673aa92a9f750e1432d0da3d	refs/tags/android-10.0.0_r26
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r26^{}
+b48dca8f398bfca92eb2598e09567ddac3262763	refs/tags/android-10.0.0_r27
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r27^{}
+170b9656b156341f75a48b306552b85bc92545ca	refs/tags/android-10.0.0_r28
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r28^{}
+93ea2fb511e275869cfc93e68c73025b501ed1ec	refs/tags/android-10.0.0_r29
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r29^{}
+a67e67b9d24c3e3bc4c008e917693ea073ae24a1	refs/tags/android-10.0.0_r3
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r3^{}
+99876638e58717298045e8147c38ab7536a9627d	refs/tags/android-10.0.0_r30
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r30^{}
+fc820df3eeb797e9236a4b9ceb26b1a08b822131	refs/tags/android-10.0.0_r31
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r31^{}
+a2d84a826019718c673c602839e3feffd7c974a3	refs/tags/android-10.0.0_r32
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r32^{}
+bfd7749ff87676b64e61e83b2ad312141c645df6	refs/tags/android-10.0.0_r33
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r33^{}
+d5937c6082b3211ca5132c590e543015d9565e96	refs/tags/android-10.0.0_r34
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r34^{}
+ae73ba7e9fc0d8b09aed164e168a7f8cace1f584	refs/tags/android-10.0.0_r35
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r35^{}
+abd0cb7159b479402ebe71ef9195e6da7735c68c	refs/tags/android-10.0.0_r36
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r36^{}
+660cfc2897a46488a9d95f4cea3e9e4d681906d1	refs/tags/android-10.0.0_r37
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r37^{}
+9790e34a18c022b8b72a072a723105ea49dabf6f	refs/tags/android-10.0.0_r38
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r38^{}
+c7bc66dfbdf662c6545f91018c5f79249095db22	refs/tags/android-10.0.0_r39
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r39^{}
+684efabcf2d1a55cc8e1e0a57b02f19289c3e2ec	refs/tags/android-10.0.0_r4
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r4^{}
+c65dc7c9494e7baf695ee5657c267b22419b662e	refs/tags/android-10.0.0_r40
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r40^{}
+a8aa53f74f328006a188068b324e7b13311e932d	refs/tags/android-10.0.0_r41
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r41^{}
+d59222533bc3f6d4eb3367e6b749e3f0e2069afa	refs/tags/android-10.0.0_r42
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r42^{}
+20598177e4e9a0a9dc6a3933e3e3f346c52d29a3	refs/tags/android-10.0.0_r43
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r43^{}
+4531ab2c57c3b80ec14e4a1fe3104be0e666a8ed	refs/tags/android-10.0.0_r44
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r44^{}
+c309b8a7e592b6eb49c313f9b94bb2d0f50e421f	refs/tags/android-10.0.0_r45
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r45^{}
+e161a72a126f989135bb1139cc2ade01061419fb	refs/tags/android-10.0.0_r46
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r46^{}
+f88b6704d1726f5a086bb187b16a2742f6808304	refs/tags/android-10.0.0_r47
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r47^{}
+ad5e2fb0d5ebd1a9d01b4613daf53b382efadde4	refs/tags/android-10.0.0_r5
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r5^{}
+3dcdd28e21d1d36b0963d8d4e9e0acf7d2c171dd	refs/tags/android-10.0.0_r6
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r6^{}
+7a5f0997cc0792d912180956533bc9fe747e0e63	refs/tags/android-10.0.0_r7
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r7^{}
+7eea1f4937a6afe617aa549f22a7f446bf1935ae	refs/tags/android-10.0.0_r8
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r8^{}
+07d15b720232d24dcc50c63dcd17679483663b2e	refs/tags/android-10.0.0_r9
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/android-10.0.0_r9^{}
+23a2b883a2359bb768267adf38d30d885bfebb46	refs/tags/android-11.0.0_r1
+32ab6e7772c03af3493069fe4dd57436ffdfc372	refs/tags/android-11.0.0_r1^{}
+c568995d932839a05ad84696c0034853eba50847	refs/tags/android-11.0.0_r10
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r10^{}
+d75882d9f0d794ab5962662af8204de64530e501	refs/tags/android-11.0.0_r11
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r11^{}
+80d09514d8800181aeede52ac14f1829b51f3e06	refs/tags/android-11.0.0_r12
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r12^{}
+b3dd0d0d3ddbb2e5824c21bc834ab9130d0c7a66	refs/tags/android-11.0.0_r13
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r13^{}
+c8ef0c82bc845831b1e8e4d81712a65c1bcaaf5d	refs/tags/android-11.0.0_r14
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r14^{}
+97530dfb93b512841695556acf97ca50f439828a	refs/tags/android-11.0.0_r15
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r15^{}
+4553ce3e0417db87f124980247d516818076e1b4	refs/tags/android-11.0.0_r16
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r16^{}
+df7cf16e60b47ab452332395ab4d0784398f29ab	refs/tags/android-11.0.0_r17
+32ab6e7772c03af3493069fe4dd57436ffdfc372	refs/tags/android-11.0.0_r17^{}
+0f637c1f9ff1aacbdbdcde69f9b06bb2333c89df	refs/tags/android-11.0.0_r18
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r18^{}
+33558095d417dd4362174b4206f67ede6df98dba	refs/tags/android-11.0.0_r19
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r19^{}
+9a17d6ae5c64a2f47e20e408922102fd50829c45	refs/tags/android-11.0.0_r2
+32ab6e7772c03af3493069fe4dd57436ffdfc372	refs/tags/android-11.0.0_r2^{}
+a84df0a6b64582bcbcfbf6e0debb2ffc09daf8f1	refs/tags/android-11.0.0_r20
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r20^{}
+f653fb535a1172660d5f18d9aad7fe1160bde78e	refs/tags/android-11.0.0_r21
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r21^{}
+64dc10541065ad871623798663e3bd878559c1e7	refs/tags/android-11.0.0_r22
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r22^{}
+02efa3900e92c9d9ec118b6c798bfb252b2417f9	refs/tags/android-11.0.0_r23
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r23^{}
+9ddbf5e9a771032f6c446d5f53ac52bf1164cc17	refs/tags/android-11.0.0_r24
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r24^{}
+6a001f6450018e5f9f95da0be259f0389ddeb7a0	refs/tags/android-11.0.0_r25
+32ab6e7772c03af3493069fe4dd57436ffdfc372	refs/tags/android-11.0.0_r25^{}
+79990abe40b28537c6c8fb2d3fa9053ddedfb563	refs/tags/android-11.0.0_r26
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r26^{}
+382969dd527f584eff3142a10c6d14b60a367347	refs/tags/android-11.0.0_r27
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r27^{}
+e998552ca89538bfdd229ef7dfea9911f1a00b13	refs/tags/android-11.0.0_r28
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r28^{}
+a6a0524ec1f75b6da36f70d169f14dda61a6be57	refs/tags/android-11.0.0_r29
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r29^{}
+87be3458ae8727fa56664d65a23e9057bb0c3b8d	refs/tags/android-11.0.0_r3
+32ab6e7772c03af3493069fe4dd57436ffdfc372	refs/tags/android-11.0.0_r3^{}
+6fc059e8b50595a2cf861aed0348c0840f7fc8ba	refs/tags/android-11.0.0_r30
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r30^{}
+28ed3d461556cfbee881cfbddfffd959a7aae045	refs/tags/android-11.0.0_r31
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r31^{}
+137d287b86816a4af90a1062396261479721b251	refs/tags/android-11.0.0_r32
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r32^{}
+2d7ffd73e17bf5b509c8c707760c5419a95ebe29	refs/tags/android-11.0.0_r33
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r33^{}
+dea0775bf8da36ac7404d702228e078e36154cad	refs/tags/android-11.0.0_r34
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r34^{}
+5ecdb08c5987ab8a81e83b8196eecd1441265977	refs/tags/android-11.0.0_r35
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r35^{}
+10b748f77cf07ba596e18efff3be23aba78e1d96	refs/tags/android-11.0.0_r36
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r36^{}
+360f2f628438210ba71e7789edae80e7c15fab38	refs/tags/android-11.0.0_r37
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r37^{}
+7c14f1aa648dbebf02437f1b408a35839264d7d2	refs/tags/android-11.0.0_r38
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r38^{}
+7fc212c8c8b7a475f3b35d929b605a57ed74f476	refs/tags/android-11.0.0_r39
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r39^{}
+c210dadd629d949f91c15e0335b53bc7c020b356	refs/tags/android-11.0.0_r4
+32ab6e7772c03af3493069fe4dd57436ffdfc372	refs/tags/android-11.0.0_r4^{}
+f8f6c8c79cd8537689285f82aabe2a997df87da3	refs/tags/android-11.0.0_r40
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r40^{}
+b4d5577c0bb69b98d6380d4916b8922ffd2f8e42	refs/tags/android-11.0.0_r41
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r41^{}
+49087dfc9ccffc18d65ac8578b9b7e47798005bd	refs/tags/android-11.0.0_r42
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r42^{}
+442e8bd8ad61ecd6618a5093bbbf5af3a7777c83	refs/tags/android-11.0.0_r43
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r43^{}
+daba06824b0cc2bed3ff99a76b01354620355e21	refs/tags/android-11.0.0_r44
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r44^{}
+693fb8d91c8b395600a4bed63a5928a796573880	refs/tags/android-11.0.0_r45
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r45^{}
+2af81b77a916e16fb778e571f1faeb397e566479	refs/tags/android-11.0.0_r46
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r46^{}
+cad63e4f14a671a3426ac008f761e55f44e2e8b8	refs/tags/android-11.0.0_r47
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r47^{}
+f8c6cb12339ebd9517018e50701e550dbcdab8db	refs/tags/android-11.0.0_r48
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r48^{}
+ec9f9e43e11c3ddfd107426fd80304534b7a6787	refs/tags/android-11.0.0_r5
+32ab6e7772c03af3493069fe4dd57436ffdfc372	refs/tags/android-11.0.0_r5^{}
+b6d5976ca89f7d04736beec7c224b7cbb2451cdf	refs/tags/android-11.0.0_r7
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r7^{}
+364a11eb872018c2f322aa6e19e6a381f162f920	refs/tags/android-11.0.0_r8
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r8^{}
+1ac36272a6a475552cf4c82ebd3d59382ca4553e	refs/tags/android-11.0.0_r9
+e5707a5b9fc46b6ea63eeece879fb996bde27e75	refs/tags/android-11.0.0_r9^{}
+7ad840678bd753ad0fa05073b0de548a0bfa04b2	refs/tags/android-12.0.0_r1
+0b273d27cf80ebce6f589660ddca52e746fd5715	refs/tags/android-12.0.0_r1^{}
+478019ca06f2ed97b5856affbbb40fcdffaab1a3	refs/tags/android-12.0.0_r10
+0b273d27cf80ebce6f589660ddca52e746fd5715	refs/tags/android-12.0.0_r10^{}
+785fc8c5337cd74db0f403fd207e0d9b02a4c686	refs/tags/android-12.0.0_r11
+0b273d27cf80ebce6f589660ddca52e746fd5715	refs/tags/android-12.0.0_r11^{}
+afabc6857104f6cb1fe3aebd5cc007f0f8fc68f7	refs/tags/android-12.0.0_r12
+e7df4dcc635b759d9f6988a6c3e28b4a668b4327	refs/tags/android-12.0.0_r12^{}
+42b128c4d86112cb4ebf65e7e010dccf2fca1262	refs/tags/android-12.0.0_r13
+e7df4dcc635b759d9f6988a6c3e28b4a668b4327	refs/tags/android-12.0.0_r13^{}
+ae83d01b6c8ea56090e5c9109efe0c79df332d7c	refs/tags/android-12.0.0_r14
+e7df4dcc635b759d9f6988a6c3e28b4a668b4327	refs/tags/android-12.0.0_r14^{}
+
+ succeeded in 211ms:
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: "jill-api" "0.9.0" "tools/base"
+exec
+/usr/bin/bash -lc "rm -rf /tmp/jill-api-src /tmp/jill-api-javadoc && mkdir -p /tmp/jill-api-src /tmp/jill-api-javadoc && cd /tmp/jill-api-src && jar xf /tmp/jill-api-0.9.0-sources.jar && find . -type f -maxdepth 8 -print | sort && sed -n '1,220p' com/android/jill/api/JillProvider.java && sed -n '1,180p' com/android/jill/api/v01/Api01TranslationTask.java" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+./META-INF/MANIFEST.MF
+./com/android/jill/api/ConfigNotSupportedException.java
+./com/android/jill/api/JillConfig.java
+./com/android/jill/api/JillProvider.java
+./com/android/jill/api/v01/Api01Config.java
+./com/android/jill/api/v01/Api01TranslationTask.java
+./com/android/jill/api/v01/ConfigurationException.java
+./com/android/jill/api/v01/TranslationException.java
+/*
+ * Copyright (C) 2015 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.android.jill.api;
+
+import java.util.Collection;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+
+/**
+ * Provides instances of {@link JillConfig}.
+ */
+public interface JillProvider {
+  /**
+   * Creates a {@link JillConfig} instance for an interface representing a {@link JillConfig} API
+   * version.
+   * @param cls the {@link JillConfig} API interface
+   * @return the {@link JillConfig} instance
+   * @throws ConfigNotSupportedException If no implementation is found for the given interface.
+   */
+  @Nonnull
+  <T extends JillConfig> T createConfig(@Nonnull Class<T> cls) throws ConfigNotSupportedException;
+
+  /**
+   * Returns whether an interface representing a {@link JillConfig} API version is supported.
+   *
+   * @param cls the {@link JillConfig} API interface
+   * @return <code>true</true> if the config is supported
+   */
+  @Nonnull
+  <T extends JillConfig> boolean isConfigSupported(@Nonnull Class<T> cls);
+
+  /**
+   * Gives a {@link Collection} containing supported {@link JillConfig} API versions.
+   * @return the supported {@link JillConfig} API versions
+   */
+  @Nonnull
+  Collection<Class<? extends JillConfig>> getSupportedConfigs();
+
+  /**
+   * Gives the version of this Jill, summarized in one string (e.g. "1.1-rc1", "2.0-a2",
+   * ...).
+   *
+   * @return the version
+   */
+  @Nonnull
+  String getTranslatorVersion();
+
+  /**
+   * Gives the release name of this Jill (e.g. Arzon, Brest, ...).
+   *
+   * @return the release name
+   */
+  @Nonnull
+  String getTranslatorReleaseName();
+
+  /**
+   * Gives an integer value that represents the release of this Jill, relative to other
+   * releases.
+   *
+   * @return the release code
+   */
+  @Nonnegative
+  int getTranslatorReleaseCode();
+
+  /**
+   * Gives an integer value that represents the sub-release of this Jill, relative to other
+   * sub-releases of the same release.
+   *
+   * @return the sub-release code
+   */
+  @Nonnegative
+  int getTranslatorSubReleaseCode();
+
+  /**
+   * Gives the kind of sub-release of this Jill.
+   *
+   * @return the sub-release kind
+   */
+  @Nonnull
+  SubReleaseKind getTranslatorSubReleaseKind();
+
+  /**
+   * The kind of sub-release.
+   */
+  public enum SubReleaseKind {
+    /**
+     * A sub-release from an engineering development, not tested, not in the code base repository.
+     */
+    ENGINEERING,
+    /**
+     * A sub-release that is not feature complete, not tested.
+     */
+    PRE_ALPHA,
+    /**
+     * A sub-release that is not feature complete, tested.
+     */
+    ALPHA,
+    /**
+     * A sub-release that is feature complete, tested, but likely contains known or unknown bugs.
+     */
+    BETA,
+    /**
+     * A pre-production sub-release, tested.
+     */
+    CANDIDATE,
+    /**
+     * A production and stable sub-release.
+     */
+    RELEASE;
+  }
+
+  /**
+   * The build ID of this Jill.
+   * @return the build ID, or null if not available
+   */
+  @CheckForNull
+  String getTranslatorBuildId();
+
+  /**
+   * Identify the source code base of this Jill.
+   * @return the source code base, or null if not available
+   */
+  @CheckForNull
+  String getTranslatorSourceCodeBase();
+}
+/*
+ * Copyright (C) 2015 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.android.jill.api.v01;
+
+
+/**
+ * A task allowing to run Jill once.
+ */
+public interface Api01TranslationTask {
+
+  /**
+   * Runs the translation task. May be called only once.
+   * @throws TranslationException If a fatal error occurred during the translation
+   * @throws IllegalStateException If the translation task is run more than once
+   */
+  void run() throws TranslationException, IllegalStateException;
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://android.googlesource.com/platform/tools/base/+/master/jill?format=JSON' | sed '1s/"'^)]}'"\\x27//' | head -c 4000" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://android.googlesource.com/platform/tools/base/+refs?format=TEXT' | sed '1s/"'^)]}'"\\x27//' | base64 -d | rg -i 'jill|0\\.9|studio' | sed -n '1,200p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 213ms:
+base64: invalid input
+curl: (23) Failure writing output to destination
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://android.googlesource.com/platform/tools/base/+refs?format=TEXT' | tail -n +2 | base64 -d | rg -i 'jill|0\\.9|studio|gradle' | sed -n '1,250p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+base64: invalid input
+curl: (23) Failure writing output to destination
+
+exec
+/usr/bin/bash -lc "git ls-remote --heads https://android.googlesource.com/platform/tools/base | rg -i 'jill|studio|tools|gradle|ub-' | sed -n '1,250p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+exec
+/usr/bin/bash -lc 'for ref in master main studio-master-dev ub-tools-idea133-dev; do echo "$ref"; curl -fsSL "https://android.googlesource.com/platform/tools/base/+/$ref?format=JSON" | tail -n +2 | head -c 500; echo; done' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 130ms:
+feb4af80af1a751aee9a96e55dde1d789f7f9094	refs/heads/gradle-dev
+197d36affa3f131baa95e7654f380cec391231ab	refs/heads/gradle_0.10
+7ee5900416498cd0687b5accf210f2c947eba199	refs/heads/gradle_0.11
+06800c70e9d4af5eac0c1e73a2dc97aac38908b7	refs/heads/gradle_0.7
+04e30ce30230efb9db8b8f1d57421e770f4ff6fd	refs/heads/gradle_0.8
+8b894e4ed0efd82855b2dd481022ff8a14c07a80	refs/heads/gradle_0.9
+7a6fd56d21ec83d61c145931d3167af687d8279b	refs/heads/mirror-goog-studio-main
+6bbb16186fa0087f54b6857e1e0aa88d115ab537	refs/heads/mirror-goog-studio-master-dev
+d2b7df2b66658de866a566c1098b7390782980e3	refs/heads/studio-1.0-dev
+19511f2136fb3fe88faff768f152987918a06665	refs/heads/studio-1.0-release
+c2fa2cedc986d887cb31209a107159839818f2df	refs/heads/studio-1.1-dev
+4363913eda4f49eae68cd34455ee371f1de3b4fc	refs/heads/studio-1.1-release
+e28a7ad1c3d876eb11aa64ed51d0927b1e73e1a6	refs/heads/studio-1.2-dev
+e2fa3c410c86237b972f4a6ff54fd9ef205f2561	refs/heads/studio-1.2-release
+34b8d50f92c80c3906a999005b8f6ef952b90f42	refs/heads/studio-1.3-dev
+03f6b16e358bd92619d71e59a34a211a6f6528f1	refs/heads/studio-1.3-release
+59f216c16538697767f203c9a2a8ceeffbc3dafb	refs/heads/studio-1.4-dev
+b947204e45cac929d0ddfaa4bfe2652345c6fd4a	refs/heads/studio-1.4-release
+05dc21d0a0f64f84c8584b547f6161110538911a	refs/heads/studio-2022.1.1-canary
+e569fb4bc4a99d8dccc15fba5195f865d36de3b5	refs/heads/studio-2024.3.1
+15d750b6b20b8073e6b1b5b478afb5fdd3ccb738	refs/heads/studio-2024.3.2-patch01
+6e0850ad93ed28caa43d9a12538ea62a141e59b3	refs/heads/studio-2024.3.2-rc01
+e6ad6bcbe8d27b547789245447d517019c67af25	refs/heads/studio-2025.1.1-alpha03
+da9a8ab04164f335577c812136ce8f643b09499f	refs/heads/studio-2025.1.1-alpha10
+be6c070b8198f0fb63d871fb75cfbbf7bf1d6673	refs/heads/studio-2025.1.1-rc01
+615d5a9977977a51454bf408d89a81263ae9d239	refs/heads/studio-2025.1.2-alpha03
+5d349be0b69b5e8333b6b97f08427749feffe084	refs/heads/studio-beta
+05dc21d0a0f64f84c8584b547f6161110538911a	refs/heads/studio-canary
+dcb3f119e04f041455c9ffe86940d6eb7bc4e6d5	refs/heads/studio-koala-feature-release
+f01666f34aeaf70d3e7e176cf25cb599b61277c5	refs/heads/studio-koala-release
+758ed6b1d0944b9b23c2d5af5013e4b53c96048f	refs/heads/studio-ladybug-release
+0e18f2f40d37ad607ac34ef6c54caf3c67f2ed0d	refs/heads/studio-main
+4f3dd083ac399c045e774282cfe1f48e6e16f239	refs/heads/studio-master-dev
+d17e1389d099364bc4832f917a6185d99713af54	refs/heads/studio-master-release
+d0500fe64ce0fe70ca6d7ef0ef3b48103a2965af	refs/heads/tools-canary-release
+af89b043e636532820d00120c9fb0070cedd28cc	refs/heads/tools_r22
+f67950452b4c18cee6e8703c26164057c5da027a	refs/heads/tools_r22.1
+64c14e8f88d71c6ca2f0b973ab7e9ec11f4432f1	refs/heads/tools_r22.2
+0725c94cb68378e2c587107766cfd2261c84a8c2	refs/heads/tools_r22.6
+8e3f073cab78785b982a082701306a68bc913d80	refs/heads/ub-tools-idea133-milestone
+1ebe5dc46fa574de7d90a0e50276ac82b6837b58	refs/heads/ub-tools-idea133-release
+
+ succeeded in 326ms:
+{
+  "commit": "01c102600be4d4de633751d6ca0bc09eda527a92",
+  "tree": "ffb7ebb9a0b0a3229ce659cd79beecec55e450df",
+  "parents": [
+    "230e365e694749ed205e4093706cd79eca51ce44",
+    "95ebbaeb2d41f28adb4c387b9f93787505ff12a8"
+  ],
+  "author": {
+    "name": "Treehugger Robot",
+    "email": "treehugger-gerrit@google.com",
+    "time": "Wed Oct 27 16:29:05 2021 +0000"
+  },
+  "committer": {
+    "name": "Automerger Merge Worker",
+    "email": "android-build-automerger-merge-worker@system.gserviceaccount.c
+studio-master-dev
+{
+  "commit": "4f3dd083ac399c045e774282cfe1f48e6e16f239",
+  "tree": "a5cbbb3740731d5f16d86059ab5f172fc9873fbe",
+  "parents": [
+    "e647036b895a4765859d926f5f072bbc5cf0a2eb",
+    "216d5e7252168fef3d27f790b9e3bb33f6dc4c8a"
+  ],
+  "author": {
+    "name": "android-build-team Robot",
+    "email": "android-build-team-robot@google.com",
+    "time": "Wed Nov 04 15:22:52 2020 +0000"
+  },
+  "committer": {
+    "name": "android-build-team Robot",
+    "email": "android-build-team-robot@google.com",
+    "tim
+ub-tools-idea133-dev
+curl: (22) The requested URL returned error: 404
+
+
+exec
+/usr/bin/bash -lc 'for ref in gradle_0.9 studio-1.3-release studio-1.3-dev master studio-master-dev; do echo "$ref"; curl -fsSL "https://android.googlesource.com/platform/tools/base/+/$ref/jack?format=JSON" | tail -n +2 | jq -r '"'.entries[].name' 2>/dev/null || true; done" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+exec
+/usr/bin/bash -lc 'for ref in gradle_0.9 studio-1.3-release studio-1.3-dev master studio-master-dev; do echo "$ref"; curl -fsSL "https://android.googlesource.com/platform/tools/base/+/$ref?format=JSON" | tail -n +2 | jq -r '"'.entries[].name' | rg '"'^jill$|''^build-system$|''^jack$'"' || true; done" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+exec
+/usr/bin/bash -lc 'for ref in gradle_0.9 studio-1.3-release studio-1.3-dev master studio-master-dev; do echo "$ref"; curl -fsSL "https://android.googlesource.com/platform/tools/base/+/$ref/jill?format=JSON" | tail -n +2 | jq -r '"'.entries[].name' 2>/dev/null || true; done" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 863ms:
+jq: error (at <stdin>:20): Cannot iterate over null (null)
+studio-1.3-dev
+jq: error (at <stdin>:20): Cannot iterate over null (null)
+master
+jq: error (at <stdin>:20): Cannot iterate over null (null)
+studio-master-dev
+jq: error (at <stdin>:20): Cannot iterate over null (null)
+
+ succeeded in 1049ms:
+curl: (22) The requested URL returned error: 404
+studio-1.3-dev
+curl: (22) The requested URL returned error: 404
+master
+curl: (22) The requested URL returned error: 404
+studio-master-dev
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 1609ms:
+curl: (22) The requested URL returned error: 404
+studio-1.3-release
+curl: (22) The requested URL returned error: 404
+studio-1.3-dev
+curl: (22) The requested URL returned error: 404
+master
+jack-api
+jill-api
+studio-master-dev
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://android.googlesource.com/platform/tools/base/+/master/jill-api?format=JSON' | tail -n +2 | jq -r '.entries[] | [.type,.name] | @tsv'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://android.googlesource.com/platform/tools/base/+/master/jill-api/src?format=JSON' | tail -n +2 | jq -r '.entries[] | [.type,.name] | @tsv'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://android.googlesource.com/platform/tools/base/+/master/jill-api/build.gradle?format=TEXT' | base64 -d | sed -n '1,200p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://android.googlesource.com/platform/tools/base/+/master/jack?format=JSON' | tail -n +2 | jq -r '.entries[] | [.type,.name] | @tsv'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+tree	jack-api
+tree	jill-api
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://android.googlesource.com/platform/tools/base/+/master/jack/jill-api?format=JSON' | tail -n +2 | jq -r '.entries[] | [.type,.name] | @tsv'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+blob	README.txt
+blob	build.gradle
+blob	jill-api.iml
+tree	src
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://android.googlesource.com/platform/tools/base/+/master/jack/jill-api/build.gradle?format=TEXT' | base64 -d | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+apply plugin: 'java'
+
+group = 'com.android.tools.jill'
+archivesBaseName = 'jill-api'
+version = '0.9.0'
+
+configurations {
+  provided
+}
+
+dependencies {
+  provided 'com.google.code.findbugs:jsr305:1.3.9'
+}
+
+compileJava.classpath += configurations.provided
+
+project.ext.pomName = 'Android Jill API'
+project.ext.pomDesc = 'API to dynamically load Jill'
+
+apply from: "$rootDir/buildSrc/base/publish.gradle"
+apply from: "$rootDir/buildSrc/base/bintray.gradle"
+apply from: "$rootDir/buildSrc/base/javadoc.gradle"
+
+javadoc {
+    classpath += configurations.provided
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://android.googlesource.com/platform/tools/base/+/master/jack/jill-api/src/test?format=JSON' | tail -n +2 | jq -r '.entries[] | [.type,.name] | @tsv'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://android.googlesource.com/platform/tools/base/+/master/jack/jill-api/src?format=JSON' | tail -n +2 | jq -r '.entries[] | [.type,.name] | @tsv' && curl -fsSL 'https://android.googlesource.com/platform/tools/base/+/master/jack/jill-api/src/main?format=JSON' | tail -n +2 | jq -r '.entries[] | [.type,.name] | @tsv'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://android.googlesource.com/platform/tools/base 'refs/tags/studio-1.3*' 'refs/tags/gradle*' 'refs/tags/tools*' | sed -n '1,200p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://android.googlesource.com/platform/tools/base | rg -i 'studio|gradle|tools|1\\.3|0\\.9' | sed -n '1,300p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 121ms:
+tree	java
+
+ succeeded in 179ms:
+6f0deba5d04426bf57ca26f6ad843d57b878e934	refs/tags/android-4.3_r0.9
+c6b4e6bcf47320deffb6c706128b8632e3695cd2	refs/tags/android-4.3_r0.9^{}
+137658a366a5b6199192fad9fe571d53a56ead0b	refs/tags/android-4.3_r0.9.1
+c6b4e6bcf47320deffb6c706128b8632e3695cd2	refs/tags/android-4.3_r0.9.1^{}
+b6cbdf1a94848eba229717af6773d728ab4c8061	refs/tags/gradle_0.10.0
+73b826082225817e2cc0093475fdf917f7a6c696	refs/tags/gradle_0.10.0^{}
+b2d7cef77ac729ee1a185bd9fc5ddcf0125363c3	refs/tags/gradle_0.10.1
+154af3e4546e0abf71d76698bb119f75bb653766	refs/tags/gradle_0.10.1^{}
+8d63bd36599fc8c5c96cf96633d0357a5ccf1199	refs/tags/gradle_0.10.2
+38d32e86739b86b414f9613b31c452822f712714	refs/tags/gradle_0.10.2^{}
+a2dfb76397890071a818ea937da12e4c257a931a	refs/tags/gradle_0.10.3
+810fb8c7f03546dbcf4f54abc97c7f6cf5fd7699	refs/tags/gradle_0.10.3^{}
+d0c7c2f60b3835dad8c21297952832ff77835268	refs/tags/gradle_0.10.4
+197d36affa3f131baa95e7654f380cec391231ab	refs/tags/gradle_0.10.4^{}
+c1776bea11be6be8105d422e95a4b13e3874fc05	refs/tags/gradle_0.11.0
+2c82cf25ce522929a06308de7d47840c0534baea	refs/tags/gradle_0.11.0^{}
+398d7c319ecf05e5712403533fc57605164c9b20	refs/tags/gradle_0.11.1
+43cd3ae51ef06e7b37d2d3854fb15047fc464fe0	refs/tags/gradle_0.11.1^{}
+427a797c3049033b4a68a222085bdf0a2d735269	refs/tags/gradle_0.11.2
+7ee5900416498cd0687b5accf210f2c947eba199	refs/tags/gradle_0.11.2^{}
+00526f72c7541dcacc2463acb69af0a1779faf91	refs/tags/gradle_0.12.0
+052be5bb6315e705b92a8fd2eb2dbeafcd47befa	refs/tags/gradle_0.12.0^{}
+5ea2a2932da850e7460d1f40417abdee0eef6819	refs/tags/gradle_0.12.1
+d857f023bbcfaba933a3800272410f4ce545c74a	refs/tags/gradle_0.12.1^{}
+c2e95bad06d7c8de88d6b60a04870f6e8f33f841	refs/tags/gradle_0.12.2
+e99dc9a1c87660320caa64bb98545971bdff387f	refs/tags/gradle_0.12.2^{}
+c07510c0dcc52e8b32b88d8d84a54923e667c067	refs/tags/gradle_0.13.0
+69c369cac359a1b2b78d006cf54513cfeab56efc	refs/tags/gradle_0.13.0^{}
+d8de8f14cd1d47acd70c1fad0386991c3cc845a2	refs/tags/gradle_0.13.1
+bd44982e8b0f488d87d18b4f420f7108ee2b131d	refs/tags/gradle_0.13.1^{}
+942ce80797403c005b45e08bb32e05b9e5585ab9	refs/tags/gradle_0.13.2
+ca1966565fc4dad0eebab6a1d2a105d5c8627379	refs/tags/gradle_0.13.2^{}
+1f873df2e6d0436a3a25bed714fa63f4b41ff0bb	refs/tags/gradle_0.13.3
+9f1c7130c817b1bb16b1c65cc080d8572c10f7dc	refs/tags/gradle_0.13.3^{}
+ad9c60408635295fde1282634efff7988626ebc1	refs/tags/gradle_0.14.0
+ebcd081c1a5c2b4ec70332d2c772a58478c307d0	refs/tags/gradle_0.14.0^{}
+43e2869c834ad082a2303a7879b3b0cf187ba80a	refs/tags/gradle_0.14.1
+f4d02172d926c74efc55fd851b8e1efa0cecbef1	refs/tags/gradle_0.14.1^{}
+a40cb3ac0873ff87b2b8c8cb45134e872cf4a3fb	refs/tags/gradle_0.14.2
+bcd2586372a3c3c0867ec99b19d232c5aac68c60	refs/tags/gradle_0.14.2^{}
+caaab57f84c8f7d344b152649f27e0f6e1f502ac	refs/tags/gradle_0.14.3
+cf5bc12eb359edecd56b541617e162342afdef8b	refs/tags/gradle_0.14.3^{}
+182fdc7bcba7888894be4da5c187d4504f5e4c39	refs/tags/gradle_0.14.4
+f970831f6b5d140c39a3f0cce676b5944146b4f8	refs/tags/gradle_0.14.4^{}
+29f518471c441f17b19bbf316940512db784fb3a	refs/tags/gradle_0.9.0
+b8c5a93aaf8e5e189249d4651b69da8ed3523f4c	refs/tags/gradle_0.9.0^{}
+accec972c49dc7193fa34b87676906f64a83afef	refs/tags/gradle_0.9.1
+02b713438cd81cde3025379f4ed384a890a778c8	refs/tags/gradle_0.9.1^{}
+1fb1c6deb6e784e34e249d90a1daa6de4a1f5a26	refs/tags/gradle_0.9.2
+9911292bb602cc7cfa99f11afcf1ca43f0e3959d	refs/tags/gradle_0.9.2^{}
+4ac768a737edf98e6462c479b36467e90854cffa	refs/tags/gradle_1.0.0
+029dad3ef25b0f9af776160b56d284733e20419e	refs/tags/gradle_1.0.0^{}
+d0af24f95ca93e97a7a17577aba90ee4214816fe	refs/tags/gradle_1.0.0-rc1
+ff9120792abc817e17e4f1cf26e44c6ae26312fc	refs/tags/gradle_1.0.0-rc1^{}
+1200d2168da750f10ddad1cc8875e7b98987186f	refs/tags/gradle_1.0.0-rc2
+3494164484a6bb93520944f3c1c0a5e38023f322	refs/tags/gradle_1.0.0-rc2^{}
+14f41ee78baf7ec4c5e3b4469fd9df03c4b2faa6	refs/tags/gradle_1.0.0-rc3
+acbe3cc858b984388609744d8962eb6b8deb4d23	refs/tags/gradle_1.0.0-rc3^{}
+4a7b9904390082b9fb098b4a98ca2d986e53c1f7	refs/tags/gradle_1.0.0-rc4
+267245b01b3066dfe2db8f362bf3872dba1cb502	refs/tags/gradle_1.0.0-rc4^{}
+ea7e75e99b64a7669607bdca747454a2fb52ba32	refs/tags/gradle_1.0.1
+19511f2136fb3fe88faff768f152987918a06665	refs/tags/gradle_1.0.1^{}
+4d51e088ac27aaad11615cce6ef5b07668c24fb3	refs/tags/gradle_1.1.0
+057226b74a07dbae77abda77a47b2c8bbb932ffe	refs/tags/gradle_1.1.0^{}
+33452842f62e23065ebbdab7cb9327a42e25d3df	refs/tags/gradle_1.1.0-rc1
+3e456b7bb377e16286d47270e80c283fc42d81da	refs/tags/gradle_1.1.0-rc1^{}
+4a8141d826865e6135a0a94b9c7b2960dc47ecea	refs/tags/gradle_1.1.0-rc2
+598fb9bcbcd93fe134341daf89eb95b6b005b981	refs/tags/gradle_1.1.0-rc2^{}
+8bd64ecc877f749bb7a6ed98bb003492fcbfe36d	refs/tags/gradle_1.1.0-rc3
+598fb9bcbcd93fe134341daf89eb95b6b005b981	refs/tags/gradle_1.1.0-rc3^{}
+6c0ecefa70b88729c3a2a53de33552e1f8c1871f	refs/tags/gradle_1.1.1
+3788a1721cd6ae58809c944c4c77a6b1c28866d2	refs/tags/gradle_1.1.1^{}
+affd4479f7f4d2fe1a2f6339695b92a51d9b1670	refs/tags/gradle_1.1.2
+8042cde566a158134a28a81ad8c1ca3681aded4d	refs/tags/gradle_1.1.2^{}
+81382c242d8c0255e851fbd0be1330c04079cd8b	refs/tags/gradle_1.1.3
+107eb9b8e408299cb0a1cbfdcdff4279cf8c1c99	refs/tags/gradle_1.1.3^{}
+b4c2eba3885d7f9b8b6e6ffdc9bcf1090e81f4ed	refs/tags/gradle_1.2.0
+3946a199bce363024a6b139c03999a2ea5395e91	refs/tags/gradle_1.2.0^{}
+100ec8f58b5901a58501f24b80e5ec0f4b2b34f8	refs/tags/gradle_1.2.0-beta1
+fb2f2718ab2b0e1ffaae0cabad9bd1338411d77e	refs/tags/gradle_1.2.0-beta1^{}
+610dbf23e4a53f3c9f8f71642886fb8c4b8e5c42	refs/tags/gradle_1.2.0-rc1
+bd424262f097c20518dfe3880e0b12a01bbc2318	refs/tags/gradle_1.2.0-rc1^{}
+e363959ed8863b251634fd2be5dd705a60cfdabf	refs/tags/gradle_1.2.1
+0b93888b7e5924d5a6749ce62854bc64d1606760	refs/tags/gradle_1.2.1^{}
+8d3912bb265211412c044888c2cde6e019ff3876	refs/tags/gradle_1.2.2
+d4d602c7ad01095e4ac16fdcaea3b7473dc42e69	refs/tags/gradle_1.2.2^{}
+4c55b9f1861e43697733baa9ec202d852f2d2204	refs/tags/gradle_1.2.3
+00bf2b36112615453d514d2b7f558a032b5be211	refs/tags/gradle_1.2.3^{}
+bea403edfff20e64dcc272232b1272a457403d4b	refs/tags/gradle_1.3.0-beta1
+cbf96c283311cf242302ccf57d616fec2b988525	refs/tags/gradle_1.3.0-beta1^{}
+d3a3799caef3e6ae4bb32229aab6f1d67f3fa108	refs/tags/gradle_1.3.0-beta2
+ff7943e332efbd8be178386e148fb748e123e54a	refs/tags/gradle_1.3.0-beta2^{}
+faa4226a459c85fcf9759fb4b20cb87b9b0843f1	refs/tags/gradle_1.3.0-beta3
+12b8b584aa0ffce23ea344f2bd7ce919a76d0aec	refs/tags/gradle_1.3.0-beta3^{}
+0c78939c8e61fb468e303cf171ef90c2bcc9a4c0	refs/tags/gradle_1.3.0-beta4
+f62e908dad2719af3f6761e91494bd5181ab823c	refs/tags/gradle_1.3.0-beta4^{}
+a32749c4a3b3ff71c20c74c52b39362d5a3cc67a	refs/tags/gradle_1.3.1
+03d9c38f4faab58c02ff75ecbbe6c403deb26c40	refs/tags/gradle_1.3.1^{}
+ae67ef203bc0740156221681af1c596fdc41f58f	refs/tags/gradle_1.5.0
+b384012a22516e7a9b936079d7f94ea28c64e2da	refs/tags/gradle_1.5.0^{}
+d3fab93b792dc2f83aa027874f6b1fcde8a69c4e	refs/tags/gradle_2.0.0
+c4542d2e15e0c8eb240eac855ffcbf59735241b2	refs/tags/gradle_2.0.0^{}
+d13e7c3e726973e4174a5962f19a2112fbc6b405	refs/tags/gradle_2.2.0
+050fc0b64b5bff7ca6905c1236297479ca495578	refs/tags/gradle_2.2.0^{}
+8961f090de198624fa3c177d0e6b662d9d728744	refs/tags/gradle_2.2.2
+0d3d4b7dc0b2948a9f8257c1176a6ea70043bf8e	refs/tags/gradle_2.2.2^{}
+499083e551b8f084fd26ddef5b56c1f0326a1fcd	refs/tags/gradle_2.3.0
+be58f822d6b8618b88be09755a4b31ec27faad97	refs/tags/gradle_2.3.0^{}
+f30f2853e52154013baa0abcdf8cf8816da2eb94	refs/tags/gradle_3.0.0
+5d179ada33c355edb5c7da0f5f98321116476ce0	refs/tags/gradle_3.0.0^{}
+2147af4a40773b3250bc6504848749e454b0d95c	refs/tags/gradle_3.1.2
+ec8e2b78ea42ac57d6e63bf88a3e09e1713bcc08	refs/tags/gradle_3.1.2^{}
+bbdd8cfe79226c66eb7123811d92a569594abb45	refs/tags/gradle_3.4.0
+2fe4c86e4adcb04068b6eae31006231051243076	refs/tags/gradle_3.4.0^{}
+420eb478b9bc8f07984836928ca9e0ecbf41ce93	refs/tags/platform-tools-29.0.1
+908b391a9c006af569dfaff08b37f8fdd6c4da89	refs/tags/platform-tools-29.0.1^{}
+85ab50d95961dece695bd89a42e81482710250e5	refs/tags/platform-tools-29.0.2
+3cdd59e47b93827ad1870f7c201db92cd55a4f05	refs/tags/platform-tools-29.0.2^{}
+e967f869bb5521a1fd3f72ed4df98fbde49c0bec	refs/tags/platform-tools-29.0.3
+3cdd59e47b93827ad1870f7c201db92cd55a4f05	refs/tags/platform-tools-29.0.3^{}
+9ad45bb94612973bc9ff4eedaba263da91f52c34	refs/tags/platform-tools-29.0.4
+3cdd59e47b93827ad1870f7c201db92cd55a4f05	refs/tags/platform-tools-29.0.4^{}
+15fe3283e34acff4631f3e24013f547196496ddb	refs/tags/platform-tools-29.0.5
+3cdd59e47b93827ad1870f7c201db92cd55a4f05	refs/tags/platform-tools-29.0.5^{}
+a5a6eec23c71ef48bbf764e148c9e4d22eb7bc4f	refs/tags/platform-tools-29.0.6
+248f3b31adc77c71406b16885fa08a19bf9a3e1d	refs/tags/platform-tools-29.0.6^{}
+9d2e3469ced9f7194d2b9a48e1dcb11d5433f57f	refs/tags/platform-tools-30.0.0
+248f3b31adc77c71406b16885fa08a19bf9a3e1d	refs/tags/platform-tools-30.0.0^{}
+f1274a36111beedffed98a7de7979dde3ca6dc64	refs/tags/platform-tools-30.0.1
+248f3b31adc77c71406b16885fa08a19bf9a3e1d	refs/tags/platform-tools-30.0.1^{}
+06cf4538c2c5fa0fd2b2a218742fc3b6b5f94181	refs/tags/platform-tools-30.0.2
+248f3b31adc77c71406b16885fa08a19bf9a3e1d	refs/tags/platform-tools-30.0.2^{}
+b07c855ac4c50a1717e259269724cf38ec27b8ef	refs/tags/platform-tools-30.0.3
+248f3b31adc77c71406b16885fa08a19bf9a3e1d	refs/tags/platform-tools-30.0.3^{}
+78f05c7d4b2a99927cde6ecc8bc542c72d54345c	refs/tags/platform-tools-30.0.4
+248f3b31adc77c71406b16885fa08a19bf9a3e1d	refs/tags/platform-tools-30.0.4^{}
+daa35bd07b37454794b08e856ce4c588a0eb8bef	refs/tags/platform-tools-30.0.5
+ba80c5d7715744c7597539782e5fb4fa191c168b	refs/tags/platform-tools-30.0.5^{}
+af041b16932cc209b59b3394c6beafee1d1c4c3e	refs/tags/platform-tools-31.0.0
+ba80c5d7715744c7597539782e5fb4fa191c168b	refs/tags/platform-tools-31.0.0^{}
+8898bd95c5f0d1cee0607e1e7237c7e97f145401	refs/tags/platform-tools-31.0.1
+ba80c5d7715744c7597539782e5fb4fa191c168b	refs/tags/platform-tools-31.0.1^{}
+e84b005b0efaeafbe60728359e3c70f101e04094	refs/tags/platform-tools-31.0.2
+ba80c5d7715744c7597539782e5fb4fa191c168b	refs/tags/platform-tools-31.0.2^{}
+6873858e0931ef5eb6985214f0d6cf6b3072f79d	refs/tags/platform-tools-31.0.3
+ba80c5d7715744c7597539782e5fb4fa191c168b	refs/tags/platform-tools-31.0.3^{}
+13f89d9c5c5220e4ceb8f6e073b56a49b5665167	refs/tags/platform-tools-32.0.0
+c850d1630671409e01b3901d16d224a46279fc21	refs/tags/platform-tools-32.0.0^{}
+8f85e0e6e07c72c72a651e2f1ba9666f4004eb11	refs/tags/platform-tools-33.0.0
+c850d1630671409e01b3901d16d224a46279fc21	refs/tags/platform-tools-33.0.0^{}
+05fc55250981858a3ef21552338501b1f92c00b3	refs/tags/platform-tools-33.0.1
+c850d1630671409e01b3901d16d224a46279fc21	refs/tags/platform-tools-33.0.1^{}
+c7eaa6790ce5b4d14fe816e77e9824f93b8e235c	refs/tags/platform-tools-33.0.2
+1cbadd67513cf6712824a79c4b18606ba421d007	refs/tags/platform-tools-33.0.2^{}
+2effee238f9a27d5557288ce26d509445357e66a	refs/tags/platform-tools-33.0.3
+1cbadd67513cf6712824a79c4b18606ba421d007	refs/tags/platform-tools-33.0.3^{}
+deb5dcccac2846e1f7cc7844e116f0fa6f70263f	refs/tags/studio-1.4
+47b1ef19c951a661ab86c7d4c9c0626757e09067	refs/tags/studio-1.4^{}
+305b4e0888763c341bc10f794718c31e82398842	refs/tags/studio-1.5
+78db7f1f8b4e64ce0e7ad891da64a1fc673782f8	refs/tags/studio-1.5^{}
+523ca70027bc5d0181b680c73a5c6fc1d8be82cd	refs/tags/studio-2.0
+c4542d2e15e0c8eb240eac855ffcbf59735241b2	refs/tags/studio-2.0^{}
+2a2be4923908e8cc1b8700251bfce2e6ab17f153	refs/tags/studio-2.0-rc1
+41e22e7622ef03805795131fdefaf33eda47ec5f	refs/tags/studio-2.0-rc1^{}
+aa8f43c3277e3cc9d997de3eb2e6613e9a7671d5	refs/tags/studio-2.2
+050fc0b64b5bff7ca6905c1236297479ca495578	refs/tags/studio-2.2^{}
+3f220b278b9059baf5599ce07dee7a93dd852618	refs/tags/studio-2.2-preview3
+4425bb7d5b12c5b1fd35dbbde63ad7086cfb32a6	refs/tags/studio-2.2-preview3^{}
+7672f299c2c18b4a7801316154558264ca7129da	refs/tags/studio-2.2.2
+0d3d4b7dc0b2948a9f8257c1176a6ea70043bf8e	refs/tags/studio-2.2.2^{}
+e5f4f1b70c4272a254500bc920255a9757589b4d	refs/tags/studio-2.3
+be58f822d6b8618b88be09755a4b31ec27faad97	refs/tags/studio-2.3^{}
+15e8d5fa9cf2d9ee52ab06fc254c55019fa33b06	refs/tags/studio-2020.3.1
+f8bfc4a722c51720c45b27b3e3a3354295afb450	refs/tags/studio-2020.3.1^{}
+826f66eedb30e41b90585851b01e1126ce9c7e67	refs/tags/studio-2021.1.1
+710a8fca3a8262a13b87afb4d1b979d0071cb4a0	refs/tags/studio-2021.1.1^{}
+018ea2770d4b66904279b5efd21b639c25dd3576	refs/tags/studio-2021.2.1
+3a1a098fda3cd573f20dd3c6056633ccd8b6e60e	refs/tags/studio-2021.2.1^{}
+9cb11ce81aa32e983f50aaaf22d34505fa455492	refs/tags/studio-2021.2.1-patch1
+9f4840589fb1c6256fb9b89595e554768c02e82c	refs/tags/studio-2021.2.1-patch1^{}
+6a695b0fe74b35f73c1200d9f96bdf7bb8696ca1	refs/tags/studio-2021.2.1-patch2
+dd21dfd47b3901fd0e08b104932288182e733429	refs/tags/studio-2021.2.1-patch2^{}
+ebffb72c4b245f10a0246926668e82a76a844f58	refs/tags/studio-2021.3.1
+ab5c0905e6e6cfbd7054f348683ff8ecf32159dc	refs/tags/studio-2021.3.1^{}
+0ec00aa8934525635e3e6f966a1d8d1c7d36105a	refs/tags/studio-2021.3.1-beta
+5d349be0b69b5e8333b6b97f08427749feffe084	refs/tags/studio-2021.3.1-beta^{}
+8d4286ed2ed02aa67283ba152c07fc6e98dd9880	refs/tags/studio-2022.1.1
+929c61f966c516f1105e540ac0f27fe3ceff9d12	refs/tags/studio-2022.1.1^{}
+f18fa6c8780c826108b8bf7a3157d11e7a91468c	refs/tags/studio-2022.1.1-beta2
+d5efd8eac45e36695921287e0fb6f51879b3d1a2	refs/tags/studio-2022.1.1-beta2^{}
+64f71202ac1083783da53465718cd06f887e1b3f	refs/tags/studio-2022.1.1-beta4
+bcdbd5a62d882c62656e99772a516ceaa2fca8fb	refs/tags/studio-2022.1.1-beta4^{}
+74982ee86444014bd52696e00542cd68d83c026a	refs/tags/studio-2022.1.1-canary
+05dc21d0a0f64f84c8584b547f6161110538911a	refs/tags/studio-2022.1.1-canary^{}
+aa75c6cdf81028c7051557011150d6e3e83e19e8	refs/tags/studio-2022.1.1-rc3
+aba166b44a21f9520753839c8da6ae56fb26c7a7	refs/tags/studio-2022.1.1-rc3^{}
+e25b8bba44d897315ed5c06bbceceb8c6ebbd127	refs/tags/studio-2022.2.1
+d64ec29e57c381c1b18e1d66b0e304910e0d73a2	refs/tags/studio-2022.2.1^{}
+64a7905ba65d819d4e4be2b3666ec567af725ec8	refs/tags/studio-2022.2.1-beta1
+dea7f8d6cd3431b15aba402536f74a28ed317145	refs/tags/studio-2022.2.1-beta1^{}
+7d9c71733984a25beb04bd74aa9beba859c5e8f1	refs/tags/studio-2022.2.1-beta5
+22e3790eaf12f76f56ac657df441c6afc40033d1	refs/tags/studio-2022.2.1-beta5^{}
+15677830c10e58f2b27108d7a305183c380007d1	refs/tags/studio-2022.2.1-canary10
+d144211dc00e2e125949484dc9b8ec269678a662	refs/tags/studio-2022.2.1-canary10^{}
+660348b56c17e41853ed20a771228554330326b8	refs/tags/studio-2022.2.1-canary2
+30490797d2b068b7c3cbf7981932f894b48643e7	refs/tags/studio-2022.2.1-canary2^{}
+f86709e8cc5683978b3c8f5de0da57641b63d24d	refs/tags/studio-2022.2.1-canary7
+f5a347f4b617858712ff4b49892eb912aaae69bf	refs/tags/studio-2022.2.1-canary7^{}
+9279c325cc5593769c7b33267f18835b1bb7dcda	refs/tags/studio-2022.3.1
+0e18f2f40d37ad607ac34ef6c54caf3c67f2ed0d	refs/tags/studio-2022.3.1^{}
+5340fe0dd9067f1a0468017b8efd2bf620d75490	refs/tags/studio-2022.3.1-beta2
+0228b8ec847d3c02de9379d9b80b554a4314aa78	refs/tags/studio-2022.3.1-beta2^{}
+20b8fba3a4cdf4e45fd1e9ff63ead7439cc4de9d	refs/tags/studio-2022.3.1-canary1
+9c5a7cc52c0735633e76a5178969e707db76d2dc	refs/tags/studio-2022.3.1-canary1^{}
+2e25295e4d70abf073156fd3e2553be80e3efa10	refs/tags/studio-2022.3.1-canary8
+90f90beda1a272616511b9a065e6dba4ec9b610f	refs/tags/studio-2022.3.1-canary8^{}
+48aeebc7737568aa27bfa3191bf48143e1d5211a	refs/tags/studio-2022.3.1-rc1
+ad6dfb9eb856d5bb7d2933bccbf23007b39c9472	refs/tags/studio-2022.3.1-rc1^{}
+0ac9d8da5c2f7654d365fa192789489a97a0737d	refs/tags/studio-2023.1.1
+b5e83d60f0afca1e1e70bfb0232addbedbcfd349	refs/tags/studio-2023.1.1^{}
+2bcc9602ed9ec74f013412ef01eeb498fac565d4	refs/tags/studio-2023.1.1-beta05
+e323a5784e906fc52adfc6115e49f49680748245	refs/tags/studio-2023.1.1-beta05^{}
+caaa67a1904e58a5892b87d0980ca6d26889bfde	refs/tags/studio-2023.1.1-canary11
+3dd7137ae14c6ecf62cbb3de2bc7d92c1078e3c4	refs/tags/studio-2023.1.1-canary11^{}
+60512aea56a0972fc839a3dec32d726281f1c012	refs/tags/studio-2023.1.1-canary3
+65e0c6b7db1c47639f09b94239af765b1c1d8a7a	refs/tags/studio-2023.1.1-canary3^{}
+81b8cf18da5b3a811189b62cf0a15fa326cf9758	refs/tags/studio-2023.1.1-patch1
+bed99c8b9df725863a73d3396f478086b3f26960	refs/tags/studio-2023.1.1-patch1^{}
+04be32418dbc8b73b74127f20d775d1684ea601f	refs/tags/studio-2023.1.1-patch2
+62f602eba04386062a69b79d86781e5e61048560	refs/tags/studio-2023.1.1-patch2^{}
+89deaf0424b881efb203e55ab13cdc841ce5bc52	refs/tags/studio-2023.2.1
+e0179e7b7c4768dd2ebab8d5c8e596180691fd09	refs/tags/studio-2023.2.1^{}
+3c0037312c9188cac1f9518d2ca85d9e4b779ac3	refs/tags/studio-2023.2.1-beta02
+035ecaf27e2a0fe59686a55f2879cdec7f701730	refs/tags/studio-2023.2.1-beta02^{}
+b82c1163651e3ea113c30af5a1796f17803c34db	refs/tags/studio-2023.2.1-canary05
+169d1b935ef851db0fecf4f9fc51399dbf9f5d0c	refs/tags/studio-2023.2.1-canary05^{}
+f93198e6e1d232c8e41f34dec971c5809de4285f	refs/tags/studio-2023.2.1-rc1
+493d9abfe9fe8d16f87380a4a6d7dd9c8d99dcbd	refs/tags/studio-2023.2.1-rc1^{}
+c5458316b58152d314889ec0d5d50d5e9de452ee	refs/tags/studio-2023.3.1
+f742df1162c4ddf0472b9b00e069013d34e591e0	refs/tags/studio-2023.3.1^{}
+efadcd39020b34af659f88727fceb34b09701a92	refs/tags/studio-2023.3.1-canary03
+03fc24cefc2bbb42bca05cf81e3f146c38d9a7a3	refs/tags/studio-2023.3.1-canary03^{}
+0552aed42f44c5a6579d2c7b7f71dbe117020c88	refs/tags/studio-2023.3.1-canary8
+9023fda88fd27ff8fe93a3124ea7cc3904bee74d	refs/tags/studio-2023.3.1-canary8^{}
+43ddaed575b102729557a2f4a2ffe5a9c7d586f2	refs/tags/studio-2023.3.1-patch2
+5615adec7953ad0af5120c851c1d8a762ce428eb	refs/tags/studio-2023.3.1-patch2^{}
+4836ea6f7d7ffb738b5c4cd4e493df0eba4cb0ed	refs/tags/studio-2023.3.1-rc2
+c66b206c780fca2e2754b3e127b407c4e149b657	refs/tags/studio-2023.3.1-rc2^{}
+ec816778935085f54e969a859e41f63ad3a69d51	refs/tags/studio-2024.1.1
+8ca74fc0f307d6bad38aff003bc8afd429007777	refs/tags/studio-2024.1.1^{}
+3f660ed7780aa11063767aaea0d2b0e9d1184c3e	refs/tags/studio-2024.1.1-beta2
+72e2b0cf2b7261797fdbd73fa672eaa9cf65b15a	refs/tags/studio-2024.1.1-beta2^{}
+3deecc9650142a558627da52b8687bb196f225a7	refs/tags/studio-2024.1.1-canary8
+9f86009d567dd090168b94b729dfb6a01993d02e	refs/tags/studio-2024.1.1-canary8^{}
+ac79e453f4fb247c1900b8bea40d71cfab40fb19	refs/tags/studio-2024.1.1-patch01
+f01666f34aeaf70d3e7e176cf25cb599b61277c5	refs/tags/studio-2024.1.1-patch01^{}
+ced5434c98f6fad20c3b4c5f648f4c273943f3e0	refs/tags/studio-2024.1.2
+c8abc4fc885bb04c8c4a4a8f536587ae3c15762e	refs/tags/studio-2024.1.2^{}
+7c3718fd5a0057b69e8f2110e7e3b3335247cc5d	refs/tags/studio-2024.1.2-beta01
+dcb3f119e04f041455c9ffe86940d6eb7bc4e6d5	refs/tags/studio-2024.1.2-beta01^{}
+278597274e5e2b6af97f81c2b3e61ff5d17606c9	refs/tags/studio-2024.1.2-canary1
+7780c6ac916200c0ba5e7c236763dd5f186eaa66	refs/tags/studio-2024.1.2-canary1^{}
+6c912c742f957e47b9eecd6257e8ef833bc2c15b	refs/tags/studio-2024.1.2-canary7
+e42bfe38444a0624223c6d86f6f8c35ebdf29c07	refs/tags/studio-2024.1.2-canary7^{}
+b497820e4026569a2f24528b2802b5f49b2a4427	refs/tags/studio-2024.1.2-patch02
+fed350966ade375a2e2fc68447a8087546853a73	refs/tags/studio-2024.1.2-patch02^{}
+d41aa451ac2dee630dc86a881e23ae24537cfe1b	refs/tags/studio-2024.1.3-alpha01
+758ed6b1d0944b9b23c2d5af5013e4b53c96048f	refs/tags/studio-2024.1.3-alpha01^{}
+c6934c7f624d618cccf8d08bea3f19163f4e7255	refs/tags/studio-2024.2.1
+8a9dad214dbbed829c191e7cf0bb111fbc4ced92	refs/tags/studio-2024.2.1^{}
+cebfa5d6b55df277773460769d4008fa60718007	refs/tags/studio-2024.2.1-alpha07
+33f9e2d5608e803930f73a25eedec059b28aa710	refs/tags/studio-2024.2.1-alpha07^{}
+b96c43d8c8b45765f5fecf77a4afdf4766a43a00	refs/tags/studio-2024.2.1-beta1
+2863b5e91d34bd05604ab0d999c552c311afc5db	refs/tags/studio-2024.2.1-beta1^{}
+cc49adea34d7d483e48382e232fa63476a58636d	refs/tags/studio-2024.2.1-beta2
+5b1a85c9666df3aa4636c2e90f9c6e07f81503bc	refs/tags/studio-2024.2.1-beta2^{}
+f01d11e08ff7e5e5ae357ddb363766a5bc46b3aa	refs/tags/studio-2024.2.1-canary9
+9c8e6228d0ae8f5bde3c3299ece8475668557469	refs/tags/studio-2024.2.1-canary9^{}
+11bff2f8d40e0e0c78fd6338693aca4103d44abe	refs/tags/studio-2024.2.1-patch02
+43329ecf90d504e618f5137844646666bd754983	refs/tags/studio-2024.2.1-patch02^{}
+265cc0cd43b999a352220afff444664c88ac31b9	refs/tags/studio-2024.2.1-patch03
+5e5cf6cba9622895c9d572dc61dcfaf39c5bfd3b	refs/tags/studio-2024.2.1-patch03^{}
+6c8f6a99d80e7e8693cfd463e3fa69df3be76caf	refs/tags/studio-2024.2.1-patch1
+9a743f09c26b7934219988666f155e96a47eaf58	refs/tags/studio-2024.2.1-patch1^{}
+b465d07d26b270b76d916269dba661948f830be4	refs/tags/studio-2024.2.1-rc01
+7098ba600bd15acd3f635ded76657f8fb82705ec	refs/tags/studio-2024.2.1-rc01^{}
+44c8b24aeaa2241a8d9cb93246c61676652001a7	refs/tags/studio-2024.2.2
+8aeed3bc2d009b78e7ffc1f0ee648cb202663ef6	refs/tags/studio-2024.2.2^{}
+dc38ef2dc11594539dda5b455c0a816d89396084	refs/tags/studio-2024.2.2-alpha01
+f7587a128d1e07b9ff75262887e091c022de0175	refs/tags/studio-2024.2.2-alpha01^{}
+327d747c4b18df331c1a12b9ae374e5ef5cd14b5	refs/tags/studio-2024.2.2-alpha03
+dcf7f7674e4b39161d20651dea99f8cde6e2a56f	refs/tags/studio-2024.2.2-alpha03^{}
+c1b0e59d3329079093b436824d411f94041d6686	refs/tags/studio-2024.2.2-alpha05
+950b4de25bead3f1e5fc2ac627fdfa9723565b7a	refs/tags/studio-2024.2.2-alpha05^{}
+cb2e3229edd4df16ab729e8ec467a1d045da5e78	refs/tags/studio-2024.2.2-alpha09
+7f4fd96eae586037f0f04b7aff46ecf661bc602f	refs/tags/studio-2024.2.2-alpha09^{}
+85c7a0a436120ad29420b7d2856803c5c8868f18	refs/tags/studio-2024.2.2-beta01
+8168d98a8d2ee7064a9f494fd0d172a11abe26ea	refs/tags/studio-2024.2.2-beta01^{}
+137c0aaf3bc5945d35763654430bb7eede8d7036	refs/tags/studio-2024.2.2-canary7
+fd658c2e9da8d74e5f32420232e4e6a98444a0ba	refs/tags/studio-2024.2.2-canary7^{}
+
+ succeeded in 196ms:
+b6cbdf1a94848eba229717af6773d728ab4c8061	refs/tags/gradle_0.10.0
+73b826082225817e2cc0093475fdf917f7a6c696	refs/tags/gradle_0.10.0^{}
+b2d7cef77ac729ee1a185bd9fc5ddcf0125363c3	refs/tags/gradle_0.10.1
+154af3e4546e0abf71d76698bb119f75bb653766	refs/tags/gradle_0.10.1^{}
+8d63bd36599fc8c5c96cf96633d0357a5ccf1199	refs/tags/gradle_0.10.2
+38d32e86739b86b414f9613b31c452822f712714	refs/tags/gradle_0.10.2^{}
+a2dfb76397890071a818ea937da12e4c257a931a	refs/tags/gradle_0.10.3
+810fb8c7f03546dbcf4f54abc97c7f6cf5fd7699	refs/tags/gradle_0.10.3^{}
+d0c7c2f60b3835dad8c21297952832ff77835268	refs/tags/gradle_0.10.4
+197d36affa3f131baa95e7654f380cec391231ab	refs/tags/gradle_0.10.4^{}
+c1776bea11be6be8105d422e95a4b13e3874fc05	refs/tags/gradle_0.11.0
+2c82cf25ce522929a06308de7d47840c0534baea	refs/tags/gradle_0.11.0^{}
+398d7c319ecf05e5712403533fc57605164c9b20	refs/tags/gradle_0.11.1
+43cd3ae51ef06e7b37d2d3854fb15047fc464fe0	refs/tags/gradle_0.11.1^{}
+427a797c3049033b4a68a222085bdf0a2d735269	refs/tags/gradle_0.11.2
+7ee5900416498cd0687b5accf210f2c947eba199	refs/tags/gradle_0.11.2^{}
+00526f72c7541dcacc2463acb69af0a1779faf91	refs/tags/gradle_0.12.0
+052be5bb6315e705b92a8fd2eb2dbeafcd47befa	refs/tags/gradle_0.12.0^{}
+5ea2a2932da850e7460d1f40417abdee0eef6819	refs/tags/gradle_0.12.1
+d857f023bbcfaba933a3800272410f4ce545c74a	refs/tags/gradle_0.12.1^{}
+c2e95bad06d7c8de88d6b60a04870f6e8f33f841	refs/tags/gradle_0.12.2
+e99dc9a1c87660320caa64bb98545971bdff387f	refs/tags/gradle_0.12.2^{}
+c07510c0dcc52e8b32b88d8d84a54923e667c067	refs/tags/gradle_0.13.0
+69c369cac359a1b2b78d006cf54513cfeab56efc	refs/tags/gradle_0.13.0^{}
+d8de8f14cd1d47acd70c1fad0386991c3cc845a2	refs/tags/gradle_0.13.1
+bd44982e8b0f488d87d18b4f420f7108ee2b131d	refs/tags/gradle_0.13.1^{}
+942ce80797403c005b45e08bb32e05b9e5585ab9	refs/tags/gradle_0.13.2
+ca1966565fc4dad0eebab6a1d2a105d5c8627379	refs/tags/gradle_0.13.2^{}
+1f873df2e6d0436a3a25bed714fa63f4b41ff0bb	refs/tags/gradle_0.13.3
+9f1c7130c817b1bb16b1c65cc080d8572c10f7dc	refs/tags/gradle_0.13.3^{}
+ad9c60408635295fde1282634efff7988626ebc1	refs/tags/gradle_0.14.0
+ebcd081c1a5c2b4ec70332d2c772a58478c307d0	refs/tags/gradle_0.14.0^{}
+43e2869c834ad082a2303a7879b3b0cf187ba80a	refs/tags/gradle_0.14.1
+f4d02172d926c74efc55fd851b8e1efa0cecbef1	refs/tags/gradle_0.14.1^{}
+a40cb3ac0873ff87b2b8c8cb45134e872cf4a3fb	refs/tags/gradle_0.14.2
+bcd2586372a3c3c0867ec99b19d232c5aac68c60	refs/tags/gradle_0.14.2^{}
+caaab57f84c8f7d344b152649f27e0f6e1f502ac	refs/tags/gradle_0.14.3
+cf5bc12eb359edecd56b541617e162342afdef8b	refs/tags/gradle_0.14.3^{}
+182fdc7bcba7888894be4da5c187d4504f5e4c39	refs/tags/gradle_0.14.4
+f970831f6b5d140c39a3f0cce676b5944146b4f8	refs/tags/gradle_0.14.4^{}
+29f518471c441f17b19bbf316940512db784fb3a	refs/tags/gradle_0.9.0
+b8c5a93aaf8e5e189249d4651b69da8ed3523f4c	refs/tags/gradle_0.9.0^{}
+accec972c49dc7193fa34b87676906f64a83afef	refs/tags/gradle_0.9.1
+02b713438cd81cde3025379f4ed384a890a778c8	refs/tags/gradle_0.9.1^{}
+1fb1c6deb6e784e34e249d90a1daa6de4a1f5a26	refs/tags/gradle_0.9.2
+9911292bb602cc7cfa99f11afcf1ca43f0e3959d	refs/tags/gradle_0.9.2^{}
+4ac768a737edf98e6462c479b36467e90854cffa	refs/tags/gradle_1.0.0
+029dad3ef25b0f9af776160b56d284733e20419e	refs/tags/gradle_1.0.0^{}
+d0af24f95ca93e97a7a17577aba90ee4214816fe	refs/tags/gradle_1.0.0-rc1
+ff9120792abc817e17e4f1cf26e44c6ae26312fc	refs/tags/gradle_1.0.0-rc1^{}
+1200d2168da750f10ddad1cc8875e7b98987186f	refs/tags/gradle_1.0.0-rc2
+3494164484a6bb93520944f3c1c0a5e38023f322	refs/tags/gradle_1.0.0-rc2^{}
+14f41ee78baf7ec4c5e3b4469fd9df03c4b2faa6	refs/tags/gradle_1.0.0-rc3
+acbe3cc858b984388609744d8962eb6b8deb4d23	refs/tags/gradle_1.0.0-rc3^{}
+4a7b9904390082b9fb098b4a98ca2d986e53c1f7	refs/tags/gradle_1.0.0-rc4
+267245b01b3066dfe2db8f362bf3872dba1cb502	refs/tags/gradle_1.0.0-rc4^{}
+ea7e75e99b64a7669607bdca747454a2fb52ba32	refs/tags/gradle_1.0.1
+19511f2136fb3fe88faff768f152987918a06665	refs/tags/gradle_1.0.1^{}
+4d51e088ac27aaad11615cce6ef5b07668c24fb3	refs/tags/gradle_1.1.0
+057226b74a07dbae77abda77a47b2c8bbb932ffe	refs/tags/gradle_1.1.0^{}
+33452842f62e23065ebbdab7cb9327a42e25d3df	refs/tags/gradle_1.1.0-rc1
+3e456b7bb377e16286d47270e80c283fc42d81da	refs/tags/gradle_1.1.0-rc1^{}
+4a8141d826865e6135a0a94b9c7b2960dc47ecea	refs/tags/gradle_1.1.0-rc2
+598fb9bcbcd93fe134341daf89eb95b6b005b981	refs/tags/gradle_1.1.0-rc2^{}
+8bd64ecc877f749bb7a6ed98bb003492fcbfe36d	refs/tags/gradle_1.1.0-rc3
+598fb9bcbcd93fe134341daf89eb95b6b005b981	refs/tags/gradle_1.1.0-rc3^{}
+6c0ecefa70b88729c3a2a53de33552e1f8c1871f	refs/tags/gradle_1.1.1
+3788a1721cd6ae58809c944c4c77a6b1c28866d2	refs/tags/gradle_1.1.1^{}
+affd4479f7f4d2fe1a2f6339695b92a51d9b1670	refs/tags/gradle_1.1.2
+8042cde566a158134a28a81ad8c1ca3681aded4d	refs/tags/gradle_1.1.2^{}
+81382c242d8c0255e851fbd0be1330c04079cd8b	refs/tags/gradle_1.1.3
+107eb9b8e408299cb0a1cbfdcdff4279cf8c1c99	refs/tags/gradle_1.1.3^{}
+b4c2eba3885d7f9b8b6e6ffdc9bcf1090e81f4ed	refs/tags/gradle_1.2.0
+3946a199bce363024a6b139c03999a2ea5395e91	refs/tags/gradle_1.2.0^{}
+100ec8f58b5901a58501f24b80e5ec0f4b2b34f8	refs/tags/gradle_1.2.0-beta1
+fb2f2718ab2b0e1ffaae0cabad9bd1338411d77e	refs/tags/gradle_1.2.0-beta1^{}
+610dbf23e4a53f3c9f8f71642886fb8c4b8e5c42	refs/tags/gradle_1.2.0-rc1
+bd424262f097c20518dfe3880e0b12a01bbc2318	refs/tags/gradle_1.2.0-rc1^{}
+e363959ed8863b251634fd2be5dd705a60cfdabf	refs/tags/gradle_1.2.1
+0b93888b7e5924d5a6749ce62854bc64d1606760	refs/tags/gradle_1.2.1^{}
+8d3912bb265211412c044888c2cde6e019ff3876	refs/tags/gradle_1.2.2
+d4d602c7ad01095e4ac16fdcaea3b7473dc42e69	refs/tags/gradle_1.2.2^{}
+4c55b9f1861e43697733baa9ec202d852f2d2204	refs/tags/gradle_1.2.3
+00bf2b36112615453d514d2b7f558a032b5be211	refs/tags/gradle_1.2.3^{}
+bea403edfff20e64dcc272232b1272a457403d4b	refs/tags/gradle_1.3.0-beta1
+cbf96c283311cf242302ccf57d616fec2b988525	refs/tags/gradle_1.3.0-beta1^{}
+d3a3799caef3e6ae4bb32229aab6f1d67f3fa108	refs/tags/gradle_1.3.0-beta2
+ff7943e332efbd8be178386e148fb748e123e54a	refs/tags/gradle_1.3.0-beta2^{}
+faa4226a459c85fcf9759fb4b20cb87b9b0843f1	refs/tags/gradle_1.3.0-beta3
+12b8b584aa0ffce23ea344f2bd7ce919a76d0aec	refs/tags/gradle_1.3.0-beta3^{}
+0c78939c8e61fb468e303cf171ef90c2bcc9a4c0	refs/tags/gradle_1.3.0-beta4
+f62e908dad2719af3f6761e91494bd5181ab823c	refs/tags/gradle_1.3.0-beta4^{}
+a32749c4a3b3ff71c20c74c52b39362d5a3cc67a	refs/tags/gradle_1.3.1
+03d9c38f4faab58c02ff75ecbbe6c403deb26c40	refs/tags/gradle_1.3.1^{}
+ae67ef203bc0740156221681af1c596fdc41f58f	refs/tags/gradle_1.5.0
+b384012a22516e7a9b936079d7f94ea28c64e2da	refs/tags/gradle_1.5.0^{}
+d3fab93b792dc2f83aa027874f6b1fcde8a69c4e	refs/tags/gradle_2.0.0
+c4542d2e15e0c8eb240eac855ffcbf59735241b2	refs/tags/gradle_2.0.0^{}
+d13e7c3e726973e4174a5962f19a2112fbc6b405	refs/tags/gradle_2.2.0
+050fc0b64b5bff7ca6905c1236297479ca495578	refs/tags/gradle_2.2.0^{}
+8961f090de198624fa3c177d0e6b662d9d728744	refs/tags/gradle_2.2.2
+0d3d4b7dc0b2948a9f8257c1176a6ea70043bf8e	refs/tags/gradle_2.2.2^{}
+499083e551b8f084fd26ddef5b56c1f0326a1fcd	refs/tags/gradle_2.3.0
+be58f822d6b8618b88be09755a4b31ec27faad97	refs/tags/gradle_2.3.0^{}
+f30f2853e52154013baa0abcdf8cf8816da2eb94	refs/tags/gradle_3.0.0
+5d179ada33c355edb5c7da0f5f98321116476ce0	refs/tags/gradle_3.0.0^{}
+2147af4a40773b3250bc6504848749e454b0d95c	refs/tags/gradle_3.1.2
+ec8e2b78ea42ac57d6e63bf88a3e09e1713bcc08	refs/tags/gradle_3.1.2^{}
+bbdd8cfe79226c66eb7123811d92a569594abb45	refs/tags/gradle_3.4.0
+2fe4c86e4adcb04068b6eae31006231051243076	refs/tags/gradle_3.4.0^{}
+
+codex
+The upstream module is `jack/jill-api`; its Gradle metadata also declares version `0.9.0`, matching the artifact. I found no Maven test artifact and the upstream module has no `src/test` tree, so the test URL may need to be `N/A` unless another versioned test location turns up.
+exec
+/usr/bin/bash -lc "for tag in gradle_1.2.0 gradle_1.2.1 gradle_1.2.2 gradle_1.2.3 gradle_1.3.0-beta1 gradle_1.3.0-beta2 gradle_1.3.0-beta3 gradle_1.3.0-beta4 gradle_1.3.1 studio-1.4 studio-1.5; do printf '%s ' \""'$tag"; curl -fsSL "https://android.googlesource.com/platform/tools/base/+/refs/tags/$tag/jack/jill-api/build.gradle?format=TEXT" | base64 -d | rg "version =|archivesBaseName" || echo missing; done' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+exec
+/usr/bin/bash -lc "for tag in gradle_1.2.0 gradle_1.2.1 gradle_1.2.2 gradle_1.2.3 gradle_1.3.0-beta1 gradle_1.3.0-beta2 gradle_1.3.0-beta3 gradle_1.3.0-beta4 gradle_1.3.1 studio-1.4 studio-1.5; do printf '%s ' \""'$tag"; curl -fsSL "https://android.googlesource.com/platform/tools/base/+/refs/tags/$tag/jack/jill-api/src/test?format=JSON" | tail -n +2 | jq -r '"'.entries[].name' 2>/dev/null || echo no-test; done" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+exec
+/usr/bin/bash -lc "for tag in gradle_1.2.0 gradle_1.2.1 gradle_1.2.2 gradle_1.2.3 gradle_1.3.0-beta1 gradle_1.3.0-beta2 gradle_1.3.0-beta3 gradle_1.3.0-beta4 gradle_1.3.1 studio-1.4 studio-1.5; do printf '%s ' \""'$tag"; curl -fsSL "https://android.googlesource.com/platform/tools/base/+/refs/tags/$tag/jack?format=JSON" | tail -n +2 | jq -r '"'.entries[].name' 2>/dev/null | paste -sd, - || echo no-jack; done" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 3318ms:
+curl: (22) The requested URL returned error: 404
+gradle_1.2.2 curl: (22) The requested URL returned error: 404
+gradle_1.2.3 curl: (22) The requested URL returned error: 404
+gradle_1.3.0-beta1 curl: (22) The requested URL returned error: 404
+gradle_1.3.0-beta2 curl: (22) The requested URL returned error: 404
+gradle_1.3.0-beta3 curl: (22) The requested URL returned error: 404
+gradle_1.3.0-beta4 curl: (22) The requested URL returned error: 404
+gradle_1.3.1 curl: (22) The requested URL returned error: 404
+studio-1.4 curl: (22) The requested URL returned error: 404
+studio-1.5 curl: (22) The requested URL returned error: 404
+
+ succeeded in 3683ms:
+curl: (22) The requested URL returned error: 404
+
+gradle_1.2.2 curl: (22) The requested URL returned error: 404
+
+gradle_1.2.3 curl: (22) The requested URL returned error: 404
+
+gradle_1.3.0-beta1 curl: (22) The requested URL returned error: 404
+
+gradle_1.3.0-beta2 curl: (22) The requested URL returned error: 404
+
+gradle_1.3.0-beta3 curl: (22) The requested URL returned error: 404
+
+gradle_1.3.0-beta4 curl: (22) The requested URL returned error: 404
+
+gradle_1.3.1 curl: (22) The requested URL returned error: 404
+
+studio-1.4 jack-api,jill-api
+studio-1.5 jack-api,jill-api
+
+ succeeded in 4851ms:
+curl: (22) The requested URL returned error: 404
+missing
+gradle_1.2.2 curl: (22) The requested URL returned error: 404
+missing
+gradle_1.2.3 curl: (22) The requested URL returned error: 404
+missing
+gradle_1.3.0-beta1 curl: (22) The requested URL returned error: 404
+missing
+gradle_1.3.0-beta2 curl: (22) The requested URL returned error: 404
+missing
+gradle_1.3.0-beta3 curl: (22) The requested URL returned error: 404
+missing
+gradle_1.3.0-beta4 curl: (22) The requested URL returned error: 404
+missing
+gradle_1.3.1 curl: (22) The requested URL returned error: 404
+missing
+studio-1.4 archivesBaseName = 'jill-api'
+version = '0.9.0'
+studio-1.5 archivesBaseName = 'jill-api'
+version = '0.9.0'
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+{
+  "coordinates" : "com.android.tools.jill:jill-api:0.9.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://repo1.maven.org|\"source-code-url\" : \"https://repo1.maven.org|\"test-code-url\" : \"N/A\"' build/discovered-artifact-metadata | head -60" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n 'android.googlesource.com/platform/tools/base|jill-api|jack-api' build/discovered-artifact-metadata metadata repository | head -100" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+rg: repository: No such file or directory (os error 2)
+build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json:2:  "coordinates" : "com.android.tools.jill:jill-api:0.9.0"
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"repository-url\"|\"test-code-url\"|\"documentation-url\"|\"description\"|\"language\"' . | head -120" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+./docs/CONTRIBUTING.md:140:     "source-code-url": "https://github.com/example/repo/tree/main/metadata/org.example/library/1.1.0",
+./docs/CONTRIBUTING.md:141:     "repository-url": "https://github.com/example/repo",
+./docs/CONTRIBUTING.md:142:     "test-code-url": "https://github.com/example/repo/tree/main/tests/src/org.example/library/1.0.0",
+./docs/CONTRIBUTING.md:143:     "documentation-url": "https://github.com/example/repo/tree/main/README.md",
+./docs/CONTRIBUTING.md:253:    "description": "<artifactDescription>",
+./forge/strategies/predefined_strategies.json:4:    "description": "Same configuration as basic_iterative, but uses gpt-5.4 instead.",
+./forge/strategies/predefined_strategies.json:22:    "description": "Iterative add-new-library workflow for the Codex agent.",
+./forge/strategies/predefined_strategies.json:40:    "description": "Strategy for fix_javac_fail.py with downloaded main library sources as read-only context. Runs gradle test first, feeds the error into the initial prompt, then iteratively repairs.",
+./forge/strategies/predefined_strategies.json:57:    "description": "Dynamic-access-guided Codex workflow using downloaded main library sources as read-only context.",
+./forge/strategies/predefined_strategies.json:75:    "description": "Same configuration as dynamic_access_main_sources_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:93:    "description": "Dynamic-access-guided Pi workflow using downloaded main library sources as read-only context.",
+./forge/strategies/predefined_strategies.json:111:    "description": "Same configuration as dynamic_access_main_sources_pi_gpt-5.4, but uses gpt-5.5 instead.",
+./forge/strategies/predefined_strategies.json:129:    "description": "Dynamic-access-guided Pi workflow using downloaded main library sources as read-only context.",
+./forge/strategies/predefined_strategies.json:148:    "description": "Dynamic-access-guided Codex workflow using downloaded upstream test sources as read-only context.",
+./forge/strategies/predefined_strategies.json:166:    "description": "Same configuration as dynamic_access_test_sources_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:184:    "description": "Dynamic-access-guided Codex workflow using downloaded documentation artifacts as read-only context.",
+./forge/strategies/predefined_strategies.json:202:    "description": "Same configuration as dynamic_access_documentation_sources_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:220:    "description": "Dynamic-access-guided Codex workflow using main sources plus upstream test sources.",
+./forge/strategies/predefined_strategies.json:239:    "description": "Same configuration as dynamic_access_main_sources_with_tests_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:258:    "description": "Dynamic-access-guided Codex workflow using main sources plus documentation artifacts.",
+./forge/strategies/predefined_strategies.json:277:    "description": "Same configuration as dynamic_access_main_sources_with_documentation_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:296:    "description": "Dynamic-access-guided Codex workflow using main sources, upstream test sources, and documentation artifacts.",
+./forge/strategies/predefined_strategies.json:316:    "description": "Same configuration as dynamic_access_main_sources_with_tests_and_documentation_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:336:    "description": "Dynamic-access-guided Codex workflow using upstream test sources plus documentation artifacts.",
+./forge/strategies/predefined_strategies.json:355:    "description": "Same configuration as dynamic_access_test_sources_with_documentation_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:374:    "description": "Composite strategy: runs javac_iterative to fix compilation, then improves dynamic-access coverage.",
+./forge/strategies/predefined_strategies.json:395:    "description": "Same configuration as javac_iterative_with_coverage_sources_pi_gpt-5.4, but uses gpt-5.5 instead.",
+./forge/strategies/predefined_strategies.json:416:    "description": "Composite strategy: optimistic bulk DA coverage, then per-class DA refinement.",
+./forge/strategies/predefined_strategies.json:438:    "description": "Strategy for fix_java_run_fail.py with downloaded main library sources as read-only context. Runs gradle test first, feeds the runtime error into the initial prompt, then iteratively repairs.",
+./forge/strategies/predefined_strategies.json:455:    "description": "Composite strategy: runs java_run_iterative to fix runtime failures, then improves dynamic-access coverage.",
+./forge/strategies/predefined_strategies.json:476:    "description": "Basic iterative add-new-library workflow for the Codex agent.",
+./forge/strategies/predefined_strategies.json:494:    "description": "Basic iterative add-new-library workflow for the Codex agent using gpt-5.5.",
+./forge/strategies/predefined_strategies.json:512:    "description": "Pi bulk dynamic-access strategy. Unlike the regular dynamic-access strategy, which iterates through uncovered classes and refines coverage class by class, this strategy gives the agent the full dynamic-access report in one prompt and asks it to cover the missing accesses in a single broad pass.",
+./forge/strategies/predefined_strategies.json:530:    "description": "Codex bulk dynamic-access strategy. Unlike the regular dynamic-access strategy, which iterates through uncovered classes and refines coverage class by class, this strategy gives the agent the full dynamic-access report in one prompt and asks it to cover the missing accesses in a single broad pass.",
+./forge/strategies/predefined_strategies.json:548:    "description": "Pi graphify-assisted bulk dynamic-access strategy. It first builds graphify context from downloaded source artifacts, then gives the agent the full dynamic-access report in one broad pass. Unlike the regular dynamic-access strategy, it does not run the class-by-class refinement loop.",
+./forge/strategies/predefined_strategies.json:567:    "description": "Codex graphify-assisted bulk dynamic-access strategy. It first builds graphify context from downloaded source artifacts, then gives the agent the full dynamic-access report in one broad pass. Unlike the regular dynamic-access strategy, it does not run the class-by-class refinement loop.",
+./forge/strategies/predefined_strategies.json:586:    "description": "Composite strategy: optimistic bulk DA coverage, then per-class DA refinement.",
+./forge/strategies/predefined_strategies.json:608:    "description": "Composite strategy: optimistic bulk DA coverage, then per-class DA refinement using gpt-5.5.",
+./forge/strategies/predefined_strategies.json:630:    "description": "Composite Codex strategy: optimistic bulk DA coverage, then per-class DA refinement.",
+./forge/strategies/predefined_strategies.json:652:    "description": "Composite Codex strategy: optimistic bulk DA coverage, then per-class DA refinement using gpt-5.5.",
+./forge/strategies/predefined_strategies.json:674:    "description": "Same configuration as basic_iterative, but uses gpt-5.5 instead.",
+./forge/strategies/predefined_strategies.json:692:    "description": "Dynamic-access-guided Codex workflow using downloaded main library sources as read-only context. Uses gpt-5.5.",
+./forge/strategies/predefined_strategies.json:710:    "description": "Dynamic-access-guided Codex workflow using downloaded documentation artifacts as read-only context. Uses gpt-5.5.",
+./forge/strategies/predefined_strategies.json:728:    "description": "Library-update strategy: skips primary workflow, directly runs dynamic-access coverage improvement on existing tests.",
+./forge/DEVELOPING.md:353:  "description": "Iterative strategy with higher iteration limits",
+./forge/utility_scripts/source_context.py:23:    "main": "source-code-url",
+./forge/utility_scripts/source_context.py:24:    "test": "test-code-url",
+./forge/utility_scripts/source_context.py:25:    "documentation": "documentation-url",
+./forge/utility_scripts/source_context.py:216:        repository_url=normalize_url_value(index_entry.get("repository-url")),
+./forge/utility_scripts/source_context.py:276:    language_value = index_entry.get("language")
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/8.0.01/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:9:    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:9:    "description" : "Apache Yetus Audience Annotations provides Java annotations for declaring intended API audience and stability, such as public, limited-private, private, stable, evolving, and unstable. It also includes doclet tooling that can include or exclude annotated elements when generating audience-specific Javadocs.",
+./metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:26:    "description" : "Apache Yetus Audience Annotations provides Java annotations for marking intended API audience boundaries such as public, limited-private, and private. It also includes doclet support for generating Javadocs filtered to the intended audience.",
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:26:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:28:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:30:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:32:        @JsonProperty("documentation-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:34:        @JsonProperty("description")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:36:        @JsonProperty("language")
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:9:    "description" : "Jetty WebSocket API provides the public interfaces and annotations used to define WebSocket endpoints, sessions, frames, and message handling for Jetty 9. It is the standalone API layer for Jetty's WebSocket implementation and intentionally avoids depending on other Jetty modules for web application classloader isolation.",
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:16:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:18:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:20:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:22:        @JsonProperty("documentation-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:24:        @JsonProperty("description")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:26:        @JsonProperty("language")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:154:                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:159:                If the library is not language-specific, leave the "language" field absent.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:164:                The "description" field must explain what the library does in exactly two sentences.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:169:                - Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:170:                - Set "description" to the selected two-sentence explanation.
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:9:    "description" : "Jetty WebSocket Common provides the internal implementation classes used by Jetty 9's WebSocket API, including session handling, frame parsing and generation, message streams, and extension support. It is intended as the shared runtime layer behind Jetty's WebSocket client, server, and servlet integrations rather than as an application-facing API.",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:279:                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:284:                If the library is not language-specific, leave the "language" field absent.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:289:                The "description" field must explain what the library does in exactly two sentences.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:296:                - Set the "description" field to the selected two-sentence explanation.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:297:                - Set the "language" field only when the library is language-specific.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:352:                    - Set "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:353:                    - Set "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:354:                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:355:                    - Set "test-code-url" to the selected test suite URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:356:                    - Set "documentation-url" to the selected project documentation URL for version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:357:                    - Set "description" to a concise explanation of the library in exactly two sentences.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:358:                    - Set "language" to the structured language object when the library is language-specific; otherwise leave the field absent.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:362:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:365:                - Set missing "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:366:                - Set missing "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:367:                - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:368:                - Set missing "test-code-url" to the selected test suite URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:369:                - Set missing "documentation-url" to the selected project documentation URL for version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:370:                - Set missing "description" to a concise explanation of the library in exactly two sentences.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:371:                - Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+./forge/schemas/benchmark_run_metrics_schema.json:4:  "description": "JSON Schema for benchmark-level metrics produced by Metadata Forge benchmarking.",
+./forge/schemas/benchmark_run_metrics_schema.json:127:      "description": "Collected run metrics.",
+./forge/schemas/benchmark_run_metrics_schema.json:379:        "description": "Name of the benchmark suite that was executed."
+./forge/schemas/benchmark_run_metrics_schema.json:384:        "description": "ISO-8601 timestamp marking when this benchmark record was created."
+./forge/schemas/benchmark_run_metrics_schema.json:388:        "description": "Per-library metrics collected during this benchmark run.",
+./metadata/org.apiguardian/apiguardian-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:6:    "repository-url" : "https://github.com/apiguardian-team/apiguardian",
+
+exec
+/usr/bin/bash -lc "find metadata -type f -name '*.json' | head -20 | xargs -r sed -n '1,120p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "org.eclipse.jetty.alpn.server.ALPNServerConnectionFactory"
+      },
+      "type": "java.lang.Boolean"
+    },
+    {
+      "condition": {
+        "typeReached": "org.eclipse.jetty.alpn.server.ALPNServerConnectionFactory"
+      },
+      "type": "java.lang.Byte"
+    },
+    {
+      "condition": {
+        "typeReached": "org.eclipse.jetty.alpn.server.ALPNServerConnectionFactory"
+      },
+      "type": "java.lang.Double"
+    },
+    {
+      "condition": {
+        "typeReached": "org.eclipse.jetty.alpn.server.ALPNServerConnectionFactory"
+      },
+      "type": "java.lang.Float"
+    },
+    {
+      "condition": {
+        "typeReached": "org.eclipse.jetty.alpn.server.ALPNServerConnectionFactory"
+      },
+      "type": "java.lang.Integer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.eclipse.jetty.alpn.server.ALPNServerConnectionFactory"
+      },
+      "type": "java.lang.Long"
+    },
+    {
+      "condition": {
+        "typeReached": "org.eclipse.jetty.alpn.server.ALPNServerConnectionFactory"
+      },
+      "type": "java.lang.Short"
+    },
+    {
+      "condition": {
+        "typeReached": "org.eclipse.jetty.alpn.server.ALPNServerConnectionFactory"
+      },
+      "type": "org.eclipse.jetty.util.TypeUtil",
+      "methods": [
+        {
+          "name": "getClassLoaderLocation",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "getCodeSourceLocation",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "getModuleLocation",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "getSystemClassLoaderLocation",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "condition": {
+        "typeReached": "org.eclipse.jetty.alpn.server.ALPNServerConnectionFactory"
+      },
+      "glob": "META-INF/services/org.eclipse.jetty.io.ssl.ALPNProcessor$Server"
+    }
+  ]
+}
+[
+  {
+    "latest" : true,
+    "metadata-version" : "11.0.24",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/11.0.24/jetty-alpn-server-11.0.24-sources.jar",
+    "repository-url" : "https://github.com/jetty/jetty.project",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/11.0.24/jetty-alpn-server-11.0.24-javadoc.jar",
+    "description" : "Jetty ALPN Server provides the server-side connection factory used by Eclipse Jetty to negotiate application protocols such as HTTP/1.1 and HTTP/2 during TLS handshakes. It integrates Jetty's server connector layer with ALPN so the server can select the correct protocol implementation for each secure connection.",
+    "tested-versions" : [
+      "11.0.24",
+      "11.0.25",
+      "11.0.26",
+      "12.0.0",
+      "12.0.1",
+      "12.0.2",
+      "12.0.3",
+      "12.0.4",
+      "12.0.5",
+      "12.0.6",
+      "12.0.7",
+      "12.0.8",
+      "12.0.9",
+      "12.0.10",
+      "12.0.11",
+      "12.0.12",
+      "12.0.13",
+      "12.0.14",
+      "12.0.15",
+      "12.0.16",
+      "12.0.17",
+      "12.0.18",
+      "12.0.19",
+      "12.0.20",
+
+exec
+/usr/bin/bash -lc "find . -path '*/artifact-metadata*' -type f | head -50" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -I -L https://repo.maven.apache.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-sources.jar && curl -I -L https://repo.maven.apache.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-javadoc.jar && curl -I -L https://repo.maven.apache.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-tests.jar' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://android.googlesource.com/platform/tools/base/+/refs/tags/studio-1.4/jack/jill-api/README.txt?format=TEXT' | base64 -d | sed -n '1,160p' && curl -fsSL 'https://android.googlesource.com/platform/tools/base/+/refs/tags/studio-1.4/jack/jill-api/src/main/java/com/android/jill/api/v01/Api01Config.java?format=TEXT' | base64 -d | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+exec
+/usr/bin/bash -lc 'for tag in studio-1.4 studio-1.5; do echo "$tag"; curl -fsSL "https://android.googlesource.com/platform/tools/base/+/refs/tags/$tag/jack/jill-api?format=JSON" | tail -n +2 | jq -r '"'.entries[] | [.type,.name] | @tsv'; done" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 900ms:
+HTTP/2 200 
+date: Fri, 01 May 2026 09:19:24 GMT
+content-type: application/java-archive
+content-length: 6994
+cf-ray: 9f4db454ea789a60-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 704541
+etag: "bac690842fc67883bff12297ab4f13bb"
+last-modified: Thu, 30 Jul 2015 18:14:45 GMT
+x-checksum-md5: bac690842fc67883bff12297ab4f13bb
+x-checksum-sha1: 2305e2939008581556ca0b392eacac2ca2af5182
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0  6994    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0 44509    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+date: Fri, 01 May 2026 09:19:25 GMT
+content-type: application/java-archive
+content-length: 44509
+cf-ray: 9f4db455fdc60396-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "5377c12a1c1f4ed998d6db0471504507"
+last-modified: Thu, 30 Jul 2015 18:14:45 GMT
+x-checksum-md5: 5377c12a1c1f4ed998d6db0471504507
+x-checksum-sha1: 862b8b97a7c410fcac80ce68e70252f72525e6ff
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0  HTTP/2 404 
+date: Fri, 01 May 2026 09:19:25 GMT
+content-type: text/html
+cf-ray: 9f4db4582ce2a43d-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+  0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+ succeeded in 951ms:
+Jill-API version 0.9
+
+This is a clone of the jill-api source code so that it can be 
+build and uploaded to bintray/mavenCentral using the same release
+mechanism as the rest of the Gradle plugin libraries./*
+ * Copyright (C) 2015 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.android.jill.api.v01;
+
+
+import com.android.jill.api.JillConfig;
+
+import java.io.File;
+
+import javax.annotation.Nonnull;
+
+/**
+* A configuration implementation for API level 01 of Jill.
+*/
+public interface Api01Config extends JillConfig {
+
+  /**
+   * Sets verbosity mode.
+   * @param isVerbose the desired verbosity mode
+   */
+  void setVerbose(boolean isVerbose) throws ConfigurationException;
+
+  /**
+   * Sets jar file to apply the Jill translation onto. The file must exist.
+   * @param input jar file to translate
+   */
+  void setInputJavaBinaryFile(@Nonnull File input) throws ConfigurationException;
+
+  /**
+   * Sets the file where the output Jack library will be written. The file may already exist and
+   * will be overwritten.
+   * @param outputJackFile The output Jack library file
+   * @throws ConfigurationException
+   */
+  void setOutputJackFile(@Nonnull File outputJackFile) throws ConfigurationException;
+
+
+  /**
+   * Sets whether debug info should be emitted.
+   * @param debugInfo the desired mode for debug info emission
+   */
+  void setDebugInfo(boolean debugInfo) throws ConfigurationException;
+
+  /**
+   * Creates an instance of the {@link Api01TranslationTask} according to this configuration.
+   * @return The {@link Api01TranslationTask}
+   */
+  @Nonnull
+  Api01TranslationTask getTask() throws ConfigurationException;
+}
+
+ succeeded in 1263ms:
+blob	README.txt
+blob	build.gradle
+blob	jill-api.iml
+tree	src
+studio-1.5
+blob	README.txt
+blob	build.gradle
+blob	jill-api.iml
+tree	src
+
+codex
+I’ve got the values: Maven Central supplies exact 0.9.0 source and javadoc jars, the POM points to the canonical AOSP `platform/tools/base` repository, and neither Maven nor the tagged upstream module exposes a test suite for `jill-api`. I’m updating the JSON now and leaving `language` absent because this is a Java API artifact, not a Kotlin/Groovy/Scala-specific library.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json
+diff --git a/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json b/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json
+index 5ddf720f69b42d7b83c5f129a8f677727e1a0209..34cb132d6eec039e5ee702f247895fdbf64ce603
+--- a/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json
++++ b/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.android.tools.jill:jill-api:0.9.0"
++  "coordinates" : "com.android.tools.jill:jill-api:0.9.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-sources.jar",
++  "repository-url" : "https://android.googlesource.com/platform/tools/base",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-javadoc.jar",
++  "description" : "Android Jill API provides interfaces for dynamically loading and configuring the Jill translator used to convert Java .jar bytecode into Jack library output. It exposes provider, configuration, and translation task contracts so tooling can discover supported Jill API versions, set inputs and outputs, and run a translation."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json b/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json
+index 5ddf720f69b42d7b83c5f129a8f677727e1a0209..34cb132d6eec039e5ee702f247895fdbf64ce603
+--- a/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json
++++ b/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.android.tools.jill:jill-api:0.9.0"
++  "coordinates" : "com.android.tools.jill:jill-api:0.9.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-sources.jar",
++  "repository-url" : "https://android.googlesource.com/platform/tools/base",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-javadoc.jar",
++  "description" : "Android Jill API provides interfaces for dynamically loading and configuring the Jill translator used to convert Java .jar bytecode into Jack library output. It exposes provider, configuration, and translation task contracts so tooling can discover supported Jill API versions, set inputs and outputs, and run a translation."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+{
+  "coordinates": "com.android.tools.jill:jill-api:0.9.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-sources.jar",
+  "repository-url": "https://android.googlesource.com/platform/tools/base",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-javadoc.jar",
+  "description": "Android Jill API provides interfaces for dynamically loading and configuring the Jill translator used to convert Java .jar bytecode into Jack library output. It exposes provider, configuration, and translation task contracts so tooling can discover supported Jill API versions, set inputs and outputs, and run a translation."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json b/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json
+index 5ddf720f69b42d7b83c5f129a8f677727e1a0209..34cb132d6eec039e5ee702f247895fdbf64ce603
+--- a/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json
++++ b/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.android.tools.jill:jill-api:0.9.0"
++  "coordinates" : "com.android.tools.jill:jill-api:0.9.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-sources.jar",
++  "repository-url" : "https://android.googlesource.com/platform/tools/base",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-javadoc.jar",
++  "description" : "Android Jill API provides interfaces for dynamically loading and configuring the Jill translator used to convert Java .jar bytecode into Jack library output. It exposes provider, configuration, and translation task contracts so tooling can discover supported Jill API versions, set inputs and outputs, and run a translation."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+{
+  "coordinates" : "com.android.tools.jill:jill-api:0.9.0",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-sources.jar",
+  "repository-url" : "https://android.googlesource.com/platform/tools/base",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-javadoc.jar",
+  "description" : "Android Jill API provides interfaces for dynamically loading and configuring the Jill translator used to convert Java .jar bytecode into Jack library output. It exposes provider, configuration, and translation task contracts so tooling can discover supported Jill API versions, set inputs and outputs, and run a translation."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json b/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json
+index 5ddf720f69b42d7b83c5f129a8f677727e1a0209..34cb132d6eec039e5ee702f247895fdbf64ce603
+--- a/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json
++++ b/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.android.tools.jill:jill-api:0.9.0"
++  "coordinates" : "com.android.tools.jill:jill-api:0.9.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-sources.jar",
++  "repository-url" : "https://android.googlesource.com/platform/tools/base",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-javadoc.jar",
++  "description" : "Android Jill API provides interfaces for dynamically loading and configuring the Jill translator used to convert Java .jar bytecode into Jack library output. It exposes provider, configuration, and translation task contracts so tooling can discover supported Jill API versions, set inputs and outputs, and run a translation."
+ }
+
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org maven2 com android tools jill jill-api 0.9.0 jill-api-0.9.0-sources.jar javadoc.jar
+web search: 
+web search: https://android.googlesource.com/platform/tools/base/%2B/master/jack/jill-api
+web search: 
+web search: "jill-api-0.9.0-javadoc.jar"
+web search: 
+web search: com/android/tools/jill/jill-api/0.9.0/ jill-api-0.9.0-javadoc.jar
+codex
+Updated [com.android.tools.jill-jill-api-0.9.0.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json).
+
+Set Maven Central source/javadoc URLs, AOSP `tools/base` as the repository, `test-code-url` to `N/A`, and left `language` absent. The source selection matches the Maven-hosted 0.9.0 artifact, and the description follows Jill’s role in translating `.jar` libraries into Jack library format. ([android.googlesource.com](https://android.googlesource.com/platform/prebuilts/tools/%2B/8ec471b))
+
+Validated the file with `jq`.
+diff --git a/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json b/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json
+index 5ddf720f69b42d7b83c5f129a8f677727e1a0209..34cb132d6eec039e5ee702f247895fdbf64ce603
+--- a/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json
++++ b/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.android.tools.jill:jill-api:0.9.0"
++  "coordinates" : "com.android.tools.jill:jill-api:0.9.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-sources.jar",
++  "repository-url" : "https://android.googlesource.com/platform/tools/base",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/tools/jill/jill-api/0.9.0/jill-api-0.9.0-javadoc.jar",
++  "description" : "Android Jill API provides interfaces for dynamically loading and configuring the Jill translator used to convert Java .jar bytecode into Jack library output. It exposes provider, configuration, and translation task contracts so tooling can discover supported Jill API versions, set inputs and outputs, and run a translation."
+ }
+
+tokens used
+110,314
+Updated [com.android.tools.jill-jill-api-0.9.0.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a/build/discovered-artifact-metadata/com.android.tools.jill-jill-api-0.9.0.json).
+
+Set Maven Central source/javadoc URLs, AOSP `tools/base` as the repository, `test-code-url` to `N/A`, and left `language` absent. The source selection matches the Maven-hosted 0.9.0 artifact, and the description follows Jill’s role in translating `.jar` libraries into Jack library format. ([android.googlesource.com](https://android.googlesource.com/platform/prebuilts/tools/%2B/8ec471b))
+
+Validated the file with `jq`.
+Ran agent for com.android.tools.jill:jill-api:0.9.0 (exit 0). Log: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a/build/agent-artifact-discovery-logs/com.android.tools.jill-jill-api-0.9.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3677-b2a3e90a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 31s
+9 actionable tasks: 4 executed, 5 from cache
