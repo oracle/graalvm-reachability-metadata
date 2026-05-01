@@ -44,6 +44,9 @@ import org.eclipse.aether.graph.Exclusion;
 import org.eclipse.aether.installation.InstallRequest;
 import org.eclipse.aether.metadata.DefaultMetadata;
 import org.eclipse.aether.metadata.Metadata;
+import org.eclipse.aether.repository.Authentication;
+import org.eclipse.aether.repository.AuthenticationContext;
+import org.eclipse.aether.repository.AuthenticationDigest;
 import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.Proxy;
 import org.eclipse.aether.repository.RemoteRepository;
@@ -434,6 +437,57 @@ public class Maven_resolver_apiTest {
     }
 
     @Test
+    void authenticationContextsExposeRepositoryAndProxyCredentialsAndClearSecrets() {
+        DefaultRepositorySystemSession session = new DefaultRepositorySystemSession()
+                .setConfigProperty("realm", "build");
+        CredentialAuthentication repositoryAuthentication = new CredentialAuthentication("repository-user",
+                new char[] {'r', 'e', 'p', 'o'}, new File("keys/repository.pem"));
+        CredentialAuthentication proxyAuthentication = new CredentialAuthentication("proxy-user",
+                new char[] {'p', 'r', 'o', 'x', 'y'}, new File("keys/proxy.pem"));
+        Proxy proxy = new Proxy(Proxy.TYPE_HTTP, "proxy.example.org", 8080, proxyAuthentication);
+        RemoteRepository repository = new RemoteRepository.Builder("secure", "default", "https://repo.example.org")
+                .setAuthentication(repositoryAuthentication)
+                .setProxy(proxy)
+                .build();
+
+        AuthenticationContext repositoryContext = AuthenticationContext.forRepository(session, repository);
+        assertThat(repositoryContext).isNotNull();
+        assertThat(repositoryContext.getSession()).isSameAs(session);
+        assertThat(repositoryContext.getRepository()).isSameAs(repository);
+        assertThat(repositoryContext.getProxy()).isNull();
+        assertThat(repositoryContext.get(AuthenticationContext.USERNAME)).isEqualTo("repository-user");
+        char[] repositoryPassword = repositoryContext.get(AuthenticationContext.PASSWORD, char[].class);
+        assertThat(repositoryPassword).containsExactly('r', 'e', 'p', 'o');
+        assertThat(repositoryContext.get(AuthenticationContext.PASSWORD)).isEqualTo("repo");
+        assertThat(repositoryContext.get(AuthenticationContext.PRIVATE_KEY_PATH, File.class))
+                .isEqualTo(new File("keys/repository.pem"));
+        assertThat(repositoryContext.get(AuthenticationContext.PRIVATE_KEY_PATH))
+                .isEqualTo(new File("keys/repository.pem").getPath());
+
+        AuthenticationContext proxyContext = AuthenticationContext.forProxy(session, repository);
+        assertThat(proxyContext).isNotNull();
+        assertThat(proxyContext.getSession()).isSameAs(session);
+        assertThat(proxyContext.getRepository()).isSameAs(repository);
+        assertThat(proxyContext.getProxy()).isSameAs(proxy);
+        assertThat(proxyContext.get(AuthenticationContext.USERNAME)).isEqualTo("proxy-user");
+        assertThat(proxyContext.get(AuthenticationContext.PASSWORD, char[].class)).containsExactly('p', 'r', 'o', 'x', 'y');
+
+        String repositoryDigest = AuthenticationDigest.forRepository(session, repository);
+        String proxyDigest = AuthenticationDigest.forProxy(session, repository);
+        assertThat(repositoryDigest).isNotBlank();
+        assertThat(proxyDigest).isNotBlank().isNotEqualTo(repositoryDigest);
+        assertThat(AuthenticationDigest.forRepository(session, new RemoteRepository.Builder("anonymous", "default",
+                "https://repo.example.org").build())).isEmpty();
+
+        repositoryContext.close();
+        assertThat(repositoryPassword).containsOnly('\0');
+        AuthenticationContext.close(proxyContext);
+        AuthenticationContext.close(null);
+        assertThat(AuthenticationContext.forProxy(session, new RemoteRepository.Builder("direct", "default",
+                "https://repo.example.org").build())).isNull();
+    }
+
+    @Test
     void repositoryAndTransferEventsExposeImmutableSnapshots() {
         DefaultRepositorySystemSession session = new DefaultRepositorySystemSession();
         Artifact artifact = new DefaultArtifact("org.example:event-demo:1.0.0");
@@ -518,6 +572,37 @@ public class Maven_resolver_apiTest {
                     assertThat(exception.getSuppressed()).containsExactly(failures.toArray(new Throwable[0]));
                 });
         assertThatNullPointerException().isThrownBy(() -> MultiRuntimeException.mayThrow(null, failures));
+    }
+
+    private static final class CredentialAuthentication implements Authentication {
+        private final String username;
+        private final char[] password;
+        private final File privateKey;
+
+        private CredentialAuthentication(String username, char[] password, File privateKey) {
+            this.username = username;
+            this.password = password.clone();
+            this.privateKey = privateKey;
+        }
+
+        @Override
+        public void fill(AuthenticationContext context, String key, Map<String, String> data) {
+            String mappedKey = data != null ? data.getOrDefault(key, key) : key;
+            if (AuthenticationContext.USERNAME.equals(mappedKey)) {
+                context.put(key, username);
+            } else if (AuthenticationContext.PASSWORD.equals(mappedKey)) {
+                context.put(key, password.clone());
+            } else if (AuthenticationContext.PRIVATE_KEY_PATH.equals(mappedKey)) {
+                context.put(key, privateKey);
+            }
+        }
+
+        @Override
+        public void digest(AuthenticationDigest digest) {
+            digest.update(username);
+            digest.update(password);
+            digest.update(privateKey.getPath());
+        }
     }
 
     private static final class RecordingVisitor implements DependencyVisitor {
