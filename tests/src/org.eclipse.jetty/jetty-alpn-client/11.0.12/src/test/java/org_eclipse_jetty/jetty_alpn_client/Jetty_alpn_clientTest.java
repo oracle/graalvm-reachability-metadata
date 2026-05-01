@@ -113,6 +113,23 @@ public class Jetty_alpn_clientTest {
     }
 
     @Test
+    void onFillableFallsBackToDelegateConnectionWhenEndpointReachesEofBeforeSelection() throws Exception {
+        RecordingEndPoint endPoint = new RecordingEndPoint();
+        endPoint.fillResult = -1;
+        StubConnection fallbackConnection = new StubConnection(endPoint);
+        RecordingClientConnectionFactory connectionFactory = new RecordingClientConnectionFactory(fallbackConnection);
+        ALPNClientConnection connection = newConnection(endPoint, connectionFactory, new HashMap<>(), List.of("h2"));
+
+        connection.onFillable();
+
+        assertThat(connection.getProtocol()).isNull();
+        assertThat(endPoint.fillCalls).isEqualTo(1);
+        assertThat(endPoint.fillInterestedCallbacks).isEmpty();
+        assertThat(connectionFactory.newConnectionCalls).isEqualTo(1);
+        assertThat(endPoint.upgradedConnection).isSameAs(fallbackConnection);
+    }
+
+    @Test
     void closeShutsDownEndpointOutput() throws Exception {
         RecordingEndPoint endPoint = new RecordingEndPoint();
         ALPNClientConnection connection = newConnection(
@@ -198,6 +215,7 @@ public class Jetty_alpn_clientTest {
         private Connection upgradedConnection;
         private int fillCalls;
         private int flushCalls;
+        private int fillResult;
 
         @Override
         public InetSocketAddress getLocalAddress() {
@@ -245,7 +263,7 @@ public class Jetty_alpn_clientTest {
         @Override
         public int fill(ByteBuffer buffer) throws IOException {
             fillCalls++;
-            return 0;
+            return fillResult;
         }
 
         @Override
