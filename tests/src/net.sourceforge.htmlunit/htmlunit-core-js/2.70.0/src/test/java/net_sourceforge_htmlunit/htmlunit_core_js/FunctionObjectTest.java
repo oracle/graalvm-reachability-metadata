@@ -16,6 +16,7 @@ import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class FunctionObjectTest {
     public static class ConstructedScriptable extends ScriptableObject {
@@ -101,13 +102,63 @@ public class FunctionObjectTest {
         }
     }
 
+    @Test
+    void defineClassReachesPublicMethodScanWhenPackageAccessIsDenied() throws Exception {
+        Context cx = Context.enter();
+        try {
+            Scriptable scope = cx.initStandardObjects();
+
+            withPackageAccessDenied(
+                    () -> {
+                        assertThatThrownBy(
+                                        () ->
+                                                ScriptableObject.defineClass(
+                                                        scope,
+                                                        PublicMethodDefinedScriptable.class,
+                                                        false,
+                                                        false))
+                                .isInstanceOf(SecurityException.class)
+                                .hasMessageContaining("Package access denied");
+                        return null;
+                    },
+                    () ->
+                            ScriptableObject.defineClass(
+                                    scope,
+                                    PublicMethodDefinedScriptable.class,
+                                    false,
+                                    false));
+        } finally {
+            Context.exit();
+        }
+    }
+
     @SuppressWarnings("removal")
     private static <T> T withDeclaredMemberAccessDenied(ThrowingAction<T> action) throws Exception {
+        return withSecurityManager(new DeclaredMemberDenyingSecurityManager(null), action, action);
+    }
+
+    @SuppressWarnings("removal")
+    private static <T> T withPackageAccessDenied(
+            ThrowingAction<T> action, ThrowingAction<T> unsupportedAction) throws Exception {
+        return withSecurityManager(
+                new PackageAccessDenyingSecurityManager(
+                        PublicMethodDefinedScriptable.class.getPackageName()),
+                action,
+                unsupportedAction);
+    }
+
+    @SuppressWarnings("removal")
+    private static <T> T withSecurityManager(
+            DelegatingSecurityManager securityManager,
+            ThrowingAction<T> action,
+            ThrowingAction<T> unsupportedAction)
+            throws Exception {
         SecurityManager previousManager = System.getSecurityManager();
+        securityManager.setDelegate(previousManager);
         try {
-            System.setSecurityManager(new DeclaredMemberDenyingSecurityManager(previousManager));
+            System.setSecurityManager(securityManager);
         } catch (UnsupportedOperationException unsupported) {
-            return action.run();
+            return unsupportedAction.run();
         }
 
         try {
@@ -123,11 +174,26 @@ public class FunctionObjectTest {
     }
 
     @SuppressWarnings("removal")
-    private static final class DeclaredMemberDenyingSecurityManager extends SecurityManager {
-        private final SecurityManager delegate;
+    private abstract static class DelegatingSecurityManager extends SecurityManager {
+        private SecurityManager delegate;
 
-        private DeclaredMemberDenyingSecurityManager(SecurityManager delegate) {
+        protected final void setDelegate(SecurityManager delegate) {
             this.delegate = delegate;
+        }
+
+        @Override
+        public void checkPermission(Permission permission) {
+            if (delegate != null) {
+                delegate.checkPermission(permission);
+            }
+        }
+    }
+
+    @SuppressWarnings("removal")
+    private static final class DeclaredMemberDenyingSecurityManager
+            extends DelegatingSecurityManager {
+        private DeclaredMemberDenyingSecurityManager(SecurityManager delegate) {
+            setDelegate(delegate);
         }
 
         @Override
@@ -136,9 +202,34 @@ public class FunctionObjectTest {
                     && "accessDeclaredMembers".equals(permission.getName())) {
                 throw new SecurityException("Declared member access denied for fallback coverage");
             }
-            if (delegate != null) {
-                delegate.checkPermission(permission);
+            super.checkPermission(permission);
+        }
+    }
+
+    @SuppressWarnings("removal")
+    private static final class PackageAccessDenyingSecurityManager
+            extends DelegatingSecurityManager {
+        private final String deniedPackageName;
+
+        private PackageAccessDenyingSecurityManager(String deniedPackageName) {
+            this.deniedPackageName = deniedPackageName;
+        }
+
+        @Override
+        public void checkPermission(Permission permission) {
+            if (permission instanceof RuntimePermission
+                    && "accessDeclaredMembers".equals(permission.getName())) {
+                throw new SecurityException("Declared member access denied for fallback coverage");
             }
+            super.checkPermission(permission);
+        }
+
+        @Override
+        public void checkPackageAccess(String packageName) {
+            if (deniedPackageName.equals(packageName)) {
+                throw new SecurityException("Package access denied for fallback coverage");
+            }
+            super.checkPackageAccess(packageName);
         }
     }
 }
