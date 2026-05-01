@@ -16,6 +16,12 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('-H:+AllowDeprecatedBuilderClassesOnImageClasspath')
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
