@@ -71,6 +71,31 @@ public class Geronimo_interceptor_1_2_specTest {
     }
 
     @Test
+    void aroundInvokeInterceptorsCanRecoverFromProceedExceptions() throws Exception {
+        FailingService service = new FailingService();
+        ChainInvocationContext context = new ChainInvocationContext(
+                service,
+                new Object[] {"lookup-key"},
+                List.of(interceptorContext -> new RecoveryInterceptor().recover(interceptorContext)),
+                interceptorContext -> {
+                    record(interceptorContext, "business-failed");
+                    return service.find((String) interceptorContext.getParameters()[0]);
+                });
+
+        Object result = context.proceed();
+
+        assertThat(result).isEqualTo("fallback:lookup-key");
+        assertThat(context.getContextData())
+                .containsEntry("failed-key", "lookup-key")
+                .containsEntry("failure-type", IllegalStateException.class.getName())
+                .containsEntry("failure-message", "missing lookup-key");
+        assertThat(events(context)).containsExactly(
+                "recovery-before",
+                "business-failed",
+                "recovery-fallback");
+    }
+
+    @Test
     void aroundTimeoutCanReadTimerAndPreserveProceedResult() throws Exception {
         BusinessTimer timer = new BusinessTimer("daily-cleanup", 3);
         ChainInvocationContext context = new ChainInvocationContext(
@@ -314,6 +339,23 @@ public class Geronimo_interceptor_1_2_specTest {
     }
 
     @Interceptor
+    static final class RecoveryInterceptor {
+        @AroundInvoke
+        Object recover(InvocationContext context) throws Exception {
+            record(context, "recovery-before");
+            try {
+                return context.proceed();
+            } catch (IllegalStateException failure) {
+                context.getContextData().put("failed-key", context.getParameters()[0]);
+                context.getContextData().put("failure-type", failure.getClass().getName());
+                context.getContextData().put("failure-message", failure.getMessage());
+                record(context, "recovery-fallback");
+                return "fallback:" + context.getParameters()[0];
+            }
+        }
+    }
+
+    @Interceptor
     static final class MethodLevelInterceptor {
         @AroundInvoke
         Object invoke(InvocationContext context) throws Exception {
@@ -321,6 +363,12 @@ public class Geronimo_interceptor_1_2_specTest {
             Object result = context.proceed();
             record(context, "method-level-after");
             return result;
+        }
+    }
+
+    static final class FailingService {
+        String find(String key) {
+            throw new IllegalStateException("missing " + key);
         }
     }
 
