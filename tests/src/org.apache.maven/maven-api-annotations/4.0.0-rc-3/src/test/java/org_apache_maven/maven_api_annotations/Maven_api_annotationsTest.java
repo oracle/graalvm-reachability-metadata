@@ -88,6 +88,15 @@ public class Maven_api_annotationsTest {
         assertThat(endpoint.description("api")).isEqualTo("COMPILE-TIME-GENERATED:api");
     }
 
+    @Test
+    void experimentalAnnotationCanMarkLifecycleDeclarations() {
+        ExperimentalLifecycle lifecycle = new ExperimentalLifecycle("artifact-resolution");
+
+        assertThat(lifecycle.record("validate")).isEqualTo("artifact-resolution:validate");
+        assertThat(lifecycle.record("compile")).isEqualTo("artifact-resolution:compile");
+        assertThat(lifecycle.events()).containsExactly("artifact-resolution:validate", "artifact-resolution:compile");
+    }
+
     private static String route(Config.Source source) {
         return switch (source) {
             case SYSTEM_PROPERTIES -> "jvm-system-property";
@@ -208,6 +217,28 @@ public class Maven_api_annotationsTest {
         @Experimental
         private String description(@Nonnull String suffix) {
             return displayName() + ":" + suffix;
+        }
+    }
+
+    private static final class ExperimentalLifecycle {
+        private final String name;
+        private final List<String> events = new ArrayList<>();
+
+        @Experimental
+        private ExperimentalLifecycle(@Experimental @Nonnull String name) {
+            this.name = name;
+        }
+
+        @Nonnull
+        private String record(@Experimental @Nonnull String phase) {
+            @Experimental String event = name + ":" + phase;
+            events.add(event);
+            return event;
+        }
+
+        @Nonnull
+        private List<String> events() {
+            return List.copyOf(events);
         }
     }
 }
