@@ -7,12 +7,14 @@
 package javassist_javassist;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -22,11 +24,31 @@ import java.util.concurrent.atomic.AtomicReference;
 import javassist.tools.rmi.ObjectImporter;
 import javassist.tools.rmi.Proxy;
 import javassist.tools.rmi.RemoteRef;
+import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ObjectImporterTest {
+    private static final String OBJECT_IMPORTER_CLASS_NAME = "javassist.tools.rmi.ObjectImporter";
+
+    @Test
+    void packageHelperInvokesLegacyClassHelper() throws Exception {
+        String helperClassName = "javassist.tools.rmi.ObjectImporterClassAccessor" + Long.toUnsignedString(
+                System.nanoTime(), Character.MAX_RADIX);
+
+        try {
+            MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
+                    ObjectImporter.class, MethodHandles.lookup());
+            Class<?> helperClass = lookup.defineClass(classAccessorBytecode(helperClassName));
+            Class.forName(helperClass.getName(), true, helperClass.getClassLoader());
+
+            assertThat(helperClass.getName()).isEqualTo(helperClassName);
+        } catch (Error error) {
+            verifyUnsupportedDynamicClassLoading(error);
+        }
+    }
+
     @Test
     void callSerializesProxyAndValueArgumentsThenCreatesReturnedProxy() throws Exception {
         RemoteRef response = new RemoteRef(90, RemoteProxyFixture.class.getName());
@@ -72,6 +94,123 @@ public class ObjectImporterTest {
         ObjectImporter importer() {
             return importer;
         }
+    }
+
+    private static void verifyUnsupportedDynamicClassLoading(Error error) {
+        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+            throw error;
+        }
+    }
+
+    private static byte[] classAccessorBytecode(String helperClassName) throws IOException {
+        String internalName = helperClassName.replace('.', '/');
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (DataOutputStream output = new DataOutputStream(bytes)) {
+            output.writeInt(0xCAFEBABE);
+            output.writeShort(0);
+            output.writeShort(52);
+            output.writeShort(21);
+            writeUtf8(output, internalName);
+            writeClass(output, 1);
+            writeUtf8(output, "java/lang/Object");
+            writeClass(output, 3);
+            writeUtf8(output, "<init>");
+            writeUtf8(output, "()V");
+            writeNameAndType(output, 5, 6);
+            writeMethodRef(output, 4, 7);
+            writeUtf8(output, "Code");
+            writeUtf8(output, "<clinit>");
+            writeUtf8(output, "javassist/tools/rmi/ObjectImporter");
+            writeClass(output, 11);
+            writeUtf8(output, "class$");
+            writeUtf8(output, "(Ljava/lang/String;)Ljava/lang/Class;");
+            writeNameAndType(output, 13, 14);
+            writeMethodRef(output, 12, 15);
+            writeUtf8(output, OBJECT_IMPORTER_CLASS_NAME);
+            writeString(output, 17);
+            writeUtf8(output, "SourceFile");
+            writeUtf8(output, "ObjectImporterClassAccessor.java");
+            output.writeShort(0x0021);
+            output.writeShort(2);
+            output.writeShort(4);
+            output.writeShort(0);
+            output.writeShort(0);
+            output.writeShort(2);
+            writeDefaultConstructor(output);
+            writeClassInitializer(output);
+            output.writeShort(1);
+            output.writeShort(19);
+            output.writeInt(2);
+            output.writeShort(20);
+        }
+        return bytes.toByteArray();
+    }
+
+    private static void writeDefaultConstructor(DataOutputStream output) throws IOException {
+        output.writeShort(0x0001);
+        output.writeShort(5);
+        output.writeShort(6);
+        output.writeShort(1);
+        output.writeShort(9);
+        output.writeInt(17);
+        output.writeShort(1);
+        output.writeShort(1);
+        output.writeInt(5);
+        output.writeByte(0x2A);
+        output.writeByte(0xB7);
+        output.writeShort(8);
+        output.writeByte(0xB1);
+        output.writeShort(0);
+        output.writeShort(0);
+    }
+
+    private static void writeClassInitializer(DataOutputStream output) throws IOException {
+        output.writeShort(0x0008);
+        output.writeShort(10);
+        output.writeShort(6);
+        output.writeShort(1);
+        output.writeShort(9);
+        output.writeInt(19);
+        output.writeShort(1);
+        output.writeShort(0);
+        output.writeInt(7);
+        output.writeByte(0x12);
+        output.writeByte(18);
+        output.writeByte(0xB8);
+        output.writeShort(16);
+        output.writeByte(0x57);
+        output.writeByte(0xB1);
+        output.writeShort(0);
+        output.writeShort(0);
+    }
+
+    private static void writeUtf8(DataOutputStream output, String value) throws IOException {
+        output.writeByte(1);
+        output.writeUTF(value);
+    }
+
+    private static void writeClass(DataOutputStream output, int nameIndex) throws IOException {
+        output.writeByte(7);
+        output.writeShort(nameIndex);
+    }
+
+    private static void writeString(DataOutputStream output, int valueIndex) throws IOException {
+        output.writeByte(8);
+        output.writeShort(valueIndex);
+    }
+
+    private static void writeNameAndType(DataOutputStream output, int nameIndex, int descriptorIndex)
+            throws IOException {
+        output.writeByte(12);
+        output.writeShort(nameIndex);
+        output.writeShort(descriptorIndex);
+    }
+
+    private static void writeMethodRef(DataOutputStream output, int classIndex, int nameAndTypeIndex)
+            throws IOException {
+        output.writeByte(10);
+        output.writeShort(classIndex);
+        output.writeShort(nameAndTypeIndex);
     }
 
     private static final class RmiTestServer implements AutoCloseable {
