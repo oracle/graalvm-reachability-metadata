@@ -214,7 +214,7 @@ public class Jackson_datatype_jsr310Test {
         public ZoneId zoneId;
         public ZoneOffset zoneOffset;
 
-        public DateTimeValues() {}
+        public DateTimeValues() { }
 
         static DateTimeValues sample() {
             DateTimeValues values = new DateTimeValues();
@@ -247,7 +247,7 @@ public class Jackson_datatype_jsr310Test {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "uuuu-MM")
         public YearMonth billingMonth;
 
-        public FormattedValues() {}
+        public FormattedValues() { }
 
         FormattedValues(LocalDateTime meetingTime, LocalDate compactDate, YearMonth billingMonth) {
             this.meetingTime = meetingTime;
@@ -263,7 +263,7 @@ public class Jackson_datatype_jsr310Test {
         @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT, pattern = "HOURS")
         public Duration hours;
 
-        public DurationUnits() {}
+        public DurationUnits() { }
 
         DurationUnits(Duration minutes, Duration hours) {
             this.minutes = minutes;
