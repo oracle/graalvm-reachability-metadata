@@ -43,6 +43,14 @@ public class Auto_service_annotationsTest {
     }
 
     @Test
+    void annotationCanDeclareAConcreteClassServiceContract() {
+        TextTransformer transformer = new UppercaseTextTransformer();
+
+        assertThat(transformer.transform("concrete service")).isEqualTo("CONCRETE SERVICE");
+        assertThat(transformer.identity()).isEqualTo("text-transformer");
+    }
+
+    @Test
     void autoServiceValueExposesSingleServiceClass() {
         AutoService annotation = new AutoServiceLiteral(GreetingService.class);
 
@@ -117,6 +125,24 @@ public class Auto_service_annotationsTest {
         @Override
         String description() {
             return "bracketed formatter";
+        }
+    }
+
+    static class TextTransformer {
+        String transform(String message) {
+            return message;
+        }
+
+        String identity() {
+            return "text-transformer";
+        }
+    }
+
+    @AutoService(TextTransformer.class)
+    static final class UppercaseTextTransformer extends TextTransformer {
+        @Override
+        String transform(String message) {
+            return message.toUpperCase();
         }
     }
 
