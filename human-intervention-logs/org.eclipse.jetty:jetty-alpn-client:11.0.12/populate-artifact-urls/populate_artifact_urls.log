@@ -1,0 +1,566 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1511-d9577a99
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de54a-8626-79d3-82d4-e23477e56ed2
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.eclipse.jetty:jetty-alpn-client:11.0.12
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "11.0.12".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1511-d9577a99/metadata/org.eclipse.jetty/jetty-alpn-client/index.json
+- Entry selector: "metadata-version" = "11.0.12"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "11.0.12".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/11.0.12/jetty-alpn-client-11.0.12-sources.jar
+- repository-url: https://github.com/eclipse/jetty.project
+- test-code-url: N/A
+- documentation-url: https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/11.0.12/jetty-alpn-client-11.0.12-javadoc.jar
+- description: Jetty ALPN Client provides the client-side connection factory and connection types Eclipse Jetty uses to negotiate application protocols over TLS. It discovers available ALPN client processors and configures SSL engines so clients can select protocols such as HTTP/2 or HTTP/1.1 during secure connection setup.
+- language: <missing>
+
+Context:
+- Coordinate version: 11.0.12
+- Entry test-version: 11.0.12
+codex
+I’ll inspect the existing index entry first so I only fill fields that are actually missing, then I’ll verify whether Maven provides versioned source/test/doc artifacts for `11.0.12`.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.eclipse.jetty/jetty-alpn-client/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1511-d9577a99
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "11.0.12",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/11.0.12/jetty-alpn-client-11.0.12-sources.jar",
+    "repository-url" : "https://github.com/eclipse/jetty.project",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/11.0.12/jetty-alpn-client-11.0.12-javadoc.jar",
+    "description" : "Jetty ALPN Client provides the client-side connection factory and connection types Eclipse Jetty uses to negotiate application protocols over TLS. It discovers available ALPN client processors and configures SSL engines so clients can select protocols such as HTTP/2 or HTTP/1.1 during secure connection setup.",
+    "tested-versions" : [
+      "11.0.12"
+    ],
+    "allowed-packages" : [
+      "org.eclipse.jetty.alpn.client"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"11\\.0\\.12\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.eclipse.jetty/jetty-alpn-client/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1511-d9577a99
+ succeeded in 0ms:
+4:    "metadata-version" : "11.0.12",
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/11.0.12/jetty-alpn-client-11.0.12-sources.jar",
+6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+7:    "test-code-url" : "N/A",
+8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/11.0.12/jetty-alpn-client-11.0.12-javadoc.jar",
+9:    "description" : "Jetty ALPN Client provides the client-side connection factory and connection types Eclipse Jetty uses to negotiate application protocols over TLS. It discovers available ALPN client processors and configures SSL engines so clients can select protocols such as HTTP/2 or HTTP/1.1 during secure connection setup.",
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/11.0.12/
+codex
+The entry already has non-blank URL and description values, and `language` is the only absent field. I’m checking whether the artifact is Kotlin/Groovy/Scala-specific before deciding whether that field should be added.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/11.0.12/jetty-alpn-client-11.0.12.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1511-d9577a99
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>org.eclipse.jetty</groupId>
+    <artifactId>jetty-alpn-parent</artifactId>
+    <version>11.0.12</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>jetty-alpn-client</artifactId>
+  <name>Jetty :: ALPN :: Client</name>
+  <properties>
+    <bundle-symbolic-name>${project.groupId}.alpn.client</bundle-symbolic-name>
+    <spotbugs.onlyAnalyze>org.eclipse.alpn.*</spotbugs.onlyAnalyze>
+  </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Import-Package>${osgi.slf4j.import.packages},org.eclipse.jetty.alpn;resolution:=optional,*</Import-Package>
+            <Require-Capability>osgi.extender; filter:="(osgi.extender=osgi.serviceloader.processor)";resolution:=optional, osgi.serviceloader; filter:="(osgi.serviceloader=org.eclipse.jetty.io.ssl.ALPNProcessor$Client)";resolution:=optional;cardinality:=multiple</Require-Capability>
+          </instructions>
+        </configuration>
+      </plugin>
+      <!-- always include the sources to be able to prepare the eclipse-jetty-SDK feature
+      with a snapshot. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-slf4j-impl</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.toolchain</groupId>
+      <artifactId>jetty-test-helper</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/11.0.12/ | rg 'sources|javadoc|test|pom|\\.jar'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1511-d9577a99
+ succeeded in 0ms:
+<a href="jetty-alpn-client-11.0.12-javadoc.jar" title="jetty-alpn-client-11.0.12-javadoc.jar">jetty-alpn-client-11.0.12-javadoc.jar</a>             2022-09-14 02:39    139919      
+<a href="jetty-alpn-client-11.0.12-javadoc.jar.asc" title="jetty-alpn-client-11.0.12-javadoc.jar.asc">jetty-alpn-client-11.0.12-javadoc.jar.asc</a>         2022-09-14 02:39       195      
+<a href="jetty-alpn-client-11.0.12-javadoc.jar.md5" title="jetty-alpn-client-11.0.12-javadoc.jar.md5">jetty-alpn-client-11.0.12-javadoc.jar.md5</a>         2022-09-14 02:39        32      
+<a href="jetty-alpn-client-11.0.12-javadoc.jar.sha1" title="jetty-alpn-client-11.0.12-javadoc.jar.sha1">jetty-alpn-client-11.0.12-javadoc.jar.sha1</a>        2022-09-14 02:39        40      
+<a href="jetty-alpn-client-11.0.12-sources.jar" title="jetty-alpn-client-11.0.12-sources.jar">jetty-alpn-client-11.0.12-sources.jar</a>             2022-09-14 02:39     14967      
+<a href="jetty-alpn-client-11.0.12-sources.jar.asc" title="jetty-alpn-client-11.0.12-sources.jar.asc">jetty-alpn-client-11.0.12-sources.jar.asc</a>         2022-09-14 02:39       195      
+<a href="jetty-alpn-client-11.0.12-sources.jar.md5" title="jetty-alpn-client-11.0.12-sources.jar.md5">jetty-alpn-client-11.0.12-sources.jar.md5</a>         2022-09-14 02:39        32      
+<a href="jetty-alpn-client-11.0.12-sources.jar.sha1" title="jetty-alpn-client-11.0.12-sources.jar.sha1">jetty-alpn-client-11.0.12-sources.jar.sha1</a>        2022-09-14 02:39        40      
+<a href="jetty-alpn-client-11.0.12.jar" title="jetty-alpn-client-11.0.12.jar">jetty-alpn-client-11.0.12.jar</a>                     2022-09-14 02:39     16922      
+<a href="jetty-alpn-client-11.0.12.jar.asc" title="jetty-alpn-client-11.0.12.jar.asc">jetty-alpn-client-11.0.12.jar.asc</a>                 2022-09-14 02:39       195      
+<a href="jetty-alpn-client-11.0.12.jar.md5" title="jetty-alpn-client-11.0.12.jar.md5">jetty-alpn-client-11.0.12.jar.md5</a>                 2022-09-14 02:39        32      
+<a href="jetty-alpn-client-11.0.12.jar.sha1" title="jetty-alpn-client-11.0.12.jar.sha1">jetty-alpn-client-11.0.12.jar.sha1</a>                2022-09-14 02:39        40      
+<a href="jetty-alpn-client-11.0.12.pom" title="jetty-alpn-client-11.0.12.pom">jetty-alpn-client-11.0.12.pom</a>                     2022-09-14 02:39      2209      
+<a href="jetty-alpn-client-11.0.12.pom.asc" title="jetty-alpn-client-11.0.12.pom.asc">jetty-alpn-client-11.0.12.pom.asc</a>                 2022-09-14 02:39       195      
+<a href="jetty-alpn-client-11.0.12.pom.md5" title="jetty-alpn-client-11.0.12.pom.md5">jetty-alpn-client-11.0.12.pom.md5</a>                 2022-09-14 02:39        32      
+<a href="jetty-alpn-client-11.0.12.pom.sha1" title="jetty-alpn-client-11.0.12.pom.sha1">jetty-alpn-client-11.0.12.pom.sha1</a>                2022-09-14 02:39        40      
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.eclipse.jetty/jetty-alpn-client/index.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1511-d9577a99
+ succeeded in 0ms:
+?? metadata/org.eclipse.jetty/jetty-alpn-client/index.json
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/11.0.12/
+web search: 
+web search: 
+web search: 
+web search: github eclipse jetty.project jetty-alpn-client 11.0.12 tag
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse/jetty.project/contents?ref=jetty-11.0.12 | rg '\"name\"|\"path\"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1511-d9577a99
+exec
+/usr/bin/bash -lc "curl -fsSL -o /dev/null -w '%{url_effective} %{http_code}\\n' https://github.com/eclipse/jetty.project" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1511-d9577a99
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/jetty/jetty.project/contents?ref=jetty-11.0.12 | rg '\"name\"|\"path\"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1511-d9577a99
+ succeeded in 257ms:
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "name": ".github",
+    "path": ".github",
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "name": ".lgtm.yml",
+    "path": ".lgtm.yml",
+    "name": ".mvn",
+    "path": ".mvn",
+    "name": "CODE_COVERAGE.md",
+    "path": "CODE_COVERAGE.md",
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "name": "Jenkinsfile",
+    "path": "Jenkinsfile",
+    "name": "Jenkinsfile-autobahn",
+    "path": "Jenkinsfile-autobahn",
+    "name": "Jmh_Jenkinsfile",
+    "path": "Jmh_Jenkinsfile",
+    "name": "KEYS.txt",
+    "path": "KEYS.txt",
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "name": "NOTICE.txt",
+    "path": "NOTICE.txt",
+    "name": "README.md",
+    "path": "README.md",
+    "name": "SECURITY.md",
+    "path": "SECURITY.md",
+    "name": "VERSION.txt",
+    "path": "VERSION.txt",
+    "name": "apache-jsp",
+    "path": "apache-jsp",
+    "name": "build-resources",
+    "path": "build-resources",
+    "name": "demos",
+    "path": "demos",
+    "name": "documentation",
+    "path": "documentation",
+    "name": "glassfish-jstl",
+    "path": "glassfish-jstl",
+    "name": "header-template.txt",
+    "path": "header-template.txt",
+    "name": "javadoc",
+    "path": "javadoc",
+    "name": "jetty-alpn",
+    "path": "jetty-alpn",
+    "name": "jetty-annotations",
+    "path": "jetty-annotations",
+    "name": "jetty-ant",
+    "path": "jetty-ant",
+    "name": "jetty-bom",
+    "path": "jetty-bom",
+    "name": "jetty-cdi",
+    "path": "jetty-cdi",
+    "name": "jetty-client",
+    "path": "jetty-client",
+    "name": "jetty-deploy",
+    "path": "jetty-deploy",
+    "name": "jetty-fcgi",
+    "path": "jetty-fcgi",
+    "name": "jetty-gcloud",
+    "path": "jetty-gcloud",
+    "name": "jetty-hazelcast",
+    "path": "jetty-hazelcast",
+    "name": "jetty-home",
+    "path": "jetty-home",
+    "name": "jetty-http-spi",
+    "path": "jetty-http-spi",
+    "name": "jetty-http",
+    "path": "jetty-http",
+    "name": "jetty-http2",
+    "path": "jetty-http2",
+    "name": "jetty-http3",
+    "path": "jetty-http3",
+    "name": "jetty-infinispan",
+    "path": "jetty-infinispan",
+    "name": "jetty-io",
+    "path": "jetty-io",
+    "name": "jetty-jaas",
+    "path": "jetty-jaas",
+    "name": "jetty-jaspi",
+    "path": "jetty-jaspi",
+    "name": "jetty-jmx",
+    "path": "jetty-jmx",
+    "name": "jetty-jndi",
+    "path": "jetty-jndi",
+    "name": "jetty-jspc-maven-plugin",
+    "path": "jetty-jspc-maven-plugin",
+    "name": "jetty-keystore",
+    "path": "jetty-keystore",
+    "name": "jetty-maven-plugin",
+    "path": "jetty-maven-plugin",
+    "name": "jetty-memcached",
+    "path": "jetty-memcached",
+    "name": "jetty-nosql",
+    "path": "jetty-nosql",
+    "name": "jetty-openid",
+    "path": "jetty-openid",
+    "name": "jetty-osgi",
+    "path": "jetty-osgi",
+    "name": "jetty-p2",
+    "path": "jetty-p2",
+    "name": "jetty-plus",
+    "path": "jetty-plus",
+    "name": "jetty-proxy",
+    "path": "jetty-proxy",
+    "name": "jetty-quic",
+    "path": "jetty-quic",
+    "name": "jetty-quickstart",
+    "path": "jetty-quickstart",
+    "name": "jetty-rewrite",
+    "path": "jetty-rewrite",
+    "name": "jetty-runner",
+    "path": "jetty-runner",
+    "name": "jetty-security",
+    "path": "jetty-security",
+    "name": "jetty-server",
+    "path": "jetty-server",
+    "name": "jetty-servlet",
+    "path": "jetty-servlet",
+    "name": "jetty-servlets",
+    "path": "jetty-servlets",
+    "name": "jetty-slf4j-impl",
+    "path": "jetty-slf4j-impl",
+    "name": "jetty-start",
+    "path": "jetty-start",
+    "name": "jetty-unixdomain-server",
+    "path": "jetty-unixdomain-server",
+    "name": "jetty-unixsocket",
+    "path": "jetty-unixsocket",
+    "name": "jetty-util-ajax",
+    "path": "jetty-util-ajax",
+    "name": "jetty-util",
+    "path": "jetty-util",
+    "name": "jetty-webapp",
+    "path": "jetty-webapp",
+    "name": "jetty-websocket",
+    "path": "jetty-websocket",
+    "name": "jetty-xml",
+    "path": "jetty-xml",
+    "name": "logos",
+    "path": "logos",
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "name": "scripts",
+    "path": "scripts",
+    "name": "tests",
+    "path": "tests",
+
+ succeeded in 361ms:
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "name": ".github",
+    "path": ".github",
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "name": ".lgtm.yml",
+    "path": ".lgtm.yml",
+    "name": ".mvn",
+    "path": ".mvn",
+    "name": "CODE_COVERAGE.md",
+    "path": "CODE_COVERAGE.md",
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "name": "Jenkinsfile",
+    "path": "Jenkinsfile",
+    "name": "Jenkinsfile-autobahn",
+    "path": "Jenkinsfile-autobahn",
+    "name": "Jmh_Jenkinsfile",
+    "path": "Jmh_Jenkinsfile",
+    "name": "KEYS.txt",
+    "path": "KEYS.txt",
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "name": "NOTICE.txt",
+    "path": "NOTICE.txt",
+    "name": "README.md",
+    "path": "README.md",
+    "name": "SECURITY.md",
+    "path": "SECURITY.md",
+    "name": "VERSION.txt",
+    "path": "VERSION.txt",
+    "name": "apache-jsp",
+    "path": "apache-jsp",
+    "name": "build-resources",
+    "path": "build-resources",
+    "name": "demos",
+    "path": "demos",
+    "name": "documentation",
+    "path": "documentation",
+    "name": "glassfish-jstl",
+    "path": "glassfish-jstl",
+    "name": "header-template.txt",
+    "path": "header-template.txt",
+    "name": "javadoc",
+    "path": "javadoc",
+    "name": "jetty-alpn",
+    "path": "jetty-alpn",
+    "name": "jetty-annotations",
+    "path": "jetty-annotations",
+    "name": "jetty-ant",
+    "path": "jetty-ant",
+    "name": "jetty-bom",
+    "path": "jetty-bom",
+    "name": "jetty-cdi",
+    "path": "jetty-cdi",
+    "name": "jetty-client",
+    "path": "jetty-client",
+    "name": "jetty-deploy",
+    "path": "jetty-deploy",
+    "name": "jetty-fcgi",
+    "path": "jetty-fcgi",
+    "name": "jetty-gcloud",
+    "path": "jetty-gcloud",
+    "name": "jetty-hazelcast",
+    "path": "jetty-hazelcast",
+    "name": "jetty-home",
+    "path": "jetty-home",
+    "name": "jetty-http-spi",
+    "path": "jetty-http-spi",
+    "name": "jetty-http",
+    "path": "jetty-http",
+    "name": "jetty-http2",
+    "path": "jetty-http2",
+    "name": "jetty-http3",
+    "path": "jetty-http3",
+    "name": "jetty-infinispan",
+    "path": "jetty-infinispan",
+    "name": "jetty-io",
+    "path": "jetty-io",
+    "name": "jetty-jaas",
+    "path": "jetty-jaas",
+    "name": "jetty-jaspi",
+    "path": "jetty-jaspi",
+    "name": "jetty-jmx",
+    "path": "jetty-jmx",
+    "name": "jetty-jndi",
+    "path": "jetty-jndi",
+    "name": "jetty-jspc-maven-plugin",
+    "path": "jetty-jspc-maven-plugin",
+    "name": "jetty-keystore",
+    "path": "jetty-keystore",
+    "name": "jetty-maven-plugin",
+    "path": "jetty-maven-plugin",
+    "name": "jetty-memcached",
+    "path": "jetty-memcached",
+    "name": "jetty-nosql",
+    "path": "jetty-nosql",
+    "name": "jetty-openid",
+    "path": "jetty-openid",
+    "name": "jetty-osgi",
+    "path": "jetty-osgi",
+    "name": "jetty-p2",
+    "path": "jetty-p2",
+    "name": "jetty-plus",
+    "path": "jetty-plus",
+    "name": "jetty-proxy",
+    "path": "jetty-proxy",
+    "name": "jetty-quic",
+    "path": "jetty-quic",
+    "name": "jetty-quickstart",
+    "path": "jetty-quickstart",
+    "name": "jetty-rewrite",
+    "path": "jetty-rewrite",
+    "name": "jetty-runner",
+    "path": "jetty-runner",
+    "name": "jetty-security",
+    "path": "jetty-security",
+    "name": "jetty-server",
+    "path": "jetty-server",
+    "name": "jetty-servlet",
+    "path": "jetty-servlet",
+    "name": "jetty-servlets",
+    "path": "jetty-servlets",
+    "name": "jetty-slf4j-impl",
+    "path": "jetty-slf4j-impl",
+    "name": "jetty-start",
+    "path": "jetty-start",
+    "name": "jetty-unixdomain-server",
+    "path": "jetty-unixdomain-server",
+    "name": "jetty-unixsocket",
+    "path": "jetty-unixsocket",
+    "name": "jetty-util-ajax",
+    "path": "jetty-util-ajax",
+    "name": "jetty-util",
+    "path": "jetty-util",
+    "name": "jetty-webapp",
+    "path": "jetty-webapp",
+    "name": "jetty-websocket",
+    "path": "jetty-websocket",
+    "name": "jetty-xml",
+    "path": "jetty-xml",
+    "name": "logos",
+    "path": "logos",
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "name": "scripts",
+    "path": "scripts",
+    "name": "tests",
+    "path": "tests",
+
+ succeeded in 983ms:
+https://github.com/jetty/jetty.project 200
+
+web search: 
+web search: Maven Central org.eclipse.jetty jetty-alpn-client 11.0.12 sources javadoc
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/10.0.17/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/11.0.12/
+web search: 
+web search: https://github.com/jetty/jetty.project/tree/jetty-11.0.12/jetty-alpn/jetty-alpn-client
+codex
+Maven Central has the sources and javadoc jars for `11.0.12` but no test jar/classifier in that version directory. The tagged Jetty module also only shows `src/main/java`, so the absent `language` field should stay absent rather than being set to Kotlin, Groovy, or Scala.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.eclipse.jetty/jetty-alpn-client/index.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1511-d9577a99
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.eclipse.jetty/jetty-alpn-client/index.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1511-d9577a99
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.eclipse.jetty/jetty-alpn-client/index.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1511-d9577a99
+ succeeded in 0ms:
+?? metadata/org.eclipse.jetty/jetty-alpn-client/index.json
+
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/11.0.12 jetty-alpn-client-11.0.12-sources.jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/11.0.12/
+web search: 
+web search: https://github.com/jetty/jetty.project/tree/jetty-11.0.12/jetty-alpn/jetty-alpn-client
+web search: 
+web search: https://github.com/jetty/jetty.project
+codex
+Checked [index.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1511-d9577a99/metadata/org.eclipse.jetty/jetty-alpn-client/index.json). No edits were needed: all requested fields are already non-blank except `language`, and this artifact is not Kotlin/Groovy/Scala-specific, so `language` should remain absent. Maven Central has the exact `11.0.12` sources and javadoc jars, but no test artifact; the tagged module shows `src/main/java` only. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/11.0.12/))
+
+Validation: `jq empty` passed, and `git diff -- metadata/org.eclipse.jetty/jetty-alpn-client/index.json` is empty.
+tokens used
+59,249
+Checked [index.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1511-d9577a99/metadata/org.eclipse.jetty/jetty-alpn-client/index.json). No edits were needed: all requested fields are already non-blank except `language`, and this artifact is not Kotlin/Groovy/Scala-specific, so `language` should remain absent. Maven Central has the exact `11.0.12` sources and javadoc jars, but no test artifact; the tagged module shows `src/main/java` only. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/11.0.12/))
+
+Validation: `jq empty` passed, and `git diff -- metadata/org.eclipse.jetty/jetty-alpn-client/index.json` is empty.
+Ran agent for org.eclipse.jetty:jetty-alpn-client:11.0.12 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1511-d9577a99/build/agent-url-discovery-logs/org.eclipse.jetty-jetty-alpn-client-11.0.12.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1511-d9577a99/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 23s
+9 actionable tasks: 1 executed, 8 up-to-date
