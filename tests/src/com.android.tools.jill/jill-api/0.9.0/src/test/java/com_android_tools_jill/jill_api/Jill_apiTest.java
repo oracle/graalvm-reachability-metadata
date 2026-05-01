@@ -78,6 +78,22 @@ public class Jill_apiTest {
     }
 
     @Test
+    void api01TranslationOverwritesExistingJackOutputFile() throws Exception {
+        Path inputJar = Files.write(tempDir.resolve("classes.jar"), new byte[] {0x50, 0x4b, 0x03, 0x04});
+        Path outputJack = Files.writeString(tempDir.resolve("library.jack"), "stale jack library contents");
+        RecordingApi01Config config = new RecordingApi01Config();
+
+        config.setInputJavaBinaryFile(inputJar.toFile());
+        config.setOutputJackFile(outputJack.toFile());
+
+        config.getTask().run();
+
+        assertThat(Files.readString(outputJack))
+                .contains("translated " + inputJar.getFileName())
+                .doesNotContain("stale jack library contents");
+    }
+
+    @Test
     void api01ConfigRejectsInvalidConfigurationBeforeCreatingTask() throws Exception {
         RecordingApi01Config config = new RecordingApi01Config();
 
