@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.jboss.arquillian.core.spi.Manager;
 import org.jboss.arquillian.core.spi.ManagerBuilder;
+import org.jboss.arquillian.core.spi.SecurityActionsInvoker;
 import org.junit.jupiter.api.Test;
 
 public class SecurityActionsTest {
@@ -29,10 +30,24 @@ public class SecurityActionsTest {
         }
     }
 
+    @Test
+    void securityActionsCreatesManagerWithExplicitClassLoader() {
+        ClassLoader classLoader = SecurityActionsTest.class.getClassLoader();
+        Manager manager = SecurityActionsInvoker.createManagerWithClassLoader(classLoader);
+        try {
+            assertThat(manager).isNotNull();
+        } finally {
+            manager.shutdown();
+        }
+    }
+
     private static void assertManagerCanBeCreated() {
         Manager manager = ManagerBuilder.from().create();
-        assertThat(manager).isNotNull();
-        manager.shutdown();
+        try {
+            assertThat(manager).isNotNull();
+        } finally {
+            manager.shutdown();
+        }
     }
 
     private static final class RejectingClassLoader extends ClassLoader {
