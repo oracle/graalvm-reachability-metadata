@@ -37,8 +37,8 @@ public class ClassPoolTest {
 
             assertThat(loadedClass.getName()).isEqualTo(GENERATED_CLASS_NAME);
             assertThat(loadedClass.getClassLoader()).isSameAs(targetLoader);
-        } catch (Error error) {
-            verifyUnsupportedDynamicClassLoading(error);
+        } catch (Throwable throwable) {
+            verifyUnsupportedDynamicClassLoading(throwable);
         }
     }
 
@@ -68,14 +68,20 @@ public class ClassPoolTest {
                     ClassPoolTest.class.getProtectionDomain()).getDeclaredConstructor().newInstance();
 
             assertThat(lookup.lookup(String.class.getName())).isSameAs(String.class);
-        } catch (Error error) {
-            verifyUnsupportedDynamicClassLoading(error);
+        } catch (Throwable throwable) {
+            verifyUnsupportedDynamicClassLoading(throwable);
         }
     }
 
-    private static void verifyUnsupportedDynamicClassLoading(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
+    private static void verifyUnsupportedDynamicClassLoading(Throwable throwable) {
+        if (!NativeImageSupport.isUnsupportedFeatureError(throwable)) {
+            if (throwable instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            }
+            if (throwable instanceof Error error) {
+                throw error;
+            }
+            throw new AssertionError(throwable);
         }
     }
 

@@ -41,8 +41,8 @@ public class SecurityActionsAnonymous3Test {
             assertThat(method.getName()).isEqualTo("getLocation");
             assertThat(method.getParameterTypes()).isEmpty();
             assertThat(method.getDeclaringClass()).isEqualTo(Point.class);
-        } catch (Error error) {
-            verifyUnsupportedDynamicClassLoading(error);
+        } catch (Throwable throwable) {
+            verifyUnsupportedDynamicClassLoading(throwable);
         }
     }
 
@@ -104,9 +104,15 @@ public class SecurityActionsAnonymous3Test {
         classFile.addMethod(method);
     }
 
-    private static void verifyUnsupportedDynamicClassLoading(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
+    private static void verifyUnsupportedDynamicClassLoading(Throwable throwable) {
+        if (!NativeImageSupport.isUnsupportedFeatureError(throwable)) {
+            if (throwable instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            }
+            if (throwable instanceof Error error) {
+                throw error;
+            }
+            throw new AssertionError(throwable);
         }
     }
 }

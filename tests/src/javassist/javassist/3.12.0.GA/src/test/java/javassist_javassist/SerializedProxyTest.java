@@ -37,8 +37,8 @@ public class SerializedProxyTest {
             assertThat(ProxyFactory.isProxyClass(deserialized.getClass())).isTrue();
             assertThat(deserialized.increment(4)).isEqualTo(15);
             assertThat(deserialized.identity()).isEqualTo("counter");
-        } catch (Error error) {
-            verifyUnsupportedDynamicClassLoading(error);
+        } catch (Throwable throwable) {
+            verifyUnsupportedDynamicClassLoading(throwable);
         }
     }
 
@@ -73,9 +73,15 @@ public class SerializedProxyTest {
         }
     }
 
-    private static void verifyUnsupportedDynamicClassLoading(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
+    private static void verifyUnsupportedDynamicClassLoading(Throwable throwable) {
+        if (!NativeImageSupport.isUnsupportedFeatureError(throwable)) {
+            if (throwable instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            }
+            if (throwable instanceof Error error) {
+                throw error;
+            }
+            throw new AssertionError(throwable);
         }
     }
 

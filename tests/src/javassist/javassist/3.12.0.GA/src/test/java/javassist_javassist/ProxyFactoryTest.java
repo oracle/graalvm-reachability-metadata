@@ -48,8 +48,8 @@ public class ProxyFactoryTest {
             assertThat(proxy.echo("input")).isEqualTo("handled:super:input");
             assertThat(proxy.sum(2, 5)).isEqualTo(7);
             assertThat(serializeWithProxyDescriptor(proxy)).isNotEmpty();
-        } catch (Error error) {
-            verifyUnsupportedDynamicClassLoading(error);
+        } catch (Throwable throwable) {
+            verifyUnsupportedDynamicClassLoading(throwable);
         }
     }
 
@@ -61,9 +61,15 @@ public class ProxyFactoryTest {
         return bytes.toByteArray();
     }
 
-    private static void verifyUnsupportedDynamicClassLoading(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
+    private static void verifyUnsupportedDynamicClassLoading(Throwable throwable) {
+        if (!NativeImageSupport.isUnsupportedFeatureError(throwable)) {
+            if (throwable instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            }
+            if (throwable instanceof Error error) {
+                throw error;
+            }
+            throw new AssertionError(throwable);
         }
     }
 

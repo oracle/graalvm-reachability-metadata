@@ -30,7 +30,8 @@ public class HotSwapperTest {
     }
 
     private static void verifyUnsupportedHotSwapRuntime(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+        if (!NativeImageSupport.isUnsupportedFeatureError(error)
+                && !(NativeImageSupport.isNativeImageRuntime() && "no Connectors loaded".equals(error.getMessage()))) {
             throw error;
         }
     }

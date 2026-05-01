@@ -38,14 +38,20 @@ public class RuntimeSupportInnerDefaultMethodHandlerTest {
             assertThat(proxy).isInstanceOf(ProxyObject.class);
             assertThat(((ProxyObject) proxy).getHandler()).isSameAs(RuntimeSupport.default_interceptor);
             assertThat(proxy.describe("value")).isEqualTo("created:value");
-        } catch (Error error) {
-            verifyUnsupportedDynamicClassLoading(error);
+        } catch (Throwable throwable) {
+            verifyUnsupportedDynamicClassLoading(throwable);
         }
     }
 
-    private static void verifyUnsupportedDynamicClassLoading(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
+    private static void verifyUnsupportedDynamicClassLoading(Throwable throwable) {
+        if (!NativeImageSupport.isUnsupportedFeatureError(throwable)) {
+            if (throwable instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            }
+            if (throwable instanceof Error error) {
+                throw error;
+            }
+            throw new AssertionError(throwable);
         }
     }
 

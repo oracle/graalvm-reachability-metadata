@@ -26,4 +26,9 @@ public class NativeImageSupportTest {
     void returnsFalseForStackOverflowError() {
         assertFalse(NativeImageSupport.isUnsupportedFeatureError(new StackOverflowError()));
     }
+
+    @Test
+    void returnsFalseForWrappedNonUnsupportedThrowable() {
+        assertFalse(NativeImageSupport.isUnsupportedFeatureError(new RuntimeException(new IllegalStateException())));
+    }
 }

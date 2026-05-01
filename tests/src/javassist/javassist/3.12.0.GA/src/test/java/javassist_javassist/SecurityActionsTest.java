@@ -39,8 +39,8 @@ public class SecurityActionsTest {
             probe.run(Point.class.getField("x"), target);
 
             assertThat(target.x).isEqualTo(7);
-        } catch (Error error) {
-            verifyUnsupportedDynamicClassLoading(error);
+        } catch (Throwable throwable) {
+            verifyUnsupportedDynamicClassLoading(throwable);
         }
     }
 
@@ -116,9 +116,15 @@ public class SecurityActionsTest {
                 "(Ljava/lang/reflect/Field;Ljava/lang/Object;Ljava/lang/Object;)V");
     }
 
-    private static void verifyUnsupportedDynamicClassLoading(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
+    private static void verifyUnsupportedDynamicClassLoading(Throwable throwable) {
+        if (!NativeImageSupport.isUnsupportedFeatureError(throwable)) {
+            if (throwable instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            }
+            if (throwable instanceof Error error) {
+                throw error;
+            }
+            throw new AssertionError(throwable);
         }
     }
 

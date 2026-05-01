@@ -37,8 +37,8 @@ public class ProxyObjectInputStreamTest {
             assertThat(ProxyFactory.isProxyClass(deserialized.getClass())).isTrue();
             assertThat(deserialized.greet("reader")).isEqualTo("handled:hello reader");
             assertThat(deserialized.identity()).isEqualTo("greeter");
-        } catch (Error error) {
-            verifyUnsupportedDynamicClassLoading(error);
+        } catch (Throwable throwable) {
+            verifyUnsupportedDynamicClassLoading(throwable);
         }
     }
 
@@ -69,9 +69,15 @@ public class ProxyObjectInputStreamTest {
         }
     }
 
-    private static void verifyUnsupportedDynamicClassLoading(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
+    private static void verifyUnsupportedDynamicClassLoading(Throwable throwable) {
+        if (!NativeImageSupport.isUnsupportedFeatureError(throwable)) {
+            if (throwable instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            }
+            if (throwable instanceof Error error) {
+                throw error;
+            }
+            throw new AssertionError(throwable);
         }
     }
 

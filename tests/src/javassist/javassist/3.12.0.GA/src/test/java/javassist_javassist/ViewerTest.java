@@ -28,8 +28,8 @@ public class ViewerTest {
             viewer.run(ViewerRunnableApplication.class.getName(), new String[] { "left", "right" });
 
             assertThat(System.getProperty(RUN_RESULT_PROPERTY)).isEqualTo("left:right");
-        } catch (Error error) {
-            verifyUnsupportedDynamicClassLoading(error);
+        } catch (Throwable throwable) {
+            verifyUnsupportedDynamicClassLoading(throwable);
         } finally {
             System.clearProperty(RUN_RESULT_PROPERTY);
         }
@@ -44,17 +44,27 @@ public class ViewerTest {
             Class<?> cachedClass = viewer.loadClass(ViewerCachedApplication.class.getName());
 
             assertThat(cachedClass).isSameAs(loadedClass);
-            assertThat(loadedClass.getClassLoader()).isSameAs(viewer);
-        } catch (Error error) {
-            verifyUnsupportedDynamicClassLoading(error);
+            if (NativeImageSupport.isNativeImageRuntime()) {
+                assertThat(loadedClass.getClassLoader()).isIn(viewer, ViewerCachedApplication.class.getClassLoader());
+            } else {
+                assertThat(loadedClass.getClassLoader()).isSameAs(viewer);
+            }
+        } catch (Throwable throwable) {
+            verifyUnsupportedDynamicClassLoading(throwable);
         }
 
         assertThat(viewer.loadClass(String.class.getName())).isSameAs(String.class);
     }
 
-    private static void verifyUnsupportedDynamicClassLoading(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
+    private static void verifyUnsupportedDynamicClassLoading(Throwable throwable) {
+        if (!NativeImageSupport.isUnsupportedFeatureError(throwable)) {
+            if (throwable instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            }
+            if (throwable instanceof Error error) {
+                throw error;
+            }
+            throw new AssertionError(throwable);
         }
     }
 

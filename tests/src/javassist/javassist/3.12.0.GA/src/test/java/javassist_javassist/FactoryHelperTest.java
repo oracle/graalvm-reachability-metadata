@@ -47,8 +47,8 @@ public class FactoryHelperTest {
                     assertThat(typeIndex.invoke(null, Boolean.TYPE)).isEqualTo(0);
                 }
             }
-        } catch (Error error) {
-            verifyUnsupportedDynamicClassLoading(error);
+        } catch (Throwable throwable) {
+            verifyUnsupportedDynamicClassLoading(throwable);
         }
     }
 
@@ -59,8 +59,8 @@ public class FactoryHelperTest {
 
             assertThat(probe.lookup(String.class.getName())).isSameAs(String.class);
             assertThat(probe.lookup(byte[].class.getName())).isSameAs(byte[].class);
-        } catch (Error error) {
-            verifyUnsupportedDynamicClassLoading(error);
+        } catch (Throwable throwable) {
+            verifyUnsupportedDynamicClassLoading(throwable);
         }
     }
 
@@ -162,9 +162,15 @@ public class FactoryHelperTest {
         return location;
     }
 
-    private static void verifyUnsupportedDynamicClassLoading(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
+    private static void verifyUnsupportedDynamicClassLoading(Throwable throwable) {
+        if (!NativeImageSupport.isUnsupportedFeatureError(throwable)) {
+            if (throwable instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            }
+            if (throwable instanceof Error error) {
+                throw error;
+            }
+            throw new AssertionError(throwable);
         }
     }
 
