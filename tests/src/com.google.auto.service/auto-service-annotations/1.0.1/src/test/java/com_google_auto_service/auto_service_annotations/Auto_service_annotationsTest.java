@@ -6,11 +6,106 @@
  */
 package com_google_auto_service.auto_service_annotations;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.google.auto.service.AutoService;
+import java.lang.annotation.Annotation;
 import org.junit.jupiter.api.Test;
 
-class Auto_service_annotationsTest {
+public class Auto_service_annotationsTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void singleServiceAnnotationCanBeAppliedToAConcreteProvider() {
+        GreetingService service = new GreetingProvider();
+
+        assertThat(service.greet("AutoService")).isEqualTo("Hello, AutoService");
+    }
+
+    @Test
+    void annotationCanDeclareMultipleServiceContractsForOneProvider() {
+        MultiServiceProvider provider = new MultiServiceProvider();
+        GreetingService greetingService = provider;
+        Resettable resettable = provider;
+        Runnable runnable = provider;
+
+        assertThat(greetingService.greet("multiple services")).isEqualTo("Hello, multiple services");
+        assertThat(resettable.reset()).isEqualTo("reset");
+
+        runnable.run();
+        assertThat(provider.hasRun()).isTrue();
+    }
+
+    @Test
+    void autoServiceValueExposesSingleServiceClass() {
+        AutoService annotation = new AutoServiceLiteral(GreetingService.class);
+
+        assertThat(annotation.annotationType()).isEqualTo(AutoService.class);
+        assertThat(annotation.value()).containsExactly(GreetingService.class);
+    }
+
+    @Test
+    void autoServiceValueExposesMultipleServiceClassesInDeclarationOrder() {
+        AutoService annotation = new AutoServiceLiteral(GreetingService.class, Resettable.class, Runnable.class);
+
+        assertThat(annotation.annotationType()).isEqualTo(AutoService.class);
+        assertThat(annotation.value()).containsExactly(GreetingService.class, Resettable.class, Runnable.class);
+    }
+
+    interface GreetingService {
+        String greet(String name);
+    }
+
+    interface Resettable {
+        String reset();
+    }
+
+    @AutoService(GreetingService.class)
+    static final class GreetingProvider implements GreetingService {
+        @Override
+        public String greet(String name) {
+            return "Hello, " + name;
+        }
+    }
+
+    @AutoService({GreetingService.class, Resettable.class, Runnable.class})
+    static final class MultiServiceProvider implements GreetingService, Resettable, Runnable {
+        private boolean hasRun;
+
+        @Override
+        public String greet(String name) {
+            return "Hello, " + name;
+        }
+
+        @Override
+        public String reset() {
+            hasRun = false;
+            return "reset";
+        }
+
+        @Override
+        public void run() {
+            hasRun = true;
+        }
+
+        boolean hasRun() {
+            return hasRun;
+        }
+    }
+
+    static final class AutoServiceLiteral implements AutoService {
+        private final Class<?>[] services;
+
+        AutoServiceLiteral(Class<?>... services) {
+            this.services = services.clone();
+        }
+
+        @Override
+        public Class<?>[] value() {
+            return services.clone();
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return AutoService.class;
+        }
     }
 }
