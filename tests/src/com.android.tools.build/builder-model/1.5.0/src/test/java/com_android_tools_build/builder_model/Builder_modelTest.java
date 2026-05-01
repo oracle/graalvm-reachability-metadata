@@ -180,6 +180,7 @@ public class Builder_modelTest {
     }
 
     @Test
+    @SuppressWarnings("checkstyle:annotationAccess")
     public void traversesCompleteAndroidProjectModelGraph() {
         SimpleSigningConfig signingConfig = new SimpleSigningConfig(
                 "debug", file("keystore/debug.keystore"), "store", "androiddebugkey", "key", "jks", true);
