@@ -163,6 +163,23 @@ public class Guava_bootstrapTest {
     }
 
     @Test
+    void shutdownRejectsNewCommandsAfterPreviouslyExecutedWorkCompletes() {
+        ImmediateExecutorService executorService = new ImmediateExecutorService();
+        AtomicInteger executions = new AtomicInteger();
+
+        executorService.execute(executions::incrementAndGet);
+        executorService.shutdown();
+
+        assertThat(executions).hasValue(1);
+        assertThat(executorService.isShutdown()).isTrue();
+        assertThat(executorService.isTerminated()).isTrue();
+        assertThatThrownBy(() -> executorService.execute(executions::incrementAndGet))
+                .isInstanceOf(RejectedExecutionException.class)
+                .hasMessageContaining("shut down");
+        assertThat(executions).hasValue(1);
+    }
+
+    @Test
     void shutdownNowReturnsWorkThatHasNotStartedYet() {
         QueueingExecutorService executorService = new QueueingExecutorService();
         Future<?> first = executorService.submit(() -> { });
