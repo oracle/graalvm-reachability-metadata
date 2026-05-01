@@ -58,6 +58,29 @@ final class Scalac_scoverage_runtime_2_13Test {
   }
 
   @Test
+  def invokedKeepsIndependentMeasurementStateForEachDataDirectory(): Unit = {
+    val firstDirectory: File = newMeasurementsDirectory("first-data-dir")
+    val secondDirectory: File = newMeasurementsDirectory("second-data-dir")
+
+    Invoker.invoked(404, firstDirectory.getAbsolutePath)
+    Invoker.invoked(404, secondDirectory.getAbsolutePath)
+    Invoker.invoked(505, secondDirectory.getAbsolutePath)
+
+    val firstDirectoryFiles: IndexedSeq[File] = Invoker.findMeasurementFiles(firstDirectory).toIndexedSeq
+    val secondDirectoryFiles: IndexedSeq[File] = Invoker.findMeasurementFiles(secondDirectory).toIndexedSeq
+
+    assertThat(invokedIds(firstDirectoryFiles: _*)).containsExactly(Integer.valueOf(404))
+    assertThat(invokedIds(secondDirectoryFiles: _*)).containsExactlyInAnyOrder(
+      Integer.valueOf(404),
+      Integer.valueOf(505)
+    )
+    assertThat(Files.readAllLines(Invoker.measurementFile(firstDirectory).toPath, StandardCharsets.UTF_8))
+      .containsExactly("404")
+    assertThat(Files.readAllLines(Invoker.measurementFile(secondDirectory).toPath, StandardCharsets.UTF_8))
+      .containsExactly("404", "505")
+  }
+
+  @Test
   def invokedReaderMergesSeveralFilesDeduplicatesIdsAndIgnoresBlankLines(): Unit = {
     val measurementsDirectory: File = newMeasurementsDirectory("reader")
     val firstFile: File = writeMeasurementFile(measurementsDirectory, "first.measurements", "1", "", "2", "2")
