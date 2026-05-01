@@ -24,6 +24,12 @@ test {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            // BouncyCastlePrivateKeyFactory calls Security.addProvider(...) at runtime.
+            buildArgs.add('-H:AdditionalSecurityProviders=org.bouncycastle.jce.provider.BouncyCastleProvider')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
