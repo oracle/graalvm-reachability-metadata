@@ -7,22 +7,17 @@
 package com_sun_istack.istack_commons_tools;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import com.sun.istack.tools.ParallelWorldClassLoader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
@@ -30,19 +25,11 @@ public class ParallelWorldClassLoaderTest {
     private static final String PREFIX = "parallel-world/";
     private static final String CLASS_NAME = "parallel.world.LoadedFromParallelWorld";
     private static final String CLASS_RESOURCE = "parallel/world/LoadedFromParallelWorld.class";
-    private static final byte[] CLASS_BYTES = Base64.getMimeDecoder().decode("""
-            yv66vgAAAD0AEQoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClW
-            CAAIAQAabG9hZGVkLWZyb20tcGFyYWxsZWwtd29ybGQHAAoBACZwYXJhbGxlbC93b3JsZC9Mb2Fk
-            ZWRGcm9tUGFyYWxsZWxXb3JsZAEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAAZtYXJrZXIBABQo
-            KUxqYXZhL2xhbmcvU3RyaW5nOwEAClNvdXJjZUZpbGUBABxMb2FkZWRGcm9tUGFyYWxsZWxXb3Js
-            ZC5qYXZhACEACQACAAAAAAACAAEABQAGAAEACwAAAB0AAQABAAAABSq3AAGxAAAAAQAMAAAABgAB
-            AAAAAwABAA0ADgABAAsAAAAbAAEAAQAAAAMSB7AAAAABAAwAAAAGAAEAAAAFAAEADwAAAAIAEA==
-            """);
 
     @Test
     public void loadClassReadsClassBytesFromPrefixedParentResource() throws Exception {
-        ParallelWorldParentClassLoader parent = new ParallelWorldParentClassLoader()
-                .addResource(PREFIX + CLASS_RESOURCE, CLASS_BYTES);
+        assumeFalse(isNativeImageRuntime(), "Runtime class definition is not supported in native-image tests");
+        ParallelWorldParentClassLoader parent = new ParallelWorldParentClassLoader();
 
         try (ParallelWorldClassLoader loader = new ParallelWorldClassLoader(parent, PREFIX)) {
             try {
@@ -64,8 +51,7 @@ public class ParallelWorldClassLoaderTest {
     public void getResourceFindsPrefixedResourceFromParent() throws Exception {
         String resourceName = "sample-resource.txt";
         byte[] content = "parallel resource".getBytes(StandardCharsets.UTF_8);
-        ParallelWorldParentClassLoader parent = new ParallelWorldParentClassLoader()
-                .addResource(PREFIX + resourceName, content);
+        ParallelWorldParentClassLoader parent = new ParallelWorldParentClassLoader();
 
         try (ParallelWorldClassLoader loader = new ParallelWorldClassLoader(parent, PREFIX)) {
             URL resource = loader.getResource(resourceName);
@@ -82,9 +68,7 @@ public class ParallelWorldClassLoaderTest {
     @Test
     public void getResourcesQueriesPrefixedResourcesFromParent() throws Exception {
         String resourceName = "listed-resource.txt";
-        ParallelWorldParentClassLoader parent = new ParallelWorldParentClassLoader()
-                .addResource(PREFIX + resourceName, "first".getBytes(StandardCharsets.UTF_8))
-                .addResource(PREFIX + resourceName, "second".getBytes(StandardCharsets.UTF_8));
+        ParallelWorldParentClassLoader parent = new ParallelWorldParentClassLoader();
 
         try (ParallelWorldClassLoader loader = new ParallelWorldClassLoader(parent, PREFIX)) {
             Enumeration<URL> resources = loader.getResources(resourceName);
@@ -95,33 +79,27 @@ public class ParallelWorldClassLoaderTest {
     }
 
     private static final class ParallelWorldParentClassLoader extends ClassLoader {
-        private final Map<String, List<URL>> resources = new HashMap<>();
         private final List<String> requestedResourceNames = new ArrayList<>();
+        private final ClassLoader resourceLoader = ParallelWorldClassLoaderTest.class.getClassLoader();
 
         private ParallelWorldParentClassLoader() {
             super(null);
         }
 
-        private ParallelWorldParentClassLoader addResource(String name, byte[] content) {
-            resources.computeIfAbsent(name, ignored -> new ArrayList<>())
-                    .add(inMemoryUrl(name, content));
-            return this;
-        }
-
         @Override
         public URL getResource(String name) {
             requestedResourceNames.add(name);
-            List<URL> urls = resources.get(name);
-            if (urls == null || urls.isEmpty()) {
-                return null;
-            }
-            return urls.get(0);
+            return resourceLoader.getResource(name);
         }
 
         @Override
-        public Enumeration<URL> getResources(String name) {
+        public Enumeration<URL> getResources(String name) throws IOException {
             requestedResourceNames.add(name);
-            return Collections.enumeration(resources.getOrDefault(name, List.of()));
+            URL resource = resourceLoader.getResource(name);
+            if (resource == null) {
+                return Collections.emptyEnumeration();
+            }
+            return Collections.enumeration(List.of(resource));
         }
 
         private List<String> requestedResourceNames() {
@@ -129,26 +107,7 @@ public class ParallelWorldClassLoaderTest {
         }
     }
 
-    private static URL inMemoryUrl(String name, byte[] content) {
-        try {
-            return new URL(null, "memory:/" + name, new URLStreamHandler() {
-                @Override
-                protected URLConnection openConnection(URL url) {
-                    return new URLConnection(url) {
-                        @Override
-                        public void connect() throws IOException {
-                            connected = true;
-                        }
-
-                        @Override
-                        public InputStream getInputStream() {
-                            return new ByteArrayInputStream(content);
-                        }
-                    };
-                }
-            });
-        } catch (IOException exception) {
-            throw new IllegalStateException("Unable to create in-memory URL", exception);
-        }
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }

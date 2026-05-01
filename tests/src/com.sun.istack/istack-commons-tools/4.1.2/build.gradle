@@ -9,6 +9,41 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+File generatedTestResourcesDir = layout.buildDirectory.dir("generated/test-resources").get().asFile
+
+sourceSets {
+    test {
+        resources.srcDir generatedTestResourcesDir
+    }
+}
+
+tasks.register("generateParallelWorldResources") {
+    dependsOn("compileTestJava")
+    outputs.dir(generatedTestResourcesDir)
+    doLast {
+        File compiledClassFile = layout.buildDirectory.file(
+                "classes/java/test/parallel/world/LoadedFromParallelWorld.class"
+        ).get().asFile
+        File prefixedClassFile = new File(
+                generatedTestResourcesDir,
+                "parallel-world/parallel/world/LoadedFromParallelWorld.class"
+        )
+        prefixedClassFile.parentFile.mkdirs()
+        prefixedClassFile.bytes = compiledClassFile.bytes
+
+        File sampleResourceFile = new File(generatedTestResourcesDir, "parallel-world/sample-resource.txt")
+        sampleResourceFile.parentFile.mkdirs()
+        sampleResourceFile.text = "parallel resource"
+
+        File listedResourceFile = new File(generatedTestResourcesDir, "parallel-world/listed-resource.txt")
+        listedResourceFile.parentFile.mkdirs()
+        listedResourceFile.text = "listed resource"
+    }
+}
+
+tasks.named("processTestResources") {
+    dependsOn("generateParallelWorldResources")
+}
 
 dependencies {
     testImplementation "com.sun.istack:istack-commons-tools:$libraryVersion"
