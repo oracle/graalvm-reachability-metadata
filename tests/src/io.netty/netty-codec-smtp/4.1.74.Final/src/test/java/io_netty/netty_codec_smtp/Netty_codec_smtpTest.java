@@ -15,6 +15,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
+import io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.codec.smtp.DefaultLastSmtpContent;
 import io.netty.handler.codec.smtp.DefaultSmtpContent;
 import io.netty.handler.codec.smtp.DefaultSmtpRequest;
@@ -220,6 +221,19 @@ public class Netty_codec_smtpTest {
                     .hasMessageContaining("Received invalid line");
         } finally {
             invalidChannel.finishAndReleaseAll();
+        }
+    }
+
+    @Test
+    void responseDecoderRejectsLinesLongerThanConfiguredMaximum() {
+        EmbeddedChannel channel = new EmbeddedChannel(new SmtpResponseDecoder(10));
+        try {
+            assertThatThrownBy(() -> channel.writeInbound(copiedBuffer("250 response text exceeds limit\r\n")))
+                    .isInstanceOf(TooLongFrameException.class)
+                    .hasMessageContaining("frame length");
+            assertThat(channel.<SmtpResponse>readInbound()).isNull();
+        } finally {
+            channel.finishAndReleaseAll();
         }
     }
 
