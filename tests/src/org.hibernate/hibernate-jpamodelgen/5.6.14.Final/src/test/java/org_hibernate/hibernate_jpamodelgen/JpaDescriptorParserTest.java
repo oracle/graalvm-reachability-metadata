@@ -62,8 +62,7 @@ public class JpaDescriptorParserTest {
             parser.parseXml();
 
             assertTrue(Files.exists(cacheFile));
-        }
-        finally {
+        } finally {
             restoreTemporaryDirectory(originalTemporaryDirectory);
         }
     }
@@ -71,8 +70,7 @@ public class JpaDescriptorParserTest {
     private static void restoreTemporaryDirectory(String originalTemporaryDirectory) {
         if (originalTemporaryDirectory == null) {
             System.clearProperty("java.io.tmpdir");
-        }
-        else {
+        } else {
             System.setProperty("java.io.tmpdir", originalTemporaryDirectory);
         }
     }
