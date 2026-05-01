@@ -106,6 +106,42 @@ public class Builder_modelTest {
     }
 
     @Test
+    public void classifiesSplitOutputsByTypedOutputAndFilterNames() {
+        SimpleFilterData x86Filter = new SimpleFilterData(OutputFile.FilterType.ABI.name(), "x86");
+        SimpleFilterData englishFilter = new SimpleFilterData(OutputFile.FilterType.LANGUAGE.name(), "en");
+        SimpleOutputFile mainOutput = new SimpleOutputFile(
+                OutputFile.OutputType.MAIN.name(), file("outputs/apk/demo-debug.apk"),
+                Collections.<FilterData>emptyList());
+        SimpleOutputFile abiLanguageSplit = new SimpleOutputFile(
+                OutputFile.OutputType.SPLIT.name(), file("outputs/apk/demo-x86-en-debug.apk"),
+                Arrays.<FilterData>asList(x86Filter, englishFilter));
+        SimpleOutputFile fullSplit = new SimpleOutputFile(
+                OutputFile.OutputType.FULL_SPLIT.name(), file("outputs/apk/demo-universal-debug.apk"),
+                Collections.<FilterData>emptyList());
+        Collection<OutputFile> outputFiles = Arrays.<OutputFile>asList(mainOutput, abiLanguageSplit, fullSplit);
+
+        Map<String, OutputFile> splitOutputsByAbi = new LinkedHashMap<String, OutputFile>();
+        for (OutputFile outputFile : outputFiles) {
+            OutputFile.OutputType outputType = OutputFile.OutputType.valueOf(outputFile.getOutputType());
+            if (outputType != OutputFile.OutputType.SPLIT) {
+                continue;
+            }
+            for (FilterData filter : outputFile.getFilters()) {
+                OutputFile.FilterType filterType = OutputFile.FilterType.valueOf(filter.getFilterType());
+                if (filterType == OutputFile.FilterType.ABI) {
+                    splitOutputsByAbi.put(filter.getIdentifier(), outputFile);
+                }
+            }
+        }
+
+        assertThat(splitOutputsByAbi).containsOnlyKeys("x86");
+        OutputFile x86Split = splitOutputsByAbi.get("x86");
+        assertThat(x86Split.getOutputFile()).isEqualTo(file("outputs/apk/demo-x86-en-debug.apk"));
+        assertThat(x86Split.getFilterTypes()).containsExactly(OutputFile.ABI, OutputFile.LANGUAGE);
+        assertThat(x86Split.getFilters()).containsExactly(x86Filter, englishFilter);
+    }
+
+    @Test
     public void traversesCompleteAndroidProjectModelGraph() {
         SimpleSigningConfig signingConfig = new SimpleSigningConfig(
                 "debug", file("keystore/debug.keystore"), "store", "androiddebugkey", "key", "jks", true);
