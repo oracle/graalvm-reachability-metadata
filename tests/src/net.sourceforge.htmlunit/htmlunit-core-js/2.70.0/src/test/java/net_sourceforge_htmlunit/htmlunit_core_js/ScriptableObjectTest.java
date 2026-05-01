@@ -45,6 +45,29 @@ public class ScriptableObjectTest {
         }
     }
 
+    public static class CompatibilityInitScriptable extends ScriptableObject {
+        private static final long serialVersionUID = 1L;
+
+        private static boolean initCalled;
+        private static Scriptable observedScope;
+
+        public static void reset() {
+            initCalled = false;
+            observedScope = null;
+        }
+
+        public static void init(Scriptable scope) {
+            initCalled = true;
+            observedScope = scope;
+            ScriptableObject.putProperty(scope, "compatibilityInitMarker", "registered");
+        }
+
+        @Override
+        public String getClassName() {
+            return "CompatibilityInitScriptable";
+        }
+    }
+
     public static class ConstructorBackedScriptable extends ScriptableObject {
         private static final long serialVersionUID = 1L;
 
@@ -101,6 +124,27 @@ public class ScriptableObjectTest {
             assertThat(InitBackedScriptable.observedScope).isSameAs(scope);
             assertThat(InitBackedScriptable.observedSealed).isTrue();
             assertThat(ScriptableObject.getProperty(scope, "initBackedMarker"))
+                    .isEqualTo("registered");
+        } finally {
+            Context.exit();
+        }
+    }
+
+    @Test
+    void defineClassInvokesCompatibilityStaticInitMethod() throws Exception {
+        CompatibilityInitScriptable.reset();
+        Context context = Context.enter();
+        try {
+            Scriptable scope = context.initStandardObjects();
+
+            String className =
+                    ScriptableObject.defineClass(
+                            scope, CompatibilityInitScriptable.class, false, false);
+
+            assertThat(className).isNull();
+            assertThat(CompatibilityInitScriptable.initCalled).isTrue();
+            assertThat(CompatibilityInitScriptable.observedScope).isSameAs(scope);
+            assertThat(ScriptableObject.getProperty(scope, "compatibilityInitMarker"))
                     .isEqualTo("registered");
         } finally {
             Context.exit();
