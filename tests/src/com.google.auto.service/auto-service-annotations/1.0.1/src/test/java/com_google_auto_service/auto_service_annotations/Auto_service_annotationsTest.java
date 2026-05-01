@@ -35,6 +35,14 @@ public class Auto_service_annotationsTest {
     }
 
     @Test
+    void annotationCanDeclareAnAbstractClassServiceContract() {
+        MessageFormatter formatter = new BracketedMessageFormatter();
+
+        assertThat(formatter.format("abstract service")).isEqualTo("[abstract service]");
+        assertThat(formatter.description()).isEqualTo("bracketed formatter");
+    }
+
+    @Test
     void autoServiceValueExposesSingleServiceClass() {
         AutoService annotation = new AutoServiceLiteral(GreetingService.class);
 
@@ -56,6 +64,14 @@ public class Auto_service_annotationsTest {
 
     interface Resettable {
         String reset();
+    }
+
+    abstract static class MessageFormatter {
+        abstract String format(String message);
+
+        String description() {
+            return "generic formatter";
+        }
     }
 
     @AutoService(GreetingService.class)
@@ -88,6 +104,19 @@ public class Auto_service_annotationsTest {
 
         boolean hasRun() {
             return hasRun;
+        }
+    }
+
+    @AutoService(MessageFormatter.class)
+    static final class BracketedMessageFormatter extends MessageFormatter {
+        @Override
+        String format(String message) {
+            return "[" + message + "]";
+        }
+
+        @Override
+        String description() {
+            return "bracketed formatter";
         }
     }
 
