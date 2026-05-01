@@ -8,6 +8,7 @@ package org_jspecify.jspecify;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +92,19 @@ public class JspecifyTest {
         assertThat(boundary.value()).isNull();
     }
 
+    @Test
+    void nullnessAnnotationsCanBeUsedOnArrayElementsAndVarargs() {
+        ArrayBackedNullnessJournal journal = new ArrayBackedNullnessJournal(
+                new @Nullable String @NonNull [] {"alpha", null});
+
+        journal.record(new @Nullable String @NonNull [] {"beta", "gamma"});
+        journal.recordVarargs("delta", null);
+
+        assertThat(journal.snapshot()).containsExactly("alpha", null, "beta", "gamma", "delta", null);
+        assertThat(journal.firstPresent(new @Nullable String @NonNull [] {null, "fallback"})).isEqualTo("fallback");
+        assertThat(journal.firstPresent(new @Nullable String @NonNull [] {null, null})).isNull();
+    }
+
     @NullMarked
     private static final class NullMarkedDirectory {
         private final Map<@NonNull String, List<@Nullable String>> labelsByKey = new LinkedHashMap<>();
@@ -132,6 +146,38 @@ public class JspecifyTest {
         @NullUnmarked
         private void setLegacyAlias(@Nullable String legacyAlias) {
             this.legacyAlias = legacyAlias;
+        }
+    }
+
+    private static final class ArrayBackedNullnessJournal {
+        private @Nullable String @NonNull [] entries;
+
+        private ArrayBackedNullnessJournal(@Nullable String @NonNull [] initialEntries) {
+            this.entries = initialEntries.clone();
+        }
+
+        private void record(@Nullable String @NonNull [] newEntries) {
+            @Nullable String @NonNull [] merged = new @Nullable String @NonNull [entries.length + newEntries.length];
+            System.arraycopy(entries, 0, merged, 0, entries.length);
+            System.arraycopy(newEntries, 0, merged, entries.length, newEntries.length);
+            entries = merged;
+        }
+
+        private void recordVarargs(@Nullable String @NonNull ... newEntries) {
+            record(newEntries);
+        }
+
+        private @Nullable String firstPresent(@Nullable String @NonNull [] candidates) {
+            for (@Nullable String candidate : candidates) {
+                if (candidate != null) {
+                    return candidate;
+                }
+            }
+            return null;
+        }
+
+        private List<@Nullable String> snapshot() {
+            return new ArrayList<>(Arrays.asList(entries));
         }
     }
 
