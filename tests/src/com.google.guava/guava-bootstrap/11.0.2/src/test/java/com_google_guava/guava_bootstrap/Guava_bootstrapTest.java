@@ -110,6 +110,18 @@ public class Guava_bootstrapTest {
     }
 
     @Test
+    void invokeAllAcceptsCollectionsDeclaredWithCallableSubtypeWildcard() throws Exception {
+        ExecutorService executorService = new ImmediateExecutorService();
+        List<NumberCallable> tasks = Arrays.asList(new NumberCallable(21), new NumberCallable(34));
+
+        List<Future<Number>> futures = invokeAllNumberTasks(executorService, tasks);
+
+        assertThat(futures).hasSize(2);
+        assertThat(futures.get(0).get()).isEqualTo(21);
+        assertThat(futures.get(1).get()).isEqualTo(34);
+    }
+
+    @Test
     void invokeAnySkipsFailedTasksAndReturnsTheFirstSuccessfulValue() throws Exception {
         ExecutorService executorService = new ImmediateExecutorService();
         AtomicInteger attempts = new AtomicInteger();
@@ -229,6 +241,24 @@ public class Guava_bootstrapTest {
 
     private static ClassLoader classLoader() {
         return Guava_bootstrapTest.class.getClassLoader();
+    }
+
+    private static List<Future<Number>> invokeAllNumberTasks(
+            ExecutorService executorService, Collection<? extends Callable<Number>> tasks) throws InterruptedException {
+        return executorService.invokeAll(tasks);
+    }
+
+    private static final class NumberCallable implements Callable<Number> {
+        private final Number value;
+
+        private NumberCallable(Number value) {
+            this.value = value;
+        }
+
+        @Override
+        public Number call() {
+            return value;
+        }
     }
 
     private static final class ImmediateExecutorService extends AbstractTestExecutorService {
