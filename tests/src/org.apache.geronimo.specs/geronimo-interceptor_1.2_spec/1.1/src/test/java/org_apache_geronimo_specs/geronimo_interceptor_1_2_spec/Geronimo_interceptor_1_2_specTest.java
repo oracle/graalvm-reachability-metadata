@@ -96,6 +96,26 @@ public class Geronimo_interceptor_1_2_specTest {
     }
 
     @Test
+    void aroundInvokeInterceptorsCanShortCircuitWithoutProceeding() throws Exception {
+        CachedReportService service = new CachedReportService();
+        ChainInvocationContext context = new ChainInvocationContext(
+                service,
+                new Object[] {"quarterly-report"},
+                List.of(
+                        interceptorContext -> new CacheHitInterceptor().returnCached(interceptorContext),
+                        interceptorContext -> new GuardInterceptor().shouldNotRun(interceptorContext)),
+                interceptorContext -> service.render((String) interceptorContext.getParameters()[0]));
+
+        Object result = context.proceed();
+
+        assertThat(result).isEqualTo("cached:quarterly-report");
+        assertThat(context.getContextData())
+                .containsEntry("cache-key", "quarterly-report")
+                .containsEntry("cache-hit", true);
+        assertThat(events(context)).containsExactly("cache-hit");
+    }
+
+    @Test
     void aroundTimeoutCanReadTimerAndPreserveProceedResult() throws Exception {
         BusinessTimer timer = new BusinessTimer("daily-cleanup", 3);
         ChainInvocationContext context = new ChainInvocationContext(
@@ -356,6 +376,27 @@ public class Geronimo_interceptor_1_2_specTest {
     }
 
     @Interceptor
+    static final class CacheHitInterceptor {
+        @AroundInvoke
+        Object returnCached(InvocationContext context) {
+            String key = (String) context.getParameters()[0];
+            record(context, "cache-hit");
+            context.getContextData().put("cache-key", key);
+            context.getContextData().put("cache-hit", true);
+            return "cached:" + key;
+        }
+    }
+
+    @Interceptor
+    static final class GuardInterceptor {
+        @AroundInvoke
+        Object shouldNotRun(InvocationContext context) {
+            record(context, "guard-ran");
+            throw new AssertionError("short-circuited interceptor chain should not continue");
+        }
+    }
+
+    @Interceptor
     static final class MethodLevelInterceptor {
         @AroundInvoke
         Object invoke(InvocationContext context) throws Exception {
@@ -369,6 +410,12 @@ public class Geronimo_interceptor_1_2_specTest {
     static final class FailingService {
         String find(String key) {
             throw new IllegalStateException("missing " + key);
+        }
+    }
+
+    static final class CachedReportService {
+        String render(String name) {
+            throw new AssertionError("cached reports should not be rendered again: " + name);
         }
     }
 
