@@ -6,8 +6,13 @@
  */
 package org.jboss.arquillian.core.spi;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.jboss.arquillian.core.spi.context.Context;
 
@@ -38,11 +43,36 @@ public final class SecurityActionsInvoker {
         return target.value;
     }
 
+    public static List<String> annotatedFieldNames() {
+        List<Field> fields = SecurityActions.getFieldsWithAnnotation(AnnotatedChild.class, CoveredField.class);
+        List<String> names = new ArrayList<String>();
+        for (Field field : fields) {
+            names.add(field.getName());
+        }
+        return names;
+    }
+
     private static final class MutableTarget {
         private String value;
 
         private MutableTarget(String value) {
             this.value = value;
         }
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    private @interface CoveredField {
+    }
+
+    private static class AnnotatedParent {
+        @CoveredField
+        private String parentValue;
+    }
+
+    private static final class AnnotatedChild extends AnnotatedParent {
+        @CoveredField
+        private String childValue;
+
+        private String unannotatedValue;
     }
 }
