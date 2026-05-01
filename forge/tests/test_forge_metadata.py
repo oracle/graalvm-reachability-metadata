@@ -284,6 +284,16 @@ class IssueClaimPreflightTests(unittest.TestCase):
             )
         )
 
+    def test_preflight_assigned_to_authenticated_user_does_not_skip(self) -> None:
+        issue = {"number": 1412, "labels": []}
+        self.assertFalse(
+            forge_metadata.should_skip_issue_from_preflight(
+                issue,
+                _preflight(assignees=("automation-user",)),
+                authenticated_user="automation-user",
+            )
+        )
+
     def test_non_todo_preflight_skips_issue(self) -> None:
         issue = {"number": 1412, "labels": []}
         self.assertTrue(
@@ -397,6 +407,11 @@ class IssueClaimPreflightTests(unittest.TestCase):
             "labels": [],
             "assignees": [{"login": "automation-user"}],
         }
+        own_assigned_issue = {
+            "number": 4,
+            "labels": [],
+            "assignees": [{"login": "current-user"}],
+        }
         claimable_issue = {
             "number": 3,
             "labels": [],
@@ -406,16 +421,23 @@ class IssueClaimPreflightTests(unittest.TestCase):
         with patch.object(
                 forge_metadata,
                 "get_issue_claim_preflights",
-                return_value={3: _preflight(issue_number=3)},
+                return_value={
+                    4: _preflight(issue_number=4, assignees=("current-user",)),
+                    3: _preflight(issue_number=3),
+                },
         ) as get_issue_claim_preflights:
             self.assertEqual(
                 forge_metadata.get_issue_claim_preflights_or_empty(
-                    [human_intervention_issue, assigned_issue, claimable_issue]
+                    [human_intervention_issue, assigned_issue, own_assigned_issue, claimable_issue],
+                    authenticated_user="current-user",
                 ),
-                {3: _preflight(issue_number=3)},
+                {
+                    4: _preflight(issue_number=4, assignees=("current-user",)),
+                    3: _preflight(issue_number=3),
+                },
             )
 
-        get_issue_claim_preflights.assert_called_once_with([3])
+        get_issue_claim_preflights.assert_called_once_with([4, 3])
 
     def test_payload_assignees_skip_without_preflight(self) -> None:
         issue = {
@@ -426,6 +448,21 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
         self.assertTrue(
             forge_metadata.should_skip_issue_from_preflight(issue, None)
+        )
+
+    def test_payload_assigned_to_authenticated_user_does_not_skip(self) -> None:
+        issue = {
+            "number": 1412,
+            "labels": [],
+            "assignees": [{"login": "automation-user"}],
+        }
+
+        self.assertFalse(
+            forge_metadata.should_skip_issue_from_preflight(
+                issue,
+                None,
+                authenticated_user="automation-user",
+            )
         )
 
     def test_cached_skip_skips_without_preflight(self) -> None:
@@ -443,6 +480,28 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
         self.assertTrue(
             forge_metadata.should_skip_issue_from_preflight(issue, None, cached_skip)
+        )
+
+    def test_cached_own_assignment_does_not_skip(self) -> None:
+        issue = {
+            "number": 1412,
+            "labels": [],
+            "assignees": [],
+        }
+        cached_skip = forge_metadata.CachedIssueClaimSkip(
+            issue_number=1412,
+            reason=forge_metadata.ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
+            observed_at_epoch=100.0,
+            assignees=("automation-user",),
+        )
+
+        self.assertFalse(
+            forge_metadata.should_skip_issue_from_preflight(
+                issue,
+                None,
+                cached_skip,
+                authenticated_user="automation-user",
+            )
         )
 
     def test_offset_issue_fetch_uses_search_page_instead_of_expanding_limit(self) -> None:
@@ -848,6 +907,35 @@ class IssueClaimCacheTests(unittest.TestCase):
                 forge_metadata.invalidate_issue_claim_cache_entry(1412, now=101.0)
                 self.assertEqual(forge_metadata.read_issue_claim_cache(now=101.0), {})
 
+    def test_cached_own_assignment_is_not_returned_as_skip(self) -> None:
+        issue = {
+            "number": 1412,
+            "title": "Add support for org.example:cached:1.0.0",
+            "labels": [],
+            "assignees": [],
+        }
+
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root):
+                forge_metadata.record_issue_claim_cache_observations(
+                    [
+                        forge_metadata.IssueClaimCacheObservation(
+                            issue_number=1412,
+                            reason=forge_metadata.ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
+                            assignees=("automation-user",),
+                        ),
+                    ],
+                )
+
+                self.assertEqual(
+                    forge_metadata.get_cached_issue_claim_skips([issue], "automation-user"),
+                    {},
+                )
+                self.assertIn(
+                    1412,
+                    forge_metadata.get_cached_issue_claim_skips([issue], "other-user"),
+                )
+
     def test_process_loop_does_not_preflight_cached_issue(self) -> None:
         cached_issue = {
             "number": 1,
@@ -1244,13 +1332,45 @@ class IssueClaimLockTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata, "get_open_blocking_issue_numbers", return_value=[]), \
-                    patch.object(forge_metadata, "get_issue_assignees", return_value=["automation-user"]), \
+                    patch.object(forge_metadata, "get_issue_assignees", return_value=["other-user"]), \
                     patch.object(forge_metadata, "get_project_item_state") as get_project_item_state:
                 self.assertIsNone(forge_metadata.try_claim_issue(issue, "automation-user"))
                 get_project_item_state.assert_not_called()
                 cache = forge_metadata.read_issue_claim_cache()
                 self.assertEqual(cache[1412].reason, forge_metadata.ISSUE_CLAIM_CACHE_REASON_ASSIGNED)
-                self.assertEqual(cache[1412].assignees, ("automation-user",))
+                self.assertEqual(cache[1412].assignees, ("other-user",))
+
+    def test_try_claim_issue_accepts_existing_authenticated_user_assignment(self) -> None:
+        issue = {
+            "number": 1412,
+            "title": "Add support for org.example:lib:1.0.0",
+            "labels": [],
+            "assignees": [{"login": "automation-user"}],
+        }
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+                    patch.object(forge_metadata, "get_open_blocking_issue_numbers", return_value=[]), \
+                    patch.object(forge_metadata, "get_issue_assignees", side_effect=[
+                        ["automation-user"],
+                        ["automation-user"],
+                    ]), \
+                    patch.object(
+                        forge_metadata,
+                        "get_project_item_state",
+                        return_value=("project-item", forge_metadata.STATUS_TODO),
+                    ), \
+                    patch.object(forge_metadata, "get_active_sibling_blocker_numbers", return_value=[]), \
+                    patch.object(forge_metadata, "set_issue_assignee") as set_issue_assignee, \
+                    patch.object(forge_metadata, "set_item_status") as set_item_status, \
+                    patch.object(forge_metadata.random, "uniform", return_value=0), \
+                    patch.object(forge_metadata.time, "sleep"):
+                self.assertEqual(
+                    forge_metadata.try_claim_issue(issue, "automation-user"),
+                    "project-item",
+                )
+
+        set_issue_assignee.assert_called_once_with(1412, "automation-user")
+        set_item_status.assert_called_once_with("project-item", forge_metadata.STATUS_IN_PROGRESS)
 
     def test_try_claim_issue_caches_active_sibling_blockers(self) -> None:
         issue = {

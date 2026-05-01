@@ -511,6 +511,26 @@ def get_issue_payload_assignees(issue: dict) -> Optional[list[str]]:
     ]
 
 
+def is_assigned_only_to_authenticated_user(
+        assignees: list[str] | tuple[str, ...] | None,
+        authenticated_user: str | None,
+) -> bool:
+    """Return True when the assignee list is exactly the current worker user."""
+    if not authenticated_user:
+        return False
+    return tuple(assignees or ()) == (authenticated_user,)
+
+
+def cached_skip_blocks_authenticated_user(
+        cached_skip: CachedIssueClaimSkip,
+        authenticated_user: str | None,
+) -> bool:
+    """Return True when a cached negative observation should still block this worker."""
+    if cached_skip.reason != ISSUE_CLAIM_CACHE_REASON_ASSIGNED:
+        return True
+    return not is_assigned_only_to_authenticated_user(cached_skip.assignees, authenticated_user)
+
+
 class LocalIssueClaimLock:
     """Non-blocking per-issue lock for scripts running as the same GitHub user."""
 
@@ -3673,7 +3693,10 @@ def _extract_issue_claim_preflight(issue_number: int, issue_node: dict | None) -
     )
 
 
-def get_issue_claim_cache_observation_from_payload(issue: dict) -> IssueClaimCacheObservation | None:
+def get_issue_claim_cache_observation_from_payload(
+        issue: dict,
+        authenticated_user: str | None = None,
+) -> IssueClaimCacheObservation | None:
     """Return a cache observation for locally visible negative issue state."""
     issue_number = issue.get("number")
     if not isinstance(issue_number, int):
@@ -3684,7 +3707,7 @@ def get_issue_claim_cache_observation_from_payload(issue: dict) -> IssueClaimCac
             reason=ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
         )
     payload_assignees = get_issue_payload_assignees(issue)
-    if payload_assignees:
+    if payload_assignees and not is_assigned_only_to_authenticated_user(payload_assignees, authenticated_user):
         return IssueClaimCacheObservation(
             issue_number=issue_number,
             reason=ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
@@ -3695,11 +3718,12 @@ def get_issue_claim_cache_observation_from_payload(issue: dict) -> IssueClaimCac
 
 def get_issue_claim_cache_observation_from_preflight(
         preflight: IssueClaimPreflight,
+        authenticated_user: str | None = None,
 ) -> IssueClaimCacheObservation | None:
     """Return a cache observation for negative GraphQL preflight state."""
     if not preflight.complete:
         return None
-    if preflight.assignees:
+    if preflight.assignees and not is_assigned_only_to_authenticated_user(preflight.assignees, authenticated_user):
         return IssueClaimCacheObservation(
             issue_number=preflight.issue_number,
             reason=ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
@@ -3752,7 +3776,10 @@ def format_cached_issue_claim_skip(cached_skip: CachedIssueClaimSkip) -> str:
     return f"recently cached as {cached_skip.reason}"
 
 
-def get_cached_issue_claim_skips(issues: list[dict]) -> dict[int, CachedIssueClaimSkip]:
+def get_cached_issue_claim_skips(
+        issues: list[dict],
+        authenticated_user: str | None = None,
+) -> dict[int, CachedIssueClaimSkip]:
     """Return fresh cached skips for the given issue payloads."""
     cache = read_issue_claim_cache()
     if not cache:
@@ -3766,6 +3793,7 @@ def get_cached_issue_claim_skips(issues: list[dict]) -> dict[int, CachedIssueCla
         issue_number: cached_skip
         for issue_number, cached_skip in cache.items()
         if issue_number in issue_numbers
+        and cached_skip_blocks_authenticated_user(cached_skip, authenticated_user)
     }
 
 
@@ -3821,22 +3849,25 @@ def get_issue_claim_preflights(
     return preflights
 
 
-def issue_needs_claim_preflight(issue: dict) -> bool:
+def issue_needs_claim_preflight(issue: dict, authenticated_user: str | None = None) -> bool:
     """Return True when an issue needs GraphQL preflight before claim attempts."""
     if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
         return False
     payload_assignees = get_issue_payload_assignees(issue)
-    if payload_assignees:
+    if payload_assignees and not is_assigned_only_to_authenticated_user(payload_assignees, authenticated_user):
         return False
     return True
 
 
-def get_issue_claim_preflights_or_empty(issues: list[dict]) -> dict[int, IssueClaimPreflight]:
+def get_issue_claim_preflights_or_empty(
+        issues: list[dict],
+        authenticated_user: str | None = None,
+) -> dict[int, IssueClaimPreflight]:
     issue_numbers = [
         issue["number"]
         for issue in issues
         if isinstance(issue, dict) and isinstance(issue.get("number"), int)
-        and issue_needs_claim_preflight(issue)
+        and issue_needs_claim_preflight(issue, authenticated_user)
     ]
     if not issue_numbers:
         return {}
@@ -3857,6 +3888,7 @@ def should_skip_issue_from_preflight(
         issue: dict,
         preflight: IssueClaimPreflight | None,
         cached_skip: CachedIssueClaimSkip | None = None,
+        authenticated_user: str | None = None,
 ) -> bool:
     number = issue["number"]
 
@@ -3866,12 +3898,12 @@ def should_skip_issue_from_preflight(
         return True
 
     payload_assignees = get_issue_payload_assignees(issue)
-    if payload_assignees:
+    if payload_assignees and not is_assigned_only_to_authenticated_user(payload_assignees, authenticated_user):
         print()
         log_stage("issue-claim", f"Issue #{number} already assigned to {payload_assignees}. Skipping.")
         return True
 
-    if cached_skip is not None:
+    if cached_skip is not None and cached_skip_blocks_authenticated_user(cached_skip, authenticated_user):
         print()
         log_stage("issue-claim", f"Issue #{number} {format_cached_issue_claim_skip(cached_skip)}. Skipping.")
         return True
@@ -3879,7 +3911,7 @@ def should_skip_issue_from_preflight(
     if preflight is None or not preflight.complete:
         return False
 
-    if preflight.assignees:
+    if preflight.assignees and not is_assigned_only_to_authenticated_user(preflight.assignees, authenticated_user):
         print()
         log_stage("issue-claim", f"Issue #{number} already assigned to {list(preflight.assignees)}. Skipping.")
         return True
@@ -4016,7 +4048,7 @@ def try_claim_issue(issue: dict, authenticated_user: str) -> Optional[str]:
 
     1. Take a non-blocking local per-issue lock so same-machine runners using the
        same GitHub account cannot both interpret the same assignee as ownership.
-    2. Skip if the issue already has assignees (someone else claimed it).
+    2. Skip if the issue is assigned to someone else.
     3. SET ourselves as the sole assignee (replaces, not appends).
     4. Wait a random 5-10 s backoff so concurrent runners' SETs have time to land.
     5. Re-read assignees — if we are still the sole assignee, the claim is ours.
@@ -4070,7 +4102,7 @@ def try_claim_issue_with_local_lock(issue: dict, authenticated_user: str) -> Opt
     # The issue-list payload can be stale when another local runner just claimed
     # the same issue as the same GitHub user, so always re-read after the lock.
     assignees = get_issue_assignees(number)
-    if assignees:
+    if assignees and not is_assigned_only_to_authenticated_user(assignees, authenticated_user):
         print()
         log_stage("issue-claim", f"Issue #{number} already assigned to {assignees}. Skipping.")
         record_issue_claim_cache_observations([
@@ -4289,14 +4321,14 @@ def process_issues_with_label(
                         payload_cache_observations = [
                             observation
                             for observation in (
-                                get_issue_claim_cache_observation_from_payload(issue)
+                                get_issue_claim_cache_observation_from_payload(issue, authenticated_user)
                                 for issue in issues
                             )
                             if observation is not None
                         ]
                         record_issue_claim_cache_observations(payload_cache_observations)
 
-                        cached_skips = get_cached_issue_claim_skips(issues)
+                        cached_skips = get_cached_issue_claim_skips(issues, authenticated_user)
                         unresolved_candidates.extend(
                             (issue, cached_skips.get(issue["number"]))
                             for issue in issues
@@ -4309,7 +4341,7 @@ def process_issues_with_label(
 
                 while pending_issues and processed_count < limit and len(active_futures) < parallelism:
                     issue, preflight, cached_skip = pending_issues.pop(0)
-                    if should_skip_issue_from_preflight(issue, preflight, cached_skip):
+                    if should_skip_issue_from_preflight(issue, preflight, cached_skip, authenticated_user):
                         continue
                     claimed_issue = claim_issue_for_processing(
                         issue,
