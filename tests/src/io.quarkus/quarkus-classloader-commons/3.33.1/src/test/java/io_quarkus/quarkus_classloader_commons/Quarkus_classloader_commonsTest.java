@@ -72,6 +72,17 @@ public class Quarkus_classloader_commonsTest {
     }
 
     @Test
+    void conversionMethodsSupportBinaryNamesReturnedByClassObjects() {
+        final String className = Fixture.NestedService.class.getName();
+        final String resourceName = ClassLoaderHelper.fromClassNameToResourceName(className);
+
+        assertThat(resourceName)
+                .endsWith("/Quarkus_classloader_commonsTest$Fixture$NestedService.class");
+        assertThat(ClassLoaderHelper.fromResourceNameToClassName(resourceName))
+                .isEqualTo(className);
+    }
+
+    @Test
     void fromResourceNameToClassNameRejectsResourceNamesThatDoNotEndWithClassSuffix() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> ClassLoaderHelper.fromResourceNameToClassName("java/lang/String.txt"))
@@ -119,5 +130,10 @@ public class Quarkus_classloader_commonsTest {
                 .isThrownBy(() -> ClassLoaderHelper.fromResourceNameToClassName(null));
         assertThatNullPointerException()
                 .isThrownBy(() -> ClassLoaderHelper.isInJdkPackage(null));
+    }
+
+    private static final class Fixture {
+        private static final class NestedService {
+        }
     }
 }
