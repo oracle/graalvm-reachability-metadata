@@ -26,7 +26,6 @@ import io.opentelemetry.sdk.logs.SdkLoggerProvider;
 import io.opentelemetry.sdk.logs.data.Body;
 import io.opentelemetry.sdk.logs.data.LogRecordData;
 import io.opentelemetry.sdk.logs.export.BatchLogRecordProcessor;
-import io.opentelemetry.sdk.logs.export.InMemoryLogRecordExporter;
 import io.opentelemetry.sdk.logs.export.LogRecordExporter;
 import io.opentelemetry.sdk.logs.export.SimpleLogRecordProcessor;
 import io.opentelemetry.sdk.resources.Resource;
@@ -53,7 +52,7 @@ public final class Opentelemetry_sdk_logsTest {
 
     @Test
     void simpleProcessorExportsCompleteLogRecordData() {
-        InMemoryLogRecordExporter exporter = InMemoryLogRecordExporter.create();
+        RecordingExporter exporter = new RecordingExporter();
         Resource resource = Resource.create(
                 Attributes.of(SERVICE_NAME, "checkout", HOST_ID, "host-a"),
                 "https://schemas.example.test/resource");
@@ -76,7 +75,7 @@ public final class Opentelemetry_sdk_logsTest {
                     .build();
 
             logger.logRecordBuilder()
-                    .setEpoch(timestamp)
+                    .setTimestamp(timestamp)
                     .setContext(context)
                     .setSeverity(Severity.ERROR3)
                     .setSeverityText("error-three")
@@ -94,7 +93,7 @@ public final class Opentelemetry_sdk_logsTest {
             assertThat(record.getInstrumentationScopeInfo().getVersion()).isEqualTo("2.3.4");
             assertThat(record.getInstrumentationScopeInfo().getSchemaUrl())
                     .isEqualTo("https://schemas.example.test/logs");
-            assertThat(record.getEpochNanos()).isEqualTo(TimeUnit.SECONDS.toNanos(1_667_000_000L) + 123_456_789L);
+            assertThat(record.getTimestampEpochNanos()).isEqualTo(TimeUnit.SECONDS.toNanos(1_667_000_000L) + 123_456_789L);
             assertThat(record.getSpanContext()).isEqualTo(spanContext);
             assertThat(record.getSeverity()).isEqualTo(Severity.ERROR3);
             assertThat(record.getSeverityText()).isEqualTo("error-three");
@@ -141,7 +140,7 @@ public final class Opentelemetry_sdk_logsTest {
 
     @Test
     void logRecordBuilderAddsEventAttributes() {
-        InMemoryLogRecordExporter exporter = InMemoryLogRecordExporter.create();
+        RecordingExporter exporter = new RecordingExporter();
         SdkLoggerProvider loggerProvider = SdkLoggerProvider.builder()
                 .addLogRecordProcessor(SimpleLogRecordProcessor.create(exporter))
                 .build();
@@ -172,7 +171,7 @@ public final class Opentelemetry_sdk_logsTest {
 
     @Test
     void logRecordBuilderUsesTimeUnitEpochAndDefaultFields() {
-        InMemoryLogRecordExporter exporter = InMemoryLogRecordExporter.create();
+        RecordingExporter exporter = new RecordingExporter();
         SdkLoggerProvider loggerProvider = SdkLoggerProvider.builder()
                 .addLogRecordProcessor(SimpleLogRecordProcessor.create(exporter))
                 .build();
@@ -180,12 +179,12 @@ public final class Opentelemetry_sdk_logsTest {
         try {
             loggerProvider.get("defaults.logger")
                     .logRecordBuilder()
-                    .setEpoch(1_234L, TimeUnit.MILLISECONDS)
+                    .setTimestamp(1_234L, TimeUnit.MILLISECONDS)
                     .setAttribute(USER_ID, "dave")
                     .emit();
 
             LogRecordData record = singleExportedRecord(exporter);
-            assertThat(record.getEpochNanos()).isEqualTo(TimeUnit.MILLISECONDS.toNanos(1_234L));
+            assertThat(record.getTimestampEpochNanos()).isEqualTo(TimeUnit.MILLISECONDS.toNanos(1_234L));
             assertThat(record.getSpanContext()).isEqualTo(SpanContext.getInvalid());
             assertThat(record.getSeverity()).isEqualTo(Severity.UNDEFINED_SEVERITY_NUMBER);
             assertThat(record.getSeverityText()).isNull();
@@ -198,7 +197,7 @@ public final class Opentelemetry_sdk_logsTest {
 
     @Test
     void logLimitsCapAttributesAndTruncateStringValues() {
-        InMemoryLogRecordExporter exporter = InMemoryLogRecordExporter.create();
+        RecordingExporter exporter = new RecordingExporter();
         LogLimits limits = LogLimits.builder()
                 .setMaxNumberOfAttributes(2)
                 .setMaxAttributeValueLength(5)
@@ -230,7 +229,7 @@ public final class Opentelemetry_sdk_logsTest {
 
     @Test
     void processorCanEnrichReadWriteLogRecordBeforeExport() {
-        InMemoryLogRecordExporter exporter = InMemoryLogRecordExporter.create();
+        RecordingExporter exporter = new RecordingExporter();
         LogRecordProcessor enrichingProcessor = new EnrichingProcessor(SimpleLogRecordProcessor.create(exporter));
         SdkLoggerProvider loggerProvider = SdkLoggerProvider.builder()
                 .addLogRecordProcessor(enrichingProcessor)
@@ -253,7 +252,7 @@ public final class Opentelemetry_sdk_logsTest {
 
     @Test
     void batchProcessorExportsQueuedRecordsOnForceFlush() {
-        InMemoryLogRecordExporter exporter = InMemoryLogRecordExporter.create();
+        RecordingExporter exporter = new RecordingExporter();
         BatchLogRecordProcessor processor = BatchLogRecordProcessor.builder(exporter)
                 .setScheduleDelay(Duration.ofMinutes(5))
                 .setExporterTimeout(Duration.ofSeconds(10))
@@ -273,7 +272,7 @@ public final class Opentelemetry_sdk_logsTest {
             CompletableResultCode flushResult = loggerProvider.forceFlush().join(10, TimeUnit.SECONDS);
 
             assertThat(flushResult.isSuccess()).isTrue();
-            assertThat(exporter.getFinishedLogItems())
+            assertThat(exporter.getExportedRecords())
                     .extracting(logRecordData -> logRecordData.getBody().asString())
                     .containsExactly("one", "two", "three");
         } finally {
@@ -309,14 +308,14 @@ public final class Opentelemetry_sdk_logsTest {
         assertThat(first.isShutdown()).isTrue();
         assertThat(second.isShutdown()).isTrue();
         LogRecordData record = first.getExportedRecords().get(0);
-        assertThat(record.getEpochNanos()).isEqualTo(987_654_321L);
+        assertThat(record.getObservedTimestampEpochNanos()).isEqualTo(987_654_321L);
         assertThat(record.getAttributes().get(USER_ID)).isEqualTo("bob");
         assertThat(record.getAttributes().get(RETRY_COUNT)).isEqualTo(7L);
     }
 
     @Test
     void shutdownProviderStopsAcceptingNewLogRecordsAndExporterCanReset() {
-        InMemoryLogRecordExporter exporter = InMemoryLogRecordExporter.create();
+        RecordingExporter exporter = new RecordingExporter();
         SdkLoggerProvider loggerProvider = SdkLoggerProvider.builder()
                 .addLogRecordProcessor(SimpleLogRecordProcessor.create(exporter))
                 .build();
@@ -329,12 +328,12 @@ public final class Opentelemetry_sdk_logsTest {
         assertThat(loggerProvider.shutdown().join(10, TimeUnit.SECONDS).isSuccess()).isTrue();
         logger.logRecordBuilder().setBody("after shutdown").emit();
 
-        assertThat(exporter.getFinishedLogItems()).isEmpty();
+        assertThat(exporter.getExportedRecords()).isEmpty();
     }
 
-    private static LogRecordData singleExportedRecord(InMemoryLogRecordExporter exporter) {
-        assertThat(exporter.getFinishedLogItems()).hasSize(1);
-        return exporter.getFinishedLogItems().get(0);
+    private static LogRecordData singleExportedRecord(RecordingExporter exporter) {
+        assertThat(exporter.getExportedRecords()).hasSize(1);
+        return exporter.getExportedRecords().get(0);
     }
 
     private static final class EnrichingProcessor implements LogRecordProcessor {
@@ -421,6 +420,10 @@ public final class Opentelemetry_sdk_logsTest {
 
         private List<LogRecordData> getExportedRecords() {
             return Collections.unmodifiableList(exportedRecords);
+        }
+
+        private void reset() {
+            exportedRecords.clear();
         }
 
         private boolean isFlushed() {
