@@ -14,7 +14,6 @@ import org.postgresql.PGConnection;
 import org.postgresql.core.BaseConnection;
 import org.postgresql.geometric.PGpoint;
 import org.postgresql.util.PSQLException;
-import org.postgresql.xml.PGXmlFactoryFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -100,9 +99,9 @@ public class PgConnectionTest {
     }
 
     @Test
-    void getXmlFactoryFactoryLoadsConfiguredClassByNameBeforeInstantiationFails() throws Exception {
+    void getXmlFactoryFactoryInstantiatesConfiguredClassBeforeCastFails() throws Exception {
         Properties properties = new Properties();
-        properties.setProperty("xmlFactoryFactory", PGXmlFactoryFactory.class.getName());
+        properties.setProperty("xmlFactoryFactory", Object.class.getName());
 
         try (Connection connection = openConnection(properties)) {
             BaseConnection baseConnection = connection.unwrap(BaseConnection.class);
