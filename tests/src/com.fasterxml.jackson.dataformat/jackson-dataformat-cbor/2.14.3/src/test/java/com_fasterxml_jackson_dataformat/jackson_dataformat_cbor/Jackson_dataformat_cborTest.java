@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -31,6 +32,7 @@ import com.fasterxml.jackson.dataformat.cbor.databind.CBORMapper;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Jackson_dataformat_cborTest {
 
@@ -317,6 +319,37 @@ public class Jackson_dataformat_cborTest {
         assertThat(minimalEncoding).isEqualTo(new byte[] {0x17});
         assertThat(fixedWidthEncoding).isEqualTo(new byte[] {0x1A, 0x00, 0x00, 0x00, 0x17});
         assertThat(fixedWidthMapper.readValue(fixedWidthEncoding, Integer.class)).isEqualTo(23);
+    }
+
+    @Test
+    void lenientUtfEncodingReplacesInvalidSurrogatePairs() throws Exception {
+        String textWithInvalidSurrogate = "prefix" + '\uD83D' + "suffix";
+        CBORFactory strictFactory = CBORFactory.builder()
+                .disable(CBORGenerator.Feature.LENIENT_UTF_ENCODING)
+                .build();
+
+        assertThatThrownBy(() -> {
+            ByteArrayOutputStream strictOutput = new ByteArrayOutputStream();
+            try (JsonGenerator generator = strictFactory.createGenerator(strictOutput)) {
+                generator.writeString(textWithInvalidSurrogate);
+            }
+        }).isInstanceOf(JsonGenerationException.class)
+                .hasMessageContaining("Invalid surrogate pair");
+
+        CBORFactory lenientFactory = CBORFactory.builder()
+                .enable(CBORGenerator.Feature.LENIENT_UTF_ENCODING)
+                .build();
+        ByteArrayOutputStream lenientOutput = new ByteArrayOutputStream();
+
+        try (JsonGenerator generator = lenientFactory.createGenerator(lenientOutput)) {
+            generator.writeString(textWithInvalidSurrogate);
+        }
+
+        try (JsonParser parser = lenientFactory.createParser(lenientOutput.toByteArray())) {
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.VALUE_STRING);
+            assertThat(parser.getText()).isEqualTo("prefix\uFFFDsuffix");
+            assertThat(parser.nextToken()).isNull();
+        }
     }
 
     @Test
