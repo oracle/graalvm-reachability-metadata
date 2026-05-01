@@ -160,6 +160,39 @@ public class Jack_apiTest {
     }
 
     @Test
+    void chainedExceptionBuilderAppendsExistingExceptionChains() {
+        ChainedExceptionBuilder<ConfigurationException> firstBuilder = new ChainedExceptionBuilder<>();
+        firstBuilder.appendException(new ConfigurationException("parse sources"));
+        firstBuilder.appendException(new ConfigurationException("resolve classpath"));
+        ConfigurationException firstChain = firstBuilder.getException();
+
+        ChainedExceptionBuilder<ConfigurationException> secondBuilder = new ChainedExceptionBuilder<>();
+        secondBuilder.appendException(new ConfigurationException("read resources"));
+        secondBuilder.appendException(new ConfigurationException("write outputs"));
+        ConfigurationException secondChain = secondBuilder.getException();
+
+        ChainedExceptionBuilder<ConfigurationException> combinedBuilder = new ChainedExceptionBuilder<>();
+        combinedBuilder.appendException(firstChain);
+        combinedBuilder.appendException(secondChain);
+
+        ConfigurationException combined = combinedBuilder.getException();
+        List<String> messages = new ArrayList<>();
+        for (ChainedException exception : combined) {
+            messages.add(exception.getMessage());
+        }
+
+        assertThat(messages).containsExactly(
+                "parse sources",
+                "resolve classpath",
+                "read resources",
+                "write outputs");
+        assertThat(combined.getNextExceptionCount()).isEqualTo(4);
+        ChainedException appendedSecondChain = combined.getNextException().getNextException();
+        assertThat((Object) appendedSecondChain).isSameAs(secondChain);
+        assertThat((Object) appendedSecondChain.getNextException()).isSameAs(secondChain.getNextException());
+    }
+
+    @Test
     void providerContractCreatesSupportedConfigAndRejectsUnsupportedConfig() throws Exception {
         FixedJackProvider provider = new FixedJackProvider();
 
