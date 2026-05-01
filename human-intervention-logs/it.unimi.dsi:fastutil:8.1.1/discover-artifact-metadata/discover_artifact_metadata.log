@@ -1,0 +1,571 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de4b5-3eaf-7e23-bdb0-8ab31e7a00df
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: it.unimi.dsi:fastutil:8.1.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "8.1.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+- Set "coordinates" to "it.unimi.dsi:fastutil:8.1.1".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll look up the published Maven artifacts and upstream tag for `fastutil` 8.1.1, then update the JSON directly with the most specific versioned URLs I can verify.
+exec
+/usr/bin/zsh -lc "pwd && ls -l build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json && sed -n '1,220p' build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792
+ succeeded in 0ms:
+/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792
+-rw-rw-r-- 1 mihailo mihailo 52 May  1 20:02 build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+{
+  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
+}
+
+exec
+/usr/bin/zsh -lc "rg -n 'it\\.unimi\\.dsi:fastutil|it\\.unimi\\.dsi-fastutil|fastutil' build/discovered-artifact-metadata metadata tests -g '*.json' -g '*.java' -g '*.properties'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792
+ succeeded in 0ms:
+build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json:2:  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
+
+web search: 
+web search: Maven Central it.unimi.dsi fastutil 8.1.1 sources javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/it.unimi.dsi/fastutil/8.1.1
+web search: 
+web search: https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/
+codex
+Maven Central has exact 8.1.1 sources and javadocs, but no test classifier in that directory. I’m checking the upstream tag naming now so the test suite URL can still point at the matching release.
+exec
+/usr/bin/zsh -lc "git ls-remote --tags https://github.com/vigna/fastutil.git '*8.1.1*'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792
+exec
+/usr/bin/zsh -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata | head -80" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc "rg -n 'repo1\\.maven\\.org|sources\\.jar|javadoc\\.jar|javadoc\\.io|/tree/' build/discovered-artifact-metadata | head -120" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792
+ succeeded in 0ms:
+ succeeded in 633ms:
+902a91a955deabb09e8a524d49cc09a56d05852d	refs/tags/8.1.1
+
+web search: 
+web search: https://github.com/vigna/fastutil/tree/8.1.1
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/ | sed -n '1,220p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1.pom | sed -n '1,220p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792
+exec
+/usr/bin/zsh -lc "curl -fsSL https://raw.githubusercontent.com/vigna/fastutil/8.1.1/README.md | sed -n '1,120p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792
+ succeeded in 264ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>it.unimi.dsi</groupId>
+  <artifactId>fastutil</artifactId>
+  <packaging>jar</packaging>
+  <name>fastutil</name>
+  <version>8.1.1</version>
+  <description>fastutil extends the Java Collections Framework by providing type-specific maps, sets, lists and priority queues with a small memory footprint and fast access and insertion; provides also big (64-bit) arrays, sets and lists, and fast, practical I/O classes for binary and text files.</description>
+  <url>http://fasutil.di.unimi.it/</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git://github.com/vigna/fastutil.git</connection>
+    <url>https://github.com/vigna/fastutil</url>
+  </scm>
+  <developers>
+    <developer>
+      <id>vigna</id>
+      <name>Sebastiano Vigna</name>
+      <email>vigna@di.unimi.it</email>
+    </developer>
+  </developers>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+ succeeded in 271ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: it/unimi/dsi/fastutil/8.1.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>it/unimi/dsi/fastutil/8.1.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="fastutil-8.1.1-javadoc.jar" title="fastutil-8.1.1-javadoc.jar">fastutil-8.1.1-javadoc.jar</a>                        2017-11-21 23:45  21352792      
+<a href="fastutil-8.1.1-javadoc.jar.asc" title="fastutil-8.1.1-javadoc.jar.asc">fastutil-8.1.1-javadoc.jar.asc</a>                    2017-11-21 23:45       455      
+<a href="fastutil-8.1.1-javadoc.jar.asc.md5" title="fastutil-8.1.1-javadoc.jar.asc.md5">fastutil-8.1.1-javadoc.jar.asc.md5</a>                2017-11-21 23:45        32      
+<a href="fastutil-8.1.1-javadoc.jar.asc.sha1" title="fastutil-8.1.1-javadoc.jar.asc.sha1">fastutil-8.1.1-javadoc.jar.asc.sha1</a>               2017-11-21 23:45        40      
+<a href="fastutil-8.1.1-javadoc.jar.md5" title="fastutil-8.1.1-javadoc.jar.md5">fastutil-8.1.1-javadoc.jar.md5</a>                    2017-11-21 23:45        32      
+<a href="fastutil-8.1.1-javadoc.jar.sha1" title="fastutil-8.1.1-javadoc.jar.sha1">fastutil-8.1.1-javadoc.jar.sha1</a>                   2017-11-21 23:45        40      
+<a href="fastutil-8.1.1-sources.jar" title="fastutil-8.1.1-sources.jar">fastutil-8.1.1-sources.jar</a>                        2017-11-21 23:45   8979447      
+<a href="fastutil-8.1.1-sources.jar.asc" title="fastutil-8.1.1-sources.jar.asc">fastutil-8.1.1-sources.jar.asc</a>                    2017-11-21 23:45       455      
+<a href="fastutil-8.1.1-sources.jar.asc.md5" title="fastutil-8.1.1-sources.jar.asc.md5">fastutil-8.1.1-sources.jar.asc.md5</a>                2017-11-21 23:45        32      
+<a href="fastutil-8.1.1-sources.jar.asc.sha1" title="fastutil-8.1.1-sources.jar.asc.sha1">fastutil-8.1.1-sources.jar.asc.sha1</a>               2017-11-21 23:45        40      
+<a href="fastutil-8.1.1-sources.jar.md5" title="fastutil-8.1.1-sources.jar.md5">fastutil-8.1.1-sources.jar.md5</a>                    2017-11-21 23:45        32      
+<a href="fastutil-8.1.1-sources.jar.sha1" title="fastutil-8.1.1-sources.jar.sha1">fastutil-8.1.1-sources.jar.sha1</a>                   2017-11-21 23:45        40      
+<a href="fastutil-8.1.1.jar" title="fastutil-8.1.1.jar">fastutil-8.1.1.jar</a>                                2017-11-21 23:45  18827847      
+<a href="fastutil-8.1.1.jar.asc" title="fastutil-8.1.1.jar.asc">fastutil-8.1.1.jar.asc</a>                            2017-11-21 23:45       455      
+<a href="fastutil-8.1.1.jar.asc.md5" title="fastutil-8.1.1.jar.asc.md5">fastutil-8.1.1.jar.asc.md5</a>                        2017-11-21 23:45        32      
+<a href="fastutil-8.1.1.jar.asc.sha1" title="fastutil-8.1.1.jar.asc.sha1">fastutil-8.1.1.jar.asc.sha1</a>                       2017-11-21 23:45        40      
+<a href="fastutil-8.1.1.jar.md5" title="fastutil-8.1.1.jar.md5">fastutil-8.1.1.jar.md5</a>                            2017-11-21 23:45        32      
+<a href="fastutil-8.1.1.jar.sha1" title="fastutil-8.1.1.jar.sha1">fastutil-8.1.1.jar.sha1</a>                           2017-11-21 23:45        40      
+<a href="fastutil-8.1.1.pom" title="fastutil-8.1.1.pom">fastutil-8.1.1.pom</a>                                2017-11-21 23:45      1400      
+<a href="fastutil-8.1.1.pom.asc" title="fastutil-8.1.1.pom.asc">fastutil-8.1.1.pom.asc</a>                            2017-11-21 23:45       455      
+<a href="fastutil-8.1.1.pom.asc.md5" title="fastutil-8.1.1.pom.asc.md5">fastutil-8.1.1.pom.asc.md5</a>                        2017-11-21 23:45        32      
+<a href="fastutil-8.1.1.pom.asc.sha1" title="fastutil-8.1.1.pom.asc.sha1">fastutil-8.1.1.pom.asc.sha1</a>                       2017-11-21 23:45        40      
+<a href="fastutil-8.1.1.pom.md5" title="fastutil-8.1.1.pom.md5">fastutil-8.1.1.pom.md5</a>                            2017-11-21 23:45        32      
+<a href="fastutil-8.1.1.pom.sha1" title="fastutil-8.1.1.pom.sha1">fastutil-8.1.1.pom.sha1</a>                           2017-11-21 23:45        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 370ms:
+Welcome to fastutil.
+--------------------
+
+[fastutil](http://fastutil.di.unimi.it/) is a collection of type-specific
+Java classes that extend the Java Collections Framework by providing
+several containers, such as maps, sets, lists and prority queues,
+implementing the interfaces of the java.util package; it provides also big
+(64-bit) arrays, sets and lists, and fast, practical I/O classes for
+binary and text files.
+
+fastutil provides a huge collection of specialized classes generated
+starting from a parameterized version; the classes are much more compact
+and much faster than the general ones. Please read the package
+documentation for more information.
+
+Note that the jar file is huge, due to the large number of classes: if you
+plan to ship your own jar with some fastutil classes included, you should
+look at AutoJar or similar tools to extract automatically the necessary
+classes.
+
+You have to "make sources" to get the actual Java sources; finally, "ant
+jar" and "ant javadoc" will generate the jar file and the API
+documentation.
+
+The Java sources are generated using a C preprocessor. The gencsource.sh
+script reads in a driver file, that is, a Java source that uses some
+preprocessor-defined symbols and some conditional compilation, and
+produces a (fake) C source, which includes the driver code and some
+definitions that customize the environment.
+
+
+* seba (<mailto:sebastiano.vigna@unimi.it>)
+* <mailto:fastutil@googlegroups.com>
+
+exec
+/usr/bin/zsh -lc "curl -fsSL https://api.github.com/repos/vigna/fastutil/git/trees/8.1.1?recursive=1 | rg '\"path\": \".*(test|Test|src/test|test/).*\"' | head -120" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792
+ succeeded in 0ms:
+zsh:1: no matches found: https://api.github.com/repos/vigna/fastutil/git/trees/8.1.1?recursive=1
+
+exec
+/usr/bin/zsh -lc "curl -fsSL https://api.github.com/repos/vigna/fastutil/git/trees/8.1.1?recursive=1 | rg '\"path\": \".*(README|CHANGES|pom.xml|build.xml|src/it/unimi/dsi/fastutil).*\"' | head -120" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792
+ succeeded in 0ms:
+zsh:1: no matches found: https://api.github.com/repos/vigna/fastutil/git/trees/8.1.1?recursive=1
+
+codex
+The upstream release tag is exactly `8.1.1`. I hit a zsh URL-globbing issue while listing the tag contents, so I’m rerunning that with quoted URLs before writing the file.
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/vigna/fastutil/git/trees/8.1.1?recursive=1' | rg '\"path\": \".*(test|Test|src/test|test/).*\"' | head -120" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/vigna/fastutil/git/trees/8.1.1?recursive=1' | rg '\"path\": \".*(README|CHANGES|pom.xml|build.xml|src/it/unimi/dsi/fastutil).*\"' | head -120" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792
+ succeeded in 589ms:
+      "path": "CHANGES",
+      "path": "README.md",
+      "path": "build.xml",
+      "path": "pom.xml",
+      "path": "src/it/unimi/dsi/fastutil",
+      "path": "src/it/unimi/dsi/fastutil/AbstractIndirectPriorityQueue.java",
+      "path": "src/it/unimi/dsi/fastutil/AbstractPriorityQueue.java",
+      "path": "src/it/unimi/dsi/fastutil/AbstractStack.java",
+      "path": "src/it/unimi/dsi/fastutil/Arrays.java",
+      "path": "src/it/unimi/dsi/fastutil/BidirectionalIterator.java",
+      "path": "src/it/unimi/dsi/fastutil/BigArrays.java",
+      "path": "src/it/unimi/dsi/fastutil/BigList.java",
+      "path": "src/it/unimi/dsi/fastutil/BigListIterator.java",
+      "path": "src/it/unimi/dsi/fastutil/BigSwapper.java",
+      "path": "src/it/unimi/dsi/fastutil/Function.java",
+      "path": "src/it/unimi/dsi/fastutil/Hash.java",
+      "path": "src/it/unimi/dsi/fastutil/HashCommon.java",
+      "path": "src/it/unimi/dsi/fastutil/IndirectPriorityQueue.java",
+      "path": "src/it/unimi/dsi/fastutil/IndirectPriorityQueues.java",
+      "path": "src/it/unimi/dsi/fastutil/PriorityQueue.java",
+      "path": "src/it/unimi/dsi/fastutil/PriorityQueues.java",
+      "path": "src/it/unimi/dsi/fastutil/SafeMath.java",
+      "path": "src/it/unimi/dsi/fastutil/Size64.java",
+      "path": "src/it/unimi/dsi/fastutil/Stack.java",
+      "path": "src/it/unimi/dsi/fastutil/Swapper.java",
+      "path": "src/it/unimi/dsi/fastutil/booleans",
+      "path": "src/it/unimi/dsi/fastutil/booleans/package.html",
+      "path": "src/it/unimi/dsi/fastutil/bytes",
+      "path": "src/it/unimi/dsi/fastutil/bytes/package.html",
+      "path": "src/it/unimi/dsi/fastutil/chars",
+      "path": "src/it/unimi/dsi/fastutil/chars/package.html",
+      "path": "src/it/unimi/dsi/fastutil/doubles",
+      "path": "src/it/unimi/dsi/fastutil/doubles/package.html",
+      "path": "src/it/unimi/dsi/fastutil/floats",
+      "path": "src/it/unimi/dsi/fastutil/floats/package.html",
+      "path": "src/it/unimi/dsi/fastutil/ints",
+      "path": "src/it/unimi/dsi/fastutil/ints/package.html",
+      "path": "src/it/unimi/dsi/fastutil/io",
+      "path": "src/it/unimi/dsi/fastutil/io/FastBufferedInputStream.java",
+      "path": "src/it/unimi/dsi/fastutil/io/FastBufferedOutputStream.java",
+      "path": "src/it/unimi/dsi/fastutil/io/FastByteArrayInputStream.java",
+      "path": "src/it/unimi/dsi/fastutil/io/FastByteArrayOutputStream.java",
+      "path": "src/it/unimi/dsi/fastutil/io/FastMultiByteArrayInputStream.java",
+      "path": "src/it/unimi/dsi/fastutil/io/InspectableFileCachedInputStream.java",
+      "path": "src/it/unimi/dsi/fastutil/io/MeasurableInputStream.java",
+      "path": "src/it/unimi/dsi/fastutil/io/MeasurableOutputStream.java",
+      "path": "src/it/unimi/dsi/fastutil/io/MeasurableStream.java",
+      "path": "src/it/unimi/dsi/fastutil/io/RepositionableStream.java",
+      "path": "src/it/unimi/dsi/fastutil/io/package.html",
+      "path": "src/it/unimi/dsi/fastutil/longs",
+      "path": "src/it/unimi/dsi/fastutil/longs/package.html",
+      "path": "src/it/unimi/dsi/fastutil/objects",
+      "path": "src/it/unimi/dsi/fastutil/objects/package.html",
+      "path": "src/it/unimi/dsi/fastutil/package.html",
+      "path": "src/it/unimi/dsi/fastutil/shorts",
+      "path": "src/it/unimi/dsi/fastutil/shorts/package.html",
+
+ succeeded in 601ms:
+      "path": "test.sh",
+      "path": "test",
+      "path": "test/it",
+      "path": "test/it/unimi",
+      "path": "test/it/unimi/dsi",
+      "path": "test/it/unimi/dsi/fastutil",
+      "path": "test/it/unimi/dsi/fastutil/ArraysTest.java",
+      "path": "test/it/unimi/dsi/fastutil/BigArraysTest.java",
+      "path": "test/it/unimi/dsi/fastutil/HashCommonTest.java",
+      "path": "test/it/unimi/dsi/fastutil/bytes",
+      "path": "test/it/unimi/dsi/fastutil/bytes/ByteArrayFrontCodedListTest.java",
+      "path": "test/it/unimi/dsi/fastutil/bytes/ByteArraysTest.java",
+      "path": "test/it/unimi/dsi/fastutil/chars",
+      "path": "test/it/unimi/dsi/fastutil/chars/CharArrayFrontCodedListTest.java",
+      "path": "test/it/unimi/dsi/fastutil/chars/CharArraysTest.java",
+      "path": "test/it/unimi/dsi/fastutil/doubles",
+      "path": "test/it/unimi/dsi/fastutil/doubles/DoubleArraysTest.java",
+      "path": "test/it/unimi/dsi/fastutil/doubles/DoubleBigArraysTest.java",
+      "path": "test/it/unimi/dsi/fastutil/doubles/DoubleOpenHashSetTest.java",
+      "path": "test/it/unimi/dsi/fastutil/floats",
+      "path": "test/it/unimi/dsi/fastutil/floats/FloatArraysTest.java",
+      "path": "test/it/unimi/dsi/fastutil/floats/FloatOpenHashSetTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints",
+      "path": "test/it/unimi/dsi/fastutil/ints/AbstractInt2IntMapTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/AbstractIntCollectionTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2IntLinkedOpenHashMapTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2IntMapGenericAVLTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2IntMapGenericArrayTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2IntMapGenericDefaultTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2IntMapGenericLinkedOpenHashTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2IntMapGenericOpenHashTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2IntMapGenericRBTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2IntMapGenericTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2IntMapsTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2IntOpenCustomHashMapTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2IntOpenHashMapTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2ObjectFunctionTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2ObjectMapGenericAVLTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2ObjectMapGenericArrayTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2ObjectMapGenericDefaultTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2ObjectMapGenericLinkedOpenHashTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2ObjectMapGenericOpenHashTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2ObjectMapGenericRBTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2ObjectMapGenericTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/Int2ObjectMapTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntArrayFIFOQueueTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntArrayFrontCodedListTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntArrayIndirectPriorityQueueTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntArrayListTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntArrayPriorityQueueTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntArraySetTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntArraysTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntBigArrayBigListTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntBigArraysTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntCollectionsTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntHeapPriorityQueueTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntHeapSemiIndirectPriorityQueueTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntLinkedOpenCustomHashSetTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntLinkedOpenHashSetTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntListsTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntOpenCustomHashSetTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntOpenHashBigSetTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntOpenHashSetTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntSemiIndirectHeapsTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/IntSetsTest.java",
+      "path": "test/it/unimi/dsi/fastutil/ints/StripedInt2IntOpenHashMapTest.java",
+      "path": "test/it/unimi/dsi/fastutil/io",
+      "path": "test/it/unimi/dsi/fastutil/io/BinIOTest.java",
+      "path": "test/it/unimi/dsi/fastutil/io/FastBufferedInputStreamTest.java",
+      "path": "test/it/unimi/dsi/fastutil/io/FastBufferedOutputStreamTest.java",
+      "path": "test/it/unimi/dsi/fastutil/io/FastByteArrayOutputStreamTest.java",
+      "path": "test/it/unimi/dsi/fastutil/io/FastMultiByteArrayInputStreamTest.java",
+      "path": "test/it/unimi/dsi/fastutil/io/InspectableFileCachedInputStreamTest.java",
+      "path": "test/it/unimi/dsi/fastutil/io/TextIOTest.java",
+      "path": "test/it/unimi/dsi/fastutil/longs",
+      "path": "test/it/unimi/dsi/fastutil/longs/LongArrayFrontCodedListTest.java",
+      "path": "test/it/unimi/dsi/fastutil/longs/LongArraysTest.java",
+      "path": "test/it/unimi/dsi/fastutil/longs/LongOpenHashBigSetTest.java",
+      "path": "test/it/unimi/dsi/fastutil/objects",
+      "path": "test/it/unimi/dsi/fastutil/objects/AbstractObject2IntFunctionTest.java",
+      "path": "test/it/unimi/dsi/fastutil/objects/Object2IntOpenHashMapTest.java",
+      "path": "test/it/unimi/dsi/fastutil/objects/Object2ObjectArrayMapTest.java",
+      "path": "test/it/unimi/dsi/fastutil/objects/ObjectAVLTreeSetTest.java",
+      "path": "test/it/unimi/dsi/fastutil/objects/ObjectArrayListTest.java",
+      "path": "test/it/unimi/dsi/fastutil/objects/ObjectArrayPriorityQueueTest.java",
+      "path": "test/it/unimi/dsi/fastutil/objects/ObjectArraySetTest.java",
+      "path": "test/it/unimi/dsi/fastutil/objects/ObjectArraysTest.java",
+      "path": "test/it/unimi/dsi/fastutil/objects/ObjectBigArrayBigListTest.java",
+      "path": "test/it/unimi/dsi/fastutil/objects/ObjectBigArraysTest.java",
+      "path": "test/it/unimi/dsi/fastutil/objects/ObjectHeapPriorityQueueTest.java",
+      "path": "test/it/unimi/dsi/fastutil/objects/ObjectOpenCustomHashSetTest.java",
+      "path": "test/it/unimi/dsi/fastutil/objects/ObjectOpenHashBigSetTest.java",
+      "path": "test/it/unimi/dsi/fastutil/objects/ObjectOpenHashSetTest.java",
+      "path": "test/it/unimi/dsi/fastutil/objects/ObjectRBTreeSetTest.java",
+      "path": "test/it/unimi/dsi/fastutil/objects/ObjectSetsTest.java",
+      "path": "test/it/unimi/dsi/fastutil/objects/Reference2ReferenceArrayMapTest.java",
+      "path": "test/it/unimi/dsi/fastutil/objects/ReferenceArraySetTest.java",
+      "path": "test/it/unimi/dsi/fastutil/shorts",
+      "path": "test/it/unimi/dsi/fastutil/shorts/ShortArrayFrontCodedListTest.java",
+      "path": "test/it/unimi/dsi/fastutil/shorts/ShortArraysTest.java",
+
+web search: 
+web search: 
+web search: 
+web search: site:mvnrepository.com/artifact/it.unimi.dsi/fastutil/8.1.1 fastutil 8.1.1
+web search: 
+web search: https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/
+web search: 
+web search: https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/
+web search: 
+web search: 
+web search: 
+web search: fastutil 8.1.1 pom scm github vigna fastutil
+web search: 
+web search: https://github.com/vigna/fastutil
+web search: 
+web search: https://github.com/vigna/fastutil/tree/8.1.1
+codex
+I’ve got the version-specific endpoints: Maven Central for sources and javadocs, and the `8.1.1` GitHub tag for the tests. I’m updating only the requested JSON now and leaving `language` absent because this is not a Kotlin, Groovy, or Scala-specific artifact.
+apply patch
+patch: completed
+/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+diff --git a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+index 495e1ecb55e691ee503e2467492e492eef3adb41..a9548f0405d7477942a9195ea3f6aba03fd772d7
+--- a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
++++ b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
++  "coordinates" : "it.unimi.dsi:fastutil:8.1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-sources.jar",
++  "repository-url" : "https://github.com/vigna/fastutil",
++  "test-code-url" : "https://github.com/vigna/fastutil/tree/8.1.1/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-javadoc.jar",
++  "description" : "fastutil extends the Java Collections Framework with type-specific maps, sets, lists, queues, priority queues, and related primitive collections designed for low memory use and fast access and insertion. It also provides big 64-bit arrays, sets, and lists plus practical binary and text I/O utilities for Java applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+index 495e1ecb55e691ee503e2467492e492eef3adb41..a9548f0405d7477942a9195ea3f6aba03fd772d7
+--- a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
++++ b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
++  "coordinates" : "it.unimi.dsi:fastutil:8.1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-sources.jar",
++  "repository-url" : "https://github.com/vigna/fastutil",
++  "test-code-url" : "https://github.com/vigna/fastutil/tree/8.1.1/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-javadoc.jar",
++  "description" : "fastutil extends the Java Collections Framework with type-specific maps, sets, lists, queues, priority queues, and related primitive collections designed for low memory use and fast access and insertion. It also provides big 64-bit arrays, sets, and lists plus practical binary and text I/O utilities for Java applications."
+ }
+
+exec
+/usr/bin/zsh -lc "sed -n '1,220p' build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792
+ succeeded in 0ms:
+{
+  "coordinates" : "it.unimi.dsi:fastutil:8.1.1",
+  "source-code-url" : "https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-sources.jar",
+  "repository-url" : "https://github.com/vigna/fastutil",
+  "test-code-url" : "https://github.com/vigna/fastutil/tree/8.1.1/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-javadoc.jar",
+  "description" : "fastutil extends the Java Collections Framework with type-specific maps, sets, lists, queues, priority queues, and related primitive collections designed for low memory use and fast access and insertion. It also provides big 64-bit arrays, sets, and lists plus practical binary and text I/O utilities for Java applications."
+}
+
+exec
+/usr/bin/zsh -lc 'python3 -m json.tool build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792
+ succeeded in 0ms:
+{
+    "coordinates": "it.unimi.dsi:fastutil:8.1.1",
+    "source-code-url": "https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-sources.jar",
+    "repository-url": "https://github.com/vigna/fastutil",
+    "test-code-url": "https://github.com/vigna/fastutil/tree/8.1.1/test",
+    "documentation-url": "https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-javadoc.jar",
+    "description": "fastutil extends the Java Collections Framework with type-specific maps, sets, lists, queues, priority queues, and related primitive collections designed for low memory use and fast access and insertion. It also provides big 64-bit arrays, sets, and lists plus practical binary and text I/O utilities for Java applications."
+}
+
+diff --git a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+index 495e1ecb55e691ee503e2467492e492eef3adb41..a9548f0405d7477942a9195ea3f6aba03fd772d7
+--- a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
++++ b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
++  "coordinates" : "it.unimi.dsi:fastutil:8.1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-sources.jar",
++  "repository-url" : "https://github.com/vigna/fastutil",
++  "test-code-url" : "https://github.com/vigna/fastutil/tree/8.1.1/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-javadoc.jar",
++  "description" : "fastutil extends the Java Collections Framework with type-specific maps, sets, lists, queues, priority queues, and related primitive collections designed for low memory use and fast access and insertion. It also provides big 64-bit arrays, sets, and lists plus practical binary and text I/O utilities for Java applications."
+ }
+
+exec
+/usr/bin/zsh -lc 'git diff -- build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+index 495e1ecb55e691ee503e2467492e492eef3adb41..a9548f0405d7477942a9195ea3f6aba03fd772d7
+--- a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
++++ b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
++  "coordinates" : "it.unimi.dsi:fastutil:8.1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-sources.jar",
++  "repository-url" : "https://github.com/vigna/fastutil",
++  "test-code-url" : "https://github.com/vigna/fastutil/tree/8.1.1/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-javadoc.jar",
++  "description" : "fastutil extends the Java Collections Framework with type-specific maps, sets, lists, queues, priority queues, and related primitive collections designed for low memory use and fast access and insertion. It also provides big 64-bit arrays, sets, and lists plus practical binary and text I/O utilities for Java applications."
+ }
+
+exec
+/usr/bin/zsh -lc 'git status --short build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json && git ls-files --error-unmatch build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json >/dev/null 2>&1; echo tracked:$?' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792
+diff --git a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+index 495e1ecb55e691ee503e2467492e492eef3adb41..a9548f0405d7477942a9195ea3f6aba03fd772d7
+--- a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
++++ b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
++  "coordinates" : "it.unimi.dsi:fastutil:8.1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-sources.jar",
++  "repository-url" : "https://github.com/vigna/fastutil",
++  "test-code-url" : "https://github.com/vigna/fastutil/tree/8.1.1/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-javadoc.jar",
++  "description" : "fastutil extends the Java Collections Framework with type-specific maps, sets, lists, queues, priority queues, and related primitive collections designed for low memory use and fast access and insertion. It also provides big 64-bit arrays, sets, and lists plus practical binary and text I/O utilities for Java applications."
+ }
+
+ succeeded in 215ms:
+tracked:1
+
+web search: 
+web search: repo.maven.apache.org maven2 it unimi dsi fastutil 8.1.1 sources javadoc
+web search: 
+web search: https://github.com/vigna/fastutil/tree/8.1.1/test
+web search: 
+web search: https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/
+web search: 
+web search: https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/
+web search: 
+web search: 
+codex
+Updated [it.unimi.dsi-fastutil-8.1.1.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json:1).
+
+I used Maven Central’s exact `8.1.1` sources and javadocs, and the upstream GitHub `8.1.1` test directory. ([repo1.maven.org](https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/)) I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific artifact. The JSON parses successfully.
+diff --git a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+index 495e1ecb55e691ee503e2467492e492eef3adb41..a9548f0405d7477942a9195ea3f6aba03fd772d7
+--- a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
++++ b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
++  "coordinates" : "it.unimi.dsi:fastutil:8.1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-sources.jar",
++  "repository-url" : "https://github.com/vigna/fastutil",
++  "test-code-url" : "https://github.com/vigna/fastutil/tree/8.1.1/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-javadoc.jar",
++  "description" : "fastutil extends the Java Collections Framework with type-specific maps, sets, lists, queues, priority queues, and related primitive collections designed for low memory use and fast access and insertion. It also provides big 64-bit arrays, sets, and lists plus practical binary and text I/O utilities for Java applications."
+ }
+
+2026-05-01T18:04:34.482664Z ERROR codex_core::session: failed to record rollout items: thread 019de4b5-3eaf-7e23-bdb0-8ab31e7a00df not found
+tokens used
+68,487
+Updated [it.unimi.dsi-fastutil-8.1.1.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json:1).
+
+I used Maven Central’s exact `8.1.1` sources and javadocs, and the upstream GitHub `8.1.1` test directory. ([repo1.maven.org](https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/)) I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific artifact. The JSON parses successfully.
+Ran agent for it.unimi.dsi:fastutil:8.1.1 (exit 0). Log: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792/build/agent-artifact-discovery-logs/it.unimi.dsi-fastutil-8.1.1.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-0db48792/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 41s
+9 actionable tasks: 4 executed, 5 from cache
