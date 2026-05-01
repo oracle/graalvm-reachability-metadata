@@ -455,7 +455,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
         randrange.assert_called_once_with(500)
 
-    def test_process_loop_uses_preflight_to_skip_unclaimable_candidates(self) -> None:
+    def test_process_loop_uses_cache_to_skip_unclaimable_candidates_without_preflight(self) -> None:
         skipped_issue = {
             "number": 1,
             "title": "Add support for org.example:skipped:1.0.0",
@@ -470,6 +470,17 @@ class IssueClaimPreflightTests(unittest.TestCase):
         }
 
         with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root):
+                forge_metadata.record_issue_claim_cache_observations(
+                    [
+                        forge_metadata.IssueClaimCacheObservation(
+                            issue_number=1,
+                            reason=forge_metadata.ISSUE_CLAIM_CACHE_REASON_BLOCKED,
+                            open_blockers=(99,),
+                        ),
+                    ],
+                )
+
             with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata, "validate_issue_processing_environment"), \
                     patch.object(
@@ -483,10 +494,6 @@ class IssueClaimPreflightTests(unittest.TestCase):
                     patch.object(
                         forge_metadata,
                         "get_issue_claim_preflights_or_empty",
-                        side_effect=[
-                            {1: _preflight(issue_number=1, assignees=("automation-user",))},
-                            {2: _preflight(issue_number=2)},
-                        ],
                     ) as get_issue_claim_preflights_or_empty, \
                     patch.object(
                         forge_metadata,
@@ -533,13 +540,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 ),
             ],
         )
-        self.assertEqual(
-            get_issue_claim_preflights_or_empty.call_args_list,
-            [
-                call([skipped_issue]),
-                call([claimable_issue]),
-            ],
-        )
+        get_issue_claim_preflights_or_empty.assert_not_called()
         claim_issue_for_processing.assert_called_once_with(
             claimable_issue,
             forge_metadata.LABEL_LIBRARY_NEW,
@@ -855,7 +856,6 @@ class IssueClaimCacheTests(unittest.TestCase):
                         patch.object(
                             forge_metadata,
                             "get_issue_claim_preflights_or_empty",
-                            return_value={2: _preflight(issue_number=2)},
                         ) as get_issue_claim_preflights_or_empty, \
                         patch.object(
                             forge_metadata,
@@ -880,15 +880,27 @@ class IssueClaimCacheTests(unittest.TestCase):
                     )
 
         self.assertEqual(processed, 1)
-        get_issue_claim_preflights_or_empty.assert_called_once_with([claimable_issue])
+        get_issue_claim_preflights_or_empty.assert_not_called()
 
-    def test_process_loop_records_preflight_negative_result(self) -> None:
+    def test_process_loop_accepts_claim_negative_result_without_preflight(self) -> None:
         issue = {
             "number": 1,
             "title": "Add support for org.example:blocked:1.0.0",
             "labels": [],
             "assignees": [],
         }
+
+        def claim_and_cache_negative_result(*_args: object, **_kwargs: object) -> None:
+            forge_metadata.record_issue_claim_cache_observations(
+                [
+                    forge_metadata.IssueClaimCacheObservation(
+                        issue_number=1,
+                        reason=forge_metadata.ISSUE_CLAIM_CACHE_REASON_BLOCKED,
+                        open_blockers=(99,),
+                    ),
+                ],
+            )
+            return None
 
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
@@ -904,9 +916,12 @@ class IssueClaimCacheTests(unittest.TestCase):
                     patch.object(
                         forge_metadata,
                         "get_issue_claim_preflights_or_empty",
-                        return_value={1: _preflight(issue_number=1, open_blockers=(99,))},
-                    ), \
-                    patch.object(forge_metadata, "claim_issue_for_processing") as claim_issue_for_processing:
+                    ) as get_issue_claim_preflights_or_empty, \
+                    patch.object(
+                        forge_metadata,
+                        "claim_issue_for_processing",
+                        side_effect=claim_and_cache_negative_result,
+                    ) as claim_issue_for_processing:
                 processed = forge_metadata.process_issues_with_label(
                     forge_metadata.LABEL_LIBRARY_NEW,
                     1,
@@ -924,9 +939,10 @@ class IssueClaimCacheTests(unittest.TestCase):
                 self.assertEqual(cache[1].open_blockers, (99,))
 
         self.assertEqual(processed, 0)
-        claim_issue_for_processing.assert_not_called()
+        get_issue_claim_preflights_or_empty.assert_not_called()
+        claim_issue_for_processing.assert_called_once()
 
-    def test_process_loop_preflights_uncached_candidates_in_chunks_before_claiming(self) -> None:
+    def test_process_loop_attempts_uncached_candidates_without_preflight(self) -> None:
         issues = [
             {
                 "number": issue_number,
@@ -948,27 +964,11 @@ class IssueClaimCacheTests(unittest.TestCase):
                     patch.object(
                         forge_metadata,
                         "get_issue_claim_preflights_or_empty",
-                        side_effect=[
-                            {
-                                issue["number"]: _preflight(
-                                    issue_number=issue["number"],
-                                    open_blockers=(99,),
-                                )
-                                for issue in issues[:forge_metadata.ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE]
-                            },
-                            {
-                                issues[-2]["number"]: _preflight(
-                                    issue_number=issues[-2]["number"],
-                                    open_blockers=(99,),
-                                ),
-                                issues[-1]["number"]: _preflight(issue_number=issues[-1]["number"]),
-                            },
-                        ],
                     ) as get_issue_claim_preflights_or_empty, \
                     patch.object(
                         forge_metadata,
                         "claim_issue_for_processing",
-                        return_value=_claimed_issue(),
+                        side_effect=[None, None, None, None, None, _claimed_issue()],
                     ) as claim_issue_for_processing, \
                     patch.object(
                         forge_metadata,
@@ -990,20 +990,20 @@ class IssueClaimCacheTests(unittest.TestCase):
                     1,
                 )
 
+        get_issue_claim_preflights_or_empty.assert_not_called()
         self.assertEqual(
-            get_issue_claim_preflights_or_empty.call_args_list,
+            claim_issue_for_processing.call_args_list,
             [
-                call(issues[:forge_metadata.ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE]),
-                call(issues[forge_metadata.ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE:]),
+                call(
+                    issue,
+                    forge_metadata.LABEL_LIBRARY_NEW,
+                    "/tmp/reachability",
+                    "/tmp/metrics",
+                    "automation-user",
+                    in_metadata_repo=True,
+                )
+                for issue in issues
             ],
-        )
-        claim_issue_for_processing.assert_called_once_with(
-            issues[-1],
-            forge_metadata.LABEL_LIBRARY_NEW,
-            "/tmp/reachability",
-            "/tmp/metrics",
-            "automation-user",
-            in_metadata_repo=True,
         )
 
 
@@ -1224,6 +1224,38 @@ class IssueClaimLockTests(unittest.TestCase):
                 cache = forge_metadata.read_issue_claim_cache()
                 self.assertEqual(cache[1412].reason, forge_metadata.ISSUE_CLAIM_CACHE_REASON_ASSIGNED)
                 self.assertEqual(cache[1412].assignees, ("automation-user",))
+
+    def test_try_claim_issue_caches_active_sibling_blockers(self) -> None:
+        issue = {
+            "number": 1412,
+            "title": "Add support for org.example:lib:1.0.0",
+            "labels": [],
+            "assignees": [],
+        }
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+                    patch.object(forge_metadata, "get_open_blocking_issue_numbers", return_value=[]), \
+                    patch.object(forge_metadata, "get_issue_assignees", return_value=[]), \
+                    patch.object(
+                        forge_metadata,
+                        "get_project_item_state",
+                        return_value=("project-item", forge_metadata.STATUS_TODO),
+                    ), \
+                    patch.object(
+                        forge_metadata,
+                        "get_active_sibling_blocker_numbers",
+                        return_value=[3759, 3763],
+                    ), \
+                    patch.object(forge_metadata, "set_issue_assignee") as set_issue_assignee:
+                self.assertIsNone(forge_metadata.try_claim_issue(issue, "automation-user"))
+                cache = forge_metadata.read_issue_claim_cache()
+                self.assertEqual(
+                    cache[1412].reason,
+                    forge_metadata.ISSUE_CLAIM_CACHE_REASON_ACTIVE_SIBLING_BLOCKED,
+                )
+                self.assertEqual(cache[1412].open_blockers, (3759, 3763))
+
+        set_issue_assignee.assert_not_called()
 
     def test_try_claim_issue_uses_combined_project_status_lookup(self) -> None:
         issue = {

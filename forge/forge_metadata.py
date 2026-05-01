@@ -140,6 +140,7 @@ ISSUE_CLAIM_LOCK_DIRNAME = "metadata-forge-issue-claim-locks"
 ISSUE_CLAIM_CACHE_REASON_ASSIGNED = "assigned"
 ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION = "human_intervention"
 ISSUE_CLAIM_CACHE_REASON_BLOCKED = "blocked"
+ISSUE_CLAIM_CACHE_REASON_ACTIVE_SIBLING_BLOCKED = "active_sibling_blocked"
 ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM = "missing_project_item"
 ISSUE_CLAIM_CACHE_REASON_NON_TODO = "non_todo"
 ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS = "in_progress"
@@ -147,6 +148,7 @@ ISSUE_CLAIM_CACHE_REASONS = {
     ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
     ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
     ISSUE_CLAIM_CACHE_REASON_BLOCKED,
+    ISSUE_CLAIM_CACHE_REASON_ACTIVE_SIBLING_BLOCKED,
     ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM,
     ISSUE_CLAIM_CACHE_REASON_NON_TODO,
     ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
@@ -3733,6 +3735,12 @@ def format_cached_issue_claim_skip(cached_skip: CachedIssueClaimSkip) -> str:
     if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_BLOCKED:
         blockers_text = ", ".join(f"#{blocker}" for blocker in cached_skip.open_blockers)
         return f"recently cached as blocked by open issue(s) {blockers_text}"
+    if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_ACTIVE_SIBLING_BLOCKED:
+        blockers_text = ", ".join(f"#{blocker}" for blocker in cached_skip.open_blockers)
+        return (
+            "recently cached as sharing a blocked downstream issue with active "
+            f"issue(s) {blockers_text}"
+        )
     if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM:
         return f"recently cached as missing project {PROJECT_NUMBER} item"
     if cached_skip.reason in {ISSUE_CLAIM_CACHE_REASON_NON_TODO, ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS}:
@@ -3896,35 +3904,20 @@ def should_skip_issue_from_preflight(
 def resolve_next_issue_claim_candidate_batch(
         unresolved_candidates: list[tuple[dict, CachedIssueClaimSkip | None]],
 ) -> list[tuple[dict, IssueClaimPreflight | None, CachedIssueClaimSkip | None]]:
-    """Resolve the next candidate batch through cache/local state or batched preflight."""
-    batch_entries: list[tuple[dict, CachedIssueClaimSkip | None, bool]] = []
-    preflight_candidates: list[dict] = []
+    """Resolve the next candidate batch through cache/local state only."""
+    batch_entries: list[tuple[dict, CachedIssueClaimSkip | None]] = []
 
-    while unresolved_candidates and len(preflight_candidates) < ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE:
+    while unresolved_candidates:
         issue, cached_skip = unresolved_candidates.pop(0)
-        needs_preflight = cached_skip is None and issue_needs_claim_preflight(issue)
-        batch_entries.append((issue, cached_skip, needs_preflight))
-        if needs_preflight:
-            preflight_candidates.append(issue)
-
-    issue_preflights = get_issue_claim_preflights_or_empty(preflight_candidates)
-    preflight_cache_observations = [
-        observation
-        for observation in (
-            get_issue_claim_cache_observation_from_preflight(preflight)
-            for preflight in issue_preflights.values()
-        )
-        if observation is not None
-    ]
-    record_issue_claim_cache_observations(preflight_cache_observations)
+        batch_entries.append((issue, cached_skip))
 
     return [
         (
             issue,
-            issue_preflights.get(issue["number"]) if needs_preflight else None,
+            None,
             cached_skip,
         )
-        for issue, cached_skip, needs_preflight in batch_entries
+        for issue, cached_skip in batch_entries
     ]
 
 
@@ -4124,6 +4117,13 @@ def try_claim_issue_with_local_lock(issue: dict, authenticated_user: str) -> Opt
             "issue-claim",
             f"Issue #{number} shares a blocked downstream issue with active issue(s) {blockers_text}. Skipping.",
         )
+        record_issue_claim_cache_observations([
+            IssueClaimCacheObservation(
+                issue_number=number,
+                reason=ISSUE_CLAIM_CACHE_REASON_ACTIVE_SIBLING_BLOCKED,
+                open_blockers=tuple(active_sibling_blockers),
+            )
+        ])
         return None
 
     try:
@@ -4167,6 +4167,13 @@ def try_claim_issue_with_local_lock(issue: dict, authenticated_user: str) -> Opt
                 authenticated_user,
                 f"active sibling issue(s) {blockers_text}",
             )
+            record_issue_claim_cache_observations([
+                IssueClaimCacheObservation(
+                    issue_number=number,
+                    reason=ISSUE_CLAIM_CACHE_REASON_ACTIVE_SIBLING_BLOCKED,
+                    open_blockers=tuple(active_sibling_blockers),
+                )
+            ])
             return None
 
         set_item_status(item_id, STATUS_IN_PROGRESS)
