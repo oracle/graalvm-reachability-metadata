@@ -20,11 +20,13 @@ import io.github.oshai.kotlinlogging.KotlinLoggingConfiguration
 import io.github.oshai.kotlinlogging.Level
 import io.github.oshai.kotlinlogging.Levels
 import io.github.oshai.kotlinlogging.Marker
+import io.github.oshai.kotlinlogging.withLoggingContext
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.slf4j.MDC
 
 public class Kotlin_logging_jvmTest {
     private lateinit var originalLoggerFactory: KLoggerFactory
@@ -261,6 +263,52 @@ public class Kotlin_logging_jvmTest {
         assertThat(copied.message).isEqualTo("failed")
         assertThat(copied.loggerName).isEqualTo(event.loggerName)
         assertThat(event).isEqualTo(KLoggingEvent(Level.INFO, marker, "event.logger", "loaded", null, payload, 77L))
+    }
+
+    @Test
+    fun withLoggingContextScopesMdcValuesAndRestoresPreviousValues() {
+        val traceKey = "kotlin.logging.test.trace"
+        val userKey = "kotlin.logging.test.user"
+        MDC.put(traceKey, "outer-trace")
+        MDC.remove(userKey)
+
+        try {
+            val observedValues = withLoggingContext(mapOf(traceKey to "inner-trace", userKey to "alice")) {
+                val valuesInOuterScope = linkedMapOf(
+                    traceKey to MDC.get(traceKey),
+                    userKey to MDC.get(userKey),
+                )
+
+                val valuesInNestedScope = withLoggingContext(userKey to "bob", restorePrevious = false) {
+                    linkedMapOf(
+                        traceKey to MDC.get(traceKey),
+                        userKey to MDC.get(userKey),
+                    )
+                }
+
+                val valuesAfterNestedScope = linkedMapOf(
+                    traceKey to MDC.get(traceKey),
+                    userKey to MDC.get(userKey),
+                )
+
+                listOf(valuesInOuterScope, valuesInNestedScope, valuesAfterNestedScope)
+            }
+
+            assertThat(observedValues[0])
+                .containsEntry(traceKey, "inner-trace")
+                .containsEntry(userKey, "alice")
+            assertThat(observedValues[1])
+                .containsEntry(traceKey, "inner-trace")
+                .containsEntry(userKey, "bob")
+            assertThat(observedValues[2])
+                .containsEntry(traceKey, "inner-trace")
+                .containsEntry(userKey, null)
+            assertThat(MDC.get(traceKey)).isEqualTo("outer-trace")
+            assertThat(MDC.get(userKey)).isNull()
+        } finally {
+            MDC.remove(traceKey)
+            MDC.remove(userKey)
+        }
     }
 
     @Test
