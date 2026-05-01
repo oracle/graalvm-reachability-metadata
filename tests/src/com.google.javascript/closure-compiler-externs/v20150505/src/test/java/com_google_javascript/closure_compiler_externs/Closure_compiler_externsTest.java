@@ -159,6 +159,35 @@ public class Closure_compiler_externsTest {
                 .contains("function Blob(opt_blobParts, opt_options) {}");
     }
 
+    @Test
+    void storageExternsDefineWebStorageAndIndexedDbApis() throws IOException {
+        Map<String, String> externFiles = loadExternFiles();
+
+        assertThat(externFiles.get("webstorage.js"))
+                .contains("function Storage() {}")
+                .contains("Storage.prototype.key = function(index) {};")
+                .contains("Storage.prototype.getItem = function(key) {};")
+                .contains("Storage.prototype.setItem = function(key, data) {};")
+                .contains("Storage.prototype.removeItem = function(key) {};")
+                .contains("Storage.prototype.clear = function() {};")
+                .contains("Window.prototype.localStorage;")
+                .contains("Window.prototype.sessionStorage;")
+                .contains("function StorageEvent() {}");
+        assertThat(externFiles.get("w3c_indexeddb.js"))
+                .contains("function IDBFactory() {}")
+                .contains("IDBFactory.prototype.open = function(name, opt_version) {};")
+                .contains("function IDBDatabase() {}")
+                .contains("IDBDatabase.prototype.createObjectStore =")
+                .contains("IDBDatabase.prototype.transaction = function(storeNames, mode) {};")
+                .contains("function IDBObjectStore() {}")
+                .contains("IDBObjectStore.prototype.put = function(value, key) {};")
+                .contains("IDBObjectStore.prototype.createIndex = function(name, keyPath, opt_paramters) {};")
+                .contains("function IDBIndex() {}")
+                .contains("IDBIndex.prototype.openCursor = function(range, direction) {};")
+                .contains("function IDBTransaction() {}")
+                .contains("IDBTransaction.prototype.objectStore = function(name) {};");
+    }
+
     private static Map<String, String> loadExternFiles() throws IOException {
         Map<String, String> externFiles = new LinkedHashMap<>();
 
