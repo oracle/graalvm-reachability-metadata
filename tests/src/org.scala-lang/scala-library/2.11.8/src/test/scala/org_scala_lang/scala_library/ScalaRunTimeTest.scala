@@ -10,6 +10,10 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 import scala.runtime.ScalaRunTime
+import scala.xml.Elem
+import scala.xml.Null
+import scala.xml.Text
+import scala.xml.TopScope
 
 final class ScalaRunTimeTest {
   @Test
@@ -20,9 +24,11 @@ final class ScalaRunTimeTest {
   }
 
   @Test
-  def rendersScalaCollectionsWithRuntimeStringFormatting(): Unit = {
-    val rendered: String = ScalaRunTime.stringOf(List("alpha", "beta"))
+  def rendersXmlNodesWithTheirOwnStringFormatting(): Unit = {
+    val node: Elem = Elem(null, "entry", Null, TopScope, false, Text("value"))
 
-    assertThat(rendered).isEqualTo("List(alpha, beta)")
+    val rendered: String = ScalaRunTime.stringOf(node)
+
+    assertThat(rendered).isEqualTo("<entry>value</entry>")
   }
 }
