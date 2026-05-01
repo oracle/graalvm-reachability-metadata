@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
@@ -207,6 +208,27 @@ public class Kerby_utilTest {
         assertThat(hostPort.toString()).isEqualTo("127.0.0.1:65000");
         assertThat(Util.toInetAddress("127.0.0.1").getHostAddress()).isEqualTo("127.0.0.1");
         assertThatThrownBy(() -> Util.toAddress("host:88:extra", 88)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void fillPopulatesExistingBuffersAndReportsEndOfStream() throws IOException {
+        byte[] payload = new byte[] {10, 11, 12, 13, 14};
+        byte[] partialBuffer = new byte[] {99, 0, 0, 0, 0, 0, 77, 88};
+
+        int[] partialStatus = Util.fill(partialBuffer, 1, new ByteArrayInputStream(payload));
+        assertThat(partialStatus[Util.SIZE_KEY]).isEqualTo(6);
+        assertThat(partialStatus[Util.LAST_READ_KEY]).isEqualTo(-1);
+        assertThat(partialBuffer[0]).isEqualTo((byte) 99);
+        assertThat(Arrays.copyOfRange(partialBuffer, 1, 6)).isEqualTo(payload);
+        assertThat(Arrays.copyOfRange(partialBuffer, 6, partialBuffer.length)).isEqualTo(new byte[] {77, 88});
+
+        byte[] exactBuffer = new byte[4];
+        InputStream source = new ByteArrayInputStream(new byte[] {21, 22, 23, 24, 25});
+        int[] exactStatus = Util.fill(exactBuffer, 0, source);
+        assertThat(exactStatus[Util.SIZE_KEY]).isEqualTo(exactBuffer.length);
+        assertThat(exactStatus[Util.LAST_READ_KEY]).isEqualTo(exactBuffer.length);
+        assertThat(exactBuffer).isEqualTo(new byte[] {21, 22, 23, 24});
+        assertThat(source.read()).isEqualTo(25);
     }
 
     @Test
