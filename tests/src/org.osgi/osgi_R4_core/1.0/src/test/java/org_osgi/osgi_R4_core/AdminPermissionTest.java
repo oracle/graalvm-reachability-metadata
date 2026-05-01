@@ -10,6 +10,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.net.URL;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -78,6 +81,22 @@ public class AdminPermissionTest {
                 .isEqualTo(42L);
         assertThat(org_osgi.osgi_R4_core.vendor.framework.AdminPermission.lastCreatedActions)
                 .isEqualTo("execute,resource");
+    }
+
+    @Test
+    void syntheticClassAccessorResolvesNamedClass() throws Throwable {
+        MethodHandles.Lookup lookup =
+                MethodHandles.privateLookupIn(
+                        org.osgi.framework.AdminPermission.class, MethodHandles.lookup());
+        MethodHandle classAccessor =
+                lookup.findStatic(
+                        org.osgi.framework.AdminPermission.class,
+                        "class$",
+                        MethodType.methodType(Class.class, String.class));
+
+        Class<?> resolvedClass = (Class<?>) classAccessor.invoke("java.lang.String");
+
+        assertThat(resolvedClass).isEqualTo(String.class);
     }
 
     private static final class TestBundle implements Bundle {
