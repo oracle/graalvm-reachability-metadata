@@ -8,7 +8,7 @@ package io_ous.jtoml;
 
 import org.junit.jupiter.api.Test;
 
-class JtomlTest {
+public class JtomlTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
