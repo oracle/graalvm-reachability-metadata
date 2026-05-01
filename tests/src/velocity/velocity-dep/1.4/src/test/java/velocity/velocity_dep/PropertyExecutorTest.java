@@ -23,7 +23,7 @@ public class PropertyExecutorTest {
 
         Object value = executor.execute(context);
 
-        assertArrayEquals(new Object[] { "message" }, (Object[]) value);
+        assertArrayEquals(new Object[] {"message" }, (Object[]) value);
     }
 
     private static PropertyExecutor createExecutor(String property) throws Exception {

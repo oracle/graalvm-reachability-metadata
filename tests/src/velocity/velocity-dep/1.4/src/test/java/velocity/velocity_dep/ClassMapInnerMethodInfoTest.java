@@ -25,7 +25,7 @@ public class ClassMapInnerMethodInfoTest {
         Map<String, String> nonPublicMap = Collections.unmodifiableMap(values);
         ClassMap classMap = new ClassMap(nonPublicMap.getClass());
 
-        Method method = classMap.findMethod("get", new Object[] { "template" });
+        Method method = classMap.findMethod("get", new Object[] {"template" });
 
         assertNotNull(method);
         assertEquals("get", method.getName());
