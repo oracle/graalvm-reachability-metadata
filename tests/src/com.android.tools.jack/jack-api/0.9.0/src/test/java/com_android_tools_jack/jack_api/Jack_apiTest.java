@@ -213,6 +213,40 @@ public class Jack_apiTest {
     }
 
     @Test
+    void api01CompilationTaskPropagatesDeclaredFailureModes() {
+        CompilationException compilationException = new CompilationException("compile failed");
+        ConfigurationException configurationException = new ConfigurationException("bad configuration");
+        UnrecoverableException unrecoverableException = new UnrecoverableException("unrecoverable");
+        IllegalStateException illegalStateException = new IllegalStateException("task already used");
+
+        Api01CompilationTask compilationFailure = () -> {
+            throw compilationException;
+        };
+        Api01CompilationTask configurationFailure = () -> {
+            throw configurationException;
+        };
+        Api01CompilationTask unrecoverableFailure = () -> {
+            throw unrecoverableException;
+        };
+        Api01CompilationTask illegalStateFailure = () -> {
+            throw illegalStateException;
+        };
+
+        assertThatExceptionOfType(CompilationException.class)
+                .isThrownBy(compilationFailure::run)
+                .isSameAs(compilationException);
+        assertThatExceptionOfType(ConfigurationException.class)
+                .isThrownBy(configurationFailure::run)
+                .isSameAs(configurationException);
+        assertThatExceptionOfType(UnrecoverableException.class)
+                .isThrownBy(unrecoverableFailure::run)
+                .isSameAs(unrecoverableException);
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(illegalStateFailure::run)
+                .isSameAs(illegalStateException);
+    }
+
+    @Test
     void api01ConfigAcceptsAllConfigurationInputsAndExposesCompilationTask() throws Exception {
         FakeApi01Config config = new FakeApi01Config();
         ByteArrayOutputStream reporter = new ByteArrayOutputStream();
