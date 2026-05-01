@@ -21,3 +21,14 @@ test {
     forkEvery = 1
     jvmArgs '--add-opens=java.base/java.util=ALL-UNNAMED'
 }
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
