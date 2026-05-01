@@ -283,7 +283,7 @@ public class Play_build_linkTest {
         }
 
         @Override
-        public void forceReload() {}
+        public void forceReload() { }
 
         @Override
         public Map<String, String> settings() {
