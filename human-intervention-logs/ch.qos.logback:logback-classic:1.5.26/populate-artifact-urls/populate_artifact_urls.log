@@ -1,0 +1,692 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3899-1a2cc37a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de3d0-1a12-7ca0-bb3c-9fcfb75a97c6
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: ch.qos.logback:logback-classic:1.5.26
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.5.26".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3899-1a2cc37a/metadata/ch.qos.logback/logback-classic/index.json
+- Entry selector: "metadata-version" = "1.5.26"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.5.26".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.5.26/logback-classic-1.5.26-sources.jar
+- repository-url: https://github.com/qos-ch/logback
+- test-code-url: https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.5.26/logback-classic-1.5.26-test-sources.jar
+- documentation-url: https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.5.26/logback-classic-1.5.26-javadoc.jar
+- description: Logback Classic is the SLF4J implementation module of Logback, a reliable, fast, and flexible logging framework for Java. It provides the classic logging backend, configuration support, appenders, filters, and integration points used by Java applications through the SLF4J API.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.5.26
+- Entry test-version: 1.5.26
+codex
+I’ll verify the existing entry first, then only patch fields that are actually missing. Since the URLs are version-specific artifacts, I’ll also confirm the Maven/tag targets before editing.
+exec
+/usr/bin/zsh -lc "rg -n '\"metadata-version\"\\s*:\\s*\"1\\.5\\.26\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/ch.qos.logback/logback-classic/index.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3899-1a2cc37a
+exec
+/usr/bin/zsh -lc "sed -n '1,220p' metadata/ch.qos.logback/logback-classic/index.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3899-1a2cc37a
+ succeeded in 0ms:
+5:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11-sources.jar",
+6:    "repository-url" : "https://github.com/qos-ch/logback/tree/v_1.2.11",
+7:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11-test-sources.jar",
+8:    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11-javadoc.jar",
+9:    "description" : "Logback Classic is the native SLF4J implementation for the Logback logging framework in Java applications. It provides logger configuration, appenders, layouts, and filtering for routing and formatting log events.",
+20:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.1/logback-classic-1.4.1-sources.jar",
+21:    "repository-url" : "https://github.com/qos-ch/logback/tree/v_1.4.1",
+22:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.1/logback-classic-1.4.1-test-sources.jar",
+23:    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.1/logback-classic-1.4.1-javadoc.jar",
+24:    "description" : "Logback Classic is the native SLF4J implementation for the Logback logging framework in Java applications. It provides logger configuration, appenders, layouts, and filtering for routing and formatting log events.",
+35:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.9/logback-classic-1.4.9-sources.jar",
+36:    "repository-url" : "https://github.com/qos-ch/logback/tree/v_1.4.9",
+37:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.9/logback-classic-1.4.9-test-sources.jar",
+38:    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.9/logback-classic-1.4.9-javadoc.jar",
+39:    "description" : "Logback Classic is the native SLF4J implementation for the Logback logging framework in Java applications. It provides logger configuration, appenders, layouts, and filtering for routing and formatting log events.",
+62:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.7/logback-classic-1.5.7-sources.jar",
+63:    "repository-url" : "https://github.com/qos-ch/logback/tree/v_1.5.7",
+64:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.7/logback-classic-1.5.7-test-sources.jar",
+65:    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.7/logback-classic-1.5.7-javadoc.jar",
+66:    "description" : "Logback Classic is the native SLF4J implementation for the Logback logging framework in Java applications. It provides logger configuration, appenders, layouts, and filtering for routing and formatting log events.",
+98:    "metadata-version" : "1.5.26",
+99:    "source-code-url" : "https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.5.26/logback-classic-1.5.26-sources.jar",
+100:    "repository-url" : "https://github.com/qos-ch/logback",
+101:    "test-code-url" : "https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.5.26/logback-classic-1.5.26-test-sources.jar",
+102:    "documentation-url" : "https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.5.26/logback-classic-1.5.26-javadoc.jar",
+103:    "description" : "Logback Classic is the SLF4J implementation module of Logback, a reliable, fast, and flexible logging framework for Java. It provides the classic logging backend, configuration support, appenders, filters, and integration points used by Java applications through the SLF4J API.",
+
+ succeeded in 0ms:
+[
+  {
+    "default-for" : "1\\.[0-3]\\..*",
+    "metadata-version" : "1.2.11",
+    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11-sources.jar",
+    "repository-url" : "https://github.com/qos-ch/logback/tree/v_1.2.11",
+    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11-test-sources.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11-javadoc.jar",
+    "description" : "Logback Classic is the native SLF4J implementation for the Logback logging framework in Java applications. It provides logger configuration, appenders, layouts, and filtering for routing and formatting log events.",
+    "tested-versions" : [
+      "1.2.11"
+    ],
+    "allowed-packages" : [
+      "ch.qos.logback"
+    ]
+  },
+  {
+    "default-for" : "1\\.4\\.[0-8]",
+    "metadata-version" : "1.4.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.1/logback-classic-1.4.1-sources.jar",
+    "repository-url" : "https://github.com/qos-ch/logback/tree/v_1.4.1",
+    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.1/logback-classic-1.4.1-test-sources.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.1/logback-classic-1.4.1-javadoc.jar",
+    "description" : "Logback Classic is the native SLF4J implementation for the Logback logging framework in Java applications. It provides logger configuration, appenders, layouts, and filtering for routing and formatting log events.",
+    "tested-versions" : [
+      "1.4.1"
+    ],
+    "allowed-packages" : [
+      "ch.qos.logback"
+    ]
+  },
+  {
+    "metadata-version" : "1.4.9",
+    "test-version" : "1.4.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.9/logback-classic-1.4.9-sources.jar",
+    "repository-url" : "https://github.com/qos-ch/logback/tree/v_1.4.9",
+    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.9/logback-classic-1.4.9-test-sources.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.9/logback-classic-1.4.9-javadoc.jar",
+    "description" : "Logback Classic is the native SLF4J implementation for the Logback logging framework in Java applications. It provides logger configuration, appenders, layouts, and filtering for routing and formatting log events.",
+    "tested-versions" : [
+      "1.4.9",
+      "1.4.10",
+      "1.4.11",
+      "1.4.12",
+      "1.4.13",
+      "1.4.14",
+      "1.5.0",
+      "1.5.1",
+      "1.5.2",
+      "1.5.3",
+      "1.5.4",
+      "1.5.5",
+      "1.5.6"
+    ],
+    "allowed-packages" : [
+      "ch.qos.logback"
+    ]
+  },
+  {
+    "metadata-version" : "1.5.7",
+    "test-version" : "1.4.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.7/logback-classic-1.5.7-sources.jar",
+    "repository-url" : "https://github.com/qos-ch/logback/tree/v_1.5.7",
+    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.7/logback-classic-1.5.7-test-sources.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.7/logback-classic-1.5.7-javadoc.jar",
+    "description" : "Logback Classic is the native SLF4J implementation for the Logback logging framework in Java applications. It provides logger configuration, appenders, layouts, and filtering for routing and formatting log events.",
+    "tested-versions" : [
+      "1.5.7",
+      "1.5.8",
+      "1.5.9",
+      "1.5.10",
+      "1.5.11",
+      "1.5.12",
+      "1.5.13",
+      "1.5.14",
+      "1.5.15",
+      "1.5.16",
+      "1.5.17",
+      "1.5.18",
+      "1.5.19",
+      "1.5.20",
+      "1.5.21",
+      "1.5.22",
+      "1.5.23",
+      "1.5.24",
+      "1.5.25",
+      "1.5.26",
+      "1.5.27",
+      "1.5.28",
+      "1.5.29"
+    ],
+    "allowed-packages" : [
+      "ch.qos.logback"
+    ]
+  },
+  {
+    "latest" : true,
+    "metadata-version" : "1.5.26",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.5.26/logback-classic-1.5.26-sources.jar",
+    "repository-url" : "https://github.com/qos-ch/logback",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.5.26/logback-classic-1.5.26-test-sources.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.5.26/logback-classic-1.5.26-javadoc.jar",
+    "description" : "Logback Classic is the SLF4J implementation module of Logback, a reliable, fast, and flexible logging framework for Java. It provides the classic logging backend, configuration support, appenders, filters, and integration points used by Java applications through the SLF4J API.",
+    "tested-versions" : [
+      "1.5.26"
+    ],
+    "allowed-packages" : [
+      "ch.qos.logback.classic"
+    ]
+  }
+]
+
+web search: 
+web search: Maven Central ch.qos.logback logback-classic 1.5.26 sources jar test-sources jar javadoc jar
+codex
+The target `1.5.26` entry already has non-blank source, repository, test, documentation, and description values. I’m checking the selected artifact URLs and then I’ll validate whether any edit is actually allowed under the “only missing fields” rule.
+exec
+/usr/bin/zsh -lc 'curl -fsSI https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.5.26/logback-classic-1.5.26-sources.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3899-1a2cc37a
+exec
+/usr/bin/zsh -lc 'curl -fsSI https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.5.26/logback-classic-1.5.26-test-sources.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3899-1a2cc37a
+exec
+/usr/bin/zsh -lc 'curl -fsSI https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.5.26/logback-classic-1.5.26-javadoc.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3899-1a2cc37a
+exec
+/usr/bin/zsh -lc "curl -fsS https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.5.26/logback-classic-1.5.26.pom | sed -n '1,180p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3899-1a2cc37a
+ succeeded in 239ms:
+HTTP/2 200 
+date: Fri, 01 May 2026 13:53:04 GMT
+content-type: application/java-archive
+content-length: 1699530
+cf-ray: 9f4f45325cf61f09-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 239279
+etag: "53e27829f1b10834c6ca5c335a2c67f8"
+last-modified: Sun, 25 Jan 2026 17:32:13 GMT
+x-checksum-md5: 53e27829f1b10834c6ca5c335a2c67f8
+x-checksum-sha1: d57c972ec04b605f82b609808137dc24a3c088d4
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 243ms:
+HTTP/2 200 
+date: Fri, 01 May 2026 13:53:04 GMT
+content-type: application/java-archive
+content-length: 253866
+cf-ray: 9f4f45325920a8bc-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2010444
+etag: "fcfbdc842c576fca86cb282ec92f9640"
+last-modified: Sun, 25 Jan 2026 17:32:13 GMT
+x-checksum-md5: fcfbdc842c576fca86cb282ec92f9640
+x-checksum-sha1: 1b4b5bd3dec0f158d20c8d85e0bddff806674d47
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 241ms:
+HTTP/2 200 
+date: Fri, 01 May 2026 13:53:04 GMT
+content-type: application/java-archive
+content-length: 318176
+cf-ray: 9f4f45325c755165-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 133
+etag: "96d3260e73208954973cca5aeacf3d32"
+last-modified: Sun, 25 Jan 2026 17:32:13 GMT
+x-checksum-md5: 96d3260e73208954973cca5aeacf3d32
+x-checksum-sha1: 240806073512ef2a9457ce074242b159d901e88f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 251ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-parent</artifactId>
+        <version>1.5.26</version>
+    </parent>
+
+    <artifactId>logback-classic</artifactId>
+    <packaging>jar</packaging>
+    <name>Logback Classic Module</name>
+    <description>logback-classic module</description>
+
+    <properties>
+        <module-name>ch.qos.logback.classic</module-name>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <!--     <dependency>
+              <groupId>org.slf4j</groupId>
+              <artifactId>slf4j-ext</artifactId>
+              <version>${slf4j.version}</version>
+              <scope>test</scope>
+            </dependency> -->
+
+        <!--     <dependency>
+              <groupId>ch.qos.cal10n.plugins</groupId>
+              <artifactId>maven-cal10n-plugin</artifactId>
+              <version>${cal10n.version}</version>
+              <scope>test</scope>
+            </dependency> -->
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <type>test-jar</type>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Must be after log4j-over-slf4j:
+             * we want to use the classes from log4j-over-slf4j (so it must come first);
+             * we want to use log4j.dtd from log4j. -->
+        <dependency>
+            <groupId>ch.qos.reload4j</groupId>
+            <artifactId>reload4j</artifactId>
+            <version>1.2.18.4</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.mail</groupId>
+            <artifactId>jakarta.mail-api</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.activation</groupId>
+            <artifactId>jakarta.activation-api</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>angus-mail</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>janino</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.main</artifactId>
+            <version>5.6.10</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+
+            <resource>
+                <directory>src/main/java/</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>ch/qos/logback/classic/logback-classic-version.properties</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                        </manifestEntries>
+                        <manifestFile>
+                            ${project.build.outputDirectory}/META-INF/MANIFEST.MF
+                        </manifestFile>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-test-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+web search: 
+web search: 
+web search: 
+web search: Maven Central ch.qos.logback logback-classic 1.5.26 sources jar test-sources jar javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.26/
+codex
+The Maven directory confirms all three exact-version artifacts exist: sources, test-sources, and javadoc. The missing `language` field should stay absent because this artifact is a Java logging library, not a Kotlin/Groovy/Scala-specific library under the requested schema.
+exec
+/usr/bin/zsh -lc 'jq empty metadata/ch.qos.logback/logback-classic/index.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3899-1a2cc37a
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc 'git diff -- metadata/ch.qos.logback/logback-classic/index.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3899-1a2cc37a
+ succeeded in 0ms:
+diff --git a/metadata/ch.qos.logback/logback-classic/index.json b/metadata/ch.qos.logback/logback-classic/index.json
+index 04958c5c..f99c3739 100644
+--- a/metadata/ch.qos.logback/logback-classic/index.json
++++ b/metadata/ch.qos.logback/logback-classic/index.json
+@@ -1,37 +1,29 @@
+ [
+   {
+-    "latest" : true,
+-    "metadata-version" : "1.5.7",
+-    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.7/logback-classic-1.5.7-sources.jar",
+-    "repository-url" : "https://github.com/qos-ch/logback/tree/v_1.5.7",
+-    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.7/logback-classic-1.5.7-test-sources.jar",
+-    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.7/logback-classic-1.5.7-javadoc.jar",
++    "default-for" : "1\\.[0-3]\\..*",
++    "metadata-version" : "1.2.11",
++    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/logback/tree/v_1.2.11",
++    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11-test-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11-javadoc.jar",
+     "description" : "Logback Classic is the native SLF4J implementation for the Logback logging framework in Java applications. It provides logger configuration, appenders, layouts, and filtering for routing and formatting log events.",
+-    "test-version" : "1.4.1",
+     "tested-versions" : [
+-      "1.5.7",
+-      "1.5.8",
+-      "1.5.9",
+-      "1.5.10",
+-      "1.5.11",
+-      "1.5.12",
+-      "1.5.13",
+-      "1.5.14",
+-      "1.5.15",
+-      "1.5.16",
+-      "1.5.17",
+-      "1.5.18",
+-      "1.5.19",
+-      "1.5.20",
+-      "1.5.21",
+-      "1.5.22",
+-      "1.5.23",
+-      "1.5.24",
+-      "1.5.25",
+-      "1.5.26",
+-      "1.5.27",
+-      "1.5.28",
+-      "1.5.29"
++      "1.2.11"
++    ],
++    "allowed-packages" : [
++      "ch.qos.logback"
++    ]
++  },
++  {
++    "default-for" : "1\\.4\\.[0-8]",
++    "metadata-version" : "1.4.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.1/logback-classic-1.4.1-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/logback/tree/v_1.4.1",
++    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.1/logback-classic-1.4.1-test-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.1/logback-classic-1.4.1-javadoc.jar",
++    "description" : "Logback Classic is the native SLF4J implementation for the Logback logging framework in Java applications. It provides logger configuration, appenders, layouts, and filtering for routing and formatting log events.",
++    "tested-versions" : [
++      "1.4.1"
+     ],
+     "allowed-packages" : [
+       "ch.qos.logback"
+@@ -39,12 +31,12 @@
+   },
+   {
+     "metadata-version" : "1.4.9",
++    "test-version" : "1.4.1",
+     "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.9/logback-classic-1.4.9-sources.jar",
+     "repository-url" : "https://github.com/qos-ch/logback/tree/v_1.4.9",
+     "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.9/logback-classic-1.4.9-test-sources.jar",
+     "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.9/logback-classic-1.4.9-javadoc.jar",
+     "description" : "Logback Classic is the native SLF4J implementation for the Logback logging framework in Java applications. It provides logger configuration, appenders, layouts, and filtering for routing and formatting log events.",
+-    "test-version" : "1.4.1",
+     "tested-versions" : [
+       "1.4.9",
+       "1.4.10",
+@@ -65,33 +57,55 @@
+     ]
+   },
+   {
+-    "default-for" : "1\\.4\\.[0-8]",
+-    "metadata-version" : "1.4.1",
+-    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.1/logback-classic-1.4.1-sources.jar",
+-    "repository-url" : "https://github.com/qos-ch/logback/tree/v_1.4.1",
+-    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.1/logback-classic-1.4.1-test-sources.jar",
+-    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.1/logback-classic-1.4.1-javadoc.jar",
++    "metadata-version" : "1.5.7",
++    "test-version" : "1.4.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.7/logback-classic-1.5.7-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/logback/tree/v_1.5.7",
++    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.7/logback-classic-1.5.7-test-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.7/logback-classic-1.5.7-javadoc.jar",
+     "description" : "Logback Classic is the native SLF4J implementation for the Logback logging framework in Java applications. It provides logger configuration, appenders, layouts, and filtering for routing and formatting log events.",
+     "tested-versions" : [
+-      "1.4.1"
++      "1.5.7",
++      "1.5.8",
++      "1.5.9",
++      "1.5.10",
++      "1.5.11",
++      "1.5.12",
++      "1.5.13",
++      "1.5.14",
++      "1.5.15",
++      "1.5.16",
++      "1.5.17",
++      "1.5.18",
++      "1.5.19",
++      "1.5.20",
++      "1.5.21",
++      "1.5.22",
++      "1.5.23",
++      "1.5.24",
++      "1.5.25",
++      "1.5.26",
++      "1.5.27",
++      "1.5.28",
++      "1.5.29"
+     ],
+     "allowed-packages" : [
+       "ch.qos.logback"
+     ]
+   },
+   {
+-    "default-for" : "1\\.[0-3]\\..*",
+-    "metadata-version" : "1.2.11",
+-    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11-sources.jar",
+-    "repository-url" : "https://github.com/qos-ch/logback/tree/v_1.2.11",
+-    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11-test-sources.jar",
+-    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11-javadoc.jar",
+-    "description" : "Logback Classic is the native SLF4J implementation for the Logback logging framework in Java applications. It provides logger configuration, appenders, layouts, and filtering for routing and formatting log events.",
++    "latest" : true,
++    "metadata-version" : "1.5.26",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.5.26/logback-classic-1.5.26-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/logback",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.5.26/logback-classic-1.5.26-test-sources.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.5.26/logback-classic-1.5.26-javadoc.jar",
++    "description" : "Logback Classic is the SLF4J implementation module of Logback, a reliable, fast, and flexible logging framework for Java. It provides the classic logging backend, configuration support, appenders, filters, and integration points used by Java applications through the SLF4J API.",
+     "tested-versions" : [
+-      "1.2.11"
++      "1.5.26"
+     ],
+     "allowed-packages" : [
+-      "ch.qos.logback"
++      "ch.qos.logback.classic"
+     ]
+   }
+ ]
+
+exec
+/usr/bin/zsh -lc "nl -ba metadata/ch.qos.logback/logback-classic/index.json | sed -n '92,112p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3899-1a2cc37a
+ succeeded in 0ms:
+    92	    "allowed-packages" : [
+    93	      "ch.qos.logback"
+    94	    ]
+    95	  },
+    96	  {
+    97	    "latest" : true,
+    98	    "metadata-version" : "1.5.26",
+    99	    "source-code-url" : "https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.5.26/logback-classic-1.5.26-sources.jar",
+   100	    "repository-url" : "https://github.com/qos-ch/logback",
+   101	    "test-code-url" : "https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.5.26/logback-classic-1.5.26-test-sources.jar",
+   102	    "documentation-url" : "https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.5.26/logback-classic-1.5.26-javadoc.jar",
+   103	    "description" : "Logback Classic is the SLF4J implementation module of Logback, a reliable, fast, and flexible logging framework for Java. It provides the classic logging backend, configuration support, appenders, filters, and integration points used by Java applications through the SLF4J API.",
+   104	    "tested-versions" : [
+   105	      "1.5.26"
+   106	    ],
+   107	    "allowed-packages" : [
+   108	      "ch.qos.logback.classic"
+   109	    ]
+   110	  }
+   111	]
+
+exec
+/usr/bin/zsh -lc 'git status --short -- metadata/ch.qos.logback/logback-classic/index.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3899-1a2cc37a
+ succeeded in 0ms:
+ M metadata/ch.qos.logback/logback-classic/index.json
+
+web search: 
+web search: site:mvnrepository.com/artifact/ch.qos.logback/logback-classic/1.5.26
+web search: 
+web search: https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.26/
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org ch/qos/logback/logback-parent/1.5.26/logback-parent-1.5.26.pom scm github qos-ch logback
+web search: 
+web search: https://github.com/qos-ch/logback
+codex
+No file edit was necessary. The `1.5.26` entry in [index.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3899-1a2cc37a/metadata/ch.qos.logback/logback-classic/index.json:98) already had non-blank values for `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description`; `language` is correctly absent because `logback-classic` is a Java logging library, not a Kotlin/Groovy/Scala-specific artifact. Maven Central lists the exact `1.5.26` sources, test-sources, and javadoc artifacts, and GitHub identifies the canonical repo as `qos-ch/logback`. ([repo1.maven.org](https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.26/))
+
+Validated JSON with `jq empty`. The file is already modified in the worktree from prior changes, but I did not add any new diff.
+2026-05-01T13:53:46.937225Z ERROR codex_core::session: failed to record rollout items: thread 019de3d0-1a12-7ca0-bb3c-9fcfb75a97c6 not found
+tokens used
+48,627
+No file edit was necessary. The `1.5.26` entry in [index.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3899-1a2cc37a/metadata/ch.qos.logback/logback-classic/index.json:98) already had non-blank values for `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description`; `language` is correctly absent because `logback-classic` is a Java logging library, not a Kotlin/Groovy/Scala-specific artifact. Maven Central lists the exact `1.5.26` sources, test-sources, and javadoc artifacts, and GitHub identifies the canonical repo as `qos-ch/logback`. ([repo1.maven.org](https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.26/))
+
+Validated JSON with `jq empty`. The file is already modified in the worktree from prior changes, but I did not add any new diff.
+Ran agent for ch.qos.logback:logback-classic:1.5.26 (exit 0). Log: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3899-1a2cc37a/build/agent-url-discovery-logs/ch.qos.logback-logback-classic-1.5.26.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3899-1a2cc37a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 10s
+9 actionable tasks: 1 executed, 8 up-to-date
