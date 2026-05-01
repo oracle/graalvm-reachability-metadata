@@ -15,6 +15,9 @@ import com.diffplug.common.swt.os.Arch;
 import com.diffplug.common.swt.os.OS;
 import com.diffplug.common.swt.os.SwtPlatform;
 import com.diffplug.common.swt.os.WS;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -189,6 +192,21 @@ public class Durian_swt_osTest {
                 .isThrownBy(unknownPlatform::toOS)
                 .withMessage("No known OS matches this platform: custom.os.arch");
         assertThatThrownBy(unknownPlatform::getWuffString).isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void commandLineEntryPointPrintsDetectedNativeAndRunningOperatingSystems() {
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try (PrintStream capture = new PrintStream(output, true, StandardCharsets.UTF_8)) {
+            System.setOut(capture);
+            OS.main(new String[0]);
+        } finally {
+            System.setOut(originalOut);
+        }
+
+        String[] lines = output.toString(StandardCharsets.UTF_8).strip().split("\\R");
+        assertThat(lines).containsExactly("native=" + OS.getNative(), "running=" + OS.getRunning());
     }
 
     @Test
