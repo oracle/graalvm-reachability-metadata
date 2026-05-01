@@ -196,6 +196,31 @@ public class Org_osgi_namespace_implementationTest {
     }
 
     @Test
+    void substringFiltersCanMatchArbitraryImplementationAttributes() throws Exception {
+        SyntheticResource resource = new SyntheticResource();
+        Capability standaloneJaxRs = resource.addImplementationCapability(
+                JAX_RS_IMPLEMENTATION,
+                "1.0.0",
+                Map.of(PROFILE_ATTRIBUTE, "jaxrs-whiteboard", DISTRIBUTION_ATTRIBUTE, "standalone-runtime"));
+        resource.addImplementationCapability(
+                JAX_RS_IMPLEMENTATION,
+                "1.0.0",
+                Map.of(PROFILE_ATTRIBUTE, "jta-bridge", DISTRIBUTION_ATTRIBUTE, "standalone-runtime"));
+        resource.addImplementationCapability(
+                HTTP_WHITEBOARD_IMPLEMENTATION,
+                "1.1.0",
+                Map.of(PROFILE_ATTRIBUTE, "servlet-whiteboard", DISTRIBUTION_ATTRIBUTE, "standalone-runtime"));
+        Requirement requirement = resource.addRequirement(
+                ImplementationNamespace.IMPLEMENTATION_NAMESPACE,
+                Map.of(Namespace.REQUIREMENT_FILTER_DIRECTIVE,
+                        "(&(" + ImplementationNamespace.IMPLEMENTATION_NAMESPACE + "=" + JAX_RS_IMPLEMENTATION + ")(" +
+                                PROFILE_ATTRIBUTE + "=jaxrs-*)(" + DISTRIBUTION_ATTRIBUTE + "=*runtime))"),
+                Map.of());
+
+        assertThat(implementationCapabilitiesMatchingFilter(resource, requirement)).containsExactly(standaloneJaxRs);
+    }
+
+    @Test
     void qualifiedImplementationVersionParticipatesInVersionRangeSelection() {
         SyntheticResource resource = new SyntheticResource();
         resource.addImplementationCapability(TRANSACTION_IMPLEMENTATION, "1.0.0", Map.of());
@@ -282,8 +307,17 @@ public class Org_osgi_namespace_implementationTest {
             Requirement requirement) throws Exception {
         Filter filter = FrameworkUtil.createFilter(requirement.getDirectives().get(Namespace.REQUIREMENT_FILTER_DIRECTIVE));
         return resource.getCapabilities(requirement.getNamespace()).stream()
-                .filter(capability -> filter.matches(capability.getAttributes()))
+                .filter(capability -> filter.matches(filterAttributes(capability)))
                 .collect(Collectors.toList());
+    }
+
+    private static Map<String, ?> filterAttributes(Capability capability) {
+        Map<String, Object> attributes = new LinkedHashMap<>(capability.getAttributes());
+        Object version = attributes.get(ImplementationNamespace.CAPABILITY_VERSION_ATTRIBUTE);
+        if (version instanceof Version) {
+            attributes.put(ImplementationNamespace.CAPABILITY_VERSION_ATTRIBUTE, version.toString());
+        }
+        return attributes;
     }
 
     private static Capability highestVersion(List<Capability> capabilities) {
