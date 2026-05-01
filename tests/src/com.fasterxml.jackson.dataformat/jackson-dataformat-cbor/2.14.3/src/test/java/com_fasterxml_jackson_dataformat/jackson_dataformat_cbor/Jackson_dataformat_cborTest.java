@@ -211,6 +211,54 @@ public class Jackson_dataformat_cborTest {
     }
 
     @Test
+    void streamingGeneratorWritesPrimitiveArraysInBulkWithOffsets() throws Exception {
+        CBORFactory factory = new CBORFactory();
+        int[] counts = new int[] {99, 3, 5, 8, 99};
+        long[] timestamps = new long[] {1_700_000_001L, 1_700_000_002L, 1_700_000_003L};
+        double[] ratios = new double[] {-1.0d, 0.25d, 0.5d, 1.0d};
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        try (CBORGenerator generator = factory.createGenerator(output)) {
+            generator.writeStartObject();
+            generator.writeFieldName("counts");
+            generator.writeArray(counts, 1, 3);
+            generator.writeFieldName("timestamps");
+            generator.writeArray(timestamps, 0, 2);
+            generator.writeFieldName("ratios");
+            generator.writeArray(ratios, 1, 2);
+            generator.writeEndObject();
+        }
+
+        try (CBORParser parser = factory.createParser(output.toByteArray())) {
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.START_OBJECT);
+
+            assertThat(parser.nextFieldName()).isEqualTo("counts");
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.START_ARRAY);
+            assertThat(parser.nextIntValue(-1)).isEqualTo(3);
+            assertThat(parser.nextIntValue(-1)).isEqualTo(5);
+            assertThat(parser.nextIntValue(-1)).isEqualTo(8);
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.END_ARRAY);
+
+            assertThat(parser.nextFieldName()).isEqualTo("timestamps");
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.START_ARRAY);
+            assertThat(parser.nextLongValue(-1L)).isEqualTo(1_700_000_001L);
+            assertThat(parser.nextLongValue(-1L)).isEqualTo(1_700_000_002L);
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.END_ARRAY);
+
+            assertThat(parser.nextFieldName()).isEqualTo("ratios");
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.START_ARRAY);
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.VALUE_NUMBER_FLOAT);
+            assertThat(parser.getDoubleValue()).isEqualTo(0.25d);
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.VALUE_NUMBER_FLOAT);
+            assertThat(parser.getDoubleValue()).isEqualTo(0.5d);
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.END_ARRAY);
+
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.END_OBJECT);
+            assertThat(parser.nextToken()).isNull();
+        }
+    }
+
+    @Test
     void cborTagsArePreservedForTaggedScalarValues() throws Exception {
         CBORFactory factory = new CBORFactory();
         String uuid = "f81d4fae-7dec-11d0-a765-00a0c91e6bf6";
