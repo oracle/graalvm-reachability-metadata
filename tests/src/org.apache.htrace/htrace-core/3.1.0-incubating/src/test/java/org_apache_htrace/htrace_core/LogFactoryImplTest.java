@@ -16,6 +16,7 @@ import org.apache.htrace.commons.logging.impl.LogFactoryImpl;
 import org.apache.htrace.commons.logging.impl.NoOpLog;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.TestAbortedException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -38,6 +39,11 @@ public class LogFactoryImplTest {
             LogFactory factory = LogFactory.getFactory();
 
             assertThat(factory.getClass().getName()).isEqualTo(LogFactoryImpl.class.getName());
+            if (isNativeImageRuntime() && factory.getClass().getClassLoader() != classLoader) {
+                throw new TestAbortedException(
+                        "Native image runtime does not support reloading application classes via URLClassLoader"
+                );
+            }
             assertThat(factory.getClass().getClassLoader()).isSameAs(classLoader);
         } catch (Error error) {
             rethrowUnlessUnsupportedFeature(error);
@@ -109,6 +115,10 @@ public class LogFactoryImplTest {
         if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
             throw error;
         }
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static final class ReloadingLogFactoryClassLoader extends URLClassLoader {
