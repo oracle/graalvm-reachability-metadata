@@ -129,6 +129,36 @@ public class Jjwt_implTest {
     }
 
     @Test
+    void customCompressionCodecResolverInflatesSignedClaimsJwt() {
+        CompressionCodec codec = new ReversingCompressionCodec();
+        SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        String jws = Jwts.builder()
+                .serializeToJsonWith(JSON)
+                .setSubject("custom-compression")
+                .claim("departments", List.of("engineering", "support"))
+                .compressWith(codec)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        Jws<Claims> parsed = parserBuilder()
+                .setCompressionCodecResolver(header -> {
+                    assertThat(header.getCompressionAlgorithm()).isEqualTo(codec.getAlgorithmName());
+                    return codec;
+                })
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(jws);
+
+        Object departments = parsed.getBody().get("departments");
+        assertThat(parsed.getHeader().getCompressionAlgorithm()).isEqualTo(codec.getAlgorithmName());
+        assertThat(parsed.getBody().getSubject()).isEqualTo("custom-compression");
+        assertThat(departments).isInstanceOf(List.class);
+        assertThat((List<?>) departments).hasSize(2);
+        assertThat(((List<?>) departments).get(0)).isEqualTo("engineering");
+        assertThat(((List<?>) departments).get(1)).isEqualTo("support");
+    }
+
+    @Test
     void hmacRsaAndEllipticCurveSignaturesAreVerifiedWithMatchingKeys() {
         Stream.of(SignatureAlgorithm.HS256, SignatureAlgorithm.HS384, SignatureAlgorithm.HS512).forEach(algorithm -> {
             SecretKey key = Keys.secretKeyFor(algorithm);
@@ -254,6 +284,35 @@ public class Jjwt_implTest {
 
     private static JwtParserBuilder parserBuilder() {
         return Jwts.parserBuilder().deserializeJsonWith(JSON);
+    }
+
+    private static final class ReversingCompressionCodec implements CompressionCodec {
+        private static final String ALGORITHM_NAME = "REV";
+
+        @Override
+        public String getAlgorithmName() {
+            return ALGORITHM_NAME;
+        }
+
+        @Override
+        public byte[] compress(byte[] bytes) {
+            return reverse(bytes);
+        }
+
+        @Override
+        public byte[] decompress(byte[] bytes) {
+            return reverse(bytes);
+        }
+
+        private static byte[] reverse(byte[] bytes) {
+            byte[] reversed = bytes.clone();
+            for (int left = 0, right = reversed.length - 1; left < right; left++, right--) {
+                byte value = reversed[left];
+                reversed[left] = reversed[right];
+                reversed[right] = value;
+            }
+            return reversed;
+        }
     }
 
     private static final class SimpleJsonCodec implements Serializer<Map<String, ?>>, Deserializer<Map<String, ?>> {
