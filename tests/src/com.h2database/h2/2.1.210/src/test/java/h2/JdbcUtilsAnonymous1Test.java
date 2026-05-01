@@ -19,6 +19,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class JdbcUtilsAnonymous1Test {
     @Test
+    void resolvesSerializedClassWithContextClassLoader() {
+        assertThat(SysProperties.USE_THREAD_CONTEXT_CLASS_LOADER).isTrue();
+        List<String> payload = new ArrayList<String>(Arrays.asList("gamma", "delta"));
+        JavaObjectSerializer configuredSerializer = JdbcUtils.serializer;
+        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+
+        JdbcUtils.serializer = null;
+        try {
+            byte[] serialized = JdbcUtils.serialize(payload, null);
+
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+            Object decoded = JdbcUtils.deserialize(serialized, null);
+
+            assertThat(decoded).isEqualTo(payload);
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+            JdbcUtils.serializer = configuredSerializer;
+        }
+    }
+
+    @Test
     void fallsBackToObjectInputStreamWhenContextClassLoaderRejectsSerializedClass() {
         assertThat(SysProperties.USE_THREAD_CONTEXT_CLASS_LOADER).isTrue();
         List<String> payload = new ArrayList<String>(Arrays.asList("alpha", "beta"));
