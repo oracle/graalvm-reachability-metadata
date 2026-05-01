@@ -25,6 +25,7 @@ import com.sun.xml.xsom.XSSchema;
 import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSTerm;
+import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSUnionSimpleType;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.XmlString;
@@ -261,6 +262,70 @@ public class XsomTest {
         XSElementDecl importedAddress = shippingChildren.getChild(1).getTerm().asElementDecl();
         assertThat(importedAddress.getTargetNamespace()).isEqualTo(EXTERNAL_NS);
         assertThat(importedAddress.getName()).isEqualTo("address");
+    }
+
+    @Test
+    void exposesSubstitutionGroupsAndDerivedComplexTypes() throws Exception {
+        XSSchemaSet schemaSet = parseSingleSchema("memory:/animals.xsd", """
+                <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                           xmlns:tns="urn:shop"
+                           targetNamespace="urn:shop"
+                           elementFormDefault="qualified">
+                  <xs:complexType name="AnimalType">
+                    <xs:sequence>
+                      <xs:element name="name" type="xs:string"/>
+                    </xs:sequence>
+                  </xs:complexType>
+                  <xs:complexType name="DogType">
+                    <xs:complexContent>
+                      <xs:extension base="tns:AnimalType">
+                        <xs:sequence>
+                          <xs:element name="barkVolume" type="xs:int"/>
+                        </xs:sequence>
+                        <xs:attribute name="breed" type="xs:string"/>
+                      </xs:extension>
+                    </xs:complexContent>
+                  </xs:complexType>
+                  <xs:complexType name="CatType">
+                    <xs:complexContent>
+                      <xs:extension base="tns:AnimalType">
+                        <xs:sequence>
+                          <xs:element name="lives" type="xs:int"/>
+                        </xs:sequence>
+                      </xs:extension>
+                    </xs:complexContent>
+                  </xs:complexType>
+                  <xs:element name="animal" type="tns:AnimalType" abstract="true"/>
+                  <xs:element name="dog" type="tns:DogType" substitutionGroup="tns:animal"/>
+                  <xs:element name="cat" type="tns:CatType" substitutionGroup="tns:animal"/>
+                </xs:schema>
+                """);
+
+        XSElementDecl animal = schemaSet.getElementDecl(SHOP_NS, "animal");
+        XSElementDecl dog = schemaSet.getElementDecl(SHOP_NS, "dog");
+        XSElementDecl cat = schemaSet.getElementDecl(SHOP_NS, "cat");
+        assertThat(animal.isAbstract()).isTrue();
+        assertThat(animal.getSubstAffiliation()).isNull();
+        assertThat(dog.getSubstAffiliation()).isSameAs(animal);
+        assertThat(cat.getSubstAffiliation()).isSameAs(animal);
+        assertThat(animal.canBeSubstitutedBy(dog)).isTrue();
+        assertThat(animal.canBeSubstitutedBy(cat)).isTrue();
+        assertThat(dog.canBeSubstitutedBy(animal)).isFalse();
+        assertThat(animal.listSubstitutables()).contains(animal, dog, cat);
+        assertThat(animal.getSubstitutables())
+                .extracting(XSElementDecl::getName)
+                .contains("animal", "dog", "cat");
+
+        XSComplexType animalType = schemaSet.getComplexType(SHOP_NS, "AnimalType");
+        XSComplexType dogType = schemaSet.getComplexType(SHOP_NS, "DogType");
+        XSComplexType catType = schemaSet.getComplexType(SHOP_NS, "CatType");
+        assertThat(dogType.getBaseType()).isSameAs(animalType);
+        assertThat(dogType.getDerivationMethod()).isEqualTo(XSType.EXTENSION);
+        assertThat(dogType.isDerivedFrom(animalType)).isTrue();
+        assertThat(catType.isDerivedFrom(animalType)).isTrue();
+        assertThat(animalType.getSubtypes()).contains(dogType, catType);
+        assertThat(dogType.getElementDecls()).contains(dog);
+        assertThat(catType.getElementDecls()).contains(cat);
     }
 
     @Test
