@@ -1,0 +1,675 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a
+model: gpt-5.4
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de2ce-a825-7682-ac6d-c2ff4e7c6048
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.ow2.asm:asm-commons:9.8
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "9.8".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json
+- Set "coordinates" to "org.ow2.asm:asm-commons:9.8".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’m checking the existing metadata shape and nearby examples first, then I’ll verify the exact 9.8 source/test/doc URLs before patching the JSON.
+exec
+/usr/bin/zsh -lc "sed -n '1,220p' build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a
+ succeeded in 0ms:
+{
+  "coordinates" : "org.ow2.asm:asm-commons:9.8"
+}
+
+exec
+/usr/bin/zsh -lc "rg -n 'org\\.ow2\\.asm|asm-commons|source-code-url|test-code-url|documentation-url' build/discovered-artifact-metadata metadata-library-tests -g '*.json' -g '*.java' -g '*.kt'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a
+ exited 2 in 0ms:
+rg: metadata-library-tests: No such file or directory (os error 2)
+build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json:2:  "coordinates" : "org.ow2.asm:asm-commons:9.8"
+
+web search: 
+web search: Maven Central org.ow2.asm asm-commons 9.8 sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.8
+web search: 
+web search: 
+web search: 
+web search: site:gitlab.ow2.org asm 9.8 tag
+web search: 
+web search: site:gitlab.ow2.org/asm/asm/-/tree ASM_9_8 asm
+codex
+I found the Maven Central 9.8 artifacts already. Next I’m pulling the published POM and the upstream tag information so the repo, test, and doc links are pinned to the correct release rather than guessed.
+exec
+/usr/bin/zsh -lc "git ls-remote --tags https://gitlab.ow2.org/asm/asm.git | rg 'ASM_9_8|9\\.8'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.8/asm-commons-9.8.pom' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.ow2.asm</groupId>
+  <artifactId>asm-commons</artifactId>
+  <version>9.8</version>
+  <name>asm-commons</name>
+  <description>Usefull class adapters based on ASM, a very small and fast Java bytecode manipulation framework</description>
+  <url>http://asm.ow2.io/</url>
+  <inceptionYear>2000</inceptionYear>
+  <organization>
+    <name>OW2</name>
+    <url>http://www.ow2.org/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>BSD-3-Clause</name>
+      <url>https://asm.ow2.io/license.html</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>ebruneton</id>
+      <name>Eric Bruneton</name>
+      <email>ebruneton@free.fr</email>
+      <roles>
+        <role>Creator</role>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>eu</id>
+      <name>Eugene Kuleshov</name>
+      <email>eu@javatx.org</email>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>forax</id>
+      <name>Remi Forax</name>
+      <email>forax@univ-mlv.fr</email>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <mailingLists>
+    <mailingList>
+      <name>ASM Users List</name>
+      <subscribe>https://mail.ow2.org/wws/subscribe/asm</subscribe>
+      <post>asm@objectweb.org</post>
+      <archive>https://mail.ow2.org/wws/arc/asm/</archive>
+    </mailingList>
+    <mailingList>
+      <name>ASM Team List</name>
+      <subscribe>https://mail.ow2.org/wws/subscribe/asm-team</subscribe>
+      <post>asm-team@objectweb.org</post>
+      <archive>https://mail.ow2.org/wws/arc/asm-team/</archive>
+    </mailingList>
+  </mailingLists>
+  <scm>
+    <connection>scm:git:https://gitlab.ow2.org/asm/asm/</connection>
+    <developerConnection>scm:git:https://gitlab.ow2.org/asm/asm/</developerConnection>
+    <url>https://gitlab.ow2.org/asm/asm/</url>
+  </scm>
+  <issueManagement>
+    <url>https://gitlab.ow2.org/asm/asm/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>9.8</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-tree</artifactId>
+      <version>9.8</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+  <parent>
+    <groupId>org.ow2</groupId>
+    <artifactId>ow2</artifactId>
+    <version>1.5.1</version>
+  </parent>
+</project>
+
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.8/' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/ow2/asm/asm-commons/9.8</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/ow2/asm/asm-commons/9.8</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="asm-commons-9.8-javadoc.jar" title="asm-commons-9.8-javadoc.jar">asm-commons-9.8-javadoc.jar</a>                       2025-03-29 15:13    214889      
+<a href="asm-commons-9.8-javadoc.jar.asc" title="asm-commons-9.8-javadoc.jar.asc">asm-commons-9.8-javadoc.jar.asc</a>                   2025-03-29 15:13       475      
+<a href="asm-commons-9.8-javadoc.jar.asc.md5" title="asm-commons-9.8-javadoc.jar.asc.md5">asm-commons-9.8-javadoc.jar.asc.md5</a>               2025-03-29 15:13        32      
+<a href="asm-commons-9.8-javadoc.jar.asc.sha1" title="asm-commons-9.8-javadoc.jar.asc.sha1">asm-commons-9.8-javadoc.jar.asc.sha1</a>              2025-03-29 15:13        40      
+<a href="asm-commons-9.8-javadoc.jar.asc.sha256" title="asm-commons-9.8-javadoc.jar.asc.sha256">asm-commons-9.8-javadoc.jar.asc.sha256</a>            2025-03-29 15:13        64      
+<a href="asm-commons-9.8-javadoc.jar.asc.sha512" title="asm-commons-9.8-javadoc.jar.asc.sha512">asm-commons-9.8-javadoc.jar.asc.sha512</a>            2025-03-29 15:13       128      
+<a href="asm-commons-9.8-javadoc.jar.md5" title="asm-commons-9.8-javadoc.jar.md5">asm-commons-9.8-javadoc.jar.md5</a>                   2025-03-29 15:13        32      
+<a href="asm-commons-9.8-javadoc.jar.sha1" title="asm-commons-9.8-javadoc.jar.sha1">asm-commons-9.8-javadoc.jar.sha1</a>                  2025-03-29 15:13        40      
+<a href="asm-commons-9.8-javadoc.jar.sha256" title="asm-commons-9.8-javadoc.jar.sha256">asm-commons-9.8-javadoc.jar.sha256</a>                2025-03-29 15:13        64      
+<a href="asm-commons-9.8-javadoc.jar.sha512" title="asm-commons-9.8-javadoc.jar.sha512">asm-commons-9.8-javadoc.jar.sha512</a>                2025-03-29 15:13       128      
+<a href="asm-commons-9.8-sources.jar" title="asm-commons-9.8-sources.jar">asm-commons-9.8-sources.jar</a>                       2025-03-29 15:13     82983      
+<a href="asm-commons-9.8-sources.jar.asc" title="asm-commons-9.8-sources.jar.asc">asm-commons-9.8-sources.jar.asc</a>                   2025-03-29 15:13       475      
+<a href="asm-commons-9.8-sources.jar.asc.md5" title="asm-commons-9.8-sources.jar.asc.md5">asm-commons-9.8-sources.jar.asc.md5</a>               2025-03-29 15:13        32      
+<a href="asm-commons-9.8-sources.jar.asc.sha1" title="asm-commons-9.8-sources.jar.asc.sha1">asm-commons-9.8-sources.jar.asc.sha1</a>              2025-03-29 15:13        40      
+<a href="asm-commons-9.8-sources.jar.asc.sha256" title="asm-commons-9.8-sources.jar.asc.sha256">asm-commons-9.8-sources.jar.asc.sha256</a>            2025-03-29 15:13        64      
+<a href="asm-commons-9.8-sources.jar.asc.sha512" title="asm-commons-9.8-sources.jar.asc.sha512">asm-commons-9.8-sources.jar.asc.sha512</a>            2025-03-29 15:13       128      
+<a href="asm-commons-9.8-sources.jar.md5" title="asm-commons-9.8-sources.jar.md5">asm-commons-9.8-sources.jar.md5</a>                   2025-03-29 15:13        32      
+<a href="asm-commons-9.8-sources.jar.sha1" title="asm-commons-9.8-sources.jar.sha1">asm-commons-9.8-sources.jar.sha1</a>                  2025-03-29 15:13        40      
+<a href="asm-commons-9.8-sources.jar.sha256" title="asm-commons-9.8-sources.jar.sha256">asm-commons-9.8-sources.jar.sha256</a>                2025-03-29 15:13        64      
+<a href="asm-commons-9.8-sources.jar.sha512" title="asm-commons-9.8-sources.jar.sha512">asm-commons-9.8-sources.jar.sha512</a>                2025-03-29 15:13       128      
+<a href="asm-commons-9.8.jar" title="asm-commons-9.8.jar">asm-commons-9.8.jar</a>                               2025-03-29 15:13     73498      
+<a href="asm-commons-9.8.jar.asc" title="asm-commons-9.8.jar.asc">asm-commons-9.8.jar.asc</a>                           2025-03-29 15:13       475      
+<a href="asm-commons-9.8.jar.asc.md5" title="asm-commons-9.8.jar.asc.md5">asm-commons-9.8.jar.asc.md5</a>                       2025-03-29 15:13        32      
+<a href="asm-commons-9.8.jar.asc.sha1" title="asm-commons-9.8.jar.asc.sha1">asm-commons-9.8.jar.asc.sha1</a>                      2025-03-29 15:13        40      
+<a href="asm-commons-9.8.jar.asc.sha256" title="asm-commons-9.8.jar.asc.sha256">asm-commons-9.8.jar.asc.sha256</a>                    2025-03-29 15:13        64      
+<a href="asm-commons-9.8.jar.asc.sha512" title="asm-commons-9.8.jar.asc.sha512">asm-commons-9.8.jar.asc.sha512</a>                    2025-03-29 15:13       128      
+<a href="asm-commons-9.8.jar.md5" title="asm-commons-9.8.jar.md5">asm-commons-9.8.jar.md5</a>                           2025-03-29 15:13        32      
+<a href="asm-commons-9.8.jar.sha1" title="asm-commons-9.8.jar.sha1">asm-commons-9.8.jar.sha1</a>                          2025-03-29 15:13        40      
+<a href="asm-commons-9.8.jar.sha256" title="asm-commons-9.8.jar.sha256">asm-commons-9.8.jar.sha256</a>                        2025-03-29 15:13        64      
+<a href="asm-commons-9.8.jar.sha512" title="asm-commons-9.8.jar.sha512">asm-commons-9.8.jar.sha512</a>                        2025-03-29 15:13       128      
+<a href="asm-commons-9.8.pom" title="asm-commons-9.8.pom">asm-commons-9.8.pom</a>                               2025-03-29 15:13      2788      
+<a href="asm-commons-9.8.pom.asc" title="asm-commons-9.8.pom.asc">asm-commons-9.8.pom.asc</a>                           2025-03-29 15:13       475      
+<a href="asm-commons-9.8.pom.asc.md5" title="asm-commons-9.8.pom.asc.md5">asm-commons-9.8.pom.asc.md5</a>                       2025-03-29 15:13        32      
+<a href="asm-commons-9.8.pom.asc.sha1" title="asm-commons-9.8.pom.asc.sha1">asm-commons-9.8.pom.asc.sha1</a>                      2025-03-29 15:13        40      
+<a href="asm-commons-9.8.pom.asc.sha256" title="asm-commons-9.8.pom.asc.sha256">asm-commons-9.8.pom.asc.sha256</a>                    2025-03-29 15:13        64      
+<a href="asm-commons-9.8.pom.asc.sha512" title="asm-commons-9.8.pom.asc.sha512">asm-commons-9.8.pom.asc.sha512</a>                    2025-03-29 15:13       128      
+<a href="asm-commons-9.8.pom.md5" title="asm-commons-9.8.pom.md5">asm-commons-9.8.pom.md5</a>                           2025-03-29 15:13        32      
+<a href="asm-commons-9.8.pom.sha1" title="asm-commons-9.8.pom.sha1">asm-commons-9.8.pom.sha1</a>                          2025-03-29 15:13        40      
+<a href="asm-commons-9.8.pom.sha256" title="asm-commons-9.8.pom.sha256">asm-commons-9.8.pom.sha256</a>                        2025-03-29 15:13        64      
+<a href="asm-commons-9.8.pom.sha512" title="asm-commons-9.8.pom.sha512">asm-commons-9.8.pom.sha512</a>                        2025-03-29 15:13       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 429ms:
+e4dcf5a07719b1aeeb0a0616d1987a0ede0e04b5	refs/tags/ASM_9_8
+c55dc7bdd8e47a22d22ce74f9c66a1ea08e29050	refs/tags/ASM_9_8^{}
+
+codex
+The upstream tag is `ASM_9_8`, which matches the released `9.8` artifacts. I’m checking that tag’s layout now so the `test-code-url` lands on the actual test directory instead of a generic repo page.
+exec
+/usr/bin/zsh -lc 'tmpdir=$(mktemp -d) && git clone --depth 1 --branch ASM_9_8 https://gitlab.ow2.org/asm/asm.git "$tmpdir" >/dev/null && find "$tmpdir" -maxdepth 3 '"\\( -path '*/asm-commons/src/test*' -o -path '*/src/test*' \\) | sed \"s#"'^$tmpdir/##" | sort | sed -n '"'1,120p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a
+exec
+/usr/bin/zsh -lc 'tmpdir=$(mktemp -d) && git clone --depth 1 --branch ASM_9_8 https://gitlab.ow2.org/asm/asm.git "$tmpdir" >/dev/null && find "$tmpdir" -maxdepth 2 -type d | sed "s#''^$tmpdir/##" | sort | sed -n '"'1,120p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a
+ succeeded in 1343ms:
+Note: switching to 'c55dc7bdd8e47a22d22ce74f9c66a1ea08e29050'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+asm-analysis/src/test
+asm-commons/src/test
+asm-test/src/test
+asm-tree/src/test
+asm-util/src/test
+asm/src/test
+
+ succeeded in 1415ms:
+Note: switching to 'c55dc7bdd8e47a22d22ce74f9c66a1ea08e29050'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+.git
+.git/branches
+.git/hooks
+.git/info
+.git/logs
+.git/objects
+.git/refs
+.gitlab
+.gitlab/issue_templates
+/tmp/tmp.BWYeHSv9e9
+asm
+asm-analysis
+asm-analysis/src
+asm-commons
+asm-commons/src
+asm-test
+asm-test/src
+asm-tree
+asm-tree/src
+asm-util
+asm-util/src
+asm/src
+benchmarks
+benchmarks/libs
+benchmarks/src
+gradle
+gradle/wrapper
+tools
+tools/retrofitter
+
+codex
+I have the exact module test path under the `ASM_9_8` tag. I’m checking one nearby metadata file for formatting conventions, then I’ll patch the target file with the pinned URLs and description.
+exec
+/usr/bin/zsh -lc "find build/discovered-artifact-metadata -name '*.json' | shuf -n 3 | xargs -I{} sed -n '1,120p' {}" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a
+ succeeded in 0ms:
+{
+  "coordinates" : "org.ow2.asm:asm-commons:9.8"
+}
+
+exec
+/usr/bin/zsh -lc 'curl -I -fsSL https://gitlab.ow2.org/asm/asm/-/tree/ASM_9_8/asm-commons/src/test' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a
+exec
+/usr/bin/zsh -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.8/asm-commons-9.8-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.8/asm-commons-9.8-javadoc.jar' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a
+ succeeded in 181ms:
+HTTP/2 200 
+date: Fri, 01 May 2026 09:12:19 GMT
+content-type: application/java-archive
+content-length: 214889
+cf-ray: 9f4da9f44bdce294-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 763323
+etag: "e14311932919ebb936b92b718d702ad7"
+last-modified: Sat, 29 Mar 2025 15:13:25 GMT
+x-checksum-md5: e14311932919ebb936b92b718d702ad7
+x-checksum-sha1: bda093545545422f5ad73ec20cdf364a709837f3
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 224ms:
+HTTP/2 200 
+cache-control: max-age=0, private, must-revalidate
+content-length: 0
+content-security-policy: 
+content-type: text/html; charset=utf-8
+date: Fri, 01 May 2026 09:12:19 GMT
+etag: W/"74e6118e2bc7c3621564f7720535339b"
+nel: {"max_age": 0}
+permissions-policy: interest-cohort=()
+set-cookie: _gitlab_session=c90634c4ed50af83ff0923a0f103fc19; path=/; secure; HttpOnly; SameSite=None
+vary: Accept
+x-gitlab-meta: {"correlation_id":"01KQHCYX4E0RTPZ9EB5FKPEPE7","version":"1"}
+x-permitted-cross-domain-policies: none
+x-request-id: 01KQHCYX4E0RTPZ9EB5FKPEPE7
+x-runtime: 0.096418
+x-ua-compatible: IE=edge
+strict-transport-security: max-age=15768000;includeSubDomains;preload
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+referrer-policy: no-referrer-when-downgrade
+x-frame-options: SAMEORIGIN
+x-robots-tag: noarchive
+
+
+exec
+/usr/bin/zsh -lc "find build/discovered-artifact-metadata -name '*.json' -size +80c | shuf -n 2 | xargs -I{} sed -n '1,120p' {}" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc "find metadata -name '*.json' | shuf -n 2 | xargs -I{} sed -n '1,120p' {}" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a
+ succeeded in 0ms:
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "org.hibernate.engine.transaction.jta.platform.internal.StandardJtaPlatformResolver"
+      },
+      "type": "bitronix.tm.TransactionManagerServices"
+    },
+    {
+      "condition": {
+        "typeReached": "org.hibernate.jpa.HibernatePersistenceProvider"
+      },
+      "type": "ch.qos.logback.classic.Logger"
+    },
+    {
+      "condition": {
+        "typeReached": "org.hibernate.jpa.HibernatePersistenceProvider"
+      },
+      "type": "ch.qos.logback.classic.encoder.PatternLayoutEncoder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.hibernate.jpa.HibernatePersistenceProvider"
+      },
+      "type": "ch.qos.logback.classic.pattern.DateConverter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.hibernate.jpa.HibernatePersistenceProvider"
+      },
+      "type": "ch.qos.logback.classic.pattern.LevelConverter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.hibernate.jpa.HibernatePersistenceProvider"
+      },
+      "type": "ch.qos.logback.classic.pattern.LineSeparatorConverter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.hibernate.jpa.HibernatePersistenceProvider"
+      },
+      "type": "ch.qos.logback.classic.pattern.LoggerConverter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.hibernate.jpa.HibernatePersistenceProvider"
+      },
+      "type": "ch.qos.logback.classic.pattern.MessageConverter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.hibernate.jpa.HibernatePersistenceProvider"
+      },
+      "type": "ch.qos.logback.classic.pattern.ThreadConverter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.hibernate.jpa.HibernatePersistenceProvider"
+      },
+      "type": "ch.qos.logback.core.ConsoleAppender",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.hibernate.jpa.HibernatePersistenceProvider"
+      },
+      "type": "ch.qos.logback.core.OutputStreamAppender",
+      "methods": [
+        {
+          "name": "setEncoder",
+          "parameterTypes": [
+            "ch.qos.logback.core.encoder.Encoder"
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.10",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-sources.jar",
+    "repository-url" : "https://github.com/antlr/antlr4",
+    "test-code-url" : "https://github.com/antlr/antlr4/tree/4.10/runtime-testsuite/test/org/antlr/v4/test/runtime/java",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-javadoc.jar",
+    "description" : "ANTLR 4 Runtime is the Java runtime library that supplies the core classes needed to execute parsers and lexers generated by ANTLR 4. It provides token streams, parse tree support, error handling, and other infrastructure used by generated language recognizers.",
+    "tested-versions" : [
+      "4.10",
+      "4.10.1",
+      "4.11.0",
+      "4.11.1",
+      "4.12.0",
+      "4.13.0",
+      "4.13.1",
+      "4.13.2"
+    ],
+    "allowed-packages" : [
+      "org.antlr.v4.runtime"
+    ]
+  }
+]
+
+exec
+/usr/bin/zsh -lc "find build/discovered-artifact-metadata -name '*.json' -size +80c | head -n 5 | xargs -I{} sh -c 'printf \"%s\\n\" \"FILE:{}\"; sed -n \"1,120p\" \"{}\"'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc 'tmpdir=$(mktemp -d) && git clone --depth 1 --branch ASM_9_8 https://gitlab.ow2.org/asm/asm.git "$tmpdir" >/dev/null && find "$tmpdir/asm-commons/src/test" -maxdepth 3 -type d | sed "s#''^$tmpdir/##" | sort' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a
+ succeeded in 961ms:
+Note: switching to 'c55dc7bdd8e47a22d22ce74f9c66a1ea08e29050'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+asm-commons/src/test
+asm-commons/src/test/java
+asm-commons/src/test/java/org
+asm-commons/src/test/java/org/objectweb
+asm-commons/src/test/resources
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.8/
+web search: 
+web search: site:gitlab.ow2.org/asm/asm/-/tree/ASM_9_8/asm-commons/src/test gitlab ow2 asm commons test
+web search: 
+web search: "ASM_9_8" gitlab ow2 asm
+codex
+I have the final field values. I’m patching the discovered metadata file now and then I’ll validate the JSON so there’s no formatting or syntax drift.
+apply patch
+patch: completed
+/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json
+diff --git a/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json b/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json
+index 5866fb88b83f20f3b429f06fdc2daa0962491411..1866ccd1d48b55e451b01ed561fb0b98a3fb7b81
+--- a/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json
++++ b/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.ow2.asm:asm-commons:9.8"
++  "coordinates" : "org.ow2.asm:asm-commons:9.8",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.8/asm-commons-9.8-sources.jar",
++  "repository-url" : "https://gitlab.ow2.org/asm/asm/",
++  "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_9_8/asm-commons/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.8/asm-commons-9.8-javadoc.jar",
++  "description" : "ASM Commons provides reusable class visitors and adapters built on top of ASM for transforming and generating Java bytecode. It adds higher-level utilities for common bytecode tasks such as remapping names, computing serialVersionUID values, and simplifying method and class transformations."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json b/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json
+index 5866fb88b83f20f3b429f06fdc2daa0962491411..1866ccd1d48b55e451b01ed561fb0b98a3fb7b81
+--- a/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json
++++ b/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.ow2.asm:asm-commons:9.8"
++  "coordinates" : "org.ow2.asm:asm-commons:9.8",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.8/asm-commons-9.8-sources.jar",
++  "repository-url" : "https://gitlab.ow2.org/asm/asm/",
++  "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_9_8/asm-commons/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.8/asm-commons-9.8-javadoc.jar",
++  "description" : "ASM Commons provides reusable class visitors and adapters built on top of ASM for transforming and generating Java bytecode. It adds higher-level utilities for common bytecode tasks such as remapping names, computing serialVersionUID values, and simplifying method and class transformations."
+ }
+
+exec
+/usr/bin/zsh -lc 'jq . build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a
+ succeeded in 0ms:
+{
+  "coordinates": "org.ow2.asm:asm-commons:9.8",
+  "source-code-url": "https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.8/asm-commons-9.8-sources.jar",
+  "repository-url": "https://gitlab.ow2.org/asm/asm/",
+  "test-code-url": "https://gitlab.ow2.org/asm/asm/-/tree/ASM_9_8/asm-commons/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.8/asm-commons-9.8-javadoc.jar",
+  "description": "ASM Commons provides reusable class visitors and adapters built on top of ASM for transforming and generating Java bytecode. It adds higher-level utilities for common bytecode tasks such as remapping names, computing serialVersionUID values, and simplifying method and class transformations."
+}
+
+exec
+/usr/bin/zsh -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a
+ succeeded in 0ms:
+{
+  "coordinates" : "org.ow2.asm:asm-commons:9.8",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.8/asm-commons-9.8-sources.jar",
+  "repository-url" : "https://gitlab.ow2.org/asm/asm/",
+  "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_9_8/asm-commons/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.8/asm-commons-9.8-javadoc.jar",
+  "description" : "ASM Commons provides reusable class visitors and adapters built on top of ASM for transforming and generating Java bytecode. It adds higher-level utilities for common bytecode tasks such as remapping names, computing serialVersionUID values, and simplifying method and class transformations."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json b/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json
+index 5866fb88b83f20f3b429f06fdc2daa0962491411..1866ccd1d48b55e451b01ed561fb0b98a3fb7b81
+--- a/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json
++++ b/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.ow2.asm:asm-commons:9.8"
++  "coordinates" : "org.ow2.asm:asm-commons:9.8",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.8/asm-commons-9.8-sources.jar",
++  "repository-url" : "https://gitlab.ow2.org/asm/asm/",
++  "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_9_8/asm-commons/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.8/asm-commons-9.8-javadoc.jar",
++  "description" : "ASM Commons provides reusable class visitors and adapters built on top of ASM for transforming and generating Java bytecode. It adds higher-level utilities for common bytecode tasks such as remapping names, computing serialVersionUID values, and simplifying method and class transformations."
+ }
+
+codex
+Updated [org.ow2.asm-asm-commons-9.8.json](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json) with the exact `9.8` coordinates, pinned source/test/documentation URLs, repository URL, and a two-sentence description. I left the `language` field absent.
+
+Validation: `jq . build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json` passed.
+diff --git a/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json b/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json
+index 5866fb88b83f20f3b429f06fdc2daa0962491411..1866ccd1d48b55e451b01ed561fb0b98a3fb7b81
+--- a/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json
++++ b/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.ow2.asm:asm-commons:9.8"
++  "coordinates" : "org.ow2.asm:asm-commons:9.8",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.8/asm-commons-9.8-sources.jar",
++  "repository-url" : "https://gitlab.ow2.org/asm/asm/",
++  "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_9_8/asm-commons/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.8/asm-commons-9.8-javadoc.jar",
++  "description" : "ASM Commons provides reusable class visitors and adapters built on top of ASM for transforming and generating Java bytecode. It adds higher-level utilities for common bytecode tasks such as remapping names, computing serialVersionUID values, and simplifying method and class transformations."
+ }
+
+2026-05-01T09:13:11.806590Z ERROR codex_core::session: failed to record rollout items: thread 019de2ce-a825-7682-ac6d-c2ff4e7c6048 not found
+tokens used
+45,202
+Updated [org.ow2.asm-asm-commons-9.8.json](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a/build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json) with the exact `9.8` coordinates, pinned source/test/documentation URLs, repository URL, and a two-sentence description. I left the `language` field absent.
+
+Validation: `jq . build/discovered-artifact-metadata/org.ow2.asm-asm-commons-9.8.json` passed.
+Ran agent for org.ow2.asm:asm-commons:9.8 (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a/build/agent-artifact-discovery-logs/org.ow2.asm-asm-commons-9.8.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3614-ddc7e92a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 47s
+9 actionable tasks: 4 executed, 5 from cache
