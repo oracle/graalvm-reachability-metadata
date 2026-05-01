@@ -204,7 +204,7 @@ class Java_dataloaderTest {
 
     @Test
     void customCacheMapReusesCachedFuturesAcrossLoadersAndOnlyBatchesMisses() {
-        RecordingCacheMap<Object, CompletableFuture<String>> cacheMap = new RecordingCacheMap<>();
+        RecordingCacheMap<Object, String> cacheMap = new RecordingCacheMap<>();
         List<List<String>> dispatchedBatches = new ArrayList<>();
         BatchLoader<String, String> batchLoader = keys -> {
             dispatchedBatches.add(List.copyOf(keys));
@@ -274,7 +274,7 @@ class Java_dataloaderTest {
 
     private static final class RecordingCacheMap<K, V> implements CacheMap<K, V> {
 
-        private final Map<K, V> values = new ConcurrentHashMap<>();
+        private final Map<K, CompletableFuture<V>> values = new ConcurrentHashMap<>();
         private final List<K> getRequests = new ArrayList<>();
         private final List<K> setRequests = new ArrayList<>();
 
@@ -284,13 +284,13 @@ class Java_dataloaderTest {
         }
 
         @Override
-        public V get(K key) {
+        public CompletableFuture<V> get(K key) {
             getRequests.add(key);
             return values.get(key);
         }
 
         @Override
-        public CacheMap<K, V> set(K key, V value) {
+        public CacheMap<K, V> set(K key, CompletableFuture<V> value) {
             setRequests.add(key);
             values.put(key, value);
             return this;
