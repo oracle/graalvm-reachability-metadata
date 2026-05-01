@@ -17,6 +17,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntBidirectionalIterator;
 import it.unimi.dsi.fastutil.ints.IntBigArrays;
+import it.unimi.dsi.fastutil.ints.IntHeapPriorityQueue;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntListIterator;
@@ -240,6 +241,42 @@ public class FastutilTest {
         assertThat(map.removeFirstDouble()).isEqualTo(2.5D);
         assertThat(map.removeLastDouble()).isEqualTo(5.0D);
         assertThat(map.keySet().toLongArray()).containsExactly(10L, 5L, 30L);
+    }
+
+    @Test
+    void intHeapPriorityQueueOrdersPrimitiveValuesWithNaturalAndCustomPriorities() {
+        IntHeapPriorityQueue naturalOrder = new IntHeapPriorityQueue(new int[] {7, 1, 4, 1, 9});
+
+        assertThat(naturalOrder.size()).isEqualTo(5);
+        assertThat(naturalOrder.firstInt()).isEqualTo(1);
+
+        naturalOrder.enqueue(-3);
+        naturalOrder.enqueue(2);
+
+        assertThat(naturalOrder.dequeueInt()).isEqualTo(-3);
+        assertThat(naturalOrder.dequeueInt()).isEqualTo(1);
+        assertThat(naturalOrder.dequeueInt()).isEqualTo(1);
+        assertThat(naturalOrder.dequeueInt()).isEqualTo(2);
+        assertThat(naturalOrder.dequeueInt()).isEqualTo(4);
+        assertThat(naturalOrder.dequeueInt()).isEqualTo(7);
+        assertThat(naturalOrder.dequeueInt()).isEqualTo(9);
+        assertThat(naturalOrder.isEmpty()).isTrue();
+
+        IntHeapPriorityQueue reverseOrder = new IntHeapPriorityQueue(
+                (left, right) -> Integer.compare(right, left));
+        reverseOrder.enqueue(5);
+        reverseOrder.enqueue(12);
+        reverseOrder.enqueue(8);
+        reverseOrder.enqueue(12);
+
+        assertThat(reverseOrder.comparator()).isNotNull();
+        assertThat(reverseOrder.firstInt()).isEqualTo(12);
+        assertThat(reverseOrder.dequeueInt()).isEqualTo(12);
+        assertThat(reverseOrder.dequeueInt()).isEqualTo(12);
+        assertThat(reverseOrder.dequeueInt()).isEqualTo(8);
+        assertThat(reverseOrder.dequeueInt()).isEqualTo(5);
+        reverseOrder.clear();
+        assertThat(reverseOrder.size()).isZero();
     }
 
     @Test
