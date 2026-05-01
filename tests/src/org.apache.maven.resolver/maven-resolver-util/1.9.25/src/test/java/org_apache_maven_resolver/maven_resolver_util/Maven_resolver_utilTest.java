@@ -35,6 +35,7 @@ import org.eclipse.aether.graph.DefaultDependencyNode;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyFilter;
 import org.eclipse.aether.graph.DependencyNode;
+import org.eclipse.aether.graph.Exclusion;
 import org.eclipse.aether.repository.Authentication;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.eclipse.aether.repository.Proxy;
@@ -49,6 +50,7 @@ import org.eclipse.aether.util.artifact.JavaScopes;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.eclipse.aether.util.filter.DependencyFilterUtils;
 import org.eclipse.aether.util.graph.manager.DependencyManagerUtils;
+import org.eclipse.aether.util.graph.selector.ExclusionDependencySelector;
 import org.eclipse.aether.util.graph.selector.OptionalDependencySelector;
 import org.eclipse.aether.util.graph.selector.ScopeDependencySelector;
 import org.eclipse.aether.util.graph.traverser.FatArtifactTraverser;
@@ -221,6 +223,27 @@ public class Maven_resolver_utilTest {
         assertThat(transitiveOptionalSelector.selectDependency(runtimeDependency)).isTrue();
         assertThat(scopeSelector.selectDependency(runtimeDependency)).isTrue();
         assertThat(scopeSelector.selectDependency(testDependency)).isFalse();
+    }
+
+    @Test
+    public void exclusionDependencySelectorPropagatesParentExclusionsToChildren() {
+        Exclusion blockedArtifact = new Exclusion("com.example", "blocked-artifact", "*", "jar");
+        Exclusion testFixture = new Exclusion("com.example", "fixtures", "tests", "jar");
+        Dependency parentDependency = new Dependency(
+                artifact("parent-artifact"), JavaScopes.COMPILE, null, List.of(blockedArtifact, testFixture));
+        DependencySelector rootSelector = new ExclusionDependencySelector();
+        DependencySelector childSelector = rootSelector.deriveChildSelector(collectionContext(parentDependency));
+        Dependency blockedDependency = dependency("blocked-artifact", JavaScopes.RUNTIME);
+        Dependency regularFixtureDependency = dependency("fixtures", JavaScopes.RUNTIME);
+        Dependency testFixtureDependency = new Dependency(
+                new DefaultArtifact("com.example", "fixtures", "tests", "jar", "1.0.0"), JavaScopes.RUNTIME);
+        Dependency allowedDependency = dependency("allowed-artifact", JavaScopes.RUNTIME);
+
+        assertThat(rootSelector.selectDependency(blockedDependency)).isTrue();
+        assertThat(childSelector.selectDependency(blockedDependency)).isFalse();
+        assertThat(childSelector.selectDependency(testFixtureDependency)).isFalse();
+        assertThat(childSelector.selectDependency(regularFixtureDependency)).isTrue();
+        assertThat(childSelector.selectDependency(allowedDependency)).isTrue();
     }
 
     @Test
