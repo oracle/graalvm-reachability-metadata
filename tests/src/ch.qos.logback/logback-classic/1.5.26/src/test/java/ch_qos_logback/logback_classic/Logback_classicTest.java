@@ -26,6 +26,7 @@ import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.filter.ThresholdFilter;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.turbo.MarkerFilter;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.OutputStreamAppender;
 import ch.qos.logback.core.encoder.Encoder;
@@ -198,6 +199,28 @@ public class Logback_classicTest {
                         "queued-9",
                         "queued-10",
                         "queued-11");
+    }
+
+    @Test
+    void turboMarkerFilterDeniesMarkedEventsBeforeAppenderProcessing() {
+        MarkerFilter filter = new MarkerFilter();
+        filter.setContext(context);
+        filter.setMarker("SUPPRESS");
+        filter.setOnMatch("DENY");
+        filter.setOnMismatch("NEUTRAL");
+        filter.start();
+        context.addTurboFilter(filter);
+        ListAppender<ILoggingEvent> appender = listAppender("turbo");
+        Logger logger = logger("turbo.marker", appender);
+        Marker suppressMarker = MarkerFactory.getMarker("SUPPRESS");
+
+        logger.info("visible event");
+        logger.warn(suppressMarker, "suppressed event");
+        logger.error("another visible event");
+
+        assertThat(appender.list)
+                .extracting(ILoggingEvent::getFormattedMessage)
+                .containsExactly("visible event", "another visible event");
     }
 
     @Test
