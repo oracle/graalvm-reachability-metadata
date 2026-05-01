@@ -119,6 +119,24 @@ public class XmlencTest {
     }
 
     @Test
+    void outputterWritesExternalDoctypeBeforeRootElement() throws Exception {
+        StringWriter writer = new StringWriter();
+        XMLOutputter outputter = new XMLOutputter(writer, "UTF-8");
+
+        outputter.setLineBreak(LineBreak.UNIX);
+        outputter.declaration();
+        outputter.dtd("catalog", "-//Example//DTD Catalog//EN", "catalog.dtd");
+        assertThat(outputter.getState()).isSameAs(XMLEventListenerStates.BEFORE_ROOT_ELEMENT);
+
+        outputter.startTag("catalog");
+        outputter.endDocument();
+
+        assertThat(writer.toString()).isEqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<!DOCTYPE catalog PUBLIC \"-//Example//DTD Catalog//EN\" \"catalog.dtd\">\n"
+                + "<catalog/>");
+    }
+
+    @Test
     void outputterBuildsCompleteEscapedDocumentAndTracksState() throws Exception {
         StringWriter writer = new StringWriter();
         XMLOutputter outputter = new XMLOutputter(writer, "UTF-8");
