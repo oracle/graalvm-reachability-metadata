@@ -32,9 +32,11 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 import org.apache.xalan.lib.ExsltMath;
+import org.apache.xalan.lib.ExsltSets;
 import org.apache.xalan.lib.ExsltStrings;
 import org.apache.xalan.processor.TransformerFactoryImpl;
 import org.apache.xpath.CachedXPathAPI;
+import org.apache.xpath.NodeSet;
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.jaxp.XPathFactoryImpl;
 import org.apache.xpath.objects.XObject;
@@ -243,6 +245,27 @@ public class XalanTest {
         assertThat(ExsltStrings.concat(titles)).isEqualTo("KindredEarthseaParable");
     }
 
+    @Test
+    public void exsltSetFunctionsComputeRelationshipsBetweenNodeLists() throws Exception {
+        Document document = parseXml(CATALOG_XML);
+        NodeList books = document.getElementsByTagName("book");
+        NodeSet allBooks = new NodeSet(books);
+        NodeSet fictionBooks = nodeSet(books.item(0), books.item(2));
+        NodeSet costlyBooks = nodeSet(books.item(1), books.item(2));
+
+        assertThat(attributes(ExsltSets.intersection(fictionBooks, costlyBooks), "id")).containsExactly("b3");
+        assertThat(attributes(ExsltSets.difference(allBooks, fictionBooks), "id")).containsExactly("b2");
+        assertThat(attributes(ExsltSets.leading(allBooks, costlyBooks), "id")).containsExactly("b1");
+        assertThat(attributes(ExsltSets.trailing(allBooks, costlyBooks), "id")).containsExactly("b3");
+        assertThat(ExsltSets.hasSameNode(fictionBooks, costlyBooks)).isTrue();
+
+        NodeSet categories = nodeSet(
+                ((Element) books.item(0)).getAttributeNode("category"),
+                ((Element) books.item(1)).getAttributeNode("category"),
+                ((Element) books.item(2)).getAttributeNode("category"));
+        assertThat(texts(ExsltSets.distinct(categories))).containsExactly("fiction", "fantasy");
+    }
+
     private TransformerFactoryImpl newTransformerFactory() {
         TransformerFactoryImpl factory = new TransformerFactoryImpl();
         assertThat(factory.getFeature(StreamSource.FEATURE)).isTrue();
@@ -286,6 +309,23 @@ public class XalanTest {
 
     private static String textOf(Element element, String tagName) {
         return element.getElementsByTagName(tagName).item(0).getTextContent();
+    }
+
+    private static NodeSet nodeSet(Node... nodes) {
+        NodeSet nodeSet = new NodeSet();
+        for (Node node : nodes) {
+            nodeSet.addNode(node);
+        }
+        return nodeSet;
+    }
+
+    private static List<String> attributes(NodeList nodes, String attributeName) {
+        List<String> values = new ArrayList<>();
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Element element = (Element) nodes.item(i);
+            values.add(element.getAttribute(attributeName));
+        }
+        return values;
     }
 
     private static List<String> texts(NodeList nodes) {
