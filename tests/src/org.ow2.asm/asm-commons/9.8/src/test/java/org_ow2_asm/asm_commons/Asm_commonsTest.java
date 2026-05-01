@@ -22,6 +22,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+import org.objectweb.asm.commons.AdviceAdapter;
 import org.objectweb.asm.commons.AnalyzerAdapter;
 import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.commons.CodeSizeEvaluator;
@@ -232,6 +233,16 @@ public class Asm_commonsTest implements Opcodes {
         assertThat(analyzer.stack).containsExactly(INTEGER);
     }
 
+    @Test
+    void adviceAdapterInjectsEntryAndExitAdviceForReturnAndThrowPaths() {
+        byte[] advisedClass = addDescribeMethodAdvice(createClassWithDescribeMethod());
+        MethodInstructionCollector collector = collectInstructions(advisedClass, "describe");
+
+        assertThat(collector.constants)
+                .containsExactly(
+                        "advice:enter:describe", "missing", "advice:exit:" + ATHROW, "advice:exit:" + ARETURN);
+    }
+
     private static byte[] createAnnotatedAbstractClass() {
         ClassWriter classWriter = new ClassWriter(0);
         classWriter.visit(
@@ -279,6 +290,68 @@ public class Asm_commonsTest implements Opcodes {
     private static byte[] addSerialVersionUid(byte[] originalClass) {
         ClassWriter classWriter = new ClassWriter(0);
         new ClassReader(originalClass).accept(new SerialVersionUIDAdder(classWriter), 0);
+        return classWriter.toByteArray();
+    }
+
+    private static byte[] createClassWithDescribeMethod() {
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        classWriter.visit(V17, ACC_PUBLIC, "sample/AdvisedTarget", null, "java/lang/Object", null);
+        MethodVisitor methodVisitor = classWriter.visitMethod(
+                ACC_PUBLIC | ACC_STATIC,
+                "describe",
+                "(Ljava/lang/Object;)Ljava/lang/String;",
+                null,
+                null);
+        Label argumentPresent = new Label();
+        methodVisitor.visitCode();
+        methodVisitor.visitVarInsn(ALOAD, 0);
+        methodVisitor.visitJumpInsn(IFNONNULL, argumentPresent);
+        methodVisitor.visitTypeInsn(NEW, "java/lang/IllegalArgumentException");
+        methodVisitor.visitInsn(DUP);
+        methodVisitor.visitLdcInsn("missing");
+        methodVisitor.visitMethodInsn(
+                INVOKESPECIAL,
+                "java/lang/IllegalArgumentException",
+                "<init>",
+                "(Ljava/lang/String;)V",
+                false);
+        methodVisitor.visitInsn(ATHROW);
+        methodVisitor.visitLabel(argumentPresent);
+        methodVisitor.visitVarInsn(ALOAD, 0);
+        methodVisitor.visitMethodInsn(
+                INVOKEVIRTUAL, "java/lang/Object", "toString", "()Ljava/lang/String;", false);
+        methodVisitor.visitInsn(ARETURN);
+        methodVisitor.visitMaxs(0, 0);
+        methodVisitor.visitEnd();
+        classWriter.visitEnd();
+        return classWriter.toByteArray();
+    }
+
+    private static byte[] addDescribeMethodAdvice(byte[] originalClass) {
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        new ClassReader(originalClass).accept(new ClassVisitor(ASM9, classWriter) {
+            @Override
+            public MethodVisitor visitMethod(
+                    int access, String name, String descriptor, String signature, String[] exceptions) {
+                MethodVisitor methodVisitor = super.visitMethod(access, name, descriptor, signature, exceptions);
+                if (!"describe".equals(name)) {
+                    return methodVisitor;
+                }
+                return new AdviceAdapter(ASM9, methodVisitor, access, name, descriptor) {
+                    @Override
+                    protected void onMethodEnter() {
+                        visitLdcInsn("advice:enter:" + getName());
+                        pop();
+                    }
+
+                    @Override
+                    protected void onMethodExit(int opcode) {
+                        visitLdcInsn("advice:exit:" + opcode);
+                        pop();
+                    }
+                };
+            }
+        }, 0);
         return classWriter.toByteArray();
     }
 
