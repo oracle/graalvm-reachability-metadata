@@ -8,7 +8,7 @@ package ch_qos_logback.logback_core;
 
 import org.junit.jupiter.api.Test;
 
-class Logback_coreTest {
+public class Logback_coreTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
