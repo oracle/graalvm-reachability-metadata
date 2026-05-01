@@ -64,6 +64,12 @@ public class MessageCatalogTest {
     }
 
     @Test
+    void chooseLocaleFindsSupportedClassResourceBundle() {
+        assertThat(catalog.chooseLocale(new String[] {"es", "en"}))
+                .isEqualTo(Locale.forLanguageTag("es"));
+    }
+
+    @Test
     void chooseLocaleSkipsUnsupportedAndInvalidLanguageTags() {
         assertThat(catalog.chooseLocale(new String[] {"x-private", "zz", "EN"}))
                 .isEqualTo(Locale.ENGLISH);
