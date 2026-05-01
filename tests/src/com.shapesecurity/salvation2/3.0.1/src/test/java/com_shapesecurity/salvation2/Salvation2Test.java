@@ -377,6 +377,45 @@ public class Salvation2Test {
     }
 
     @Test
+    void addsDirectivesThroughPublicApiAndUsesThemForPolicyEvaluation() {
+        Policy policy = Policy.parseSerializedCSP("default-src 'none'", Policy.PolicyErrorConsumer.ignored);
+        List<String> messages = new ArrayList<>();
+
+        Directive addedBaseUri = policy.add(
+                "base-uri",
+                List.of("'self'"),
+                (severity, message, valueIndex) -> messages.add(message));
+        assertThat(addedBaseUri).isInstanceOf(SourceExpressionDirective.class);
+        SourceExpressionDirective baseUri = (SourceExpressionDirective) addedBaseUri;
+        assertThat(policy.baseUri()).containsSame(baseUri);
+        assertThat(policy.baseUri().orElseThrow().self()).isTrue();
+
+        Directive addedManifestSource = policy.add(
+                "manifest-src",
+                List.of("https://assets.example.com/manifests/"),
+                (severity, message, valueIndex) -> messages.add(message));
+        assertThat(addedManifestSource).isInstanceOf(SourceExpressionDirective.class);
+        SourceExpressionDirective manifestSource = (SourceExpressionDirective) addedManifestSource;
+        assertThat(policy.getFetchDirective(FetchDirectiveKind.ManifestSrc)).containsSame(manifestSource);
+
+        URLWithScheme origin = uri("https://app.example.com/index.html");
+        assertThat(policy.allowsApplicationManifest(
+                Optional.of(uri("https://assets.example.com/manifests/site.webmanifest")),
+                Optional.of(origin))).isTrue();
+        assertThat(policy.allowsApplicationManifest(
+                Optional.of(uri("https://assets.example.com/private/site.webmanifest")),
+                Optional.of(origin))).isFalse();
+        assertThat(policy.allowsApplicationManifest(Optional.empty(), Optional.of(origin))).isFalse();
+
+        policy.add(
+                "manifest-src",
+                List.of("https://duplicate.example.com"),
+                (severity, message, valueIndex) -> messages.add(message));
+        assertThat(messages).anySatisfy(message -> assertThat(message).contains("Duplicate directive"));
+        assertThat(policy.getFetchDirective(FetchDirectiveKind.ManifestSrc)).containsSame(manifestSource);
+    }
+
+    @Test
     void mapsDirectiveNamesToFetchDirectiveKinds() {
         assertThat(FetchDirectiveKind.fromString("script-src")).isEqualTo(FetchDirectiveKind.ScriptSrc);
         assertThat(FetchDirectiveKind.ScriptSrc.repr).isEqualTo("script-src");
