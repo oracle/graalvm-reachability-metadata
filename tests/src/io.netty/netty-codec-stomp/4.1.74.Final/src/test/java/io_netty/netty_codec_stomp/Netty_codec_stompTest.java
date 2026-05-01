@@ -232,6 +232,55 @@ public class Netty_codec_stompTest {
     }
 
     @Test
+    void decoderFinalizesZeroContentLengthFrameAndContinuesWithNextFrame() {
+        EmbeddedChannel channel = new EmbeddedChannel(new StompSubframeDecoder(256, 16));
+        ByteBuf encoded = Unpooled.copiedBuffer(
+                "RECEIPT\n"
+                        + "receipt-id:receipt-1\n"
+                        + "content-length:0\n"
+                        + "\n"
+                        + "\0"
+                        + "\n"
+                        + "CONNECTED\n"
+                        + "version:1.2\n"
+                        + "session:session-1\n"
+                        + "\n"
+                        + "\0",
+                UTF_8);
+
+        try {
+            assertThat(channel.writeInbound(encoded)).isTrue();
+            StompHeadersSubframe firstHeaders = channel.readInbound();
+            LastStompContentSubframe firstLastContent = channel.readInbound();
+            StompHeadersSubframe secondHeaders = channel.readInbound();
+            LastStompContentSubframe secondLastContent = channel.readInbound();
+            try {
+                assertThat(firstHeaders.command()).isEqualTo(StompCommand.RECEIPT);
+                assertThat(firstHeaders.headers().getAsString(StompHeaders.RECEIPT_ID)).isEqualTo("receipt-1");
+                assertThat(firstHeaders.headers().getLong(StompHeaders.CONTENT_LENGTH)).isZero();
+                assertThat(firstHeaders.decoderResult()).isEqualTo(DecoderResult.SUCCESS);
+                assertThat(firstLastContent.content().readableBytes()).isZero();
+                assertThat(firstLastContent.decoderResult()).isEqualTo(DecoderResult.SUCCESS);
+
+                assertThat(secondHeaders.command()).isEqualTo(StompCommand.CONNECTED);
+                assertThat(secondHeaders.headers().getAsString(StompHeaders.VERSION)).isEqualTo("1.2");
+                assertThat(secondHeaders.headers().getAsString(StompHeaders.SESSION)).isEqualTo("session-1");
+                assertThat(secondHeaders.decoderResult()).isEqualTo(DecoderResult.SUCCESS);
+                assertThat(secondLastContent.content().readableBytes()).isZero();
+                assertThat(secondLastContent.decoderResult()).isEqualTo(DecoderResult.SUCCESS);
+                assertThat((Object) channel.readInbound()).isNull();
+            } finally {
+                ReferenceCountUtil.release(firstHeaders);
+                ReferenceCountUtil.release(firstLastContent);
+                ReferenceCountUtil.release(secondHeaders);
+                ReferenceCountUtil.release(secondLastContent);
+            }
+        } finally {
+            channel.finishAndReleaseAll();
+        }
+    }
+
+    @Test
     void decoderReportsInvalidHeadersWhenValidationIsEnabled() {
         EmbeddedChannel channel = new EmbeddedChannel(new StompSubframeDecoder(256, 16, true));
         ByteBuf encoded = Unpooled.copiedBuffer(
