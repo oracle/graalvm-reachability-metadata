@@ -20,7 +20,7 @@ public class MainTest {
         final StringWriter standardOutput = new StringWriter();
         final StringWriter errorOutput = new StringWriter();
 
-        final boolean compiled = BatchCompiler.compile(new String[] { "--module-version", "1.2.3" },
+        final boolean compiled = BatchCompiler.compile(new String[] {"--module-version", "1.2.3" },
                 new PrintWriter(standardOutput), new PrintWriter(errorOutput), null);
 
         assertThat(compiled).isTrue();
