@@ -26,7 +26,7 @@ public class ReflectionUtilTest {
 
     @Test
     void findsPublicMethodWithExplicitParameterTypes() {
-        Class<?>[] parameterTypes = new Class<?>[] { int.class, int.class };
+        Class<?>[] parameterTypes = new Class<?>[] {int.class, int.class};
 
         Method method = ReflectionUtil.getMethod("reflection", "substring", parameterTypes);
 
@@ -36,8 +36,8 @@ public class ReflectionUtilTest {
 
     @Test
     void findsAndInvokesMatchingPublicMethod() {
-        Method method = ReflectionUtil.findMethod("reflection", "substring", new Object[] { 0, 7 });
-        Object result = ReflectionUtil.invokeMethod("reflection", "substring", new Object[] { 0, 7 });
+        Method method = ReflectionUtil.findMethod("reflection", "substring", new Object[] {0, 7});
+        Object result = ReflectionUtil.invokeMethod("reflection", "substring", new Object[] {0, 7});
 
         assertThat(method.getName()).isEqualTo("substring");
         assertThat(result).isEqualTo("reflect");

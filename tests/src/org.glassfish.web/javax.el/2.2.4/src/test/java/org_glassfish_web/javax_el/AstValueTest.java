@@ -30,9 +30,9 @@ public class AstValueTest {
                 context,
                 "#{text.substring}",
                 String.class,
-                new Class<?>[] { int.class, int.class });
+                new Class<?>[] {int.class, int.class});
 
-        Object value = expression.invoke(context, new Object[] { 0, 10 });
+        Object value = expression.invoke(context, new Object[] {0, 10});
 
         assertThat(expression.isParmetersProvided()).isFalse();
         assertThat(value).isEqualTo("reflection");
