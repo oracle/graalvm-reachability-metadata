@@ -1,0 +1,54 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package backport_util_concurrent.backport_util_concurrent;
+
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentSkipListMap;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class ConcurrentSkipListMapTest {
+    @Test
+    void serializationRoundTripPreservesSortedEntriesAndConcurrentMapBehavior() throws Exception {
+        ConcurrentSkipListMap original = new ConcurrentSkipListMap();
+        original.put("charlie", "three");
+        original.put("alpha", "one");
+        original.put("bravo", Integer.valueOf(2));
+
+        ConcurrentSkipListMap restored = roundTrip(original);
+
+        assertThat(restored.size()).isEqualTo(3);
+        assertThat(restored.firstKey()).isEqualTo("alpha");
+        assertThat(restored.lastKey()).isEqualTo("charlie");
+        assertThat(restored.get("alpha")).isEqualTo("one");
+        assertThat(restored.get("bravo")).isEqualTo(Integer.valueOf(2));
+        assertThat(restored.get("charlie")).isEqualTo("three");
+        assertThat(restored.putIfAbsent("delta", "four")).isNull();
+        assertThat(restored.replace("alpha", "one", "uno")).isTrue();
+        assertThat(restored.get("alpha")).isEqualTo("uno");
+    }
+
+    private static ConcurrentSkipListMap roundTrip(ConcurrentSkipListMap value)
+            throws IOException, ClassNotFoundException {
+        try (ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(serialize(value)))) {
+            return (ConcurrentSkipListMap) inputStream.readObject();
+        }
+    }
+
+    private static byte[] serialize(Object value) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream)) {
+            objectOutputStream.writeObject(value);
+        }
+        return outputStream.toByteArray();
+    }
+}
