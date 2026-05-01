@@ -14,6 +14,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.ModuleVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.RecordComponentVisitor;
 import org.objectweb.asm.TypePath;
@@ -26,6 +27,7 @@ import org.objectweb.asm.util.CheckAnnotationAdapter;
 import org.objectweb.asm.util.CheckClassAdapter;
 import org.objectweb.asm.util.CheckFieldAdapter;
 import org.objectweb.asm.util.CheckMethodAdapter;
+import org.objectweb.asm.util.CheckModuleAdapter;
 import org.objectweb.asm.util.CheckRecordComponentAdapter;
 import org.objectweb.asm.util.CheckSignatureAdapter;
 import org.objectweb.asm.util.Printer;
@@ -34,6 +36,7 @@ import org.objectweb.asm.util.TraceAnnotationVisitor;
 import org.objectweb.asm.util.TraceClassVisitor;
 import org.objectweb.asm.util.TraceFieldVisitor;
 import org.objectweb.asm.util.TraceMethodVisitor;
+import org.objectweb.asm.util.TraceModuleVisitor;
 import org.objectweb.asm.util.TraceRecordComponentVisitor;
 import org.objectweb.asm.util.TraceSignatureVisitor;
 
@@ -222,6 +225,54 @@ public class Asm_utilTest {
                 .contains("RECORDCOMPONENT")
                 .contains("I x")
                 .contains("Lgenerated/asmutil/Coordinate;");
+    }
+
+    @Test
+    void moduleVisitorsTraceAndValidateModuleDirectives() {
+        Textifier textifier = new Textifier();
+        ModuleVisitor tracedModule = new TraceModuleVisitor(textifier);
+        CheckModuleAdapter checkedModule = new CheckModuleAdapter(tracedModule, false);
+
+        checkedModule.visitMainClass("generated/asmutil/App");
+        checkedModule.visitPackage("generated/asmutil");
+        checkedModule.visitRequire("java.base", Opcodes.ACC_MANDATED, null);
+        checkedModule.visitRequire("org.objectweb.asm", Opcodes.ACC_TRANSITIVE, null);
+        checkedModule.visitExport("generated/asmutil/api", Opcodes.ACC_SYNTHETIC, "consumer.module");
+        checkedModule.visitOpen("generated/asmutil/internal", 0, "test.consumer");
+        checkedModule.visitUse("generated/asmutil/spi/Plugin");
+        checkedModule.visitProvide("generated/asmutil/spi/Plugin", "generated/asmutil/impl/DefaultPlugin");
+        checkedModule.visitEnd();
+
+        String trace = print(textifier);
+
+        assertThat(trace)
+                .contains("main class generated/asmutil/App")
+                .contains("package generated/asmutil")
+                .contains("requires")
+                .contains("java.base")
+                .contains("transitive")
+                .contains("org.objectweb.asm")
+                .contains("exports")
+                .contains("generated/asmutil/api")
+                .contains("consumer.module")
+                .contains("opens")
+                .contains("generated/asmutil/internal")
+                .contains("test.consumer")
+                .contains("uses generated/asmutil/spi/Plugin")
+                .contains("provides generated/asmutil/spi/Plugin")
+                .contains("generated/asmutil/impl/DefaultPlugin");
+        assertThatThrownBy(() -> checkedModule.visitUse("generated/asmutil/spi/LatePlugin"))
+                .isInstanceOf(IllegalStateException.class);
+
+        CheckModuleAdapter duplicateModule = new CheckModuleAdapter(null, false);
+        duplicateModule.visitRequire("java.base", Opcodes.ACC_MANDATED, null);
+        assertThatThrownBy(() -> duplicateModule.visitRequire("java.base", Opcodes.ACC_MANDATED, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("already declared");
+        assertThatThrownBy(() -> new CheckModuleAdapter(null, false)
+                .visitProvide("generated/asmutil/spi/Plugin"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Providers cannot be null or empty");
     }
 
     @Test
