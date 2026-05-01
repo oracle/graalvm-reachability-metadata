@@ -83,6 +83,22 @@ public class Re2jTest {
     }
 
     @Test
+    void supportsReluctantQuantifiersForMinimalMatches() {
+        String input = "<item>first</item><item>second</item>";
+
+        Matcher greedyMatcher = Pattern.compile("<item>.*</item>").matcher(input);
+        assertThat(greedyMatcher.find()).isTrue();
+        assertThat(greedyMatcher.group()).isEqualTo(input);
+
+        Matcher reluctantMatcher = Pattern.compile("<item>.*?</item>").matcher(input);
+        assertThat(reluctantMatcher.find()).isTrue();
+        assertThat(reluctantMatcher.group()).isEqualTo("<item>first</item>");
+        assertThat(reluctantMatcher.find()).isTrue();
+        assertThat(reluctantMatcher.group()).isEqualTo("<item>second</item>");
+        assertThat(reluctantMatcher.find()).isFalse();
+    }
+
+    @Test
     void replacesAllFirstAndWithAppendReplacement() {
         Pattern assignment = Pattern.compile("([A-Za-z]+)=(\\d+)");
 
