@@ -1,0 +1,244 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2842-8ccfe04d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de56a-3614-78b3-adf7-29d980ead6ae
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: jspapi:jsp-api:2.0-20040521
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.0-20040521".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2842-8ccfe04d/metadata/jspapi/jsp-api/index.json
+- Entry selector: "metadata-version" = "2.0-20040521"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "2.0-20040521".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/tags/TOMCAT_5_5_0/servletapi/jsr152/src/share/
+- repository-url: https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/
+- test-code-url: N/A
+- documentation-url: https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/tags/TOMCAT_5_5_0/servletapi/jsr152/src/share/javax/servlet/jsp/package.html
+- description: jspapi:jsp-api provides the JavaServer Pages 2.0 API interfaces and support classes under javax.servlet.jsp and javax.servlet.jsp.tagext for JSP pages, tag libraries, and expression language integration. It is an API-only artifact used by JSP containers and applications at compile time, while the actual JSP engine implementation is supplied by a servlet/JSP runtime such as Apache Tomcat.
+- language: <missing>
+
+Context:
+- Coordinate version: 2.0-20040521
+- Entry test-version: 2.0-20040521
+codex
+I’ll verify the artifact/version sources before touching the JSON, then I’ll only edit fields that are actually missing. Since the listed values are non-blank, the main thing to confirm is whether `language` should be added.
+web search: 
+web search: jspapi jsp-api 2.0-20040521 Maven source jar
+web search: 
+web search: https://repo1.maven.org/maven2/jspapi/jsp-api/
+web search: 
+web search: https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/
+web search: 
+web search: 
+codex
+Maven Central has the exact `2.0-20040521` artifact, but that directory only lists the binary JAR and POM, not `-sources`, `-test-sources`, or Javadoc artifacts. I’m checking the local entry now and confirming whether the existing Apache SVN tag URLs are already populated.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/jspapi/jsp-api/index.json" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2842-8ccfe04d
+ succeeded in 0ms:
+/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2842-8ccfe04d
+4:    "metadata-version" : "2.0-20040521",
+5:    "source-code-url" : "https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/tags/TOMCAT_5_5_0/servletapi/jsr152/src/share/",
+6:    "repository-url" : "https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/",
+7:    "test-code-url" : "N/A",
+8:    "documentation-url" : "https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/tags/TOMCAT_5_5_0/servletapi/jsr152/src/share/javax/servlet/jsp/package.html",
+9:    "description" : "jspapi:jsp-api provides the JavaServer Pages 2.0 API interfaces and support classes under javax.servlet.jsp and javax.servlet.jsp.tagext for JSP pages, tag libraries, and expression language integration. It is an API-only artifact used by JSP containers and applications at compile time, while the actual JSP engine implementation is supplied by a servlet/JSP runtime such as Apache Tomcat.",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/jsp-api-2.0-20040521.pom | sed -n '1,120p'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2842-8ccfe04d
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>jspapi</groupId>
+  <artifactId>jsp-api</artifactId>
+  <version>2.0-20040521</version>
+</project>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/ | sed -n '1,80p'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2842-8ccfe04d
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jspapi/jsp-api/2.0-20040521</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jspapi/jsp-api/2.0-20040521</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jsp-api-2.0-20040521.jar" title="jsp-api-2.0-20040521.jar">jsp-api-2.0-20040521.jar</a>                          2005-09-20 05:49     51279      
+<a href="jsp-api-2.0-20040521.jar.md5" title="jsp-api-2.0-20040521.jar.md5">jsp-api-2.0-20040521.jar.md5</a>                      2005-09-20 05:49        32      
+<a href="jsp-api-2.0-20040521.jar.sha1" title="jsp-api-2.0-20040521.jar.sha1">jsp-api-2.0-20040521.jar.sha1</a>                     2005-09-20 05:49        40      
+<a href="jsp-api-2.0-20040521.pom" title="jsp-api-2.0-20040521.pom">jsp-api-2.0-20040521.pom</a>                          2005-09-20 05:49       154      
+<a href="jsp-api-2.0-20040521.pom.md5" title="jsp-api-2.0-20040521.pom.md5">jsp-api-2.0-20040521.pom.md5</a>                      2005-09-20 05:49       145      
+<a href="jsp-api-2.0-20040521.pom.sha1" title="jsp-api-2.0-20040521.pom.sha1">jsp-api-2.0-20040521.pom.sha1</a>                     2005-09-20 05:49       153      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:49       119      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:49        83      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:49       138      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/jspapi/jsp-api/index.json" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2842-8ccfe04d
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0-20040521",
+    "source-code-url" : "https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/tags/TOMCAT_5_5_0/servletapi/jsr152/src/share/",
+    "repository-url" : "https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/tags/TOMCAT_5_5_0/servletapi/jsr152/src/share/javax/servlet/jsp/package.html",
+    "description" : "jspapi:jsp-api provides the JavaServer Pages 2.0 API interfaces and support classes under javax.servlet.jsp and javax.servlet.jsp.tagext for JSP pages, tag libraries, and expression language integration. It is an API-only artifact used by JSP containers and applications at compile time, while the actual JSP engine implementation is supplied by a servlet/JSP runtime such as Apache Tomcat.",
+    "tested-versions" : [
+      "2.0-20040521"
+    ],
+    "allowed-packages" : [
+      "javax.servlet.jsp"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/jspapi/jsp-api/index.json' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2842-8ccfe04d
+ succeeded in 0ms:
+?? metadata/jspapi/jsp-api/index.json
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/tags/TOMCAT_5_5_0/servletapi/jsr152/src/share/ | sed -n '1,20p'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2842-8ccfe04d
+exec
+/usr/bin/bash -lc "curl -fsSI https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/tags/TOMCAT_5_5_0/servletapi/jsr152/src/share/javax/servlet/jsp/package.html | sed -n '1,20p'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2842-8ccfe04d
+ succeeded in 124ms:
+HTTP/1.1 200 OK
+Date: Fri, 01 May 2026 21:21:01 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Tue, 24 Aug 2004 18:38:35 GMT
+ETag: W/"267144//tomcat/archive/tc5.5.x/tags/TOMCAT_5_5_0/servletapi/jsr152/src/share"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+Content-Type: text/html; charset=UTF-8
+
+
+ succeeded in 122ms:
+HTTP/1.1 200 OK
+Date: Fri, 01 May 2026 21:21:01 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Wed, 29 Jan 2003 22:26:17 GMT
+ETag: "267045//tomcat/archive/tc5.5.x/tags/TOMCAT_5_5_0/servletapi/jsr152/src/share/javax/servlet/jsp/package.html"
+Accept-Ranges: bytes
+Content-Length: 3052
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+Content-Type: text/html
+
+
+web search: 
+web search: https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/tags/TOMCAT_5_5_0/servletapi/jsr152/src/share/
+web search: 
+web search: repo1.maven.org maven2 jspapi jsp-api 2.0-20040521 jsp-api-2.0-20040521.jar
+web search: 
+web search: https://repo1.maven.org/maven2/jspapi/jsp-api/
+web search: 
+web search: https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/
+web search: 
+web search: https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/
+codex
+The JSON entry already has non-blank values for every requested field except `language`. JSP API is a Java API artifact, not one of the Kotlin/Groovy/Scala language-specific cases in your schema, so I’m leaving `language` absent and making no file edit.
+exec
+/usr/bin/bash -lc 'jq empty metadata/jspapi/jsp-api/index.json && git diff -- metadata/jspapi/jsp-api/index.json' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2842-8ccfe04d
+ succeeded in 0ms:
+web search: 
+web search: site:repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521 jsp-api-2.0-20040521.jar
+web search: 
+web search: https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/tags/TOMCAT_5_5_0/servletapi/jsr152/src/share/
+web search: 
+web search: 
+web search: 
+web search: "jsp-api-2.0-20040521.jar" "jsp-api-2.0-20040521.pom"
+codex
+No edit was required in [index.json](/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2842-8ccfe04d/metadata/jspapi/jsp-api/index.json:1). The requested fields are already non-blank, and `language` should remain absent because `jspapi:jsp-api` is a Java JSP API artifact, not a Kotlin/Groovy/Scala-specific library. ([svn.apache.org](https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/tags/TOMCAT_5_5_0/servletapi/jsr152/src/share/javax/servlet/jsp/package.html))
+
+I verified JSON validity with `jq empty`; there is no diff for the file. Maven Central lists the exact `2.0-20040521` version, and the existing source/documentation URLs point at the Tomcat `TOMCAT_5_5_0` JSP 2.0 API source/docs tree. ([repo1.maven.org](https://repo1.maven.org/maven2/jspapi/jsp-api/?utm_source=openai))
+tokens used
+34,402
+No edit was required in [index.json](/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2842-8ccfe04d/metadata/jspapi/jsp-api/index.json:1). The requested fields are already non-blank, and `language` should remain absent because `jspapi:jsp-api` is a Java JSP API artifact, not a Kotlin/Groovy/Scala-specific library. ([svn.apache.org](https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/tags/TOMCAT_5_5_0/servletapi/jsr152/src/share/javax/servlet/jsp/package.html))
+
+I verified JSON validity with `jq empty`; there is no diff for the file. Maven Central lists the exact `2.0-20040521` version, and the existing source/documentation URLs point at the Tomcat `TOMCAT_5_5_0` JSP 2.0 API source/docs tree. ([repo1.maven.org](https://repo1.maven.org/maven2/jspapi/jsp-api/?utm_source=openai))
+Ran agent for jspapi:jsp-api:2.0-20040521 (exit 0). Log: /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2842-8ccfe04d/build/agent-url-discovery-logs/jspapi-jsp-api-2.0-20040521.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2842-8ccfe04d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 4s
+9 actionable tasks: 1 executed, 8 up-to-date
