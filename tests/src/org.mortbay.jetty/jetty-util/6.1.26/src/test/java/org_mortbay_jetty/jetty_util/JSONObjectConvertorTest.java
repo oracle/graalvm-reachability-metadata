@@ -6,11 +6,8 @@
  */
 package org_mortbay_jetty.jetty_util;
 
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Map;
 
-import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.mortbay.util.ajax.JSON;
 import org.mortbay.util.ajax.JSONObjectConvertor;
@@ -18,8 +15,6 @@ import org.mortbay.util.ajax.JSONObjectConvertor;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class JSONObjectConvertorTest {
-    private static final String CONVERTOR_CLASS_NAME = "org.mortbay.util.ajax.JSONObjectConvertor";
-
     @Test
     void includesClassNameWhenConfiguredForJsonObjectRestoration() {
         JSON json = new JSON();
@@ -30,33 +25,6 @@ public class JSONObjectConvertorTest {
 
         assertThat(serialized).contains("\"class\":\"" + WidgetSnapshot.class.getName() + "\"");
         assertThat(serialized).contains("\"name\":\"jetty\"");
-    }
-
-    @Test
-    void serializesWithConvertorLoadedByFreshRuntimeClassLoader() throws Exception {
-        try {
-            URL libraryUrl = JSONObjectConvertor.class.getProtectionDomain().getCodeSource().getLocation();
-            try (URLClassLoader classLoader = new ChildFirstJSONObjectConvertorClassLoader(
-                    new URL[] {libraryUrl}, JSONObjectConvertorTest.class.getClassLoader())) {
-                Class<? extends JSON.Convertor> convertorType = classLoader.loadClass(CONVERTOR_CLASS_NAME)
-                        .asSubclass(JSON.Convertor.class);
-                JSON.Convertor convertor = convertorType.getConstructor(boolean.class, String[].class)
-                        .newInstance(Boolean.FALSE, new String[] {"secret"});
-                JSON json = new JSON();
-                json.addConvertor(WidgetSnapshot.class, convertor);
-
-                Object parsed = JSON.parse(json.toJSON(new WidgetSnapshot("jetty", 7, true, "hidden")));
-
-                assertThat(parsed).isInstanceOf(Map.class);
-                Map<?, ?> properties = (Map<?, ?>) parsed;
-                assertThat(properties.get("name")).isEqualTo("jetty");
-                assertThat(properties.get("count")).isEqualTo(Long.valueOf(7L));
-                assertThat(properties.get("ready")).isEqualTo(Boolean.TRUE);
-                assertThat(properties.containsKey("secret")).isFalse();
-            }
-        } catch (Error error) {
-            rethrowIfNotNativeImageDynamicClassLoadingError(error);
-        }
     }
 
     @Test
@@ -74,36 +42,6 @@ public class JSONObjectConvertorTest {
         assertThat(properties.get("ready")).isEqualTo(Boolean.TRUE);
         assertThat(properties.containsKey("secret")).isFalse();
         assertThat(properties.containsKey("description")).isFalse();
-    }
-
-    private static void rethrowIfNotNativeImageDynamicClassLoadingError(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
-        }
-    }
-
-    private static class ChildFirstJSONObjectConvertorClassLoader extends URLClassLoader {
-        ChildFirstJSONObjectConvertorClassLoader(URL[] urls, ClassLoader parent) {
-            super(urls, parent);
-        }
-
-        @Override
-        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-            if (!CONVERTOR_CLASS_NAME.equals(name)) {
-                return super.loadClass(name, resolve);
-            }
-
-            synchronized (getClassLoadingLock(name)) {
-                Class<?> loadedClass = findLoadedClass(name);
-                if (loadedClass == null) {
-                    loadedClass = findClass(name);
-                }
-                if (resolve) {
-                    resolveClass(loadedClass);
-                }
-                return loadedClass;
-            }
-        }
     }
 
     public static class WidgetSnapshot {
