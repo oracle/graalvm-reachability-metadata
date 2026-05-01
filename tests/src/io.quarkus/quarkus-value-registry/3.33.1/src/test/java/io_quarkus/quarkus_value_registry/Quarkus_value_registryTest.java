@@ -113,6 +113,21 @@ public class Quarkus_value_registryTest {
     }
 
     @Test
+    void independentlyCreatedRuntimeKeysWithTheSameNameShareRegisteredValues() {
+        InMemoryValueRegistry registry = new InMemoryValueRegistry();
+        RuntimeKey<String> registrationKey = RuntimeKey.key("feature.mode");
+        RuntimeKey<String> lookupKey = RuntimeKey.key("feature.mode", String.class);
+        RuntimeKey<String> derivedKey = RuntimeKey.key("feature.summary");
+
+        registry.register(registrationKey, "active");
+        registry.registerInfo(derivedKey, currentRegistry -> "mode=" + currentRegistry.get(lookupKey));
+
+        assertThat(registry.containsKey(lookupKey)).isTrue();
+        assertThat(registry.get(lookupKey)).isEqualTo("active");
+        assertThat(registry.get(derivedKey)).isEqualTo("mode=active");
+    }
+
+    @Test
     void runtimeInfoProviderCanRegisterValuesFromARuntimeSource() {
         InMemoryValueRegistry registry = new InMemoryValueRegistry();
         MapRuntimeSource source = new MapRuntimeSource();
