@@ -4,6 +4,7 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 import io
+import json
 import os
 import subprocess
 import tempfile
@@ -400,6 +401,23 @@ class IssueClaimPreflightTests(unittest.TestCase):
             forge_metadata.should_skip_issue_from_preflight(issue, None)
         )
 
+    def test_cached_skip_skips_without_preflight(self) -> None:
+        issue = {
+            "number": 1412,
+            "labels": [],
+            "assignees": [],
+        }
+        cached_skip = forge_metadata.CachedIssueClaimSkip(
+            issue_number=1412,
+            reason=forge_metadata.ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
+            observed_at_epoch=100.0,
+            project_status=forge_metadata.STATUS_IN_PROGRESS,
+        )
+
+        self.assertTrue(
+            forge_metadata.should_skip_issue_from_preflight(issue, None, cached_skip)
+        )
+
     def test_offset_issue_fetch_uses_search_page_instead_of_expanding_limit(self) -> None:
         page_items = [_search_issue(number) for number in range(200, 300)]
 
@@ -451,47 +469,49 @@ class IssueClaimPreflightTests(unittest.TestCase):
             "assignees": [],
         }
 
-        with patch.object(forge_metadata, "validate_issue_processing_environment"), \
-                patch.object(
-                    forge_metadata,
-                    "get_prioritized_issues_with_label",
-                    side_effect=[
-                        ([skipped_issue], 0, 1, True, False),
-                        ([claimable_issue], 0, 2, True, False),
-                    ],
-                ) as get_prioritized_issues_with_label, \
-                patch.object(
-                    forge_metadata,
-                    "get_issue_claim_preflights_or_empty",
-                    side_effect=[
-                        {1: _preflight(issue_number=1, assignees=("automation-user",))},
-                        {2: _preflight(issue_number=2)},
-                    ],
-                ) as get_issue_claim_preflights_or_empty, \
-                patch.object(
-                    forge_metadata,
-                    "claim_issue_for_processing",
-                    return_value=_claimed_issue(),
-                ) as claim_issue_for_processing, \
-                patch.object(
-                    forge_metadata,
-                    "process_claimed_issue_lifecycle",
-                    return_value=True,
-                ), \
-                patch.object(forge_metadata, "get_open_blocking_issue_numbers") as get_open_blocking_issue_numbers, \
-                patch.object(forge_metadata, "get_issue_assignees") as get_issue_assignees, \
-                patch.object(forge_metadata, "get_project_item_state") as get_project_item_state:
-            processed = forge_metadata.process_issues_with_label(
-                forge_metadata.LABEL_LIBRARY_NEW,
-                1,
-                0,
-                "/tmp/reachability",
-                "/tmp/metrics",
-                None,
-                False,
-                "automation-user",
-                1,
-            )
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+                    patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                    patch.object(
+                        forge_metadata,
+                        "get_prioritized_issues_with_label",
+                        side_effect=[
+                            ([skipped_issue], 0, 1, True, False),
+                            ([claimable_issue], 0, 2, True, False),
+                        ],
+                    ) as get_prioritized_issues_with_label, \
+                    patch.object(
+                        forge_metadata,
+                        "get_issue_claim_preflights_or_empty",
+                        side_effect=[
+                            {1: _preflight(issue_number=1, assignees=("automation-user",))},
+                            {2: _preflight(issue_number=2)},
+                        ],
+                    ) as get_issue_claim_preflights_or_empty, \
+                    patch.object(
+                        forge_metadata,
+                        "claim_issue_for_processing",
+                        return_value=_claimed_issue(),
+                    ) as claim_issue_for_processing, \
+                    patch.object(
+                        forge_metadata,
+                        "process_claimed_issue_lifecycle",
+                        return_value=True,
+                    ), \
+                    patch.object(forge_metadata, "get_open_blocking_issue_numbers") as get_open_blocking_issue_numbers, \
+                    patch.object(forge_metadata, "get_issue_assignees") as get_issue_assignees, \
+                    patch.object(forge_metadata, "get_project_item_state") as get_project_item_state:
+                processed = forge_metadata.process_issues_with_label(
+                    forge_metadata.LABEL_LIBRARY_NEW,
+                    1,
+                    0,
+                    "/tmp/reachability",
+                    "/tmp/metrics",
+                    None,
+                    False,
+                    "automation-user",
+                    1,
+                )
 
         self.assertEqual(processed, 1)
         self.assertEqual(
@@ -678,6 +698,163 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             environment_already_validated=True,
         )
         process_reviews.assert_not_called()
+
+
+class IssueClaimCacheTests(unittest.TestCase):
+    def test_read_cache_ignores_missing_corrupt_and_expired_cache(self) -> None:
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root):
+                self.assertEqual(forge_metadata.read_issue_claim_cache(now=100.0), {})
+
+                with open(forge_metadata.get_issue_claim_cache_path(), "w", encoding="utf-8") as cache_file:
+                    cache_file.write("{not json")
+                self.assertEqual(forge_metadata.read_issue_claim_cache(now=100.0), {})
+
+                with open(forge_metadata.get_issue_claim_cache_path(), "w", encoding="utf-8") as cache_file:
+                    json.dump(
+                        {
+                            "version": forge_metadata.ISSUE_CLAIM_CACHE_VERSION,
+                            "repo": forge_metadata.REPO,
+                            "updated_at_epoch": 0.0,
+                            "entries": {
+                                "1412": {
+                                    "observed_at_epoch": 0.0,
+                                    "reason": forge_metadata.ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
+                                    "project_status": forge_metadata.STATUS_IN_PROGRESS,
+                                },
+                            },
+                        },
+                        cache_file,
+                    )
+
+                self.assertEqual(forge_metadata.read_issue_claim_cache(now=901.0), {})
+
+    def test_record_and_invalidate_cache_entry(self) -> None:
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root):
+                forge_metadata.record_issue_claim_cache_observations(
+                    [
+                        forge_metadata.IssueClaimCacheObservation(
+                            issue_number=1412,
+                            reason=forge_metadata.ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
+                            assignees=("automation-user",),
+                        ),
+                    ],
+                    now=100.0,
+                )
+
+                cache = forge_metadata.read_issue_claim_cache(now=100.0)
+                self.assertEqual(cache[1412].reason, forge_metadata.ISSUE_CLAIM_CACHE_REASON_ASSIGNED)
+                self.assertEqual(cache[1412].assignees, ("automation-user",))
+
+                forge_metadata.invalidate_issue_claim_cache_entry(1412, now=101.0)
+                self.assertEqual(forge_metadata.read_issue_claim_cache(now=101.0), {})
+
+    def test_process_loop_does_not_preflight_cached_issue(self) -> None:
+        cached_issue = {
+            "number": 1,
+            "title": "Add support for org.example:cached:1.0.0",
+            "labels": [],
+            "assignees": [],
+        }
+        claimable_issue = {
+            "number": 2,
+            "title": "Add support for org.example:claimable:1.0.0",
+            "labels": [],
+            "assignees": [],
+        }
+
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root):
+                forge_metadata.record_issue_claim_cache_observations(
+                    [
+                        forge_metadata.IssueClaimCacheObservation(
+                            issue_number=1,
+                            reason=forge_metadata.ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
+                            project_status=forge_metadata.STATUS_IN_PROGRESS,
+                        ),
+                    ],
+                )
+
+                with patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                        patch.object(
+                            forge_metadata,
+                            "get_prioritized_issues_with_label",
+                            return_value=([cached_issue, claimable_issue], 0, 2, True, True),
+                        ), \
+                        patch.object(
+                            forge_metadata,
+                            "get_issue_claim_preflights_or_empty",
+                            return_value={2: _preflight(issue_number=2)},
+                        ) as get_issue_claim_preflights_or_empty, \
+                        patch.object(
+                            forge_metadata,
+                            "claim_issue_for_processing",
+                            return_value=_claimed_issue(),
+                        ), \
+                        patch.object(
+                            forge_metadata,
+                            "process_claimed_issue_lifecycle",
+                            return_value=True,
+                        ):
+                    processed = forge_metadata.process_issues_with_label(
+                        forge_metadata.LABEL_LIBRARY_NEW,
+                        1,
+                        0,
+                        "/tmp/reachability",
+                        "/tmp/metrics",
+                        None,
+                        False,
+                        "automation-user",
+                        1,
+                    )
+
+        self.assertEqual(processed, 1)
+        get_issue_claim_preflights_or_empty.assert_called_once_with([claimable_issue])
+
+    def test_process_loop_records_preflight_negative_result(self) -> None:
+        issue = {
+            "number": 1,
+            "title": "Add support for org.example:blocked:1.0.0",
+            "labels": [],
+            "assignees": [],
+        }
+
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+                    patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                    patch.object(
+                        forge_metadata,
+                        "get_prioritized_issues_with_label",
+                        side_effect=[
+                            ([issue], 0, 1, True, False),
+                            ([], 0, 1, True, True),
+                        ],
+                    ), \
+                    patch.object(
+                        forge_metadata,
+                        "get_issue_claim_preflights_or_empty",
+                        return_value={1: _preflight(issue_number=1, open_blockers=(99,))},
+                    ), \
+                    patch.object(forge_metadata, "claim_issue_for_processing") as claim_issue_for_processing:
+                processed = forge_metadata.process_issues_with_label(
+                    forge_metadata.LABEL_LIBRARY_NEW,
+                    1,
+                    0,
+                    "/tmp/reachability",
+                    "/tmp/metrics",
+                    None,
+                    False,
+                    "automation-user",
+                    1,
+                )
+
+                cache = forge_metadata.read_issue_claim_cache()
+                self.assertEqual(cache[1].reason, forge_metadata.ISSUE_CLAIM_CACHE_REASON_BLOCKED)
+                self.assertEqual(cache[1].open_blockers, (99,))
+
+        self.assertEqual(processed, 0)
+        claim_issue_for_processing.assert_not_called()
 
 
 class ProjectItemStatusTests(unittest.TestCase):
@@ -894,6 +1071,9 @@ class IssueClaimLockTests(unittest.TestCase):
                     patch.object(forge_metadata, "get_project_item_state") as get_project_item_state:
                 self.assertIsNone(forge_metadata.try_claim_issue(issue, "automation-user"))
                 get_project_item_state.assert_not_called()
+                cache = forge_metadata.read_issue_claim_cache()
+                self.assertEqual(cache[1412].reason, forge_metadata.ISSUE_CLAIM_CACHE_REASON_ASSIGNED)
+                self.assertEqual(cache[1412].assignees, ("automation-user",))
 
     def test_try_claim_issue_uses_combined_project_status_lookup(self) -> None:
         issue = {
@@ -921,11 +1101,37 @@ class IssueClaimLockTests(unittest.TestCase):
                     forge_metadata.try_claim_issue(issue, "automation-user"),
                     "project-item",
                 )
+                cache = forge_metadata.read_issue_claim_cache()
+                self.assertEqual(cache[1412].reason, forge_metadata.ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS)
 
-        get_project_item_state.assert_called_once_with(1412)
-        get_item_status.assert_not_called()
-        set_issue_assignee.assert_called_once_with(1412, "automation-user")
-        set_item_status.assert_called_once_with("project-item", forge_metadata.STATUS_IN_PROGRESS)
+            get_project_item_state.assert_called_once_with(1412)
+            get_item_status.assert_not_called()
+            set_issue_assignee.assert_called_once_with(1412, "automation-user")
+            set_item_status.assert_called_once_with("project-item", forge_metadata.STATUS_IN_PROGRESS)
+
+    def test_revert_issue_claim_invalidates_cache_entry(self) -> None:
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root):
+                forge_metadata.record_issue_claim_cache_observations(
+                    [
+                        forge_metadata.IssueClaimCacheObservation(
+                            issue_number=1412,
+                            reason=forge_metadata.ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
+                            project_status=forge_metadata.STATUS_IN_PROGRESS,
+                        ),
+                    ],
+                )
+
+                with patch.object(forge_metadata, "set_item_status") as set_item_status, \
+                        patch.object(forge_metadata, "clear_issue_assignees") as clear_issue_assignees, \
+                        patch.object(forge_metadata, "get_item_status", return_value=forge_metadata.STATUS_TODO), \
+                        patch.object(forge_metadata, "get_issue_assignees", return_value=[]):
+                    forge_metadata.revert_issue_claim("item-1", 1412, "test")
+
+                self.assertEqual(forge_metadata.read_issue_claim_cache(), {})
+
+        set_item_status.assert_called_once_with("item-1", forge_metadata.STATUS_TODO)
+        clear_issue_assignees.assert_called_once_with(1412)
 
 
 class InterruptHandlingTests(unittest.TestCase):

@@ -99,6 +99,10 @@ GITHUB_API_MAX_PAGE_SIZE = 100
 GITHUB_SEARCH_MAX_RESULTS = 1000
 # GitHub validates GraphQL node cost against worst-case first values; 5 issues can exceed 500k here.
 ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE = 4
+ISSUE_CLAIM_CACHE_VERSION = 1
+ISSUE_CLAIM_CACHE_FILENAME = "issue-cache-v1.json"
+ISSUE_CLAIM_CACHE_LOCK_FILENAME = "issue-cache-v1.lock"
+DEFAULT_ISSUE_CLAIM_CACHE_TTL_SECONDS = 15 * 60
 GITHUB_RATE_LIMIT_EXIT_CODE = 75
 REVIEW_PERIOD_SUFFIX_SECONDS = {
     "s": 1,
@@ -133,6 +137,20 @@ SCRATCH_WORKTREE_DIRNAME = "forge_worktrees"
 SCRATCH_REVIEW_WORKTREE_DIRNAME = "forge_review_worktrees"
 SCRATCH_METRICS_DIRNAME = "forge_run_metrics"
 ISSUE_CLAIM_LOCK_DIRNAME = "metadata-forge-issue-claim-locks"
+ISSUE_CLAIM_CACHE_REASON_ASSIGNED = "assigned"
+ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION = "human_intervention"
+ISSUE_CLAIM_CACHE_REASON_BLOCKED = "blocked"
+ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM = "missing_project_item"
+ISSUE_CLAIM_CACHE_REASON_NON_TODO = "non_todo"
+ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS = "in_progress"
+ISSUE_CLAIM_CACHE_REASONS = {
+    ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
+    ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
+    ISSUE_CLAIM_CACHE_REASON_BLOCKED,
+    ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM,
+    ISSUE_CLAIM_CACHE_REASON_NON_TODO,
+    ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
+}
 HUMAN_INTERVENTION_LOGS_DIRNAME = "human-intervention-logs"
 SCRIPT_RUN_METRICS_DIR = "script_run_metrics"
 ADD_NEW_LIBRARY_METRICS_FILE = "add_new_library_support.json"
@@ -203,6 +221,25 @@ class IssueReference:
     @property
     def repo(self) -> str:
         return f"{self.owner}/{self.repo_name}"
+
+
+@dataclass(frozen=True)
+class IssueClaimCacheObservation:
+    issue_number: int
+    reason: str
+    assignees: tuple[str, ...] = ()
+    project_status: str | None = None
+    open_blockers: tuple[int, ...] = ()
+
+
+@dataclass(frozen=True)
+class CachedIssueClaimSkip:
+    issue_number: int
+    reason: str
+    observed_at_epoch: float
+    assignees: tuple[str, ...] = ()
+    project_status: str | None = None
+    open_blockers: tuple[int, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -545,6 +582,51 @@ class LocalIssueClaimLock:
             held_issue_claim_lock_numbers.discard(self.issue_number)
 
 
+class LocalIssueClaimCacheWriterLock:
+    """Short-lived exclusive lock for atomic issue-claim cache updates."""
+
+    def __init__(self):
+        self.lock_path = get_issue_claim_cache_lock_path()
+        self.lock_file = None
+        self.fallback_lock_path = f"{self.lock_path}.exclusive"
+
+    def __enter__(self):
+        self.acquire()
+        return self
+
+    def __exit__(self, _exc_type, _exc, _traceback) -> None:
+        self.release()
+
+    def acquire(self) -> None:
+        os.makedirs(os.path.dirname(self.lock_path), exist_ok=True)
+        if fcntl is None:
+            self._acquire_exclusive_file_lock()
+            return
+        self.lock_file = open(self.lock_path, "a+", encoding="utf-8")
+        fcntl.flock(self.lock_file.fileno(), fcntl.LOCK_EX)
+
+    def release(self) -> None:
+        if self.lock_file is None:
+            return
+        try:
+            if fcntl is not None:
+                fcntl.flock(self.lock_file.fileno(), fcntl.LOCK_UN)
+        finally:
+            self.lock_file.close()
+            self.lock_file = None
+            if fcntl is None and os.path.exists(self.fallback_lock_path):
+                os.unlink(self.fallback_lock_path)
+
+    def _acquire_exclusive_file_lock(self) -> None:
+        while True:
+            try:
+                fd = os.open(self.fallback_lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+                self.lock_file = os.fdopen(fd, "w", encoding="utf-8")
+                return
+            except FileExistsError:
+                time.sleep(0.05)
+
+
 def get_issue_claim_locks_root() -> str:
     """Return the shared local directory for issue claim locks."""
     return os.path.join(
@@ -559,12 +641,210 @@ def get_issue_claim_lock_path(issue_number: int) -> str:
     return os.path.join(get_issue_claim_locks_root(), f"issue-{issue_number}.lock")
 
 
+def get_issue_claim_cache_path() -> str:
+    """Return the shared local issue-claim cache path."""
+    return os.path.join(get_issue_claim_locks_root(), ISSUE_CLAIM_CACHE_FILENAME)
+
+
+def get_issue_claim_cache_lock_path() -> str:
+    """Return the shared local issue-claim cache writer lock path."""
+    return os.path.join(get_issue_claim_locks_root(), ISSUE_CLAIM_CACHE_LOCK_FILENAME)
+
+
 def try_acquire_issue_claim_lock(issue_number: int) -> LocalIssueClaimLock | None:
     """Acquire a local per-issue claim lock, or return None if another local runner holds it."""
     claim_lock = LocalIssueClaimLock(issue_number)
     if claim_lock.acquire():
         return claim_lock
     return None
+
+
+def is_issue_claim_cache_enabled() -> bool:
+    """Return True when the shared local issue-claim cache is enabled."""
+    return os.environ.get("FORGE_ISSUE_CLAIM_CACHE", "1") != "0"
+
+
+def get_issue_claim_cache_ttl_seconds() -> int:
+    """Return the issue-claim cache TTL in seconds."""
+    raw_value = os.environ.get("FORGE_ISSUE_CLAIM_CACHE_TTL_SECONDS")
+    if raw_value is None or raw_value == "":
+        return DEFAULT_ISSUE_CLAIM_CACHE_TTL_SECONDS
+    try:
+        value = int(raw_value)
+    except ValueError:
+        print("ERROR: FORGE_ISSUE_CLAIM_CACHE_TTL_SECONDS must be a non-negative integer.", file=sys.stderr)
+        sys.exit(1)
+    if value < 0:
+        print("ERROR: FORGE_ISSUE_CLAIM_CACHE_TTL_SECONDS must be a non-negative integer.", file=sys.stderr)
+        sys.exit(1)
+    return value
+
+
+def _read_issue_claim_cache_payload() -> dict | None:
+    cache_path = get_issue_claim_cache_path()
+    try:
+        with open(cache_path, "r", encoding="utf-8") as cache_file:
+            payload = json.load(cache_file)
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return None
+    if not isinstance(payload, dict):
+        return None
+    if payload.get("version") != ISSUE_CLAIM_CACHE_VERSION:
+        return None
+    if payload.get("repo") != REPO:
+        return None
+    if not isinstance(payload.get("entries"), dict):
+        return None
+    return payload
+
+
+def _parse_issue_claim_cache_entry(
+        issue_number: int,
+        entry: dict,
+        now: float,
+        ttl_seconds: int,
+) -> CachedIssueClaimSkip | None:
+    if not isinstance(entry, dict):
+        return None
+    reason = entry.get("reason")
+    if reason not in ISSUE_CLAIM_CACHE_REASONS:
+        return None
+    try:
+        observed_at_epoch = float(entry.get("observed_at_epoch"))
+    except (TypeError, ValueError):
+        return None
+    if now - observed_at_epoch > ttl_seconds:
+        return None
+
+    assignee_values = entry.get("assignees", [])
+    if not isinstance(assignee_values, list):
+        assignee_values = []
+    assignees = tuple(
+        assignee
+        for assignee in assignee_values
+        if isinstance(assignee, str) and assignee
+    )
+    blocker_values = entry.get("open_blockers", [])
+    if not isinstance(blocker_values, list):
+        blocker_values = []
+    open_blockers = tuple(
+        blocker
+        for blocker in blocker_values
+        if isinstance(blocker, int)
+    )
+    project_status = entry.get("project_status")
+    if project_status is not None and not isinstance(project_status, str):
+        project_status = None
+
+    return CachedIssueClaimSkip(
+        issue_number=issue_number,
+        reason=reason,
+        observed_at_epoch=observed_at_epoch,
+        assignees=assignees,
+        project_status=project_status,
+        open_blockers=open_blockers,
+    )
+
+
+def read_issue_claim_cache(now: float | None = None, require_fresh_cache: bool = True) -> dict[int, CachedIssueClaimSkip]:
+    """Read fresh issue-claim cache entries without taking a lock."""
+    if not is_issue_claim_cache_enabled():
+        return {}
+    ttl_seconds = get_issue_claim_cache_ttl_seconds()
+    if ttl_seconds <= 0:
+        return {}
+    now = time.time() if now is None else now
+    payload = _read_issue_claim_cache_payload()
+    if payload is None:
+        return {}
+    try:
+        updated_at_epoch = float(payload.get("updated_at_epoch"))
+    except (TypeError, ValueError):
+        return {}
+    if require_fresh_cache and now - updated_at_epoch > ttl_seconds:
+        return {}
+
+    cache: dict[int, CachedIssueClaimSkip] = {}
+    for issue_number_text, entry in payload.get("entries", {}).items():
+        try:
+            issue_number = int(issue_number_text)
+        except (TypeError, ValueError):
+            continue
+        cached_skip = _parse_issue_claim_cache_entry(issue_number, entry, now, ttl_seconds)
+        if cached_skip is not None:
+            cache[issue_number] = cached_skip
+    return cache
+
+
+def _write_issue_claim_cache_entries(entries: dict[int, CachedIssueClaimSkip], updated_at_epoch: float) -> None:
+    cache_path = get_issue_claim_cache_path()
+    os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+    payload = {
+        "version": ISSUE_CLAIM_CACHE_VERSION,
+        "repo": REPO,
+        "updated_at_epoch": updated_at_epoch,
+        "entries": {
+            str(issue_number): {
+                "observed_at_epoch": cached_skip.observed_at_epoch,
+                "reason": cached_skip.reason,
+                "assignees": list(cached_skip.assignees),
+                "project_status": cached_skip.project_status,
+                "open_blockers": list(cached_skip.open_blockers),
+            }
+            for issue_number, cached_skip in sorted(entries.items())
+        },
+    }
+    temp_path = f"{cache_path}.{os.getpid()}.{uuid.uuid4().hex}.tmp"
+    try:
+        with open(temp_path, "w", encoding="utf-8") as cache_file:
+            json.dump(payload, cache_file, sort_keys=True)
+            cache_file.write("\n")
+            cache_file.flush()
+            os.fsync(cache_file.fileno())
+        os.replace(temp_path, cache_path)
+    finally:
+        if os.path.exists(temp_path):
+            os.unlink(temp_path)
+
+
+def record_issue_claim_cache_observations(
+        observations: list[IssueClaimCacheObservation],
+        now: float | None = None,
+) -> None:
+    """Record negative issue-claim observations in the shared local cache."""
+    observations = [
+        observation
+        for observation in observations
+        if observation.reason in ISSUE_CLAIM_CACHE_REASONS
+    ]
+    if not observations or not is_issue_claim_cache_enabled() or get_issue_claim_cache_ttl_seconds() <= 0:
+        return
+    now = time.time() if now is None else now
+    with LocalIssueClaimCacheWriterLock():
+        cache = read_issue_claim_cache(now, require_fresh_cache=False)
+        for observation in observations:
+            cache[observation.issue_number] = CachedIssueClaimSkip(
+                issue_number=observation.issue_number,
+                reason=observation.reason,
+                observed_at_epoch=now,
+                assignees=observation.assignees,
+                project_status=observation.project_status,
+                open_blockers=observation.open_blockers,
+            )
+        _write_issue_claim_cache_entries(cache, now)
+
+
+def invalidate_issue_claim_cache_entry(issue_number: int, now: float | None = None) -> None:
+    """Remove one issue from the shared local issue-claim cache."""
+    if not is_issue_claim_cache_enabled() or get_issue_claim_cache_ttl_seconds() <= 0:
+        return
+    now = time.time() if now is None else now
+    with LocalIssueClaimCacheWriterLock():
+        cache = read_issue_claim_cache(now, require_fresh_cache=False)
+        if issue_number not in cache:
+            return
+        cache.pop(issue_number, None)
+        _write_issue_claim_cache_entries(cache, now)
 
 
 def pull_request_has_label(pr: dict, label_name: str) -> bool:
@@ -2925,6 +3205,7 @@ def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> None:
             f"Issue #{issue_number} revert verification failed: "
             f"status={verified_status!r}, assignees={verified_assignees!r}"
         )
+    invalidate_issue_claim_cache_entry(issue_number)
     print(
         f"ERROR: Issue #{issue_number} failed due to {reason}; verified revert with "
         f"status={verified_status}, assignees={verified_assignees}",
@@ -3370,6 +3651,96 @@ def _extract_issue_claim_preflight(issue_number: int, issue_node: dict | None) -
     )
 
 
+def get_issue_claim_cache_observation_from_payload(issue: dict) -> IssueClaimCacheObservation | None:
+    """Return a cache observation for locally visible negative issue state."""
+    issue_number = issue.get("number")
+    if not isinstance(issue_number, int):
+        return None
+    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
+        return IssueClaimCacheObservation(
+            issue_number=issue_number,
+            reason=ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
+        )
+    payload_assignees = get_issue_payload_assignees(issue)
+    if payload_assignees:
+        return IssueClaimCacheObservation(
+            issue_number=issue_number,
+            reason=ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
+            assignees=tuple(payload_assignees),
+        )
+    return None
+
+
+def get_issue_claim_cache_observation_from_preflight(
+        preflight: IssueClaimPreflight,
+) -> IssueClaimCacheObservation | None:
+    """Return a cache observation for negative GraphQL preflight state."""
+    if not preflight.complete:
+        return None
+    if preflight.assignees:
+        return IssueClaimCacheObservation(
+            issue_number=preflight.issue_number,
+            reason=ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
+            assignees=preflight.assignees,
+        )
+    if preflight.open_blockers:
+        return IssueClaimCacheObservation(
+            issue_number=preflight.issue_number,
+            reason=ISSUE_CLAIM_CACHE_REASON_BLOCKED,
+            open_blockers=preflight.open_blockers,
+        )
+    if not preflight.item_id:
+        return IssueClaimCacheObservation(
+            issue_number=preflight.issue_number,
+            reason=ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM,
+        )
+    if preflight.project_status != STATUS_TODO:
+        reason = (
+            ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS
+            if preflight.project_status == STATUS_IN_PROGRESS
+            else ISSUE_CLAIM_CACHE_REASON_NON_TODO
+        )
+        return IssueClaimCacheObservation(
+            issue_number=preflight.issue_number,
+            reason=reason,
+            project_status=preflight.project_status,
+        )
+    return None
+
+
+def format_cached_issue_claim_skip(cached_skip: CachedIssueClaimSkip) -> str:
+    """Return a readable reason for a cached issue-claim skip."""
+    if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_ASSIGNED:
+        return f"recently cached as assigned to {list(cached_skip.assignees)}"
+    if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION:
+        return f"recently cached with label '{LABEL_HUMAN_INTERVENTION}'"
+    if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_BLOCKED:
+        blockers_text = ", ".join(f"#{blocker}" for blocker in cached_skip.open_blockers)
+        return f"recently cached as blocked by open issue(s) {blockers_text}"
+    if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM:
+        return f"recently cached as missing project {PROJECT_NUMBER} item"
+    if cached_skip.reason in {ISSUE_CLAIM_CACHE_REASON_NON_TODO, ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS}:
+        return f"recently cached as not Todo (it was '{cached_skip.project_status}')"
+    return f"recently cached as {cached_skip.reason}"
+
+
+def get_cached_issue_claim_skips(issues: list[dict]) -> dict[int, CachedIssueClaimSkip]:
+    """Return fresh cached skips for the given issue payloads."""
+    cache = read_issue_claim_cache()
+    if not cache:
+        return {}
+    issue_numbers = {
+        issue["number"]
+        for issue in issues
+        if isinstance(issue, dict) and isinstance(issue.get("number"), int)
+    }
+    return {
+        issue_number: cached_skip
+        for issue_number, cached_skip in cache.items()
+        if issue_number in issue_numbers
+    }
+
+
 def get_issue_claim_preflights(
         issue_numbers: list[int],
         chunk_size: int = ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE,
@@ -3454,7 +3825,11 @@ def get_issue_claim_preflights_or_empty(issues: list[dict]) -> dict[int, IssueCl
         return {}
 
 
-def should_skip_issue_from_preflight(issue: dict, preflight: IssueClaimPreflight | None) -> bool:
+def should_skip_issue_from_preflight(
+        issue: dict,
+        preflight: IssueClaimPreflight | None,
+        cached_skip: CachedIssueClaimSkip | None = None,
+) -> bool:
     number = issue["number"]
 
     if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
@@ -3466,6 +3841,11 @@ def should_skip_issue_from_preflight(issue: dict, preflight: IssueClaimPreflight
     if payload_assignees:
         print()
         log_stage("issue-claim", f"Issue #{number} already assigned to {payload_assignees}. Skipping.")
+        return True
+
+    if cached_skip is not None:
+        print()
+        log_stage("issue-claim", f"Issue #{number} {format_cached_issue_claim_skip(cached_skip)}. Skipping.")
         return True
 
     if preflight is None or not preflight.complete:
@@ -3600,6 +3980,12 @@ def try_claim_issue(issue: dict, authenticated_user: str) -> Optional[str]:
     if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
         print()
         log_stage("issue-claim", f"Issue #{number} has label '{LABEL_HUMAN_INTERVENTION}'. Skipping.")
+        record_issue_claim_cache_observations([
+            IssueClaimCacheObservation(
+                issue_number=number,
+                reason=ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
+            )
+        ])
         return None
 
     claim_lock = try_acquire_issue_claim_lock(number)
@@ -3624,6 +4010,13 @@ def try_claim_issue_with_local_lock(issue: dict, authenticated_user: str) -> Opt
         blockers_text = ", ".join(f"#{blocker}" for blocker in open_blockers)
         print()
         log_stage("issue-claim", f"Issue #{number} is blocked by open issue(s) {blockers_text}. Skipping.")
+        record_issue_claim_cache_observations([
+            IssueClaimCacheObservation(
+                issue_number=number,
+                reason=ISSUE_CLAIM_CACHE_REASON_BLOCKED,
+                open_blockers=tuple(open_blockers),
+            )
+        ])
         return None
 
     # The issue-list payload can be stale when another local runner just claimed
@@ -3632,6 +4025,13 @@ def try_claim_issue_with_local_lock(issue: dict, authenticated_user: str) -> Opt
     if assignees:
         print()
         log_stage("issue-claim", f"Issue #{number} already assigned to {assignees}. Skipping.")
+        record_issue_claim_cache_observations([
+            IssueClaimCacheObservation(
+                issue_number=number,
+                reason=ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
+                assignees=tuple(assignees),
+            )
+        ])
         return None
 
     item_id, current_status = get_project_item_state(number)
@@ -3640,11 +4040,29 @@ def try_claim_issue_with_local_lock(issue: dict, authenticated_user: str) -> Opt
             f"ERROR: Issue #{number} is not linked to project {PROJECT_NUMBER}",
             file=sys.stderr,
         )
+        record_issue_claim_cache_observations([
+            IssueClaimCacheObservation(
+                issue_number=number,
+                reason=ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM,
+            )
+        ])
         return None
 
     if current_status != STATUS_TODO:
         print()
         log_stage("issue-claim", f"Issue #{number} is not Todo (it is '{current_status}'). Skipping.")
+        reason = (
+            ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS
+            if current_status == STATUS_IN_PROGRESS
+            else ISSUE_CLAIM_CACHE_REASON_NON_TODO
+        )
+        record_issue_claim_cache_observations([
+            IssueClaimCacheObservation(
+                issue_number=number,
+                reason=reason,
+                project_status=current_status,
+            )
+        ])
         return None
 
     active_sibling_blockers = get_active_sibling_blocker_numbers(number)
@@ -3674,6 +4092,14 @@ def try_claim_issue_with_local_lock(issue: dict, authenticated_user: str) -> Opt
         if assignees != [authenticated_user]:
             print()
             log_stage("issue-claim", f"Issue #{number}: assignee is now {assignees}, not us. Backing off.")
+            if assignees:
+                record_issue_claim_cache_observations([
+                    IssueClaimCacheObservation(
+                        issue_number=number,
+                        reason=ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
+                        assignees=tuple(assignees),
+                    )
+                ])
             return None
 
         active_sibling_blockers = get_active_sibling_blocker_numbers(number)
@@ -3693,6 +4119,13 @@ def try_claim_issue_with_local_lock(issue: dict, authenticated_user: str) -> Opt
             return None
 
         set_item_status(item_id, STATUS_IN_PROGRESS)
+        record_issue_claim_cache_observations([
+            IssueClaimCacheObservation(
+                issue_number=number,
+                reason=ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
+                project_status=STATUS_IN_PROGRESS,
+            )
+        ])
         print()
         log_stage("issue-claim", f"Claimed issue #{number} (-> In Progress)")
         return item_id
@@ -3766,7 +4199,7 @@ def process_issues_with_label(
     regular_offset = 0
     exhausted = False
     priority_exhausted = False
-    pending_issues: list[tuple[dict, IssueClaimPreflight | None]] = []
+    pending_issues: list[tuple[dict, IssueClaimPreflight | None, CachedIssueClaimSkip | None]] = []
     active_futures: dict[concurrent.futures.Future[bool], ClaimedIssue] = {}
 
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=parallelism)
@@ -3802,17 +4235,42 @@ def process_issues_with_label(
                             exhausted = True
                             break
 
-                    issue_preflights = get_issue_claim_preflights_or_empty(issues)
+                    payload_cache_observations = [
+                        observation
+                        for observation in (
+                            get_issue_claim_cache_observation_from_payload(issue)
+                            for issue in issues
+                        )
+                        if observation is not None
+                    ]
+                    record_issue_claim_cache_observations(payload_cache_observations)
+
+                    cached_skips = get_cached_issue_claim_skips(issues)
+                    issues_needing_preflight = [
+                        issue
+                        for issue in issues
+                        if issue["number"] not in cached_skips
+                    ]
+                    issue_preflights = get_issue_claim_preflights_or_empty(issues_needing_preflight)
+                    preflight_cache_observations = [
+                        observation
+                        for observation in (
+                            get_issue_claim_cache_observation_from_preflight(preflight)
+                            for preflight in issue_preflights.values()
+                        )
+                        if observation is not None
+                    ]
+                    record_issue_claim_cache_observations(preflight_cache_observations)
                     pending_issues.extend(
-                        (issue, issue_preflights.get(issue["number"]))
+                        (issue, issue_preflights.get(issue["number"]), cached_skips.get(issue["number"]))
                         for issue in issues
                     )
                     print()
                     log_stage("issue-scan", f"Found {len(issues)} issue(s) to consider")
 
                 while pending_issues and processed_count < limit and len(active_futures) < parallelism:
-                    issue, preflight = pending_issues.pop(0)
-                    if should_skip_issue_from_preflight(issue, preflight):
+                    issue, preflight, cached_skip = pending_issues.pop(0)
+                    if should_skip_issue_from_preflight(issue, preflight, cached_skip):
                         continue
                     claimed_issue = claim_issue_for_processing(
                         issue,
