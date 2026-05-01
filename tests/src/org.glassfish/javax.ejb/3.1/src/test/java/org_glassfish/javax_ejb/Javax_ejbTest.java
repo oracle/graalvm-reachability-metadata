@@ -318,6 +318,19 @@ public class Javax_ejbTest {
     }
 
     @Test
+    void embeddableContainerReportsMissingRequestedProvider() {
+        String requestedProvider = "example.embeddable.Provider";
+        Map<String, Object> properties = new HashMap<>();
+        properties.put(EJBContainer.PROVIDER, requestedProvider);
+        properties.put(EJBContainer.APP_NAME, "inventory-test");
+
+        assertThatExceptionOfType(EJBException.class)
+                .isThrownBy(() -> EJBContainer.createEJBContainer(properties))
+                .withMessageContaining("No EJBContainer provider available")
+                .withMessageContaining(requestedProvider);
+    }
+
+    @Test
     void annotatedBeansCanBeInstantiatedAndInvokedWithoutContainer() throws Exception {
         InventoryBean inventory = new InventoryBean();
         BillingBean billing = new BillingBean();
