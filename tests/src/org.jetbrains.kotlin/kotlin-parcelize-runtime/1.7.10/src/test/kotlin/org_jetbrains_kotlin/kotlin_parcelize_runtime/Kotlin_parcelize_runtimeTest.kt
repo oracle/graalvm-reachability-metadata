@@ -49,6 +49,15 @@ public class Kotlin_parcelize_runtimeTest {
     }
 
     @Test
+    public fun parcelerImplementationsCanProvideTypedParcelableArrays() {
+        val parceler: Parceler<String> = ArrayCreatingStringParceler
+        val createdArray: Array<String> = parceler.newArray(3)
+
+        assertThat(createdArray).containsExactly("", "", "")
+        assertThat(createdArray::class.java.componentType).isEqualTo(String::class.java)
+    }
+
+    @Test
     public fun parcelerDefaultNewArrayReportsThatGenerationIsExpectedFromParcelizeTooling() {
         assertThatThrownBy { StringParceler.newArray(3) }
             .isInstanceOf(NotImplementedError::class.java)
@@ -150,6 +159,16 @@ private object IntParceler : Parceler<Int> {
     override fun Int.write(parcel: Parcel, flags: Int) {
         parcel.writeInt(this)
     }
+}
+
+private object ArrayCreatingStringParceler : Parceler<String> {
+    override fun create(parcel: Parcel): String = parcel.readString().orEmpty()
+
+    override fun String.write(parcel: Parcel, flags: Int) {
+        parcel.writeString(this)
+    }
+
+    override fun newArray(size: Int): Array<String> = Array(size) { "" }
 }
 
 public class CreatorBackedParcelable(public val value: String) : Parcelable {
