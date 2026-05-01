@@ -42,4 +42,33 @@ public class XML4JDOMAdapterTest {
             }
         }
     }
+
+    @Test
+    void getDocumentWithValidationInstallsBuilderErrorHandler() throws Exception {
+        XML4JDOMAdapter adapter = new XML4JDOMAdapter();
+        String xml = """
+                <!DOCTYPE root [
+                    <!ELEMENT root (child)>
+                    <!ATTLIST root id CDATA #REQUIRED>
+                    <!ELEMENT child (#PCDATA)>
+                ]>
+                <root id="validated">
+                    <child>content</child>
+                </root>
+                """;
+
+        try (InputStream inputStream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))) {
+            Document document = adapter.getDocument(inputStream, true);
+
+            Element root = document.getDocumentElement();
+            Element child = (Element) root.getElementsByTagName("child").item(0);
+            assertThat(root.getNodeName()).isEqualTo("root");
+            assertThat(root.getAttribute("id")).isEqualTo("validated");
+            assertThat(child.getTextContent()).isEqualTo("content");
+        } catch (Error error) {
+            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+                throw error;
+            }
+        }
+    }
 }
