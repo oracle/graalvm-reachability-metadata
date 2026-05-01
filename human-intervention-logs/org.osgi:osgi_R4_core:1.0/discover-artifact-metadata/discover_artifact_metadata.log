@@ -1,0 +1,2275 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de54f-ab9c-7ea2-83f6-972609b2c136
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.osgi:osgi_R4_core:1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
+- Set "coordinates" to "org.osgi:osgi_R4_core:1.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream OSGi sources, then patch the JSON directly with only fields I can support confidently.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 0ms:
+{
+  "coordinates" : "org.osgi:osgi_R4_core:1.0"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files | rg 'build/discovered-artifact-metadata/org\\.osgi-osgi_R4_core-1\\.0\\.json"'$|osgi_R4_core|org.osgi'"'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+tests/src/org.osgi/org.osgi.core/4.3.0/build.gradle
+tests/src/org.osgi/org.osgi.core/4.3.0/settings.gradle
+tests/src/org.osgi/org.osgi.core/4.3.0/src/test/java/org_osgi/org_osgi_core/FrameworkUtil1Test.java
+tests/src/org.osgi/org.osgi.core/4.3.0/src/test/java/org_osgi/org_osgi_core/PackagePermissionCollection1Test.java
+tests/src/org.osgi/org.osgi.core/4.3.0/src/test/java/org_osgi/org_osgi_core/ServicePermissionCollection1Test.java
+tests/src/org.osgi/org.osgi.core/4.3.0/src/test/java/org_osgi/org_osgi_core/BundlePermissionCollection1Test.java
+tests/src/org.osgi/org.osgi.core/4.3.0/src/test/java/org_osgi/org_osgi_core/AdaptPermissionCollection1Test.java
+tests/src/org.osgi/org.osgi.core/4.3.0/src/test/java/org_osgi/org_osgi_core/FrameworkUtilFilterImpl1Test.java
+tests/src/org.osgi/org.osgi.core/4.3.0/src/test/java/org_osgi/org_osgi_core/AdminPermissionCollection1Test.java
+tests/src/org.osgi/org.osgi.core/4.3.0/src/test/java/org_osgi/org_osgi_core/CapabilityPermissionCollection1Test.java
+tests/src/org.osgi/org.osgi.core/4.3.0/gradle.properties
+tests/src/org.osgi/org.osgi.core/4.3.0/user-code-filter.json
+tests/src/org.osgi/org.osgi.core/4.3.1/build.gradle
+tests/src/org.osgi/org.osgi.core/4.3.1/settings.gradle
+tests/src/org.osgi/org.osgi.core/4.3.1/src/test/java/org_osgi/org_osgi_core/FrameworkUtil1Test.java
+tests/src/org.osgi/org.osgi.core/4.3.1/src/test/java/org_osgi/org_osgi_core/PackagePermissionCollection1Test.java
+tests/src/org.osgi/org.osgi.core/4.3.1/src/test/java/org_osgi/org_osgi_core/ServicePermissionCollection1Test.java
+tests/src/org.osgi/org.osgi.core/4.3.1/src/test/java/org_osgi/org_osgi_core/BundlePermissionCollection1Test.java
+tests/src/org.osgi/org.osgi.core/4.3.1/src/test/java/org_osgi/org_osgi_core/AdaptPermissionCollection1Test.java
+tests/src/org.osgi/org.osgi.core/4.3.1/src/test/java/org_osgi/org_osgi_core/FrameworkUtilFilterImpl1Test.java
+tests/src/org.osgi/org.osgi.core/4.3.1/src/test/java/org_osgi/org_osgi_core/AdminPermissionCollection1Test.java
+tests/src/org.osgi/org.osgi.core/4.3.1/src/test/java/org_osgi/org_osgi_core/CapabilityPermissionCollection1Test.java
+tests/src/org.osgi/org.osgi.core/4.3.1/gradle.properties
+tests/src/org.osgi/org.osgi.core/4.3.1/user-code-filter.json
+tests/src/org.osgi/org.osgi.annotation.versioning/1.1.2/build.gradle
+tests/src/org.osgi/org.osgi.annotation.versioning/1.1.2/settings.gradle
+tests/src/org.osgi/org.osgi.annotation.versioning/1.1.2/src/test/java/org_osgi/org_osgi_annotation_versioning/Org_osgi_annotation_versioningTest.java
+tests/src/org.osgi/org.osgi.annotation.versioning/1.1.2/gradle.properties
+tests/src/org.osgi/org.osgi.annotation.versioning/1.1.2/user-code-filter.json
+tests/src/org.osgi/org.osgi.namespace.extender/1.0.1/build.gradle
+tests/src/org.osgi/org.osgi.namespace.extender/1.0.1/settings.gradle
+tests/src/org.osgi/org.osgi.namespace.extender/1.0.1/src/test/java/org_osgi/org_osgi_namespace_extender/Org_osgi_namespace_extenderTest.java
+tests/src/org.osgi/org.osgi.namespace.extender/1.0.1/gradle.properties
+tests/src/org.osgi/org.osgi.namespace.extender/1.0.1/user-code-filter.json
+tests/src/org.osgi/org.osgi.annotation.bundle/2.0.0/build.gradle
+tests/src/org.osgi/org.osgi.annotation.bundle/2.0.0/settings.gradle
+tests/src/org.osgi/org.osgi.annotation.bundle/2.0.0/src/test/java/org_osgi/org_osgi_annotation_bundle/Org_osgi_annotation_bundleTest.java
+tests/src/org.osgi/org.osgi.annotation.bundle/2.0.0/gradle.properties
+tests/src/org.osgi/org.osgi.annotation.bundle/2.0.0/user-code-filter.json
+tests/src/org.osgi/org.osgi.resource/1.0.0/build.gradle
+tests/src/org.osgi/org.osgi.resource/1.0.0/settings.gradle
+tests/src/org.osgi/org.osgi.resource/1.0.0/src/test/java/org_osgi/org_osgi_resource/Org_osgi_resourceTest.java
+tests/src/org.osgi/org.osgi.resource/1.0.0/gradle.properties
+tests/src/org.osgi/org.osgi.resource/1.0.0/user-code-filter.json
+tests/src/org.osgi/org.osgi.namespace.service/1.0.0/build.gradle
+tests/src/org.osgi/org.osgi.namespace.service/1.0.0/settings.gradle
+tests/src/org.osgi/org.osgi.namespace.service/1.0.0/src/test/java/org_osgi/org_osgi_namespace_service/Org_osgi_namespace_serviceTest.java
+tests/src/org.osgi/org.osgi.namespace.service/1.0.0/gradle.properties
+tests/src/org.osgi/org.osgi.namespace.service/1.0.0/user-code-filter.json
+tests/src/org.osgi/org.osgi.service.serviceloader/1.0.0/build.gradle
+tests/src/org.osgi/org.osgi.service.serviceloader/1.0.0/settings.gradle
+tests/src/org.osgi/org.osgi.service.serviceloader/1.0.0/src/test/java/org_osgi/org_osgi_service_serviceloader/Org_osgi_service_serviceloaderTest.java
+tests/src/org.osgi/org.osgi.service.serviceloader/1.0.0/gradle.properties
+tests/src/org.osgi/org.osgi.service.serviceloader/1.0.0/user-code-filter.json
+tests/src/org.osgi/org.osgi.compendium/5.0.0/build.gradle
+tests/src/org.osgi/org.osgi.compendium/5.0.0/settings.gradle
+tests/src/org.osgi/org.osgi.compendium/5.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+tests/src/org.osgi/org.osgi.compendium/5.0.0/src/test/java/org_osgi/org_osgi_compendium/ApplicationHandleDelegate1Test.java
+tests/src/org.osgi/org.osgi.compendium/5.0.0/src/test/java/org_osgi/org_osgi_compendium/ApplicationDescriptorDelegate1Test.java
+tests/src/org.osgi/org.osgi.compendium/5.0.0/src/test/java/org_osgi/org_osgi_compendium/DeploymentCustomizerPermission1Test.java
+tests/src/org.osgi/org.osgi.compendium/5.0.0/src/test/java/org_osgi/org_osgi_compendium/DeploymentAdminPermission1Test.java
+tests/src/org.osgi/org.osgi.compendium/5.0.0/src/test/java/org_osgi/org_osgi_compendium/XMLParserActivator1Test.java
+tests/src/org.osgi/org.osgi.compendium/5.0.0/src/test/java/org_osgi/org_osgi_compendium/vendor/deploymentadmin/DeploymentAdminPermission.java
+tests/src/org.osgi/org.osgi.compendium/5.0.0/src/test/java/org_osgi/org_osgi_compendium/vendor/deploymentadmin/DeploymentCustomizerPermission.java
+tests/src/org.osgi/org.osgi.compendium/5.0.0/src/test/java/org_osgi/org_osgi_compendium/DmtData1Test.java
+tests/src/org.osgi/org.osgi.compendium/5.0.0/gradle.properties
+tests/src/org.osgi/org.osgi.compendium/5.0.0/user-code-filter.json
+metadata/org.osgi/org.osgi.core/4.3.0/reachability-metadata.json
+metadata/org.osgi/org.osgi.core/index.json
+metadata/org.osgi/org.osgi.core/4.3.1/reachability-metadata.json
+metadata/org.osgi/org.osgi.annotation.versioning/1.1.2/reachability-metadata.json
+metadata/org.osgi/org.osgi.annotation.versioning/index.json
+metadata/org.osgi/org.osgi.namespace.extender/index.json
+metadata/org.osgi/org.osgi.namespace.extender/1.0.1/reachability-metadata.json
+metadata/org.osgi/org.osgi.annotation.bundle/2.0.0/reachability-metadata.json
+metadata/org.osgi/org.osgi.annotation.bundle/index.json
+metadata/org.osgi/org.osgi.resource/1.0.0/reachability-metadata.json
+metadata/org.osgi/org.osgi.resource/index.json
+metadata/org.osgi/org.osgi.namespace.service/1.0.0/reachability-metadata.json
+metadata/org.osgi/org.osgi.namespace.service/index.json
+metadata/org.osgi/org.osgi.service.serviceloader/1.0.0/reachability-metadata.json
+metadata/org.osgi/org.osgi.service.serviceloader/index.json
+metadata/org.osgi/org.osgi.compendium/index.json
+metadata/org.osgi/org.osgi.compendium/5.0.0/reachability-metadata.json
+stats/org.osgi/org.osgi.core/4.3.0/stats.json
+stats/org.osgi/org.osgi.core/4.3.0/execution-metrics.json
+stats/org.osgi/org.osgi.core/4.3.1/stats.json
+stats/org.osgi/org.osgi.annotation.versioning/1.1.2/stats.json
+stats/org.osgi/org.osgi.annotation.versioning/1.1.2/execution-metrics.json
+stats/org.osgi/org.osgi.namespace.extender/1.0.1/stats.json
+stats/org.osgi/org.osgi.namespace.extender/1.0.1/execution-metrics.json
+stats/org.osgi/org.osgi.namespace.service/1.0.0/stats.json
+stats/org.osgi/org.osgi.namespace.service/1.0.0/execution-metrics.json
+stats/org.osgi/org.osgi.annotation.bundle/2.0.0/stats.json
+stats/org.osgi/org.osgi.compendium/5.0.0/stats.json
+stats/org.osgi/org.osgi.compendium/5.0.0/execution-metrics.json
+stats/org.osgi/org.osgi.resource/1.0.0/stats.json
+stats/org.osgi/org.osgi.resource/1.0.0/execution-metrics.json
+stats/org.osgi/org.osgi.service.serviceloader/1.0.0/stats.json
+stats/org.osgi/org.osgi.service.serviceloader/1.0.0/execution-metrics.json
+
+web search: 
+web search: Maven org.osgi osgi_R4_core 1.0 sources jar
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 org osgi osgi_R4_core 1.0
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/osgi/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/
+codex
+Maven Central has the exact artifact and POM only for `osgi_R4_core:1.0`; there are no `-sources`, `-javadoc`, or test artifacts in that directory, so I’m checking upstream tags and OSGi’s release docs next.
+exec
+/usr/bin/bash -lc "jar tf ~/.m2/repository/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 0ms:
+java.nio.file.NoSuchFileException: /home/vjovanov/.m2/repository/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar
+	at java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:92)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:106)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111)
+	at java.base/sun.nio.fs.UnixFileAttributeViews$Basic.readAttributes(UnixFileAttributeViews.java:57)
+	at java.base/sun.nio.fs.UnixFileSystemProvider.readAttributes(UnixFileSystemProvider.java:161)
+	at java.base/sun.nio.fs.LinuxFileSystemProvider.readAttributes(LinuxFileSystemProvider.java:99)
+	at java.base/java.nio.file.Files.readAttributes(Files.java:1702)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1493)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:704)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:204)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:150)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:131)
+	at jdk.jartool/sun.tools.jar.Main.list(Main.java:1553)
+	at jdk.jartool/sun.tools.jar.Main.run(Main.java:361)
+	at jdk.jartool/sun.tools.jar.Main.main(Main.java:1731)
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.pom' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.osgi</groupId>
+  <artifactId>osgi_R4_core</artifactId>
+  <version>1.0</version>
+  <packaging>jar</packaging>
+  <name>OSGi R4 core</name>
+  <url>http://www.osgi.org</url>
+  <description>OSGi R4 core</description>
+</project> 
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0-sources.jar || true
+curl -I -fsSL https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0-javadoc.jar || true
+curl -I -fsSL https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0-tests.jar || true' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 781ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Fri, 01 May 2026 20:51:59 GMT
+content-type: text/html
+cf-ray: 9f51aadaaa6c75ff-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Fri, 01 May 2026 20:52:00 GMT
+content-type: text/html
+cf-ray: 9f51aadbfe0ebe70-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Fri, 01 May 2026 20:52:00 GMT
+content-type: text/html
+cf-ray: 9f51aaddcf6a0d25-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL -o /tmp/osgi_R4_core-1.0.jar https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar && jar tf /tmp/osgi_R4_core-1.0.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 173ms:
+META-INF/MANIFEST.MF
+META-INF/OSGI.SF
+META-INF/OSGI.RSA
+OSGI-OPT/
+OSGI-OPT/src/
+OSGI-OPT/src/org/
+OSGI-OPT/src/org/osgi/
+OSGI-OPT/src/org/osgi/framework/
+OSGI-OPT/src/org/osgi/framework/AdminPermission.java
+OSGI-OPT/src/org/osgi/framework/AllServiceListener.java
+OSGI-OPT/src/org/osgi/framework/Bundle.java
+OSGI-OPT/src/org/osgi/framework/BundleActivator.java
+OSGI-OPT/src/org/osgi/framework/BundleContext.java
+OSGI-OPT/src/org/osgi/framework/BundleEvent.java
+OSGI-OPT/src/org/osgi/framework/BundleException.java
+OSGI-OPT/src/org/osgi/framework/BundleListener.java
+OSGI-OPT/src/org/osgi/framework/BundlePermission.java
+OSGI-OPT/src/org/osgi/framework/Configurable.java
+OSGI-OPT/src/org/osgi/framework/Constants.java
+OSGI-OPT/src/org/osgi/framework/Filter.java
+OSGI-OPT/src/org/osgi/framework/FrameworkEvent.java
+OSGI-OPT/src/org/osgi/framework/FrameworkListener.java
+OSGI-OPT/src/org/osgi/framework/FrameworkUtil.java
+OSGI-OPT/src/org/osgi/framework/InvalidSyntaxException.java
+OSGI-OPT/src/org/osgi/framework/PackagePermission.java
+OSGI-OPT/src/org/osgi/framework/ServiceEvent.java
+OSGI-OPT/src/org/osgi/framework/ServiceFactory.java
+OSGI-OPT/src/org/osgi/framework/ServiceListener.java
+OSGI-OPT/src/org/osgi/framework/ServicePermission.java
+OSGI-OPT/src/org/osgi/framework/ServiceReference.java
+OSGI-OPT/src/org/osgi/framework/ServiceRegistration.java
+OSGI-OPT/src/org/osgi/framework/SynchronousBundleListener.java
+OSGI-OPT/src/org/osgi/framework/Version.java
+OSGI-OPT/src/org/osgi/framework/package.html
+OSGI-OPT/src/org/osgi/service/
+OSGI-OPT/src/org/osgi/service/condpermadmin/
+OSGI-OPT/src/org/osgi/service/condpermadmin/BundleLocationCondition.java
+OSGI-OPT/src/org/osgi/service/condpermadmin/BundleSignerCondition.java
+OSGI-OPT/src/org/osgi/service/condpermadmin/Condition.java
+OSGI-OPT/src/org/osgi/service/condpermadmin/ConditionInfo.java
+OSGI-OPT/src/org/osgi/service/condpermadmin/ConditionalPermissionAdmin.java
+OSGI-OPT/src/org/osgi/service/condpermadmin/ConditionalPermissionInfo.java
+OSGI-OPT/src/org/osgi/service/condpermadmin/package.html
+OSGI-OPT/src/org/osgi/service/packageadmin/
+OSGI-OPT/src/org/osgi/service/packageadmin/ExportedPackage.java
+OSGI-OPT/src/org/osgi/service/packageadmin/PackageAdmin.java
+OSGI-OPT/src/org/osgi/service/packageadmin/RequiredBundle.java
+OSGI-OPT/src/org/osgi/service/packageadmin/package.html
+OSGI-OPT/src/org/osgi/service/permissionadmin/
+OSGI-OPT/src/org/osgi/service/permissionadmin/PermissionAdmin.java
+OSGI-OPT/src/org/osgi/service/permissionadmin/PermissionInfo.java
+OSGI-OPT/src/org/osgi/service/permissionadmin/package.html
+OSGI-OPT/src/org/osgi/service/startlevel/
+OSGI-OPT/src/org/osgi/service/startlevel/StartLevel.java
+OSGI-OPT/src/org/osgi/service/startlevel/package.html
+OSGI-OPT/src/org/osgi/service/url/
+OSGI-OPT/src/org/osgi/service/url/AbstractURLStreamHandlerService.java
+OSGI-OPT/src/org/osgi/service/url/URLConstants.java
+OSGI-OPT/src/org/osgi/service/url/URLStreamHandlerService.java
+OSGI-OPT/src/org/osgi/service/url/URLStreamHandlerSetter.java
+OSGI-OPT/src/org/osgi/service/url/package.html
+about.html
+epl-v10.html
+org/
+org/osgi/
+org/osgi/framework/
+org/osgi/framework/AdminPermission$1.class
+org/osgi/framework/AdminPermission.class
+org/osgi/framework/AllServiceListener.class
+org/osgi/framework/Bundle.class
+org/osgi/framework/BundleActivator.class
+org/osgi/framework/BundleContext.class
+org/osgi/framework/BundleEvent.class
+org/osgi/framework/BundleException.class
+org/osgi/framework/BundleListener.class
+org/osgi/framework/BundlePermission.class
+org/osgi/framework/BundlePermissionCollection.class
+org/osgi/framework/Configurable.class
+org/osgi/framework/Constants.class
+org/osgi/framework/Filter.class
+org/osgi/framework/FrameworkEvent.class
+org/osgi/framework/FrameworkListener.class
+org/osgi/framework/FrameworkUtil$1.class
+org/osgi/framework/FrameworkUtil.class
+org/osgi/framework/InvalidSyntaxException.class
+org/osgi/framework/PackagePermission.class
+org/osgi/framework/PackagePermissionCollection.class
+org/osgi/framework/ServiceEvent.class
+org/osgi/framework/ServiceFactory.class
+org/osgi/framework/ServiceListener.class
+org/osgi/framework/ServicePermission.class
+org/osgi/framework/ServicePermissionCollection.class
+org/osgi/framework/ServiceReference.class
+org/osgi/framework/ServiceRegistration.class
+org/osgi/framework/SynchronousBundleListener.class
+org/osgi/framework/Version.class
+org/osgi/framework/packageinfo
+org/osgi/service/
+org/osgi/service/condpermadmin/
+org/osgi/service/condpermadmin/BooleanCondition.class
+org/osgi/service/condpermadmin/BundleLocationCondition$1.class
+org/osgi/service/condpermadmin/BundleLocationCondition.class
+org/osgi/service/condpermadmin/BundleSignerCondition$1.class
+org/osgi/service/condpermadmin/BundleSignerCondition.class
+org/osgi/service/condpermadmin/Condition.class
+org/osgi/service/condpermadmin/ConditionInfo.class
+org/osgi/service/condpermadmin/ConditionalPermissionAdmin.class
+org/osgi/service/condpermadmin/ConditionalPermissionInfo.class
+org/osgi/service/condpermadmin/packageinfo
+org/osgi/service/packageadmin/
+org/osgi/service/packageadmin/ExportedPackage.class
+org/osgi/service/packageadmin/PackageAdmin.class
+org/osgi/service/packageadmin/RequiredBundle.class
+org/osgi/service/packageadmin/packageinfo
+org/osgi/service/permissionadmin/
+org/osgi/service/permissionadmin/PermissionAdmin.class
+org/osgi/service/permissionadmin/PermissionInfo.class
+org/osgi/service/permissionadmin/packageinfo
+org/osgi/service/startlevel/
+org/osgi/service/startlevel/StartLevel.class
+
+ succeeded in 179ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/osgi/osgi_R4_core/1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/osgi/osgi_R4_core/1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-01-17 05:32       117      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-01-17 05:32        81      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-01-17 05:32       136      
+<a href="osgi_R4_core-1.0.jar" title="osgi_R4_core-1.0.jar">osgi_R4_core-1.0.jar</a>                              2006-01-17 05:32    444838      
+<a href="osgi_R4_core-1.0.jar.md5" title="osgi_R4_core-1.0.jar.md5">osgi_R4_core-1.0.jar.md5</a>                          2006-01-17 05:32        32      
+<a href="osgi_R4_core-1.0.jar.sha1" title="osgi_R4_core-1.0.jar.sha1">osgi_R4_core-1.0.jar.sha1</a>                         2006-01-17 05:32        40      
+<a href="osgi_R4_core-1.0.pom" title="osgi_R4_core-1.0.pom">osgi_R4_core-1.0.pom</a>                              2006-01-17 05:32       285      
+<a href="osgi_R4_core-1.0.pom.md5" title="osgi_R4_core-1.0.pom.md5">osgi_R4_core-1.0.pom.md5</a>                          2006-01-17 05:32        32      
+<a href="osgi_R4_core-1.0.pom.sha1" title="osgi_R4_core-1.0.pom.sha1">osgi_R4_core-1.0.pom.sha1</a>                         2006-01-17 05:32        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "ls build/discovered-artifact-metadata | sed -n '1,20p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 0ms:
+org.osgi-osgi_R4_core-1.0.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\".*repo.maven|\"source-code-url\".*github|\"documentation-url\".*repo.maven' build/discovered-artifact-metadata | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n 'osgi_R4_core|org.osgi.core|OSGi R4' build/discovered-artifact-metadata metadata tests/src | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json:2:  "coordinates" : "org.osgi:osgi_R4_core:1.0"
+tests/src/org.osgi/org.osgi.core/4.3.0/build.gradle:14:    testImplementation "org.osgi:org.osgi.core:$libraryVersion"
+tests/src/org.osgi/org.osgi.core/4.3.0/settings.gradle:20:rootProject.name = 'org.osgi.org.osgi.core_tests'
+tests/src/org.osgi/org.osgi.core/4.3.0/src/test/java/org_osgi/org_osgi_core/FrameworkUtil1Test.java:7:package org_osgi.org_osgi_core;
+tests/src/org.osgi/org.osgi.core/4.3.0/src/test/java/org_osgi/org_osgi_core/PackagePermissionCollection1Test.java:7:package org_osgi.org_osgi_core;
+tests/src/org.osgi/org.osgi.core/4.3.0/src/test/java/org_osgi/org_osgi_core/ServicePermissionCollection1Test.java:7:package org_osgi.org_osgi_core;
+tests/src/org.osgi/org.osgi.core/4.3.0/src/test/java/org_osgi/org_osgi_core/BundlePermissionCollection1Test.java:7:package org_osgi.org_osgi_core;
+tests/src/org.osgi/org.osgi.core/4.3.0/src/test/java/org_osgi/org_osgi_core/AdaptPermissionCollection1Test.java:7:package org_osgi.org_osgi_core;
+tests/src/org.osgi/org.osgi.core/4.3.0/src/test/java/org_osgi/org_osgi_core/FrameworkUtilFilterImpl1Test.java:7:package org_osgi.org_osgi_core;
+tests/src/org.osgi/org.osgi.core/4.3.0/src/test/java/org_osgi/org_osgi_core/AdminPermissionCollection1Test.java:7:package org_osgi.org_osgi_core;
+tests/src/org.osgi/org.osgi.core/4.3.0/src/test/java/org_osgi/org_osgi_core/CapabilityPermissionCollection1Test.java:7:package org_osgi.org_osgi_core;
+tests/src/org.osgi/org.osgi.core/4.3.0/gradle.properties:4:library.coordinates = org.osgi:org.osgi.core:4.3.0
+tests/src/org.osgi/org.osgi.core/4.3.0/gradle.properties:6:metadata.dir = org.osgi/org.osgi.core/4.3.0/
+tests/src/org.osgi/org.osgi.core/4.3.1/build.gradle:14:    testImplementation "org.osgi:org.osgi.core:$libraryVersion"
+tests/src/org.osgi/org.osgi.core/4.3.1/settings.gradle:20:rootProject.name = 'org.osgi.org.osgi.core_tests'
+tests/src/org.osgi/org.osgi.compendium/5.0.0/build.gradle:14:    testImplementation "org.osgi:org.osgi.core:$libraryVersion"
+tests/src/org.osgi/org.osgi.core/4.3.1/src/test/java/org_osgi/org_osgi_core/FrameworkUtil1Test.java:7:package org_osgi.org_osgi_core;
+tests/src/org.osgi/org.osgi.core/4.3.1/src/test/java/org_osgi/org_osgi_core/PackagePermissionCollection1Test.java:7:package org_osgi.org_osgi_core;
+tests/src/org.osgi/org.osgi.core/4.3.1/src/test/java/org_osgi/org_osgi_core/ServicePermissionCollection1Test.java:7:package org_osgi.org_osgi_core;
+tests/src/org.osgi/org.osgi.core/4.3.1/src/test/java/org_osgi/org_osgi_core/BundlePermissionCollection1Test.java:7:package org_osgi.org_osgi_core;
+tests/src/org.osgi/org.osgi.core/4.3.1/src/test/java/org_osgi/org_osgi_core/AdaptPermissionCollection1Test.java:7:package org_osgi.org_osgi_core;
+tests/src/org.osgi/org.osgi.core/4.3.1/src/test/java/org_osgi/org_osgi_core/FrameworkUtilFilterImpl1Test.java:7:package org_osgi.org_osgi_core;
+tests/src/org.osgi/org.osgi.core/4.3.1/src/test/java/org_osgi/org_osgi_core/AdminPermissionCollection1Test.java:7:package org_osgi.org_osgi_core;
+tests/src/org.osgi/org.osgi.core/4.3.1/src/test/java/org_osgi/org_osgi_core/CapabilityPermissionCollection1Test.java:7:package org_osgi.org_osgi_core;
+tests/src/org.osgi/org.osgi.core/4.3.1/gradle.properties:4:library.coordinates = org.osgi:org.osgi.core:4.3.1
+tests/src/org.osgi/org.osgi.core/4.3.1/gradle.properties:6:metadata.dir = org.osgi/org.osgi.core/4.3.1/
+tests/src/org.osgi/org.osgi.namespace.extender/1.0.1/build.gradle:16:    testImplementation 'org.osgi:org.osgi.core:4.3.1'
+tests/src/org.apache.geronimo.specs/geronimo-osgi-registry/1.0/build.gradle:16:    testImplementation 'org.osgi:org.osgi.core:4.2.0'
+metadata/org.osgi/org.osgi.core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.1/org.osgi.core-4.3.1-sources.jar",
+metadata/org.osgi/org.osgi.core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.1/org.osgi.core-4.3.1-javadoc.jar",
+metadata/org.osgi/org.osgi.core/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.0/org.osgi.core-4.3.0-sources.jar",
+metadata/org.osgi/org.osgi.core/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.0/org.osgi.core-4.3.0-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '1,90p' metadata/org.osgi/org.osgi.core/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.3.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.1/org.osgi.core-4.3.1-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "https://github.com/osgi/osgi/tree/r4v431-core-cmpn-spec-final/org.osgi.test.cases.framework",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.1/org.osgi.core-4.3.1-javadoc.jar",
+    "description" : "This artifact provides the OSGi Core Release 4.3.1 API interfaces and classes used to compile OSGi bundles. It defines the framework contracts for bundles, module lifecycle, service registration, and runtime interaction in OSGi-based applications.",
+    "tested-versions" : [
+      "4.3.1",
+      "5.0.0",
+      "6.0.0"
+    ],
+    "allowed-packages" : [
+      "org.osgi"
+    ]
+  },
+  {
+    "metadata-version" : "4.3.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.0/org.osgi.core-4.3.0-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "https://github.com/osgi/osgi/tree/r4v43-core-ri-ct-final",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.0/org.osgi.core-4.3.0-javadoc.jar",
+    "description" : "This artifact provides the core OSGi Service Platform Release 4.3 interfaces and classes. It defines the Framework APIs for bundles, lifecycle management, module wiring, and services used when compiling OSGi-based applications.",
+    "tested-versions" : [
+      "4.3.0"
+    ],
+    "allowed-packages" : [
+      "org.osgi"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "find metadata -name index.json | head -20 | xargs -r sed -n '1,40p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "11.0.24",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/11.0.24/jetty-alpn-server-11.0.24-sources.jar",
+    "repository-url" : "https://github.com/jetty/jetty.project",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/11.0.24/jetty-alpn-server-11.0.24-javadoc.jar",
+    "description" : "Jetty ALPN Server provides the server-side connection factory used by Eclipse Jetty to negotiate application protocols such as HTTP/1.1 and HTTP/2 during TLS handshakes. It integrates Jetty's server connector layer with ALPN so the server can select the correct protocol implementation for each secure connection.",
+    "tested-versions" : [
+      "11.0.24",
+      "11.0.25",
+      "11.0.26",
+      "12.0.0",
+      "12.0.1",
+      "12.0.2",
+      "12.0.3",
+      "12.0.4",
+      "12.0.5",
+      "12.0.6",
+      "12.0.7",
+      "12.0.8",
+      "12.0.9",
+      "12.0.10",
+      "12.0.11",
+      "12.0.12",
+      "12.0.13",
+      "12.0.14",
+      "12.0.15",
+      "12.0.16",
+      "12.0.17",
+      "12.0.18",
+      "12.0.19",
+      "12.0.20",
+      "12.0.21",
+      "12.0.22",
+      "12.0.23",
+      "12.0.24",
+      "12.0.25",
+      "12.0.26",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/osgi/osgi/tags?per_page=100 | rg '\"name\"' | sed -n '1,100p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/osgi/osgi.git | rg -i 'r4|core|cmpn|spec|final' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 249ms:
+    "name": "svn-r43-branch",
+    "name": "svn-archive-branch",
+    "name": "r401-core-spec-final",
+    "name": "r401-core-ri-tck-final",
+    "name": "r401-cmpn-spec-final",
+    "name": "r401-cmpn-ri-tck-final",
+    "name": "r9-dev",
+    "name": "r8-core-final-rerelease",
+    "name": "r8-core-final",
+    "name": "r8-cmpn-spec-RC1",
+    "name": "r8-cmpn-final",
+    "name": "r7-enterprise-spec-final",
+    "name": "r7-enterprise-ri-ct-final",
+    "name": "r7-core-spec-final",
+    "name": "r7-core-ri-ct-final",
+    "name": "r7-cmpn-spec-final",
+    "name": "r7-cmpn-ri-ct-final",
+    "name": "r6-residential-supplement-spec-final",
+    "name": "r6-residential-supplement-ri-ct-final",
+    "name": "r6-residential-spec-final",
+    "name": "r6-residential-ri-ct-final",
+    "name": "r6-enterprise-spec-final",
+    "name": "r6-enterprise-ri-ct-final",
+    "name": "r6-core-spec-final",
+    "name": "r6-core-ri-ct-final",
+    "name": "r6-cmpn-spec-final",
+    "name": "r6-cmpn-ri-ct-final",
+    "name": "r5-spec-javadoc",
+    "name": "r5-javaone-prototype",
+    "name": "r5-enterprise-spec-final",
+    "name": "r5-enterprise-ri-ct-final",
+    "name": "r5-core-spec-final",
+    "name": "r5-core-ri-ct-final",
+    "name": "r5-cmpn-spec-final",
+    "name": "r5-cmpn-ri-ct-final",
+    "name": "r4v431-core-cmpn-spec-final",
+    "name": "r4v43-residential-spec-final",
+    "name": "r4v43-residential-ri-ct-final",
+    "name": "r4v43-core-spec-final",
+    "name": "r4v43-core-ri-ct-final",
+    "name": "r4v43-cmpn-spec-final",
+    "name": "r4v43-cmpn-ri-ct-final",
+    "name": "r4v42-enterprise-spec-final",
+    "name": "r4v42-enterprise-ri-ct-final",
+    "name": "r4v42-core-spec-final",
+    "name": "r4v42-core-cmpn-final",
+    "name": "r4v42-cmpn-spec-final",
+    "name": "r4v41-spec-final",
+    "name": "r4v41-ri-tck-final",
+    "name": "r4v41-final",
+    "name": "r4v41-core-ri-tck-final",
+    "name": "r4v41-cmpn-ri-tck-final",
+    "name": "r4-mobile-spec-final",
+    "name": "r4-mobile-ri-tck-final",
+    "name": "r4-mobile-jsr232",
+    "name": "r4-core-spec-final",
+    "name": "r4-core-ri-tck-final",
+    "name": "ee.j2se-1.7-final",
+    "name": "ee.j2se-1.6-final",
+    "name": "ee.j2se-1.5-final",
+    "name": "ee.j2se-1.4-final",
+    "name": "Post-new-SOW-interim",
+    "name": "8.1.0.cmpn-RC1",
+    "name": "8.1.0.cmpn",
+    "name": "8.0.0.1",
+
+ succeeded in 340ms:
+705eba1ba09abdaaab755aed9d7e5d3bd87aadf1	refs/tags/8.1.0.cmpn
+8e96a2338c89bcf9976f71bd6f4fb3f5055f3f78	refs/tags/8.1.0.cmpn^{}
+9e1c74c47197691eb3f85e1d8cc914a5b3b836e3	refs/tags/8.1.0.cmpn-RC1
+a50e1dbfe4c99fa93bce3df288fd774973e7f09b	refs/tags/8.1.0.cmpn-RC1^{}
+f763359052e75b5c3825805fe08e66d7e34fcb56	refs/tags/ee.j2se-1.4-final
+f1cddae02ee07e25efe7e140c87e36d0462dc6d2	refs/tags/ee.j2se-1.4-final^{}
+a37d8033bbc06c33342b795f1518651c1b9b8115	refs/tags/ee.j2se-1.5-final
+8205fae853e28f9e18ab61321d89dfed44c1f53e	refs/tags/ee.j2se-1.5-final^{}
+6fee6a63685b033f4006b7d9fe44aac89ac72d7c	refs/tags/ee.j2se-1.6-final
+bc447e05f91354b9694b986cd49e73568047a3a2	refs/tags/ee.j2se-1.6-final^{}
+56435b732766a0ee3ad01c3375e96bbe00d17813	refs/tags/ee.j2se-1.7-final
+243393651826fc6dc4a60c88c2e989b1fc9e3309	refs/tags/ee.j2se-1.7-final^{}
+846518ba0da82390ea1816dcd552ee4619fb72a8	refs/tags/r4-core-ri-tck-final
+e7e4667718c48aae1fbcebed2511cfa5d4bb6737	refs/tags/r4-core-ri-tck-final^{}
+efb18788e5390a59a810ae4b5c2623550169ea51	refs/tags/r4-core-spec-final
+d92b092034664ee57e3a6c625aaa3d74a460780b	refs/tags/r4-core-spec-final^{}
+b1ba558dd485d6ca64ed4ab41cb149e8f7d3f4f3	refs/tags/r4-mobile-jsr232
+8e0e2ce9002f40cb5c104fd15986eb3cb7e940df	refs/tags/r4-mobile-jsr232^{}
+9b508fb09a61130d2e391bdab542570d2c108a15	refs/tags/r4-mobile-ri-tck-final
+75bd7a9b81bec3c97c87e275b501aeae5ecb6191	refs/tags/r4-mobile-ri-tck-final^{}
+0f8c2f7f5d07163b14ad566341676fdfacff4ce7	refs/tags/r4-mobile-spec-final
+75bd7a9b81bec3c97c87e275b501aeae5ecb6191	refs/tags/r4-mobile-spec-final^{}
+b39cb733f4468ca67ee6a7a8c82762023fd8e539	refs/tags/r401-cmpn-ri-tck-final
+ba77e1ad550137b416efaf5bae0d39530a7e46b0	refs/tags/r401-cmpn-ri-tck-final^{}
+bcb8a044f35859cf7b63120d62f029d17fddaf76	refs/tags/r401-cmpn-spec-final
+75bd7a9b81bec3c97c87e275b501aeae5ecb6191	refs/tags/r401-cmpn-spec-final^{}
+3280b6e5fa401e36b12ba128300bf3bf83bda770	refs/tags/r401-core-ri-tck-final
+ba77e1ad550137b416efaf5bae0d39530a7e46b0	refs/tags/r401-core-ri-tck-final^{}
+4d9aa00c80f914a390493115c8970a99d348d365	refs/tags/r401-core-spec-final
+75bd7a9b81bec3c97c87e275b501aeae5ecb6191	refs/tags/r401-core-spec-final^{}
+d90b46c492395793d004bcd02199038f8f3631ef	refs/tags/r4v41-cmpn-ri-tck-final
+56e5f4410639aaeef2a9be55e3f9b03c6fa28f96	refs/tags/r4v41-cmpn-ri-tck-final^{}
+964d8746e21100942730f9bbc4f1fcef66bf9853	refs/tags/r4v41-core-ri-tck-final
+56e5f4410639aaeef2a9be55e3f9b03c6fa28f96	refs/tags/r4v41-core-ri-tck-final^{}
+cfe28312ab18988eff1e0b77cd11b2335b9d0d7b	refs/tags/r4v41-final
+cab003f20e989dcd809e6ed958df50681051560a	refs/tags/r4v41-final^{}
+08948a527de9e985db40f245f8dd48a077fc2529	refs/tags/r4v41-ri-tck-final
+56e5f4410639aaeef2a9be55e3f9b03c6fa28f96	refs/tags/r4v41-ri-tck-final^{}
+62094ff8637bf8e868ed2805c115e7d5a99a016e	refs/tags/r4v41-spec-final
+cab003f20e989dcd809e6ed958df50681051560a	refs/tags/r4v41-spec-final^{}
+0d9b2787fa8d341930d806f87aa2216bd041cb90	refs/tags/r4v42-cmpn-spec-final
+8b283d49469e805fd42dc8486416ff6d8e7359e3	refs/tags/r4v42-cmpn-spec-final^{}
+ec6b5ff8940c6a954a596f6b626233bcb671c299	refs/tags/r4v42-core-cmpn-final
+7f0db3bb6dfc444c2604b09e540f965df7ab8b29	refs/tags/r4v42-core-cmpn-final^{}
+6588345cffe98cc3885ffc6138d503a550ab4891	refs/tags/r4v42-core-spec-final
+9e385ab9be0ad9a9aaaeea34d535f0b1e4badc23	refs/tags/r4v42-core-spec-final^{}
+8408231684ea30dd2f7284dc4d8866ed30464ff2	refs/tags/r4v42-enterprise-ri-ct-final
+88a4172723302f8ffb7abddbc067b5f4d4653298	refs/tags/r4v42-enterprise-ri-ct-final^{}
+b249cf513552b26e25b7b95359c7f88cb91f0683	refs/tags/r4v42-enterprise-spec-final
+a0a2a3a893bacf09e4a04d8d9362b35a269d8091	refs/tags/r4v42-enterprise-spec-final^{}
+74c035a17b9b4a2ec2935b5096f645d5c2f4711b	refs/tags/r4v43-cmpn-ri-ct-final
+b4bdf0b13eb363c03a297903efbdecb4ec68f3c8	refs/tags/r4v43-cmpn-ri-ct-final^{}
+72920c5b272795ec24c05b4a29b138a76f54a9ba	refs/tags/r4v43-cmpn-spec-final
+11b8e9cfce63e1ec92d567ca570528220513946a	refs/tags/r4v43-cmpn-spec-final^{}
+2ea0bea27df5ff7fcdc6855102290e179d1d24e9	refs/tags/r4v43-core-ri-ct-final
+13c1f9cb6ef8d36d40880a7b19b20376f1cf4a74	refs/tags/r4v43-core-ri-ct-final^{}
+9dec5f3b2288e0d993f1067cccbfee99272e2ff2	refs/tags/r4v43-core-spec-final
+d5a215e24afd9974ae387f4451477c1d2358f806	refs/tags/r4v43-core-spec-final^{}
+803250a4b8b28f604ea4e553ccfc0b0c62d3a8d4	refs/tags/r4v43-residential-ri-ct-final
+e5b2bf63de2076970b47b9b72386615e328e9418	refs/tags/r4v43-residential-ri-ct-final^{}
+4582a132670dbfcea7dd27286811ad0044368ee7	refs/tags/r4v43-residential-spec-final
+11b8e9cfce63e1ec92d567ca570528220513946a	refs/tags/r4v43-residential-spec-final^{}
+8f1f83c4ad1c427e0e10a1b9156dffef6711c4ba	refs/tags/r4v431-core-cmpn-spec-final
+c7da4c70103383ed4e94a520e8c337b441a512b3	refs/tags/r4v431-core-cmpn-spec-final^{}
+7db8eb64f579ccb2208add5e543149ad259ecf76	refs/tags/r5-cmpn-ri-ct-final
+a834984f32027b4041ba5192db5b324967088bb0	refs/tags/r5-cmpn-ri-ct-final^{}
+8a3d85bbe1d04ef79bda177255bae087236565a2	refs/tags/r5-cmpn-spec-final
+a834984f32027b4041ba5192db5b324967088bb0	refs/tags/r5-cmpn-spec-final^{}
+541dce37542a0be2a0dc4ed46f9c256588e96dac	refs/tags/r5-core-ri-ct-final
+8ae7389a2e63c5e8bfefa131ea4585305d2be813	refs/tags/r5-core-ri-ct-final^{}
+2af5800d300564d74586a6ac5dbd0fcfb106f0de	refs/tags/r5-core-spec-final
+d375fa2dee6bc966094c087e7df5a3d312b46f46	refs/tags/r5-core-spec-final^{}
+64934d512f0fd4059c3decbc9f945e2b2c8e111a	refs/tags/r5-enterprise-ri-ct-final
+e708dbb8773c82dee4d2a0226acf523e28a30e88	refs/tags/r5-enterprise-ri-ct-final^{}
+f1164f15a8d47626bda9fb04a9288831f23875ea	refs/tags/r5-enterprise-spec-final
+d375fa2dee6bc966094c087e7df5a3d312b46f46	refs/tags/r5-enterprise-spec-final^{}
+aeca6dd90e1d19302d6c3609cf568343edf4c6b5	refs/tags/r5-spec-javadoc
+93a465491b60efc4585d94ccd39798cc909b6f4b	refs/tags/r5-spec-javadoc^{}
+44369ee9127e86c27c1af59f1be763ecc263e34d	refs/tags/r6-cmpn-ri-ct-final
+b181066028a00e34c1e0291469a596d2fc9dac55	refs/tags/r6-cmpn-ri-ct-final^{}
+482a684d7c95cdb8a7a308d9d12dcdded893fb34	refs/tags/r6-cmpn-spec-final
+b0858c3b90a73ecc81055c7565fbbcbd4f76674e	refs/tags/r6-cmpn-spec-final^{}
+2a11a3e5d8c60b50e4081343ebed6bcec311a598	refs/tags/r6-core-ri-ct-final
+8d66fa5f5dd5c11333da19e866590f85464fb9d4	refs/tags/r6-core-ri-ct-final^{}
+d8890daf8811f2c2c451a7ed793bac2d8dcce35a	refs/tags/r6-core-spec-final
+8d66fa5f5dd5c11333da19e866590f85464fb9d4	refs/tags/r6-core-spec-final^{}
+837e5d17769f3ef0646b913f1e02509291349d7f	refs/tags/r6-enterprise-ri-ct-final
+b181066028a00e34c1e0291469a596d2fc9dac55	refs/tags/r6-enterprise-ri-ct-final^{}
+301ecbf2d2502438d34aeaedce156c45882ed856	refs/tags/r6-enterprise-spec-final
+b0858c3b90a73ecc81055c7565fbbcbd4f76674e	refs/tags/r6-enterprise-spec-final^{}
+234b425b53e5b3ef3e475750dc86561b81a7b1c2	refs/tags/r6-residential-ri-ct-final
+b181066028a00e34c1e0291469a596d2fc9dac55	refs/tags/r6-residential-ri-ct-final^{}
+5655cfae7d61f051746213bab0f386423fa38d8e	refs/tags/r6-residential-spec-final
+b0858c3b90a73ecc81055c7565fbbcbd4f76674e	refs/tags/r6-residential-spec-final^{}
+b23a773251adfcd4e3f8248318a1262cb22ee7cb	refs/tags/r6-residential-supplement-ri-ct-final
+5a6f80cf01bacbaf6b80388cd7774f079ba74301	refs/tags/r6-residential-supplement-ri-ct-final^{}
+7742076a96cb0f7cdd869f0d47ab11678fae7bdb	refs/tags/r6-residential-supplement-spec-final
+5a6f80cf01bacbaf6b80388cd7774f079ba74301	refs/tags/r6-residential-supplement-spec-final^{}
+c27b1731cbca5a6b836195161c9330c8e395bafe	refs/tags/r7-cmpn-ri-ct-final
+c886e125edee3b79de55b0a2002e6ea61570b481	refs/tags/r7-cmpn-ri-ct-final^{}
+06a66f4bd61a26146a0fd8e9a9c44c25fe7d0256	refs/tags/r7-cmpn-spec-final
+ac877b9fdaa36e26adb939cf9dd425e77243f449	refs/tags/r7-cmpn-spec-final^{}
+0da01b21e2eb092be2ffca6d64bc2101aab5c2d8	refs/tags/r7-core-ri-ct-final
+c886e125edee3b79de55b0a2002e6ea61570b481	refs/tags/r7-core-ri-ct-final^{}
+9f7d1961209d60a89013af62947e221b20c330da	refs/tags/r7-core-spec-final
+ac877b9fdaa36e26adb939cf9dd425e77243f449	refs/tags/r7-core-spec-final^{}
+f9c179ba3f7b7dac37d0b3fa7afb3a066999452a	refs/tags/r7-enterprise-ri-ct-final
+de3115285dde04d3a56d68698b4b3f4b766f4b2b	refs/tags/r7-enterprise-ri-ct-final^{}
+a5e0536048c3854870a70dda9022e784f1cbc404	refs/tags/r7-enterprise-spec-final
+c886e125edee3b79de55b0a2002e6ea61570b481	refs/tags/r7-enterprise-spec-final^{}
+148d6a318212c3e9e6f738563190d90c70815ff2	refs/tags/r8-cmpn-final
+db39ce672917cadce15aad14a33795cbed7e8791	refs/tags/r8-cmpn-final^{}
+4fd91a48643c84ab29ecb49ee9f42384f2b32fe5	refs/tags/r8-cmpn-spec-RC1
+b986b23c6429cf7bf0fa9079828cdcab15902325	refs/tags/r8-cmpn-spec-RC1^{}
+1948b511fe978fb46950dde4c01b5f7a2f659bf2	refs/tags/r8-core-final
+6eee417af367c749a6f84a11239d94cc63f6bdcb	refs/tags/r8-core-final^{}
+337beaf9a460f031c058c562d1a5004273c57902	refs/tags/r8-core-final-rerelease
+c7fbc4cc481f1a9a112b8dafce7de534999c3a10	refs/tags/r8-core-final-rerelease^{}
+974e60feddfd376ec73da42d35891af9c44b1543	refs/tags/svn-r43-branch
+26c05f5834c98dc0ac1e169eadc7f67b340746c2	refs/tags/svn-r43-branch^{}
+
+web search: 
+web search: OSGi R4 Core Specification javadoc org.osgi.framework Version 1.0 documentation
+web search: 
+web search: https://docs.osgi.org/javadoc/
+web search: 
+web search: https://docs.osgi.org/javadoc/r4v401/
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/maven-metadata.xml && echo && unzip -p /tmp/osgi_R4_core-1.0.jar META-INF/MANIFEST.MF | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 187ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>org.osgi</groupId>
+  <artifactId>osgi_R4_core</artifactId>
+  <versioning>
+    <latest>1.0</latest>
+    <release>1.0</release>
+    <versions>
+      <version>1.0</version>
+    </versions>
+    <lastUpdated>20211130161317</lastUpdated>
+  </versioning>
+</metadata>
+
+Manifest-Version: 1.0
+Created-By: 1.4.2_06 (Sun Microsystems Inc.)
+
+Name: org/osgi/service/permissionadmin/PermissionInfo.class
+SHA1-Digest: fow44PP2OD1UeNjdrJPm5CHMli4=
+
+Name: org/osgi/framework/BundleContext.class
+SHA1-Digest: woBvBzW4mCEgfcmkWueWBKh7yQM=
+
+Name: OSGI-OPT/src/org/osgi/framework/AdminPermission.java
+SHA1-Digest: UWVbg3DYcQ5xRk93KWhHUB9b0a0=
+
+Name: OSGI-OPT/src/org/osgi/service/url/AbstractURLStreamHandlerServic
+ e.java
+SHA1-Digest: 1+laZDZwXVZXy2Kp5a1VooJ8cl0=
+
+Name: OSGI-OPT/src/org/osgi/framework/InvalidSyntaxException.java
+SHA1-Digest: oeGADzNtJRY7ODqkUw+RyXkHAc4=
+
+Name: org/osgi/framework/BundleEvent.class
+SHA1-Digest: btDNCdUUTBDp/mcQPBecXP0rsZ0=
+
+Name: org/osgi/framework/Bundle.class
+SHA1-Digest: Urz/Ku45q+YtxGHBcB6crWpr7nI=
+
+Name: org/osgi/framework/FrameworkUtil$1.class
+SHA1-Digest: uzH02aPT9FoVe8ZqiGL0bTx5SYM=
+
+Name: OSGI-OPT/src/org/osgi/service/startlevel/package.html
+SHA1-Digest: hRwCUEVh8fTEs+EX5YX1DXStsuA=
+
+Name: org/osgi/service/condpermadmin/ConditionalPermissionInfo.class
+SHA1-Digest: JWsjyJ7sIa6/AXwHPb3JeOdy7qM=
+
+Name: OSGI-OPT/src/org/osgi/framework/PackagePermission.java
+SHA1-Digest: Gv1Lg4NSRP8DkEGsEse6k4JV4UQ=
+
+Name: OSGI-OPT/src/org/osgi/framework/ServiceListener.java
+SHA1-Digest: 6VlVjRJ7oH7adI0h9HOYJ0+L0II=
+
+Name: OSGI-OPT/src/org/osgi/framework/ServiceRegistration.java
+SHA1-Digest: 6Y/ea89RKWesUQJxmkCEb5o6KDM=
+
+Name: org/osgi/framework/ServiceFactory.class
+SHA1-Digest: x1mGjAO/N5s7DBsFOlxAWlq+mmU=
+
+Name: org/osgi/framework/AdminPermission$1.class
+SHA1-Digest: MjxO1pi2D4GSpSc84MbeaKPSN84=
+
+Name: OSGI-OPT/src/org/osgi/framework/Filter.java
+SHA1-Digest: RljDE3QqUhFQtfP+DYpfYhBA4o4=
+
+Name: org/osgi/framework/PackagePermission.class
+SHA1-Digest: H57/TbdtrrTJa6CnaLgemWPOPZU=
+
+Name: OSGI-OPT/src/org/osgi/service/permissionadmin/PermissionAdmin.ja
+ va
+SHA1-Digest: ZGbMG2mFfZJ3MG+iWQbjSHP5qDw=
+
+Name: org/osgi/service/url/URLStreamHandlerService.class
+SHA1-Digest: i+nJI0jy7+q9IocObfct8cHo1EQ=
+
+Name: OSGI-OPT/src/org/osgi/framework/BundleEvent.java
+SHA1-Digest: TL9iooUc3KRddlT9PDYIrT7X+w0=
+
+Name: org/osgi/service/condpermadmin/BundleSignerCondition$1.class
+SHA1-Digest: 41Zv7pF5VhoyyQiXr3+rp4wvPLA=
+
+Name: OSGI-OPT/src/org/osgi/framework/ServiceReference.java
+SHA1-Digest: TIZ7YRLmLLtCz7o6/qj/h0Q5IIU=
+
+Name: org/osgi/framework/BundlePermission.class
+SHA1-Digest: i3QmBL/oCcARpNLgeOC78mVS1JQ=
+
+Name: OSGI-OPT/src/org/osgi/service/condpermadmin/ConditionalPermissio
+ nInfo.java
+SHA1-Digest: UyI2gXROjQe+mEDZfdcqssbKlpk=
+
+Name: org/osgi/framework/Configurable.class
+SHA1-Digest: jamKBU8tnLZ05ysR4f7sXIF9orY=
+
+Name: org/osgi/service/condpermadmin/BooleanCondition.class
+SHA1-Digest: 7U4LqC9hSVJ/sQDfxECzbgXrcgU=
+
+Name: org/osgi/framework/FrameworkUtil.class
+SHA1-Digest: 3RSUVPTuupeirHoNfCQ6h/ux+9Y=
+
+Name: OSGI-OPT/src/org/osgi/framework/SynchronousBundleListener.java
+SHA1-Digest: 70rJd433GWMoyWUHm2DjX6K4N7s=
+
+Name: org/osgi/framework/ServicePermissionCollection.class
+SHA1-Digest: yllWGY4FWQiVbxeI60SxZ1rTwcg=
+
+Name: about.html
+SHA1-Digest: rC8Oa/wTAv5SZ96xNojIZdfM21Q=
+
+Name: OSGI-OPT/src/org/osgi/framework/FrameworkListener.java
+SHA1-Digest: Mo3D/2wJpd4zOD/1wZDV7/wwYYg=
+
+Name: org/osgi/service/packageadmin/RequiredBundle.class
+SHA1-Digest: cBK7L6s6ykXWpmPfCh6WHizQMEI=
+
+Name: OSGI-OPT/src/org/osgi/service/condpermadmin/ConditionalPermissio
+ nAdmin.java
+SHA1-Digest: owsPPudfnapcUgUq3ULs9vJAWlE=
+
+Name: org/osgi/service/condpermadmin/ConditionalPermissionAdmin.class
+SHA1-Digest: 6VB+m52gVIXIXRnqRDBKcrju+4c=
+
+Name: org/osgi/framework/FrameworkEvent.class
+SHA1-Digest: Kla52+pwBb7ElPTXaXJMheP/EFQ=
+
+Name: org/osgi/framework/AllServiceListener.class
+SHA1-Digest: hhQs5yhNk2Kft5rv5EqXCd0SdGM=
+
+Name: OSGI-OPT/src/org/osgi/framework/FrameworkEvent.java
+SHA1-Digest: Gcm6+vutzpK5yqST2+d16A2i+wk=
+
+Name: OSGI-OPT/src/org/osgi/framework/FrameworkUtil.java
+SHA1-Digest: lMGNp1RCK6z/Bbz+j0qYJc9GS+o=
+
+codex
+The upstream repository has dedicated `r4-core-spec-final` and `r4-core-ri-tck-final` tags, matching this older Release 4 artifact line. I’m checking those trees now so the test URL is as specific as possible instead of just linking the tag root.
+exec
+/usr/bin/bash -lc "git ls-tree -r --name-only r4-core-ri-tck-final 2>/dev/null | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/osgi/osgi/git/trees/r4-core-spec-final?recursive=1 | rg '\"path\"' | rg -i 'org.osgi.framework|src|javadoc|doc|package.html' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/osgi/osgi/git/trees/r4-core-ri-tck-final?recursive=1 | rg '\"path\"' | rg -i 'test|tck|src|framework|org.osgi.test' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 801ms:
+      "path": "archive/nursery.rpwa/src",
+      "path": "archive/nursery.rpwa/src/nursery",
+      "path": "archive/nursery.rpwa/src/nursery/rpwa",
+      "path": "archive/nursery.rpwa/src/nursery/rpwa/Activator.java",
+      "path": "archive/nursery.rpwa/src/nursery/rpwa/DP.java",
+      "path": "archive/nursery.rpwa/src/nursery/rpwa/WireAdminProcessor.java",
+      "path": "archive/nursery.rpwa/src/nursery/rpwa/t1.properties",
+      "path": "archive/nursery.rpwa/src/nursery/rpwa/t2.properties",
+      "path": "archive/org.osgi.impl.bundle.saxon/src",
+      "path": "archive/org.osgi.impl.bundle.saxon/src/org",
+      "path": "archive/org.osgi.impl.bundle.saxon/src/org/osgi",
+      "path": "archive/org.osgi.impl.bundle.saxon/src/org/osgi/impl",
+      "path": "archive/org.osgi.impl.bundle.saxon/src/org/osgi/impl/bundle",
+      "path": "archive/org.osgi.impl.bundle.saxon/src/org/osgi/impl/bundle/saxon",
+      "path": "archive/org.osgi.impl.bundle.saxon/src/org/osgi/impl/bundle/saxon/.cvsignore",
+      "path": "archive/org.osgi.impl.bundle.saxon/src/org/osgi/impl/bundle/saxon/SaxonActivator.java",
+      "path": "archive/org.osgi.impl.bundle.saxon/src/org/osgi/impl/bundle/saxon/packageinfo",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src/org",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src/org/osgi",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src/org/osgi/impl",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src/org/osgi/impl/service",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src/org/osgi/impl/service/basiccontainer",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src/org/osgi/impl/service/basiccontainer/Activator.java",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src/org/osgi/impl/service/basiccontainer/BasicContainer.java",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src/org/osgi/impl/service/basiccontainer/BasicContainerApplication.java",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src/org/osgi/impl/service/basiccontainer/BasicContainerDescriptor.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/src",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com/nokia",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com/nokia/test",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/megletcontainer",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/megletcontainer/TestMegletContainerBundleActivator.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/megletsample",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/megletsample/TestApplication.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/megletsample2",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/megletsample2/TestApplication2.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org/osgi",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org/osgi/impl",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org/osgi/impl/service",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org/osgi/impl/service/megcontainer",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org/osgi/impl/service/megcontainer/Activator.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org/osgi/impl/service/megcontainer/MegletContainer.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org/osgi/impl/service/megcontainer/MegletDescriptorImpl.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org/osgi/impl/service/megcontainer/MegletHandleImpl.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/AbstractHandler.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/ActionDefinitionImpl.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/ActionHandler.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/Activator.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/AttributeDefinitionHandler.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/BundlesTracker.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/ExAttributeDefinitionImpl.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/IconHandler.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/ListenerData.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/Localizator.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/Logger.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/MetaDataListenersTracker.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/MetaDataServiceImpl.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/MetaTypeData.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/MetaTypeParser.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/MetaTypeProviderHandler.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/ObjectClassDefinitionHandler.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/OptionHandler.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/PropertyHandler.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/ReferenceHandler.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/package.html",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/packageinfo",
+      "path": "archive/org.osgi.impl.service.upnp/src",
+      "path": "archive/org.osgi.impl.service.upnp/src/org",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/UPnPController.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/control",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/control/ControlImpl.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/control/ParsedRequest.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/control/SOAPConstants.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/control/SOAPErrorCodes.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/control/SOAPMaker.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/control/SOAPParser.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/control/packageinfo",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/event",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/event/ErrorCheck.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/event/EventRegistry.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/event/GenaConstants.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/event/GenaEventListener.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/event/GenaServer.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/event/Processor.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/event/RenewalCheck.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/event/RequestProcessor.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/event/SendEvents.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/event/Subscription.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/event/SubscriptionAlive.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/event/SubscriptionCheck.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/event/UnsubscribeCheck.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/event/packageinfo",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/packageinfo",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/ssdp",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/ssdp/DeviceDetails.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/ssdp/DeviceExporter.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/ssdp/DeviceRenewalThread.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/ssdp/EventAccessForExporter.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/ssdp/SSDPComponent.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/ssdp/SSDPConstants.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/ssdp/SSDPMulticastListener.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/ssdp/SSDPParser.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/ssdp/UPnPExporter.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cd/ssdp/packageinfo",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/UPnPBundleActivator.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/UPnPControllerImpl.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/basedriver",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/basedriver/UPnPActionImpl.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/basedriver/UPnPBaseDriver.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/basedriver/UPnPDeviceImpl.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/basedriver/UPnPIconImpl.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/basedriver/UPnPServiceImpl.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/basedriver/UPnPStateVariableImpl.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/basedriver/packageinfo",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/control",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/control/ControlImpl.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/control/ParsedRequest.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/control/SOAPConstants.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/control/SOAPErrorCodes.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/control/SOAPMaker.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/control/SOAPParser.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/control/packageinfo",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/description",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/description/Action.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/description/ArgumentList.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/description/Attribute.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/description/Description.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/description/Document.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/description/Element.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/description/Icon.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/description/RootDevice.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/description/ServiceInfo.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/description/StateVariable.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/description/packageinfo",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/event",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/event/EventServiceImpl.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/event/GenaConstants.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/event/GenaServer.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/event/GenaSocket.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/event/Processor.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/event/RequestProcessor.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/event/SendRenewal.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/event/SendSubscription.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/event/SendUnsubscribe.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/event/Subscription.java",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl/service/upnp/cp/event/SubscriptionAlive.java",
+
+ succeeded in 810ms:
+      "path": "archive/nursery.obr/src",
+      "path": "archive/nursery.obr/src/nursery",
+      "path": "archive/nursery.obr/src/nursery/obr",
+      "path": "archive/nursery.obr/src/nursery/obr/admin",
+      "path": "archive/nursery.obr/src/nursery/obr/admin/RepositoryAdminImpl.java",
+      "path": "archive/nursery.obr/src/nursery/obr/admin/ResolverImpl.java",
+      "path": "archive/nursery.obr/src/nursery/obr/admin/component.xml",
+      "path": "archive/nursery.obr/src/nursery/obr/bindex",
+      "path": "archive/nursery.obr/src/nursery/obr/bindex/BundleInfo.java",
+      "path": "archive/nursery.obr/src/nursery/obr/bindex/Entry.java",
+      "path": "archive/nursery.obr/src/nursery/obr/bindex/Index.java",
+      "path": "archive/nursery.obr/src/nursery/obr/bindex/Manifest.java",
+      "path": "archive/nursery.obr/src/nursery/obr/bindex/Parameter.java",
+      "path": "archive/nursery.obr/src/nursery/obr/resource",
+      "path": "archive/nursery.obr/src/nursery/obr/resource/CapabilityImpl.java",
+      "path": "archive/nursery.obr/src/nursery/obr/resource/Filter.java",
+      "path": "archive/nursery.obr/src/nursery/obr/resource/RepositoryImpl.java",
+      "path": "archive/nursery.obr/src/nursery/obr/resource/RequirementImpl.java",
+      "path": "archive/nursery.obr/src/nursery/obr/resource/ResourceImpl.java",
+      "path": "archive/nursery.obr/src/nursery/obr/web",
+      "path": "archive/nursery.obr/src/nursery/obr/web/ObrServlet.java",
+      "path": "archive/nursery.obr/src/nursery/obr/web/component.xml",
+      "path": "archive/nursery.obr/src/nursery/obr/web/www",
+      "path": "archive/nursery.obr/src/nursery/obr/web/www/main.xsl",
+      "path": "archive/nursery.obr/src/nursery/obr/web/www/obr.js",
+      "path": "archive/nursery.obr/src/nursery/obr/web/www/portal.css",
+      "path": "archive/nursery.obr/src/nursery/obr/web/www/repository.xsl",
+      "path": "archive/nursery.obr/src/nursery/obr/web/www/resolve.xsl",
+      "path": "archive/nursery.obr/src/nursery/obr/web/www/resource.xsl",
+      "path": "archive/nursery.obr/src/nursery/obr/web/www/search.xsl",
+      "path": "archive/nursery.obr/src/nursery/test",
+      "path": "archive/nursery.obr/src/nursery/test/obr",
+      "path": "archive/nursery.obr/src/nursery/test/obr/Basic.java",
+      "path": "archive/nursery.obr/src/nursery/test/obr/RepositoryAdminTest.java",
+      "path": "archive/nursery.obr/src/nursery/test/obr/Xml.java",
+      "path": "archive/nursery.obr/src/nursery/test/obr/repository.xml",
+      "path": "archive/nursery.obr/src/nursery/test/obr/single.xml",
+      "path": "archive/nursery.obr/src/org",
+      "path": "archive/nursery.obr/src/org/osgi",
+      "path": "archive/nursery.obr/src/org/osgi/service",
+      "path": "archive/nursery.obr/src/org/osgi/service/obr",
+      "path": "archive/nursery.obr/src/org/osgi/service/obr/Capability.java",
+      "path": "archive/nursery.obr/src/org/osgi/service/obr/CapabilityProvider.java",
+      "path": "archive/nursery.obr/src/org/osgi/service/obr/Repository.java",
+      "path": "archive/nursery.obr/src/org/osgi/service/obr/RepositoryAdmin.java",
+      "path": "archive/nursery.obr/src/org/osgi/service/obr/Requirement.java",
+      "path": "archive/nursery.obr/src/org/osgi/service/obr/Resolver.java",
+      "path": "archive/nursery.obr/src/org/osgi/service/obr/Resource.java",
+      "path": "archive/nursery.obr/src/org/osgi/service/obr/UnsatisfiedException.java",
+      "path": "archive/nursery.obr/src/org/osgi/service/obr/packageinfo",
+      "path": "archive/nursery.rpwa/src",
+      "path": "archive/nursery.rpwa/src/nursery",
+      "path": "archive/nursery.rpwa/src/nursery/rpwa",
+      "path": "archive/nursery.rpwa/src/nursery/rpwa/Activator.java",
+      "path": "archive/nursery.rpwa/src/nursery/rpwa/DP.java",
+      "path": "archive/nursery.rpwa/src/nursery/rpwa/WireAdminProcessor.java",
+      "path": "archive/nursery.rpwa/src/nursery/rpwa/t1.properties",
+      "path": "archive/nursery.rpwa/src/nursery/rpwa/t2.properties",
+      "path": "archive/org.osgi.impl.bundle.servlet/src",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/GenericServlet.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/LocalStrings.properties",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/RequestDispatcher.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/Servlet.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/ServletConfig.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/ServletContext.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/ServletException.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/ServletInputStream.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/ServletOutputStream.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/ServletRequest.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/ServletResponse.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/SingleThreadModel.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/UnavailableException.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/http",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/http/Cookie.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/http/HttpServlet.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/http/HttpServletRequest.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/http/HttpServletResponse.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/http/HttpSession.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/http/HttpSessionBindingEvent.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/http/HttpSessionBindingListener.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/http/HttpSessionContext.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/http/HttpUtils.java",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/http/LocalStrings.properties",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/http/packageinfo",
+      "path": "archive/org.osgi.impl.bundle.servlet/src/javax/servlet/packageinfo",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src/org",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src/org/osgi",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src/org/osgi/impl",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src/org/osgi/impl/service",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src/org/osgi/impl/service/basiccontainer",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src/org/osgi/impl/service/basiccontainer/Activator.java",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src/org/osgi/impl/service/basiccontainer/BasicContainer.java",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src/org/osgi/impl/service/basiccontainer/BasicContainerApplication.java",
+      "path": "archive/org.osgi.impl.service.basiccontainer/src/org/osgi/impl/service/basiccontainer/BasicContainerDescriptor.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/com.nokia.test.midletcontainer.mf",
+      "path": "archive/org.osgi.impl.service.megcontainer/midletsampleresources/TestIcon.gif",
+      "path": "archive/org.osgi.impl.service.megcontainer/src",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com/nokia",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com/nokia/test",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/dummybundle",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/dummybundle/DummyBundleActivator.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/midletcontainer",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/midletcontainer/TestMidletContainerBundleActivator.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/midletsample",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/midletsample/TestMidlet.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/midletsample/export",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/midletsample/export/InstanceID.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/javax",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/javax/microedition",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/javax/microedition/midlet",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/javax/microedition/midlet/MIDlet.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/javax/microedition/midlet/MIDletStateChangeException.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org/osgi",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org/osgi/impl",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org/osgi/impl/service",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org/osgi/impl/service/midletcontainer",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org/osgi/impl/service/midletcontainer/Activator.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org/osgi/impl/service/midletcontainer/Container2MidletInterface.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org/osgi/impl/service/midletcontainer/MIDletClassLoader.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org/osgi/impl/service/midletcontainer/MidletContainer.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org/osgi/impl/service/midletcontainer/MidletDescriptor.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org/osgi/impl/service/midletcontainer/MidletHandle.java",
+      "path": "archive/org.osgi.impl.service.megcontainer/src/org/osgi/impl/service/midletcontainer/Splitter.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/AbstractHandler.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/ActionDefinitionImpl.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/ActionHandler.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/Activator.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/AttributeDefinitionHandler.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/BundlesTracker.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/ExAttributeDefinitionImpl.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/IconHandler.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/ListenerData.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/Localizator.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/Logger.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/MetaDataListenersTracker.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/MetaDataServiceImpl.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/MetaTypeData.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/MetaTypeParser.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/MetaTypeProviderHandler.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/ObjectClassDefinitionHandler.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/OptionHandler.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/PropertyHandler.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/ReferenceHandler.java",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/package.html",
+      "path": "archive/org.osgi.impl.service.metatype2/src/org/osgi/impl/service/metatype2/packageinfo",
+      "path": "archive/org.osgi.impl.service.upnp/src",
+      "path": "archive/org.osgi.impl.service.upnp/src/org",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi",
+      "path": "archive/org.osgi.impl.service.upnp/src/org/osgi/impl",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/osgi/osgi/git/trees/r4-core-ri-tck-final?recursive=1 | jq -r '.tree[].path' | rg '"'^org'"\\.osgi\\.|test|tck|framework' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/osgi/osgi/git/trees/r4-core-spec-final?recursive=1 | jq -r '.tree[].path' | rg '"'^org'"\\.osgi\\.|osgi\\.core|framework' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 304ms:
+archive/org.osgi.tools.btool/src/test/org.osgi.framework.jar
+archive/osgi.testdoc/tov/org.osgi.framework.html
+archive/osgi.testdoc/tov/org.osgi.test.cases.framework.classpath.html
+archive/osgi.testdoc/tov/org.osgi.test.cases.framework.div.html
+archive/osgi.testdoc/tov/org.osgi.test.cases.framework.dynpkgimport.html
+archive/osgi.testdoc/tov/org.osgi.test.cases.framework.filter.html
+archive/osgi.testdoc/tov/org.osgi.test.cases.framework.lifecycle.html
+archive/osgi.testdoc/tov/org.osgi.test.cases.framework.registry.html
+archive/osgi.testdoc/tov/org.osgi.test.cases.framework.syncbundlelistener.html
+org.osgi.framework
+org.osgi.framework/.classpath
+org.osgi.framework/.cvsignore
+org.osgi.framework/.project
+org.osgi.framework/.settings
+org.osgi.framework/.settings/org.eclipse.jdt.core.prefs
+org.osgi.framework/build.properties
+org.osgi.framework/build.xml
+org.osgi.framework/src
+org.osgi.framework/src/org
+org.osgi.framework/src/org/osgi
+org.osgi.framework/src/org/osgi/framework
+org.osgi.framework/src/org/osgi/framework/AdminPermission.java
+org.osgi.framework/src/org/osgi/framework/AllServiceListener.java
+org.osgi.framework/src/org/osgi/framework/Bundle.java
+org.osgi.framework/src/org/osgi/framework/BundleActivator.java
+org.osgi.framework/src/org/osgi/framework/BundleContext.java
+org.osgi.framework/src/org/osgi/framework/BundleEvent.java
+org.osgi.framework/src/org/osgi/framework/BundleException.java
+org.osgi.framework/src/org/osgi/framework/BundleListener.java
+org.osgi.framework/src/org/osgi/framework/BundlePermission.java
+org.osgi.framework/src/org/osgi/framework/Configurable.java
+org.osgi.framework/src/org/osgi/framework/Constants.java
+org.osgi.framework/src/org/osgi/framework/Filter.java
+org.osgi.framework/src/org/osgi/framework/FrameworkEvent.java
+org.osgi.framework/src/org/osgi/framework/FrameworkListener.java
+org.osgi.framework/src/org/osgi/framework/FrameworkUtil.java
+org.osgi.framework/src/org/osgi/framework/InvalidSyntaxException.java
+org.osgi.framework/src/org/osgi/framework/PackagePermission.java
+org.osgi.framework/src/org/osgi/framework/ServiceEvent.java
+org.osgi.framework/src/org/osgi/framework/ServiceFactory.java
+org.osgi.framework/src/org/osgi/framework/ServiceListener.java
+org.osgi.framework/src/org/osgi/framework/ServicePermission.java
+org.osgi.framework/src/org/osgi/framework/ServiceReference.java
+org.osgi.framework/src/org/osgi/framework/ServiceRegistration.java
+org.osgi.framework/src/org/osgi/framework/SynchronousBundleListener.java
+org.osgi.framework/src/org/osgi/framework/Version.java
+org.osgi.framework/src/org/osgi/framework/package.html
+org.osgi.framework/src/org/osgi/framework/packageinfo
+org.osgi.impl.bundle.autoconf
+org.osgi.impl.bundle.autoconf/.classpath
+org.osgi.impl.bundle.autoconf/.cvsignore
+org.osgi.impl.bundle.autoconf/.project
+org.osgi.impl.bundle.autoconf/Manifest.mf
+org.osgi.impl.bundle.autoconf/build.properties
+org.osgi.impl.bundle.autoconf/build.xml
+org.osgi.impl.bundle.autoconf/src
+org.osgi.impl.bundle.autoconf/src/OSGI-INF
+org.osgi.impl.bundle.autoconf/src/OSGI-INF/services.xml
+org.osgi.impl.bundle.autoconf/src/org
+org.osgi.impl.bundle.autoconf/src/org/osgi
+org.osgi.impl.bundle.autoconf/src/org/osgi/impl
+org.osgi.impl.bundle.autoconf/src/org/osgi/impl/bundle
+org.osgi.impl.bundle.autoconf/src/org/osgi/impl/bundle/autoconf
+org.osgi.impl.bundle.autoconf/src/org/osgi/impl/bundle/autoconf/Autoconf.java
+org.osgi.impl.bundle.autoconf/src/org/osgi/impl/bundle/autoconf/MetaData.java
+org.osgi.impl.bundle.autoconf/src/org/osgi/impl/bundle/autoconf/StoredConfiguration.java
+org.osgi.impl.bundle.autoconf/src/org/osgi/impl/bundle/autoconf/StoredConfigurations.java
+org.osgi.impl.bundle.autoconf/src/org/osgi/impl/bundle/autoconf/autoconf.xsd
+org.osgi.impl.bundle.autoconf/src/org/osgi/impl/bundle/autoconf/package.html
+org.osgi.impl.bundle.autoconf/src/org/osgi/impl/bundle/autoconf/packageinfo
+org.osgi.impl.bundle.jaxp
+org.osgi.impl.bundle.jaxp/.classpath
+org.osgi.impl.bundle.jaxp/.cvsignore
+org.osgi.impl.bundle.jaxp/.project
+org.osgi.impl.bundle.jaxp/Manifest.mf
+org.osgi.impl.bundle.jaxp/build.properties
+org.osgi.impl.bundle.jaxp/build.xml
+org.osgi.impl.bundle.jaxp/src
+org.osgi.impl.bundle.jaxp/src/org
+org.osgi.impl.bundle.jaxp/src/org/osgi
+org.osgi.impl.bundle.jaxp/src/org/osgi/impl
+org.osgi.impl.bundle.jaxp/src/org/osgi/impl/bundle
+org.osgi.impl.bundle.jaxp/src/org/osgi/impl/bundle/jaxp
+org.osgi.impl.bundle.jaxp/src/org/osgi/impl/bundle/jaxp/JaxpActivator.java
+org.osgi.impl.bundle.jaxp/src/org/osgi/impl/bundle/jaxp/packageinfo
+org.osgi.impl.bundle.rsh
+org.osgi.impl.bundle.rsh/.classpath
+org.osgi.impl.bundle.rsh/.cvsignore
+org.osgi.impl.bundle.rsh/.project
+org.osgi.impl.bundle.rsh/Manifest.mf
+org.osgi.impl.bundle.rsh/build.properties
+org.osgi.impl.bundle.rsh/build.xml
+org.osgi.impl.bundle.rsh/src
+org.osgi.impl.bundle.rsh/src/org
+org.osgi.impl.bundle.rsh/src/org/osgi
+org.osgi.impl.bundle.rsh/src/org/osgi/impl
+org.osgi.impl.bundle.rsh/src/org/osgi/impl/bundle
+org.osgi.impl.bundle.rsh/src/org/osgi/impl/bundle/rsh
+org.osgi.impl.bundle.rsh/src/org/osgi/impl/bundle/rsh/.cvsignore
+org.osgi.impl.bundle.rsh/src/org/osgi/impl/bundle/rsh/RshConnection.java
+org.osgi.impl.bundle.rsh/src/org/osgi/impl/bundle/rsh/RshHandler.java
+org.osgi.impl.bundle.rsh/src/org/osgi/impl/bundle/rsh/RshServer.java
+org.osgi.impl.bundle.rsh/src/org/osgi/impl/bundle/rsh/packageinfo
+org.osgi.impl.framework.eclipse
+org.osgi.impl.framework.eclipse/.classpath
+org.osgi.impl.framework.eclipse/.cvsignore
+org.osgi.impl.framework.eclipse/.options
+org.osgi.impl.framework.eclipse/.project
+org.osgi.impl.framework.eclipse/CDC-1.0_Foundation-1.0.profile
+org.osgi.impl.framework.eclipse/J2SE-1.3.profile
+org.osgi.impl.framework.eclipse/J2SE-1.4.profile
+org.osgi.impl.framework.eclipse/J2SE-1.5.profile
+org.osgi.impl.framework.eclipse/MANIFEST.MF
+org.osgi.impl.framework.eclipse/META-INF
+org.osgi.impl.framework.eclipse/META-INF/MANIFEST.MF
+org.osgi.impl.framework.eclipse/about.html
+org.osgi.impl.framework.eclipse/build.properties
+org.osgi.impl.framework.eclipse/build.xml
+org.osgi.impl.framework.eclipse/launch
+org.osgi.impl.framework.eclipse/launch/.cvsignore
+org.osgi.impl.framework.eclipse/launch/.options
+org.osgi.impl.framework.eclipse/launch/DevFramework.launch
+org.osgi.impl.framework.eclipse/launch/DevFrameworkSecurity.launch
+org.osgi.impl.framework.eclipse/launch/osgi.policy
+org.osgi.impl.framework.eclipse/launch/osgi.properties
+org.osgi.impl.framework.eclipse/src
+org.osgi.impl.framework.eclipse/src/java
+org.osgi.impl.framework.eclipse/src/java/security
+org.osgi.impl.framework.eclipse/src/java/security/cert
+org.osgi.impl.framework.eclipse/src/java/security/cert/X509Certificate.java
+org.osgi.impl.framework.eclipse/src/javax
+org.osgi.impl.framework.eclipse/src/javax/security
+org.osgi.impl.framework.eclipse/src/javax/security/auth
+org.osgi.impl.framework.eclipse/src/javax/security/auth/x500
+org.osgi.impl.framework.eclipse/src/javax/security/auth/x500/X500Principal.java
+org.osgi.impl.framework.eclipse/src/org
+org.osgi.impl.framework.eclipse/src/org/eclipse
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/event
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/event/BatchBundleListener.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/BundleClassLoader.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/BundleData.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/BundleOperation.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/BundleProtectionDomain.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/BundleWatcher.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/ClassLoaderDelegate.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/EventPublisher.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/FilePath.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/FrameworkAdaptor.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/PermissionStorage.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/ServiceRegistry.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/core
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/core/AbstractBundleData.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/core/AbstractClassLoader.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/core/AbstractFrameworkAdaptor.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/core/AdaptorElementFactory.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/core/AdaptorMsg.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/core/BundleEntry.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/core/BundleFile.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/core/BundleInstaller.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/core/DefaultClassLoader.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/core/DevClassPathHelper.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/core/ExternalMessages.properties
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/core/SignedBundle.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/core/SignedBundleSupport.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/adaptor/core/StateManager.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/console
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/console/CommandInterpreter.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/console/CommandProvider.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/debug
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/debug/Debug.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/debug/FrameworkDebugOptions.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/eventmgr
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/eventmgr/EventDispatcher.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/eventmgr/EventListeners.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/eventmgr/EventManager.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/eventmgr/ListenerQueue.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/AbstractBundle.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/AliasMapper.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/BundleCombinedPermissions.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/BundleContextImpl.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/BundleFragment.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/BundleHost.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/BundleLoader.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/BundleLoaderProxy.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/BundleNativeCode.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/BundlePermissionCollection.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/BundlePermissions.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/BundleProtectionDomainImpl.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/BundleRepository.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/BundleResourceHandler.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/BundleSource.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/BundleURLConnection.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/ConditionalPermissionAdminImpl.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/ConditionalPermissionInfoImpl.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/ConditionalPermissionSet.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/ConditionalPermissions.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/ConsoleMessages.properties
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/ConsoleMsg.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/Constants.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/DefaultPermissionStorage.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/DependentPolicy.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/ExportedPackageImpl.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/ExternalMessages.properties
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/FilterImpl.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/FilteredServiceListener.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/FilteredSourcePackage.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/Framework.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/FrameworkCommandInterpreter.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/FrameworkCommandProvider.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/FrameworkConsole.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/FrameworkSecurityManager.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/GlobalPolicy.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/IBuddyPolicy.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/KeyedElement.java
+org.osgi.impl.framework.eclipse/src/org/eclipse/osgi/framework/internal/core/KeyedHashSet.java
+
+ succeeded in 333ms:
+archive/nursery.obr/src/nursery/test
+archive/nursery.obr/src/nursery/test/obr
+archive/nursery.obr/src/nursery/test/obr/Basic.java
+archive/nursery.obr/src/nursery/test/obr/RepositoryAdminTest.java
+archive/nursery.obr/src/nursery/test/obr/Xml.java
+archive/nursery.obr/src/nursery/test/obr/repository.xml
+archive/nursery.obr/src/nursery/test/obr/single.xml
+archive/org.osgi.impl.service.megcontainer/com.nokia.test.midletcontainer.mf
+archive/org.osgi.impl.service.megcontainer/src/com/nokia/test
+archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/dummybundle
+archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/dummybundle/DummyBundleActivator.java
+archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/midletcontainer
+archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/midletcontainer/TestMidletContainerBundleActivator.java
+archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/midletsample
+archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/midletsample/TestMidlet.java
+archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/midletsample/export
+archive/org.osgi.impl.service.megcontainer/src/com/nokia/test/midletsample/export/InstanceID.java
+archive/org.osgi.test.cases.condpermadmin
+archive/org.osgi.test.cases.condpermadmin/.classpath
+archive/org.osgi.test.cases.condpermadmin/.cvsignore
+archive/org.osgi.test.cases.condpermadmin/.project
+archive/org.osgi.test.cases.condpermadmin/Manifest.mf
+archive/org.osgi.test.cases.condpermadmin/build.properties
+archive/org.osgi.test.cases.condpermadmin/build.xml
+archive/org.osgi.test.cases.condpermadmin/log.ref
+archive/org.osgi.test.cases.condpermadmin/src
+archive/org.osgi.test.cases.condpermadmin/src/org
+archive/org.osgi.test.cases.condpermadmin/src/org/osgi
+archive/org.osgi.test.cases.condpermadmin/src/org/osgi/test
+archive/org.osgi.test.cases.condpermadmin/src/org/osgi/test/cases
+archive/org.osgi.test.cases.condpermadmin/src/org/osgi/test/cases/condpermadmin
+archive/org.osgi.test.cases.condpermadmin/src/org/osgi/test/cases/condpermadmin/TestCase.java
+archive/org.osgi.test.cases.condpermadmin/src/org/osgi/test/cases/condpermadmin/packageinfo
+archive/org.osgi.test.cases.condpermadmin/src/org/osgi/test/cases/condpermadmin/tb1
+archive/org.osgi.test.cases.condpermadmin/src/org/osgi/test/cases/condpermadmin/tb1/Activator.java
+archive/org.osgi.test.cases.condpermadmin/src/org/osgi/test/cases/condpermadmin/tb1/packageinfo
+archive/org.osgi.test.cases.condpermadmin/src/org/osgi/test/cases/condpermadmin/tbc
+archive/org.osgi.test.cases.condpermadmin/src/org/osgi/test/cases/condpermadmin/tbc/TBCService.java
+archive/org.osgi.test.cases.condpermadmin/src/org/osgi/test/cases/condpermadmin/tbc/TestControl.java
+archive/org.osgi.test.cases.condpermadmin/src/org/osgi/test/cases/condpermadmin/tbc/packageinfo
+archive/org.osgi.test.cases.condpermadmin/tb1.mf
+archive/org.osgi.test.cases.condpermadmin/tbc.mf
+archive/org.osgi.test.cases.cu
+archive/org.osgi.test.cases.cu/.classpath
+archive/org.osgi.test.cases.cu/.cvsignore
+archive/org.osgi.test.cases.cu/.project
+archive/org.osgi.test.cases.cu/.settings
+archive/org.osgi.test.cases.cu/.settings/org.eclipse.core.resources.prefs
+archive/org.osgi.test.cases.cu/.settings/org.eclipse.jdt.core.prefs
+archive/org.osgi.test.cases.cu/.settings/org.eclipse.jdt.ui.prefs
+archive/org.osgi.test.cases.cu/Manifest.mf
+archive/org.osgi.test.cases.cu/build.properties
+archive/org.osgi.test.cases.cu/build.xml
+archive/org.osgi.test.cases.cu/log.ref
+archive/org.osgi.test.cases.cu/src
+archive/org.osgi.test.cases.cu/src/org
+archive/org.osgi.test.cases.cu/src/org/osgi
+archive/org.osgi.test.cases.cu/src/org/osgi/test
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/TestCase.java
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/packageinfo
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb1
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb1/Activator.java
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb1/HipGyro.java
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb1/HipModule.java
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb1/HipTacho.java
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb1/packageinfo
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb2
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb2/Activator.java
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb2/DoorWindowFactory.java
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb3
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb3/Activator.java
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb3/EventFilterListener.java
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb3/NoFilterListener.java
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb4
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb4/Activator.java
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb4/EventFilterListener.java
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb4/NoFilterListener.java
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb5
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb5/Activator.java
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb5/EventFilterListener.java
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tb5/NoFilterListener.java
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tbc
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tbc/HipPosition.java
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tbc/TBCService.java
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tbc/TestControl.java
+archive/org.osgi.test.cases.cu/src/org/osgi/test/cases/cu/tbc/packageinfo
+archive/org.osgi.test.cases.cu/tb1.mf
+archive/org.osgi.test.cases.cu/tb2.mf
+archive/org.osgi.test.cases.cu/tb3.mf
+archive/org.osgi.test.cases.cu/tb4.mf
+archive/org.osgi.test.cases.cu/tb5.mf
+archive/org.osgi.test.cases.cu/tbc.mf
+archive/org.osgi.test.cases.deploymentadmin.res
+archive/org.osgi.test.cases.deploymentadmin.res/.classpath
+archive/org.osgi.test.cases.deploymentadmin.res/.cvsignore
+archive/org.osgi.test.cases.deploymentadmin.res/.project
+archive/org.osgi.test.cases.deploymentadmin.res/build.properties
+archive/org.osgi.test.cases.deploymentadmin.res/build.xml
+archive/org.osgi.test.cases.deploymentadmin.res/bundles
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/META-INF
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/META-INF/MANIFEST.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/META-INF/README.txt
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/META-INF/TEST.RSA
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/META-INF/TEST.SF
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/OSGI-INF
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/OSGI-INF/AUTOCONF.xml
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/OSGI-INF/l10n
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/OSGI-INF/l10n/dp.properties
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/bundle001.jar
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/bundle001.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/bundle002.jar
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/bundle002.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/bundle003.jar
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/bundle003.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/bundle004.jar
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/bundle004.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/bundle005.jar
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/bundle005.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/bundle006.jar
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/bundle006.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/conf.txt
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/resource_processor_file.txt
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/rp_bundle.jar
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/rp_bundle2.jar
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/rp_bundle3.jar
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/rp_bundle4.jar
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/rp_bundle5.jar
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/rp_bundle_dmo_rp1.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/rp_bundle_dmo_rp2.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/rp_bundle_dmo_rp3.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/rp_bundle_dmo_rp4.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/rp_bundle_dmo_rp5.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/rp_bundle_tc1_rp1.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/rp_bundle_tc1_rp2.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/rp_bundle_tc1_rp3.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/rp_bundle_tc1_rp4.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/rp_bundle_tc2_rp1.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/rp_bundle_tc2_rp2.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/rp_bundle_tc2_rp3.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/rp_bundle_tc2_rp4.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/simple_resource.xml
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/st_ra.ge-dir
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/st_ra.ge-dir/bundle001.jar
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/unsignedbundle.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/wrong(path)
+archive/org.osgi.test.cases.deploymentadmin.res/bundles/wrong(path)/bundle001.jar
+archive/org.osgi.test.cases.deploymentadmin.res/bundles_update
+archive/org.osgi.test.cases.deploymentadmin.res/bundles_update/bundle001.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles_update/bundle002.mf
+archive/org.osgi.test.cases.deploymentadmin.res/bundles_update/bundle005.mf
+archive/org.osgi.test.cases.deploymentadmin.res/gendp.bat
+archive/org.osgi.test.cases.deploymentadmin.res/invalid_keystore
+archive/org.osgi.test.cases.deploymentadmin.res/log.ref
+archive/org.osgi.test.cases.deploymentadmin.res/megtck_keystore
+archive/org.osgi.test.cases.deploymentadmin.res/res
+archive/org.osgi.test.cases.deploymentadmin.res/res/add_bundle_fix_pack_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/add_resource_fix_pack_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/auto_config_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/bad_header_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/block_session_dmo.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/block_session_tc1.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/block_session_tc2.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/bsn_dif_from_manifest_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/bundle_fail_on_stop_res_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/bundle_fail_res_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/bundle_from_other_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/bundle_from_other_dp_dif_vers.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/bundle_throws_exception_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/bundle_throws_exception_stop_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/bundle_throws_exception_update.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/bversion_dif_from_manifest_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/different_name_and_version_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/dp_installs_resource_for_rp4.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/dp_removes_resource_for_rp4.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/dp_throws_resource_violation.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/fix_pack_higher_range_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/fix_pack_lower_range_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/installation_fails_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/localized_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/missing_b_version_header_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/missing_bsn_header_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/missing_bundle_fix_pack_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/missing_fix_pack_header_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/missing_name_header_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/missing_res_name_header_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/missing_resource_fix_pack_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/missing_version_header_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/non_customizer_rp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/resource_from_other_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/resource_processor2_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/resource_processor_customizer.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/resource_processor_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/resource_processor_rp3.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/rp_from_other_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/rp_from_other_dp_dmo.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/rp_not_able_to_commit.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/rp_resource_install_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/rp_resource_uninstall_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/rp_resource_update_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/rp_throws_no_such_resource.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/session_resource_processor_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/session_test.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/session_update_test.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/simple_bundle_res_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/simple_clone_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/simple_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/simple_fix_pack_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/simple_higher_major_version_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/simple_higher_micro_version_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/simple_higher_minor_version_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/simple_no_bundle_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/simple_no_resource_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/simple_resource_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/simple_resource_processor_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/simple_resource_processor_uninstall.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/simple_resource_rp3.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/simple_resource_uninstall_dp.mf
+archive/org.osgi.test.cases.deploymentadmin.res/res/simple_uninstall_bundle_dp.mf
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/osgi/osgi/git/trees/r4-core-ri-tck-final?recursive=1 | jq -r '.tree[].path' | rg '"'^archive/org'"\\.osgi\\.test\\.cases\\.framework(/|"'$)'"' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/osgi/osgi/git/trees/r4-core-spec-final?recursive=1 | jq -r '.tree[].path' | rg '"'^(org'"\\.osgi\\.framework|org\\.osgi\\.service\\.(condpermadmin|packageadmin|permissionadmin|startlevel|url))(/|"'$)'"' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/osgi/osgi/contents/archive/org.osgi.test.cases.framework?ref=r4-core-ri-tck-final | jq -r '.[].name' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 176ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 324ms:
+ succeeded in 339ms:
+org.osgi.framework
+org.osgi.framework/.classpath
+org.osgi.framework/.cvsignore
+org.osgi.framework/.project
+org.osgi.framework/.settings
+org.osgi.framework/.settings/org.eclipse.jdt.core.prefs
+org.osgi.framework/build.properties
+org.osgi.framework/build.xml
+org.osgi.framework/src
+org.osgi.framework/src/org
+org.osgi.framework/src/org/osgi
+org.osgi.framework/src/org/osgi/framework
+org.osgi.framework/src/org/osgi/framework/AdminPermission.java
+org.osgi.framework/src/org/osgi/framework/AllServiceListener.java
+org.osgi.framework/src/org/osgi/framework/Bundle.java
+org.osgi.framework/src/org/osgi/framework/BundleActivator.java
+org.osgi.framework/src/org/osgi/framework/BundleContext.java
+org.osgi.framework/src/org/osgi/framework/BundleEvent.java
+org.osgi.framework/src/org/osgi/framework/BundleException.java
+org.osgi.framework/src/org/osgi/framework/BundleListener.java
+org.osgi.framework/src/org/osgi/framework/BundlePermission.java
+org.osgi.framework/src/org/osgi/framework/Configurable.java
+org.osgi.framework/src/org/osgi/framework/Constants.java
+org.osgi.framework/src/org/osgi/framework/Filter.java
+org.osgi.framework/src/org/osgi/framework/FrameworkEvent.java
+org.osgi.framework/src/org/osgi/framework/FrameworkListener.java
+org.osgi.framework/src/org/osgi/framework/FrameworkUtil.java
+org.osgi.framework/src/org/osgi/framework/InvalidSyntaxException.java
+org.osgi.framework/src/org/osgi/framework/PackagePermission.java
+org.osgi.framework/src/org/osgi/framework/ServiceEvent.java
+org.osgi.framework/src/org/osgi/framework/ServiceFactory.java
+org.osgi.framework/src/org/osgi/framework/ServiceListener.java
+org.osgi.framework/src/org/osgi/framework/ServicePermission.java
+org.osgi.framework/src/org/osgi/framework/ServiceReference.java
+org.osgi.framework/src/org/osgi/framework/ServiceRegistration.java
+org.osgi.framework/src/org/osgi/framework/SynchronousBundleListener.java
+org.osgi.framework/src/org/osgi/framework/Version.java
+org.osgi.framework/src/org/osgi/framework/package.html
+org.osgi.framework/src/org/osgi/framework/packageinfo
+org.osgi.service.condpermadmin
+org.osgi.service.condpermadmin/.classpath
+org.osgi.service.condpermadmin/.project
+org.osgi.service.condpermadmin/.settings
+org.osgi.service.condpermadmin/.settings/org.eclipse.jdt.core.prefs
+org.osgi.service.condpermadmin/build.properties
+org.osgi.service.condpermadmin/build.xml
+org.osgi.service.condpermadmin/src
+org.osgi.service.condpermadmin/src/org
+org.osgi.service.condpermadmin/src/org/osgi
+org.osgi.service.condpermadmin/src/org/osgi/service
+org.osgi.service.condpermadmin/src/org/osgi/service/condpermadmin
+org.osgi.service.condpermadmin/src/org/osgi/service/condpermadmin/BundleLocationCondition.java
+org.osgi.service.condpermadmin/src/org/osgi/service/condpermadmin/BundleSignerCondition.java
+org.osgi.service.condpermadmin/src/org/osgi/service/condpermadmin/Condition.java
+org.osgi.service.condpermadmin/src/org/osgi/service/condpermadmin/ConditionInfo.java
+org.osgi.service.condpermadmin/src/org/osgi/service/condpermadmin/ConditionalPermissionAdmin.java
+org.osgi.service.condpermadmin/src/org/osgi/service/condpermadmin/ConditionalPermissionInfo.java
+org.osgi.service.condpermadmin/src/org/osgi/service/condpermadmin/package.html
+org.osgi.service.condpermadmin/src/org/osgi/service/condpermadmin/packageinfo
+org.osgi.service.packageadmin
+org.osgi.service.packageadmin/.classpath
+org.osgi.service.packageadmin/.cvsignore
+org.osgi.service.packageadmin/.project
+org.osgi.service.packageadmin/.settings
+org.osgi.service.packageadmin/.settings/org.eclipse.jdt.core.prefs
+org.osgi.service.packageadmin/build.properties
+org.osgi.service.packageadmin/build.xml
+org.osgi.service.packageadmin/src
+org.osgi.service.packageadmin/src/org
+org.osgi.service.packageadmin/src/org/osgi
+org.osgi.service.packageadmin/src/org/osgi/service
+org.osgi.service.packageadmin/src/org/osgi/service/packageadmin
+org.osgi.service.packageadmin/src/org/osgi/service/packageadmin/ExportedPackage.java
+org.osgi.service.packageadmin/src/org/osgi/service/packageadmin/PackageAdmin.java
+org.osgi.service.packageadmin/src/org/osgi/service/packageadmin/RequiredBundle.java
+org.osgi.service.packageadmin/src/org/osgi/service/packageadmin/package.html
+org.osgi.service.packageadmin/src/org/osgi/service/packageadmin/packageinfo
+org.osgi.service.permissionadmin
+org.osgi.service.permissionadmin/.classpath
+org.osgi.service.permissionadmin/.cvsignore
+org.osgi.service.permissionadmin/.project
+org.osgi.service.permissionadmin/.settings
+org.osgi.service.permissionadmin/.settings/org.eclipse.jdt.core.prefs
+org.osgi.service.permissionadmin/build.properties
+org.osgi.service.permissionadmin/build.xml
+org.osgi.service.permissionadmin/src
+org.osgi.service.permissionadmin/src/org
+org.osgi.service.permissionadmin/src/org/osgi
+org.osgi.service.permissionadmin/src/org/osgi/service
+org.osgi.service.permissionadmin/src/org/osgi/service/permissionadmin
+org.osgi.service.permissionadmin/src/org/osgi/service/permissionadmin/PermissionAdmin.java
+org.osgi.service.permissionadmin/src/org/osgi/service/permissionadmin/PermissionInfo.java
+org.osgi.service.permissionadmin/src/org/osgi/service/permissionadmin/package.html
+org.osgi.service.permissionadmin/src/org/osgi/service/permissionadmin/packageinfo
+org.osgi.service.startlevel
+org.osgi.service.startlevel/.classpath
+org.osgi.service.startlevel/.cvsignore
+org.osgi.service.startlevel/.project
+org.osgi.service.startlevel/.settings
+org.osgi.service.startlevel/.settings/org.eclipse.jdt.core.prefs
+org.osgi.service.startlevel/build.properties
+org.osgi.service.startlevel/build.xml
+org.osgi.service.startlevel/src
+org.osgi.service.startlevel/src/org
+org.osgi.service.startlevel/src/org/osgi
+org.osgi.service.startlevel/src/org/osgi/service
+org.osgi.service.startlevel/src/org/osgi/service/startlevel
+org.osgi.service.startlevel/src/org/osgi/service/startlevel/StartLevel.java
+org.osgi.service.startlevel/src/org/osgi/service/startlevel/package.html
+org.osgi.service.startlevel/src/org/osgi/service/startlevel/packageinfo
+org.osgi.service.url
+org.osgi.service.url/.classpath
+org.osgi.service.url/.cvsignore
+org.osgi.service.url/.project
+org.osgi.service.url/.settings
+org.osgi.service.url/.settings/org.eclipse.jdt.core.prefs
+org.osgi.service.url/build.properties
+org.osgi.service.url/build.xml
+org.osgi.service.url/src
+org.osgi.service.url/src/org
+org.osgi.service.url/src/org/osgi
+org.osgi.service.url/src/org/osgi/service
+org.osgi.service.url/src/org/osgi/service/url
+org.osgi.service.url/src/org/osgi/service/url/AbstractURLStreamHandlerService.java
+org.osgi.service.url/src/org/osgi/service/url/URLConstants.java
+org.osgi.service.url/src/org/osgi/service/url/URLStreamHandlerService.java
+org.osgi.service.url/src/org/osgi/service/url/URLStreamHandlerSetter.java
+org.osgi.service.url/src/org/osgi/service/url/package.html
+org.osgi.service.url/src/org/osgi/service/url/packageinfo
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/osgi/osgi/git/trees/r4-core-ri-tck-final?recursive=1 | jq -r '.tree[].path' | rg 'org\\.osgi\\.test\\.cases\\.framework' | sed -n '1,240p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 319ms:
+archive/osgi.testdoc/tov/org.osgi.test.cases.framework.classpath.html
+archive/osgi.testdoc/tov/org.osgi.test.cases.framework.div.html
+archive/osgi.testdoc/tov/org.osgi.test.cases.framework.dynpkgimport.html
+archive/osgi.testdoc/tov/org.osgi.test.cases.framework.filter.html
+archive/osgi.testdoc/tov/org.osgi.test.cases.framework.lifecycle.html
+archive/osgi.testdoc/tov/org.osgi.test.cases.framework.registry.html
+archive/osgi.testdoc/tov/org.osgi.test.cases.framework.syncbundlelistener.html
+org.osgi.test.cases.framework.classloading
+org.osgi.test.cases.framework.classloading/.classpath
+org.osgi.test.cases.framework.classloading/.cvsignore
+org.osgi.test.cases.framework.classloading/.project
+org.osgi.test.cases.framework.classloading/.settings
+org.osgi.test.cases.framework.classloading/.settings/org.eclipse.core.resources.prefs
+org.osgi.test.cases.framework.classloading/.settings/org.eclipse.jdt.core.prefs
+org.osgi.test.cases.framework.classloading/.settings/org.eclipse.jdt.ui.prefs
+org.osgi.test.cases.framework.classloading/Manifest.mf
+org.osgi.test.cases.framework.classloading/build.properties
+org.osgi.test.cases.framework.classloading/build.xml
+org.osgi.test.cases.framework.classloading/log.ref
+org.osgi.test.cases.framework.classloading/src
+org.osgi.test.cases.framework.classloading/src/java
+org.osgi.test.cases.framework.classloading/src/java/lang
+org.osgi.test.cases.framework.classloading/src/java/lang/Math.java
+org.osgi.test.cases.framework.classloading/src/java/lang/SomeClass.java
+org.osgi.test.cases.framework.classloading/src/javax
+org.osgi.test.cases.framework.classloading/src/javax/xml
+org.osgi.test.cases.framework.classloading/src/javax/xml/parsers
+org.osgi.test.cases.framework.classloading/src/javax/xml/parsers/DocumentBuilderFactory.java
+org.osgi.test.cases.framework.classloading/src/javax/xml/parsers/SomeClass.java
+org.osgi.test.cases.framework.classloading/src/org
+org.osgi.test.cases.framework.classloading/src/org/osgi
+org.osgi.test.cases.framework.classloading/src/org/osgi/test
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/TestCase.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/exports
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/exports/listener
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/exports/listener/AllServiceListenerTester.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/exports/listener/ServiceListenerTester.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/exports/security
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/exports/security/SomePermission.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/exports/service
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/exports/service/SomeService.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb1
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb1/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb10a
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb10a/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb11a
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb11a/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb11b
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb11b/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb11c
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb11c/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb11d
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb11d/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb11e
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb11e/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb12a
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb12a/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb12b
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb12b/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13a
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13a/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13b
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13b/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13c
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13c/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13d
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13d/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13e
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13e/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13f
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13f/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13g
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13g/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13h
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13h/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13i
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13i/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13j
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13j/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13k
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13k/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13l
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13l/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13m
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13m/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13n
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13n/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13o
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13o/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13p
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb13p/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb14a
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb14a/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb14f
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb14f/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb14g
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb14g/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb14h
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb14h/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb15a
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb15a/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb15b
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb15b/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb15c
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb15c/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb15d
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb15d/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb15e
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb15e/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb15f
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb15f/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb15g
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb15g/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb15h
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb15h/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb15i
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb15i/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb16a
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb16a/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb16b
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb16b/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb16b/TestClass.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb16c
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb16c/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb16d
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb16d/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb16e
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb16e/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb16f
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb16f/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb16g
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb16g/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb16h
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb16h/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb16i
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb16i/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17a
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17a/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17b
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17b/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17c
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17c/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17d
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17d/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17e
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17e/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17f
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17f/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17g
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17g/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17h
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17h/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17i
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17i/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17j
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb17j/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb18a
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb18a/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb1a
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb1a/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb1a/SomeServiceImpl.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb1b
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb1b/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb1b/SomeServiceImpl.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb2
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb2/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb2a
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb2a/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb2a/SomeServiceImpl.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb3
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb3/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb4a
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb4a/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb4b
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb4b/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb4c
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb4c/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb4d
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb4d/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb4e
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb4e/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb4f
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb4f/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb4g
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb4g/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb5
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb5/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb5a
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb5a/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb5a/ServiceListenerTesterImpl.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb5b
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb5b/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb5b/ServiceListenerTesterImpl.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb5c
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb5c/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb5c/AllServiceListenerTesterImpl.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb6a
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb6a/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb6b
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb6b/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb6c
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb6c/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb6c/SomeServiceImpl.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb6d
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb6d/Activator.java
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb7a
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb7a/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb7b
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb7b/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb7c
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb7c/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb7d
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb7d/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb7e
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb7e/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb8a
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb8a/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb8b
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb8b/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb8c
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb8c/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb8d
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb8d/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb8e
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb8e/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb8f
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb8f/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb9a
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb9a/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb9b
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb9b/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb9c
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb9c/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb9d
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tb9d/packageinfo
+org.osgi.test.cases.framework.classloading/src/org/osgi/test/cases/framework/classloading/tbc
+
+web search: 
+web search: 
+web search: 
+web search: site:docs.osgi.org/javadoc/r4 OSGi Release 4 javadoc
+web search: 
+web search: https://docs.osgi.org/javadoc/
+web search: 
+web search: https://docs.osgi.org/javadoc/r4v401/
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/osgi/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/
+web search: 
+web search: github osgi/osgi r4-core-spec-final r4-core-ri-tck-final
+codex
+I found no Kotlin, Groovy, or Scala language coupling here, so I’ll leave `language` absent. The source URL will use the exact Maven JAR because that artifact contains `OSGI-OPT/src`; tests and docs will use the matching OSGi R4 final tag/docs.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
+diff --git a/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json b/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
+index a8e4967288a545a0b3087af65d7cf4ef824f33cd..4b2cfb1736fa64d8104a706ce2c6397b4b5d3ed2
+--- a/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:osgi_R4_core:1.0"
++  "coordinates" : "org.osgi:osgi_R4_core:1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final",
++  "documentation-url" : "https://docs.osgi.org/javadoc/r4v401/",
++  "description" : "This artifact provides the OSGi Service Platform Release 4 core API classes and service interfaces used to compile Java bundles. It defines contracts for bundle lifecycle, framework services, permissions, package administration, start levels, and URL handler integration in OSGi runtimes."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json b/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
+index a8e4967288a545a0b3087af65d7cf4ef824f33cd..4b2cfb1736fa64d8104a706ce2c6397b4b5d3ed2
+--- a/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:osgi_R4_core:1.0"
++  "coordinates" : "org.osgi:osgi_R4_core:1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final",
++  "documentation-url" : "https://docs.osgi.org/javadoc/r4v401/",
++  "description" : "This artifact provides the OSGi Service Platform Release 4 core API classes and service interfaces used to compile Java bundles. It defines contracts for bundle lifecycle, framework services, permissions, package administration, start levels, and URL handler integration in OSGi runtimes."
+ }
+
+exec
+/usr/bin/bash -lc "jq . build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json >/dev/null && sed -n '1,80p' build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 0ms:
+{
+  "coordinates" : "org.osgi:osgi_R4_core:1.0",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar",
+  "repository-url" : "https://github.com/osgi/osgi",
+  "test-code-url" : "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final",
+  "documentation-url" : "https://docs.osgi.org/javadoc/r4v401/",
+  "description" : "This artifact provides the OSGi Service Platform Release 4 core API classes and service interfaces used to compile Java bundles. It defines contracts for bundle lifecycle, framework services, permissions, package administration, start levels, and URL handler integration in OSGi runtimes."
+}
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar | sed -n '1,20p'
+curl -I -fsSL https://docs.osgi.org/javadoc/r4v401/ | sed -n '1,20p'
+curl -I -fsSL https://github.com/osgi/osgi/tree/r4-core-ri-tck-final | sed -n '1,20p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+diff --git a/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json b/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
+index a8e4967288a545a0b3087af65d7cf4ef824f33cd..4b2cfb1736fa64d8104a706ce2c6397b4b5d3ed2
+--- a/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:osgi_R4_core:1.0"
++  "coordinates" : "org.osgi:osgi_R4_core:1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final",
++  "documentation-url" : "https://docs.osgi.org/javadoc/r4v401/",
++  "description" : "This artifact provides the OSGi Service Platform Release 4 core API classes and service interfaces used to compile Java bundles. It defines contracts for bundle lifecycle, framework services, permissions, package administration, start levels, and URL handler integration in OSGi runtimes."
+ }
+
+ succeeded in 1205ms:
+HTTP/2 200 
+date: Fri, 01 May 2026 20:53:41 GMT
+content-type: text/html; charset=utf-8
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=T8IPFCdyp6wjHIXRfdmC9U6b6aISLn25qNqufTpqBKYun6458vyWExeJZmgBTEZFinqlIMRphc1I5ZQyYel2eE%2Bk41R9R4ra9nrUDuuZmrIpyjU7Pl1fLof1azvL%2BcrFB4KYjny6mVcNwLnC"}]}
+server: cloudflare
+last-modified: Thu, 02 Feb 2023 23:10:45 GMT
+access-control-allow-origin: *
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+expires: Fri, 01 May 2026 21:03:41 GMT
+cache-control: max-age=600
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+x-proxy-cache: MISS
+x-github-request-id: 0842:1949EB:4CDFA4:4DD0B0:69F512D5
+x-content-type-options: nosniff
+age: 0
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230051-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1777668822.504701,VS0,VE111
+HTTP/2 200 
+date: Fri, 01 May 2026 20:53:42 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"9b6826a5ab15fb910b7948c226d00890"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=mm506ZiW47LsvnaKyjPY4I2IQA0j6Wp4eJ%2FpPNG9pi%2BD%2B9e7%2FcBvmETQIfxrsMcRDUfMLMGZnVvCh9Y4awf2q2RZ%2B55KoMT%2BhD9YrVWJizzaviin0eRqs6xQS4lXbd8TXf5pn5W2yFWpDrKJhEEYTlttpFli6QG57I8ZkKnH2ksPDka9ie466t82CtMzdYmUd4aIbiUE7U8GRDrb6hoA%2BOgchWslJdh2nkHmyA3eih6kJbYZjyJzaq8VUbvcgWs0RjaIPIoKLQW%2BoIK4We4rNQ%3D%3D--hgSakHopVS83o5xn--MXaoXSm0ARbB37mG4P57ew%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1964643221.1777668821; expires=Sat, 01 May 2027 20:53:41 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 01 May 2027 20:53:41 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5109:233ADF:2CB35A3:2026BF3:69F512D5
+
+
+diff --git a/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json b/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
+index a8e4967288a545a0b3087af65d7cf4ef824f33cd..4b2cfb1736fa64d8104a706ce2c6397b4b5d3ed2
+--- a/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:osgi_R4_core:1.0"
++  "coordinates" : "org.osgi:osgi_R4_core:1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final",
++  "documentation-url" : "https://docs.osgi.org/javadoc/r4v401/",
++  "description" : "This artifact provides the OSGi Service Platform Release 4 core API classes and service interfaces used to compile Java bundles. It defines contracts for bundle lifecycle, framework services, permissions, package administration, start levels, and URL handler integration in OSGi runtimes."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json b/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
+index a8e4967288a545a0b3087af65d7cf4ef824f33cd..4b2cfb1736fa64d8104a706ce2c6397b4b5d3ed2
+--- a/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:osgi_R4_core:1.0"
++  "coordinates" : "org.osgi:osgi_R4_core:1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final",
++  "documentation-url" : "https://docs.osgi.org/javadoc/r4v401/",
++  "description" : "This artifact provides the OSGi Service Platform Release 4 core API classes and service interfaces used to compile Java bundles. It defines contracts for bundle lifecycle, framework services, permissions, package administration, start levels, and URL handler integration in OSGi runtimes."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json && git ls-files --error-unmatch build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json >/dev/null 2>&1; echo tracked:$?' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93
+diff --git a/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json b/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
+index a8e4967288a545a0b3087af65d7cf4ef824f33cd..4b2cfb1736fa64d8104a706ce2c6397b4b5d3ed2
+--- a/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:osgi_R4_core:1.0"
++  "coordinates" : "org.osgi:osgi_R4_core:1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final",
++  "documentation-url" : "https://docs.osgi.org/javadoc/r4v401/",
++  "description" : "This artifact provides the OSGi Service Platform Release 4 core API classes and service interfaces used to compile Java bundles. It defines contracts for bundle lifecycle, framework services, permissions, package administration, start levels, and URL handler integration in OSGi runtimes."
+ }
+
+ succeeded in 106ms:
+tracked:1
+
+web search: 
+web search: https://docs.osgi.org/javadoc/
+web search: 
+web search: repo.maven.apache.org org/osgi/osgi_R4_core/1.0 osgi_R4_core-1.0.jar
+web search: 
+web search: site:github.com/osgi/osgi/tree/r4-core-ri-tck-final org.osgi.test.cases.framework
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/osgi/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/
+web search: 
+web search: https://docs.osgi.org/javadoc/r4v401/
+codex
+Updated [org.osgi-osgi_R4_core-1.0.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json). The Maven directory has the exact `1.0` JAR/POM, OSGi’s GitHub repo is the specs/implementations/TCK source, and the OSGi docs index points Release 4 Version 4.0 Javadoc to the selected docs URL. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/))
+
+No `language` field was added. `jq` validation passed, and the selected Maven, GitHub tag, and docs endpoints returned `200`.
+diff --git a/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json b/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
+index a8e4967288a545a0b3087af65d7cf4ef824f33cd..4b2cfb1736fa64d8104a706ce2c6397b4b5d3ed2
+--- a/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:osgi_R4_core:1.0"
++  "coordinates" : "org.osgi:osgi_R4_core:1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final",
++  "documentation-url" : "https://docs.osgi.org/javadoc/r4v401/",
++  "description" : "This artifact provides the OSGi Service Platform Release 4 core API classes and service interfaces used to compile Java bundles. It defines contracts for bundle lifecycle, framework services, permissions, package administration, start levels, and URL handler integration in OSGi runtimes."
+ }
+
+tokens used
+134,745
+Updated [org.osgi-osgi_R4_core-1.0.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93/build/discovered-artifact-metadata/org.osgi-osgi_R4_core-1.0.json). The Maven directory has the exact `1.0` JAR/POM, OSGi’s GitHub repo is the specs/implementations/TCK source, and the OSGi docs index points Release 4 Version 4.0 Javadoc to the selected docs URL. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/))
+
+No `language` field was added. `jq` validation passed, and the selected Maven, GitHub tag, and docs endpoints returned `200`.
+Ran agent for org.osgi:osgi_R4_core:1.0 (exit 0). Log: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93/build/agent-artifact-discovery-logs/org.osgi-osgi_R4_core-1.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-bf181b93/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 58s
+9 actionable tasks: 4 executed, 5 from cache
