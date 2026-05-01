@@ -25,6 +25,7 @@ import io.netty.channel.kqueue.KQueueEventLoopGroup;
 import io.netty.channel.kqueue.KQueueServerDomainSocketChannel;
 import io.netty.channel.kqueue.KQueueServerSocketChannel;
 import io.netty.channel.kqueue.KQueueSocketChannel;
+import io.netty.channel.kqueue.KQueueSocketChannelConfig;
 import io.netty.channel.unix.DomainSocketReadMode;
 import org.junit.jupiter.api.Test;
 
@@ -114,6 +115,31 @@ public class Netty_transport_classes_kqueueTest {
     @Test
     void eventLoopGroupConstructorRespectsTransportAvailability() {
         assertEventLoopGroupConstructorMatchesAvailability(() -> new KQueueEventLoopGroup(1));
+    }
+
+    @Test
+    void socketChannelConfigControlsTcpNoPushOption() {
+        if (KQueue.isAvailable()) {
+            KQueueSocketChannel channel = new KQueueSocketChannel();
+            try {
+                KQueueSocketChannelConfig config = channel.config();
+
+                assertThat(config.getOptions()).containsKey(KQueueChannelOption.TCP_NOPUSH);
+
+                config.setTcpNoPush(true);
+                assertThat(config.isTcpNoPush()).isTrue();
+                assertThat(config.getOption(KQueueChannelOption.TCP_NOPUSH)).isTrue();
+
+                assertThat(config.setOption(KQueueChannelOption.TCP_NOPUSH, false)).isTrue();
+                assertThat(config.isTcpNoPush()).isFalse();
+                assertThat(config.getOption(KQueueChannelOption.TCP_NOPUSH)).isFalse();
+            } finally {
+                channel.close().syncUninterruptibly();
+            }
+            return;
+        }
+
+        assertThatThrownBy(KQueueSocketChannel::new).isInstanceOf(UnsatisfiedLinkError.class);
     }
 
     @Test
