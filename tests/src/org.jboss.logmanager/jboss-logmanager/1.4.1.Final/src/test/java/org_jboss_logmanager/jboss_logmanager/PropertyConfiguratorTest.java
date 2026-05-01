@@ -34,7 +34,6 @@ public class PropertyConfiguratorTest {
             String configuration = """
                     loggers=%1$s
                     logger.%1$s.level=INFO
-                    logger.%1$s.filter=coverageFilter
                     logger.%1$s.handlers=coverageHandler
                     logger.%1$s.useParentHandlers=false
                     handler.coverageHandler=%2$s
@@ -68,13 +67,13 @@ public class PropertyConfiguratorTest {
 
             assertThat(logger.getUseParentHandlers()).isFalse();
             assertThat(logger.getLevel()).isEqualTo(Level.INFO);
-            assertThat(logger.getFilter()).isInstanceOfSatisfying(TrackingFilter.class,
-                    filter -> assertThat(filter.isEnabled()).isTrue());
+            assertThat(logger.getFilter()).isNull();
             assertThat(logger.getHandlers()).singleElement().isInstanceOfSatisfying(TrackingHandler.class, handler -> {
                 assertThat(handler.getLevel()).isEqualTo(Level.INFO);
                 assertThat(handler.getEncoding()).isEqualTo("UTF-8");
                 assertThat(handler.getLabel()).isEqualTo("primary");
-                assertThat(handler.getFilter()).isSameAs(logger.getFilter());
+                assertThat(handler.getFilter()).isInstanceOfSatisfying(TrackingFilter.class,
+                        filter -> assertThat(filter.isEnabled()).isTrue());
                 assertThat(handler.getFormatter()).isInstanceOfSatisfying(TrackingFormatter.class,
                         formatter -> assertThat(formatter.getPrefix()).isEqualTo("formatted:"));
                 assertThat(handler.getConfiguredErrorManager()).isInstanceOfSatisfying(TrackingErrorManager.class,

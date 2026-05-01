@@ -9,6 +9,7 @@ package org_jboss_logmanager.jboss_logmanager;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.net.URI;
 import java.net.URL;
 import java.security.PrivilegedAction;
 
@@ -22,7 +23,7 @@ public class FormattersAnonymous12Anonymous2Test {
     @Test
     void resourceActionUsesClassLoaderResourceWhenFrameClassHasAClassLoader() throws Throwable {
         final String resourceName = "org/example/FrameClass.class";
-        final URL resourceUrl = new URL("file:/active-class-loader-resource");
+        final URL resourceUrl = URI.create("file:/active-class-loader-resource").toURL();
         final TrackingResourceClassLoader classLoader = new TrackingResourceClassLoader(resourceName, resourceUrl);
 
         final URL result = newResourceLookupAction(classLoader, resourceName).run();
@@ -46,8 +47,9 @@ public class FormattersAnonymous12Anonymous2Test {
             final ClassLoader classLoader,
             final String resourceName
     ) throws Throwable {
-        final Class<?> enclosingFormatterStepClass = Class.forName(Formatters.class.getName() + "$12");
-        final Class<?> resourceActionClass = Class.forName(enclosingFormatterStepClass.getName() + "$2");
+        final Object enclosingFormatterStep = Formatters.exceptionFormatStep(false, 0, 0, true);
+        final Class<?> enclosingFormatterStepClass = enclosingFormatterStep.getClass();
+        final Class<?> resourceActionClass = Class.forName(enclosingFormatterStepClass.getName() + "$3");
         final MethodHandle constructor = MethodHandles.privateLookupIn(resourceActionClass, MethodHandles.lookup())
                 .findConstructor(
                         resourceActionClass,
@@ -58,7 +60,7 @@ public class FormattersAnonymous12Anonymous2Test {
                                 String.class
                         )
                 );
-        return (PrivilegedAction<URL>) constructor.invoke(null, classLoader, resourceName);
+        return (PrivilegedAction<URL>) constructor.invoke(enclosingFormatterStep, classLoader, resourceName);
     }
 
     private static final class TrackingResourceClassLoader extends ClassLoader {
