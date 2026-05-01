@@ -50,7 +50,7 @@ public class Quarkus_bootstrap_jsonTest {
         JsonObject object = JsonReader.of(document).read();
 
         JsonString text = object.get("text");
-        assertThat(text.value()).isEqualTo("line\nquote=\" slash=\\ unicode=☺");
+        assertThat(text.value()).isEqualTo("line\nquote=\" slash=\\ unicode=\u263A");
         JsonBoolean active = object.get("active");
         JsonBoolean disabled = object.get("disabled");
         assertThat(active).isSameAs(JsonBoolean.TRUE);
@@ -243,6 +243,86 @@ public class Quarkus_bootstrap_jsonTest {
         assertThat(parsedArray.value()).hasSize(2);
         assertThat(((JsonInteger) parsedArray.value().get(0)).intValue()).isEqualTo(1);
         assertThat((JsonValue) ((JsonObject) parsedArray.value().get(1)).get("password")).isNull();
+    }
+
+    @Test
+    void customTransformRewritesNestedObjectsAndArrays() throws IOException {
+        JsonObject source = JsonReader.of("""
+                {
+                  "name": "quarkus",
+                  "enabled": true,
+                  "details": {"name": "bootstrap", "rank": 1},
+                  "aliases": ["json", "builder"],
+                  "modules": [{"name": "core"}, {"name": "test"}]
+                }
+                """).read();
+        JsonTransform renameNameMembersAndUppercaseStrings = new JsonTransform() {
+            @Override
+            public void accept(Json.JsonBuilder<?> builder, JsonValue value) {
+                if (builder instanceof Json.JsonObjectBuilder object && value instanceof JsonMember member) {
+                    putMember(object, member.attribute().value(), member.value());
+                } else if (builder instanceof Json.JsonArrayBuilder array) {
+                    addValue(array, value);
+                }
+            }
+
+            private void putMember(Json.JsonObjectBuilder object, String attribute, JsonValue value) {
+                String targetAttribute = "name".equals(attribute) ? "displayName" : attribute;
+                if (value instanceof JsonString string) {
+                    object.put(targetAttribute, string.value().toUpperCase());
+                } else if (value instanceof JsonInteger integer) {
+                    object.put(targetAttribute, integer.longValue());
+                } else if (value instanceof JsonBoolean bool) {
+                    object.put(targetAttribute, bool.value());
+                } else if (value instanceof JsonObject nestedObject) {
+                    Json.JsonObjectBuilder nestedBuilder = Json.object();
+                    nestedBuilder.transform(nestedObject, this);
+                    object.put(targetAttribute, nestedBuilder);
+                } else if (value instanceof JsonArray nestedArray) {
+                    Json.JsonArrayBuilder nestedBuilder = Json.array();
+                    nestedBuilder.transform(nestedArray, this);
+                    object.put(targetAttribute, nestedBuilder);
+                }
+            }
+
+            private void addValue(Json.JsonArrayBuilder array, JsonValue value) {
+                if (value instanceof JsonString string) {
+                    array.add(string.value().toUpperCase());
+                } else if (value instanceof JsonInteger integer) {
+                    array.add(integer.longValue());
+                } else if (value instanceof JsonBoolean bool) {
+                    array.add(bool.value());
+                } else if (value instanceof JsonObject nestedObject) {
+                    Json.JsonObjectBuilder nestedBuilder = Json.object();
+                    nestedBuilder.transform(nestedObject, this);
+                    array.add(nestedBuilder);
+                } else if (value instanceof JsonArray nestedArray) {
+                    Json.JsonArrayBuilder nestedBuilder = Json.array();
+                    nestedBuilder.transform(nestedArray, this);
+                    array.add(nestedBuilder);
+                }
+            }
+        };
+
+        Json.JsonObjectBuilder transformed = Json.object();
+        transformed.transform(source, renameNameMembersAndUppercaseStrings);
+        JsonObject parsed = JsonReader.of(render(transformed)).read();
+
+        assertThat((JsonValue) parsed.get("name")).isNull();
+        assertThat(((JsonString) parsed.get("displayName")).value()).isEqualTo("QUARKUS");
+        assertThat(((JsonBoolean) parsed.get("enabled")).value()).isTrue();
+        JsonObject details = parsed.get("details");
+        assertThat((JsonValue) details.get("name")).isNull();
+        assertThat(((JsonString) details.get("displayName")).value()).isEqualTo("BOOTSTRAP");
+        assertThat(((JsonInteger) details.get("rank")).intValue()).isEqualTo(1);
+        JsonArray aliases = parsed.get("aliases");
+        assertThat(aliases.<JsonString>stream().map(JsonString::value).toList()).containsExactly("JSON", "BUILDER");
+        JsonArray modules = parsed.get("modules");
+        assertThat(modules.value()).hasSize(2);
+        JsonObject firstModule = (JsonObject) modules.value().get(0);
+        JsonObject secondModule = (JsonObject) modules.value().get(1);
+        assertThat(((JsonString) firstModule.get("displayName")).value()).isEqualTo("CORE");
+        assertThat(((JsonString) secondModule.get("displayName")).value()).isEqualTo("TEST");
     }
 
     @Test
