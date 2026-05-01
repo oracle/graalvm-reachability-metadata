@@ -36,7 +36,7 @@ class Opengauss_jdbcTest {
     private static final String USERNAME = "fred";
     private static final String PASSWORD = "Secretpassword@123";
     private static final String DATABASE = "postgres";
-    private static final String JDBC_URL = "jdbc:opengauss://localhost:15432/" + DATABASE;
+    private static final String JDBC_URL = "jdbc:postgresql://localhost:15432/" + DATABASE;
     private static Process process;
 
     private static Connection openConnection() throws SQLException {
