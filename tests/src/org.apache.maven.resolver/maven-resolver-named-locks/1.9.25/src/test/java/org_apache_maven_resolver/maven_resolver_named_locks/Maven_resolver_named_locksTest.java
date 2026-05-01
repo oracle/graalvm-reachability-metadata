@@ -124,6 +124,14 @@ public class Maven_resolver_named_locksTest {
     }
 
     @Test
+    void statefulLocksAllowExclusiveReentryAndSharedDowngrade(@TempDir Path tempDir) throws Exception {
+        assertExclusiveReentryAndSharedDowngrade(new LocalReadWriteLockNamedLockFactory(), "rw-downgrade");
+        assertExclusiveReentryAndSharedDowngrade(new LocalSemaphoreNamedLockFactory(), "semaphore-downgrade");
+        assertExclusiveReentryAndSharedDowngrade(
+                new FileLockNamedLockFactory(), tempDir.resolve("locks").resolve("downgrade.lck").toString());
+    }
+
+    @Test
     void statefulLocksRejectUnlockWithoutHeldLock(@TempDir Path tempDir) {
         assertUnlockWithoutHeldLockFails(new LocalReadWriteLockNamedLockFactory(), "rw-unlocked");
         assertUnlockWithoutHeldLockFails(new LocalSemaphoreNamedLockFactory(), "semaphore-unlocked");
@@ -232,6 +240,40 @@ public class Maven_resolver_named_locksTest {
         } finally {
             lock.unlock();
             lock.close();
+        }
+    }
+
+    private static void assertExclusiveReentryAndSharedDowngrade(NamedLockFactorySupport factory, String lockName)
+            throws Exception {
+        NamedLock owner = factory.getLock(lockName);
+        NamedLock competitor = factory.getLock(lockName);
+        int ownerHeldLocks = 0;
+
+        try {
+            assertThat(owner.lockExclusively(LOCK_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
+            ownerHeldLocks++;
+            assertThat(owner.lockExclusively(LOCK_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
+            ownerHeldLocks++;
+            assertThat(owner.lockShared(LOCK_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
+            ownerHeldLocks++;
+
+            assertThat(lockSharedInWorker(competitor)).isFalse();
+            assertThat(lockExclusivelyInWorker(competitor)).isFalse();
+
+            owner.unlock();
+            ownerHeldLocks--;
+            assertThat(lockSharedInWorker(competitor)).isFalse();
+
+            owner.unlock();
+            ownerHeldLocks--;
+            assertThat(lockExclusivelyInWorker(competitor)).isFalse();
+        } finally {
+            while (ownerHeldLocks > 0) {
+                owner.unlock();
+                ownerHeldLocks--;
+            }
+            owner.close();
+            competitor.close();
         }
     }
 
