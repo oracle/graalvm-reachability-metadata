@@ -11,7 +11,10 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -59,7 +62,11 @@ import javax.ejb.Stateful;
 import javax.ejb.StatefulTimeout;
 import javax.ejb.Stateless;
 import javax.ejb.Timeout;
+import javax.ejb.TimedObject;
+import javax.ejb.Timer;
 import javax.ejb.TimerConfig;
+import javax.ejb.TimerHandle;
+import javax.ejb.TimerService;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionManagement;
@@ -348,6 +355,30 @@ public class Javax_ejbTest {
     }
 
     @Test
+    void timerServiceCreatesCalendarTimerAndTimedObjectReceivesTimerCallback() {
+        SimpleTimerService timerService = new SimpleTimerService();
+        ScheduleExpression schedule = new ScheduleExpression().second(0).minute(15).hour(8);
+        TimerConfig config = new TimerConfig("daily-reconciliation", false);
+        RecordingTimedObject timedObject = new RecordingTimedObject();
+
+        Timer timer = timerService.createCalendarTimer(schedule, config);
+        timedObject.ejbTimeout(timer);
+
+        assertThat(timer.isCalendarTimer()).isTrue();
+        assertThat(timer.isPersistent()).isFalse();
+        assertThat(timer.getSchedule()).isSameAs(schedule);
+        assertThat(timer.getInfo()).isEqualTo("daily-reconciliation");
+        assertThat(timer.getHandle().getTimer()).isSameAs(timer);
+        assertThat(timerService.getTimers()).containsExactly(timer);
+        assertThat(timedObject.lastTimeoutInfo()).isEqualTo("daily-reconciliation");
+
+        timer.cancel();
+
+        assertThat(timerService.getTimers()).isEmpty();
+        assertThatExceptionOfType(NoSuchObjectLocalException.class).isThrownBy(timer::getInfo);
+    }
+
+    @Test
     void asyncResultPropagatesNullValues() throws InterruptedException, ExecutionException {
         AsyncResult<Object> result = new AsyncResult<>(null);
 
@@ -362,6 +393,193 @@ public class Javax_ejbTest {
         assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> context.getProperty(null));
         assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> context.containsProperty(null));
         assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> context.removeProperty(null));
+    }
+
+    private static final class SimpleTimerService implements TimerService {
+        private final Collection<Timer> timers = new ArrayList<>();
+
+        @Override
+        public Timer createTimer(long duration, Serializable info) {
+            return createSingleActionTimer(duration, new TimerConfig(info, true));
+        }
+
+        @Override
+        public Timer createSingleActionTimer(long duration, TimerConfig config) {
+            return register(new SimpleTimer(this, timeoutAfter(duration), null, config, false));
+        }
+
+        @Override
+        public Timer createTimer(long initialDuration, long intervalDuration, Serializable info) {
+            return createIntervalTimer(initialDuration, intervalDuration, new TimerConfig(info, true));
+        }
+
+        @Override
+        public Timer createIntervalTimer(long initialDuration, long intervalDuration, TimerConfig config) {
+            return register(new SimpleTimer(this, timeoutAfter(initialDuration), null, config, false));
+        }
+
+        @Override
+        public Timer createTimer(Date expiration, Serializable info) {
+            return createSingleActionTimer(expiration, new TimerConfig(info, true));
+        }
+
+        @Override
+        public Timer createSingleActionTimer(Date expiration, TimerConfig config) {
+            return register(new SimpleTimer(this, expiration, null, config, false));
+        }
+
+        @Override
+        public Timer createTimer(Date initialExpiration, long intervalDuration, Serializable info) {
+            return createIntervalTimer(initialExpiration, intervalDuration, new TimerConfig(info, true));
+        }
+
+        @Override
+        public Timer createIntervalTimer(Date initialExpiration, long intervalDuration, TimerConfig config) {
+            return register(new SimpleTimer(this, initialExpiration, null, config, false));
+        }
+
+        @Override
+        public Timer createCalendarTimer(ScheduleExpression schedule) {
+            return createCalendarTimer(schedule, new TimerConfig(null, true));
+        }
+
+        @Override
+        public Timer createCalendarTimer(ScheduleExpression schedule, TimerConfig config) {
+            return register(new SimpleTimer(this, null, schedule, config, true));
+        }
+
+        @Override
+        public Collection<Timer> getTimers() {
+            return Collections.unmodifiableCollection(timers);
+        }
+
+        private Timer register(Timer timer) {
+            timers.add(timer);
+            return timer;
+        }
+
+        private void remove(Timer timer) {
+            timers.remove(timer);
+        }
+
+        private Date timeoutAfter(long duration) {
+            return new Date(System.currentTimeMillis() + duration);
+        }
+    }
+
+    private static final class SimpleTimer implements Timer {
+        private final SimpleTimerService timerService;
+        private final Date nextTimeout;
+        private final ScheduleExpression schedule;
+        private final Serializable info;
+        private final boolean persistent;
+        private final boolean calendarTimer;
+        private boolean cancelled;
+
+        private SimpleTimer(
+                SimpleTimerService timerService,
+                Date nextTimeout,
+                ScheduleExpression schedule,
+                TimerConfig config,
+                boolean calendarTimer) {
+            this.timerService = timerService;
+            this.nextTimeout = copyDate(nextTimeout);
+            this.schedule = schedule;
+            this.info = config.getInfo();
+            this.persistent = config.isPersistent();
+            this.calendarTimer = calendarTimer;
+        }
+
+        @Override
+        public void cancel() {
+            ensureActive();
+            cancelled = true;
+            timerService.remove(this);
+        }
+
+        @Override
+        public long getTimeRemaining() {
+            ensureActive();
+            if (nextTimeout == null) {
+                throw new NoMoreTimeoutsException("Calendar timer does not expose a fixed next timeout");
+            }
+            return Math.max(0L, nextTimeout.getTime() - System.currentTimeMillis());
+        }
+
+        @Override
+        public Date getNextTimeout() {
+            ensureActive();
+            if (nextTimeout == null) {
+                throw new NoMoreTimeoutsException("Calendar timer does not expose a fixed next timeout");
+            }
+            return copyDate(nextTimeout);
+        }
+
+        @Override
+        public ScheduleExpression getSchedule() {
+            ensureActive();
+            return schedule;
+        }
+
+        @Override
+        public boolean isPersistent() {
+            ensureActive();
+            return persistent;
+        }
+
+        @Override
+        public boolean isCalendarTimer() {
+            ensureActive();
+            return calendarTimer;
+        }
+
+        @Override
+        public Serializable getInfo() {
+            ensureActive();
+            return info;
+        }
+
+        @Override
+        public TimerHandle getHandle() {
+            ensureActive();
+            return new SimpleTimerHandle(this);
+        }
+
+        private void ensureActive() {
+            if (cancelled) {
+                throw new NoSuchObjectLocalException("Timer was cancelled");
+            }
+        }
+
+        private Date copyDate(Date date) {
+            return date == null ? null : new Date(date.getTime());
+        }
+    }
+
+    private static final class SimpleTimerHandle implements TimerHandle {
+        private final Timer timer;
+
+        private SimpleTimerHandle(Timer timer) {
+            this.timer = timer;
+        }
+
+        @Override
+        public Timer getTimer() {
+            return timer;
+        }
+    }
+
+    private static final class RecordingTimedObject implements TimedObject {
+        private Serializable lastTimeoutInfo;
+
+        @Override
+        public void ejbTimeout(Timer timer) {
+            lastTimeoutInfo = timer.getInfo();
+        }
+
+        private Serializable lastTimeoutInfo() {
+            return lastTimeoutInfo;
+        }
     }
 
     private static final class TimerPayload implements Serializable {
