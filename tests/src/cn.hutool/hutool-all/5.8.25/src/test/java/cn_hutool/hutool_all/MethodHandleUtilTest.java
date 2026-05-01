@@ -43,12 +43,12 @@ public class MethodHandleUtilTest {
                 .isEqualTo("handled-static");
 
         MethodHandle specialHandle = MethodHandleUtil.findMethod(
-                MethodHandleSubject.class,
-                "specialMessage",
+                PrivateGreeting.class,
+                "privateGreeting",
                 MethodType.methodType(String.class, String.class));
         assertThat(specialHandle).isNotNull();
-        assertThat((String) specialHandle.invokeWithArguments(subject, "special"))
-                .isEqualTo("subject:special:14");
+        assertThat((String) specialHandle.invokeWithArguments(new PrivateGreetingSubject(), "special"))
+                .isEqualTo("private special");
     }
 
     @Test
@@ -78,10 +78,15 @@ public class MethodHandleUtilTest {
         public static String staticMessage(String suffix) {
             return "handled-" + suffix;
         }
+    }
 
-        private String specialMessage(String suffix) {
-            return prefix + ":" + suffix + ":" + (count * 2);
+    public interface PrivateGreeting {
+        private String privateGreeting(String name) {
+            return "private " + name;
         }
+    }
+
+    public static class PrivateGreetingSubject implements PrivateGreeting {
     }
 
     public interface DefaultGreeting {
