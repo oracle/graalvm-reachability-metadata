@@ -224,6 +224,28 @@ public class Maven_api_diTest {
     }
 
     @Test
+    void diIndexProcessorSkipsWritingWhenNamedTypeIndexIsUnchanged() {
+        DiIndexProcessor processor = new DiIndexProcessor();
+        RecordingFiler filer = new RecordingFiler("""
+                org.example.build.AlphaExtension
+                org.example.build.BetaExtension
+                """);
+        processor.init(new SimpleProcessingEnvironment(filer));
+
+        PackageElement packageElement = new SimplePackageElement("org.example.build");
+        TypeElement alpha = new SimpleTypeElement("AlphaExtension", packageElement);
+        TypeElement beta = new SimpleTypeElement("BetaExtension", packageElement);
+
+        boolean firstRoundClaimed = processor.process(Set.of(), new SimpleRoundEnvironment(false, Set.of(beta, alpha)));
+        boolean finalRoundClaimed = processor.process(Set.of(), new SimpleRoundEnvironment(true, Set.of()));
+
+        assertThat(firstRoundClaimed).isTrue();
+        assertThat(finalRoundClaimed).isTrue();
+        assertThat(filer.createdResources()).isZero();
+        assertThat(filer.writtenContent()).isEmpty();
+    }
+
+    @Test
     void diIndexProcessorIsRegisteredAsAServiceProvider() {
         List<Processor> processors = ServiceLoader.load(Processor.class).stream()
                 .filter(provider -> provider.type().equals(DiIndexProcessor.class))
@@ -603,6 +625,7 @@ public class Maven_api_diTest {
     static final class RecordingFiler implements Filer {
         private final String existingContent;
         private final StringWriter writtenContent = new StringWriter();
+        private int createdResources;
 
         RecordingFiler(String existingContent) {
             this.existingContent = existingContent;
@@ -621,12 +644,17 @@ public class Maven_api_diTest {
         @Override
         public FileObject createResource(
                 Location location, CharSequence moduleAndPkg, CharSequence relativeName, Element... originatingElements) {
+            createdResources++;
             return new InMemoryFileObject(relativeName.toString(), writtenContent);
         }
 
         @Override
         public FileObject getResource(Location location, CharSequence moduleAndPkg, CharSequence relativeName) {
             return new InMemoryFileObject(relativeName.toString(), existingContent);
+        }
+
+        int createdResources() {
+            return createdResources;
         }
 
         String writtenContent() {
