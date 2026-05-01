@@ -188,6 +188,33 @@ public class Closure_compiler_externsTest {
                 .contains("IDBTransaction.prototype.objectStore = function(name) {};");
     }
 
+    @Test
+    void webCryptoExternsDefineCryptoKeysAndSubtleOperations() throws IOException {
+        Map<String, String> externFiles = loadExternFiles();
+
+        assertThat(externFiles.get("w3c_webcrypto.js"))
+                .contains("var webCrypto = {};")
+                .contains("webCrypto.Algorithm;")
+                .contains("webCrypto.AlgorithmIdentifier;")
+                .contains("webCrypto.CryptoKey = function() {};")
+                .contains("webCrypto.CryptoKey.prototype.type;")
+                .contains("webCrypto.CryptoKey.prototype.extractable;")
+                .contains("webCrypto.CryptoKey.prototype.algorithm;")
+                .contains("webCrypto.CryptoKey.prototype.usages;")
+                .contains("webCrypto.JsonWebKey = function() {};")
+                .contains("webCrypto.SubtleCrypto = function() {};")
+                .contains("webCrypto.SubtleCrypto.prototype.encrypt = function(algorithm, key,")
+                .contains("webCrypto.SubtleCrypto.prototype.decrypt = function(algorithm, key,")
+                .contains("webCrypto.SubtleCrypto.prototype.sign = function(algorithm, key,")
+                .contains("webCrypto.SubtleCrypto.prototype.verify = function(algorithm, key,")
+                .contains("webCrypto.SubtleCrypto.prototype.digest = function(algorithm, data) {};")
+                .contains("webCrypto.SubtleCrypto.prototype.generateKey = function(algorithm,")
+                .contains("webCrypto.SubtleCrypto.prototype.importKey = function(format, keyData,")
+                .contains("webCrypto.SubtleCrypto.prototype.exportKey = function(format, key) {};")
+                .contains("Window.prototype.crypto.getRandomValues = function(typedArray) {};")
+                .contains("Window.prototype.crypto.subtle;");
+    }
+
     private static Map<String, String> loadExternFiles() throws IOException {
         Map<String, String> externFiles = new LinkedHashMap<>();
 
