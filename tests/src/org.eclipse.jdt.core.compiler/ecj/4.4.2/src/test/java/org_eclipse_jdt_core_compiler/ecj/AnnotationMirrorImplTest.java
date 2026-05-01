@@ -213,8 +213,8 @@ public class AnnotationMirrorImplTest {
 
         @Override
         public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnvironment) {
-            for (Element element : roundEnvironment.getElementsAnnotatedWith(MirrorCoverageAnnotation.class)) {
-                final MirrorCoverageAnnotation annotation = element.getAnnotation(MirrorCoverageAnnotation.class);
+            for (Element elementAnnotationAccess : roundEnvironment.getElementsAnnotatedWith(MirrorCoverageAnnotation.class)) {
+                final MirrorCoverageAnnotation annotation = elementAnnotationAccess.getAnnotation(MirrorCoverageAnnotation.class);
                 assertThat(annotation).isNotNull();
 
                 assertThat(annotation.role()).isEqualTo(MirrorCoverageRole.WRITE);
