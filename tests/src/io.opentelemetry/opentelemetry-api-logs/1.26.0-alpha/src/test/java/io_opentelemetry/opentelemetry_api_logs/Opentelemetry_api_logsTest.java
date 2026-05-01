@@ -54,9 +54,12 @@ public class Opentelemetry_api_logsTest {
                 .build();
 
         LogRecordBuilder logRecordBuilder = logger.logRecordBuilder();
-        assertThat(logRecordBuilder.setEpoch(Instant.parse("2022-10-01T12:34:56.123456789Z")))
+        assertThat(logRecordBuilder.setTimestamp(Instant.parse("2022-10-01T12:34:56.123456789Z")))
                 .isSameAs(logRecordBuilder);
-        assertThat(logRecordBuilder.setEpoch(42, TimeUnit.MILLISECONDS)).isSameAs(logRecordBuilder);
+        assertThat(logRecordBuilder.setTimestamp(42, TimeUnit.MILLISECONDS)).isSameAs(logRecordBuilder);
+        assertThat(logRecordBuilder.setObservedTimestamp(Instant.parse("2022-10-01T12:34:57.123456789Z")))
+                .isSameAs(logRecordBuilder);
+        assertThat(logRecordBuilder.setObservedTimestamp(43, TimeUnit.MILLISECONDS)).isSameAs(logRecordBuilder);
         assertThat(logRecordBuilder.setContext(Context.current())).isSameAs(logRecordBuilder);
         assertThat(logRecordBuilder.setSeverity(Severity.WARN3)).isSameAs(logRecordBuilder);
         assertThat(logRecordBuilder.setSeverityText("WARN")).isSameAs(logRecordBuilder);
@@ -97,7 +100,8 @@ public class Opentelemetry_api_logsTest {
         Instant timestamp = Instant.parse("2022-10-01T12:34:56.123456789Z");
 
         LogRecordBuilder builder = logger.logRecordBuilder()
-                .setEpoch(timestamp)
+                .setTimestamp(timestamp)
+                .setObservedTimestamp(timestamp.plusMillis(1))
                 .setContext(context)
                 .setSeverity(Severity.ERROR3)
                 .setSeverityText("ERROR")
@@ -110,7 +114,8 @@ public class Opentelemetry_api_logsTest {
         assertThat(logger.configuration.instrumentationVersion).isEqualTo("2.5.0");
         assertThat(logger.records).hasSize(1);
         RecordingLogRecord record = logger.records.get(0);
-        assertThat(record.epochNanos).isEqualTo(1_664_627_696_123_456_789L);
+        assertThat(record.timestampNanos).isEqualTo(1_664_627_696_123_456_789L);
+        assertThat(record.observedTimestampNanos).isEqualTo(1_664_627_696_124_456_789L);
         assertThat(record.context).isSameAs(context);
         assertThat(record.severity).isEqualTo(Severity.ERROR3);
         assertThat(record.severityText).isEqualTo("ERROR");
@@ -126,7 +131,8 @@ public class Opentelemetry_api_logsTest {
         RecordingLogger logger = new RecordingLogger(new RecordingLoggerConfiguration("orders"));
 
         logger.logRecordBuilder()
-                .setEpoch(123, TimeUnit.MILLISECONDS)
+                .setTimestamp(123, TimeUnit.MILLISECONDS)
+                .setObservedTimestamp(124, TimeUnit.MILLISECONDS)
                 .setSeverity(Severity.INFO2)
                 .setSeverityText("INFO")
                 .setBody("order log")
@@ -135,7 +141,8 @@ public class Opentelemetry_api_logsTest {
 
         assertThat(logger.records).hasSize(1);
         RecordingLogRecord event = logger.records.get(0);
-        assertThat(event.epochNanos).isEqualTo(123_000_000L);
+        assertThat(event.timestampNanos).isEqualTo(123_000_000L);
+        assertThat(event.observedTimestampNanos).isEqualTo(124_000_000L);
         assertThat(event.severity).isEqualTo(Severity.INFO2);
         assertThat(event.severityText).isEqualTo("INFO");
         assertThat(event.body).isEqualTo("order log");
@@ -313,15 +320,31 @@ public class Opentelemetry_api_logsTest {
         }
 
         @Override
-        public LogRecordBuilder setEpoch(long timestamp, TimeUnit unit) {
-            record.epochNanos = unit.toNanos(timestamp);
+        public LogRecordBuilder setTimestamp(long timestamp, TimeUnit unit) {
+            record.timestampNanos = unit.toNanos(timestamp);
             return this;
         }
 
         @Override
-        public LogRecordBuilder setEpoch(Instant instant) {
-            record.epochNanos = TimeUnit.SECONDS.toNanos(instant.getEpochSecond()) + instant.getNano();
+        public LogRecordBuilder setTimestamp(Instant instant) {
+            record.timestampNanos = toEpochNanos(instant);
             return this;
+        }
+
+        @Override
+        public LogRecordBuilder setObservedTimestamp(long timestamp, TimeUnit unit) {
+            record.observedTimestampNanos = unit.toNanos(timestamp);
+            return this;
+        }
+
+        @Override
+        public LogRecordBuilder setObservedTimestamp(Instant instant) {
+            record.observedTimestampNanos = toEpochNanos(instant);
+            return this;
+        }
+
+        private static long toEpochNanos(Instant instant) {
+            return TimeUnit.SECONDS.toNanos(instant.getEpochSecond()) + instant.getNano();
         }
 
         @Override
@@ -362,7 +385,8 @@ public class Opentelemetry_api_logsTest {
 
     private static final class RecordingLogRecord {
         private final Map<AttributeKey<?>, Object> attributes = new LinkedHashMap<>();
-        private Long epochNanos;
+        private Long timestampNanos;
+        private Long observedTimestampNanos;
         private Context context;
         private Severity severity;
         private String severityText;
