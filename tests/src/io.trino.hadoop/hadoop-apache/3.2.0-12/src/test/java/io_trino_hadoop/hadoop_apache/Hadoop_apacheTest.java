@@ -34,6 +34,9 @@ import org.apache.hadoop.io.erasurecode.rawcoder.XORRawEncoder;
 import org.apache.hadoop.io.file.tfile.TFile;
 import org.apache.hadoop.util.DataChecksum;
 import org.apache.hadoop.util.LineReader;
+import org.apache.hadoop.util.bloom.BloomFilter;
+import org.apache.hadoop.util.bloom.Key;
+import org.apache.hadoop.util.hash.Hash;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -235,6 +238,42 @@ public class Hadoop_apacheTest {
     }
 
     @Test
+    void bloomFilterCombinesMembershipSetsWithLogicalOperations() {
+        BloomFilter left = new BloomFilter(512, 5, Hash.MURMUR_HASH);
+        left.add(key("alpha"));
+        left.add(key("beta"));
+
+        BloomFilter right = new BloomFilter(512, 5, Hash.MURMUR_HASH);
+        right.add(key("beta"));
+        right.add(key("gamma"));
+
+        BloomFilter union = new BloomFilter(512, 5, Hash.MURMUR_HASH);
+        union.or(left);
+        union.or(right);
+
+        BloomFilter intersection = new BloomFilter(512, 5, Hash.MURMUR_HASH);
+        intersection.or(left);
+        intersection.and(right);
+
+        BloomFilter symmetricDifference = new BloomFilter(512, 5, Hash.MURMUR_HASH);
+        symmetricDifference.or(left);
+        symmetricDifference.xor(right);
+
+        assertThat(left.membershipTest(key("alpha"))).isTrue();
+        assertThat(left.membershipTest(key("beta"))).isTrue();
+        assertThat(left.membershipTest(key("gamma"))).isFalse();
+        assertThat(union.membershipTest(key("alpha"))).isTrue();
+        assertThat(union.membershipTest(key("beta"))).isTrue();
+        assertThat(union.membershipTest(key("gamma"))).isTrue();
+        assertThat(intersection.membershipTest(key("alpha"))).isFalse();
+        assertThat(intersection.membershipTest(key("beta"))).isTrue();
+        assertThat(intersection.membershipTest(key("gamma"))).isFalse();
+        assertThat(symmetricDifference.membershipTest(key("alpha"))).isTrue();
+        assertThat(symmetricDifference.membershipTest(key("beta"))).isFalse();
+        assertThat(symmetricDifference.membershipTest(key("gamma"))).isTrue();
+    }
+
+    @Test
     void tFileStoresSortedRecordsAndNamedMetaBlocks() throws Exception {
         Configuration configuration = hadoopConfiguration();
         Path file = new Path(new File(temporaryDirectory, "records.tfile").toURI());
@@ -337,6 +376,10 @@ public class Hadoop_apacheTest {
 
     private static byte[] bytes(String value) {
         return value.getBytes(StandardCharsets.UTF_8);
+    }
+
+    private static Key key(String value) {
+        return new Key(bytes(value));
     }
 
     private static String toString(BytesWritable writable) {
