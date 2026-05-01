@@ -63,6 +63,14 @@ public class AnnotationsTest {
     }
 
     @Test
+    void visibleForTestingCanDocumentTypesConstructorsAndFields() {
+        TestOnlyNameTokenizer tokenizer = new TestOnlyNameTokenizer("Ada Lovelace");
+
+        assertArrayEquals(new String[] {"Ada", "Lovelace"}, tokenizer.tokens());
+        assertEquals(' ', tokenizer.separator());
+    }
+
+    @Test
     void guardedByCanDocumentFieldAndMethodSynchronization() {
         SynchronizedCounter counter = new SynchronizedCounter();
 
@@ -155,6 +163,28 @@ public class AnnotationsTest {
         @VisibleForTesting
         String defaultHelper() {
             return "default helper";
+        }
+    }
+
+    @VisibleForTesting(visibility = Visibility.PACKAGE)
+    private static final class TestOnlyNameTokenizer {
+        private final String name;
+
+        @VisibleForTesting(visibility = Visibility.PRIVATE)
+        private final char separator;
+
+        @VisibleForTesting(visibility = Visibility.PACKAGE)
+        TestOnlyNameTokenizer(String name) {
+            this.name = name;
+            separator = ' ';
+        }
+
+        String[] tokens() {
+            return name.split(String.valueOf(separator));
+        }
+
+        char separator() {
+            return separator;
         }
     }
 
