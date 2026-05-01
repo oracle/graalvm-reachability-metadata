@@ -15,12 +15,14 @@ import kotlinx.io.asOutputStream
 import kotlinx.io.asSink
 import kotlinx.io.asSource
 import kotlinx.io.buffered
+import kotlinx.io.bytestring.ByteString
 import kotlinx.io.discardingSink
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.indexOf
 import kotlinx.io.readAtMostTo
 import kotlinx.io.readByteArray
+import kotlinx.io.readByteString
 import kotlinx.io.readCodePointValue
 import kotlinx.io.readDecimalLong
 import kotlinx.io.readDouble
@@ -176,6 +178,23 @@ public class Kotlinx_io_core_jvmTest {
         assertArrayEquals(byteArrayOf(4, 2, 3, 5, 6, 7), buffer.readByteArray())
         assertTrue(buffer.exhausted())
         assertThrows(EOFException::class.java) { buffer.skip(1) }
+    }
+
+    @Test
+    fun byteStringsCanBeWrittenReadAndSearchedAsBinarySequences() {
+        val payload: ByteString = ByteString(byteArrayOf(9, 1, 2, 3, 2, 3, 4, 9))
+        val buffer: Buffer = Buffer()
+        buffer.write(payload, startIndex = 1, endIndex = 7)
+
+        val needle: ByteString = ByteString(2.toByte(), 3.toByte())
+        assertEquals(1L, buffer.indexOf(needle))
+        assertEquals(3L, buffer.indexOf(needle, startIndex = 2))
+        assertEquals(-1L, buffer.indexOf(ByteString(4.toByte(), 9.toByte())))
+        assertEquals(6L, buffer.size, "sequence searches must not consume buffer content")
+
+        assertEquals(ByteString(1.toByte(), 2.toByte(), 3.toByte()), buffer.readByteString(byteCount = 3))
+        assertEquals(ByteString(2.toByte(), 3.toByte(), 4.toByte()), buffer.readByteString())
+        assertTrue(buffer.exhausted())
     }
 
     @Test
