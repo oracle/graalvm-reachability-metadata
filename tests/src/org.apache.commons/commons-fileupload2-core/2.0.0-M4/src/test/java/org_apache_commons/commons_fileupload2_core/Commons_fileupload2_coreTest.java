@@ -133,7 +133,7 @@ public class Commons_fileupload2_coreTest {
 
         assertThat(parameterMap).containsOnlyKeys("tag", "single");
         assertThat(parameterMap.get("tag")).extracting(item -> item.getString()).containsExactly("red", "blue");
-        assertThat(parameterMap.get("single")).singleElement().extracting(item -> item.getString()).isEqualTo("value");
+        assertThat(parameterMap.get("single")).singleElement().satisfies(item -> assertThat(item.getString()).isEqualTo("value"));
     }
 
     @Test
