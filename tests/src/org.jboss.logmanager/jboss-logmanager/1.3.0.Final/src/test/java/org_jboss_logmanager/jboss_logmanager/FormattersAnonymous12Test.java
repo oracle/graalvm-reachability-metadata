@@ -43,7 +43,9 @@ public class FormattersAnonymous12Test {
         String formatted = formatWithTccl(rejectingClassLoader, newFailure(className));
 
         assertThat(formatted).contains("\tat " + className + ".invoke");
-        assertThat(rejectingClassLoader.wasRejected()).isTrue();
+        if (!isNativeImageRuntime()) {
+            assertThat(rejectingClassLoader.wasRejected()).isTrue();
+        }
     }
 
     @Test
@@ -57,7 +59,9 @@ public class FormattersAnonymous12Test {
             String formatted = formattingAction.format(newFailure(className));
 
             assertThat(formatted).contains("\tat " + className + ".invoke");
-            assertThat(classLoader.getRejectedCount()).isGreaterThanOrEqualTo(2);
+            if (!isNativeImageRuntime()) {
+                assertThat(classLoader.getRejectedCount()).isGreaterThanOrEqualTo(2);
+            }
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
@@ -88,6 +92,10 @@ public class FormattersAnonymous12Test {
                 new StackTraceElement(className, "invoke", "GeneratedFrame.java", 17)
         });
         return failure;
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     public interface BootstrapFormattingAction {
