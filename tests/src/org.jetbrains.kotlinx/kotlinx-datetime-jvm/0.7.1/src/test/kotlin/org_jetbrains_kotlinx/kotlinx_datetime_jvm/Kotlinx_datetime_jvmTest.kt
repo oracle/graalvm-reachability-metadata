@@ -273,6 +273,20 @@ public class Kotlinx_datetime_jvmTest {
     }
 
     @Test
+    fun rfc1123ComponentsParseFormatAndConvertUsingOffset(): Unit {
+        val rfc1123Format = DateTimeComponents.Formats.RFC_1123
+        val components: DateTimeComponents = rfc1123Format.parse("Tue, 3 Jun 2008 11:05:30 +0200")
+
+        assertThat(components.dayOfWeek).isEqualTo(DayOfWeek.TUESDAY)
+        assertThat(components.toLocalDateTime()).isEqualTo(LocalDateTime(2008, 6, 3, 11, 5, 30))
+        assertThat(components.toUtcOffset()).isEqualTo(UtcOffset(hours = 2))
+        assertThat(components.toInstantUsingOffset()).isEqualTo(Instant.parse("2008-06-03T09:05:30Z"))
+
+        val formatted: String = rfc1123Format.format(components)
+        assertThat(rfc1123Format.parse(formatted).toInstantUsingOffset()).isEqualTo(components.toInstantUsingOffset())
+    }
+
+    @Test
     fun javaTimeConvertersPreserveEquivalentValues(): Unit {
         val date: LocalDate = LocalDate(2024, Month.FEBRUARY, 29)
         val time: LocalTime = LocalTime(12, 34, 56, 789_000_000)
