@@ -8,6 +8,7 @@ package io_trino_hadoop.hadoop_apache;
 
 import org.apache.hadoop.conf.Configurable;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.ChecksumException;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
@@ -31,6 +32,7 @@ import org.apache.hadoop.io.erasurecode.ErasureCoderOptions;
 import org.apache.hadoop.io.erasurecode.rawcoder.XORRawDecoder;
 import org.apache.hadoop.io.erasurecode.rawcoder.XORRawEncoder;
 import org.apache.hadoop.io.file.tfile.TFile;
+import org.apache.hadoop.util.DataChecksum;
 import org.apache.hadoop.util.LineReader;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -47,6 +49,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class Hadoop_apacheTest {
     @TempDir
@@ -120,6 +123,31 @@ public class Hadoop_apacheTest {
 
         assertThat(lines).containsExactly("alpha", "βeta", "gamma");
         assertThat(truncated.toString()).isEqualTo("abc");
+    }
+
+    @Test
+    void dataChecksumCalculatesAndVerifiesChunkedSums() throws Exception {
+        byte[] payload = bytes("abcdefghij");
+        DataChecksum checksum = DataChecksum.newDataChecksum(DataChecksum.Type.CRC32, 4);
+        byte[] sums = new byte[checksum.getChecksumSize(payload.length)];
+
+        checksum.calculateChunkedSums(payload, 0, payload.length, sums, 0);
+        DataChecksum verifier = DataChecksum.newDataChecksum(checksum.getHeader(), 0);
+
+        verifier.verifyChunkedSums(ByteBuffer.wrap(payload), ByteBuffer.wrap(sums), "payload.bin", 0);
+        byte[] corruptedPayload = payload.clone();
+        corruptedPayload[5] ^= 1;
+
+        assertThat(verifier).isEqualTo(checksum);
+        assertThat(verifier.getChecksumType()).isEqualTo(DataChecksum.Type.CRC32);
+        assertThat(verifier.getBytesPerChecksum()).isEqualTo(4);
+        assertThatExceptionOfType(ChecksumException.class)
+                .isThrownBy(() -> verifier.verifyChunkedSums(
+                        ByteBuffer.wrap(corruptedPayload),
+                        ByteBuffer.wrap(sums),
+                        "payload.bin",
+                        0))
+                .withMessageContaining("payload.bin");
     }
 
     @Test
