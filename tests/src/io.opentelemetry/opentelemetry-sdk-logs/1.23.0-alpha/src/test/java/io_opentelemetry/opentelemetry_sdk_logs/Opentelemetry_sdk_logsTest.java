@@ -140,7 +140,7 @@ public final class Opentelemetry_sdk_logsTest {
     }
 
     @Test
-    void eventBuilderAddsEventAttributesWhenDomainIsConfigured() {
+    void logRecordBuilderAddsEventAttributes() {
         InMemoryLogRecordExporter exporter = InMemoryLogRecordExporter.create();
         SdkLoggerProvider loggerProvider = SdkLoggerProvider.builder()
                 .addLogRecordProcessor(SimpleLogRecordProcessor.create(exporter))
@@ -148,12 +148,13 @@ public final class Opentelemetry_sdk_logsTest {
 
         try {
             Logger logger = loggerProvider.loggerBuilder("audit.logger")
-                    .setEventDomain("audit")
                     .build();
 
-            logger.eventBuilder("user.login")
+            logger.logRecordBuilder()
                     .setSeverity(Severity.INFO)
                     .setSeverityText("information")
+                    .setAttribute(EVENT_DOMAIN, "audit")
+                    .setAttribute(EVENT_NAME, "user.login")
                     .setAttribute(USER_ID, "alice")
                     .emit();
 
