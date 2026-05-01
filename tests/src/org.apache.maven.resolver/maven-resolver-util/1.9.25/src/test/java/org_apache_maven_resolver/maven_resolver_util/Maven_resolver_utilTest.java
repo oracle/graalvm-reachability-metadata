@@ -17,6 +17,7 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -31,11 +32,13 @@ import org.eclipse.aether.collection.DependencyCollectionContext;
 import org.eclipse.aether.collection.DependencySelector;
 import org.eclipse.aether.collection.DependencyTraverser;
 import org.eclipse.aether.collection.VersionFilter;
+import org.eclipse.aether.collection.VersionFilter.VersionFilterContext;
 import org.eclipse.aether.graph.DefaultDependencyNode;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyFilter;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.graph.Exclusion;
+import org.eclipse.aether.repository.ArtifactRepository;
 import org.eclipse.aether.repository.Authentication;
 import org.eclipse.aether.repository.AuthenticationContext;
 import org.eclipse.aether.repository.Proxy;
@@ -55,6 +58,8 @@ import org.eclipse.aether.util.graph.selector.OptionalDependencySelector;
 import org.eclipse.aether.util.graph.selector.ScopeDependencySelector;
 import org.eclipse.aether.util.graph.traverser.FatArtifactTraverser;
 import org.eclipse.aether.util.graph.version.ChainedVersionFilter;
+import org.eclipse.aether.util.graph.version.HighestVersionFilter;
+import org.eclipse.aether.util.graph.version.SnapshotVersionFilter;
 import org.eclipse.aether.util.graph.visitor.CloningDependencyVisitor;
 import org.eclipse.aether.util.graph.visitor.PathRecordingDependencyVisitor;
 import org.eclipse.aether.util.graph.visitor.PostorderNodeListGenerator;
@@ -351,6 +356,25 @@ public class Maven_resolver_utilTest {
         assertThat(filter).isNull();
     }
 
+    @Test
+    public void versionFiltersPruneSnapshotAndSelectHighestReleaseCandidates() throws Exception {
+        GenericVersionScheme versionScheme = new GenericVersionScheme();
+        TestVersionFilterContext context = versionFilterContext(
+                versionScheme.parseVersionConstraint("[1.0,2.0)"),
+                versionScheme.parseVersion("1.0.0"),
+                versionScheme.parseVersion("1.1.0-SNAPSHOT"),
+                versionScheme.parseVersion("1.1.0"));
+
+        new SnapshotVersionFilter().filterVersions(context);
+
+        assertThat(context.getVersions()).extracting(Object::toString).containsExactly("1.0.0", "1.1.0");
+
+        new HighestVersionFilter().filterVersions(context);
+
+        assertThat(context.getVersions()).extracting(Object::toString).containsExactly("1.1.0");
+        assertThat(context.getCount()).isOne();
+    }
+
     private static Artifact artifact(String artifactId) {
         return artifact(artifactId, Map.of());
     }
@@ -382,6 +406,14 @@ public class Maven_resolver_utilTest {
         return new TestDependencyCollectionContext(dependency);
     }
 
+    private static TestVersionFilterContext versionFilterContext(
+            VersionConstraint versionConstraint, Version... versions) {
+        return new TestVersionFilterContext(
+                dependency("version-candidate", JavaScopes.COMPILE),
+                versionConstraint,
+                Arrays.asList(versions));
+    }
+
     private static final class TestDependencyCollectionContext implements DependencyCollectionContext {
         private final Dependency dependency;
 
@@ -407,6 +439,60 @@ public class Maven_resolver_utilTest {
         @Override
         public List<Dependency> getManagedDependencies() {
             return Collections.emptyList();
+        }
+    }
+
+    private static final class TestVersionFilterContext implements VersionFilterContext {
+        private final Dependency dependency;
+        private final VersionConstraint versionConstraint;
+        private final List<Version> versions;
+
+        private TestVersionFilterContext(
+                Dependency dependency,
+                VersionConstraint versionConstraint,
+                List<Version> versions) {
+            this.dependency = dependency;
+            this.versionConstraint = versionConstraint;
+            this.versions = new ArrayList<>(versions);
+        }
+
+        @Override
+        public RepositorySystemSession getSession() {
+            return null;
+        }
+
+        @Override
+        public Dependency getDependency() {
+            return dependency;
+        }
+
+        @Override
+        public int getCount() {
+            return versions.size();
+        }
+
+        @Override
+        public Iterator<Version> iterator() {
+            return versions.iterator();
+        }
+
+        @Override
+        public VersionConstraint getVersionConstraint() {
+            return versionConstraint;
+        }
+
+        @Override
+        public ArtifactRepository getRepository(Version version) {
+            return null;
+        }
+
+        @Override
+        public List<RemoteRepository> getRepositories() {
+            return Collections.emptyList();
+        }
+
+        private List<Version> getVersions() {
+            return Collections.unmodifiableList(versions);
         }
     }
 }
