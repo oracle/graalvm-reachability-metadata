@@ -57,6 +57,7 @@ import jakarta.persistence.PersistenceUnitUtil;
 import jakarta.persistence.PessimisticLockException;
 import jakarta.persistence.PessimisticLockScope;
 import jakarta.persistence.Query;
+import jakarta.persistence.QueryFlushMode;
 import jakarta.persistence.QueryTimeoutException;
 import jakarta.persistence.RollbackException;
 import jakarta.persistence.SchemaManager;
@@ -321,7 +322,7 @@ public class Jakarta_persistence_apiTest {
         assertThat(typedQuery.setParameter(titleParameter, "Jakarta Persistence")).isSameAs(typedQuery);
         assertThat(typedQuery.setParameter("createdBy", "test")).isSameAs(typedQuery);
         assertThat(typedQuery.setParameter(1, 42)).isSameAs(typedQuery);
-        assertThat(typedQuery.setFlushMode(FlushModeType.COMMIT)).isSameAs(typedQuery);
+        assertThat(typedQuery.setQueryFlushMode(QueryFlushMode.FLUSH)).isSameAs(typedQuery);
         assertThat(typedQuery.setLockMode(LockModeType.PESSIMISTIC_READ)).isSameAs(typedQuery);
         assertThat(typedQuery.setLockScope(PessimisticLockScope.EXTENDED)).isSameAs(typedQuery);
         assertThat(typedQuery.setCacheRetrieveMode(CacheRetrieveMode.BYPASS)).isSameAs(typedQuery);
@@ -334,7 +335,7 @@ public class Jakarta_persistence_apiTest {
         assertThat(typedQuery.getParameterValue("createdBy")).isEqualTo("test");
         assertThat(typedQuery.getParameterValue(1)).isEqualTo(42);
         assertThat(typedQuery.getParameterValue(titleParameter)).isEqualTo("Jakarta Persistence");
-        assertThat(typedQuery.getFlushMode()).isEqualTo(FlushModeType.COMMIT);
+        assertThat(typedQuery.getQueryFlushMode()).isEqualTo(QueryFlushMode.FLUSH);
         assertThat(typedQuery.getLockMode()).isEqualTo(LockModeType.PESSIMISTIC_READ);
         assertThat(typedQuery.getLockScope()).isEqualTo(PessimisticLockScope.EXTENDED);
         assertThat(typedQuery.getCacheRetrieveMode()).isEqualTo(CacheRetrieveMode.BYPASS);
@@ -784,6 +785,7 @@ public class Jakarta_persistence_apiTest {
         private final Map<Integer, TemporalType> temporalValuesByPosition = new LinkedHashMap<>();
         private int maxResults;
         private int firstResult;
+        private QueryFlushMode queryFlushMode = QueryFlushMode.DEFAULT;
         private FlushModeType flushMode = FlushModeType.AUTO;
         private LockModeType lockMode = LockModeType.NONE;
         private CacheRetrieveMode cacheRetrieveMode = CacheRetrieveMode.USE;
@@ -799,12 +801,10 @@ public class Jakarta_persistence_apiTest {
             this.singleResult = singleResult;
         }
 
-        @Override
         public Statement asStatement() {
             throw new UnsupportedOperationException();
         }
 
-        @Override
         @SuppressWarnings("unchecked")
         public <R> TypedQuery<R> ofType(Class<R> resultType) {
             return new RecordingTypedQuery<>(
@@ -813,7 +813,6 @@ public class Jakarta_persistence_apiTest {
             );
         }
 
-        @Override
         public <R> TypedQuery<R> withEntityGraph(EntityGraph<R> graph) {
             throw new UnsupportedOperationException();
         }
@@ -1021,6 +1020,17 @@ public class Jakarta_persistence_apiTest {
         }
 
         @Override
+        public Query setQueryFlushMode(QueryFlushMode flushMode) {
+            this.queryFlushMode = flushMode;
+            return this;
+        }
+
+        @Override
+        public QueryFlushMode getQueryFlushMode() {
+            return queryFlushMode;
+        }
+
+        @Override
         public Query setFlushMode(FlushModeType flushMode) {
             this.flushMode = flushMode;
             return this;
@@ -1131,13 +1141,11 @@ public class Jakarta_persistence_apiTest {
             return typedResults.size();
         }
 
-        @Override
         public TypedQuery<T> setEntityGraph(EntityGraph<? super T> entityGraph) {
             this.entityGraph = entityGraph;
             return this;
         }
 
-        @Override
         public EntityGraph<? super T> getEntityGraph() {
             return entityGraph;
         }
@@ -1255,6 +1263,12 @@ public class Jakarta_persistence_apiTest {
         @Override
         public TypedQuery<T> setParameter(int position, Date value, TemporalType temporalType) {
             super.setParameter(position, value, temporalType);
+            return this;
+        }
+
+        @Override
+        public TypedQuery<T> setQueryFlushMode(QueryFlushMode flushMode) {
+            super.setQueryFlushMode(flushMode);
             return this;
         }
 
