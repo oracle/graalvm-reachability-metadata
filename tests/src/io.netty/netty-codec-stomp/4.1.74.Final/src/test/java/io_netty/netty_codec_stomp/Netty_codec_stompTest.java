@@ -205,6 +205,44 @@ public class Netty_codec_stompTest {
     }
 
     @Test
+    void decoderPreservesEmbeddedNulBytesWhenContentLengthIsPresent() {
+        EmbeddedChannel channel = new EmbeddedChannel(
+                new StompSubframeDecoder(256, 2),
+                new StompSubframeAggregator(64));
+        byte[] payload = new byte[] {'A', 0, 'B'};
+        ByteBuf encoded = Unpooled.buffer();
+        encoded.writeCharSequence(
+                "MESSAGE\n"
+                        + "subscription:sub-1\n"
+                        + "message-id:msg-binary\n"
+                        + "destination:/queue/binary\n"
+                        + "content-length:" + payload.length + "\n"
+                        + "\n",
+                UTF_8);
+        encoded.writeBytes(payload);
+        encoded.writeByte(0);
+
+        try {
+            assertThat(channel.writeInbound(encoded)).isTrue();
+            StompFrame frame = channel.readInbound();
+            try {
+                assertThat(frame.command()).isEqualTo(StompCommand.MESSAGE);
+                assertThat(frame.headers().getAsString(StompHeaders.MESSAGE_ID)).isEqualTo("msg-binary");
+                assertThat(frame.content().readableBytes()).isEqualTo(payload.length);
+                assertThat(frame.content().getByte(0)).isEqualTo((byte) 'A');
+                assertThat(frame.content().getByte(1)).isZero();
+                assertThat(frame.content().getByte(2)).isEqualTo((byte) 'B');
+                assertThat(frame.decoderResult()).isEqualTo(DecoderResult.SUCCESS);
+                assertThat((Object) channel.readInbound()).isNull();
+            } finally {
+                frame.release();
+            }
+        } finally {
+            channel.finishAndReleaseAll();
+        }
+    }
+
+    @Test
     void decoderReadsNulTerminatedFrameWithoutContentLength() {
         EmbeddedChannel channel = new EmbeddedChannel(
                 new StompSubframeDecoder(256, 16),
