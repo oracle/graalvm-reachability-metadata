@@ -110,6 +110,13 @@ public class Kotlin_stdlib_jdk8Test {
     }
 
     @Test
+    fun objectStreamToListExtensionPreservesEncounterOrderAndNullElements() {
+        val values: List<String?> = Stream.of("north", null, "south", "north").toList()
+
+        assertThat(values).containsExactly("north", null, "south", "north")
+    }
+
+    @Test
     fun namedRegexGroupsExposeJdkMatcherGroupsByName() {
         val regex = Regex("""(?<scheme>[a-z]+)://(?<host>[^/:]+)(?::(?<port>\d+))?/(?<path>.+)""")
         val matchWithPort = regex.matchEntire("https://kotlinlang.org:443/docs/home")
