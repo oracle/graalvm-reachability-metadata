@@ -1,0 +1,2265 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de18e-1688-7a81-8561-f9b7699f66ca
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jetbrains.compose.ui:ui:1.8.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.8.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
+- Set "coordinates" to "org.jetbrains.compose.ui:ui:1.8.2".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the published Maven artifacts first, then fall back to the project tag if Maven does not include sources, tests, or docs for this exact version. After that I’ll patch the JSON directly.
+web search: 
+web search: Maven org.jetbrains.compose.ui ui 1.8.2 sources javadoc tests
+codex
+The search confirms this is the JetBrains Compose Multiplatform artifact and that version `1.8.2` exists on Maven Central. I’m checking the artifact directory now because sources/tests/docs should use Maven-hosted files when those classifiers are actually published.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json && sed -n '1,160p' build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json" in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+-rw-rw-r-- 1 vjovanov vjovanov 58 May  1 05:21 build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
+{
+  "coordinates" : "org.jetbrains.compose.ui:ui:1.8.2"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2.pom' in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- This module was also published with a richer model, Gradle metadata,  -->
+    <!-- which should be used instead. Do not delete the following line which  -->
+    <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+    <!-- that they should prefer consuming it instead. -->
+    <!-- do_not_remove: published-with-gradle-metadata -->
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jetbrains.compose.ui</groupId>
+    <artifactId>ui</artifactId>
+    <version>1.8.2</version>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib</artifactId>
+                <version>2.1.21</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <name>Compose UI primitives</name>
+    <description>Compose UI primitives. This library contains the primitives that form the Compose UI Toolkit, such as drawing, measurement and layout.</description>
+    <url>https://github.com/JetBrains/compose-jb</url>
+    <inceptionYear>2020</inceptionYear>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:https://github.com/JetBrains/compose-jb.git</connection>
+        <developerConnection>scm:git:https://github.com/JetBrains/compose-jb.git</developerConnection>
+        <url>https://github.com/JetBrains/compose-jb</url>
+    </scm>
+    <developers>
+        <developer>
+            <name>Compose Multiplatform Team</name>
+            <organization>JetBrains</organization>
+            <organizationUrl>https://www.jetbrains.com</organizationUrl>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>androidx.compose.ui</groupId>
+            <artifactId>ui</artifactId>
+            <version>1.8.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.androidx.lifecycle</groupId>
+            <artifactId>lifecycle-common</artifactId>
+            <version>2.8.4</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.androidx.lifecycle</groupId>
+            <artifactId>lifecycle-runtime</artifactId>
+            <version>2.8.4</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.androidx.lifecycle</groupId>
+            <artifactId>lifecycle-runtime-compose</artifactId>
+            <version>2.8.4</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.androidx.lifecycle</groupId>
+            <artifactId>lifecycle-viewmodel</artifactId>
+            <version>2.8.4</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.compose.annotation-internal</groupId>
+            <artifactId>annotation</artifactId>
+            <version>1.8.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.compose.collection-internal</groupId>
+            <artifactId>collection</artifactId>
+            <version>1.8.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.compose.runtime</groupId>
+            <artifactId>runtime</artifactId>
+            <version>1.8.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.compose.runtime</groupId>
+            <artifactId>runtime-saveable</artifactId>
+            <version>1.8.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.compose.ui</groupId>
+            <artifactId>ui-backhandler</artifactId>
+            <version>1.8.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.compose.ui</groupId>
+            <artifactId>ui-geometry</artifactId>
+            <version>1.8.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.compose.ui</groupId>
+            <artifactId>ui-graphics</artifactId>
+            <version>1.8.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.compose.ui</groupId>
+            <artifactId>ui-text</artifactId>
+            <version>1.8.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.compose.ui</groupId>
+            <artifactId>ui-uikit</artifactId>
+            <version>1.8.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.compose.ui</groupId>
+            <artifactId>ui-unit</artifactId>
+            <version>1.8.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.compose.ui</groupId>
+            <artifactId>ui-util</artifactId>
+            <version>1.8.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>atomicfu</artifactId>
+            <version>0.23.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-core</artifactId>
+            <version>1.8.0</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.skiko</groupId>
+            <artifactId>skiko</artifactId>
+            <version>0.9.4.2</version>
+            <scope>runtime</scope>
+        </dependency>
+    </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui/1.8.2/' in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+ succeeded in 203ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jetbrains/compose/ui/ui/1.8.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jetbrains/compose/ui/ui/1.8.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="ui-1.8.2-javadoc.jar" title="ui-1.8.2-javadoc.jar">ui-1.8.2-javadoc.jar</a>                              2025-06-17 12:34        22      
+<a href="ui-1.8.2-javadoc.jar.asc" title="ui-1.8.2-javadoc.jar.asc">ui-1.8.2-javadoc.jar.asc</a>                          2025-06-17 12:34       215      
+<a href="ui-1.8.2-javadoc.jar.asc.md5" title="ui-1.8.2-javadoc.jar.asc.md5">ui-1.8.2-javadoc.jar.asc.md5</a>                      2025-06-17 12:34        32      
+<a href="ui-1.8.2-javadoc.jar.asc.sha1" title="ui-1.8.2-javadoc.jar.asc.sha1">ui-1.8.2-javadoc.jar.asc.sha1</a>                     2025-06-17 12:34        40      
+<a href="ui-1.8.2-javadoc.jar.asc.sha256" title="ui-1.8.2-javadoc.jar.asc.sha256">ui-1.8.2-javadoc.jar.asc.sha256</a>                   2025-06-17 12:34        64      
+<a href="ui-1.8.2-javadoc.jar.asc.sha512" title="ui-1.8.2-javadoc.jar.asc.sha512">ui-1.8.2-javadoc.jar.asc.sha512</a>                   2025-06-17 12:34       128      
+<a href="ui-1.8.2-javadoc.jar.md5" title="ui-1.8.2-javadoc.jar.md5">ui-1.8.2-javadoc.jar.md5</a>                          2025-06-17 12:34        32      
+<a href="ui-1.8.2-javadoc.jar.sha1" title="ui-1.8.2-javadoc.jar.sha1">ui-1.8.2-javadoc.jar.sha1</a>                         2025-06-17 12:34        40      
+<a href="ui-1.8.2-javadoc.jar.sha256" title="ui-1.8.2-javadoc.jar.sha256">ui-1.8.2-javadoc.jar.sha256</a>                       2025-06-17 12:34        64      
+<a href="ui-1.8.2-javadoc.jar.sha512" title="ui-1.8.2-javadoc.jar.sha512">ui-1.8.2-javadoc.jar.sha512</a>                       2025-06-17 12:34       128      
+<a href="ui-1.8.2-sources.jar" title="ui-1.8.2-sources.jar">ui-1.8.2-sources.jar</a>                              2025-06-17 12:34    900170      
+<a href="ui-1.8.2-sources.jar.asc" title="ui-1.8.2-sources.jar.asc">ui-1.8.2-sources.jar.asc</a>                          2025-06-17 12:34       215      
+<a href="ui-1.8.2-sources.jar.asc.md5" title="ui-1.8.2-sources.jar.asc.md5">ui-1.8.2-sources.jar.asc.md5</a>                      2025-06-17 12:34        32      
+<a href="ui-1.8.2-sources.jar.asc.sha1" title="ui-1.8.2-sources.jar.asc.sha1">ui-1.8.2-sources.jar.asc.sha1</a>                     2025-06-17 12:34        40      
+<a href="ui-1.8.2-sources.jar.asc.sha256" title="ui-1.8.2-sources.jar.asc.sha256">ui-1.8.2-sources.jar.asc.sha256</a>                   2025-06-17 12:34        64      
+<a href="ui-1.8.2-sources.jar.asc.sha512" title="ui-1.8.2-sources.jar.asc.sha512">ui-1.8.2-sources.jar.asc.sha512</a>                   2025-06-17 12:34       128      
+<a href="ui-1.8.2-sources.jar.md5" title="ui-1.8.2-sources.jar.md5">ui-1.8.2-sources.jar.md5</a>                          2025-06-17 12:34        32      
+<a href="ui-1.8.2-sources.jar.sha1" title="ui-1.8.2-sources.jar.sha1">ui-1.8.2-sources.jar.sha1</a>                         2025-06-17 12:34        40      
+<a href="ui-1.8.2-sources.jar.sha256" title="ui-1.8.2-sources.jar.sha256">ui-1.8.2-sources.jar.sha256</a>                       2025-06-17 12:34        64      
+<a href="ui-1.8.2-sources.jar.sha512" title="ui-1.8.2-sources.jar.sha512">ui-1.8.2-sources.jar.sha512</a>                       2025-06-17 12:34       128      
+<a href="ui-1.8.2.jar" title="ui-1.8.2.jar">ui-1.8.2.jar</a>                                      2025-06-17 12:34    314261      
+<a href="ui-1.8.2.jar.asc" title="ui-1.8.2.jar.asc">ui-1.8.2.jar.asc</a>                                  2025-06-17 12:34       215      
+<a href="ui-1.8.2.jar.asc.md5" title="ui-1.8.2.jar.asc.md5">ui-1.8.2.jar.asc.md5</a>                              2025-06-17 12:34        32      
+<a href="ui-1.8.2.jar.asc.sha1" title="ui-1.8.2.jar.asc.sha1">ui-1.8.2.jar.asc.sha1</a>                             2025-06-17 12:34        40      
+<a href="ui-1.8.2.jar.asc.sha256" title="ui-1.8.2.jar.asc.sha256">ui-1.8.2.jar.asc.sha256</a>                           2025-06-17 12:34        64      
+<a href="ui-1.8.2.jar.asc.sha512" title="ui-1.8.2.jar.asc.sha512">ui-1.8.2.jar.asc.sha512</a>                           2025-06-17 12:34       128      
+<a href="ui-1.8.2.jar.md5" title="ui-1.8.2.jar.md5">ui-1.8.2.jar.md5</a>                                  2025-06-17 12:34        32      
+<a href="ui-1.8.2.jar.sha1" title="ui-1.8.2.jar.sha1">ui-1.8.2.jar.sha1</a>                                 2025-06-17 12:34        40      
+<a href="ui-1.8.2.jar.sha256" title="ui-1.8.2.jar.sha256">ui-1.8.2.jar.sha256</a>                               2025-06-17 12:34        64      
+<a href="ui-1.8.2.jar.sha512" title="ui-1.8.2.jar.sha512">ui-1.8.2.jar.sha512</a>                               2025-06-17 12:34       128      
+<a href="ui-1.8.2.module" title="ui-1.8.2.module">ui-1.8.2.module</a>                                   2025-06-17 12:34     30753      
+<a href="ui-1.8.2.module.asc" title="ui-1.8.2.module.asc">ui-1.8.2.module.asc</a>                               2025-06-17 12:34       215      
+<a href="ui-1.8.2.module.asc.md5" title="ui-1.8.2.module.asc.md5">ui-1.8.2.module.asc.md5</a>                           2025-06-17 12:34        32      
+<a href="ui-1.8.2.module.asc.sha1" title="ui-1.8.2.module.asc.sha1">ui-1.8.2.module.asc.sha1</a>                          2025-06-17 12:34        40      
+<a href="ui-1.8.2.module.asc.sha256" title="ui-1.8.2.module.asc.sha256">ui-1.8.2.module.asc.sha256</a>                        2025-06-17 12:34        64      
+<a href="ui-1.8.2.module.asc.sha512" title="ui-1.8.2.module.asc.sha512">ui-1.8.2.module.asc.sha512</a>                        2025-06-17 12:34       128      
+<a href="ui-1.8.2.module.md5" title="ui-1.8.2.module.md5">ui-1.8.2.module.md5</a>                               2025-06-17 12:34        32      
+<a href="ui-1.8.2.module.sha1" title="ui-1.8.2.module.sha1">ui-1.8.2.module.sha1</a>                              2025-06-17 12:34        40      
+<a href="ui-1.8.2.module.sha256" title="ui-1.8.2.module.sha256">ui-1.8.2.module.sha256</a>                            2025-06-17 12:34        64      
+<a href="ui-1.8.2.module.sha512" title="ui-1.8.2.module.sha512">ui-1.8.2.module.sha512</a>                            2025-06-17 12:34       128      
+<a href="ui-1.8.2.pom" title="ui-1.8.2.pom">ui-1.8.2.pom</a>                                      2025-06-17 12:34      6641      
+<a href="ui-1.8.2.pom.asc" title="ui-1.8.2.pom.asc">ui-1.8.2.pom.asc</a>                                  2025-06-17 12:34       215      
+<a href="ui-1.8.2.pom.asc.md5" title="ui-1.8.2.pom.asc.md5">ui-1.8.2.pom.asc.md5</a>                              2025-06-17 12:34        32      
+<a href="ui-1.8.2.pom.asc.sha1" title="ui-1.8.2.pom.asc.sha1">ui-1.8.2.pom.asc.sha1</a>                             2025-06-17 12:34        40      
+<a href="ui-1.8.2.pom.asc.sha256" title="ui-1.8.2.pom.asc.sha256">ui-1.8.2.pom.asc.sha256</a>                           2025-06-17 12:34        64      
+<a href="ui-1.8.2.pom.asc.sha512" title="ui-1.8.2.pom.asc.sha512">ui-1.8.2.pom.asc.sha512</a>                           2025-06-17 12:34       128      
+<a href="ui-1.8.2.pom.md5" title="ui-1.8.2.pom.md5">ui-1.8.2.pom.md5</a>                                  2025-06-17 12:34        32      
+<a href="ui-1.8.2.pom.sha1" title="ui-1.8.2.pom.sha1">ui-1.8.2.pom.sha1</a>                                 2025-06-17 12:34        40      
+<a href="ui-1.8.2.pom.sha256" title="ui-1.8.2.pom.sha256">ui-1.8.2.pom.sha256</a>                               2025-06-17 12:34        64      
+<a href="ui-1.8.2.pom.sha512" title="ui-1.8.2.pom.sha512">ui-1.8.2.pom.sha512</a>                               2025-06-17 12:34       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: 
+web search: 
+web search: org.jetbrains.compose.ui ui 1.8.2 Maven Central
+codex
+Maven Central publishes `sources` and `javadoc` classifiers for this artifact, but I don’t see a Maven test classifier in the version directory. I’m checking the source archive and the tagged GitHub layout to make sure the fallback test URL points at the real test tree for `1.8.2`.
+exec
+/usr/bin/bash -lc "curl -fsSL -o /tmp/ui-1.8.2-sources.jar https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2-sources.jar && jar tf /tmp/ui-1.8.2-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/JetBrains/compose-multiplatform/git/refs/tags/v1.8.2' in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/JetBrains/compose-multiplatform/contents?ref=v1.8.2' in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/refs/tags/v1.8.2' in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+ succeeded in 134ms:
+META-INF/
+META-INF/MANIFEST.MF
+commonMain/
+commonMain/androidx/
+commonMain/androidx/compose/
+commonMain/androidx/compose/ui/
+commonMain/androidx/compose/ui/Alignment.kt
+commonMain/androidx/compose/ui/AtomicReference.kt
+commonMain/androidx/compose/ui/ComposeUiFlags.kt
+commonMain/androidx/compose/ui/ComposedModifier.kt
+commonMain/androidx/compose/ui/Expect.kt
+commonMain/androidx/compose/ui/Modifier.kt
+commonMain/androidx/compose/ui/MotionDurationScale.kt
+commonMain/androidx/compose/ui/SensitiveContent.kt
+commonMain/androidx/compose/ui/SessionMutex.kt
+commonMain/androidx/compose/ui/UiComposable.kt
+commonMain/androidx/compose/ui/ZIndexModifier.kt
+commonMain/androidx/compose/ui/compose-ui-documentation.md
+commonMain/androidx/compose/ui/autofill/
+commonMain/androidx/compose/ui/autofill/Autofill.kt
+commonMain/androidx/compose/ui/autofill/AutofillManager.kt
+commonMain/androidx/compose/ui/autofill/AutofillTree.kt
+commonMain/androidx/compose/ui/autofill/AutofillType.kt
+commonMain/androidx/compose/ui/autofill/ContentDataType.kt
+commonMain/androidx/compose/ui/autofill/ContentType.kt
+commonMain/androidx/compose/ui/draganddrop/
+commonMain/androidx/compose/ui/draganddrop/DragAndDrop.kt
+commonMain/androidx/compose/ui/draganddrop/DragAndDropManager.kt
+commonMain/androidx/compose/ui/draganddrop/DragAndDropNode.kt
+commonMain/androidx/compose/ui/draw/
+commonMain/androidx/compose/ui/draw/Alpha.kt
+commonMain/androidx/compose/ui/draw/Blur.kt
+commonMain/androidx/compose/ui/draw/Clip.kt
+commonMain/androidx/compose/ui/draw/DrawModifier.kt
+commonMain/androidx/compose/ui/draw/PainterModifier.kt
+commonMain/androidx/compose/ui/draw/Rotate.kt
+commonMain/androidx/compose/ui/draw/Scale.kt
+commonMain/androidx/compose/ui/draw/Shadow.kt
+commonMain/androidx/compose/ui/focus/
+commonMain/androidx/compose/ui/focus/BeyondBoundsLayout.kt
+commonMain/androidx/compose/ui/focus/FocusChangedModifier.kt
+commonMain/androidx/compose/ui/focus/FocusDirection.kt
+commonMain/androidx/compose/ui/focus/FocusEventModifier.kt
+commonMain/androidx/compose/ui/focus/FocusEventModifierNode.kt
+commonMain/androidx/compose/ui/focus/FocusInvalidationManager.kt
+commonMain/androidx/compose/ui/focus/FocusListener.kt
+commonMain/androidx/compose/ui/focus/FocusManager.kt
+commonMain/androidx/compose/ui/focus/FocusModifier.kt
+commonMain/androidx/compose/ui/focus/FocusOrderModifier.kt
+commonMain/androidx/compose/ui/focus/FocusOwner.kt
+commonMain/androidx/compose/ui/focus/FocusOwnerImpl.kt
+commonMain/androidx/compose/ui/focus/FocusProperties.kt
+commonMain/androidx/compose/ui/focus/FocusPropertiesModifierNode.kt
+commonMain/androidx/compose/ui/focus/FocusRequester.kt
+commonMain/androidx/compose/ui/focus/FocusRequesterModifier.kt
+commonMain/androidx/compose/ui/focus/FocusRequesterModifierNode.kt
+commonMain/androidx/compose/ui/focus/FocusRestorer.kt
+commonMain/androidx/compose/ui/focus/FocusState.kt
+commonMain/androidx/compose/ui/focus/FocusTargetModifierNode.kt
+commonMain/androidx/compose/ui/focus/FocusTargetNode.kt
+commonMain/androidx/compose/ui/focus/FocusTransactionManager.kt
+commonMain/androidx/compose/ui/focus/FocusTransactions.kt
+commonMain/androidx/compose/ui/focus/FocusTraversal.kt
+commonMain/androidx/compose/ui/focus/Focusability.kt
+commonMain/androidx/compose/ui/focus/OneDimensionalFocusSearch.kt
+commonMain/androidx/compose/ui/focus/TwoDimensionalFocusSearch.kt
+commonMain/androidx/compose/ui/graphics/
+commonMain/androidx/compose/ui/graphics/GraphicsLayerModifier.kt
+commonMain/androidx/compose/ui/graphics/GraphicsLayerScope.kt
+commonMain/androidx/compose/ui/graphics/TransformOrigin.kt
+commonMain/androidx/compose/ui/graphics/vector/
+commonMain/androidx/compose/ui/graphics/vector/DrawCache.kt
+commonMain/androidx/compose/ui/graphics/vector/ImageVector.kt
+commonMain/androidx/compose/ui/graphics/vector/Vector.kt
+commonMain/androidx/compose/ui/graphics/vector/VectorComposable.kt
+commonMain/androidx/compose/ui/graphics/vector/VectorCompose.kt
+commonMain/androidx/compose/ui/graphics/vector/VectorPainter.kt
+commonMain/androidx/compose/ui/hapticfeedback/
+commonMain/androidx/compose/ui/hapticfeedback/HapticFeedback.kt
+commonMain/androidx/compose/ui/hapticfeedback/HapticFeedbackType.kt
+commonMain/androidx/compose/ui/input/
+commonMain/androidx/compose/ui/input/InputModeManager.kt
+commonMain/androidx/compose/ui/input/key/
+commonMain/androidx/compose/ui/input/key/Key.kt
+commonMain/androidx/compose/ui/input/key/KeyEvent.kt
+commonMain/androidx/compose/ui/input/key/KeyInputModifier.kt
+commonMain/androidx/compose/ui/input/key/KeyInputModifierNode.kt
+commonMain/androidx/compose/ui/input/key/SoftKeyboardInterceptionModifierNode.kt
+commonMain/androidx/compose/ui/input/key/SoftwareKeyboardInterceptionModifier.kt
+commonMain/androidx/compose/ui/input/nestedscroll/
+commonMain/androidx/compose/ui/input/nestedscroll/NestedScrollModifier.kt
+commonMain/androidx/compose/ui/input/nestedscroll/NestedScrollNode.kt
+commonMain/androidx/compose/ui/input/pointer/
+commonMain/androidx/compose/ui/input/pointer/HitPathTracker.kt
+commonMain/androidx/compose/ui/input/pointer/InternalPointerInput.kt
+commonMain/androidx/compose/ui/input/pointer/PointerEvent.kt
+commonMain/androidx/compose/ui/input/pointer/PointerIcon.kt
+commonMain/androidx/compose/ui/input/pointer/PointerInputEventProcessor.kt
+commonMain/androidx/compose/ui/input/pointer/PointerInputTestUtil.kt
+commonMain/androidx/compose/ui/input/pointer/SuspendingPointerInputFilter.kt
+commonMain/androidx/compose/ui/input/pointer/util/
+commonMain/androidx/compose/ui/input/pointer/util/PointerIdArray.kt
+commonMain/androidx/compose/ui/input/pointer/util/VelocityTracker.kt
+commonMain/androidx/compose/ui/input/rotary/
+commonMain/androidx/compose/ui/input/rotary/RotaryInputModifier.kt
+commonMain/androidx/compose/ui/input/rotary/RotaryInputModifierNode.kt
+commonMain/androidx/compose/ui/input/rotary/RotaryScrollEvent.kt
+commonMain/androidx/compose/ui/internal/
+commonMain/androidx/compose/ui/internal/IdentityHashCode.kt
+commonMain/androidx/compose/ui/internal/InlineClassHelper.kt
+commonMain/androidx/compose/ui/internal/JvmDefaultWithCompatibility.kt
+commonMain/androidx/compose/ui/layout/
+commonMain/androidx/compose/ui/layout/AlignmentLine.kt
+commonMain/androidx/compose/ui/layout/ApproachLayoutModifierNode.kt
+commonMain/androidx/compose/ui/layout/ApproachMeasureScope.kt
+commonMain/androidx/compose/ui/layout/BeyondBoundsLayout.kt
+commonMain/androidx/compose/ui/layout/ContentScale.kt
+commonMain/androidx/compose/ui/layout/IntrinsicMeasurable.kt
+commonMain/androidx/compose/ui/layout/IntrinsicMeasureScope.kt
+commonMain/androidx/compose/ui/layout/Layout.kt
+
+ succeeded in 194ms:
+{
+  "ref": "refs/tags/v1.8.2",
+  "node_id": "MDM6UmVmMjkzNDk4NTA4OnJlZnMvdGFncy92MS44LjI=",
+  "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/refs/tags/v1.8.2",
+  "object": {
+    "sha": "a08a11f1b7eab1cde4fbbae3d89a337f7bd3e239",
+    "type": "tag",
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/tags/a08a11f1b7eab1cde4fbbae3d89a337f7bd3e239"
+  }
+}
+
+ succeeded in 167ms:
+[
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "babdf35630abd06eb959e9c972b5796ee6c55761",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/.github?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/.github",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/babdf35630abd06eb959e9c972b5796ee6c55761",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/.github?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/babdf35630abd06eb959e9c972b5796ee6c55761",
+      "html": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "11983746ccdf218d23b621fda3e876a0e82f99da",
+    "size": 319,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/.gitignore?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/blob/v1.8.2/.gitignore",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/blobs/11983746ccdf218d23b621fda3e876a0e82f99da",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/compose-multiplatform/v1.8.2/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/.gitignore?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/blobs/11983746ccdf218d23b621fda3e876a0e82f99da",
+      "html": "https://github.com/JetBrains/compose-multiplatform/blob/v1.8.2/.gitignore"
+    }
+  },
+  {
+    "name": ".idea",
+    "path": ".idea",
+    "sha": "9ab66718870f4fea893d18bbe05751f688fc6248",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/.idea?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/.idea",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/9ab66718870f4fea893d18bbe05751f688fc6248",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/.idea?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/9ab66718870f4fea893d18bbe05751f688fc6248",
+      "html": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/.idea"
+    }
+  },
+  {
+    "name": "CHANGELOG.md",
+    "path": "CHANGELOG.md",
+    "sha": "ab2b7e9e99e7ec721659f294a744832fd9078da5",
+    "size": 264780,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/CHANGELOG.md?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/blob/v1.8.2/CHANGELOG.md",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/blobs/ab2b7e9e99e7ec721659f294a744832fd9078da5",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/compose-multiplatform/v1.8.2/CHANGELOG.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/CHANGELOG.md?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/blobs/ab2b7e9e99e7ec721659f294a744832fd9078da5",
+      "html": "https://github.com/JetBrains/compose-multiplatform/blob/v1.8.2/CHANGELOG.md"
+    }
+  },
+  {
+    "name": "LICENSE.txt",
+    "path": "LICENSE.txt",
+    "sha": "244380c242e0f0f3545082a425eb43990addbd5f",
+    "size": 11394,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/LICENSE.txt?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/blob/v1.8.2/LICENSE.txt",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/blobs/244380c242e0f0f3545082a425eb43990addbd5f",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/compose-multiplatform/v1.8.2/LICENSE.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/LICENSE.txt?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/blobs/244380c242e0f0f3545082a425eb43990addbd5f",
+      "html": "https://github.com/JetBrains/compose-multiplatform/blob/v1.8.2/LICENSE.txt"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "4a5d4a54abff2730fe184571e68c65081f445e17",
+    "size": 4783,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/README.md?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/blob/v1.8.2/README.md",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/blobs/4a5d4a54abff2730fe184571e68c65081f445e17",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/compose-multiplatform/v1.8.2/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/README.md?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/blobs/4a5d4a54abff2730fe184571e68c65081f445e17",
+      "html": "https://github.com/JetBrains/compose-multiplatform/blob/v1.8.2/README.md"
+    }
+  },
+  {
+    "name": "VERSIONING.md",
+    "path": "VERSIONING.md",
+    "sha": "8d15b085d202975f34cb9abfd913f3b14b58141e",
+    "size": 515,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/VERSIONING.md?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/blob/v1.8.2/VERSIONING.md",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/blobs/8d15b085d202975f34cb9abfd913f3b14b58141e",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/compose-multiplatform/v1.8.2/VERSIONING.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/VERSIONING.md?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/blobs/8d15b085d202975f34cb9abfd913f3b14b58141e",
+      "html": "https://github.com/JetBrains/compose-multiplatform/blob/v1.8.2/VERSIONING.md"
+    }
+  },
+  {
+    "name": "artwork",
+    "path": "artwork",
+    "sha": "c66157e39d4cd4866e701db51a309f9bb8bbcb75",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/artwork?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/artwork",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/c66157e39d4cd4866e701db51a309f9bb8bbcb75",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/artwork?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/c66157e39d4cd4866e701db51a309f9bb8bbcb75",
+      "html": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/artwork"
+    }
+  },
+  {
+    "name": "benchmarks",
+    "path": "benchmarks",
+    "sha": "b8a3b8288fb521ec99fe0f32b1575ff2539867b9",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/benchmarks?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/benchmarks",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/b8a3b8288fb521ec99fe0f32b1575ff2539867b9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/benchmarks?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/b8a3b8288fb521ec99fe0f32b1575ff2539867b9",
+      "html": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/benchmarks"
+    }
+  },
+  {
+    "name": "ci",
+    "path": "ci",
+    "sha": "9cd5ba2f631c312cd6850170d3459456d668c085",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/ci?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/ci",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/9cd5ba2f631c312cd6850170d3459456d668c085",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/ci?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/9cd5ba2f631c312cd6850170d3459456d668c085",
+      "html": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/ci"
+    }
+  },
+  {
+    "name": "components",
+    "path": "components",
+    "sha": "fc5c4b11e837a5034d7b103b5efbb89eb78ef227",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/components?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/components",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/fc5c4b11e837a5034d7b103b5efbb89eb78ef227",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/components?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/fc5c4b11e837a5034d7b103b5efbb89eb78ef227",
+      "html": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/components"
+    }
+  },
+  {
+    "name": "compose",
+    "path": "compose",
+    "sha": "e6a517608441b28d083f215e21ce4f169ef0834a",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/compose?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/compose",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/e6a517608441b28d083f215e21ce4f169ef0834a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/compose?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/e6a517608441b28d083f215e21ce4f169ef0834a",
+      "html": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/compose"
+    }
+  },
+  {
+    "name": "docs",
+    "path": "docs",
+    "sha": "cc8ebceff29ee321bc2bc26a9b6855eb07811318",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/docs?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/docs",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/cc8ebceff29ee321bc2bc26a9b6855eb07811318",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/docs?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/cc8ebceff29ee321bc2bc26a9b6855eb07811318",
+      "html": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/docs"
+    }
+  },
+  {
+    "name": "examples",
+    "path": "examples",
+    "sha": "e68e8783232970da790a6dd98c406c32dd10076e",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/examples?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/examples",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/e68e8783232970da790a6dd98c406c32dd10076e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/examples?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/e68e8783232970da790a6dd98c406c32dd10076e",
+      "html": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/examples"
+    }
+  },
+  {
+    "name": "experimental",
+    "path": "experimental",
+    "sha": "2c526081ac626db822d884377de11907d9dc1464",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/experimental?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/experimental",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/2c526081ac626db822d884377de11907d9dc1464",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/experimental?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/2c526081ac626db822d884377de11907d9dc1464",
+      "html": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/experimental"
+    }
+  },
+  {
+    "name": "gradle-plugins",
+    "path": "gradle-plugins",
+    "sha": "4631566f50bd07d0f108d7c8040fc16e860c586e",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/gradle-plugins?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/gradle-plugins",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/4631566f50bd07d0f108d7c8040fc16e860c586e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/gradle-plugins?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/4631566f50bd07d0f108d7c8040fc16e860c586e",
+      "html": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/gradle-plugins"
+    }
+  },
+  {
+    "name": "gradle.properties",
+    "path": "gradle.properties",
+    "sha": "c6b54f2197f8be23ac6dbb9b558949d34ac592af",
+    "size": 238,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/gradle.properties?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/blob/v1.8.2/gradle.properties",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/blobs/c6b54f2197f8be23ac6dbb9b558949d34ac592af",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/compose-multiplatform/v1.8.2/gradle.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/gradle.properties?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/blobs/c6b54f2197f8be23ac6dbb9b558949d34ac592af",
+      "html": "https://github.com/JetBrains/compose-multiplatform/blob/v1.8.2/gradle.properties"
+    }
+  },
+  {
+    "name": "html",
+    "path": "html",
+    "sha": "43f25c2a2cfada8a8480361e8f69f05d7eb6f9ed",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/html?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/html",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/43f25c2a2cfada8a8480361e8f69f05d7eb6f9ed",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/html?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/43f25c2a2cfada8a8480361e8f69f05d7eb6f9ed",
+      "html": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/html"
+    }
+  },
+  {
+    "name": "idea-plugin",
+    "path": "idea-plugin",
+    "sha": "cb59cdedbff8215ac91189cf2b8e8160bba244d5",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/idea-plugin?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/idea-plugin",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/cb59cdedbff8215ac91189cf2b8e8160bba244d5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/idea-plugin?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/cb59cdedbff8215ac91189cf2b8e8160bba244d5",
+      "html": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/idea-plugin"
+    }
+  },
+  {
+    "name": "instrumented-test",
+    "path": "instrumented-test",
+    "sha": "268e7d04e3743ef3cc86db51b16edbfe24cbc132",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/instrumented-test?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/instrumented-test",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/268e7d04e3743ef3cc86db51b16edbfe24cbc132",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/instrumented-test?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/268e7d04e3743ef3cc86db51b16edbfe24cbc132",
+      "html": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/instrumented-test"
+    }
+  },
+  {
+    "name": "license",
+    "path": "license",
+    "sha": "04ff0bf10304f9572090d81483448b1b02b46914",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/license?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/license",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/04ff0bf10304f9572090d81483448b1b02b46914",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/license?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/04ff0bf10304f9572090d81483448b1b02b46914",
+      "html": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/license"
+    }
+  },
+  {
+    "name": "tooling",
+    "path": "tooling",
+    "sha": "316dbcab00fa1156a1e883644b4edeee82f2a774",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/tooling?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/tooling",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/316dbcab00fa1156a1e883644b4edeee82f2a774",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/tooling?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/316dbcab00fa1156a1e883644b4edeee82f2a774",
+      "html": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/tooling"
+    }
+  },
+  {
+    "name": "tools",
+    "path": "tools",
+    "sha": "328d388a5173779f93ec2d251fc3dd404e0cbc86",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/tools?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/tools",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/328d388a5173779f93ec2d251fc3dd404e0cbc86",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/tools?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/328d388a5173779f93ec2d251fc3dd404e0cbc86",
+      "html": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/tools"
+    }
+  },
+  {
+    "name": "tutorials",
+    "path": "tutorials",
+    "sha": "c65ae4dd770d55fc83e200536be468c03c036ac3",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/tutorials?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/tutorials",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/c65ae4dd770d55fc83e200536be468c03c036ac3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform/contents/tutorials?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/trees/c65ae4dd770d55fc83e200536be468c03c036ac3",
+      "html": "https://github.com/JetBrains/compose-multiplatform/tree/v1.8.2/tutorials"
+    }
+  }
+]
+
+ succeeded in 225ms:
+{
+  "ref": "refs/tags/v1.8.2",
+  "node_id": "MDM6UmVmMzUxNzA4NTk4OnJlZnMvdGFncy92MS44LjI=",
+  "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/refs/tags/v1.8.2",
+  "object": {
+    "sha": "dd730aeb9f07008607114e41b52f251f12957e5f",
+    "type": "tag",
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/tags/dd730aeb9f07008607114e41b52f251f12957e5f"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -o /tmp/ui-1.8.2-javadoc.jar https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2-javadoc.jar && ls -l /tmp/ui-1.8.2-javadoc.jar && jar tf /tmp/ui-1.8.2-javadoc.jar' in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/JetBrains/compose-multiplatform/git/tags/a08a11f1b7eab1cde4fbbae3d89a337f7bd3e239' in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/tags/dd730aeb9f07008607114e41b52f251f12957e5f' in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2-tests.jar || true' in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+ succeeded in 173ms:
+{
+  "node_id": "TA_kwDOFPalttoAKGRkNzMwYWViOWYwNzAwODYwNzExNGU0MWI1MmYyNTFmMTI5NTdlNWY",
+  "sha": "dd730aeb9f07008607114e41b52f251f12957e5f",
+  "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/tags/dd730aeb9f07008607114e41b52f251f12957e5f",
+  "tagger": {
+    "name": "TeamCity",
+    "email": "",
+    "date": "2025-06-17T13:22:02Z"
+  },
+  "object": {
+    "sha": "f82a1f972cf867036ad6456e8f24818a96665ff8",
+    "type": "commit",
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/commits/f82a1f972cf867036ad6456e8f24818a96665ff8"
+  },
+  "tag": "v1.8.2",
+  "message": "Details\n\norg.jetbrains.compose.*:*:1.8.2\norg.jetbrains.compose.material:material-navigation:1.8.0-beta06\norg.jetbrains.compose.material3.adaptive:adaptive-*:1.1.2\norg.jetbrains.androidx.lifecycle:lifecycle-*:2.9.1\norg.jetbrains.androidx.navigation:navigation-*:2.9.0-beta03\n(internal) org.jetbrains.androidx.graphics:graphics-shapes:<not published>\n(internal) org.jetbrains.androidx.savedstate:savedstate:1.3.1\n(internal) org.jetbrains.androidx.window:window-core:<not published>\n",
+  "verification": {
+    "verified": false,
+    "reason": "unsigned",
+    "signature": null,
+    "payload": null,
+    "verified_at": null
+  }
+}
+
+ succeeded in 191ms:
+{
+  "node_id": "TA_kwDOEX5ujNoAKGEwOGExMWYxYjdlYWIxY2RlNGZiYmFlM2Q4OWEzMzdmN2JkM2UyMzk",
+  "sha": "a08a11f1b7eab1cde4fbbae3d89a337f7bd3e239",
+  "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/tags/a08a11f1b7eab1cde4fbbae3d89a337f7bd3e239",
+  "tagger": {
+    "name": "TeamCity",
+    "email": "",
+    "date": "2025-06-17T13:21:58Z"
+  },
+  "object": {
+    "sha": "a149d0f12867c1380e2072400616563d649b1160",
+    "type": "commit",
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform/git/commits/a149d0f12867c1380e2072400616563d649b1160"
+  },
+  "tag": "v1.8.2",
+  "message": "Details\n\norg.jetbrains.compose.*:*:1.8.2\norg.jetbrains.compose.material:material-navigation:1.8.0-beta06\norg.jetbrains.compose.material3.adaptive:adaptive-*:1.1.2\norg.jetbrains.androidx.lifecycle:lifecycle-*:2.9.1\norg.jetbrains.androidx.navigation:navigation-*:2.9.0-beta03\n(internal) org.jetbrains.androidx.graphics:graphics-shapes:<not published>\n(internal) org.jetbrains.androidx.savedstate:savedstate:1.3.1\n(internal) org.jetbrains.androidx.window:window-core:<not published>\n",
+  "verification": {
+    "verified": false,
+    "reason": "unsigned",
+    "signature": null,
+    "payload": null,
+    "verified_at": null
+  }
+}
+
+ succeeded in 229ms:
+HTTP/2 404 
+date: Fri, 01 May 2026 03:21:56 GMT
+content-type: text/html
+cf-ray: 9f4ba8ab9bb42ff1-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 319ms:
+-rw-rw-r-- 1 vjovanov vjovanov 22 May  1 05:21 /tmp/ui-1.8.2-javadoc.jar
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2.module | jq '.component, .createdBy, [.variants[].name] | .[0:20]'" in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+ exited 5 in 0ms:
+jq: error (at <stdin>:1029): Cannot index object with object
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui?ref=v1.8.2' in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src?ref=v1.8.2' in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/f82a1f972cf867036ad6456e8f24818a96665ff8?recursive=1' | jq -r '.truncated, (.tree[]?.path | select(test(\"("'^|/)compose/ui/ui/")))'"' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+ succeeded in 179ms:
+[
+  {
+    "name": "androidInstrumentedTest",
+    "path": "compose/ui/ui/src/androidInstrumentedTest",
+    "sha": "2ca5ef71501e3f242c61b1a34bfecd477b65a126",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/androidInstrumentedTest?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/androidInstrumentedTest",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/2ca5ef71501e3f242c61b1a34bfecd477b65a126",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/androidInstrumentedTest?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/2ca5ef71501e3f242c61b1a34bfecd477b65a126",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/androidInstrumentedTest"
+    }
+  },
+  {
+    "name": "androidMain",
+    "path": "compose/ui/ui/src/androidMain",
+    "sha": "253110a70025a47e51c43c1d11963ad622fdfa19",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/androidMain?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/androidMain",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/253110a70025a47e51c43c1d11963ad622fdfa19",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/androidMain?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/253110a70025a47e51c43c1d11963ad622fdfa19",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/androidMain"
+    }
+  },
+  {
+    "name": "androidUnitTest",
+    "path": "compose/ui/ui/src/androidUnitTest",
+    "sha": "398eec4db6849744eb985411c4167cce718dce7c",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/androidUnitTest?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/androidUnitTest",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/398eec4db6849744eb985411c4167cce718dce7c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/androidUnitTest?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/398eec4db6849744eb985411c4167cce718dce7c",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/androidUnitTest"
+    }
+  },
+  {
+    "name": "commonMain",
+    "path": "compose/ui/ui/src/commonMain",
+    "sha": "349d2b0351fbfddfe94d0f511622928139591820",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/commonMain?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/commonMain",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/349d2b0351fbfddfe94d0f511622928139591820",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/commonMain?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/349d2b0351fbfddfe94d0f511622928139591820",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/commonMain"
+    }
+  },
+  {
+    "name": "darwinMain",
+    "path": "compose/ui/ui/src/darwinMain",
+    "sha": "d362158666eda5e71e4425d2f8acddbe86e05c23",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/darwinMain?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/darwinMain",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/d362158666eda5e71e4425d2f8acddbe86e05c23",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/darwinMain?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/d362158666eda5e71e4425d2f8acddbe86e05c23",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/darwinMain"
+    }
+  },
+  {
+    "name": "desktopMain",
+    "path": "compose/ui/ui/src/desktopMain",
+    "sha": "5ebe439311b445da219c77aba6d166cbacb438d9",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/desktopMain?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/desktopMain",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/5ebe439311b445da219c77aba6d166cbacb438d9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/desktopMain?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/5ebe439311b445da219c77aba6d166cbacb438d9",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/desktopMain"
+    }
+  },
+  {
+    "name": "desktopTest",
+    "path": "compose/ui/ui/src/desktopTest",
+    "sha": "04ac4a60d521eaa9d65113d5bdb8561258952d0d",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/desktopTest?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/desktopTest",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/04ac4a60d521eaa9d65113d5bdb8561258952d0d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/desktopTest?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/04ac4a60d521eaa9d65113d5bdb8561258952d0d",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/desktopTest"
+    }
+  },
+  {
+    "name": "jsMain",
+    "path": "compose/ui/ui/src/jsMain",
+    "sha": "503cc4978d6b5b2b09d0dc125f628cd6ead1464b",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/jsMain?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/jsMain",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/503cc4978d6b5b2b09d0dc125f628cd6ead1464b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/jsMain?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/503cc4978d6b5b2b09d0dc125f628cd6ead1464b",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/jsMain"
+    }
+  },
+  {
+    "name": "jsNativeMain",
+    "path": "compose/ui/ui/src/jsNativeMain",
+    "sha": "09f74b82829f7a7f4a852cfb3f87b35c12789fd9",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/jsNativeMain?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/jsNativeMain",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/09f74b82829f7a7f4a852cfb3f87b35c12789fd9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/jsNativeMain?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/09f74b82829f7a7f4a852cfb3f87b35c12789fd9",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/jsNativeMain"
+    }
+  },
+  {
+    "name": "jsWasmMain",
+    "path": "compose/ui/ui/src/jsWasmMain",
+    "sha": "c79f18f58205476409666edb7470d5a2da686dcc",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/jsWasmMain?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/jsWasmMain",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/c79f18f58205476409666edb7470d5a2da686dcc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/jsWasmMain?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/c79f18f58205476409666edb7470d5a2da686dcc",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/jsWasmMain"
+    }
+  },
+  {
+    "name": "jvmMain",
+    "path": "compose/ui/ui/src/jvmMain",
+    "sha": "74a644ec4c65651e490c6d67b65ddae39998ca68",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/jvmMain?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/jvmMain",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/74a644ec4c65651e490c6d67b65ddae39998ca68",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/jvmMain?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/74a644ec4c65651e490c6d67b65ddae39998ca68",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/jvmMain"
+    }
+  },
+  {
+    "name": "macosMain",
+    "path": "compose/ui/ui/src/macosMain",
+    "sha": "de0068ba262ba6a850180485ea5c3473cbe95231",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/macosMain?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/macosMain",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/de0068ba262ba6a850180485ea5c3473cbe95231",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/macosMain?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/de0068ba262ba6a850180485ea5c3473cbe95231",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/macosMain"
+    }
+  },
+  {
+    "name": "main",
+    "path": "compose/ui/ui/src/main",
+    "sha": "2d53776a08fec87a6b33361cd81558e10e40ba38",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/main?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/main",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/2d53776a08fec87a6b33361cd81558e10e40ba38",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/main?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/2d53776a08fec87a6b33361cd81558e10e40ba38",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/main"
+    }
+  },
+  {
+    "name": "nativeMain",
+    "path": "compose/ui/ui/src/nativeMain",
+    "sha": "40061c471cde91c51a06b1b6b9f3e7f22e244e74",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/nativeMain?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/nativeMain",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/40061c471cde91c51a06b1b6b9f3e7f22e244e74",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/nativeMain?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/40061c471cde91c51a06b1b6b9f3e7f22e244e74",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/nativeMain"
+    }
+  },
+  {
+    "name": "notMobileMain",
+    "path": "compose/ui/ui/src/notMobileMain",
+    "sha": "3a0ead596762bf1af4457579b97fe881ea0011fc",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/notMobileMain?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/notMobileMain",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/3a0ead596762bf1af4457579b97fe881ea0011fc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/notMobileMain?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/3a0ead596762bf1af4457579b97fe881ea0011fc",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/notMobileMain"
+    }
+  },
+  {
+    "name": "skikoMain",
+    "path": "compose/ui/ui/src/skikoMain",
+    "sha": "eaa62a1d07853cd231199832242bb9db08acfa46",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/skikoMain?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/skikoMain",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/eaa62a1d07853cd231199832242bb9db08acfa46",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/skikoMain?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/eaa62a1d07853cd231199832242bb9db08acfa46",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/skikoMain"
+    }
+  },
+  {
+    "name": "skikoTest",
+    "path": "compose/ui/ui/src/skikoTest",
+    "sha": "eb63c89f1e5e4cd37317e30abd65fd20f8fe2f25",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/skikoTest?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/skikoTest",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/eb63c89f1e5e4cd37317e30abd65fd20f8fe2f25",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/skikoTest?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/eb63c89f1e5e4cd37317e30abd65fd20f8fe2f25",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/skikoTest"
+    }
+  },
+  {
+    "name": "uikitInstrumentedTest",
+    "path": "compose/ui/ui/src/uikitInstrumentedTest",
+    "sha": "43b3e9b2a7d3bd11ab48c33d3adac2902ca7f62e",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/uikitInstrumentedTest?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/uikitInstrumentedTest",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/43b3e9b2a7d3bd11ab48c33d3adac2902ca7f62e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/uikitInstrumentedTest?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/43b3e9b2a7d3bd11ab48c33d3adac2902ca7f62e",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/uikitInstrumentedTest"
+    }
+  },
+  {
+    "name": "uikitMain",
+    "path": "compose/ui/ui/src/uikitMain",
+    "sha": "11b7c9a429c67411197a9410fe83cac5ed3797af",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/uikitMain?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/uikitMain",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/11b7c9a429c67411197a9410fe83cac5ed3797af",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/uikitMain?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/11b7c9a429c67411197a9410fe83cac5ed3797af",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/uikitMain"
+    }
+  },
+  {
+    "name": "uikitTest",
+    "path": "compose/ui/ui/src/uikitTest",
+    "sha": "763b9219bc20605e276725ab81188248be956975",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/uikitTest?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/uikitTest",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/763b9219bc20605e276725ab81188248be956975",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/uikitTest?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/763b9219bc20605e276725ab81188248be956975",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/uikitTest"
+    }
+  },
+  {
+    "name": "wasmJsMain",
+    "path": "compose/ui/ui/src/wasmJsMain",
+    "sha": "d0bc85c33f2a40abc2f4aa5d64c0115dae668ec6",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/wasmJsMain?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/wasmJsMain",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/d0bc85c33f2a40abc2f4aa5d64c0115dae668ec6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/wasmJsMain?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/d0bc85c33f2a40abc2f4aa5d64c0115dae668ec6",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/wasmJsMain"
+    }
+  },
+  {
+    "name": "webCommonW3C",
+    "path": "compose/ui/ui/src/webCommonW3C",
+    "sha": "330e3e4308d20627029007d60b536312a2a5f9eb",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/webCommonW3C?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/webCommonW3C",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/330e3e4308d20627029007d60b536312a2a5f9eb",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/webCommonW3C?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/330e3e4308d20627029007d60b536312a2a5f9eb",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/webCommonW3C"
+    }
+  },
+  {
+    "name": "webTest",
+    "path": "compose/ui/ui/src/webTest",
+    "sha": "0479f93fea1f4e5074f06eb7a213aaad5c3288f9",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/webTest?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/webTest",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/0479f93fea1f4e5074f06eb7a213aaad5c3288f9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src/webTest?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/0479f93fea1f4e5074f06eb7a213aaad5c3288f9",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src/webTest"
+    }
+  }
+]
+
+ succeeded in 181ms:
+[
+  {
+    "name": "OWNERS",
+    "path": "compose/ui/ui/OWNERS",
+    "sha": "9f1c7256c06f75c025698b0116f760efd10a0c08",
+    "size": 271,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/OWNERS?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/blob/v1.8.2/compose/ui/ui/OWNERS",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/blobs/9f1c7256c06f75c025698b0116f760efd10a0c08",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/compose-multiplatform-core/v1.8.2/compose/ui/ui/OWNERS",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/OWNERS?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/blobs/9f1c7256c06f75c025698b0116f760efd10a0c08",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/blob/v1.8.2/compose/ui/ui/OWNERS"
+    }
+  },
+  {
+    "name": "api",
+    "path": "compose/ui/ui/api",
+    "sha": "f1af16e67ea5afc1c57993d77ca0c7e72da2695f",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/api?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/api",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/f1af16e67ea5afc1c57993d77ca0c7e72da2695f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/api?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/f1af16e67ea5afc1c57993d77ca0c7e72da2695f",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/api"
+    }
+  },
+  {
+    "name": "bcv",
+    "path": "compose/ui/ui/bcv",
+    "sha": "b34cc4eb1f78a1d53adea08e8205feb7cc2d42f5",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/bcv?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/bcv",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/b34cc4eb1f78a1d53adea08e8205feb7cc2d42f5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/bcv?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/b34cc4eb1f78a1d53adea08e8205feb7cc2d42f5",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/bcv"
+    }
+  },
+  {
+    "name": "benchmark",
+    "path": "compose/ui/ui/benchmark",
+    "sha": "83e30c49c902da27b067857235260adae5889387",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/benchmark?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/benchmark",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/83e30c49c902da27b067857235260adae5889387",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/benchmark?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/83e30c49c902da27b067857235260adae5889387",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/benchmark"
+    }
+  },
+  {
+    "name": "build.gradle",
+    "path": "compose/ui/ui/build.gradle",
+    "sha": "a4259760ba7e696c9165325a06a3d25e93f81a78",
+    "size": 23404,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/build.gradle?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/blob/v1.8.2/compose/ui/ui/build.gradle",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/blobs/a4259760ba7e696c9165325a06a3d25e93f81a78",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/compose-multiplatform-core/v1.8.2/compose/ui/ui/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/build.gradle?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/blobs/a4259760ba7e696c9165325a06a3d25e93f81a78",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/blob/v1.8.2/compose/ui/ui/build.gradle"
+    }
+  },
+  {
+    "name": "gradle.properties",
+    "path": "compose/ui/ui/gradle.properties",
+    "sha": "529a7add87c61250b2825a9d20d06ea93330b4f4",
+    "size": 646,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/gradle.properties?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/blob/v1.8.2/compose/ui/ui/gradle.properties",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/blobs/529a7add87c61250b2825a9d20d06ea93330b4f4",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/compose-multiplatform-core/v1.8.2/compose/ui/ui/gradle.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/gradle.properties?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/blobs/529a7add87c61250b2825a9d20d06ea93330b4f4",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/blob/v1.8.2/compose/ui/ui/gradle.properties"
+    }
+  },
+  {
+    "name": "integration-tests",
+    "path": "compose/ui/ui/integration-tests",
+    "sha": "29ed3282b10b753d2427fab747681d121065cc91",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/integration-tests?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/integration-tests",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/29ed3282b10b753d2427fab747681d121065cc91",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/integration-tests?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/29ed3282b10b753d2427fab747681d121065cc91",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/integration-tests"
+    }
+  },
+  {
+    "name": "lint-baseline.xml",
+    "path": "compose/ui/ui/lint-baseline.xml",
+    "sha": "88f4f982b471d110d2aa6e97e8b6e68b8b9afedc",
+    "size": 7559,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/lint-baseline.xml?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/blob/v1.8.2/compose/ui/ui/lint-baseline.xml",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/blobs/88f4f982b471d110d2aa6e97e8b6e68b8b9afedc",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/compose-multiplatform-core/v1.8.2/compose/ui/ui/lint-baseline.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/lint-baseline.xml?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/blobs/88f4f982b471d110d2aa6e97e8b6e68b8b9afedc",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/blob/v1.8.2/compose/ui/ui/lint-baseline.xml"
+    }
+  },
+  {
+    "name": "proguard-rules.pro",
+    "path": "compose/ui/ui/proguard-rules.pro",
+    "sha": "36af3b2278c8f18931d99e00b7cc4861d9a5289b",
+    "size": 2551,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/proguard-rules.pro?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/blob/v1.8.2/compose/ui/ui/proguard-rules.pro",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/blobs/36af3b2278c8f18931d99e00b7cc4861d9a5289b",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/compose-multiplatform-core/v1.8.2/compose/ui/ui/proguard-rules.pro",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/proguard-rules.pro?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/blobs/36af3b2278c8f18931d99e00b7cc4861d9a5289b",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/blob/v1.8.2/compose/ui/ui/proguard-rules.pro"
+    }
+  },
+  {
+    "name": "samples",
+    "path": "compose/ui/ui/samples",
+    "sha": "d1c4859f84311f7665049b086569e8aa3fd1a0a6",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/samples?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/samples",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/d1c4859f84311f7665049b086569e8aa3fd1a0a6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/samples?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/d1c4859f84311f7665049b086569e8aa3fd1a0a6",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/samples"
+    }
+  },
+  {
+    "name": "src",
+    "path": "compose/ui/ui/src",
+    "sha": "2a88035ba96452a75c6745c4f2ec1735599d0a48",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src?ref=v1.8.2",
+    "html_url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src",
+    "git_url": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/2a88035ba96452a75c6745c4f2ec1735599d0a48",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/contents/compose/ui/ui/src?ref=v1.8.2",
+      "git": "https://api.github.com/repos/JetBrains/compose-multiplatform-core/git/trees/2a88035ba96452a75c6745c4f2ec1735599d0a48",
+      "html": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src"
+    }
+  }
+]
+
+ succeeded in 2241ms:
+true
+compose/ui/ui/OWNERS
+compose/ui/ui/api
+compose/ui/ui/api/1.0.0-beta02.txt
+compose/ui/ui/api/1.0.0-beta03.txt
+compose/ui/ui/api/1.0.0-beta04.txt
+compose/ui/ui/api/1.0.0-beta05.txt
+compose/ui/ui/api/1.0.0-beta06.txt
+compose/ui/ui/api/1.0.0-beta07.txt
+compose/ui/ui/api/1.0.0-beta08.txt
+compose/ui/ui/api/1.0.0-beta09.txt
+compose/ui/ui/api/1.0.0-beta10.txt
+compose/ui/ui/api/1.1.0-beta02.txt
+compose/ui/ui/api/1.1.0-beta03.txt
+compose/ui/ui/api/1.1.0-beta04.txt
+compose/ui/ui/api/1.1.0-beta05.txt
+compose/ui/ui/api/1.2.0-beta01.txt
+compose/ui/ui/api/1.2.0-beta02.txt
+compose/ui/ui/api/1.2.0-beta03.txt
+compose/ui/ui/api/1.2.0-beta04.txt
+compose/ui/ui/api/1.3.0-beta01.txt
+compose/ui/ui/api/1.3.0-beta02.txt
+compose/ui/ui/api/1.3.0-beta03.txt
+compose/ui/ui/api/1.3.0-beta04.txt
+compose/ui/ui/api/1.4.0-beta01.txt
+compose/ui/ui/api/1.4.0-beta02.txt
+compose/ui/ui/api/1.5.0-beta01.txt
+compose/ui/ui/api/1.6.0-beta01.txt
+compose/ui/ui/api/1.7.0-beta01.txt
+compose/ui/ui/api/1.7.0-beta02.txt
+compose/ui/ui/api/1.8.0-beta01.txt
+compose/ui/ui/api/1.8.0-beta02.txt
+compose/ui/ui/api/1.8.0-beta03.txt
+compose/ui/ui/api/api_lint.ignore
+compose/ui/ui/api/current.ignore
+compose/ui/ui/api/current.txt
+compose/ui/ui/api/desktop
+compose/ui/ui/api/desktop/ui.api
+compose/ui/ui/api/res-1.0.0-beta02.txt
+compose/ui/ui/api/res-1.0.0-beta03.txt
+compose/ui/ui/api/res-1.0.0-beta04.txt
+compose/ui/ui/api/res-1.0.0-beta05.txt
+compose/ui/ui/api/res-1.0.0-beta06.txt
+compose/ui/ui/api/res-1.0.0-beta07.txt
+compose/ui/ui/api/res-1.0.0-beta08.txt
+compose/ui/ui/api/res-1.0.0-beta09.txt
+compose/ui/ui/api/res-1.0.0-beta10.txt
+compose/ui/ui/api/res-1.1.0-beta02.txt
+compose/ui/ui/api/res-1.1.0-beta03.txt
+compose/ui/ui/api/res-1.1.0-beta04.txt
+compose/ui/ui/api/res-1.1.0-beta05.txt
+compose/ui/ui/api/res-1.2.0-beta01.txt
+compose/ui/ui/api/res-1.2.0-beta02.txt
+compose/ui/ui/api/res-1.2.0-beta03.txt
+compose/ui/ui/api/res-1.2.0-beta04.txt
+compose/ui/ui/api/res-1.3.0-beta01.txt
+compose/ui/ui/api/res-1.3.0-beta02.txt
+compose/ui/ui/api/res-1.3.0-beta03.txt
+compose/ui/ui/api/res-1.3.0-beta04.txt
+compose/ui/ui/api/res-1.4.0-beta01.txt
+compose/ui/ui/api/res-1.4.0-beta02.txt
+compose/ui/ui/api/res-1.5.0-beta01.txt
+compose/ui/ui/api/res-1.6.0-beta01.txt
+compose/ui/ui/api/res-1.7.0-beta01.txt
+compose/ui/ui/api/res-1.7.0-beta02.txt
+compose/ui/ui/api/res-1.8.0-beta01.txt
+compose/ui/ui/api/res-1.8.0-beta02.txt
+compose/ui/ui/api/res-1.8.0-beta03.txt
+compose/ui/ui/api/res-current.txt
+compose/ui/ui/api/restricted_1.0.0-beta02.txt
+compose/ui/ui/api/restricted_1.0.0-beta03.txt
+compose/ui/ui/api/restricted_1.0.0-beta04.txt
+compose/ui/ui/api/restricted_1.0.0-beta05.txt
+compose/ui/ui/api/restricted_1.0.0-beta06.txt
+compose/ui/ui/api/restricted_1.0.0-beta07.txt
+compose/ui/ui/api/restricted_1.0.0-beta08.txt
+compose/ui/ui/api/restricted_1.0.0-beta09.txt
+compose/ui/ui/api/restricted_1.0.0-beta10.txt
+compose/ui/ui/api/restricted_1.1.0-beta02.txt
+compose/ui/ui/api/restricted_1.1.0-beta03.txt
+compose/ui/ui/api/restricted_1.1.0-beta04.txt
+compose/ui/ui/api/restricted_1.1.0-beta05.txt
+compose/ui/ui/api/restricted_1.2.0-beta01.txt
+compose/ui/ui/api/restricted_1.2.0-beta02.txt
+compose/ui/ui/api/restricted_1.2.0-beta03.txt
+compose/ui/ui/api/restricted_1.2.0-beta04.txt
+compose/ui/ui/api/restricted_1.3.0-beta01.txt
+compose/ui/ui/api/restricted_1.3.0-beta02.txt
+compose/ui/ui/api/restricted_1.3.0-beta03.txt
+compose/ui/ui/api/restricted_1.3.0-beta04.txt
+compose/ui/ui/api/restricted_1.4.0-beta01.txt
+compose/ui/ui/api/restricted_1.4.0-beta02.txt
+compose/ui/ui/api/restricted_1.5.0-beta01.txt
+compose/ui/ui/api/restricted_1.6.0-beta01.txt
+compose/ui/ui/api/restricted_1.7.0-beta01.txt
+compose/ui/ui/api/restricted_1.7.0-beta02.txt
+compose/ui/ui/api/restricted_1.8.0-beta01.txt
+compose/ui/ui/api/restricted_1.8.0-beta02.txt
+compose/ui/ui/api/restricted_1.8.0-beta03.txt
+compose/ui/ui/api/restricted_current.ignore
+compose/ui/ui/api/restricted_current.txt
+compose/ui/ui/api/ui.klib.api
+compose/ui/ui/bcv
+compose/ui/ui/bcv/native
+compose/ui/ui/bcv/native/1.7.0.txt
+compose/ui/ui/benchmark
+compose/ui/ui/benchmark/build.gradle
+compose/ui/ui/benchmark/src
+compose/ui/ui/benchmark/src/androidTest
+compose/ui/ui/benchmark/src/androidTest/AndroidManifest.xml
+compose/ui/ui/benchmark/src/androidTest/java
+compose/ui/ui/benchmark/src/androidTest/java/androidx
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/BenchmarkModifierExtensions.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/LayoutCoordinatesBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/LayoutNodeModifierBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/LifecycleAwareWindowRecomposerBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/MatrixBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/ModifiersBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/NestedScrollingBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/OnPositionedBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/RecreateLayersBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/TrailingLambdaBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/accessibility
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/accessibility/AccessibilityBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/accessibility/SemanticsEventsBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/accessibility/TextAccessibilityBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/accessibility/TextFieldAccessibilityBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/autofill
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/autofill/AndroidAutofillBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/autofill/FakeViewStructure.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/autofill/PopulateAutofillStructBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/autofill/SemanticAutofillBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/autofill/SemanticAutofillBenchmarkUtils.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/focus
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/focus/FocusBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/focus/ParameterizedFocusBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/graphics
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/graphics/vector
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/graphics/vector/CreateVectorPainterBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/input
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/input/pointer
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/input/pointer/AndroidTapIntegrationBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/input/pointer/ComposeMultiFingerInputUIOnlyBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/input/pointer/ComposeOneFingerInputUIOnlyBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/input/pointer/ComposePreciseFingerTapIntegrationBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/input/pointer/ComposePreciseStylusTapIntegrationBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/input/pointer/ComposeTapIntegrationBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/input/pointer/TapIntegrationBenchmarkValues.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/input/pointer/TestActivity.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/input/pointer/UtilsTest.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/input/pointer/VelocityTrackerBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/input/pointer/utils.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/spatial
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/spatial/RectListBenchmark.kt
+compose/ui/ui/benchmark/src/androidTest/java/androidx/compose/ui/benchmark/spatial/SpatialTestData.kt
+compose/ui/ui/benchmark/src/main
+compose/ui/ui/benchmark/src/main/AndroidManifest.xml
+compose/ui/ui/benchmark/src/main/res
+compose/ui/ui/benchmark/src/main/res/drawable
+compose/ui/ui/benchmark/src/main/res/drawable/ic_hourglass.xml
+compose/ui/ui/build.gradle
+compose/ui/ui/gradle.properties
+compose/ui/ui/integration-tests
+compose/ui/ui/integration-tests/ui-demos
+compose/ui/ui/integration-tests/ui-demos/build.gradle
+compose/ui/ui/integration-tests/ui-demos/lint-baseline.xml
+compose/ui/ui/integration-tests/ui-demos/src
+compose/ui/ui/integration-tests/ui-demos/src/main
+compose/ui/ui/integration-tests/ui-demos/src/main/AndroidManifest.xml
+compose/ui/ui/integration-tests/ui-demos/src/main/java
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/ClipboardDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/DeclarativeGraphicsDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/DialogDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/MultipleCollect.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/PainterResourcesDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/PopupDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/ScreenCoordinatesDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/SimpleChatActivity.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/SoftwareKeyboardControllerDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/UiDemos.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/VectorGraphicsDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/accessibility
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/accessibility/ComplexAccessibilityDemos.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/accessibility/ScrollingUIDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/autofill
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/autofill/AutofillNavigationDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/autofill/ExplicitAutofillTypesDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/autofill/MixedOldNewAutofillDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/autofill/MultiPageLoginDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/autofill/TextFieldAutofillDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus/AdjacentScrollablesFocusDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus/CancelFocusDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus/CaptureFocusDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus/ClickableInLazyColumnDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus/ConditionalFocusabilityDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus/CustomFocusOrderDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus/ExplicitEnterExitWithCustomFocusEnterExitDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus/FocusInDialogDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus/FocusInPopupDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus/FocusManagerMoveFocusDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus/FocusRestorationDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus/FocusableDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus/LazyListChildFocusDemos.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus/NestedLazyListFocusSearchDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus/OneDimensionalFocusSearchDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus/ReuseFocusReference.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus/ScrollableLazyRowFocusDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus/ScrollableRowFocusDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/focus/TwoDimentionalFocusSearchDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/gestures
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/gestures/ButtonMetaStateDemo.kt
+compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/gestures/Colors.kt
+
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\"|\"documentation-url\"|\"language\"' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n 'repo1.maven.org.*sources|javadoc|tests.jar|github.com/JetBrains/compose' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n 'org.jetbrains.compose|androidx.compose.ui|org.jetbrains.kotlin' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json:2:  "coordinates" : "org.jetbrains.compose.ui:ui:1.8.2"
+
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\"|\"documentation-url\"|\"language\"' . --glob '*.json' --glob '"'!build/**'"' | head -120" in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+ succeeded in 0ms:
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:10:    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.70/bcpkix-jdk15on-1.70-javadoc.jar",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-javadoc.jar",
+./metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v5.12.0/src/test",
+./metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/5.12.0/amqp-client-5.12.0-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/8.0.01/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+./metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-1.2.17/tests",
+./metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-javadoc.jar",
+./metadata/org.openjfx/javafx-base/index.json:7:    "test-code-url" : "https://github.com/javafxports/openjdk-jfx/tree/11.0.2+1/tests",
+./metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-javadoc.jar",
+./metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/5.3.31/spring-instrument-5.3.31-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/1.5.0/jackrabbit-jcr-commons/src/test/java",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/1.5.0/jackrabbit-jcr-commons/README.txt",
+./metadata/org.rnorth.duct-tape/duct-tape/index.json:8:    "test-code-url": "https://github.com/rnorth/duct-tape/tree/1.0.8/src/test/java",
+./metadata/org.rnorth.duct-tape/duct-tape/index.json:9:    "documentation-url": "https://github.com/rnorth/duct-tape/blob/1.0.8/docs/index.md",
+./metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-tests.jar",
+./metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-javadoc.jar",
+./metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-tests.jar",
+./metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:9:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-test.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-test.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:34:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-2.15.2/toml/src/test",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-2.3/paranamer/src/test",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.3/paranamer-2.3-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-2.18.1/yaml/src/test",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.18.1/jackson-dataformat-yaml-2.18.1-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-javadoc.jar",
+./metadata/org.apache.directory.server/apacheds-i18n/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.directory.server/apacheds-i18n/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/2.0.0-M15/apacheds-i18n-2.0.0-M15-javadoc.jar",
+./metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-module-kotlin/tree/jackson-module-kotlin-2.17.2/src/test",
+./metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-javadoc.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/2.0.0/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+./metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/2.0.0/api-i18n-2.0.0-javadoc.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+./metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/1.0.0-M20/",
+./metadata/org.yaml/snakeyaml/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml/src/snakeyaml-1.32/src/test/",
+./metadata/org.yaml/snakeyaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.32/snakeyaml-1.32-javadoc.jar",
+./metadata/com.github.stephenc.jcip/jcip-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/com.github.stephenc.jcip/jcip-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/stephenc/jcip/jcip-annotations/1.0-1/jcip-annotations-1.0-1-javadoc.jar",
+./metadata/org.jline/jline-terminal-jna/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.20.0/terminal-jna/src/test",
+./metadata/org.jline/jline-terminal-jna/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.20.0/jline-terminal-jna-3.20.0-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.0/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/12.0.0/jetty-alpn-java-server-12.0.0-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:21:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-11.0.24/jetty-alpn/jetty-alpn-java-server/src/test",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/11.0.24/jetty-alpn-java-server-11.0.24-javadoc.jar",
+./metadata/org.jline/jline-console/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-3.28.0/console/src/test",
+./metadata/org.jline/jline-console/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/3.28.0/jline-console-3.28.0-javadoc.jar",
+./metadata/org.jline/jline-console/index.json:52:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.22.0/console/src/test",
+./metadata/org.jline/jline-console/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/3.22.0/jline-console-3.22.0-javadoc.jar",
+./metadata/com.itextpdf/kernel/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/kernel/src/test",
+./metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-javadoc.jar",
+./metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalatest-test/src/test",
+./metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-javadoc.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apiguardian/apiguardian-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-javadoc.jar",
+./metadata/org.jline/jline/index.json:11:    "test-code-url": "https://github.com/jline/jline3/tree/jline-parent-3.21.0",
+./metadata/org.jline/jline/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0-javadoc.jar",
+./metadata/org.mortbay.jetty/servlet-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/2.5-20081211/servlet-api-2.5-20081211-javadoc.jar",
+./metadata/org.slf4j/slf4j-api/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3-tests.jar",
+./metadata/org.slf4j/slf4j-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.3/slf4j-site-1.5.3-sources.jar",
+./metadata/org.slf4j/slf4j-api/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-tests.jar",
+./metadata/org.slf4j/slf4j-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-javadoc.jar",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-10.0.0/jetty-util-ajax/src/test",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/10.0.0/jetty-util-ajax-10.0.0-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:21:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.38.v20210224/jetty-util-ajax/src/test",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/9.4.38.v20210224/jetty-util-ajax-9.4.38.v20210224-javadoc.jar",
+./metadata/com.itextpdf/forms/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/forms/src/test",
+./metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-javadoc.jar",
+./metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v0.31.1/api/src/test",
+./metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/0.31.1/opencensus-api-0.31.1-javadoc.jar",
+./metadata/org.slf4j/slf4j-simple/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/541e6f7d181ff3405ae9495724430825aefff6a9/slf4j-simple/src/test/java",
+./metadata/org.slf4j/slf4j-simple/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/1.8.0-alpha0/slf4j-simple-1.8.0-alpha0-javadoc.jar",
+./metadata/org.slf4j/slf4j-simple/index.json:47:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_1.7.32/slf4j-simple/src/test/java",
+./metadata/org.slf4j/slf4j-simple/index.json:48:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/1.7.32/slf4j-simple-1.7.32-javadoc.jar",
+./metadata/org.slf4j/slf4j-simple/index.json:65:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_1.7.25/slf4j-simple/src/test/java",
+./metadata/org.slf4j/slf4j-simple/index.json:66:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/1.7.25/slf4j-simple-1.7.25-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/com.itextpdf/layout/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/layout/src/test",
+./metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-javadoc.jar",
+./metadata/oro/oro/index.json:7:    "test-code-url" : "N/A",
+./metadata/oro/oro/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/jakarta/oro/tags/oro-2.0.8/docs/index.html",
+./metadata/org.eclipse.jetty/jetty-io/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.0.M0/jetty-io/src/test",
+./metadata/org.eclipse.jetty/jetty-io/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/9.4.0.M0/jetty-io-9.4.0.M0-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:21:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.3.19.v20170502/jetty-io/src/test",
+./metadata/org.eclipse.jetty/jetty-io/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/9.3.19.v20170502/jetty-io-9.3.19.v20170502-javadoc.jar",
+./metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/javax.validation/validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/2.0.0.Final/src/test",
+./metadata/javax.validation/validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/2.0.0.Final/validation-api-2.0.0.Final-javadoc.jar",
+./metadata/javax.validation/validation-api/index.json:22:    "test-code-url" : "https://github.com/jakartaee/validation/tree/1.1.0.Final/src/test",
+./metadata/javax.validation/validation-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.1.0.Final/validation-api-1.1.0.Final-javadoc.jar",
+./metadata/javax.validation/validation-api/index.json:36:    "test-code-url" : "https://github.com/jakartaee/validation/tree/1.0.0.GA/src/test",
+./metadata/javax.validation/validation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-javadoc.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/2.0.0/src/test/java",
+./metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/2.0.0/stax-ex-2.0.0-javadoc.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/1.8.2/src/test",
+./metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8.2/stax-ex-1.8.2-javadoc.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/1.8/stax-ex/src/test",
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"' metadata/io.github.oshai/kotlin-logging-jvm/index.json metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json metadata/org.awaitility/awaitility/index.json metadata/com.github.ben-manes.caffeine/caffeine/index.json && sed -n '1,24p' metadata/io.github.oshai/kotlin-logging-jvm/index.json && sed -n '1,18p' metadata/com.github.ben-manes.caffeine/caffeine/index.json" in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+ succeeded in 0ms:
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-sources.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-sources.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-sources.jar",
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.0.01",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-sources.jar",
+    "repository-url" : "https://github.com/oshai/kotlin-logging",
+    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/8.0.01/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-javadoc.jar",
+    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.1"
+    },
+    "tested-versions" : [
+      "8.0.01"
+    ],
+    "allowed-packages" : [
+      "io.github.oshai.kotlinlogging"
+    ]
+  }
+]
+[
+  {
+    "latest": true,
+    "allowed-packages": [
+      "com.github.benmanes.caffeine"
+    ],
+    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-sources.jar",
+    "repository-url": "https://github.com/ben-manes/caffeine/tree/v3.1.2",
+    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-test.jar",
+    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-javadoc.jar",
+    "description": "Caffeine is a high-performance Java caching library that provides an in-memory cache with a Guava-inspired API. It supports automatic loading, size-based eviction, time-based expiration, refresh, reference-based entries, removal notifications, and cache statistics.",
+    "metadata-version": "3.1.2",
+    "tested-versions": [
+      "3.1.2",
+      "3.1.3",
+      "3.1.4",
+      "3.1.5",
+      "3.1.6",
+
+exec
+/usr/bin/bash -lc "curl -ILs https://github.com/JetBrains/compose-jb | sed -n '1,40p'" in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/compose-multiplatform-core | jq -r '.html_url, .description, .archived, .default_branch'" in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/compose-multiplatform | jq -r '.html_url, .description, .archived, .default_branch'" in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/JetBrains/compose-multiplatform-core/v1.8.2/compose/ui/ui/gradle.properties && printf '\\n---\\n' && curl -fsSL https://raw.githubusercontent.com/JetBrains/compose-multiplatform-core/v1.8.2/compose/ui/ui/src/commonMain/kotlin/androidx/compose/ui/compose-ui-documentation.md | sed -n '1,80p'" in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+ succeeded in 265ms:
+https://github.com/JetBrains/compose-multiplatform-core
+Development environment for Android Jetpack extension libraries under the androidx namespace. Synchronized with Android Jetpack's primary development branch on AOSP.
+false
+jb-main
+
+ succeeded in 225ms:
+https://github.com/JetBrains/compose-multiplatform
+Compose Multiplatform, a modern UI framework for Kotlin that makes building performant and beautiful user interfaces easy and enjoyable.
+false
+master
+
+ succeeded in 407ms:
+#
+# Copyright 2025 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+kotlin.js.ir.output.granularity=whole-program
+---
+# Module root
+
+Compose UI
+
+# Package androidx.compose.ui.semantics
+
+In this page, you'll find documentation for types, properties, and functions available in the
+`androidx.compose.ui.semantics` package such as [semantics], [clearAndSetSemantics],
+[customActions], and [testTag].
+
+If you're looking for guidance instead, check out the following Compose guides:
+* <a href="https://developer.android.com/jetpack/compose/accessibility" class="external" target="_blank">Accessibility in Compose</a>.
+* <a href="https://developer.android.com/jetpack/compose/testing" class="external" target="_blank">Testing in Compose</a>.
+
+# Package androidx.compose.ui.viewinterop
+
+In this page, you'll find documentation for types, properties, and functions available in the
+`androidx.compose.ui.viewinterop` package such as [AndroidView].
+
+If you're looking for guidance instead, check out the following Compose guides:
+* <a href="https://developer.android.com/jetpack/compose/interop" class="external" target="_blank">Adopting Compose in your app</a>.
+* <a href="https://developer.android.com/jetpack/compose/interop/interop-apis" class="external" target="_blank">Interoperability APIs</a>.
+
+ succeeded in 754ms:
+HTTP/2 301 
+date: Fri, 01 May 2026 03:22:34 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/JetBrains/compose-multiplatform
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=kMCvY%2F3qx6fPROUksiOH3Ag5%2Fv68VmA4jQJ%2B%2Fo7zFa7r8V54axod2oGwDiQZgGJOXYFnhx4%2BrencKfGVlrhmTnr9yYsbmIdTE%2BSCQ0qGW5ueZHyzDnJKGY2jpKBYULwBxNCl4WRThRfx1ZmzPo%2BDDwhheiJvMQyuR2cfEqniFwFZHJHiH%2BA%2BNgXSw7J3XKwkXh8gdMKxJZ2RtQy3o1l20D%2BD9r%2B27xsuU3UEMYTgk27zrooDUKigPF2YA%2BE9fjtjmBClhTYmZ%2Bzl96K%2FlFlwdA%3D%3D--j4MbXt5fIQN5bjzl--Kbu%2FrzGm9W5YDtKyDCrg5A%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1287012560.1777605754; expires=Sat, 01 May 2027 03:22:34 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 01 May 2027 03:22:34 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FE:2D4BFC:23C38AB:1C58D51:69F41C7A
+
+HTTP/2 200 
+date: Fri, 01 May 2026 03:22:34 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"4732059b9c8cea3c3f29f485507815d0"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=dAjRG%2BT3C5qFvDLEm7ztlKyYETKUXbjZkmWL6AE6zqJkrCNvpIwpM8zYwSa%2FBqZQbl9LCyl7s0MZT0KB6HUjhCY9bjf4b8bOI9ZTs7DIz0Srb9VJXKY7lERoH4C6ebNmqat3Yoxtta0Nvlj3NotVa%2FmhZsLThZ2k6xqVtJacShIa0UTBHLMSAVOkk3TJVKvCHRTWIdAU1lXINHDn2KC7RReJxAMj4jHVZV5Folx%2Bg9kx%2Fv60lzXgjZoqGOQD9f4WZlGTYSWTGkQHLOIq5hpW4g%3D%3D--hctYQx93toGqCuJ7--5qEugn34nZIB2sfAJz7faw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1956856084.1777605754; expires=Sat, 01 May 2027 03:22:34 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 01 May 2027 03:22:34 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FE:2D4BFC:23C399A:1C58E1E:69F41C7A
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/JetBrains/compose-multiplatform-core/v1.8.2/gradle/libs.versions.toml | rg -n 'kotlin|ksp|coroutines' | head -60 || true" in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+ succeeded in 164ms:
+44:kotlin = "2.1.21"
+45:kotlinBenchmark = "0.4.11"
+46:kotlinGradlePluginAnnotations = "2.1.21"
+47:kotlinGradlePluginApi = "2.1.21"
+48:kotlinCompileTesting = "1.4.9"
+49:kotlinCoroutines = "1.8.0"
+50:kotlinNativeUtils = "2.1.21"
+51:kotlinSerialization = "1.7.3"
+52:kotlinToolingCore = "2.1.21"
+53:ksp = "2.1.21-2.0.1"
+93:androidKotlinMultiplatform = { module = "com.android.kotlin.multiplatform.library:com.android.kotlin.multiplatform.library.gradle.plugin", version.ref = "androidGradlePlugin" }
+96:atomicFu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomicFu" }
+97:atomicFuPluginz = { module = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", version.ref = "atomicFu" }
+111:jetbrainsBinaryCompatibilityValidator = { module = "org.jetbrains.kotlinx:binary-compatibility-validator", version.ref = "binaryCompatibilityValidator" }
+112:binaryCompatibilityValidator = { module = "org.jetbrains.kotlinx.binary-compatibility-validator:org.jetbrains.kotlinx.binary-compatibility-validator.gradle.plugin", version.ref = "binaryCompatibilityValidator"}
+122:datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
+130:dokkaAnalysisIntellij = { module = "org.jetbrains.dokka:kotlin-analysis-intellij", version.ref = "dokka" }
+131:dokkaAnalysisCompiler = { module = "org.jetbrains.dokka:kotlin-analysis-compiler", version.ref = "dokka" }
+186:intellijKotlinCompiler = { module = "com.android.tools.external.com-intellij:kotlin-compiler", version.ref = "androidLint" }
+187:kotlinNativeUtils = { module = "org.jetbrains.kotlin:kotlin-native-utils", version.ref = "kotlinNativeUtils" }
+188:kotlinGradlePluginApi = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin-api", version.ref = "kotlinGradlePluginApi" }
+189:kotlinToolingCore = { module = "org.jetbrains.kotlin:kotlin-tooling-core", version.ref = "kotlinToolingCore" }
+190:kotlinGradlePluginAnnotations = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin-annotations", version.ref = "kotlinGradlePluginAnnotations" }
+191:kotlinAnnotationProcessingEmbeddable = { module = "org.jetbrains.kotlin:kotlin-annotation-processing-embeddable" }
+192:kotlinBenchmarkRuntime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "kotlinBenchmark" }
+193:kotlinBom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
+194:kotlinCompiler = { module = "org.jetbrains.kotlin:kotlin-compiler", version.ref = "kotlin" }
+195:kotlinCompilerEmbeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable" }
+196:kotlinCompileTesting = { module = "com.github.tschuchortdev:kotlin-compile-testing", version.ref = "kotlinCompileTesting" }
+197:kotlinCompileTestingKsp = { module = "com.github.tschuchortdev:kotlin-compile-testing-ksp", version.ref = "kotlinCompileTesting" }
+198:kotlinCoroutinesAndroid = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinCoroutines" }
+199:kotlinCoroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinCoroutines" }
+200:kotlinCoroutinesCore = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinCoroutines" }
+201:kotlinCoroutinesGuava = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava", version.ref = "kotlinCoroutines" }
+202:kotlinCoroutinesPlayServices = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinCoroutines" }
+203:kotlinCoroutinesTest = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutines" }
+204:kotlinCoroutinesRx2 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-rx2", version.ref = "kotlinCoroutines" }
+205:kotlinCoroutinesRx3 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-rx3", version.ref = "kotlinCoroutines" }
+206:kotlinDaemonEmbeddable = { module = "org.jetbrains.kotlin:kotlin-daemon-embeddable" }
+207:kotlinKlibCommonizer = { module = "org.jetbrains.kotlin:kotlin-klib-commonizer" }
+208:kotlinMetadataJvm = { module = "org.jetbrains.kotlinx:kotlinx-metadata-jvm", version = "0.9.0" }
+209:kotlinSerializationCore = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinSerialization" }
+210:kotlinSerializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinSerialization" }
+211:kotlinSerializationJsonOkio = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json-okio", version.ref = "kotlinSerialization" }
+212:kotlinSerializationProtobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf", version.ref = "kotlinSerialization" }
+213:kotlinGradlePluginz = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+214:kotlinStdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib" }
+215:kotlinStdlibCommon = { module = "org.jetbrains.kotlin:kotlin-stdlib-common" }
+216:kotlinStdlibJdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
+217:kotlinStdlibJs = { module = "org.jetbrains.kotlin:kotlin-stdlib-js" }
+218:kotlinTest = { module = "org.jetbrains.kotlin:kotlin-test" }
+219:kotlinTestAnnotationsCommon = { module = "org.jetbrains.kotlin:kotlin-test-annotations-common" }
+220:kotlinTestCommon = { module = "org.jetbrains.kotlin:kotlin-test-common" }
+221:kotlinTestJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit" }
+222:kotlinTestJs = { module = "org.jetbrains.kotlin:kotlin-test-js", version.ref = "kotlin" }
+223:kotlinTestWasm = { module = "org.jetbrains.kotlin:kotlin-test-wasm-js", version.ref = "kotlin" }
+224:kotlinReflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
+225:kotlinPoet = { module = "com.squareup:kotlinpoet", version = "1.14.2" }
+226:kotlinPoetJavaPoet = { module = "com.squareup:kotlinpoet-javapoet", version = "1.14.2" }
+227:kotlinXHtml = { module = "org.jetbrains.kotlinx:kotlinx-html-jvm", version = "0.7.3" }
+
+web search: 
+web search: https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src
+web search: 
+web search: repo.maven.apache.org maven2 org jetbrains compose ui ui 1.8.2 sources javadoc
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/compose-multiplatform/contents/compose/ui/ui?ref=v1.8.2 | jq -r 'if type==\"array\" then .[].path else .message end'" in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/compose-multiplatform/contents/compose?ref=v1.8.2 | jq -r '.[]?.path' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+ succeeded in 154ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 163ms:
+compose/README.md
+compose/integrations
+compose/scripts
+
+codex
+I’ve got enough confidence to update the file. The published artifact uses Kotlin `2.1.21`, so the language metadata should be Kotlin `2.1`; sources come from Maven, while tests come from the tagged `compose-multiplatform-core` module because no Maven test classifier exists.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json b/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
+index cdca64b7833f47f47ba0421e68f2cd9926d377b2..dc81b1215c2c4bcb4d5830b6435ec2d8416cb71a
+--- a/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.compose.ui:ui:1.8.2"
++  "coordinates" : "org.jetbrains.compose.ui:ui:1.8.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/compose-multiplatform-core",
++  "test-code-url" : "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src",
++  "documentation-url" : "https://github.com/JetBrains/compose-multiplatform-core/blob/v1.8.2/compose/ui/ui/src/commonMain/kotlin/androidx/compose/ui/compose-ui-documentation.md",
++  "description" : "Compose UI provides the core primitives for the Compose UI toolkit, including modifiers, layout, measurement, drawing, input, focus, semantics, and platform interop APIs. It is the foundational Kotlin Multiplatform UI layer used by Compose Multiplatform components to describe and manage user interface structure and behavior.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.1"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json b/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
+index cdca64b7833f47f47ba0421e68f2cd9926d377b2..dc81b1215c2c4bcb4d5830b6435ec2d8416cb71a
+--- a/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.compose.ui:ui:1.8.2"
++  "coordinates" : "org.jetbrains.compose.ui:ui:1.8.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/compose-multiplatform-core",
++  "test-code-url" : "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src",
++  "documentation-url" : "https://github.com/JetBrains/compose-multiplatform-core/blob/v1.8.2/compose/ui/ui/src/commonMain/kotlin/androidx/compose/ui/compose-ui-documentation.md",
++  "description" : "Compose UI provides the core primitives for the Compose UI toolkit, including modifiers, layout, measurement, drawing, input, focus, semantics, and platform interop APIs. It is the foundational Kotlin Multiplatform UI layer used by Compose Multiplatform components to describe and manage user interface structure and behavior.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.1"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json' in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+ succeeded in 0ms:
+{
+  "coordinates": "org.jetbrains.compose.ui:ui:1.8.2",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2-sources.jar",
+  "repository-url": "https://github.com/JetBrains/compose-multiplatform-core",
+  "test-code-url": "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src",
+  "documentation-url": "https://github.com/JetBrains/compose-multiplatform-core/blob/v1.8.2/compose/ui/ui/src/commonMain/kotlin/androidx/compose/ui/compose-ui-documentation.md",
+  "description": "Compose UI provides the core primitives for the Compose UI toolkit, including modifiers, layout, measurement, drawing, input, focus, semantics, and platform interop APIs. It is the foundational Kotlin Multiplatform UI layer used by Compose Multiplatform components to describe and manage user interface structure and behavior.",
+  "language": {
+    "name": "kotlin",
+    "version": "2.1"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json' in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "while read -r url; do printf '%s -> ' \""'$url"; curl -o /dev/null -sSL -w '"'%{http_code}\\n' \""'$url"; done <<'"'EOF'
+https://repo.maven.apache.org/maven2/org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2-sources.jar
+https://github.com/JetBrains/compose-multiplatform-core
+https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src
+https://github.com/JetBrains/compose-multiplatform-core/blob/v1.8.2/compose/ui/ui/src/commonMain/kotlin/androidx/compose/ui/compose-ui-documentation.md
+EOF" in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json b/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
+index cdca64b7833f47f47ba0421e68f2cd9926d377b2..dc81b1215c2c4bcb4d5830b6435ec2d8416cb71a
+--- a/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.compose.ui:ui:1.8.2"
++  "coordinates" : "org.jetbrains.compose.ui:ui:1.8.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/compose-multiplatform-core",
++  "test-code-url" : "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src",
++  "documentation-url" : "https://github.com/JetBrains/compose-multiplatform-core/blob/v1.8.2/compose/ui/ui/src/commonMain/kotlin/androidx/compose/ui/compose-ui-documentation.md",
++  "description" : "Compose UI provides the core primitives for the Compose UI toolkit, including modifiers, layout, measurement, drawing, input, focus, semantics, and platform interop APIs. It is the foundational Kotlin Multiplatform UI layer used by Compose Multiplatform components to describe and manage user interface structure and behavior.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.1"
++  }
+ }
+
+ succeeded in 2889ms:
+200
+https://github.com/JetBrains/compose-multiplatform-core -> 200
+https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src -> 200
+https://github.com/JetBrains/compose-multiplatform-core/blob/v1.8.2/compose/ui/ui/src/commonMain/kotlin/androidx/compose/ui/compose-ui-documentation.md -> 200
+
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json b/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
+index cdca64b7833f47f47ba0421e68f2cd9926d377b2..dc81b1215c2c4bcb4d5830b6435ec2d8416cb71a
+--- a/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.compose.ui:ui:1.8.2"
++  "coordinates" : "org.jetbrains.compose.ui:ui:1.8.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/compose-multiplatform-core",
++  "test-code-url" : "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src",
++  "documentation-url" : "https://github.com/JetBrains/compose-multiplatform-core/blob/v1.8.2/compose/ui/ui/src/commonMain/kotlin/androidx/compose/ui/compose-ui-documentation.md",
++  "description" : "Compose UI provides the core primitives for the Compose UI toolkit, including modifiers, layout, measurement, drawing, input, focus, semantics, and platform interop APIs. It is the foundational Kotlin Multiplatform UI layer used by Compose Multiplatform components to describe and manage user interface structure and behavior.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.1"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json && git ls-files --error-unmatch build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json >/dev/null 2>&1; echo tracked:$?' in /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json b/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
+index cdca64b7833f47f47ba0421e68f2cd9926d377b2..dc81b1215c2c4bcb4d5830b6435ec2d8416cb71a
+--- a/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.compose.ui:ui:1.8.2"
++  "coordinates" : "org.jetbrains.compose.ui:ui:1.8.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/compose-multiplatform-core",
++  "test-code-url" : "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src",
++  "documentation-url" : "https://github.com/JetBrains/compose-multiplatform-core/blob/v1.8.2/compose/ui/ui/src/commonMain/kotlin/androidx/compose/ui/compose-ui-documentation.md",
++  "description" : "Compose UI provides the core primitives for the Compose UI toolkit, including modifiers, layout, measurement, drawing, input, focus, semantics, and platform interop APIs. It is the foundational Kotlin Multiplatform UI layer used by Compose Multiplatform components to describe and manage user interface structure and behavior.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.1"
++  }
+ }
+
+ succeeded in 101ms:
+codex
+Updated [org.jetbrains.compose.ui-ui-1.8.2.json](/home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json) with the discovered URLs, two-sentence description, and Kotlin `2.1` language metadata.
+
+Validation done: `jq` parses the JSON, and all configured URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json b/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
+index cdca64b7833f47f47ba0421e68f2cd9926d377b2..dc81b1215c2c4bcb4d5830b6435ec2d8416cb71a
+--- a/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.compose.ui:ui:1.8.2"
++  "coordinates" : "org.jetbrains.compose.ui:ui:1.8.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/compose/ui/ui/1.8.2/ui-1.8.2-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/compose-multiplatform-core",
++  "test-code-url" : "https://github.com/JetBrains/compose-multiplatform-core/tree/v1.8.2/compose/ui/ui/src",
++  "documentation-url" : "https://github.com/JetBrains/compose-multiplatform-core/blob/v1.8.2/compose/ui/ui/src/commonMain/kotlin/androidx/compose/ui/compose-ui-documentation.md",
++  "description" : "Compose UI provides the core primitives for the Compose UI toolkit, including modifiers, layout, measurement, drawing, input, focus, semantics, and platform interop APIs. It is the foundational Kotlin Multiplatform UI layer used by Compose Multiplatform components to describe and manage user interface structure and behavior.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.1"
++  }
+ }
+
+2026-05-01T03:23:39.718203Z ERROR codex_core::session: failed to record rollout items: thread 019de18e-1688-7a81-8561-f9b7699f66ca not found
+tokens used
+89,256
+Updated [org.jetbrains.compose.ui-ui-1.8.2.json](/home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc/build/discovered-artifact-metadata/org.jetbrains.compose.ui-ui-1.8.2.json) with the discovered URLs, two-sentence description, and Kotlin `2.1` language metadata.
+
+Validation done: `jq` parses the JSON, and all configured URLs returned HTTP 200.
+Ran agent for org.jetbrains.compose.ui:ui:1.8.2 (exit 0). Log: /home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc/build/agent-artifact-discovery-logs/org.jetbrains.compose.ui-ui-1.8.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge7/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3624-e99e74fc/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 22s
+9 actionable tasks: 4 executed, 5 from cache
