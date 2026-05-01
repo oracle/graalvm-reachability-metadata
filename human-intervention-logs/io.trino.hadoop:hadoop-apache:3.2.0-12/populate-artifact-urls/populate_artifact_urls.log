@@ -1,0 +1,151 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3017-64b6153b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de4b6-9da2-7062-9824-41cb811018f3
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.trino.hadoop:hadoop-apache:3.2.0-12
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.2.0-12".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3017-64b6153b/metadata/io.trino.hadoop/hadoop-apache/index.json
+- Entry selector: "metadata-version" = "3.2.0-12"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "3.2.0-12".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/hadoop-apache-3.2.0-12-sources.jar
+- repository-url: https://github.com/trinodb/trino-hadoop-apache
+- test-code-url: https://github.com/trinodb/trino-hadoop-apache/tree/3.2.0-12/src/test
+- documentation-url: https://repo.maven.apache.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/hadoop-apache-3.2.0-12-javadoc.jar
+- description: hadoop-apache is Trino's shaded distribution of Apache Hadoop 3.2.0, relocating Hadoop and selected transitive dependencies under Trino-controlled packages. It provides Hadoop filesystem, security, line-reading, and native-library support for Trino while reducing dependency conflicts with applications that embed it.
+- language: <missing>
+
+Context:
+- Coordinate version: 3.2.0-12
+- Entry test-version: 3.2.0-12
+codex
+I’ll verify the existing metadata entry first, then check the version-specific artifact and repository links before making only the missing-field edit.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/io.trino.hadoop/hadoop-apache/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3017-64b6153b
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.2.0-12",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/hadoop-apache-3.2.0-12-sources.jar",
+    "repository-url" : "https://github.com/trinodb/trino-hadoop-apache",
+    "test-code-url" : "https://github.com/trinodb/trino-hadoop-apache/tree/3.2.0-12/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/hadoop-apache-3.2.0-12-javadoc.jar",
+    "description" : "hadoop-apache is Trino's shaded distribution of Apache Hadoop 3.2.0, relocating Hadoop and selected transitive dependencies under Trino-controlled packages. It provides Hadoop filesystem, security, line-reading, and native-library support for Trino while reducing dependency conflicts with applications that embed it.",
+    "tested-versions" : [
+      "3.2.0-12"
+    ],
+    "allowed-packages" : [
+      "io.trino.hadoop",
+      "org.apache.hadoop"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3017-64b6153b
+ succeeded in 0ms:
+?? metadata/io.trino.hadoop/
+?? tests/src/io.trino.hadoop/
+
+web search: 
+web search: io.trino.hadoop hadoop-apache 3.2.0-12 Maven hadoop-apache-3.2.0-12
+web search: 
+web search: https://repo1.maven.org/maven2/io/trino/hadoop/hadoop-apache/
+web search: 
+web search: https://repo1.maven.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/
+codex
+The entry already has non-blank values for the URL and description fields. I’m checking whether the only absent field, `language`, applies here; this artifact is Java/shaded Hadoop, not Kotlin/Groovy/Scala-specific, so it should remain absent under your rules.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/io.trino.hadoop/hadoop-apache/index.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3017-64b6153b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'jq . metadata/io.trino.hadoop/hadoop-apache/index.json >/dev/null' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3017-64b6153b
+ succeeded in 0ms:
+web search: 
+web search: Maven Central io.trino.hadoop hadoop-apache 3.2.0-12
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/
+web search: 
+web search: 
+web search: 
+web search: "hadoop-apache-3.2.0-12.pom" "trinodb/trino-hadoop-apache"
+web search: 
+web search: https://github.com/trinodb/trino-hadoop-apache/tree/3.2.0-12
+web search: 
+web search: 'src/test' in https://github.com/trinodb/trino-hadoop-apache/tree/3.2.0-12/src/test
+codex
+No file change was needed in [index.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3017-64b6153b/metadata/io.trino.hadoop/hadoop-apache/index.json:1). The entry already has non-blank source, repository, test, documentation, and two-sentence description values; the only absent field is `language`, and this artifact is Java/shaded Hadoop rather than Kotlin/Groovy/Scala-specific, so it should remain absent. GitHub also reports the repo at tag `3.2.0-12` as Java, and Maven Central lists the exact `3.2.0-12` sources and javadoc jars. ([github.com](https://github.com/trinodb/trino-hadoop-apache/tree/3.2.0-12))
+
+Validation run: `jq . metadata/io.trino.hadoop/hadoop-apache/index.json >/dev/null` passed. `git diff -- metadata/io.trino.hadoop/hadoop-apache/index.json` is empty.
+tokens used
+41,673
+No file change was needed in [index.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3017-64b6153b/metadata/io.trino.hadoop/hadoop-apache/index.json:1). The entry already has non-blank source, repository, test, documentation, and two-sentence description values; the only absent field is `language`, and this artifact is Java/shaded Hadoop rather than Kotlin/Groovy/Scala-specific, so it should remain absent. GitHub also reports the repo at tag `3.2.0-12` as Java, and Maven Central lists the exact `3.2.0-12` sources and javadoc jars. ([github.com](https://github.com/trinodb/trino-hadoop-apache/tree/3.2.0-12))
+
+Validation run: `jq . metadata/io.trino.hadoop/hadoop-apache/index.json >/dev/null` passed. `git diff -- metadata/io.trino.hadoop/hadoop-apache/index.json` is empty.
+Ran agent for io.trino.hadoop:hadoop-apache:3.2.0-12 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3017-64b6153b/build/agent-url-discovery-logs/io.trino.hadoop-hadoop-apache-3.2.0-12.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3017-64b6153b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 48s
+9 actionable tasks: 1 executed, 8 up-to-date

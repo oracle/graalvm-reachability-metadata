@@ -82,7 +82,7 @@ public class Hadoop_apacheTest {
 
     @Test
     void textAndWritableBuffersHandleUtf8AndVariableLengthData() throws Exception {
-        Text text = new Text("hadoop π");
+        Text text = new Text("hadoop \u03c0");
         text.append(" rocks".getBytes(StandardCharsets.UTF_8), 0, " rocks".length());
         DataOutputBuffer output = new DataOutputBuffer();
 
@@ -92,22 +92,22 @@ public class Hadoop_apacheTest {
         input.reset(output.getData(), output.getLength());
         Text decoded = new Text();
         decoded.readFields(input);
-        ByteBuffer encodedSnowman = Text.encode("snowman ☃");
+        ByteBuffer encodedSnowman = Text.encode("snowman \u2603");
         byte[] snowmanBytes = new byte[encodedSnowman.remaining()];
         encodedSnowman.get(snowmanBytes);
 
-        assertThat(decoded.toString()).isEqualTo("hadoop π rocks");
-        assertThat(decoded.find("π")).isGreaterThan(0);
-        assertThat(decoded.charAt(decoded.find("π"))).isEqualTo('π');
+        assertThat(decoded.toString()).isEqualTo("hadoop \u03c0 rocks");
+        assertThat(decoded.find("\u03c0")).isGreaterThan(0);
+        assertThat(decoded.charAt(decoded.find("\u03c0"))).isEqualTo('\u03c0');
         assertThat(decoded.copyBytes()).containsSequence("rocks".getBytes(StandardCharsets.UTF_8));
         assertThat(Text.readString(input)).isEqualTo("tail value");
-        assertThat(Text.decode(snowmanBytes)).isEqualTo("snowman ☃");
+        assertThat(Text.decode(snowmanBytes)).isEqualTo("snowman \u2603");
     }
 
     @Test
     void lineReaderHonorsCustomDelimiterAndMaximumLineLength() throws Exception {
         byte[] delimiter = "||".getBytes(StandardCharsets.UTF_8);
-        byte[] content = "alpha||βeta||gamma".getBytes(StandardCharsets.UTF_8);
+        byte[] content = "alpha||\u03b2eta||gamma".getBytes(StandardCharsets.UTF_8);
         List<String> lines = new ArrayList<>();
 
         try (LineReader reader = new LineReader(new ByteArrayInputStream(content), 8, delimiter)) {
@@ -124,7 +124,7 @@ public class Hadoop_apacheTest {
             assertThat(consumed).isEqualTo("abc\n".length());
         }
 
-        assertThat(lines).containsExactly("alpha", "βeta", "gamma");
+        assertThat(lines).containsExactly("alpha", "\u03b2eta", "gamma");
         assertThat(truncated.toString()).isEqualTo("abc");
     }
 
