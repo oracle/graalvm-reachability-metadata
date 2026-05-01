@@ -149,6 +149,43 @@ final class Util_interfaceTest {
   }
 
   @Test
+  def renderedProblemDiagnosticsCanBeDisplayedWithFieldBasedFallback(): Unit = {
+    val position = new StaticPosition(
+      lineNumber = presentInt(3),
+      text = "libraryDependencies +=",
+      characterOffset = presentInt(57),
+      pointerColumn = presentInt(21),
+      pointerPadding = Optional.of("                    "),
+      path = Optional.of("src/main/scala/example/Build.scala"),
+      file = Optional.empty[File]()
+    )
+    val fallbackProblem = new DiagnosticProblem(
+      diagnosticCategory = "parse-error",
+      diagnosticSeverity = Severity.Error,
+      diagnosticMessage = "expected expression",
+      diagnosticPosition = position
+    )
+    val renderedDiagnostic =
+      """custom sbt diagnostic
+        |with compiler-provided context""".stripMargin
+    val renderedProblem = new RenderedDiagnosticProblem(
+      diagnosticCategory = "parse-error",
+      diagnosticSeverity = Severity.Error,
+      diagnosticMessage = "expected expression",
+      diagnosticPosition = position,
+      renderedDiagnostic = renderedDiagnostic
+    )
+
+    assertThat(displayDiagnostic(renderedProblem)).isEqualTo(renderedDiagnostic)
+    assertThat(displayDiagnostic(fallbackProblem)).isEqualTo(
+      """Error parse-error: expected expression
+        |src/main/scala/example/Build.scala:3
+        |libraryDependencies +=
+        |                    ^""".stripMargin
+    )
+  }
+
+  @Test
   def loggerAcceptsLazyMessageAndThrowableSuppliers(): Unit = {
     val logger = new DeferredLogger()
     var evaluatedMessages = 0
@@ -241,6 +278,20 @@ final class Util_interfaceTest {
         message
       }
     }
+
+  private def displayDiagnostic(problem: Problem): String =
+    problem.rendered().orElseGet(new Supplier[String] {
+      override def get(): String = fieldBasedDiagnostic(problem)
+    })
+
+  private def fieldBasedDiagnostic(problem: Problem): String = {
+    val position = problem.position()
+    val lineSuffix = if (position.line().isPresent) s":${position.line().get()}" else ""
+    val source = if (position.sourcePath().isPresent) s"${position.sourcePath().get()}$lineSuffix" else "<unknown>"
+    val pointer = s"${position.pointerSpace().orElse("")}^"
+
+    s"${problem.severity()} ${problem.category()}: ${problem.message()}\n$source\n${position.lineContent()}\n$pointer"
+  }
 
   private class StaticPosition(
     lineNumber: Optional[JInteger],
