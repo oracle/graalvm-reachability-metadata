@@ -181,6 +181,44 @@ public class BaseLibraryTest {
     }
 
     @Test
+    void clonedCallbackRegistryExcludesCallbacksPendingDeferredRemoval() {
+        CallbackRegistry<RecordingCallback, EventSource, String> registry = newRegistry();
+        List<RecordingCallback> clonedCallbacks = new ArrayList<RecordingCallback>();
+        RecordingCallback removed = new RecordingCallback("removed");
+        RecordingCallback kept = new RecordingCallback("kept");
+        RecordingCallback cloning = new RecordingCallback("cloning") {
+            @Override
+            void onEvent(EventSource sender, int code, String payload) {
+                super.onEvent(sender, code, payload);
+                if (code == 10) {
+                    registry.remove(removed);
+                    CallbackRegistry<RecordingCallback, EventSource, String> clone = registry.clone();
+                    clone.copyCallbacks(clonedCallbacks);
+                    clone.notifyCallbacks(new EventSource("clone"), 20, "after-deferred-remove");
+                }
+            }
+        };
+
+        registry.add(cloning);
+        registry.add(removed);
+        registry.add(kept);
+        registry.notifyCallbacks(new EventSource("original"), 10, "first");
+        registry.notifyCallbacks(new EventSource("original"), 11, "second");
+
+        assertThat(clonedCallbacks).containsExactly(cloning, kept);
+        assertThat(cloning.events).containsExactly(
+                "original:10:first",
+                "clone:20:after-deferred-remove",
+                "original:11:second");
+        assertThat(removed.events).containsExactly("original:10:first");
+        assertThat(kept.events).containsExactly(
+                "clone:20:after-deferred-remove",
+                "original:10:first",
+                "original:11:second");
+        assertThat(registry.copyCallbacks()).containsExactly(cloning, kept);
+    }
+
+    @Test
     void observableCallbacksReceivePropertyChangesAndCanBeRemoved() {
         ObservableModel model = new ObservableModel("initial");
         List<String> changes = new ArrayList<String>();
