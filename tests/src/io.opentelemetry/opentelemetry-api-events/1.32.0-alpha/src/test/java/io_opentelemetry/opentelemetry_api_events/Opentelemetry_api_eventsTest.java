@@ -11,12 +11,15 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.events.EventBuilder;
 import io.opentelemetry.api.events.EventEmitter;
 import io.opentelemetry.api.events.EventEmitterBuilder;
 import io.opentelemetry.api.events.EventEmitterProvider;
 import io.opentelemetry.api.events.GlobalEventEmitterProvider;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -88,6 +91,35 @@ public class Opentelemetry_api_eventsTest {
         RecordedEvent event = emitter.events.get(0);
         assertThat(event.name).isEqualTo("payment.authorized");
         assertThat(event.attributes).isSameAs(attributes);
+    }
+
+    @Test
+    void eventBuilderSetsTimestampAndEmits() {
+        RecordingEventEmitterProvider provider = new RecordingEventEmitterProvider();
+        RecordingEventEmitter emitter = (RecordingEventEmitter) provider.get("io.example.builder");
+        Attributes attributes = Attributes.builder()
+                .put("payment.id", "pay-456")
+                .put("payment.captured", true)
+                .build();
+
+        EventBuilder timestampBuilder = emitter.builder("payment.captured", attributes);
+        assertThat(timestampBuilder.setTimestamp(1234L, TimeUnit.MILLISECONDS)).isSameAs(timestampBuilder);
+        timestampBuilder.emit();
+
+        Instant occurredAt = Instant.ofEpochSecond(5678L, 901L);
+        EventBuilder instantBuilder = emitter.builder("payment.refunded", Attributes.empty());
+        assertThat(instantBuilder.setTimestamp(occurredAt)).isSameAs(instantBuilder);
+        instantBuilder.emit();
+
+        assertThat(emitter.events).hasSize(2);
+        RecordedEvent capturedEvent = emitter.events.get(0);
+        assertThat(capturedEvent.name).isEqualTo("payment.captured");
+        assertThat(capturedEvent.attributes).isSameAs(attributes);
+        assertThat(capturedEvent.timestamp).isEqualTo(Instant.ofEpochMilli(1234L));
+        RecordedEvent refundedEvent = emitter.events.get(1);
+        assertThat(refundedEvent.name).isEqualTo("payment.refunded");
+        assertThat(refundedEvent.attributes).isSameAs(Attributes.empty());
+        assertThat(refundedEvent.timestamp).isEqualTo(occurredAt);
     }
 
     @Test
@@ -236,17 +268,57 @@ public class Opentelemetry_api_eventsTest {
 
         @Override
         public void emit(String eventName, Attributes attributes) {
-            events.add(new RecordedEvent(eventName, attributes));
+            events.add(new RecordedEvent(eventName, attributes, null));
+        }
+
+        @Override
+        public EventBuilder builder(String eventName, Attributes attributes) {
+            return new RecordingEventBuilder(this, eventName, attributes);
+        }
+    }
+
+    private static final class RecordingEventBuilder implements EventBuilder {
+        private final RecordingEventEmitter emitter;
+        private final String eventName;
+        private final Attributes attributes;
+        private Instant timestamp;
+
+        private RecordingEventBuilder(
+                RecordingEventEmitter emitter,
+                String eventName,
+                Attributes attributes) {
+            this.emitter = emitter;
+            this.eventName = eventName;
+            this.attributes = attributes;
+        }
+
+        @Override
+        public EventBuilder setTimestamp(long timestamp, TimeUnit unit) {
+            this.timestamp = Instant.ofEpochSecond(0L, unit.toNanos(timestamp));
+            return this;
+        }
+
+        @Override
+        public EventBuilder setTimestamp(Instant instant) {
+            timestamp = instant;
+            return this;
+        }
+
+        @Override
+        public void emit() {
+            emitter.events.add(new RecordedEvent(eventName, attributes, timestamp));
         }
     }
 
     private static final class RecordedEvent {
         private final String name;
         private final Attributes attributes;
+        private final Instant timestamp;
 
-        private RecordedEvent(String name, Attributes attributes) {
+        private RecordedEvent(String name, Attributes attributes, Instant timestamp) {
             this.name = name;
             this.attributes = attributes;
+            this.timestamp = timestamp;
         }
     }
 }
