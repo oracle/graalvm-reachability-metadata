@@ -1,0 +1,1104 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de551-dda5-7d52-a4e9-6c0ad4c6c10c
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: javax.ws.rs:jsr311-api:1.1.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.1.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+- Set "coordinates" to "javax.ws.rs:jsr311-api:1.1.1".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven Central first, then cross-check the project/repository trail before editing the JSON. For this old JAX-RS API artifact, the Maven-published source and javadoc jars are likely the most reliable exact-version URLs if they exist.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json && sed -n '1,160p' build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+ succeeded in 0ms:
+/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+-rw-rw-r-- 1 vjovanov vjovanov 53 May  1 22:54 build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+{
+  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"javax\\.ws\\.rs:jsr311-api|jsr311-api\" build/discovered-artifact-metadata metadata tests || true" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+ succeeded in 0ms:
+build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json:2:  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
+
+web search: 
+web search: Maven Central javax.ws.rs jsr311-api 1.1.1 sources javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/
+web search: 
+web search: "jsr311" "1.1.1" "svn" "tag"
+web search: 
+web search: site:github.com/jax-rs/api jsr311-api 1.1.1
+web search: 
+web search: https://github.com/jax-rs/api
+codex
+Maven Central confirms `1.1.1` published both `-sources.jar` and `-javadoc.jar`, but no test-source artifact appears in that version directory. The POM’s project URL points to the old `jsr311.dev.java.net` site and includes an SVN SCM entry only in a commented block, so I’m checking whether there is a better maintained repository URL before deciding what is confidence-worthy.
+exec
+/usr/bin/bash -lc 'rg --files build/discovered-artifact-metadata | head -40' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+ succeeded in 0ms:
+build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f -name '*.json' | head -20 | xargs sed -n '1,80p'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+ succeeded in 0ms:
+{
+  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|repository-url|test-code-url|documentation-url|\"language\"' . --glob '*.json' --glob '"'!build/**'"' | head -80" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+ succeeded in 0ms:
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/8.0.01/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/1.14.0/htmlunit-cssparser-1.14.0-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/1.14.0/src/test",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/1.14.0/htmlunit-cssparser-1.14.0-javadoc.jar",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-sources.jar",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:6:    "repository-url" : "https://github.com/google/j2objc",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-javadoc.jar",
+./metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/2.0.8/oro-2.0.8-sources.jar",
+./metadata/oro/oro/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/jakarta/oro/",
+./metadata/oro/oro/index.json:7:    "test-code-url" : "N/A",
+./metadata/oro/oro/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/jakarta/oro/tags/oro-2.0.8/docs/index.html",
+./metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-sources.jar",
+./metadata/com.itextpdf/kernel/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+./metadata/com.itextpdf/kernel/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/kernel/src/test",
+./metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-javadoc.jar",
+./metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-sources.jar",
+./metadata/com.itextpdf/forms/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+./metadata/com.itextpdf/forms/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/forms/src/test",
+./metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-javadoc.jar",
+./metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-sources.jar",
+./metadata/com.itextpdf/layout/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+./metadata/com.itextpdf/layout/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/layout/src/test",
+./metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-javadoc.jar",
+./metadata/com.itextpdf/svg/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/8.0.3/svg-8.0.3-sources.jar",
+./metadata/com.itextpdf/svg/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+./metadata/com.itextpdf/svg/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/svg/src/test",
+./metadata/com.itextpdf/svg/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/8.0.3/svg-8.0.3-javadoc.jar",
+./metadata/com.itextpdf/io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/8.0.3/io-8.0.3-sources.jar",
+./metadata/com.itextpdf/io/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+./metadata/com.itextpdf/io/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/io/src/test",
+./metadata/com.itextpdf/io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/8.0.3/io-8.0.3-javadoc.jar",
+./metadata/org.yaml/snakeyaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.32/snakeyaml-1.32-sources.jar",
+./metadata/org.yaml/snakeyaml/index.json:6:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml",
+./metadata/org.yaml/snakeyaml/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml/src/snakeyaml-1.32/src/test/",
+./metadata/org.yaml/snakeyaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.32/snakeyaml-1.32-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.70.0/neko-htmlunit-2.70.0-sources.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.70.0/neko-htmlunit-2.70.0-tests.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.70.0/neko-htmlunit-2.70.0-javadoc.jar",
+./metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/2.5-20081211/servlet-api-2.5-20081211-sources.jar",
+./metadata/org.mortbay.jetty/servlet-api/index.json:6:    "repository-url" : "http://svn.codehaus.org/jetty/servlet-api",
+./metadata/org.mortbay.jetty/servlet-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/2.5-20081211/servlet-api-2.5-20081211-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/javax.validation/validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/2.0.0.Final/validation-api-2.0.0.Final-sources.jar",
+./metadata/javax.validation/validation-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/validation",
+./metadata/javax.validation/validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/2.0.0.Final/src/test",
+./metadata/javax.validation/validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/2.0.0.Final/validation-api-2.0.0.Final-javadoc.jar",
+./metadata/javax.validation/validation-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.1.0.Final/validation-api-1.1.0.Final-sources.jar",
+./metadata/javax.validation/validation-api/index.json:21:    "repository-url" : "https://github.com/jakartaee/validation",
+./metadata/javax.validation/validation-api/index.json:22:    "test-code-url" : "https://github.com/jakartaee/validation/tree/1.1.0.Final/src/test",
+./metadata/javax.validation/validation-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.1.0.Final/validation-api-1.1.0.Final-javadoc.jar",
+./metadata/javax.validation/validation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-sources.jar",
+./metadata/javax.validation/validation-api/index.json:35:    "repository-url" : "https://github.com/jakartaee/validation",
+./metadata/javax.validation/validation-api/index.json:36:    "test-code-url" : "https://github.com/jakartaee/validation/tree/1.0.0.GA/src/test",
+./metadata/javax.validation/validation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.36.0/artemis-jms-client-2.36.0-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:6:    "repository-url" : "https://github.com/apache/artemis",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/2.36.0/artemis-jms-client/src/test",
+
+exec
+/usr/bin/bash -lc "rg --files | rg 'artifact.*metadata|discovered|metadata' | head -80" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+ succeeded in 0ms:
+tests/tck-build-logic/src/main/resources/scaffold/reachability-metadata.json.template
+forge/forge_metadata.py
+forge/tests/test_forge_metadata.py
+forge/docs/native-metadata-exploration.md
+skills/fix-missing-reachability-metadata/SKILL.md
+forge/ai_workflows/fix_metadata_codex.py
+metadata/io.github.oshai/kotlin-logging-jvm/8.0.01/reachability-metadata.json
+metadata/io.github.oshai/kotlin-logging-jvm/index.json
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/reachability-metadata.json
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json
+metadata/org.apache.yetus/audience-annotations/0.12.0/reachability-metadata.json
+metadata/org.apache.yetus/audience-annotations/index.json
+metadata/org.apache.yetus/audience-annotations/0.14.0/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-api/9.4.40.v20210413/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json
+metadata/org.eclipse.jetty.websocket/websocket-common/9.4.40.v20210413/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json
+metadata/org.apiguardian/apiguardian-api/1.1.2/reachability-metadata.json
+metadata/org.apiguardian/apiguardian-api/index.json
+metadata/javax.activation/javax.activation-api/1.2.0/reachability-metadata.json
+metadata/javax.activation/javax.activation-api/index.json
+metadata/javax.activation/activation/1.1/reachability-metadata.json
+metadata/javax.activation/activation/index.json
+tests/src/org.yaml/snakeyaml/1.32/src/test/resources/META-INF/native-image/reachability-metadata.json
+metadata/org.apache.arrow/arrow-format/7.0.0/reachability-metadata.json
+metadata/org.apache.arrow/arrow-format/index.json
+metadata/org.apache.arrow/arrow-format/15.0.0/reachability-metadata.json
+metadata/org.jvnet/animal-sniffer-annotation/1.0/reachability-metadata.json
+metadata/org.jvnet/animal-sniffer-annotation/index.json
+metadata/org.jboss.interceptor/jboss-interceptor-spi/2.0.0.Final/reachability-metadata.json
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json
+tests/src/org.eclipse.jetty.websocket/websocket-common/9.4.40.v20210413/src/test/resources/META-INF/native-image/reachability-metadata.json
+metadata/org.jboss.interceptor/jboss-interceptor-api/1.1/reachability-metadata.json
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json
+metadata/jakarta.websocket/jakarta.websocket-client-api/2.1.0/reachability-metadata.json
+tests/src/org.mortbay.jetty/servlet-api/2.5-20081211/src/test/resources/META-INF/native-image/reachability-metadata.json
+metadata/jakarta.websocket/jakarta.websocket-api/index.json
+metadata/jakarta.websocket/jakarta.websocket-api/2.1.0/reachability-metadata.json
+metadata/org.junit.platform/junit-platform-commons/1.8.2/reachability-metadata.json
+metadata/org.junit.platform/junit-platform-commons/index.json
+metadata/com.sun.mail/jakarta.mail/2.0.1/reachability-metadata.json
+metadata/com.sun.mail/jakarta.mail/index.json
+metadata/org.snakeyaml/snakeyaml-engine/3.0.1/reachability-metadata.json
+metadata/org.snakeyaml/snakeyaml-engine/index.json
+metadata/com.google.auth/google-auth-library-credentials/index.json
+tests/src/javax.activation/javax.activation-api/1.2.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+metadata/com.google.auth/google-auth-library-credentials/1.10.0/reachability-metadata.json
+tests/src/javax.validation/validation-api/2.0.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json
+metadata/org.clojure/google-closure-library-third-party/0.0-20150505-021ed5b3/reachability-metadata.json
+metadata/org.clojure/google-closure-library-third-party/0.0-20250515-f04e4c0e/reachability-metadata.json
+metadata/org.clojure/google-closure-library-third-party/index.json
+metadata/org.postgresql/postgresql/42.3.4/reachability-metadata.json
+metadata/org.postgresql/postgresql/42.7.3/reachability-metadata.json
+metadata/org.postgresql/postgresql/index.json
+metadata/javax.servlet/javax.servlet-api/3.1.0/reachability-metadata.json
+metadata/javax.servlet/javax.servlet-api/index.json
+tests/src/javax.validation/validation-api/1.0.0.GA/src/test/resources/META-INF/native-image/reachability-metadata.json
+metadata/com.android.tools/annotations/24.5.0/reachability-metadata.json
+metadata/com.android.tools/annotations/index.json
+metadata/org.eclipse.aether/aether-util/1.0.2.v20150114/reachability-metadata.json
+metadata/org.eclipse.aether/aether-util/index.json
+metadata/org.eclipse.aether/aether-api/1.0.2.v20150114/reachability-metadata.json
+metadata/org.eclipse.aether/aether-api/index.json
+metadata/org.eclipse.aether/aether-spi/1.0.2.v20150114/reachability-metadata.json
+metadata/org.eclipse.aether/aether-spi/index.json
+metadata/org.eclipse.aether/aether-impl/1.0.2.v20150114/reachability-metadata.json
+metadata/org.eclipse.aether/aether-impl/index.json
+tests/src/javax.validation/validation-api/1.1.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json
+metadata/com.github.spotbugs/spotbugs-annotations/4.8.6/reachability-metadata.json
+metadata/com.github.spotbugs/spotbugs-annotations/index.json
+metadata/org.codehaus.woodstox/stax2-api/4.2.2/reachability-metadata.json
+metadata/org.codehaus.woodstox/stax2-api/index.json
+tests/src/org.apache.activemq/artemis-jms-client/2.28.0/metadata-user-code-filter.json
+metadata/org.dom4j/dom4j/2.1.1/reachability-metadata.json
+metadata/org.dom4j/dom4j/index.json
+metadata/org.latencyutils/LatencyUtils/2.0.3/reachability-metadata.json
+metadata/org.latencyutils/LatencyUtils/index.json
+
+web search: 
+web search: https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1.pom | sed -n '1,220p'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.ws.rs</groupId>
+  <artifactId>jsr311-api</artifactId>
+  <packaging>jar</packaging>
+  <version>1.1.1</version>
+  <name>jsr311-api</name>
+  <url>https://jsr311.dev.java.net</url>
+
+<!--
+  <scm>
+    <connection>scm:svn:https://jsr311.dev.java.net/svn/jsr311/trunk/src</connection>
+    <developerConnection>scm:svn:https://jsr311.dev.java.net/svn/jsr311/trunk/src</developerConnection>
+  </scm>
+-->
+
+
+    <organization>
+        <name>Sun Microsystems, Inc</name>
+        <url>http://www.sun.com/</url>
+    </organization>
+
+    <issueManagement>
+        <system>bugzilla</system>
+        <url>https://jsr311.dev.java.net/servlets/ProjectIssues</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>JSR311 Dev List</name>
+            <archive>dev@jsr311.dev.java.net</archive>
+        </mailingList>
+        <mailingList>
+            <name>JSR311 Users List</name>
+            <archive>users@jsr311.dev.java.net</archive>
+        </mailingList>
+        <mailingList>
+            <name>JSR311 Announce List</name>
+            <archive>announce@jsr311.dev.java.net</archive>
+        </mailingList>
+    </mailingLists>
+
+    <licenses>
+        <license>
+            <name>
+                CDDL License
+            </name>
+            <url>http://www.opensource.org/licenses/cddl1.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <testSourceDirectory>test</testSourceDirectory>
+
+    <plugins>
+      <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.0.2</version>
+          <configuration>
+              <source>1.5</source>
+              <target>1.5</target>
+          </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+            <manifestEntries>
+              <Specification-Title>JAX-RS: Java API for RESTful Web Services</Specification-Title>
+              <Specification-Version>${project.version}</Specification-Version>
+              <Specification-Vendor>Sun Microsystems, Inc.</Specification-Vendor>
+              <Extension-Name>javax.ws.rs</Extension-Name>
+              <Build-Id>${buildNumber}</Build-Id>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>buildnumber-maven-plugin</artifactId>
+          <configuration>
+            <format>{0,date,MM/dd/yyyy hh:mm aa}</format>
+            <items>
+              <item>timestamp</item>
+            </items>
+          </configuration>
+          <executions>
+            <execution>
+              <phase>validate</phase>
+              <goals>
+                <goal>create</goal>
+              </goals>
+            </execution>
+          </executions>
+       </plugin>
+       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+          <executions>
+            <execution>
+              <phase>validate</phase>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+       </plugin>
+       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+            <configuration>
+              <instructions>
+                <Export-Package>javax.ws.rs.*</Export-Package>
+                <Import-Package></Import-Package>
+                <Bundle-Version>1.1.1</Bundle-Version> 
+              </instructions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+        <extensions>
+          <extension>
+            <groupId>org.jvnet.wagon-svn</groupId>
+              <artifactId>wagon-svn</artifactId>
+              <version>1.8</version>
+          </extension>
+        </extensions>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+    <distributionManagement>
+      <repository>
+        <uniqueVersion>false</uniqueVersion>
+        <id>java.net-m2-repository</id>
+        <url>java-net:/maven2-repository/trunk/repository/</url>
+      </repository>
+    </distributionManagement>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/javax/ws/rs/jsr311-api/1.1.1/ | sed -n '1,120p'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+ succeeded in 161ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/ws/rs/jsr311-api/1.1.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/ws/rs/jsr311-api/1.1.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jsr311-api-1.1.1-javadoc.jar" title="jsr311-api-1.1.1-javadoc.jar">jsr311-api-1.1.1-javadoc.jar</a>                      2009-11-23 23:41    304118      
+<a href="jsr311-api-1.1.1-javadoc.jar.md5" title="jsr311-api-1.1.1-javadoc.jar.md5">jsr311-api-1.1.1-javadoc.jar.md5</a>                  2009-11-23 23:41        32      
+<a href="jsr311-api-1.1.1-javadoc.jar.sha1" title="jsr311-api-1.1.1-javadoc.jar.sha1">jsr311-api-1.1.1-javadoc.jar.sha1</a>                 2009-11-23 23:41        40      
+<a href="jsr311-api-1.1.1-sources.jar" title="jsr311-api-1.1.1-sources.jar">jsr311-api-1.1.1-sources.jar</a>                      2009-11-23 23:41     70022      
+<a href="jsr311-api-1.1.1-sources.jar.md5" title="jsr311-api-1.1.1-sources.jar.md5">jsr311-api-1.1.1-sources.jar.md5</a>                  2009-11-23 23:41        32      
+<a href="jsr311-api-1.1.1-sources.jar.sha1" title="jsr311-api-1.1.1-sources.jar.sha1">jsr311-api-1.1.1-sources.jar.sha1</a>                 2009-11-23 23:41        40      
+<a href="jsr311-api-1.1.1.jar" title="jsr311-api-1.1.1.jar">jsr311-api-1.1.1.jar</a>                              2009-11-23 23:41     46367      
+<a href="jsr311-api-1.1.1.jar.md5" title="jsr311-api-1.1.1.jar.md5">jsr311-api-1.1.1.jar.md5</a>                          2009-11-23 23:41        32      
+<a href="jsr311-api-1.1.1.jar.sha1" title="jsr311-api-1.1.1.jar.sha1">jsr311-api-1.1.1.jar.sha1</a>                         2009-11-23 23:41        40      
+<a href="jsr311-api-1.1.1.pom" title="jsr311-api-1.1.1.pom">jsr311-api-1.1.1.pom</a>                              2009-11-23 23:41      5469      
+<a href="jsr311-api-1.1.1.pom.md5" title="jsr311-api-1.1.1.pom.md5">jsr311-api-1.1.1.pom.md5</a>                          2009-11-23 23:41        55      
+<a href="jsr311-api-1.1.1.pom.sha1" title="jsr311-api-1.1.1.pom.sha1">jsr311-api-1.1.1.pom.sha1</a>                         2009-11-23 23:41        63      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: "https://jsr311.dev.java.net" "jsr311-api"
+exec
+/usr/bin/bash -lc "sed -n '1,70p' metadata/javax.activation/activation/index.json && sed -n '1,70p' metadata/javax.activation/javax.activation-api/index.json" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+    "repository-url" : "https://github.com/javaee/activation",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+    "description" : "JavaBeans Activation Framework provides a standard API for detecting data types, accessing arbitrary data through DataSource abstractions, and locating content handlers for that data. It is commonly used by JavaMail to process MIME content and dispatch operations such as viewing, editing, or transferring data.",
+    "tested-versions" : [
+      "1.1",
+      "1.1.1"
+    ],
+    "allowed-packages" : [
+      "com.sun.activation",
+      "javax.activation"
+    ]
+  }
+]
+[
+  {
+    "latest": true,
+    "allowed-packages": [ "javax.activation" ],
+    "metadata-version": "1.2.0",
+    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+    "repository-url": "https://github.com/javaee/activation",
+    "test-code-url": "N/A",
+    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+    "description": "JavaBeans Activation Framework API defines the javax.activation types for describing data sources, determining MIME types, and dispatching data to content handlers. It provides the standard activation API that other libraries use to work with arbitrary data without bundling the implementation classes.",
+    "tested-versions": [
+      "1.2.0"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,70p' metadata/javax.servlet/javax.servlet-api/index.json" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.1.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+    "repository-url" : "https://github.com/javaee/servlet-spec",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+    "tested-versions" : [
+      "3.1.0",
+      "4.0.0",
+      "4.0.1"
+    ],
+    "allowed-packages" : [
+      "javax.servlet"
+    ],
+    "description" : "Defines the Java Servlet 3.1 API for handling HTTP requests and responses in Java web applications. It provides the standard interfaces, classes, annotations, and asynchronous processing contracts used by servlet containers and web components."
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,70p' metadata/org.jvnet/animal-sniffer-annotation/index.json metadata/org.jboss.interceptor/jboss-interceptor-api/index.json" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages": [ "org.jvnet.animal_sniffer" ],
+    "metadata-version": "1.0",
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+    "test-code-url": "N/A",
+    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+    "description": "This artifact provides the @IgnoreJRERequirement annotation used by Animal Sniffer to mark code that should be excluded from JRE API compatibility checks. It lets libraries document members that intentionally rely on newer JDK APIs while still validating their minimum runtime requirements.",
+    "tested-versions": [
+      "1.0"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+    "test-code-url" : "N/A",
+    "documentation-url" : "N/A",
+    "description" : "This library provides the EJB 3.1 Interceptor API annotations and interfaces in the javax.interceptor package. It defines interceptor bindings, invocation lifecycle annotations, and InvocationContext contracts used by containers and applications to intercept method calls and lifecycle events.",
+    "tested-versions" : [
+      "1.1",
+      "3.1.0-CR1",
+      "3.1.0-CR2",
+      "3.1.0-CR3"
+    ],
+    "allowed-packages" : [
+      "javax.interceptor"
+    ]
+  }
+]
+
+web search: 
+web search: "JSR311 API" "github.com" "javaee"
+web search: 
+web search: https://github.com/javaee/jsr311
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/javaee/jsr311.git | sed -n '1,120p'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/javaee/jax-rs-api.git | sed -n '1,80p'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/eclipse-ee4j/jaxrs-api.git | sed -n '1,80p'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+ succeeded in 312ms:
+8953fb7229f29ad961d464209af7be3cd6180ca8	refs/tags/1.1-final
+cec6a642d1e9cd948cb803ece5b863392c4b1c18	refs/tags/2.0
+8e8ec8905756635be14d853b46df6f62c4499b4f	refs/tags/2.0^{}
+51b3ff29f0035ba4ffb61a82e9c6043f797641d1	refs/tags/2.0-edr01
+7e9e0eae963828f94dfd93702abda6387f213a37	refs/tags/2.0-edr02
+a555529841f64c68295d178968ac514a55f40d1c	refs/tags/2.0-m01
+8769f7e2077e516b845319ffc7e72d21aff67126	refs/tags/2.0-m01^{}
+a3f01bb35b74402233030d8078690b0ca418968f	refs/tags/2.0-m02
+10f81b14eca5394d11a6d68acaf233afb5cfa961	refs/tags/2.0-m02^{}
+b04a097b52190e8d512c6520b05e850777c8259c	refs/tags/2.0-m03
+85bc928b94e0e8b8f3ddc0496615530b8bca9d6f	refs/tags/2.0-m03^{}
+859e766f0f1bc15b93d42d4790581eda622f1081	refs/tags/2.0-m04
+5a7009122f73743f85dbc69aed5acb6e4d560905	refs/tags/2.0-m04^{}
+c929b9a2ab2d48f97142075c3757407b4f348f3b	refs/tags/2.0-m05
+3a484ec4eaa2f9e4bbccad5590e6b7445f1928bb	refs/tags/2.0-m05^{}
+feb0c78ac16b3ad6528b3c4016e22052fec94a7c	refs/tags/2.0-m06
+5c7221adb48a0352eae88de57b99c3411cf6a4eb	refs/tags/2.0-m06^{}
+bb3fe9a4daacd11506eedc1969e12a54bfcba9fe	refs/tags/2.0-m07
+3d075a8088da4f00b16db31c5f96d8814a69923e	refs/tags/2.0-m07^{}
+5fc43e222cb7e9c9adf88ebafb8143ce92fb7d77	refs/tags/2.0-m08
+0072bd91ab6a79c522c3c45dcad3adf8b98d2b87	refs/tags/2.0-m08^{}
+0c6de81a199360bac6fbe7c422b173258b879d44	refs/tags/2.0-m09
+54c743b4472df11c4bee5b5f6adf5c87130f92ec	refs/tags/2.0-m09^{}
+9d67b13a576b0620bef327e02179b3ca6c6235b0	refs/tags/2.0-m10
+f4660d022a92a74ed92d53dbf93b2ebe8c3b057d	refs/tags/2.0-m10^{}
+545565d6f7af753f9bb6fadeb05ef9d8f0279244	refs/tags/2.0-m11
+54717a06c11d1251152f64a5f1077487e6c4e409	refs/tags/2.0-m11^{}
+60299bf2b797ac90ea3969cc714ff70cbfbc6b26	refs/tags/2.0-m12
+d9b22ab8d7d70b8a9128c3d06741713cf232268e	refs/tags/2.0-m12^{}
+d1e6718e5ec5d53d4417a6e99950a03d116fba78	refs/tags/2.0-m13
+f78adb8af61e5a85872decb83325f61898cab763	refs/tags/2.0-m13^{}
+9b75066ee58689a9e5965e9cbf5f024b5ed7f06a	refs/tags/2.0-m14
+2df01bf3fcb05e6779c694ca7e309144a8568c80	refs/tags/2.0-m14^{}
+997948c4a03a0b92aa40596f2d19bcda40b88b51	refs/tags/2.0-m15
+296478be5d9933a995169800c86ae4220ad4fddf	refs/tags/2.0-m15^{}
+c767dfcbdc58349b57f51bd2a454e453bb50de88	refs/tags/2.0-m16
+21f19f7e05a90eacbafcea4fb0f4468a47c1e06f	refs/tags/2.0-m16^{}
+bc54c4a60c854e73309963660ed00ff6e466abcf	refs/tags/2.0-pfd
+3d38980a4e00d13c23d15b7d3f96e85006888060	refs/tags/2.0-pfd^{}
+83a55967cf6cdcba6b3a4211004d35484d6860a2	refs/tags/2.0-pr
+b1290f70a843233768de8c1a5a3cbf35f074e8cb	refs/tags/2.0-rc1
+3d99bb194fdde43bd331ae41a918cd41799ca500	refs/tags/2.0-rc1^{}
+e84f4dd913bdda118c68495f70a0987d0469afab	refs/tags/2.0-rc2
+5899e3dc2e6f3a56dc124e99c4193704373f1725	refs/tags/2.0-rc2^{}
+fb3e2989c296b584414ce14cb728436640ce3ad0	refs/tags/2.0-rc3
+9905df1e7b01e826cbca7b612e0e9fc1d0db273f	refs/tags/2.0-rc3^{}
+4404f8b8a2d9978a1bfe4197125bc381a07b93fc	refs/tags/2.0.1
+c866c4f2a9e93a5c445b27119b7bac0479e9033f	refs/tags/2.0.1^{}
+93eb49c7adbdc95031b4634a87e1765e75ac5086	refs/tags/2.1
+4bcecc9256d5380ca0127fd5199a5beebfcb76f5	refs/tags/2.1-edr
+41553b52958320302d675d4bd5240f2ec25f074a	refs/tags/2.1-m01
+2814638d39075ae5fa833ac92520c78e5d7ecd62	refs/tags/2.1-m01^{}
+852c229d0175a3f9ab36e448a7074e1ce48e4679	refs/tags/2.1-m02
+1860536572a6e84239dbe9510d34e25125748571	refs/tags/2.1-m02^{}
+cb40d579bfa6a569795c614445f4e6b80814046c	refs/tags/2.1-m03
+22f94f02c2756b3ea0aafcea47b6975cff1417e2	refs/tags/2.1-m03^{}
+535b2907cd28c1e40f720f72b74c95cdfe511e75	refs/tags/2.1-m04
+14940fc5dd9f5d8d0755552eb7b05fa45cae6cf3	refs/tags/2.1-m04^{}
+2dd373705b323fffc310fdaa837a3f4e0ea2e933	refs/tags/2.1-m05
+4bcecc9256d5380ca0127fd5199a5beebfcb76f5	refs/tags/2.1-m05^{}
+bb4cdabbe9c7e4b3044e2de8da3ac0f0c67e40b9	refs/tags/2.1-m06
+4c3f2a638ad8f706fa5d70f0b7fd8dca9ed2a9ad	refs/tags/2.1-m06^{}
+2d48ecc2456233fbd9cae925e6fda7a35cac67ba	refs/tags/2.1-m07
+27e436d7099cfb568623f0747395477a2f41d4b6	refs/tags/2.1-m07^{}
+39e5045624333cb651ac42e9fd8a02ec81a6537a	refs/tags/2.1-m08
+10de4a9040bda23796600afd3876a6ae20b625d9	refs/tags/2.1-m08^{}
+c70d27db4d9ec429c4e6f088d9c30e08c3a4399a	refs/tags/2.1-m09
+ab987c3a252cdef25407ccfda09a64e2688c3d25	refs/tags/2.1-m09^{}
+58df84571ad5bcd5f10502f55a1208b3bd28d7f7	refs/tags/edr-2.0-3
+d80080c2c8cda81529db35a57018329888ef9d75	refs/tags/edr-2.0-3^{}
+
+ succeeded in 330ms:
+8a46c1a8a1535e0a9706162ea82e218c35605e9a	refs/tags/2.1.1
+2fce7ddc46c9bfe68e73f2d09487d050d1732612	refs/tags/2.1.1^{}
+20223096b812df674c54cc44d50a7759c56309c5	refs/tags/2.1.2
+02d9f65c99e65e885374245d1c221c75dc188d70	refs/tags/2.1.3
+0b1bd59bdcb7a4390e9c9e3d7f2ebc9b4b604089	refs/tags/2.1.4
+950b67e0e6476dee8c8cfab4a16fb10b726775eb	refs/tags/2.1.5
+67acde2d5155ecb5cf957c96f7ad446b9fc1b54c	refs/tags/2.1.6
+3c4941be798aba7986916b26e3f17e5b6c4ef85a	refs/tags/3.0.0
+db36433e3fe221cb1df0db6526830714bcbed9d9	refs/tags/3.0.0-m1
+779683825b78996e5e35b8a7cbfa1f21dc0cf705	refs/tags/3.1.0
+99943ac6c22a3986960aba451b42afbcd7e813d2	refs/tags/4.0.0-M1-RELEASE
+8a44c077ab18dcde041d1132b2f9487d429a741c	refs/tags/4.0.0-M1-RELEASE^{}
+87a33d0b85c5755afc7f96ed1e6102f5297d1445	refs/tags/4.0.0-M2-RELEASE
+dfdebae99f24a72039c04efd8fdc0d19a512a660	refs/tags/4.0.0-M2-RELEASE^{}
+622ed2190dc13261dda8fc63536bfcb61c579c91	refs/tags/4.0.0-RELEASE
+08951a497c713bff50ff7133ea92c707f6e21614	refs/tags/4.0.0-RELEASE^{}
+a2f52e8b489e0ab8fe56adbd9174be5cf6302b64	refs/tags/initial-contribution
+ba7b9cdb9e7e3821d43cdd08175f8ef5aa609b5f	refs/tags/tck-3.1.1
+71a804da0890747ab03173e997d001209ec2a3f8	refs/tags/tck-3.1.2
+dd0a8d2d0c98ff39f3f0a8b8bbdbd772135312d2	refs/tags/tck-3.1.2^{}
+
+ succeeded in 347ms:
+e94c778fa02eeaf5a3b8e27d0bb1e14f80ee2b21	refs/tags/jsr311-api-0.1
+b455007954dfe13644c94bcd40cd8386667b5730	refs/tags/jsr311-api-0.10
+78c5df8e01f89ea3728a1169266acba765ea531f	refs/tags/jsr311-api-0.11
+40881518b678fdffc9c383fc2b9782c485daec60	refs/tags/jsr311-api-0.2
+51258d1e25ede0e3827de61b78c0e098ec039896	refs/tags/jsr311-api-0.3
+5c7b49f9dc57ef2d0782c1e43b8cab82be324da1	refs/tags/jsr311-api-0.4
+68a78571a0d191cd0363c0211093c6a9c7cd42e3	refs/tags/jsr311-api-0.5
+39ac5a50b36930d21a3a2d2010af9fc6bdf5064b	refs/tags/jsr311-api-0.6
+000ee4b8632661558389519555acbbb0151d384d	refs/tags/jsr311-api-0.7
+b671e00e3ff73c53d5510edb440de9afe5145f4d	refs/tags/jsr311-api-0.8
+485c21ee0d7c8fbad8119895447f765f3e751b02	refs/tags/jsr311-api-0.9
+800be34ed9cfd113f451268153275ba7866b4c34	refs/tags/jsr311-api-1.0
+9cbb80b62dfc885c8e39479e754e9cd26529266d	refs/tags/jsr311-api-1.0-FAB
+cd56ba1b81b7cb2a6f3c6a0667615f156f9e67fc	refs/tags/jsr311-api-1.1
+7425210c2d03a328a4ae885a86e06187aaaa3039	refs/tags/jsr311-api-1.1-ea
+0f62b9060e0f4716781fa02519a562f43c146bf2	refs/tags/jsr311-api-1.1-mr1
+77e870d449eca094d1cb23b723dfe013387ecc6b	refs/tags/jsr311-api-1.1.1
+
+codex
+I found an archived GitHub repository at `javaee/jsr311` with an exact `jsr311-api-1.1.1` tag, which is a better repository URL than the dead Java.net homepage. I’m inspecting that tag’s tree now to see whether the original tests are available there, since Maven Central only published main sources and javadocs.
+exec
+/usr/bin/bash -lc "git ls-remote --heads https://github.com/javaee/jsr311.git | sed -n '1,80p'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/javaee/jsr311/contents?ref=jsr311-api-1.1.1 | sed -n '1,220p'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/javaee/jsr311 | sed -n '1,160p'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+ succeeded in 186ms:
+[
+  {
+    "name": ".cvsignore",
+    "path": ".cvsignore",
+    "sha": "9d0b71a3c79d2d3afbfa99269fea4280f5e73344",
+    "size": 11,
+    "url": "https://api.github.com/repos/javaee/jsr311/contents/.cvsignore?ref=jsr311-api-1.1.1",
+    "html_url": "https://github.com/javaee/jsr311/blob/jsr311-api-1.1.1/.cvsignore",
+    "git_url": "https://api.github.com/repos/javaee/jsr311/git/blobs/9d0b71a3c79d2d3afbfa99269fea4280f5e73344",
+    "download_url": "https://raw.githubusercontent.com/javaee/jsr311/jsr311-api-1.1.1/.cvsignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/javaee/jsr311/contents/.cvsignore?ref=jsr311-api-1.1.1",
+      "git": "https://api.github.com/repos/javaee/jsr311/git/blobs/9d0b71a3c79d2d3afbfa99269fea4280f5e73344",
+      "html": "https://github.com/javaee/jsr311/blob/jsr311-api-1.1.1/.cvsignore"
+    }
+  },
+  {
+    "name": "README.txt",
+    "path": "README.txt",
+    "sha": "3f71b68a3646723999db12b71564d9ef52364242",
+    "size": 189,
+    "url": "https://api.github.com/repos/javaee/jsr311/contents/README.txt?ref=jsr311-api-1.1.1",
+    "html_url": "https://github.com/javaee/jsr311/blob/jsr311-api-1.1.1/README.txt",
+    "git_url": "https://api.github.com/repos/javaee/jsr311/git/blobs/3f71b68a3646723999db12b71564d9ef52364242",
+    "download_url": "https://raw.githubusercontent.com/javaee/jsr311/jsr311-api-1.1.1/README.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/javaee/jsr311/contents/README.txt?ref=jsr311-api-1.1.1",
+      "git": "https://api.github.com/repos/javaee/jsr311/git/blobs/3f71b68a3646723999db12b71564d9ef52364242",
+      "html": "https://github.com/javaee/jsr311/blob/jsr311-api-1.1.1/README.txt"
+    }
+  },
+  {
+    "name": "docs",
+    "path": "docs",
+    "sha": "ef531c595bc615e435da12eb88dc9b3b93e4a4a0",
+    "size": 0,
+    "url": "https://api.github.com/repos/javaee/jsr311/contents/docs?ref=jsr311-api-1.1.1",
+    "html_url": "https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/docs",
+    "git_url": "https://api.github.com/repos/javaee/jsr311/git/trees/ef531c595bc615e435da12eb88dc9b3b93e4a4a0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/javaee/jsr311/contents/docs?ref=jsr311-api-1.1.1",
+      "git": "https://api.github.com/repos/javaee/jsr311/git/trees/ef531c595bc615e435da12eb88dc9b3b93e4a4a0",
+      "html": "https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/docs"
+    }
+  },
+  {
+    "name": "lib",
+    "path": "lib",
+    "sha": "d564d0bc3dd917926892c55e3706cc116d5b165e",
+    "size": 0,
+    "url": "https://api.github.com/repos/javaee/jsr311/contents/lib?ref=jsr311-api-1.1.1",
+    "html_url": "https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/lib",
+    "git_url": "https://api.github.com/repos/javaee/jsr311/git/trees/d564d0bc3dd917926892c55e3706cc116d5b165e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/javaee/jsr311/contents/lib?ref=jsr311-api-1.1.1",
+      "git": "https://api.github.com/repos/javaee/jsr311/git/trees/d564d0bc3dd917926892c55e3706cc116d5b165e",
+      "html": "https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/lib"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "dfbae8859080f5a9a845cc5b6543d993cf8aa77f",
+    "size": 5678,
+    "url": "https://api.github.com/repos/javaee/jsr311/contents/pom.xml?ref=jsr311-api-1.1.1",
+    "html_url": "https://github.com/javaee/jsr311/blob/jsr311-api-1.1.1/pom.xml",
+    "git_url": "https://api.github.com/repos/javaee/jsr311/git/blobs/dfbae8859080f5a9a845cc5b6543d993cf8aa77f",
+    "download_url": "https://raw.githubusercontent.com/javaee/jsr311/jsr311-api-1.1.1/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/javaee/jsr311/contents/pom.xml?ref=jsr311-api-1.1.1",
+      "git": "https://api.github.com/repos/javaee/jsr311/git/blobs/dfbae8859080f5a9a845cc5b6543d993cf8aa77f",
+      "html": "https://github.com/javaee/jsr311/blob/jsr311-api-1.1.1/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "9434c4f345b3875e6dcfd322680f5c0976a00270",
+    "size": 0,
+    "url": "https://api.github.com/repos/javaee/jsr311/contents/src?ref=jsr311-api-1.1.1",
+    "html_url": "https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/src",
+    "git_url": "https://api.github.com/repos/javaee/jsr311/git/trees/9434c4f345b3875e6dcfd322680f5c0976a00270",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/javaee/jsr311/contents/src?ref=jsr311-api-1.1.1",
+      "git": "https://api.github.com/repos/javaee/jsr311/git/trees/9434c4f345b3875e6dcfd322680f5c0976a00270",
+      "html": "https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/src"
+    }
+  },
+  {
+    "name": "test",
+    "path": "test",
+    "sha": "541e0bfdf2ad824b42bc3f26615ec228e5d3e3b8",
+    "size": 0,
+    "url": "https://api.github.com/repos/javaee/jsr311/contents/test?ref=jsr311-api-1.1.1",
+    "html_url": "https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/test",
+    "git_url": "https://api.github.com/repos/javaee/jsr311/git/trees/541e0bfdf2ad824b42bc3f26615ec228e5d3e3b8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/javaee/jsr311/contents/test?ref=jsr311-api-1.1.1",
+      "git": "https://api.github.com/repos/javaee/jsr311/git/trees/541e0bfdf2ad824b42bc3f26615ec228e5d3e3b8",
+      "html": "https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/test"
+    }
+  }
+]
+
+ succeeded in 207ms:
+{
+  "id": 89323630,
+  "node_id": "MDEwOlJlcG9zaXRvcnk4OTMyMzYzMA==",
+  "name": "jsr311",
+  "full_name": "javaee/jsr311",
+  "private": false,
+  "owner": {
+    "login": "javaee",
+    "id": 23086798,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjIzMDg2Nzk4",
+    "avatar_url": "https://avatars.githubusercontent.com/u/23086798?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/javaee",
+    "html_url": "https://github.com/javaee",
+    "followers_url": "https://api.github.com/users/javaee/followers",
+    "following_url": "https://api.github.com/users/javaee/following{/other_user}",
+    "gists_url": "https://api.github.com/users/javaee/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/javaee/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/javaee/subscriptions",
+    "organizations_url": "https://api.github.com/users/javaee/orgs",
+    "repos_url": "https://api.github.com/users/javaee/repos",
+    "events_url": "https://api.github.com/users/javaee/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/javaee/received_events",
+    "type": "Organization",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "html_url": "https://github.com/javaee/jsr311",
+  "description": "Legacy JAX-RS (JSR-311) spec. development. Please use the link below for the latest project details",
+  "fork": false,
+  "url": "https://api.github.com/repos/javaee/jsr311",
+  "forks_url": "https://api.github.com/repos/javaee/jsr311/forks",
+  "keys_url": "https://api.github.com/repos/javaee/jsr311/keys{/key_id}",
+  "collaborators_url": "https://api.github.com/repos/javaee/jsr311/collaborators{/collaborator}",
+  "teams_url": "https://api.github.com/repos/javaee/jsr311/teams",
+  "hooks_url": "https://api.github.com/repos/javaee/jsr311/hooks",
+  "issue_events_url": "https://api.github.com/repos/javaee/jsr311/issues/events{/number}",
+  "events_url": "https://api.github.com/repos/javaee/jsr311/events",
+  "assignees_url": "https://api.github.com/repos/javaee/jsr311/assignees{/user}",
+  "branches_url": "https://api.github.com/repos/javaee/jsr311/branches{/branch}",
+  "tags_url": "https://api.github.com/repos/javaee/jsr311/tags",
+  "blobs_url": "https://api.github.com/repos/javaee/jsr311/git/blobs{/sha}",
+  "git_tags_url": "https://api.github.com/repos/javaee/jsr311/git/tags{/sha}",
+  "git_refs_url": "https://api.github.com/repos/javaee/jsr311/git/refs{/sha}",
+  "trees_url": "https://api.github.com/repos/javaee/jsr311/git/trees{/sha}",
+  "statuses_url": "https://api.github.com/repos/javaee/jsr311/statuses/{sha}",
+  "languages_url": "https://api.github.com/repos/javaee/jsr311/languages",
+  "stargazers_url": "https://api.github.com/repos/javaee/jsr311/stargazers",
+  "contributors_url": "https://api.github.com/repos/javaee/jsr311/contributors",
+  "subscribers_url": "https://api.github.com/repos/javaee/jsr311/subscribers",
+  "subscription_url": "https://api.github.com/repos/javaee/jsr311/subscription",
+  "commits_url": "https://api.github.com/repos/javaee/jsr311/commits{/sha}",
+  "git_commits_url": "https://api.github.com/repos/javaee/jsr311/git/commits{/sha}",
+  "comments_url": "https://api.github.com/repos/javaee/jsr311/comments{/number}",
+  "issue_comment_url": "https://api.github.com/repos/javaee/jsr311/issues/comments{/number}",
+  "contents_url": "https://api.github.com/repos/javaee/jsr311/contents/{+path}",
+  "compare_url": "https://api.github.com/repos/javaee/jsr311/compare/{base}...{head}",
+  "merges_url": "https://api.github.com/repos/javaee/jsr311/merges",
+  "archive_url": "https://api.github.com/repos/javaee/jsr311/{archive_format}{/ref}",
+  "downloads_url": "https://api.github.com/repos/javaee/jsr311/downloads",
+  "issues_url": "https://api.github.com/repos/javaee/jsr311/issues{/number}",
+  "pulls_url": "https://api.github.com/repos/javaee/jsr311/pulls{/number}",
+  "milestones_url": "https://api.github.com/repos/javaee/jsr311/milestones{/number}",
+  "notifications_url": "https://api.github.com/repos/javaee/jsr311/notifications{?since,all,participating}",
+  "labels_url": "https://api.github.com/repos/javaee/jsr311/labels{/name}",
+  "releases_url": "https://api.github.com/repos/javaee/jsr311/releases{/id}",
+  "deployments_url": "https://api.github.com/repos/javaee/jsr311/deployments",
+  "created_at": "2017-04-25T06:07:53Z",
+  "updated_at": "2025-07-15T15:40:14Z",
+  "pushed_at": "2017-06-14T10:12:06Z",
+  "git_url": "git://github.com/javaee/jsr311.git",
+  "ssh_url": "git@github.com:javaee/jsr311.git",
+  "clone_url": "https://github.com/javaee/jsr311.git",
+  "svn_url": "https://github.com/javaee/jsr311",
+  "homepage": "https://github.com/jakartaee/rest",
+  "size": 5673,
+  "stargazers_count": 14,
+  "watchers_count": 14,
+  "language": "Java",
+  "has_issues": true,
+  "has_projects": false,
+  "has_downloads": true,
+  "has_wiki": true,
+  "has_pages": true,
+  "has_discussions": false,
+  "forks_count": 3,
+  "mirror_url": null,
+  "archived": true,
+  "disabled": false,
+  "open_issues_count": 0,
+  "license": {
+    "key": "other",
+    "name": "Other",
+    "spdx_id": "NOASSERTION",
+    "url": null,
+    "node_id": "MDc6TGljZW5zZTA="
+  },
+  "allow_forking": true,
+  "is_template": false,
+  "web_commit_signoff_required": false,
+  "has_pull_requests": true,
+  "pull_request_creation_policy": "all",
+  "topics": [
+
+  ],
+  "visibility": "public",
+  "forks": 3,
+  "open_issues": 0,
+  "watchers": 14,
+  "default_branch": "master",
+  "temp_clone_token": null,
+  "custom_properties": {
+
+  },
+  "organization": {
+    "login": "javaee",
+    "id": 23086798,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjIzMDg2Nzk4",
+    "avatar_url": "https://avatars.githubusercontent.com/u/23086798?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/javaee",
+    "html_url": "https://github.com/javaee",
+    "followers_url": "https://api.github.com/users/javaee/followers",
+    "following_url": "https://api.github.com/users/javaee/following{/other_user}",
+    "gists_url": "https://api.github.com/users/javaee/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/javaee/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/javaee/subscriptions",
+    "organizations_url": "https://api.github.com/users/javaee/orgs",
+    "repos_url": "https://api.github.com/users/javaee/repos",
+    "events_url": "https://api.github.com/users/javaee/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/javaee/received_events",
+    "type": "Organization",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "network_count": 3,
+  "subscribers_count": 7
+}
+
+ succeeded in 331ms:
+aad0fb432a1bbafee5574c5ff28834cabac53562	refs/heads/gh-pages
+39b3c097ed762f9eaa38088f05c05c2ede2f2c41	refs/heads/jsr311-api-0.4-split-entity-provider
+b82d6f60637fe2aed60b928f5c78b5701b86881a	refs/heads/jsr311-api-0.5-to-0.6
+76034028b454ddad5f927f4da54d591049fd9545	refs/heads/master
+268ed0e8b335c433a439a79674fc350f90a8a88e	refs/heads/sketch1
+
+codex
+I have the field choices now: Maven Central for sources and javadocs, GitHub’s exact `jsr311-api-1.1.1` tag for tests, and the archived `javaee/jsr311` repo for the repository URL. I’m updating only the requested discovered-metadata JSON and leaving `language` absent because this is not a Kotlin, Groovy, or Scala-specific artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+diff --git a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+index 2745151ae873239f249f13515d49ce94b97fcb8d..97f267bd4988c23bdc628cb62ba57d30709297c4
+--- a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
++++ b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
++  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-sources.jar",
++  "repository-url" : "https://github.com/javaee/jsr311",
++  "test-code-url" : "https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-javadoc.jar",
++  "description" : "The JSR 311 API defines the Java API for RESTful Web Services (JAX-RS) in the javax.ws.rs package. It provides annotations, resource contracts, request/response abstractions, and extension points used by JAX-RS runtimes to expose RESTful HTTP services."
+ }
+
+diff --git a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+index 2745151ae873239f249f13515d49ce94b97fcb8d..97f267bd4988c23bdc628cb62ba57d30709297c4
+--- a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
++++ b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
++  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-sources.jar",
++  "repository-url" : "https://github.com/javaee/jsr311",
++  "test-code-url" : "https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-javadoc.jar",
++  "description" : "The JSR 311 API defines the Java API for RESTful Web Services (JAX-RS) in the javax.ws.rs package. It provides annotations, resource contracts, request/response abstractions, and extension points used by JAX-RS runtimes to expose RESTful HTTP services."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+ succeeded in 0ms:
+{
+  "coordinates": "javax.ws.rs:jsr311-api:1.1.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-sources.jar",
+  "repository-url": "https://github.com/javaee/jsr311",
+  "test-code-url": "https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-javadoc.jar",
+  "description": "The JSR 311 API defines the Java API for RESTful Web Services (JAX-RS) in the javax.ws.rs package. It provides annotations, resource contracts, request/response abstractions, and extension points used by JAX-RS runtimes to expose RESTful HTTP services."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+index 2745151ae873239f249f13515d49ce94b97fcb8d..97f267bd4988c23bdc628cb62ba57d30709297c4
+--- a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
++++ b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
++  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-sources.jar",
++  "repository-url" : "https://github.com/javaee/jsr311",
++  "test-code-url" : "https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-javadoc.jar",
++  "description" : "The JSR 311 API defines the Java API for RESTful Web Services (JAX-RS) in the javax.ws.rs package. It provides annotations, resource contracts, request/response abstractions, and extension points used by JAX-RS runtimes to expose RESTful HTTP services."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7
+diff --git a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+index 2745151ae873239f249f13515d49ce94b97fcb8d..97f267bd4988c23bdc628cb62ba57d30709297c4
+--- a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
++++ b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
++  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-sources.jar",
++  "repository-url" : "https://github.com/javaee/jsr311",
++  "test-code-url" : "https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-javadoc.jar",
++  "description" : "The JSR 311 API defines the Java API for RESTful Web Services (JAX-RS) in the javax.ws.rs package. It provides annotations, resource contracts, request/response abstractions, and extension points used by JAX-RS runtimes to expose RESTful HTTP services."
+ }
+
+ succeeded in 173ms:
+web search: 
+web search: https://api.github.com/repos/javaee/jsr311
+web search: 
+web search: repo.maven.apache.org javax ws rs jsr311-api 1.1.1 sources javadoc jar
+web search: 
+web search: https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/test
+codex
+Updated [javax.ws.rs-jsr311-api-1.1.1.json](/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json) with the discovered metadata. Maven Central provides exact `1.1.1` source and javadoc jars, and the archived `javaee/jsr311` repo has the exact `jsr311-api-1.1.1` tag with a `test` directory. ([repo1.maven.org](https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/?utm_source=openai))
+
+I left `language` absent because this is not Kotlin, Groovy, or Scala-specific. Validated the JSON with `jq .`.
+diff --git a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+index 2745151ae873239f249f13515d49ce94b97fcb8d..97f267bd4988c23bdc628cb62ba57d30709297c4
+--- a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
++++ b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
++  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-sources.jar",
++  "repository-url" : "https://github.com/javaee/jsr311",
++  "test-code-url" : "https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-javadoc.jar",
++  "description" : "The JSR 311 API defines the Java API for RESTful Web Services (JAX-RS) in the javax.ws.rs package. It provides annotations, resource contracts, request/response abstractions, and extension points used by JAX-RS runtimes to expose RESTful HTTP services."
+ }
+
+tokens used
+96,833
+Updated [javax.ws.rs-jsr311-api-1.1.1.json](/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json) with the discovered metadata. Maven Central provides exact `1.1.1` source and javadoc jars, and the archived `javaee/jsr311` repo has the exact `jsr311-api-1.1.1` tag with a `test` directory. ([repo1.maven.org](https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/?utm_source=openai))
+
+I left `language` absent because this is not Kotlin, Groovy, or Scala-specific. Validated the JSON with `jq .`.
+Ran agent for javax.ws.rs:jsr311-api:1.1.1 (exit 0). Log: /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7/build/agent-artifact-discovery-logs/javax.ws.rs-jsr311-api-1.1.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2839-e3465db7/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 35s
+9 actionable tasks: 4 executed, 5 from cache
