@@ -314,7 +314,7 @@ public class Org_abego_treelayout_coreTest {
         private final Map<String, double[]> extents = new HashMap<>();
 
         MapBackedExtentProvider put(String node, double width, double height) {
-            extents.put(node, new double[] { width, height });
+            extents.put(node, new double[] {width, height});
             return this;
         }
 
