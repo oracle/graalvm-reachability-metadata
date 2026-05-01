@@ -1,0 +1,16 @@
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Done.
+
+Changes made:
+- Removed non-metadata failing isolated-loader test method from:
+  - `tests/src/ch.qos.reload4j/reload4j/1.2.19/src/test/java/ch_qos_reload4j/reload4j/EnhancedThrowableRendererTest.java`
+- Removed non-metadata `SocketHubAppender` tests causing native process failure from uncaught monitor-thread exceptions:
+  - `tests/src/ch.qos.reload4j/reload4j/1.2.19/src/test/java/ch_qos_reload4j/reload4j/SocketHubAppenderTest.java`
+  - `tests/src/ch.qos.reload4j/reload4j/1.2.19/src/test/java/ch_qos_reload4j/reload4j/SocketHubAppenderInnerServerMonitorTest.java`
+- Preserved the metadata-related `MDCKeySetExtractorTest` failure as instructed.
+- Did not modify metadata files.
+- Wrote report:
+  - `post-gen-interventions/ch.qos.reload4j_reload4j_1.2.19.md`
+
+Verification:
+- `./gradlew compileTestJava -Pcoordinates=ch.qos.reload4j:reload4j:1.2.19 --stacktrace` passed.
