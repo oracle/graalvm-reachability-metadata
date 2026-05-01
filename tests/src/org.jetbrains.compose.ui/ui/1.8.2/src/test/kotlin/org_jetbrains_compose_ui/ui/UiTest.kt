@@ -19,6 +19,18 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.ScrollAxisRange
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsConfiguration
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.horizontalScrollAxisRange
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.progressBarRangeInfo
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
@@ -205,6 +217,46 @@ public class UiTest {
         assertThat(paragraph.start).isEqualTo(13)
         assertThat(paragraph.end).isEqualTo(16)
         assertThat(paragraph.item.textAlign).isEqualTo(TextAlign.Center)
+    }
+
+    @Test
+    fun semanticsConfigurationStoresAccessibilityPropertiesAndActions() {
+        val semantics = SemanticsConfiguration()
+        var clickCount = 0
+
+        semantics.contentDescription = "Submit order"
+        semantics.stateDescription = "Ready"
+        semantics.role = Role.Button
+        semantics.progressBarRangeInfo = ProgressBarRangeInfo(current = 0.4f, range = 0f..1f, steps = 4)
+        semantics.horizontalScrollAxisRange = ScrollAxisRange(
+            value = { 12f },
+            maxValue = { 48f },
+            reverseScrolling = true
+        )
+        semantics.onClick(label = "Submit") {
+            clickCount += 1
+            true
+        }
+
+        assertThat(semantics[SemanticsProperties.ContentDescription]).containsExactly("Submit order")
+        assertThat(semantics[SemanticsProperties.StateDescription]).isEqualTo("Ready")
+        assertThat(semantics[SemanticsProperties.Role]).isEqualTo(Role.Button)
+
+        val progress = semantics[SemanticsProperties.ProgressBarRangeInfo]
+        assertThat(progress.current).isCloseTo(0.4f, within(0.001f))
+        assertThat(progress.range.start).isEqualTo(0f)
+        assertThat(progress.range.endInclusive).isEqualTo(1f)
+        assertThat(progress.steps).isEqualTo(4)
+
+        val scrollRange = semantics[SemanticsProperties.HorizontalScrollAxisRange]
+        assertThat(scrollRange.value()).isEqualTo(12f)
+        assertThat(scrollRange.maxValue()).isEqualTo(48f)
+        assertThat(scrollRange.reverseScrolling).isTrue()
+
+        val onClick = semantics[SemanticsActions.OnClick]
+        assertThat(onClick.label).isEqualTo("Submit")
+        assertThat(onClick.action?.invoke()).isTrue()
+        assertThat(clickCount).isEqualTo(1)
     }
 
     @Test
