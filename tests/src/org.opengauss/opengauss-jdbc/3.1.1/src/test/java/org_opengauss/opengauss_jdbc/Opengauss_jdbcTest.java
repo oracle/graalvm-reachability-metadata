@@ -72,6 +72,7 @@ class Opengauss_jdbcTest {
     void commitAndRollback() throws Exception {
         try (Connection conn = openConnection()) {
             conn.setAutoCommit(false);
+            conn.prepareStatement("DROP TABLE IF EXISTS foo").execute();
             // OpenGauss 3.1.0 does not support `CREATE TABLE foo (id INT GENERATED ALWAYS AS IDENTITY, name VARCHAR)` SQL
             conn.prepareStatement("CREATE TABLE foo (id SERIAL, name VARCHAR)").execute();
             conn.commit();
