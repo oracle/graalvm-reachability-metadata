@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.eclipse.aether.named.NamedLock;
+import org.eclipse.aether.named.NamedLockKey;
 import org.eclipse.aether.named.providers.FileLockNamedLockFactory;
 import org.eclipse.aether.named.providers.LocalReadWriteLockNamedLockFactory;
 import org.eclipse.aether.named.providers.LocalSemaphoreNamedLockFactory;
@@ -47,33 +48,34 @@ public class Maven_resolver_named_locksTest {
     @Test
     void factoryReusesNamedLockUntilEveryHandleIsClosed() {
         LocalReadWriteLockNamedLockFactory factory = new LocalReadWriteLockNamedLockFactory();
-        NamedLockSupport first = factory.getLock("repository");
-        NamedLockSupport second = factory.getLock("repository");
-        NamedLockSupport differentName = factory.getLock("metadata");
+        NamedLockSupport first = namedLockSupport(factory, "repository");
+        NamedLockSupport second = namedLockSupport(factory, "repository");
+        NamedLockSupport differentName = namedLockSupport(factory, "metadata");
 
         assertThat(first).isSameAs(second);
         assertThat(first).isNotSameAs(differentName);
-        assertThat(first.name()).isEqualTo("repository");
-        assertThat(first).hasToString("ReadWriteLockNamedLock{name='repository'}");
+        assertThat(first.key().name()).isEqualTo("repository");
+        assertThat(first.key().resources()).isEmpty();
+        assertThat(first).hasToString("ReadWriteLockNamedLock{key='NamedLockKey{name='repository', resources=[]}'}");
         assertThat(first.diagnosticState()).isEmpty();
 
         first.close();
         second.close();
 
-        NamedLockSupport replacement = factory.getLock("repository");
+        NamedLockSupport replacement = namedLockSupport(factory, "repository");
         assertThat(replacement).isNotSameAs(first);
 
         replacement.close();
         differentName.close();
-        factory.closeLock("already-closed");
+        factory.closeLock(namedLockKey("already-closed"));
         factory.shutdown();
     }
 
     @Test
     void noopProviderAcceptsEverySharedAndExclusiveRequest() throws Exception {
         NoopNamedLockFactory factory = new NoopNamedLockFactory();
-        NamedLock lock = factory.getLock("anything");
-        NamedLock competingHandle = factory.getLock("anything");
+        NamedLock lock = namedLock(factory, "anything");
+        NamedLock competingHandle = namedLock(factory, "anything");
 
         try {
             assertThat(lock.lockShared(LOCK_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
@@ -110,7 +112,7 @@ public class Maven_resolver_named_locksTest {
     @Test
     void fileLockCoordinatesReadersAndWriters(@TempDir Path tempDir) throws Exception {
         FileLockNamedLockFactory factory = new FileLockNamedLockFactory();
-        String lockName = tempDir.resolve("locks").resolve("repository.lck").toString();
+        String lockName = tempDir.resolve("locks").resolve("repository.lck").toUri().toString();
 
         assertStatefulLockCoordinatesReadersAndWriters(factory, lockName);
     }
@@ -120,7 +122,7 @@ public class Maven_resolver_named_locksTest {
         assertSharedToExclusiveUpgradeIsRejected(new LocalReadWriteLockNamedLockFactory(), "rw-upgrade");
         assertSharedToExclusiveUpgradeIsRejected(new LocalSemaphoreNamedLockFactory(), "semaphore-upgrade");
         assertSharedToExclusiveUpgradeIsRejected(
-                new FileLockNamedLockFactory(), tempDir.resolve("locks").resolve("upgrade.lck").toString());
+                new FileLockNamedLockFactory(), tempDir.resolve("locks").resolve("upgrade.lck").toUri().toString());
     }
 
     @Test
@@ -128,7 +130,7 @@ public class Maven_resolver_named_locksTest {
         assertExclusiveReentryAndSharedDowngrade(new LocalReadWriteLockNamedLockFactory(), "rw-downgrade");
         assertExclusiveReentryAndSharedDowngrade(new LocalSemaphoreNamedLockFactory(), "semaphore-downgrade");
         assertExclusiveReentryAndSharedDowngrade(
-                new FileLockNamedLockFactory(), tempDir.resolve("locks").resolve("downgrade.lck").toString());
+                new FileLockNamedLockFactory(), tempDir.resolve("locks").resolve("downgrade.lck").toUri().toString());
     }
 
     @Test
@@ -136,13 +138,13 @@ public class Maven_resolver_named_locksTest {
         assertUnlockWithoutHeldLockFails(new LocalReadWriteLockNamedLockFactory(), "rw-unlocked");
         assertUnlockWithoutHeldLockFails(new LocalSemaphoreNamedLockFactory(), "semaphore-unlocked");
         assertUnlockWithoutHeldLockFails(
-                new FileLockNamedLockFactory(), tempDir.resolve("locks").resolve("unlocked.lck").toString());
+                new FileLockNamedLockFactory(), tempDir.resolve("locks").resolve("unlocked.lck").toUri().toString());
     }
 
     @Test
     void diagnosticFactoryTracksCurrentThreadLockStateAndReturnsFailures() throws Exception {
         DiagnosticReadWriteLockFactory factory = new DiagnosticReadWriteLockFactory();
-        NamedLockSupport lock = factory.getLock("diagnostic");
+        NamedLockSupport lock = namedLockSupport(factory, "diagnostic");
         RuntimeException failure = new RuntimeException("boom");
 
         assertThat(factory.isDiagnosticEnabled()).isTrue();
@@ -220,8 +222,8 @@ public class Maven_resolver_named_locksTest {
 
     private static void assertStatefulLockCoordinatesReadersAndWriters(NamedLockFactorySupport factory, String lockName)
             throws Exception {
-        NamedLock owner = factory.getLock(lockName);
-        NamedLock competitor = factory.getLock(lockName);
+        NamedLock owner = namedLock(factory, lockName);
+        NamedLock competitor = namedLock(factory, lockName);
 
         try {
             assertThat(owner.lockShared(LOCK_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
@@ -249,7 +251,7 @@ public class Maven_resolver_named_locksTest {
 
     private static void assertSharedToExclusiveUpgradeIsRejected(NamedLockFactorySupport factory, String lockName)
             throws Exception {
-        NamedLock lock = factory.getLock(lockName);
+        NamedLock lock = namedLock(factory, lockName);
 
         try {
             assertThat(lock.lockShared(LOCK_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
@@ -264,8 +266,8 @@ public class Maven_resolver_named_locksTest {
 
     private static void assertExclusiveReentryAndSharedDowngrade(NamedLockFactorySupport factory, String lockName)
             throws Exception {
-        NamedLock owner = factory.getLock(lockName);
-        NamedLock competitor = factory.getLock(lockName);
+        NamedLock owner = namedLock(factory, lockName);
+        NamedLock competitor = namedLock(factory, lockName);
         int ownerHeldLocks = 0;
 
         try {
@@ -297,7 +299,7 @@ public class Maven_resolver_named_locksTest {
     }
 
     private static void assertUnlockWithoutHeldLockFails(NamedLockFactorySupport factory, String lockName) {
-        NamedLock lock = factory.getLock(lockName);
+        NamedLock lock = namedLock(factory, lockName);
 
         try {
             assertThatIllegalStateException()
@@ -306,6 +308,18 @@ public class Maven_resolver_named_locksTest {
         } finally {
             lock.close();
         }
+    }
+
+    private static NamedLock namedLock(NamedLockFactorySupport factory, String lockName) {
+        return factory.getLock(namedLockKey(lockName));
+    }
+
+    private static NamedLockSupport namedLockSupport(NamedLockFactorySupport factory, String lockName) {
+        return (NamedLockSupport) namedLock(factory, lockName);
+    }
+
+    private static NamedLockKey namedLockKey(String lockName) {
+        return NamedLockKey.of(lockName);
     }
 
     private static boolean lockSharedInWorker(NamedLock lock) throws Exception {
@@ -351,8 +365,8 @@ public class Maven_resolver_named_locksTest {
         }
 
         @Override
-        protected NamedLockSupport createLock(String name) {
-            return new ReadWriteLockNamedLock(name, this, new ReentrantReadWriteLock());
+        protected NamedLockSupport createLock(NamedLockKey key) {
+            return new ReadWriteLockNamedLock(key, this, new ReentrantReadWriteLock());
         }
     }
 
