@@ -205,7 +205,7 @@ public class Commons_fileupload2_coreTest {
                 part("Content-Disposition: form-data; name=\"first\"", "", "1"),
                 part("Content-Disposition: form-data; name=\"second\"", "", "2"));
         Upload requestLimitedUpload = newUpload(DiskFileItemFactory.DEFAULT_THRESHOLD);
-        requestLimitedUpload.setSizeMax(body.length - 1L);
+        requestLimitedUpload.setMaxSize(body.length - 1L);
         assertThatExceptionOfType(FileUploadSizeException.class)
                 .isThrownBy(() -> requestLimitedUpload.parseRequest(request(boundary, body)))
                 .satisfies(exception -> {
@@ -214,7 +214,7 @@ public class Commons_fileupload2_coreTest {
                 });
 
         Upload fileLimitedUpload = newUpload(DiskFileItemFactory.DEFAULT_THRESHOLD);
-        fileLimitedUpload.setFileSizeMax(3);
+        fileLimitedUpload.setMaxFileSize(3);
         byte[] largeBody = multipart(boundary,
                 part("Content-Disposition: form-data; name=\"payload\"; filename=\"payload.txt\"",
                         "Content-Length: 4",
@@ -230,7 +230,7 @@ public class Commons_fileupload2_coreTest {
                 });
 
         Upload countLimitedUpload = newUpload(DiskFileItemFactory.DEFAULT_THRESHOLD);
-        countLimitedUpload.setFileCountMax(1);
+        countLimitedUpload.setMaxFileCount(1);
         assertThatExceptionOfType(FileUploadFileCountLimitException.class)
                 .isThrownBy(() -> countLimitedUpload.parseRequest(request(boundary, body)))
                 .satisfies(exception -> {
