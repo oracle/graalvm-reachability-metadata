@@ -343,7 +343,7 @@ public class Maven_resolver_apiTest {
     void metadataAndResolutionResultsModelFilesPropertiesFailuresAndRepositories(@TempDir Path tempDir) {
         File metadataFile = tempDir.resolve("maven-metadata.xml").toFile();
         Metadata metadata = new DefaultMetadata("org.example", "demo", "1.0.0", "maven-metadata.xml",
-                Metadata.Nature.RELEASE_OR_SNAPSHOT, Map.of("checksum", "sha1"), null);
+                Metadata.Nature.RELEASE_OR_SNAPSHOT, Map.of("checksum", "sha1"), (Path) null);
 
         assertThat(metadata.getGroupId()).isEqualTo("org.example");
         assertThat(metadata.getArtifactId()).isEqualTo("demo");
