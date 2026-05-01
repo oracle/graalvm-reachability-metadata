@@ -11,13 +11,10 @@ import ch.qos.logback.core.util.EnvUtil;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
-import java.net.URL;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class EnvUtilTest {
     private static final String JANINO_SCRIPT_EVALUATOR_CLASS = "org.codehaus.janino.ScriptEvaluator";
-    private static final String JANINO_SCRIPT_EVALUATOR_RESOURCE = "org/codehaus/janino/ScriptEvaluator.class";
     private static final String MISSING_CLASS = "ch_qos_logback.logback_core.MissingEnvUtilTarget";
 
     @Test
@@ -47,12 +44,9 @@ public class EnvUtilTest {
     }
 
     @Test
-    void isJaninoAvailableMatchesRuntimeClasspath() {
+    void isJaninoAvailableLoadsOptionalJaninoClassWhenPresent() {
         try {
-            URL janinoClassResource = EnvUtilTest.class.getClassLoader().getResource(JANINO_SCRIPT_EVALUATOR_RESOURCE);
-            boolean expectedAvailable = janinoClassResource != null;
-
-            assertThat(EnvUtil.isJaninoAvailable()).isEqualTo(expectedAvailable);
+            assertThat(EnvUtil.isJaninoAvailable()).isTrue();
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
