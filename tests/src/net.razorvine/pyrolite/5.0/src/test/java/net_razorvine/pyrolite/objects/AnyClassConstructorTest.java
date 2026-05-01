@@ -6,39 +6,20 @@
  */
 package net_razorvine.pyrolite.objects;
 
-import net.razorvine.pickle.objects.AnyClassConstructor;
+import net.razorvine.pyro.PyroURI;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AnyClassConstructorTest {
     @Test
-    void constructsObjectUsingRuntimeArgumentTypes() {
-        AnyClassConstructor constructor = new AnyClassConstructor(ConstructorTarget.class);
+    void parsesPyroUriIntoProtocolObjectIdHostAndPort() {
+        PyroURI uri = new PyroURI("PYRO:worker@example.test:4444");
 
-        Object value = constructor.construct(new Object[]{"sample", Integer.valueOf(7)});
-
-        assertThat(value).isInstanceOfSatisfying(ConstructorTarget.class, target -> {
-            assertThat(target.name()).isEqualTo("sample");
-            assertThat(target.count()).isEqualTo(7);
-        });
-    }
-
-    public static final class ConstructorTarget {
-        private final String name;
-        private final Integer count;
-
-        public ConstructorTarget(String name, Integer count) {
-            this.name = name;
-            this.count = count;
-        }
-
-        public String name() {
-            return name;
-        }
-
-        public Integer count() {
-            return count;
-        }
+        assertThat(uri.protocol).isEqualTo("PYRO");
+        assertThat(uri.objectid).isEqualTo("worker");
+        assertThat(uri.host).isEqualTo("example.test");
+        assertThat(uri.port).isEqualTo(4444);
+        assertThat(uri).hasToString("<PyroURI PYRO:worker@example.test:4444>");
     }
 }

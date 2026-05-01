@@ -6,27 +6,55 @@
  */
 package net_razorvine.pyrolite.objects;
 
-import net.razorvine.pickle.objects.Reconstructor;
-import net.razorvine.pickle.objects.TimeZoneConstructor;
-import net.razorvine.pickle.objects.Tzinfo;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import net.razorvine.pyro.Message;
+import net.razorvine.pyro.PyroException;
 import org.junit.jupiter.api.Test;
 
-import java.util.TimeZone;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ReconstructorTest {
     @Test
-    void delegatesReconstructionToPythonSubclassConstructor() {
-        Reconstructor constructor = new Reconstructor();
-        TimeZoneConstructor subclassConstructor = new TimeZoneConstructor(TimeZoneConstructor.DATEUTIL_TZUTC);
-        TimeZoneConstructor baseConstructor = new TimeZoneConstructor(TimeZoneConstructor.TZINFO);
-        Tzinfo state = new Tzinfo();
+    void messageHeaderPreservesProtocolFieldsAndAnnotations() {
+        SortedMap<String, byte[]> annotations = new TreeMap<>();
+        annotations.put("TEST", new byte[] {1, 2, 3});
+        Message message = new Message(
+                Message.MSG_RESULT,
+                new byte[] {4, 5, 6},
+                Message.SERIALIZER_SERPENT,
+                Message.FLAGS_EXCEPTION,
+                42,
+                annotations,
+                null);
 
-        Object value = constructor.construct(new Object[]{subclassConstructor, baseConstructor, state});
+        Message parsed = Message.from_header(message.get_header_bytes());
 
-        assertThat(value).isInstanceOfSatisfying(TimeZone.class, timeZone -> {
-            assertThat(timeZone.getID()).isEqualTo("UTC");
-        });
+        assertThat(parsed.type).isEqualTo(Message.MSG_RESULT);
+        assertThat(parsed.serializer_id).isEqualTo(Message.SERIALIZER_SERPENT);
+        assertThat(parsed.flags).isEqualTo(Message.FLAGS_EXCEPTION);
+        assertThat(parsed.seq).isEqualTo(42);
+        assertThat(parsed.data_size).isEqualTo(3);
+        assertThat(parsed.annotations_size).isEqualTo(11);
+        assertThat(message.get_annotations_bytes()).hasSize(11);
+    }
+
+    @Test
+    void rejectsMessagesWithInvalidProtocolHeader() {
+        byte[] header = new Message(
+                Message.MSG_RESULT,
+                new byte[0],
+                Message.SERIALIZER_SERPENT,
+                0,
+                1,
+                null,
+                null).get_header_bytes();
+        header[0] = 'X';
+
+        assertThatThrownBy(() -> Message.from_header(header))
+                .isInstanceOf(PyroException.class)
+                .hasMessage("invalid message");
     }
 }

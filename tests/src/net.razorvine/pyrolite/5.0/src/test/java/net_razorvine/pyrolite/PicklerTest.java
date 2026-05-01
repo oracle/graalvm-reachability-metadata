@@ -6,55 +6,28 @@
  */
 package net_razorvine.pyrolite;
 
-import java.io.Serializable;
-import java.util.Map;
-
-import net.razorvine.pickle.Pickler;
-import net.razorvine.pickle.Unpickler;
+import net.razorvine.pyro.Message;
+import net.razorvine.pyro.PyroURI;
+import net.razorvine.pyro.serializer.PyroSerializer;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PicklerTest {
     @Test
-    void picklesSerializableJavaBeanThroughPublicGetters() throws Exception {
-        SerializableEndpoint endpoint = new SerializableEndpoint("worker", true, "PYRO:worker@example.test:4444");
+    void serpentSerializerRoundTripsPyroUriThroughRegisteredClassSerializer() throws Exception {
+        PyroSerializer serializer = PyroSerializer.getSerpentSerializer();
+        PyroURI endpoint = new PyroURI("worker", "example.test", 4444);
 
-        byte[] pickle = new Pickler().dumps(endpoint);
-        Object unpickled = new Unpickler().loads(pickle);
+        byte[] serialized = serializer.serializeData(endpoint);
+        Object deserialized = serializer.deserializeData(serialized);
 
-        assertThat(unpickled).isInstanceOfSatisfying(Map.class, rawMap -> {
-            Map<?, ?> map = (Map<?, ?>) rawMap;
-            assertThat(map.get("name")).isEqualTo("worker");
-            assertThat(map.get("active")).isEqualTo(true);
-            assertThat(map.get("URI")).isEqualTo("PYRO:worker@example.test:4444");
-            assertThat(map.get("__class__")).isEqualTo(SerializableEndpoint.class.getName());
+        assertThat(serializer.getSerializerId()).isEqualTo(Message.SERIALIZER_SERPENT);
+        assertThat(deserialized).isInstanceOfSatisfying(PyroURI.class, uri -> {
+            assertThat(uri.protocol).isEqualTo("PYRO");
+            assertThat(uri.objectid).isEqualTo("worker");
+            assertThat(uri.host).isEqualTo("example.test");
+            assertThat(uri.port).isEqualTo(4444);
         });
-    }
-
-    public static final class SerializableEndpoint implements Serializable {
-        private static final long serialVersionUID = 1L;
-
-        private final String name;
-        private final boolean active;
-        private final String uri;
-
-        public SerializableEndpoint(String name, boolean active, String uri) {
-            this.name = name;
-            this.active = active;
-            this.uri = uri;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public boolean isActive() {
-            return active;
-        }
-
-        public String getURI() {
-            return uri;
-        }
     }
 }

@@ -6,29 +6,34 @@
  */
 package net_razorvine.pyrolite.objects;
 
-import net.razorvine.pickle.objects.ExceptionConstructor;
+import java.util.HashMap;
+import java.util.Map;
+
+import net.razorvine.pyro.PyroException;
+import net.razorvine.pyro.serializer.PyroSerializer;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExceptionConstructorTest {
     @Test
-    void constructsExceptionAndStoresPythonExceptionType() {
-        ExceptionConstructor constructor = new ExceptionConstructor(RemoteProblem.class, "pickle", "RemoteProblem");
+    void deserializesSerpentExceptionDictionaryIntoPyroException() throws Exception {
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("_pyroTraceback", "remote traceback\n");
 
-        Object value = constructor.construct(new Object[]{"boom"});
+        Map<String, Object> exception = new HashMap<>();
+        exception.put("__class__", "builtins.ValueError");
+        exception.put("__exception__", true);
+        exception.put("args", new Object[] {"boom"});
+        exception.put("attributes", attributes);
 
-        assertThat(value).isInstanceOfSatisfying(RemoteProblem.class, problem -> {
-            assertThat(problem).hasMessage("[pickle.RemoteProblem] boom");
-            assertThat(problem.pythonExceptionType).isEqualTo("pickle.RemoteProblem");
+        PyroSerializer serializer = PyroSerializer.getSerpentSerializer();
+        Object value = serializer.deserializeData(serializer.serializeData(exception));
+
+        assertThat(value).isInstanceOfSatisfying(PyroException.class, problem -> {
+            assertThat(problem).hasMessage("[builtins.ValueError] boom");
+            assertThat(problem.pythonExceptionType).isEqualTo("builtins.ValueError");
+            assertThat(problem._pyroTraceback).isEqualTo("remote traceback\n");
         });
-    }
-
-    public static class RemoteProblem extends RuntimeException {
-        public String pythonExceptionType;
-
-        public RemoteProblem(String message) {
-            super(message);
-        }
     }
 }

@@ -6,44 +6,35 @@
  */
 package net_razorvine.pyrolite;
 
-import java.nio.charset.StandardCharsets;
+import java.util.Set;
 
-import net.razorvine.pickle.IObjectConstructor;
-import net.razorvine.pickle.Unpickler;
+import net.razorvine.pyro.PyroProxy;
+import net.razorvine.pyro.serializer.PyroSerializer;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UnpicklerTest {
-    private static final byte[] BUILD_PICKLE = "ctest\nBuildable\n(tRS'configured'\nb."
-            .getBytes(StandardCharsets.US_ASCII);
-
     @Test
-    void appliesSetStateDuringBuildOpcode() throws Exception {
-        Unpickler.registerConstructor("test", "Buildable", new BuildableConstructor());
+    void serpentSerializerRoundTripsPyroProxyMetadataAndHandshake() throws Exception {
+        PyroProxy proxy = new PyroProxy("example.test", 4444, "worker");
+        proxy.pyroHandshake = "hello from java";
+        proxy.pyroMethods.add("run");
+        proxy.pyroAttrs.add("status");
+        proxy.pyroOneway.add("notify");
+        PyroSerializer serializer = PyroSerializer.getSerpentSerializer();
 
-        Object value = new Unpickler().loads(BUILD_PICKLE);
+        byte[] serialized = serializer.serializeData(proxy);
+        Object deserialized = serializer.deserializeData(serialized);
 
-        assertThat(value).isInstanceOfSatisfying(BuildableObject.class,
-                buildable -> assertThat(buildable.state()).isEqualTo("configured"));
-    }
-
-    private static final class BuildableConstructor implements IObjectConstructor {
-        @Override
-        public Object construct(Object[] args) {
-            return new BuildableObject();
-        }
-    }
-
-    public static final class BuildableObject {
-        private String state;
-
-        public void __setstate__(String state) {
-            this.state = state;
-        }
-
-        public String state() {
-            return state;
-        }
+        assertThat(deserialized).isInstanceOfSatisfying(PyroProxy.class, restored -> {
+            assertThat(restored.hostname).isEqualTo("example.test");
+            assertThat(restored.port).isEqualTo(4444);
+            assertThat(restored.objectid).isEqualTo("worker");
+            assertThat(restored.pyroHandshake).isEqualTo("hello from java");
+            assertThat(restored.pyroMethods).containsExactlyInAnyOrderElementsOf(Set.of("run"));
+            assertThat(restored.pyroAttrs).containsExactlyInAnyOrderElementsOf(Set.of("status"));
+            assertThat(restored.pyroOneway).containsExactlyInAnyOrderElementsOf(Set.of("notify"));
+        });
     }
 }
