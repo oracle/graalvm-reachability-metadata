@@ -8,7 +8,7 @@ package cn_hutool.hutool_all;
 
 import org.junit.jupiter.api.Test;
 
-class Hutool_allTest {
+public class Hutool_allTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
