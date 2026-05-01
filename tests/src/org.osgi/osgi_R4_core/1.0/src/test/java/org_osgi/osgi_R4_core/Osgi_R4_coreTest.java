@@ -8,7 +8,7 @@ package org_osgi.osgi_R4_core;
 
 import org.junit.jupiter.api.Test;
 
-class Osgi_R4_coreTest {
+public class Osgi_R4_coreTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
