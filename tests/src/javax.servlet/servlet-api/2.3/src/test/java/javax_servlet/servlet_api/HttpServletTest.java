@@ -8,8 +8,14 @@ package javax_servlet.servlet_api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,11 +27,81 @@ public class HttpServletTest {
         assertThat(servlet.invokeGetLastModified()).isEqualTo(-1L);
     }
 
+    @Test
+    void doOptionsDiscoversSupportedMethodsFromDeclaredServletMethods() throws ServletException, IOException {
+        final ExposedHttpServlet servlet = new ExposedHttpServlet();
+        final RecordedResponse response = new RecordedResponse();
+
+        servlet.invokeDoOptions(response.asHttpServletResponse());
+
+        assertThat(response.headerName()).isEqualTo("Allow");
+        assertThat(response.headerValue()).isEqualTo("GET, HEAD, POST, TRACE, OPTIONS");
+    }
+
     private static final class ExposedHttpServlet extends HttpServlet {
         long invokeGetLastModified() {
             final HttpServletRequest request = null;
 
             return super.getLastModified(request);
         }
+
+        void invokeDoOptions(final HttpServletResponse response) throws ServletException, IOException {
+            final HttpServletRequest request = null;
+
+            super.doOptions(request, response);
+        }
+
+        @Override
+        protected void doGet(final HttpServletRequest request, final HttpServletResponse response) {
+        }
+
+        @Override
+        protected void doPost(final HttpServletRequest request, final HttpServletResponse response) {
+        }
+    }
+
+    private static final class RecordedResponse {
+        private String headerName;
+        private String headerValue;
+
+        HttpServletResponse asHttpServletResponse() {
+            return (HttpServletResponse) Proxy.newProxyInstance(
+                    HttpServletTest.class.getClassLoader(),
+                    new Class<?>[]{HttpServletResponse.class},
+                    this::handleInvocation);
+        }
+
+        String headerName() {
+            return headerName;
+        }
+
+        String headerValue() {
+            return headerValue;
+        }
+
+        private Object handleInvocation(final Object proxy, final Method method, final Object[] arguments) {
+            if (isObjectMethod(method)) {
+                return handleObjectMethod(proxy, method, arguments);
+            }
+            if (method.getName().equals("setHeader") && arguments.length == 2) {
+                headerName = (String) arguments[0];
+                headerValue = (String) arguments[1];
+                return null;
+            }
+            throw new UnsupportedOperationException(method.toGenericString());
+        }
+    }
+
+    private static boolean isObjectMethod(final Method method) {
+        return method.getDeclaringClass().equals(Object.class);
+    }
+
+    private static Object handleObjectMethod(final Object proxy, final Method method, final Object[] arguments) {
+        return switch (method.getName()) {
+            case "equals" -> proxy == arguments[0];
+            case "hashCode" -> System.identityHashCode(proxy);
+            case "toString" -> proxy.getClass().getName();
+            default -> throw new UnsupportedOperationException(method.toGenericString());
+        };
     }
 }
