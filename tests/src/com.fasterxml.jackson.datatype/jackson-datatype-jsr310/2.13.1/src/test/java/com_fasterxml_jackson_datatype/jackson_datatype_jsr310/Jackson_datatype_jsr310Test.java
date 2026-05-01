@@ -102,6 +102,19 @@ public class Jackson_datatype_jsr310Test {
     }
 
     @Test
+    void supportsObjectMapperModuleAutoDiscovery() throws Exception {
+        ObjectMapper mapper = new ObjectMapper()
+                .findAndRegisterModules()
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        MonthDay leapDay = MonthDay.of(2, 29);
+
+        String json = mapper.writeValueAsString(leapDay);
+
+        assertThat(json).isEqualTo("\"--02-29\"");
+        assertThat(mapper.readValue(json, MonthDay.class)).isEqualTo(leapDay);
+    }
+
+    @Test
     void supportsArrayAndNumericTimestampRepresentations() throws Exception {
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
         LocalDate date = LocalDate.of(2020, 2, 29);
