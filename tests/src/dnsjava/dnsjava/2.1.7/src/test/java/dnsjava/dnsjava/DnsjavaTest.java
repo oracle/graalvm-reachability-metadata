@@ -8,7 +8,7 @@ package dnsjava.dnsjava;
 
 import org.junit.jupiter.api.Test;
 
-class DnsjavaTest {
+public class DnsjavaTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");

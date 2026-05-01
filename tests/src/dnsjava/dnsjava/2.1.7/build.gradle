@@ -15,7 +15,16 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    jvmArgs += ["--add-exports=java.base/sun.net.dns=ALL-UNNAMED"]
+}
+
 graalvmNative {
+    binaries {
+        all {
+            buildArgs.add('--add-exports=java.base/sun.net.dns=ALL-UNNAMED')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
