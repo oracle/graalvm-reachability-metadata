@@ -10,6 +10,12 @@ import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.io.resource.NoResourceException;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ClassPathResourceTest {
@@ -44,6 +50,48 @@ public class ClassPathResourceTest {
                     .hasMessageContaining(resourcePath);
         } finally {
             currentThread.setContextClassLoader(originalClassLoader);
+        }
+    }
+
+    @Test
+    public void invokesSystemLookupWhenNoClassOrClassLoaderIsAvailable() throws Exception {
+        String resourcePath = "cn_hutool/hutool_all/missing-system-resource.txt";
+        ClassPathResource resource = new ClassPathResource(resourcePath, new FixedUrlClassLoader());
+        setField(resource, "clazz", null);
+        setField(resource, "classLoader", null);
+        Method initUrl = ClassPathResource.class.getDeclaredMethod("initUrl");
+        initUrl.setAccessible(true);
+
+        assertThatThrownBy(() -> invokeInitUrl(resource, initUrl))
+                .isInstanceOf(NoResourceException.class)
+                .hasMessageContaining(resourcePath);
+    }
+
+    private static void setField(ClassPathResource resource, String fieldName, Object value)
+            throws ReflectiveOperationException {
+        Field field = ClassPathResource.class.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(resource, value);
+    }
+
+    private static void invokeInitUrl(ClassPathResource resource, Method initUrl) throws Throwable {
+        try {
+            initUrl.invoke(resource);
+        } catch (InvocationTargetException exception) {
+            throw exception.getCause();
+        }
+    }
+
+    private static class FixedUrlClassLoader extends ClassLoader {
+        private final URL resourceUrl;
+
+        FixedUrlClassLoader() throws MalformedURLException {
+            this.resourceUrl = new URL("file:/class-path-resource-fixture");
+        }
+
+        @Override
+        public URL getResource(String name) {
+            return resourceUrl;
         }
     }
 }
