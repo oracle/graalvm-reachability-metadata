@@ -24,6 +24,9 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -165,6 +168,32 @@ public class Quarkus_fs_utilTest {
         try (FileSystem zipFileSystem = ZipUtils.newFileSystem(zip)) {
             assertThat(Files.readString(zipFileSystem.getPath("META-INF/example.txt"), StandardCharsets.UTF_8))
                     .isEqualTo("created");
+        }
+    }
+
+    @Test
+    void reproducibleZipFileSystemNormalizesEntryTimestampsAndUnixPermissions() throws Exception {
+        Instant entryTime = Instant.parse("2021-04-05T06:07:08Z");
+        Path zip = tempDir.resolve("normalized-attributes.zip");
+
+        try (FileSystem zipFileSystem = ZipUtils.createNewReproducibleZipFileSystem(zip, entryTime)) {
+            Files.createDirectories(zipFileSystem.getPath("assets"));
+            Files.writeString(zipFileSystem.getPath("assets/data.txt"), "normalized", StandardCharsets.UTF_8);
+        }
+
+        FileTime expectedTime = FileTime.fromMillis(entryTime.toEpochMilli());
+        Set<PosixFilePermission> expectedDirectoryPermissions = PosixFilePermissions.fromString("rwxr-xr-x");
+        Set<PosixFilePermission> expectedFilePermissions = PosixFilePermissions.fromString("rw-r--r--");
+        try (FileSystem zipFileSystem = ZipUtils.newFileSystem(
+                ZipUtils.toZipUri(zip), Map.of("enablePosixFileAttributes", "true"))) {
+            Path directory = zipFileSystem.getPath("assets");
+            Path file = zipFileSystem.getPath("assets/data.txt");
+
+            assertThat(Files.getLastModifiedTime(directory)).isEqualTo(expectedTime);
+            assertThat(Files.getLastModifiedTime(file)).isEqualTo(expectedTime);
+            assertThat(Files.getPosixFilePermissions(directory)).isEqualTo(expectedDirectoryPermissions);
+            assertThat(Files.getPosixFilePermissions(file)).isEqualTo(expectedFilePermissions);
+            assertThat(Files.readString(file, StandardCharsets.UTF_8)).isEqualTo("normalized");
         }
     }
 
