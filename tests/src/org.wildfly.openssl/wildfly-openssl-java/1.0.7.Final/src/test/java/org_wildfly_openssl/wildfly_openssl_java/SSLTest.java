@@ -122,6 +122,9 @@ public class SSLTest {
 
     private static Path findJvmLibrary() {
         String javaHome = System.getProperty("java.home");
+        if (javaHome == null || javaHome.isBlank()) {
+            return null;
+        }
         List<Path> candidates = Arrays.asList(
                 Paths.get(javaHome, "lib", System.mapLibraryName("java")),
                 Paths.get(javaHome, "bin", System.mapLibraryName("java")),
