@@ -9,6 +9,7 @@ package org_apache_kerby.kerby_pkix;
 import org.apache.kerby.asn1.Asn1;
 import org.apache.kerby.asn1.type.Asn1BitString;
 import org.apache.kerby.asn1.type.Asn1Boolean;
+import org.apache.kerby.asn1.type.Asn1GeneralizedTime;
 import org.apache.kerby.asn1.type.Asn1IA5String;
 import org.apache.kerby.asn1.type.Asn1Integer;
 import org.apache.kerby.asn1.type.Asn1ObjectIdentifier;
@@ -34,18 +35,23 @@ import org.apache.kerby.x509.type.AlgorithmIdentifier;
 import org.apache.kerby.x509.type.AttCertValidityPeriod;
 import org.apache.kerby.x509.type.AuthorityKeyIdentifier;
 import org.apache.kerby.x509.type.BasicConstraints;
+import org.apache.kerby.x509.type.CRLNumber;
 import org.apache.kerby.x509.type.Certificate;
 import org.apache.kerby.x509.type.CertificateSerialNumber;
 import org.apache.kerby.x509.type.DSAParameter;
 import org.apache.kerby.x509.type.DhParameter;
 import org.apache.kerby.x509.type.DirectoryString;
 import org.apache.kerby.x509.type.DisplayText;
+import org.apache.kerby.x509.type.ExtendedKeyUsage;
 import org.apache.kerby.x509.type.Extension;
 import org.apache.kerby.x509.type.Extensions;
 import org.apache.kerby.x509.type.GeneralName;
 import org.apache.kerby.x509.type.GeneralNames;
 import org.apache.kerby.x509.type.KeyIdentifier;
+import org.apache.kerby.x509.type.KeyPurposeId;
 import org.apache.kerby.x509.type.KeyUsage;
+import org.apache.kerby.x509.type.PrivateKeyUsagePeriod;
+import org.apache.kerby.x509.type.SubjectKeyIdentifier;
 import org.apache.kerby.x509.type.SubjectPublicKeyInfo;
 import org.apache.kerby.x509.type.TBSCertificate;
 import org.junit.jupiter.api.Test;
@@ -280,6 +286,46 @@ public class Kerby_pkixTest {
         AttributeTypeAndValue signerIssuerCommonName = decodedIssuerAndSerialNumber.getIssuer().getName()
                 .getElements().get(0).getElements().get(0);
         assertThat(attributeValue(signerIssuerCommonName)).isEqualTo("signer.example.test");
+    }
+
+    @Test
+    void x509ExtensionValueTypesExposeExtendedKeyUsageIdentifiersAndKeyUsagePeriods() throws Exception {
+        KeyPurposeId serverAuthPurpose = new KeyPurposeId();
+        serverAuthPurpose.setValue("1.3.6.1.5.5.7.3.1");
+        KeyPurposeId decodedServerAuthPurpose = new KeyPurposeId();
+        decodedServerAuthPurpose.decode(Asn1.encode(serverAuthPurpose));
+        assertThat(decodedServerAuthPurpose.getValue()).isEqualTo("1.3.6.1.5.5.7.3.1");
+
+        KeyPurposeId clientAuthPurpose = new KeyPurposeId();
+        clientAuthPurpose.setValue("1.3.6.1.5.5.7.3.2");
+        ExtendedKeyUsage extendedKeyUsage = new ExtendedKeyUsage();
+        extendedKeyUsage.addElement(serverAuthPurpose);
+        extendedKeyUsage.addElement(clientAuthPurpose);
+        assertThat(extendedKeyUsage.getElements()).hasSize(2);
+        assertThat(extendedKeyUsage.getElements().get(0).getValue()).isEqualTo("1.3.6.1.5.5.7.3.1");
+        assertThat(extendedKeyUsage.getElements().get(1).getValue()).isEqualTo("1.3.6.1.5.5.7.3.2");
+        assertThat(Asn1.encode(extendedKeyUsage)).isNotEmpty();
+
+        SubjectKeyIdentifier subjectKeyIdentifier = new SubjectKeyIdentifier();
+        subjectKeyIdentifier.setValue(new byte[] {0x01, 0x23, 0x45, 0x67});
+        SubjectKeyIdentifier decodedSubjectKeyIdentifier = new SubjectKeyIdentifier();
+        decodedSubjectKeyIdentifier.decode(Asn1.encode(subjectKeyIdentifier));
+        assertThat(decodedSubjectKeyIdentifier.getValue()).containsExactly(new byte[] {0x01, 0x23, 0x45, 0x67});
+
+        CRLNumber crlNumber = new CRLNumber();
+        crlNumber.setValue(BigInteger.valueOf(98_765L));
+        CRLNumber decodedCrlNumber = new CRLNumber();
+        decodedCrlNumber.decode(Asn1.encode(crlNumber));
+        assertThat(decodedCrlNumber.getValue()).isEqualTo(BigInteger.valueOf(98_765L));
+
+        Date notBeforeDate = new Date(1_704_067_200_000L);
+        Date notAfterDate = new Date(1_735_689_600_000L);
+        PrivateKeyUsagePeriod privateKeyUsagePeriod = new PrivateKeyUsagePeriod();
+        privateKeyUsagePeriod.setNotBeforeTime(new Asn1GeneralizedTime(notBeforeDate));
+        privateKeyUsagePeriod.setNotAfterTime(new Asn1GeneralizedTime(notAfterDate));
+        assertThat(privateKeyUsagePeriod.getNotBeforeTime().getValue()).isEqualTo(notBeforeDate);
+        assertThat(privateKeyUsagePeriod.getNotAfterTime().getValue()).isEqualTo(notAfterDate);
+        assertThat(Asn1.encode(privateKeyUsagePeriod)).isNotEmpty();
     }
 
     @Test
