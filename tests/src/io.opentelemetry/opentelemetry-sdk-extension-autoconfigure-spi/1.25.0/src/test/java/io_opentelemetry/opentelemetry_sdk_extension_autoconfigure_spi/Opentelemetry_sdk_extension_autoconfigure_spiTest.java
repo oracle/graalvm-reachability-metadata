@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapGetter;
@@ -24,6 +25,7 @@ import io.opentelemetry.sdk.autoconfigure.spi.logs.ConfigurableLogRecordExporter
 import io.opentelemetry.sdk.autoconfigure.spi.metrics.ConfigurableMetricExporterProvider;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSamplerProvider;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
+import io.opentelemetry.sdk.autoconfigure.spi.traces.SdkTracerProviderConfigurer;
 import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.logs.data.LogRecordData;
 import io.opentelemetry.sdk.logs.export.LogRecordExporter;
@@ -32,6 +34,11 @@ import io.opentelemetry.sdk.metrics.data.AggregationTemporality;
 import io.opentelemetry.sdk.metrics.data.MetricData;
 import io.opentelemetry.sdk.metrics.export.MetricExporter;
 import io.opentelemetry.sdk.resources.Resource;
+import io.opentelemetry.sdk.trace.ReadWriteSpan;
+import io.opentelemetry.sdk.trace.ReadableSpan;
+import io.opentelemetry.sdk.trace.SdkTracerProvider;
+import io.opentelemetry.sdk.trace.SdkTracerProviderBuilder;
+import io.opentelemetry.sdk.trace.SpanProcessor;
 import io.opentelemetry.sdk.trace.data.LinkData;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
@@ -292,6 +299,34 @@ public class Opentelemetry_sdk_extension_autoconfigure_spiTest {
     }
 
     @Test
+    void tracerProviderConfigurerUsesConfigurationToCustomizeBuilder() {
+        ConfigProperties configProperties = new MapBackedConfigProperties(Map.of("record.spans", Boolean.TRUE));
+        RecordingSpanProcessor spanProcessor = new RecordingSpanProcessor();
+        SdkTracerProviderConfigurer configurer = new SdkTracerProviderConfigurer() {
+            @Override
+            public void configure(SdkTracerProviderBuilder builder, ConfigProperties config) {
+                if (config.getBoolean("record.spans", false)) {
+                    builder.addSpanProcessor(spanProcessor);
+                }
+            }
+        };
+        SdkTracerProviderBuilder builder = SdkTracerProvider.builder();
+
+        configurer.configure(builder, configProperties);
+        SdkTracerProvider tracerProvider = builder.build();
+        try {
+            Span span = tracerProvider.get("configured-test").spanBuilder("configured-span").startSpan();
+            span.end();
+
+            assertThat(spanProcessor.startedSpanNames).containsExactly("configured-span");
+            assertThat(spanProcessor.endedSpanNames).containsExactly("configured-span");
+            assertThat(tracerProvider.forceFlush().isSuccess()).isTrue();
+        } finally {
+            tracerProvider.shutdown();
+        }
+    }
+
+    @Test
     void autoConfigurationCustomizerDefaultExtensionPointsAreChainableNoOps() {
         RecordingAutoConfigurationCustomizer customizer = new RecordingAutoConfigurationCustomizer();
 
@@ -464,6 +499,31 @@ public class Opentelemetry_sdk_extension_autoconfigure_spiTest {
                         logRecordExporterCustomizer) {
             logRecordExporterCustomizers.add(logRecordExporterCustomizer);
             return this;
+        }
+    }
+
+    private static final class RecordingSpanProcessor implements SpanProcessor {
+        private final List<String> startedSpanNames = new ArrayList<>();
+        private final List<String> endedSpanNames = new ArrayList<>();
+
+        @Override
+        public void onStart(Context parentContext, ReadWriteSpan span) {
+            startedSpanNames.add(span.getName());
+        }
+
+        @Override
+        public boolean isStartRequired() {
+            return true;
+        }
+
+        @Override
+        public void onEnd(ReadableSpan span) {
+            endedSpanNames.add(span.getName());
+        }
+
+        @Override
+        public boolean isEndRequired() {
+            return true;
         }
     }
 
