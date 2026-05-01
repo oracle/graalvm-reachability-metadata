@@ -65,9 +65,10 @@ public class ReflectorTest {
     }
 
     @Test
-    void reportsObjectPropertyLookupFailuresFromLegacyFieldLookup() {
+    void reportsObjectPropertyAccessorFailuresFromLegacyClassFieldLookup() {
         assertThatThrownBy(() -> reflector.getObjectProperty(new BeanWithAccessor(), "value"))
             .isInstanceOf(ReflectorException.class)
+            .hasCauseInstanceOf(NoSuchFieldException.class)
             .hasMessageContaining("value");
     }
 
