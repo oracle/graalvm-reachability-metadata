@@ -8,7 +8,7 @@ package com_google_auto_value.auto_value;
 
 import org.junit.jupiter.api.Test;
 
-class Auto_valueTest {
+public class Auto_valueTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
