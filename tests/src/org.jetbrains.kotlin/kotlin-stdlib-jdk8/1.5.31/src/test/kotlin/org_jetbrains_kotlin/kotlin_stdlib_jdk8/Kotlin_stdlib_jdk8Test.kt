@@ -180,4 +180,17 @@ public class Kotlin_stdlib_jdk8Test {
             assertThat(doubleValue).isGreaterThanOrEqualTo(0.25).isLessThan(0.75)
         }
     }
+
+    @Test
+    fun defaultRandomSupportsJdk8UpperBoundedGeneration() {
+        assertThat(Random.Default.nextLong(1L)).isZero()
+
+        repeat(100) {
+            val longValue = Random.Default.nextLong(50L)
+            val doubleValue = Random.Default.nextDouble(2.5)
+
+            assertThat(longValue).isBetween(0L, 49L)
+            assertThat(doubleValue).isGreaterThanOrEqualTo(0.0).isLessThan(2.5)
+        }
+    }
 }
