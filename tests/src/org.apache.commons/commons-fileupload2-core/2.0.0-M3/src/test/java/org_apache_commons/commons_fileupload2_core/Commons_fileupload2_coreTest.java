@@ -442,5 +442,11 @@ public class Commons_fileupload2_coreTest {
         public InputStream getInputStream() {
             return new ByteArrayInputStream(body);
         }
+
+        @Override
+        public boolean isMultipartRelated() {
+            return contentType != null
+                    && contentType.trim().regionMatches(true, 0, "multipart/related", 0, "multipart/related".length());
+        }
     }
 }
