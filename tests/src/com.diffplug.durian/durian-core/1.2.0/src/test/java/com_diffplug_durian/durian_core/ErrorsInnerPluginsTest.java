@@ -9,11 +9,13 @@ package com_diffplug_durian.durian_core;
 import com.diffplug.common.base.Errors;
 import org.junit.jupiter.api.Test;
 
+import java.awt.Window;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,13 +27,19 @@ public class ErrorsInnerPluginsTest {
         ByteArrayOutputStream capturedErr = new ByteArrayOutputStream();
         RuntimeException error = new RuntimeException("dialog fallback path");
 
+        Timer closeDialogs = new Timer(50, event -> disposeShowingWindows());
+        closeDialogs.setRepeats(true);
+
         try (PrintStream replacementErr = new PrintStream(capturedErr, true, StandardCharsets.UTF_8)) {
-            System.setProperty("java.awt.headless", "true");
+            enableAwtWhenDisplayIsAvailable();
             System.setErr(replacementErr);
+            closeDialogs.start();
 
             Errors.Plugins.defaultDialog(error);
             SwingUtilities.invokeAndWait(() -> assertThat(SwingUtilities.isEventDispatchThread()).isTrue());
         } finally {
+            closeDialogs.stop();
+            disposeShowingWindows();
             System.setErr(originalErr);
             restoreSystemProperty("java.awt.headless", previousHeadless);
         }
@@ -40,6 +48,20 @@ public class ErrorsInnerPluginsTest {
         assertThat(output)
                 .contains(RuntimeException.class.getName())
                 .contains("dialog fallback path");
+    }
+
+    private static void enableAwtWhenDisplayIsAvailable() {
+        if (System.getenv("DISPLAY") != null || System.getenv("WAYLAND_DISPLAY") != null) {
+            System.setProperty("java.awt.headless", "false");
+        }
+    }
+
+    private static void disposeShowingWindows() {
+        for (Window window : Window.getWindows()) {
+            if (window.isShowing()) {
+                window.dispose();
+            }
+        }
     }
 
     private static void restoreSystemProperty(String propertyName, String previousValue) {
