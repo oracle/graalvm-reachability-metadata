@@ -11,6 +11,7 @@ import argparse
 
 from git_scripts.common_git import (
     ensure_gh_authenticated,
+    gh,
     get_origin_owner,
     parse_coordinate_parts,
     stage_and_commit as stage_and_commit_common,
@@ -151,12 +152,7 @@ def create_pull_request(branch, coordinates, metrics_repo_root, repo_path):
 
     origin_owner = get_origin_owner(cwd=repo_path)
 
-    view = subprocess.run(
-        ["gh", "pr", "view", "--repo", REPO, "--head", f"{origin_owner}:{branch}"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True
-    )
+    view = gh("pr", "view", "--repo", REPO, "--head", f"{origin_owner}:{branch}", check=False)
 
     if view.returncode == 0:
         print(f"Pull request already exists for branch {branch}.")
@@ -199,7 +195,7 @@ def create_pull_request(branch, coordinates, metrics_repo_root, repo_path):
     if REVIEWERS:
         for r in REVIEWERS:
             cmd.extend(["--reviewer", r])
-    subprocess.run(cmd, check=True)
+    gh(*cmd[1:])
 
 
 def build_parser():

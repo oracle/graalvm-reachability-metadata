@@ -10,6 +10,7 @@ import sys
 
 from git_scripts.common_git import (
     ensure_gh_authenticated,
+    gh,
     parse_coordinate_parts,
     get_origin_owner,
     stage_and_commit as stage_and_commit_common,
@@ -84,12 +85,7 @@ def create_pull_request(
     origin_owner = get_origin_owner(cwd=repo_path)
 
     # If a PR already exists for this branch, do nothing
-    view = subprocess.run(
-        ["gh", "pr", "view", "--repo", REPO, "--head", branch],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
+    view = gh("pr", "view", "--repo", REPO, "--head", branch, check=False)
     if view.returncode == 0:
         print(f"Pull request already exists for branch {branch}.")
         return
@@ -148,7 +144,7 @@ def create_pull_request(
     ]
     for r in REVIEWERS:
         cmd.extend(["--reviewer", r])
-    subprocess.run(cmd, check=True)
+    gh(*cmd[1:])
 
 
 

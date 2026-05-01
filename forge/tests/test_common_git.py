@@ -47,6 +47,50 @@ class RemoteBranchDeletionTests(unittest.TestCase):
 
 
 class GitHubRateLimitTests(unittest.TestCase):
+    def test_common_gh_logs_github_query_to_console(self) -> None:
+        completed_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout="{}",
+            stderr="",
+        )
+
+        with patch.object(common_git.subprocess, "run", return_value=completed_process), \
+                patch("sys.stdout", new_callable=io.StringIO) as stdout:
+            common_git.gh(
+                "api",
+                "graphql",
+                "-f",
+                "query=query { viewer { login } }",
+            )
+
+        self.assertIn(
+            "[github-query] gh api graphql -f query=query { viewer { login } }",
+            stdout.getvalue(),
+        )
+
+    def test_common_gh_log_redacts_body_argument(self) -> None:
+        completed_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout="",
+            stderr="",
+        )
+
+        with patch.object(common_git.subprocess, "run", return_value=completed_process), \
+                patch("sys.stdout", new_callable=io.StringIO) as stdout:
+            common_git.gh(
+                "issue",
+                "comment",
+                "1412",
+                "--body",
+                "long generated comment",
+            )
+
+        output = stdout.getvalue()
+        self.assertIn("[github-query] gh issue comment 1412 --body <redacted>", output)
+        self.assertNotIn("long generated comment", output)
+
     def test_common_gh_raises_typed_rate_limit_error_from_stderr(self) -> None:
         completed_process = subprocess.CompletedProcess(
             ["gh"],

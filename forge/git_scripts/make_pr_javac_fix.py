@@ -12,6 +12,7 @@ import tempfile
 
 from git_scripts.common_git import (
     ensure_gh_authenticated,
+    gh,
     parse_coordinate_parts,
     get_origin_owner,
     git_files_under,
@@ -157,12 +158,7 @@ def create_pull_request(
     origin_owner = get_origin_owner(cwd=repo_path)
 
     # If a PR already exists for this branch, do nothing
-    view = subprocess.run(
-        ["gh", "pr", "view", "--repo", REPO, "--head", f"{origin_owner}:{branch}"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True
-    )
+    view = gh("pr", "view", "--repo", REPO, "--head", f"{origin_owner}:{branch}", check=False)
 
     if view.returncode == 0:
         print(f"Pull request already exists for branch {branch}.")
@@ -263,7 +259,7 @@ Summary:
     if REVIEWERS:
         for reviewer in REVIEWERS:
             cmd.extend(["--reviewer", reviewer])
-    subprocess.run(cmd, check=True)
+    gh(*cmd[1:])
 
 
 

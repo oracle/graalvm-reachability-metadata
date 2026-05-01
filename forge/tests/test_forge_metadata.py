@@ -155,6 +155,33 @@ def _claimed_issue(label: str = forge_metadata.LABEL_LIBRARY_NEW) -> forge_metad
 
 
 class IssueClaimPreflightTests(unittest.TestCase):
+    def test_forge_gh_logs_github_query_to_console(self) -> None:
+        completed_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout="{}",
+            stderr="",
+        )
+
+        with patch.object(forge_metadata.subprocess, "run", return_value=completed_process), \
+                patch("sys.stdout", new_callable=io.StringIO) as stdout:
+            forge_metadata.gh(
+                "api",
+                "--method",
+                "GET",
+                "/search/issues",
+                "-f",
+                "q=repo:oracle/graalvm-reachability-metadata is:issue",
+            )
+
+        self.assertIn(
+            (
+                "[github-query] gh api --method GET /search/issues -f "
+                "q=repo:oracle/graalvm-reachability-metadata is:issue"
+            ),
+            stdout.getvalue(),
+        )
+
     def test_gh_raises_typed_rate_limit_error_from_stderr(self) -> None:
         completed_process = subprocess.CompletedProcess(
             ["gh"],

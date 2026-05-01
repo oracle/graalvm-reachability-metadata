@@ -9,7 +9,7 @@ import shutil
 import subprocess
 import sys
 import time
-from typing import Any, Callable, List
+from typing import Any, Callable, Iterable, List
 from utility_scripts.library_stats import load_library_stats_entry
 from utility_scripts.strategy_loader import load_strategy_by_name
 
@@ -92,6 +92,7 @@ def ensure_gh_authenticated() -> None:
         )
         sys.exit(1)
     try:
+        log_github_query(("auth", "status", "--hostname", "github.com"))
         subprocess.run(
             ["gh", "auth", "status", "--hostname", "github.com"],
             stdout=subprocess.PIPE,
@@ -110,6 +111,14 @@ class GitHubRateLimitExceeded(RuntimeError):
 
 GITHUB_TRANSIENT_RETRY_ATTEMPTS = 3
 GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS = 2.0
+GITHUB_LOG_REDACTED_FLAGS = {
+    "--body",
+    "--body-file",
+    "--input",
+}
+GITHUB_LOG_REDACTED_KEYS = {
+    "body",
+}
 
 
 def is_github_rate_limit_text(text: str) -> bool:
@@ -203,6 +212,45 @@ def _log_github_transient_retry(reason: str, attempt: int, max_attempts: int, qu
     )
 
 
+def _split_github_arg_key_value(arg: str) -> tuple[str, str] | None:
+    if "=" not in arg:
+        return None
+    key, value = arg.split("=", 1)
+    if not key or not value:
+        return None
+    return key, value
+
+
+def _format_github_log_arg(arg: str) -> str:
+    key_value = _split_github_arg_key_value(arg)
+    if key_value is None:
+        return arg
+    key, value = key_value
+    if key.lower() in GITHUB_LOG_REDACTED_KEYS:
+        return f"{key}=<redacted>"
+    return f"{key}={value}"
+
+
+def _format_github_log_args(args: Iterable[str]) -> list[str]:
+    formatted_args: list[str] = []
+    redact_next = False
+    for arg in args:
+        if redact_next:
+            formatted_args.append("<redacted>")
+            redact_next = False
+            continue
+        formatted_args.append(_format_github_log_arg(arg))
+        if arg in GITHUB_LOG_REDACTED_FLAGS:
+            redact_next = True
+    return formatted_args
+
+
+def log_github_query(args: Iterable[str]) -> None:
+    """Print one console line for a GitHub CLI query."""
+    formatted_args = _format_github_log_args(args)
+    print(f"[github-query] gh {' '.join(formatted_args)}")
+
+
 def gh(
         *args: str,
         check: bool = True,
@@ -213,6 +261,7 @@ def gh(
     """Run a gh CLI command and return the completed process."""
     cmd = ["gh", *args]
     env = {**os.environ, "GH_PROMPT_DISABLED": "1", "GH_PAGER": ""}
+    log_github_query(args)
     result = subprocess.run(
         cmd,
         capture_output=True,

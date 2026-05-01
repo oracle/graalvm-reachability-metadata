@@ -60,6 +60,7 @@ from git_scripts.common_git import (
     get_issue_project_item_status,
     get_origin_owner,
     is_github_rate_limit_text,
+    log_github_query,
     run_github_json_with_retries,
 )
 from git_scripts.make_pr_javac_fix import main as run_make_pr_javac_fix
@@ -317,17 +318,20 @@ def gh(
         *args: str,
         check: bool = True,
         input_text: str | None = None,
+        cwd: str | None = None,
         quiet: bool = False,
 ) -> subprocess.CompletedProcess:
     """Run a gh CLI command and return the completed process."""
     cmd = ["gh", *args]
     env = {**os.environ, "GH_PROMPT_DISABLED": "1", "GH_PAGER": ""}
+    log_github_query(args)
     result = subprocess.run(
         cmd,
         capture_output=True,
         text=True,
         env=env,
         input=input_text,
+        cwd=cwd,
     )
     if check and result.returncode != 0:
         error_text = "\n".join(part for part in (result.stderr, result.stdout) if part)
@@ -3022,13 +3026,13 @@ def create_review_workspace(base_reachability_metadata_path: str, pr_number: int
         f"Failed to create review worktree for PR #{pr_number}",
     )
     try:
-        subprocess.run(
-            ["gh", "pr", "checkout", str(pr_number), "--detach"],
+        gh(
+            "pr",
+            "checkout",
+            str(pr_number),
+            "--detach",
             cwd=review_worktree_path,
             check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
         )
     except subprocess.CalledProcessError as exc:
         remove_worktree(base_reachability_metadata_path, review_worktree_path)
