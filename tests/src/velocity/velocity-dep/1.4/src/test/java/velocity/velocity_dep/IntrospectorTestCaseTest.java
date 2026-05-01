@@ -6,11 +6,14 @@
  */
 package velocity.velocity_dep;
 
+import org.apache.velocity.test.IntrospectorTestCase;
 import org.junit.jupiter.api.Test;
 
-class Velocity_depTest {
+public class IntrospectorTestCaseTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void runUpstreamPrimitiveIntrospectionTest() {
+        IntrospectorTestCase testCase = new IntrospectorTestCase("IntrospectorTestCase");
+
+        testCase.runTest();
     }
 }
