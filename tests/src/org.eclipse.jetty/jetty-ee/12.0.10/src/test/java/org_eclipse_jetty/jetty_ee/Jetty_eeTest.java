@@ -127,6 +127,22 @@ public class Jetty_eeTest {
     }
 
     @Test
+    void attributesAddProtectedClassesCreatesStoredMatcherWithoutEnvironmentDefaults() {
+        Attributes attributes = new Attributes.Mapped();
+
+        WebAppClassLoading.addProtectedClasses(attributes, "attributes.protected.", "-attributes.protected.internal.");
+
+        Object protectedAttribute = attributes.getAttribute(PROTECTED_ATTRIBUTE);
+        assertThat(protectedAttribute).isInstanceOf(ClassMatcher.class);
+
+        ClassMatcher protectedMatcher = (ClassMatcher) protectedAttribute;
+        assertThat(attributes.getAttribute(HIDDEN_ATTRIBUTE)).isNull();
+        assertThat(protectedMatcher.match("attributes.protected.Api")).isTrue();
+        assertThat(protectedMatcher.match("attributes.protected.internal.Secret")).isFalse();
+        assertThat(protectedMatcher.match(String.class.getName())).isFalse();
+    }
+
+    @Test
     void serverGettersStartWithoutDefaultsAndServerAddersReuseStoredMatchers() {
         Server server = new Server();
 
