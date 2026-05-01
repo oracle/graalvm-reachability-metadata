@@ -347,15 +347,57 @@ class IssueClaimPreflightTests(unittest.TestCase):
     def test_issue_scan_batch_size_returns_candidate_batch_size(self) -> None:
         self.assertEqual(
             forge_metadata.get_issue_scan_batch_size(1, 1),
-            forge_metadata.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
+            1,
         )
         self.assertEqual(
             forge_metadata.get_issue_scan_batch_size(5, 1),
-            forge_metadata.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
+            1,
         )
         self.assertEqual(
             forge_metadata.get_issue_scan_batch_size(100, 4),
-            forge_metadata.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
+            4,
+        )
+
+    def test_preflight_skips_issue_payloads_that_are_already_locally_unclaimable(self) -> None:
+        human_intervention_issue = {
+            "number": 1,
+            "labels": [{"name": forge_metadata.LABEL_HUMAN_INTERVENTION}],
+            "assignees": [],
+        }
+        assigned_issue = {
+            "number": 2,
+            "labels": [],
+            "assignees": [{"login": "automation-user"}],
+        }
+        claimable_issue = {
+            "number": 3,
+            "labels": [],
+            "assignees": [],
+        }
+
+        with patch.object(
+                forge_metadata,
+                "get_issue_claim_preflights",
+                return_value={3: _preflight(issue_number=3)},
+        ) as get_issue_claim_preflights:
+            self.assertEqual(
+                forge_metadata.get_issue_claim_preflights_or_empty(
+                    [human_intervention_issue, assigned_issue, claimable_issue]
+                ),
+                {3: _preflight(issue_number=3)},
+            )
+
+        get_issue_claim_preflights.assert_called_once_with([3])
+
+    def test_payload_assignees_skip_without_preflight(self) -> None:
+        issue = {
+            "number": 1412,
+            "labels": [],
+            "assignees": [{"login": "automation-user"}],
+        }
+
+        self.assertTrue(
+            forge_metadata.should_skip_issue_from_preflight(issue, None)
         )
 
     def test_offset_issue_fetch_uses_search_page_instead_of_expanding_limit(self) -> None:
@@ -457,14 +499,14 @@ class IssueClaimPreflightTests(unittest.TestCase):
             [
                 call(
                     forge_metadata.LABEL_LIBRARY_NEW,
-                    forge_metadata.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
+                    1,
                     0,
                     0,
                     False,
                 ),
                 call(
                     forge_metadata.LABEL_LIBRARY_NEW,
-                    forge_metadata.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
+                    1,
                     0,
                     1,
                     True,

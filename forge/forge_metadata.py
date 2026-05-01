@@ -3422,11 +3422,22 @@ def get_issue_claim_preflights(
     return preflights
 
 
+def issue_needs_claim_preflight(issue: dict) -> bool:
+    """Return True when an issue needs GraphQL preflight before claim attempts."""
+    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
+        return False
+    payload_assignees = get_issue_payload_assignees(issue)
+    if payload_assignees:
+        return False
+    return True
+
+
 def get_issue_claim_preflights_or_empty(issues: list[dict]) -> dict[int, IssueClaimPreflight]:
     issue_numbers = [
         issue["number"]
         for issue in issues
         if isinstance(issue, dict) and isinstance(issue.get("number"), int)
+        and issue_needs_claim_preflight(issue)
     ]
     if not issue_numbers:
         return {}
@@ -3449,6 +3460,12 @@ def should_skip_issue_from_preflight(issue: dict, preflight: IssueClaimPreflight
     if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
         print()
         log_stage("issue-claim", f"Issue #{number} has label '{LABEL_HUMAN_INTERVENTION}'. Skipping.")
+        return True
+
+    payload_assignees = get_issue_payload_assignees(issue)
+    if payload_assignees:
+        print()
+        log_stage("issue-claim", f"Issue #{number} already assigned to {payload_assignees}. Skipping.")
         return True
 
     if preflight is None or not preflight.complete:
@@ -3706,9 +3723,9 @@ def format_issue_processing_message(issue: dict) -> str:
     )
 
 
-def get_issue_scan_batch_size(_remaining_limit: int, _available_slots: int) -> int:
+def get_issue_scan_batch_size(remaining_limit: int, available_slots: int) -> int:
     """Return how many issue candidates to fetch for the next scan."""
-    return DEFAULT_ISSUE_SCAN_BATCH_SIZE
+    return max(1, min(DEFAULT_ISSUE_SCAN_BATCH_SIZE, remaining_limit, available_slots))
 
 
 def resolve_random_issue_scan_offset(label: str) -> int:
