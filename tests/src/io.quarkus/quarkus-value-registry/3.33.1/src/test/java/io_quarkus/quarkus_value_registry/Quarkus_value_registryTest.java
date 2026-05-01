@@ -93,6 +93,26 @@ public class Quarkus_value_registryTest {
     }
 
     @Test
+    void classBasedRuntimeKeysCanAddressDerivedRuntimeObjects() {
+        InMemoryValueRegistry registry = new InMemoryValueRegistry();
+        RuntimeKey<String> host = RuntimeKey.key("client.host");
+        RuntimeKey<Boolean> secure = RuntimeKey.booleanKey("client.secure");
+        RuntimeKey<ServiceEndpoint> endpoint = RuntimeKey.key(ServiceEndpoint.class);
+
+        registry.register(host, "api.example.test");
+        registry.register(secure, true);
+        registry.registerInfo(endpoint, currentRegistry -> {
+            String scheme = currentRegistry.get(secure) ? "https" : "http";
+            return new ServiceEndpoint(scheme, currentRegistry.get(host), "/status");
+        });
+
+        ServiceEndpoint actual = registry.get(endpoint);
+
+        assertThat(actual).isEqualTo(new ServiceEndpoint("https", "api.example.test", "/status"));
+        assertThat(actual.uri()).isEqualTo("https://api.example.test/status");
+    }
+
+    @Test
     void runtimeInfoProviderCanRegisterValuesFromARuntimeSource() {
         InMemoryValueRegistry registry = new InMemoryValueRegistry();
         MapRuntimeSource source = new MapRuntimeSource();
@@ -111,6 +131,12 @@ public class Quarkus_value_registryTest {
     }
 
     private record ExampleValue(String name, int priority) {
+    }
+
+    private record ServiceEndpoint(String scheme, String host, String path) {
+        private String uri() {
+            return scheme + "://" + host + path;
+        }
     }
 
     private static final class InMemoryValueRegistry implements ValueRegistry {
