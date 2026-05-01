@@ -79,6 +79,35 @@ public class BaseLibraryTest {
     }
 
     @Test
+    void callbackRegistryClearDuringNotificationHidesCallbacksFromRegistryCopies() {
+        CallbackRegistry<RecordingCallback, EventSource, String> registry = newRegistry();
+        List<Boolean> emptyStates = new ArrayList<Boolean>();
+        List<List<RecordingCallback>> snapshots = new ArrayList<List<RecordingCallback>>();
+        RecordingCallback clearing = new RecordingCallback("clearing") {
+            @Override
+            void onEvent(EventSource sender, int code, String payload) {
+                super.onEvent(sender, code, payload);
+                registry.clear();
+                emptyStates.add(Boolean.valueOf(registry.isEmpty()));
+                snapshots.add(registry.copyCallbacks());
+            }
+        };
+        RecordingCallback notifiedAfterClear = new RecordingCallback("notified-after-clear");
+
+        registry.add(clearing);
+        registry.add(notifiedAfterClear);
+        registry.notifyCallbacks(new EventSource("first"), 5, "clear-now");
+        registry.notifyCallbacks(new EventSource("second"), 6, "already-cleared");
+
+        assertThat(clearing.events).containsExactly("first:5:clear-now");
+        assertThat(notifiedAfterClear.events).containsExactly("first:5:clear-now");
+        assertThat(emptyStates).containsExactly(Boolean.TRUE);
+        assertThat(snapshots).containsExactly(new ArrayList<RecordingCallback>());
+        assertThat(registry.isEmpty()).isTrue();
+        assertThat(registry.copyCallbacks()).isEmpty();
+    }
+
+    @Test
     void callbackRegistryDefersReentrantAddsAndRemovesUntilCurrentNotificationCompletes() {
         CallbackRegistry<RecordingCallback, EventSource, String> registry = newRegistry();
         RecordingCallback late = new RecordingCallback("late");
