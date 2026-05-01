@@ -8,11 +8,13 @@ package io_quarkus.quarkus_fs_util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import io.quarkus.fs.util.FileSystemHelper;
 import io.quarkus.fs.util.FileSystemProviders;
 import io.quarkus.fs.util.ZipUtils;
+import io.quarkus.fs.util.sysfs.ConfigurableFileSystemProviderWrapper;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.net.URI;
@@ -20,12 +22,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessMode;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.junit.jupiter.api.Test;
@@ -86,6 +90,17 @@ public class Quarkus_fs_utilTest {
             assertThat(Files.readString(zipFileSystem.getPath("config/application.properties"), StandardCharsets.UTF_8))
                     .isEqualTo("key=value");
         }
+    }
+
+    @Test
+    void configurableFileSystemProviderAllowsOnlyConfiguredAccessModes() {
+        Path missing = tempDir.resolve("missing-executable");
+        ConfigurableFileSystemProviderWrapper provider = new ConfigurableFileSystemProviderWrapper(
+                missing.getFileSystem().provider(), Set.of(AccessMode.EXECUTE));
+
+        assertThatCode(() -> provider.checkAccess(missing, AccessMode.EXECUTE)).doesNotThrowAnyException();
+        assertThatExceptionOfType(NoSuchFileException.class)
+                .isThrownBy(() -> provider.checkAccess(missing, AccessMode.READ));
     }
 
     @Test
