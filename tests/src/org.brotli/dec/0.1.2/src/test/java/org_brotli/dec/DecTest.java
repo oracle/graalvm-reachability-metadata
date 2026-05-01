@@ -94,6 +94,36 @@ public class DecTest {
     }
 
     @Test
+    void supportsInterleavingSingleByteAndBulkReads() throws IOException {
+        byte[] expectedBytes = TEXT.getBytes(StandardCharsets.UTF_8);
+
+        try (BrotliInputStream inputStream = new BrotliInputStream(
+                new ByteArrayInputStream(TEXT_COMPRESSED), 16)) {
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            for (int index = 0; index < 3; index++) {
+                int value = inputStream.read();
+                assertThat(value).isBetween(0, 255);
+                output.write(value);
+            }
+
+            byte[] scratch = new byte[19];
+            Arrays.fill(scratch, GUARD_BYTE);
+            int read;
+            while ((read = inputStream.read(scratch, 4, 11)) != -1) {
+                assertThat(read).isBetween(1, 11);
+                assertThat(scratch[0]).isEqualTo(GUARD_BYTE);
+                assertThat(scratch[3]).isEqualTo(GUARD_BYTE);
+                assertThat(scratch[15]).isEqualTo(GUARD_BYTE);
+                assertThat(scratch[18]).isEqualTo(GUARD_BYTE);
+                output.write(scratch, 4, read);
+            }
+
+            assertThat(output.toByteArray()).isEqualTo(expectedBytes);
+            assertThat(inputStream.read()).isEqualTo(-1);
+        }
+    }
+
+    @Test
     void decodesBinaryDataAcrossManyPartialBufferReads() throws IOException {
         byte[] expectedBytes = expectedBinaryPayload();
 
