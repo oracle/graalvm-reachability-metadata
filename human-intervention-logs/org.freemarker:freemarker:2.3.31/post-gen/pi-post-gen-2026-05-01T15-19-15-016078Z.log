@@ -1,0 +1,19 @@
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Implemented the post-generation intervention.
+
+Changes made:
+- Removed non-metadata generated failing tests:
+  - `FreemarkerDebugImplRmiDebugModelImplStubTest.java`
+  - `FreemarkerDebugImplRmiDebuggedEnvironmentImplStubTest.java`
+  - `FreemarkerExtDomNodeModelTest.java`
+- Removed only the failing test-only classloader methods/helpers from:
+  - `FreemarkerDebugImplRmiDebuggerListenerImplStubTest.java`
+  - `FreemarkerTemplateUtilityClassUtilTest.java`
+- Did not modify metadata files.
+- Wrote the required report:
+  - `post-gen-interventions/org.freemarker_freemarker_2.3.31.md`
+
+Validation:
+- `./gradlew compileTestJava -Pcoordinates=org.freemarker:freemarker:2.3.31 --stacktrace` passed.
+- `./gradlew test -Pcoordinates=org.freemarker:freemarker:2.3.31 --stacktrace` now has only 1 remaining failure, which is metadata-related:
+  - missing reflection metadata for `java.lang.Throwable.writeObject(java.io.ObjectOutputStream)`.
