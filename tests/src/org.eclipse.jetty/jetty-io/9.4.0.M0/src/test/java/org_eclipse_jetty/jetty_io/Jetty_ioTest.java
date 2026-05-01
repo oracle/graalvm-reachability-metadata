@@ -38,13 +38,13 @@ import org.eclipse.jetty.io.ByteArrayEndPoint;
 import org.eclipse.jetty.io.ByteBufferPool;
 import org.eclipse.jetty.io.ChannelEndPoint;
 import org.eclipse.jetty.io.Connection;
-import org.eclipse.jetty.io.ConnectionStatistics;
 import org.eclipse.jetty.io.EndPoint;
 import org.eclipse.jetty.io.EofException;
 import org.eclipse.jetty.io.IdleTimeout;
 import org.eclipse.jetty.io.LeakTrackingByteBufferPool;
 import org.eclipse.jetty.io.MappedByteBufferPool;
 import org.eclipse.jetty.io.RuntimeIOException;
+import org.eclipse.jetty.io.SocketChannelEndPoint;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.eclipse.jetty.io.ssl.SslConnection;
 import org.eclipse.jetty.io.ssl.SslHandshakeListener;
@@ -210,7 +210,7 @@ public class Jetty_ioTest {
 
             try (SocketChannel client = SocketChannel.open((InetSocketAddress) server.getLocalAddress());
                     SocketChannel accepted = server.accept()) {
-                ChannelEndPoint endPoint = new ChannelEndPoint(scheduler, accepted);
+                ChannelEndPoint endPoint = new SocketChannelEndPoint(accepted, null, null, scheduler);
 
                 assertTrue(client.write(BufferUtil.toBuffer("ping")) > 0);
                 ByteBuffer input = BufferUtil.allocate(8);
@@ -280,40 +280,31 @@ public class Jetty_ioTest {
     }
 
     @Test
-    void connectionStatisticsCollectsConnectionCountersAndTraffic() throws Exception {
-        ConnectionStatistics statistics = new ConnectionStatistics();
-        statistics.start();
-        try {
-            TestConnection first = new TestConnection(200, 80, 3, 1);
-            TestConnection second = new TestConnection(50, 20, 1, 2);
+    void connectionListenerReceivesOpenCloseCallbacksAndTrafficAccessorsWork() {
+        TestConnection connection = new TestConnection(200, 80, 3, 1);
+        RecordingConnectionListener listener = new RecordingConnectionListener();
 
-            statistics.onOpened(first);
-            statistics.onOpened(second);
-            assertEquals(2, statistics.getConnections());
-            assertEquals(2, statistics.getConnectionsMax());
-            assertEquals(2, statistics.getConnectionsTotal());
+        connection.addListener(listener);
+        connection.onOpen();
+        assertSame(connection, listener.opened.get());
+        assertNull(listener.closed.get());
 
-            statistics.onClosed(first);
-            assertEquals(1, statistics.getConnections());
-            statistics.onClosed(second);
+        assertEquals(200, connection.getBytesIn());
+        assertEquals(80, connection.getBytesOut());
+        assertEquals(3, connection.getMessagesIn());
+        assertEquals(1, connection.getMessagesOut());
+        assertTrue(connection.getCreatedTimeStamp() <= System.currentTimeMillis());
 
-            assertEquals(0, statistics.getConnections());
-            assertEquals(250, statistics.getReceivedBytes());
-            assertEquals(100, statistics.getSentBytes());
-            assertEquals(4, statistics.getReceivedMessages());
-            assertEquals(3, statistics.getSentMessages());
-            assertTrue(statistics.getConnectionDurationMax() >= 0);
-            assertTrue(statistics.getConnectionDurationMean() >= 0);
-            assertTrue(statistics.getConnectionDurationStdDev() >= 0);
-            assertTrue(statistics.dump().contains("ConnectionStatistics"));
+        connection.close();
+        assertSame(connection, listener.closed.get());
 
-            statistics.reset();
-            assertEquals(0, statistics.getConnections());
-            assertEquals(0, statistics.getReceivedBytes());
-            assertEquals(0, statistics.getSentBytes());
-        } finally {
-            statistics.stop();
-        }
+        connection.removeListener(listener);
+        listener.opened.set(null);
+        listener.closed.set(null);
+        connection.onOpen();
+        connection.onClose();
+        assertNull(listener.opened.get());
+        assertNull(listener.closed.get());
     }
 
     @Test
@@ -340,9 +331,9 @@ public class Jetty_ioTest {
         assertSame(sslConnection, sslConnection.getDecryptedEndPoint().getSslConnection());
 
         sslConnection.setRenegotiationAllowed(false);
-        sslConnection.setRenegotiationLimit(1);
         assertFalse(sslConnection.isRenegotiationAllowed());
-        assertEquals(1, sslConnection.getRenegotiationLimit());
+        sslConnection.setRenegotiationAllowed(true);
+        assertTrue(sslConnection.isRenegotiationAllowed());
 
         sslConnection.getDecryptedEndPoint().setConnection(new TestConnection(0, 0, 0, 0));
         assertDoesNotThrow(sslConnection::close);
@@ -401,6 +392,21 @@ public class Jetty_ioTest {
         public void handshakeFailed(SslHandshakeListener.Event event, Throwable failure) {
             failedEvent.set(event);
             this.failure.set(failure);
+        }
+    }
+
+    private static final class RecordingConnectionListener implements Connection.Listener {
+        private final AtomicReference<Connection> opened = new AtomicReference<>();
+        private final AtomicReference<Connection> closed = new AtomicReference<>();
+
+        @Override
+        public void onOpened(Connection connection) {
+            opened.set(connection);
+        }
+
+        @Override
+        public void onClosed(Connection connection) {
+            closed.set(connection);
         }
     }
 
