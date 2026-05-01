@@ -1,0 +1,722 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de4d9-ab7b-7ae1-8dd6-6b435d48ed62
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.codehaus.plexus:plexus-utils:1.0.4
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.0.4".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde/metadata/org.codehaus.plexus/plexus-utils/index.json
+- Entry selector: "metadata-version" = "1.0.4"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.0.4".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4-sources.jar
+- repository-url: https://github.com/codehaus-plexus/plexus-utils
+- test-code-url: N/A
+- documentation-url: N/A
+- description: Plexus Utils is a Java utility library used by Plexus and Maven-related projects. It provides common helpers for file and stream handling, string operations, command-line execution, XML utilities, reflection, and graph topological sorting.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.0.4
+- Entry test-version: 1.0.4
+codex
+I’ll verify the existing entry and confirm whether version-specific source/test/docs artifacts exist before touching the JSON. The key constraint here is that `N/A` is explicitly non-blank, so I need to avoid overwriting it unless the file actually has a blank/missing field.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"1\\.0\\.4\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.codehaus.plexus/plexus-utils/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde
+4:    "metadata-version" : "1.0.4",
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4-sources.jar",
+6:    "repository-url" : "https://github.com/codehaus-plexus/plexus-utils",
+7:    "test-code-url" : "N/A",
+8:    "documentation-url" : "N/A",
+9:    "description" : "Plexus Utils is a Java utility library used by Plexus and Maven-related projects. It provides common helpers for file and stream handling, string operations, command-line execution, XML utilities, reflection, and graph topological sorting.",
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde
+ succeeded in 0ms:
+?? metadata/org.codehaus.plexus/plexus-utils/
+?? tests/src/org.codehaus.plexus/plexus-utils/
+
+web search: 
+web search: Maven repository org.codehaus.plexus plexus-utils 1.0.4 sources jar test sources jar
+web search: 
+web search: https://central.sonatype.com/artifact/org.codehaus.plexus/plexus-utils/1.0.4
+codex
+Maven Central confirms the 1.0.4 POM and source artifact, and its directory listing does not expose a test-sources artifact. I’m checking the source artifact itself now because some older source jars include `src/test` content even without a separate classifier.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.codehaus.plexus/plexus-utils/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.4",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4-sources.jar",
+    "repository-url" : "https://github.com/codehaus-plexus/plexus-utils",
+    "test-code-url" : "N/A",
+    "documentation-url" : "N/A",
+    "description" : "Plexus Utils is a Java utility library used by Plexus and Maven-related projects. It provides common helpers for file and stream handling, string operations, command-line execution, XML utilities, reflection, and graph topological sorting.",
+    "tested-versions" : [
+      "1.0.4"
+    ],
+    "allowed-packages" : [
+      "org.codehaus.plexus.util"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4-sources.jar -o /tmp/plexus-utils-1.0.4-sources.jar && jar tf /tmp/plexus-utils-1.0.4-sources.jar | rg '("'^|/)src/test|Test'"\\.java"'$|TestCase'"\\.java"'$|/test/'"' | head -80" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4-test-sources.jar || true' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde
+ succeeded in 206ms:
+ succeeded in 264ms:
+HTTP/2 404 
+date: Fri, 01 May 2026 18:43:07 GMT
+content-type: text/html
+cf-ray: 9f50ee10487b039d-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: org.codehaus.plexus plexus-utils 1.0.4 Maven Central sources jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/1.0.4/
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.codehaus.plexus</groupId>
+  <artifactId>plexus-utils</artifactId>
+  <name>Plexus Common Utilities</name>
+  <version>1.0.4</version>
+  <ciManagement>
+    <notifiers>
+      <notifier>
+        <configuration>
+          <address>dev@plexus.codehaus.org</address>
+        </configuration>
+      </notifier>
+      <notifier>
+        <type>irc</type>
+        <configuration>
+          <port>6667</port>
+          <channel>#plexus</channel>
+          <host>irc.codehaus.org</host>
+        </configuration>
+      </notifier>
+    </notifiers>
+  </ciManagement>
+  <inceptionYear>2001</inceptionYear>
+  <mailingLists>
+    <mailingList>
+      <name>Plexus Developer List</name>
+      <subscribe>http://lists.codehaus.org/mailman/listinfo/plexus-dev</subscribe>
+      <unsubscribe>http://lists.codehaus.org/mailman/listinfo/plexus-dev</unsubscribe>
+      <archive>http://lists.codehaus.org/pipermail/plexus-dev/</archive>
+    </mailingList>
+  </mailingLists>
+  <developers>
+    <developer>
+      <id>jvanzyl</id>
+      <name>Jason van Zyl</name>
+      <email>jason@zenplex.com</email>
+      <organization>Zenplex</organization>
+      <roles>
+        <role>Developer</role>
+        <role>Release Manager</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>kaz</id>
+      <name>Pete Kazmier</name>
+      <email></email>
+      <organization></organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jtaylor</id>
+      <name>James Taylor</name>
+      <email>james@jamestaylor.org</email>
+      <organization></organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>dandiep</id>
+      <name>Dan Diephouse</name>
+      <email>dan@envoisolutions.com</email>
+      <organization>Envoi solutions</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>kasper</id>
+      <name>Kasper Nielsen</name>
+      <email>apache@kav.dk</email>
+      <organization></organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>bwalding</id>
+      <name>Ben Walding</name>
+      <email>bwalding@codehaus.org</email>
+      <organization>Walding Consulting Services</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mhw</id>
+      <name>Mark Wilkinson</name>
+      <email>mhw@kremvax.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>michal</id>
+      <name>Michal Maczka</name>
+      <email>mmaczka@interia.pl</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>evenisse</id>
+      <name>Emmanuel Venisse</name>
+      <email>evenisse@codehaus.org</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>trygvis</id>
+      <name>Trygve Laugstol</name>
+      <email>trygvis@codehaus.org</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>kenney</id>
+      <name>Kenney Westerhof</name>
+      <email>kenney@codehaus.org</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:svn:svn://svn.codehaus.org/plexus/scm/trunk/plexus-utils</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/trunk/plexus-utils</developerConnection>
+  </scm>
+  <organization>
+    <name>Codehaus</name>
+    <url>http://www.codehaus.org/</url>
+  </organization>
+  <build>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>
+    <testSourceDirectory>src/test/java</testSourceDirectory>
+    <outputDirectory>target/classes</outputDirectory>
+    <testOutputDirectory>target/test-classes</testOutputDirectory>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+      </testResource>
+    </testResources>
+    <directory>target</directory>
+    <plugins>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.0-beta-3-SNAPSHOT</version>
+        <configuration>
+          <tagBase>https://svn.codehaus.org/plexus/tags</tagBase>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>RELEASE</version>
+        <configuration>
+          <excludes>
+            <exclude implementation="java.lang.String">org/codehaus/plexus/util/FileBasedTestCase.java</exclude>
+            <exclude implementation="java.lang.String">**/Test*.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <id>snapshots</id>
+      <name>Maven Snapshot Development Repository</name>
+      <url>http://snapshots.maven.codehaus.org/maven2</url>
+    </repository>
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>central</id>
+      <name>Maven Repository Switchboard</name>
+      <url>http://repo1.maven.org/maven2</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <id>snapshots-plugins</id>
+      <name>Maven Snapshot Plugins Development Repository</name>
+      <url>http://snapshots.maven.codehaus.org/maven2</url>
+    </pluginRepository>
+    <pluginRepository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>central</id>
+      <name>Maven Plugin Repository</name>
+      <url>http://repo1.maven.org/maven2</url>
+    </pluginRepository>
+  </pluginRepositories>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <reporting>
+    <outputDirectory>target/site</outputDirectory>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/codehaus-plexus/plexus-utils.git | rg '1\\.0\\.4|plexus-utils-1\\.0\\.4|v1\\.0\\.4'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde
+exec
+/usr/bin/bash -lc "jar tf /tmp/plexus-utils-1.0.4-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/codehaus/
+org/codehaus/plexus/
+org/codehaus/plexus/util/
+org/codehaus/plexus/util/cli/
+org/codehaus/plexus/util/dag/
+org/codehaus/plexus/util/introspection/
+org/codehaus/plexus/util/reflection/
+org/codehaus/plexus/util/xml/
+org/codehaus/plexus/util/xml/pull/
+org/codehaus/plexus/util/Base64.java
+org/codehaus/plexus/util/CachedMap.java
+org/codehaus/plexus/util/cli/Commandline.java
+org/codehaus/plexus/util/cli/CommandLineException.java
+org/codehaus/plexus/util/cli/CommandLineUtils.java
+org/codehaus/plexus/util/cli/DefaultConsumer.java
+org/codehaus/plexus/util/cli/EnhancedStringTokenizer.java
+org/codehaus/plexus/util/cli/StreamConsumer.java
+org/codehaus/plexus/util/cli/StreamFeeder.java
+org/codehaus/plexus/util/cli/StreamPumper.java
+org/codehaus/plexus/util/cli/WriterStreamConsumer.java
+org/codehaus/plexus/util/CollectionUtils.java
+org/codehaus/plexus/util/dag/CycleDetectedException.java
+org/codehaus/plexus/util/dag/CycleDetector.java
+org/codehaus/plexus/util/dag/DAG.java
+org/codehaus/plexus/util/dag/TopologicalSorter.java
+org/codehaus/plexus/util/dag/Vertex.java
+org/codehaus/plexus/util/DirectoryScanner.java
+org/codehaus/plexus/util/ExceptionUtils.java
+org/codehaus/plexus/util/Expand.java
+org/codehaus/plexus/util/FastMap.java
+org/codehaus/plexus/util/FileUtils.java
+org/codehaus/plexus/util/InterpolationFilterReader.java
+org/codehaus/plexus/util/introspection/ClassMap.java
+org/codehaus/plexus/util/introspection/MethodMap.java
+org/codehaus/plexus/util/introspection/ReflectionValueExtractor.java
+org/codehaus/plexus/util/IOUtil.java
+org/codehaus/plexus/util/LineOrientedInterpolatingReader.java
+org/codehaus/plexus/util/Os.java
+org/codehaus/plexus/util/PathTool.java
+org/codehaus/plexus/util/PropertyUtils.java
+org/codehaus/plexus/util/reflection/Reflector.java
+org/codehaus/plexus/util/reflection/ReflectorException.java
+org/codehaus/plexus/util/ReflectionUtils.java
+org/codehaus/plexus/util/SelectorUtils.java
+org/codehaus/plexus/util/StringInputStream.java
+org/codehaus/plexus/util/StringOutputStream.java
+org/codehaus/plexus/util/StringUtils.java
+org/codehaus/plexus/util/SweeperPool.java
+org/codehaus/plexus/util/TypeFormat.java
+org/codehaus/plexus/util/xml/CompactXMLWriter.java
+org/codehaus/plexus/util/xml/PrettyPrintXMLWriter.java
+org/codehaus/plexus/util/xml/pull/MXParser.java
+org/codehaus/plexus/util/xml/pull/MXSerializer.java
+org/codehaus/plexus/util/xml/pull/XmlPullParser.java
+org/codehaus/plexus/util/xml/pull/XmlPullParserException.java
+org/codehaus/plexus/util/xml/pull/XmlSerializer.java
+org/codehaus/plexus/util/xml/SerializerXMLWriter.java
+org/codehaus/plexus/util/xml/XMLWriter.java
+org/codehaus/plexus/util/xml/Xpp3Dom.java
+org/codehaus/plexus/util/xml/Xpp3DomBuilder.java
+org/codehaus/plexus/util/xml/Xpp3DomWriter.java
+
+ exited 1 in 355ms:
+codex
+The POM points at the old Codehaus SVN release infrastructure and declares `src/test/java`, but the Maven sources jar only contains main Java classes and the `test-sources` classifier returns 404. I’m checking whether the mirrored GitHub repository exposes an equivalent 1.0.4 tag before deciding whether `N/A` is the only confident value for tests/docs.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4.pom | sed -n '220,420p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde
+ succeeded in 0ms:
+    <outputDirectory>target/site</outputDirectory>
+  </reporting>
+  <distributionManagement>
+    <repository>
+      <id>repo1</id>
+      <name>Maven Central Repository</name>
+      <url>scp://repo1.maven.org/home/projects/maven/repository-staging/to-ibiblio/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <id>snapshots</id>
+      <name>Maven Central Development Repository</name>
+      <url>scp://repo1.maven.org/home/projects/maven/repository-staging/snapshots/maven2</url>
+    </snapshotRepository>
+    <status>deployed</status>
+  </distributionManagement>
+</project>
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://github.com/codehaus-plexus/plexus-utils.git | tail -80' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4-javadoc.jar || true' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde
+ succeeded in 229ms:
+HTTP/2 404 
+date: Fri, 01 May 2026 18:43:26 GMT
+content-type: text/html
+cf-ray: 9f50ee8a0ca7dc8b-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 327ms:
+38ecf41fe352679ded6ab65e413574a4b19c2966	refs/tags/plexus-utils-1.5.8^{}
+80727cd1792c5559f20ff7224bb0f6d6cd40cd03	refs/tags/plexus-utils-1.5.9
+9e32214e844daa22fe2fc131eb8f707c6b03a228	refs/tags/plexus-utils-1.5.9^{}
+24c0c93596d2260350c3f2b106f5db9b9429b785	refs/tags/plexus-utils-2.0.0
+136533605ceee46df68e08c61e3804b789f19ee1	refs/tags/plexus-utils-2.0.0^{}
+d02201337c0b93bcc0c77e1c6120766b631b31cb	refs/tags/plexus-utils-2.0.1
+8f3b800fafbd787f55b0d3974ed7c0449b778902	refs/tags/plexus-utils-2.0.1^{}
+05e581a993a89ecb425e8f305699f60a31e8cc34	refs/tags/plexus-utils-2.0.2
+4e1275464c93d3e284f373dd30f06015ebe24711	refs/tags/plexus-utils-2.0.2^{}
+09291061e59ba6e730e736da2fe9b4baa0150c42	refs/tags/plexus-utils-2.0.3
+b3ad4147d9e65fcd2c18d5a8630ac9f844570748	refs/tags/plexus-utils-2.0.3^{}
+f21b34c749c61030b5e63b3b090f49ae466d25a7	refs/tags/plexus-utils-2.0.4
+523d7c07b5d9e5cd89e231055e97dcb814af1b76	refs/tags/plexus-utils-2.0.4^{}
+1bc644f74de92e52c415b8a232cff9690b9daaa6	refs/tags/plexus-utils-2.0.5
+8d9191e13217edd1c73dfc53efb6f4cab407485a	refs/tags/plexus-utils-2.0.5^{}
+c2ef0611f8709e9a3fba2af57835a60264b1081c	refs/tags/plexus-utils-2.0.7
+e282b22a3ddbb2ea4ae4d4b429b3b93b89409584	refs/tags/plexus-utils-2.0.7^{}
+01d252ac6be7f132d37a632b9ddbdd345b037181	refs/tags/plexus-utils-2.1
+b0e8713ff665f7fb5c8fcf6ae40d1ee03147db97	refs/tags/plexus-utils-3.0
+f1ee873df4113eae791face1984e14e2b37440ad	refs/tags/plexus-utils-3.0.1
+a09697db5ee87f97180b1c84b5bbdef47ba28658	refs/tags/plexus-utils-3.0.10
+9f1b1dffcfe474c574b2b3041201f5c6692d8b7f	refs/tags/plexus-utils-3.0.11
+b60b2d5f5dc534ec7f9ef23ea31cef42d0dda2ea	refs/tags/plexus-utils-3.0.12
+5d446205de12702bf1734e2893a919bf599c3c12	refs/tags/plexus-utils-3.0.13
+e434f28f0a2f9175a493be39c47176aeb3d00469	refs/tags/plexus-utils-3.0.14
+3b271b43f9e5021b4232fc2ffdfb4e469c7f8685	refs/tags/plexus-utils-3.0.15
+cf317f9b4070c3c619e9ee75a3e38bea3ff621c1	refs/tags/plexus-utils-3.0.16
+3dd5750645d806aeeae174e5268609d927660e0b	refs/tags/plexus-utils-3.0.17
+a4ef5af0a58e4b0f1d08db4fc25a793139a1ad21	refs/tags/plexus-utils-3.0.18
+08e46b90d2b8ebd7adfcdb5cc9cfb3df37c43cd0	refs/tags/plexus-utils-3.0.19
+2b5a6c3645602fd19932d6a6bce07e9c9bf9b29f	refs/tags/plexus-utils-3.0.2
+dc6ed699c644d649622f85bdf85d0684e54c11f6	refs/tags/plexus-utils-3.0.20
+859590100d6177108424ed120e1bb8ca86ff0b54	refs/tags/plexus-utils-3.0.21
+573ef640816840e5f528dbeb70d7fbec684f216e	refs/tags/plexus-utils-3.0.22
+b4217444289ade35c1972af9fc3bfa42f972e1c8	refs/tags/plexus-utils-3.0.22^{}
+7c1bd1718b246fa2ce4d3f4d0bd3cb7facbb15c3	refs/tags/plexus-utils-3.0.23
+6176f91bb843eecddac857591ed20bda38e01470	refs/tags/plexus-utils-3.0.23^{}
+f87cb2cb2ef730896badb476254245f03175d613	refs/tags/plexus-utils-3.0.24
+fd36d8b80ba10955ef065230571ce2be2d4c1bbb	refs/tags/plexus-utils-3.0.24^{}
+c07eb85ab8a59dd73d00449f33e3bc57924123e2	refs/tags/plexus-utils-3.0.3
+76880d4187130c8142b887c55d05c1cb349e2dc2	refs/tags/plexus-utils-3.0.4
+b50fe89cfb368e06dabc340b851504a2a2f25c47	refs/tags/plexus-utils-3.0.5
+4332f7bd3c51ff3496998fdcb2d00a38e067630d	refs/tags/plexus-utils-3.0.6
+23cb9cba9d7ba020547802a45b2991dee99dbcb1	refs/tags/plexus-utils-3.0.7
+b0c708017f813ec9b7799fe82b4bc4bfd1631c53	refs/tags/plexus-utils-3.0.8
+244226d693f6a816fdba0f33f269e9e71f3e8984	refs/tags/plexus-utils-3.0.9
+746e7eb06cfdc6bce4e904c022cd5dd240a40213	refs/tags/plexus-utils-3.1.0
+9063d79ca6732c4b45566a7784a1888c4ef78fb0	refs/tags/plexus-utils-3.1.0^{}
+1b21b604496a6d02fa4960c8409b2f7e59dabccb	refs/tags/plexus-utils-3.1.1
+8cbc868ba4647e5c3838a3a9fc391323b158c012	refs/tags/plexus-utils-3.1.1^{}
+a27db0f550949b7adf37c0020a71c4cfcc8ed75c	refs/tags/plexus-utils-3.2.0
+42455f74a94ca96cc87b36a88131650301c95aaa	refs/tags/plexus-utils-3.2.0^{}
+c12afaf2401b872977e4068e393ef396a61adc0c	refs/tags/plexus-utils-3.2.1
+0a3cd62dece044be0950a8453467a9a6cb29d696	refs/tags/plexus-utils-3.2.1^{}
+98d4beba4f9d4e41ed89f689765713fbf13abc42	refs/tags/plexus-utils-3.3.0
+0e25d74d16b8ce748038f572806052bb37ccbb38	refs/tags/plexus-utils-3.3.0^{}
+1eee991323715bb292b07e3a061a78ab1248ab68	refs/tags/plexus-utils-3.3.1
+2229b3556a5f0467ef7b936cc1b031468b9e08b3	refs/tags/plexus-utils-3.3.1^{}
+a0d031928892b58684f664ed75b14aa7cc7511d3	refs/tags/plexus-utils-3.4.0
+6f2b70a826dc4885b2a3206ec374cba75a4f09bc	refs/tags/plexus-utils-3.4.0^{}
+5b69ff4814231d8fcd3d532dd78331d0bdf0904d	refs/tags/plexus-utils-3.4.1
+abc5db68410568c4c95c72f948353cbe8cd44d01	refs/tags/plexus-utils-3.4.1^{}
+ab37527fbc0da28a3ec557abfc53cd388b112076	refs/tags/plexus-utils-3.4.2
+01908b2979d4104a1e87f7e1eb0e157c9e1a3f8c	refs/tags/plexus-utils-3.4.2^{}
+2939dc790e814961e5e04d50059914d0f13f6da5	refs/tags/plexus-utils-3.5.0
+2b784ba7f518257c2215a34103c38bbda2a45056	refs/tags/plexus-utils-3.5.0^{}
+c5c7244cafae3a92ea7aa5a7d695bae5dc1be461	refs/tags/plexus-utils-3.5.1
+8488ff2200964f47114b9dee5604dc3314a2fe8a	refs/tags/plexus-utils-3.5.1^{}
+42ee98f7b4435dc4a9bb79b007de6d20dd4af4a0	refs/tags/plexus-utils-3.6.0
+b7230bd6243248c3866ae9c9380408e8d7568545	refs/tags/plexus-utils-3.6.0^{}
+55ac7778eddbafaad0b5711048c5129b63a5d499	refs/tags/plexus-utils-3.6.1
+c61982e755b021faca509637f1ea6ae04ee241c3	refs/tags/plexus-utils-3.6.1^{}
+1fd13601b3db86c12c91780cca8c1b80995c25e6	refs/tags/plexus-utils-4.0.0
+0803079106d268c234271ef6ddfce7e35f6def5a	refs/tags/plexus-utils-4.0.0^{}
+4da838486b6ecc1411326b4ea0c64b5b03210d4a	refs/tags/plexus-utils-4.0.1
+31ef81812095709ebbfa0e4b707e1c3ad00a51e5	refs/tags/plexus-utils-4.0.1^{}
+6374bd3e69bbf07064fb1eceb80a2a878157c9c0	refs/tags/plexus-utils-4.0.2
+4789f7a122d2bb096b67630d62faa27560b035ef	refs/tags/plexus-utils-4.0.2^{}
+5c773067887f0efc51bc9683847d60a5ca9653fb	refs/tags/plexus-utils-4.0.3
+c86a34f37425fc5fd698c76241623c8d02dab7c6	refs/tags/plexus-utils-4.0.3^{}
+
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/1.0.4 plexus-utils-1.0.4-sources.jar
+web search: 
+web search: https://central.sonatype.com/artifact/org.codehaus.plexus/plexus-utils/1.0.4
+web search: 
+web search: https://github.com/codehaus-plexus/plexus-utils/tags
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://github.com/codehaus-plexus/plexus-utils.git | head -40' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/codehaus-plexus/plexus-utils/tree/plexus-utils-1.0.4 || true' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/codehaus-plexus/plexus-utils/tree/v1.0.4 || true' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde
+ succeeded in 308ms:
+758087ab51a0dd93459dba7eb555541dbd9eadd4	refs/tags/plexus-utils-1.4
+6c3df81771272bf372e9e5064bd45e6fcbfe8c07	refs/tags/plexus-utils-1.4^{}
+efb6ed4a823b4f6509c8ca122a3203e140a259f1	refs/tags/plexus-utils-1.4-alpha-1
+a74651c6edfbfc1fbe4b8d16b9c207da34408ac1	refs/tags/plexus-utils-1.4-alpha-1^{}
+31c6ac0366f09ac5195c9309cf51b7de9f4757c2	refs/tags/plexus-utils-1.4.1
+ef5904a13e88a5c3a5b05c2d8aeb8a807acaba4d	refs/tags/plexus-utils-1.4.1^{}
+d86f8516993d06a7224e2cc701187d59710df21e	refs/tags/plexus-utils-1.4.2
+dcf16401132a88255bfdf988a0f7fad3e4948542	refs/tags/plexus-utils-1.4.2^{}
+f3eb7b5695327d646ebb47f4dbd50ce631ee2391	refs/tags/plexus-utils-1.4.3
+1cb61deb0b2c4f47f69043f1d16f8a76b8537225	refs/tags/plexus-utils-1.4.3^{}
+1ba81f80be3dd5397de8f940be3b84e6c88fc8d3	refs/tags/plexus-utils-1.4.4
+9e2a5448ee289411f5e697f9918e6c6945737882	refs/tags/plexus-utils-1.4.4^{}
+4aaeb35b6e428f095da3188ad35e019eca255cf4	refs/tags/plexus-utils-1.4.5
+57c0bcc2ea35e58ec7dc0476504180c5ad0a4593	refs/tags/plexus-utils-1.4.5^{}
+e5253b4433be1c55bcdddc152eaeac381a720a4d	refs/tags/plexus-utils-1.4.6
+3061b3f8ee53c50d8f52fba75209c303772489af	refs/tags/plexus-utils-1.4.6^{}
+ce42464013d712cd5de8873132d4807ca63c53b7	refs/tags/plexus-utils-1.4.7
+769ffcb6382b23c1d74b8858ce98d5132863542d	refs/tags/plexus-utils-1.4.7^{}
+95cb7e8deaaeb4b8ed1186f18e268839e32d7668	refs/tags/plexus-utils-1.4.8
+b8b142269cf1927b25d24cdb26864b4ba4975245	refs/tags/plexus-utils-1.4.8^{}
+dcf3d435e2860918c81a0fe1a989cf5ea1299bcc	refs/tags/plexus-utils-1.4.9
+ee91731bb9698aa1afc379ce7cc1003e96ca9e85	refs/tags/plexus-utils-1.4.9^{}
+9c2a86c430c565b8f97d5a123a67a2b362ef6a60	refs/tags/plexus-utils-1.5
+c665a89e86b234c0b389b70d65096b2f9a4f5d4b	refs/tags/plexus-utils-1.5^{}
+bab478d09020684694b01bef13ed6c632a4d24e9	refs/tags/plexus-utils-1.5.1
+d52414c27c4b879b861d94a1793c1c5a67d22a96	refs/tags/plexus-utils-1.5.1^{}
+bcbd452f1fd584873efd75483243578588465e3b	refs/tags/plexus-utils-1.5.10
+5b7ea37dc840c1fd387cc77e0192057a6b942434	refs/tags/plexus-utils-1.5.10^{}
+b89af74c48e93a560cbce0e94984bbceb89acdae	refs/tags/plexus-utils-1.5.11
+107dfeb4e7e27b2eaf4d835c075c02be97fe0369	refs/tags/plexus-utils-1.5.11^{}
+3f59e5cc37381f12c286beeab9027d4358751663	refs/tags/plexus-utils-1.5.12
+9f6196f04cccd2ec5d4273a2a82b4c575456f9df	refs/tags/plexus-utils-1.5.12^{}
+a601cbf214d9a1d8cbf7766790b17445d7e4a1bd	refs/tags/plexus-utils-1.5.13
+237368aa8e0bca8e9588803adfa97c28c57fcad1	refs/tags/plexus-utils-1.5.13^{}
+78731b44609e0650fd6f3e1373bb7c7074a21987	refs/tags/plexus-utils-1.5.14
+2eb098d65abcbf5ad918798d539f0e180975b156	refs/tags/plexus-utils-1.5.14^{}
+560e84e9cf80145af70958f2e7c9dcb669cb3e88	refs/tags/plexus-utils-1.5.15
+584924be719d7fe209ed37c841c11423fd912289	refs/tags/plexus-utils-1.5.15^{}
+f318e216439acfc996abc3f9716221db14148331	refs/tags/plexus-utils-1.5.2
+1e2810901aec856fce9be2a7fd01d5281dc31bf6	refs/tags/plexus-utils-1.5.2^{}
+
+ succeeded in 343ms:
+HTTP/2 404 
+date: Fri, 01 May 2026 18:43:38 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=YyRGctltel2MRjE6FJ0OLB93rSKZI%2FixjQ5CNV2srER5N73ku7yUIlSA8d4sQDtoH3%2FiNe6yjWNc%2BbaEf%2Bg9ijA6ds6KHDsH%2FNAkOGdRNdWzsanc6ux0DOMRz0KdiizHOiVflWvlf7DZkNtakjRjz5GdEyJZciPBRUCUs2YCDvSTRWLw4FdEMIwya7yXq6iQrGIf7rkXmsnzwwOZ5vL9S8Cz3JwoDIYV8Qxo27yHjzEiKxZ4KUR890DEYrJSGOLlqv8ZTiFSxazSn68v61DQdA%3D%3D--RyjF4xexvrxLhNHK--gjmYXfN0uSvyHGG4UeaYkg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1081505003.1777661018; expires=Sat, 01 May 2027 18:43:38 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 01 May 2027 18:43:38 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5113:233ADF:18A2A0E:119E1E2:69F4F45A
+
+
+ succeeded in 319ms:
+HTTP/2 404 
+date: Fri, 01 May 2026 18:43:38 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=BpncBq2y5KuyICMg0EkZ2eUjtJVrOH%2FLN0ey5Q6uTnADWT%2BSUv0Vmv27JV4iadHi1yvY%2BWOrcfecDV%2BjBLAR2vu8jx5NF4%2Bl6EX4m5sjU0dhvwaYgl7InkoNLujD5%2B6t6Kt2d0EyHatBYKbz9SUWCjKu3DcjxuM7IRz2sXKisgHKytpjTwU9qzLoH1v0ju0CEfw8WdjUWTBCGSwxt09lAm0QwizzXH7jciMIq6LIbULfH8MyPjTiZ%2B38llfa5ar0Zczr9iVOyXQ1d7gMxVH30Q%3D%3D--btXk10qLLi2EW%2FLJ--S%2FlDqYfvlTBfbNZn2uangw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.395939360.1777661018; expires=Sat, 01 May 2027 18:43:38 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 01 May 2027 18:43:38 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5115:339AA0:18DCED1:11C9E64:69F4F45A
+
+
+codex
+The repository entry already has non-blank values for the source URL, repository URL, test URL, docs URL, and description. Since `language` is missing and this artifact is a plain Java utility library rather than Kotlin/Groovy/Scala-specific, there is no field to add under the requested rules.
+exec
+/usr/bin/bash -lc 'python -m json.tool metadata/org.codehaus.plexus/plexus-utils/index.json >/tmp/plexus-utils-index.json && diff -u metadata/org.codehaus.plexus/plexus-utils/index.json /tmp/plexus-utils-index.json | head -40 || true' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde
+ succeeded in 0ms:
+--- metadata/org.codehaus.plexus/plexus-utils/index.json	2026-05-01 20:42:35.814754628 +0200
++++ /tmp/plexus-utils-index.json	2026-05-01 20:44:48.943421387 +0200
+@@ -1,17 +1,17 @@
+ [
+-  {
+-    "latest" : true,
+-    "metadata-version" : "1.0.4",
+-    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4-sources.jar",
+-    "repository-url" : "https://github.com/codehaus-plexus/plexus-utils",
+-    "test-code-url" : "N/A",
+-    "documentation-url" : "N/A",
+-    "description" : "Plexus Utils is a Java utility library used by Plexus and Maven-related projects. It provides common helpers for file and stream handling, string operations, command-line execution, XML utilities, reflection, and graph topological sorting.",
+-    "tested-versions" : [
+-      "1.0.4"
+-    ],
+-    "allowed-packages" : [
+-      "org.codehaus.plexus.util"
+-    ]
+-  }
++    {
++        "latest": true,
++        "metadata-version": "1.0.4",
++        "source-code-url": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4-sources.jar",
++        "repository-url": "https://github.com/codehaus-plexus/plexus-utils",
++        "test-code-url": "N/A",
++        "documentation-url": "N/A",
++        "description": "Plexus Utils is a Java utility library used by Plexus and Maven-related projects. It provides common helpers for file and stream handling, string operations, command-line execution, XML utilities, reflection, and graph topological sorting.",
++        "tested-versions": [
++            "1.0.4"
++        ],
++        "allowed-packages": [
++            "org.codehaus.plexus.util"
++        ]
++    }
+ ]
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.codehaus.plexus/plexus-utils/index.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde
+ succeeded in 0ms:
+web search: 
+web search: Maven Central org.codehaus.plexus plexus-utils 1.0.4
+codex
+No repository changes were needed in [index.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde/metadata/org.codehaus.plexus/plexus-utils/index.json:1).
+
+I verified Maven Central has the exact `1.0.4` sources jar already recorded, but no `test-sources` or `javadoc` artifact is listed for that version. The POM identifies this as `Plexus Common Utilities` with Java source/test directories, and it is not Kotlin/Groovy/Scala-specific, so `language` should remain absent. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/1.0.4/?utm_source=openai))
+
+`git diff -- metadata/org.codehaus.plexus/plexus-utils/index.json` is empty.
+tokens used
+61,097
+No repository changes were needed in [index.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde/metadata/org.codehaus.plexus/plexus-utils/index.json:1).
+
+I verified Maven Central has the exact `1.0.4` sources jar already recorded, but no `test-sources` or `javadoc` artifact is listed for that version. The POM identifies this as `Plexus Common Utilities` with Java source/test directories, and it is not Kotlin/Groovy/Scala-specific, so `language` should remain absent. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/1.0.4/?utm_source=openai))
+
+`git diff -- metadata/org.codehaus.plexus/plexus-utils/index.json` is empty.
+Ran agent for org.codehaus.plexus:plexus-utils:1.0.4 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde/build/agent-url-discovery-logs/org.codehaus.plexus-plexus-utils-1.0.4.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2273-767ddfde/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 21s
+9 actionable tasks: 1 executed, 8 up-to-date
