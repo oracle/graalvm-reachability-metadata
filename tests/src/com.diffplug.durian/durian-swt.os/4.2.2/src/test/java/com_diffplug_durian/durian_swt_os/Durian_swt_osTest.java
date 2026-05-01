@@ -21,8 +21,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class Durian_swt_osTest {
     private static final Map<OS, Arch> EXPECTED_ARCH = Map.ofEntries(
             entry(OS.WIN_x64, Arch.x64),
@@ -45,6 +49,22 @@ public class Durian_swt_osTest {
             entry(OS.WIN_unknown, "win32.win32.unknown"),
             entry(OS.LINUX_unknown, "gtk.linux.unknown"),
             entry(OS.MAC_unknown, "cocoa.macosx.unknown"));
+
+    @Test
+    @Order(1)
+    void detectPlatformUsesInjectedSystemAndEnvironmentAccessors() {
+        OS.detectPlatform(
+                key -> switch (key) {
+                    case "os.name" -> "Linux";
+                    case "os.arch" -> "x86_64";
+                    case "sun.arch.data.model" -> "64";
+                    default -> null;
+                },
+                key -> null);
+
+        assertThat(OS.getNative()).isEqualTo(OS.LINUX_x64);
+        assertThat(OS.getRunning()).isEqualTo(OS.LINUX_x64);
+    }
 
     @Test
     void archSelectorsReturnTheMatchingBranch() {
