@@ -416,6 +416,41 @@ public class Salvation2Test {
     }
 
     @Test
+    void evaluatesElementAndAttributeSpecificStylePermissions() {
+        String styleAttribute = "color: red;";
+        String styleHash = sha256(styleAttribute);
+        URLWithScheme origin = uri("https://app.example.com/index.html");
+        Policy policy = Policy.parseSerializedCSP(
+                "style-src 'self'; "
+                        + "style-src-elem https://styles.example.com; "
+                        + "style-src-attr 'sha256-" + styleHash + "' 'unsafe-hashes'",
+                Policy.PolicyErrorConsumer.ignored);
+
+        assertThat(policy.getGoverningDirectiveForEffectiveDirective(FetchDirectiveKind.StyleSrcElem))
+                .contains(policy.getFetchDirective(FetchDirectiveKind.StyleSrcElem).orElseThrow());
+        assertThat(policy.getGoverningDirectiveForEffectiveDirective(FetchDirectiveKind.StyleSrcAttr))
+                .contains(policy.getFetchDirective(FetchDirectiveKind.StyleSrcAttr).orElseThrow());
+        assertThat(policy.allowsExternalStyle(
+                Optional.empty(),
+                Optional.of(uri("https://styles.example.com/main.css")),
+                Optional.of(origin))).isTrue();
+        assertThat(policy.allowsExternalStyle(
+                Optional.empty(),
+                Optional.of(uri("https://app.example.com/main.css")),
+                Optional.of(origin))).isFalse();
+        assertThat(policy.allowsStyleAsAttribute(Optional.of(styleAttribute))).isTrue();
+        assertThat(policy.allowsStyleAsAttribute(Optional.of("color: blue;"))).isFalse();
+
+        Policy fallbackPolicy = Policy.parseSerializedCSP("style-src 'self'", Policy.PolicyErrorConsumer.ignored);
+        assertThat(fallbackPolicy.getGoverningDirectiveForEffectiveDirective(FetchDirectiveKind.StyleSrcElem))
+                .contains(fallbackPolicy.getFetchDirective(FetchDirectiveKind.StyleSrc).orElseThrow());
+        assertThat(fallbackPolicy.allowsExternalStyle(
+                Optional.empty(),
+                Optional.of(uri("https://app.example.com/main.css")),
+                Optional.of(origin))).isTrue();
+    }
+
+    @Test
     void mapsDirectiveNamesToFetchDirectiveKinds() {
         assertThat(FetchDirectiveKind.fromString("script-src")).isEqualTo(FetchDirectiveKind.ScriptSrc);
         assertThat(FetchDirectiveKind.ScriptSrc.repr).isEqualTo("script-src");
