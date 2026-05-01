@@ -1,0 +1,1292 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de438-bf01-7d92-8afb-3b4ec93a6d6a
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.diffplug.durian:durian-core:1.2.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.2.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json
+- Set "coordinates" to "com.diffplug.durian:durian-core:1.2.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the upstream repository tag, then patch the JSON directly with the exact-version links.
+exec
+/usr/bin/zsh -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'com\\.diffplug\\.durian-durian-core-1\\.2\\.0\\.json"'$'"'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ succeeded in 0ms:
+/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json
+
+exec
+/usr/bin/zsh -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ succeeded in 0ms:
+{
+  "coordinates" : "com.diffplug.durian:durian-core:1.2.0"
+}
+
+web search: 
+web search: Maven Central com.diffplug.durian durian-core 1.2.0 sources jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/diffplug/durian/
+web search: 
+web search: repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/durian-core-1.2.0-sources.jar
+codex
+Maven Central shows the sources and javadoc artifacts for `1.2.0`; I’m checking whether a test artifact exists and what upstream tag exactly matches that release.
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/durian-core-1.2.0.pom' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+exec
+/usr/bin/zsh -lc 'git ls-remote --tags https://github.com/diffplug/durian.git' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ succeeded in 254ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.diffplug.durian</groupId>
+  <artifactId>durian-core</artifactId>
+  <version>1.2.0</version>
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>animal-sniffer-annotations</artifactId>
+      <version>1.14</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.j2objc</groupId>
+      <artifactId>j2objc-annotations</artifactId>
+      <version>0.1</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>annotations</artifactId>
+      <version>3.0.0</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>3.0.0</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+  <name>durian-core</name>
+  <description>Durian - Guava's spikier (unofficial) cousin</description>
+  <url>https://github.com/diffplug/durian</url>
+  <scm>
+    <url>https://github.com/diffplug/durian</url>
+    <connection>scm:git:git://github.com/diffplug/durian</connection>
+    <developerConnection>scm:git:ssh:git@github.com/diffplug/durian</developerConnection>
+  </scm>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/license/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>nedtwigg</id>
+      <name>Ned Twigg</name>
+      <email>ned.twigg@diffplug.com</email>
+    </developer>
+  </developers>
+</project>
+
+ succeeded in 292ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/diffplug/durian/durian-core/1.2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/diffplug/durian/durian-core/1.2.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="durian-core-1.2.0-javadoc.jar" title="durian-core-1.2.0-javadoc.jar">durian-core-1.2.0-javadoc.jar</a>                     2016-06-27 18:54    506572      
+<a href="durian-core-1.2.0-javadoc.jar.asc" title="durian-core-1.2.0-javadoc.jar.asc">durian-core-1.2.0-javadoc.jar.asc</a>                 2016-06-27 18:54       821      
+<a href="durian-core-1.2.0-javadoc.jar.asc.md5" title="durian-core-1.2.0-javadoc.jar.asc.md5">durian-core-1.2.0-javadoc.jar.asc.md5</a>             2016-06-27 18:54        32      
+<a href="durian-core-1.2.0-javadoc.jar.asc.sha1" title="durian-core-1.2.0-javadoc.jar.asc.sha1">durian-core-1.2.0-javadoc.jar.asc.sha1</a>            2016-06-27 18:54        40      
+<a href="durian-core-1.2.0-javadoc.jar.asc.sha256" title="durian-core-1.2.0-javadoc.jar.asc.sha256">durian-core-1.2.0-javadoc.jar.asc.sha256</a>          2016-06-27 18:54        64      
+<a href="durian-core-1.2.0-javadoc.jar.asc.sha512" title="durian-core-1.2.0-javadoc.jar.asc.sha512">durian-core-1.2.0-javadoc.jar.asc.sha512</a>          2016-06-27 18:54       128      
+<a href="durian-core-1.2.0-javadoc.jar.md5" title="durian-core-1.2.0-javadoc.jar.md5">durian-core-1.2.0-javadoc.jar.md5</a>                 2016-06-27 18:54        32      
+<a href="durian-core-1.2.0-javadoc.jar.sha1" title="durian-core-1.2.0-javadoc.jar.sha1">durian-core-1.2.0-javadoc.jar.sha1</a>                2016-06-27 18:54        40      
+<a href="durian-core-1.2.0-sources.jar" title="durian-core-1.2.0-sources.jar">durian-core-1.2.0-sources.jar</a>                     2016-06-27 18:54    225751      
+<a href="durian-core-1.2.0-sources.jar.asc" title="durian-core-1.2.0-sources.jar.asc">durian-core-1.2.0-sources.jar.asc</a>                 2016-06-27 18:54       821      
+<a href="durian-core-1.2.0-sources.jar.asc.md5" title="durian-core-1.2.0-sources.jar.asc.md5">durian-core-1.2.0-sources.jar.asc.md5</a>             2016-06-27 18:54        32      
+<a href="durian-core-1.2.0-sources.jar.asc.sha1" title="durian-core-1.2.0-sources.jar.asc.sha1">durian-core-1.2.0-sources.jar.asc.sha1</a>            2016-06-27 18:54        40      
+<a href="durian-core-1.2.0-sources.jar.asc.sha256" title="durian-core-1.2.0-sources.jar.asc.sha256">durian-core-1.2.0-sources.jar.asc.sha256</a>          2016-06-27 18:54        64      
+<a href="durian-core-1.2.0-sources.jar.asc.sha512" title="durian-core-1.2.0-sources.jar.asc.sha512">durian-core-1.2.0-sources.jar.asc.sha512</a>          2016-06-27 18:54       128      
+<a href="durian-core-1.2.0-sources.jar.md5" title="durian-core-1.2.0-sources.jar.md5">durian-core-1.2.0-sources.jar.md5</a>                 2016-06-27 18:54        32      
+<a href="durian-core-1.2.0-sources.jar.sha1" title="durian-core-1.2.0-sources.jar.sha1">durian-core-1.2.0-sources.jar.sha1</a>                2016-06-27 18:54        40      
+<a href="durian-core-1.2.0.jar" title="durian-core-1.2.0.jar">durian-core-1.2.0.jar</a>                             2016-06-27 18:54    343717      
+<a href="durian-core-1.2.0.jar.asc" title="durian-core-1.2.0.jar.asc">durian-core-1.2.0.jar.asc</a>                         2016-06-27 18:54       821      
+<a href="durian-core-1.2.0.jar.asc.md5" title="durian-core-1.2.0.jar.asc.md5">durian-core-1.2.0.jar.asc.md5</a>                     2016-06-27 18:54        32      
+<a href="durian-core-1.2.0.jar.asc.sha1" title="durian-core-1.2.0.jar.asc.sha1">durian-core-1.2.0.jar.asc.sha1</a>                    2016-06-27 18:54        40      
+<a href="durian-core-1.2.0.jar.asc.sha256" title="durian-core-1.2.0.jar.asc.sha256">durian-core-1.2.0.jar.asc.sha256</a>                  2016-06-27 18:54        64      
+<a href="durian-core-1.2.0.jar.asc.sha512" title="durian-core-1.2.0.jar.asc.sha512">durian-core-1.2.0.jar.asc.sha512</a>                  2016-06-27 18:54       128      
+<a href="durian-core-1.2.0.jar.md5" title="durian-core-1.2.0.jar.md5">durian-core-1.2.0.jar.md5</a>                         2016-06-27 18:54        32      
+<a href="durian-core-1.2.0.jar.sha1" title="durian-core-1.2.0.jar.sha1">durian-core-1.2.0.jar.sha1</a>                        2016-06-27 18:54        40      
+<a href="durian-core-1.2.0.pom" title="durian-core-1.2.0.pom">durian-core-1.2.0.pom</a>                             2016-06-27 18:54      1954      
+<a href="durian-core-1.2.0.pom.asc" title="durian-core-1.2.0.pom.asc">durian-core-1.2.0.pom.asc</a>                         2016-06-27 18:54       821      
+<a href="durian-core-1.2.0.pom.asc.md5" title="durian-core-1.2.0.pom.asc.md5">durian-core-1.2.0.pom.asc.md5</a>                     2016-06-27 18:54        32      
+<a href="durian-core-1.2.0.pom.asc.sha1" title="durian-core-1.2.0.pom.asc.sha1">durian-core-1.2.0.pom.asc.sha1</a>                    2016-06-27 18:54        40      
+<a href="durian-core-1.2.0.pom.asc.sha256" title="durian-core-1.2.0.pom.asc.sha256">durian-core-1.2.0.pom.asc.sha256</a>                  2016-06-27 18:54        64      
+<a href="durian-core-1.2.0.pom.asc.sha512" title="durian-core-1.2.0.pom.asc.sha512">durian-core-1.2.0.pom.asc.sha512</a>                  2016-06-27 18:54       128      
+<a href="durian-core-1.2.0.pom.md5" title="durian-core-1.2.0.pom.md5">durian-core-1.2.0.pom.md5</a>                         2016-06-27 18:54        32      
+<a href="durian-core-1.2.0.pom.sha1" title="durian-core-1.2.0.pom.sha1">durian-core-1.2.0.pom.sha1</a>                        2016-06-27 18:54        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 590ms:
+bb018d6ef51967ea04cea6210d0a12d8b07185cd	refs/tags/durian/v1.0.0
+0eb48436f140cc1797b28328551a13ffeb6c3f39	refs/tags/durian/v1.1.0
+d9eee9f63a23ef06dab2cca3e459e8bb734d2a5c	refs/tags/guava/v19.0.0
+356deb28fd17a2946f8172a90f6140442af4562f	refs/tags/posts/weirdGradleEnvIssue
+ed78d23b6b129103a900787395a7a8a0ac7b0b49	refs/tags/v0.1
+197292bf93812087608e3003fa242da4d4d851b1	refs/tags/v1.0
+6d21c10a62251a0c9c01be855f1ceb2106d074ea	refs/tags/v1.0.1
+6d2e01da845f5353919413d787953530d243a4a0	refs/tags/v2.0
+3c4b2276e895c6a9999d06dd3b069d76e84eecae	refs/tags/v3.0
+783d95ebb155e9490b22ba9761e083a612c1beae	refs/tags/v3.1
+1e8b90e43f37793d920c8f50148b982abf630fcd	refs/tags/v3.1.1
+8964ab7e2739cca5accc9a5e4a02ed9f3e2e87da	refs/tags/v3.1.2
+08cb5511dc6bfe4e32fd25cda79221bc4da86375	refs/tags/v3.2.0
+d22632e79bbc1766d5b101aa2ca92e42648d2cdc	refs/tags/v3.2.0^{}
+eb7581ebe3bea9dad863f473e537ec22dc79facf	refs/tags/v3.4.0
+
+web search: 
+web search: "durian/v1.2.0" diffplug durian
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://api.github.com/repos/diffplug/durian/tags?per_page=100' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ exited 1 in 0ms:
+zsh:1: no matches found: https://api.github.com/repos/diffplug/durian/tags?per_page=100
+
+exec
+/usr/bin/zsh -lc 'git ls-remote --heads https://github.com/diffplug/durian.git' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://api.github.com/repos/diffplug/durian/releases/tags/durian/v1.2.0' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ exited 22 in 462ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 563ms:
+eba512249eed1de7acb55602b7b0202b895c6c94	refs/heads/gh-pages
+10631a3480e5491eb6eb6ee06e752d8596914232	refs/heads/master
+3fb7dee2c447c8d223e5d096291e1d1aaa52a2d1	refs/heads/master-durian
+36cf8273fa8518d87f6a325f85249225e9e9bbb2	refs/heads/master-guava
+0c83c8bd3bac51a12b67554ad02a4a87dd741dc3	refs/heads/master-migrate
+
+codex
+The upstream repository does not advertise a `1.2.0` tag through Git refs. I’m going one level deeper now: inspecting the Maven source artifact and repository history so the test URL is either exact with confidence or explicitly `N/A`.
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/diffplug/durian/tags?per_page=100'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+exec
+/usr/bin/zsh -lc 'tmp=$(mktemp -d); cd "$tmp" && curl -fsSLO https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/durian-core-1.2.0-sources.jar && jar tf durian-core-1.2.0-sources.jar | sed -n '"'1,120p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+exec
+/usr/bin/zsh -lc "curl -fsSL https://raw.githubusercontent.com/diffplug/durian/master-durian/README.md | sed -n '1,200p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ succeeded in 425ms:
+[
+  {
+    "name": "v3.4.0",
+    "zipball_url": "https://api.github.com/repos/diffplug/durian/zipball/refs/tags/v3.4.0",
+    "tarball_url": "https://api.github.com/repos/diffplug/durian/tarball/refs/tags/v3.4.0",
+    "commit": {
+      "sha": "eb7581ebe3bea9dad863f473e537ec22dc79facf",
+      "url": "https://api.github.com/repos/diffplug/durian/commits/eb7581ebe3bea9dad863f473e537ec22dc79facf"
+    },
+    "node_id": "MDM6UmVmMzQxODYyNzc6cmVmcy90YWdzL3YzLjQuMA=="
+  },
+  {
+    "name": "v3.2.0",
+    "zipball_url": "https://api.github.com/repos/diffplug/durian/zipball/refs/tags/v3.2.0",
+    "tarball_url": "https://api.github.com/repos/diffplug/durian/tarball/refs/tags/v3.2.0",
+    "commit": {
+      "sha": "d22632e79bbc1766d5b101aa2ca92e42648d2cdc",
+      "url": "https://api.github.com/repos/diffplug/durian/commits/d22632e79bbc1766d5b101aa2ca92e42648d2cdc"
+    },
+    "node_id": "MDM6UmVmMzQxODYyNzc6cmVmcy90YWdzL3YzLjIuMA=="
+  },
+  {
+    "name": "v3.1.2",
+    "zipball_url": "https://api.github.com/repos/diffplug/durian/zipball/refs/tags/v3.1.2",
+    "tarball_url": "https://api.github.com/repos/diffplug/durian/tarball/refs/tags/v3.1.2",
+    "commit": {
+      "sha": "8964ab7e2739cca5accc9a5e4a02ed9f3e2e87da",
+      "url": "https://api.github.com/repos/diffplug/durian/commits/8964ab7e2739cca5accc9a5e4a02ed9f3e2e87da"
+    },
+    "node_id": "MDM6UmVmMzQxODYyNzc6cmVmcy90YWdzL3YzLjEuMg=="
+  },
+  {
+    "name": "v3.1.1",
+    "zipball_url": "https://api.github.com/repos/diffplug/durian/zipball/refs/tags/v3.1.1",
+    "tarball_url": "https://api.github.com/repos/diffplug/durian/tarball/refs/tags/v3.1.1",
+    "commit": {
+      "sha": "1e8b90e43f37793d920c8f50148b982abf630fcd",
+      "url": "https://api.github.com/repos/diffplug/durian/commits/1e8b90e43f37793d920c8f50148b982abf630fcd"
+    },
+    "node_id": "MDM6UmVmMzQxODYyNzc6cmVmcy90YWdzL3YzLjEuMQ=="
+  },
+  {
+    "name": "v3.1",
+    "zipball_url": "https://api.github.com/repos/diffplug/durian/zipball/refs/tags/v3.1",
+    "tarball_url": "https://api.github.com/repos/diffplug/durian/tarball/refs/tags/v3.1",
+    "commit": {
+      "sha": "783d95ebb155e9490b22ba9761e083a612c1beae",
+      "url": "https://api.github.com/repos/diffplug/durian/commits/783d95ebb155e9490b22ba9761e083a612c1beae"
+    },
+    "node_id": "MDM6UmVmMzQxODYyNzc6cmVmcy90YWdzL3YzLjE="
+  },
+  {
+    "name": "v3.0",
+    "zipball_url": "https://api.github.com/repos/diffplug/durian/zipball/refs/tags/v3.0",
+    "tarball_url": "https://api.github.com/repos/diffplug/durian/tarball/refs/tags/v3.0",
+    "commit": {
+      "sha": "3c4b2276e895c6a9999d06dd3b069d76e84eecae",
+      "url": "https://api.github.com/repos/diffplug/durian/commits/3c4b2276e895c6a9999d06dd3b069d76e84eecae"
+    },
+    "node_id": "MDM6UmVmMzQxODYyNzc6cmVmcy90YWdzL3YzLjA="
+  },
+  {
+    "name": "v2.0",
+    "zipball_url": "https://api.github.com/repos/diffplug/durian/zipball/refs/tags/v2.0",
+    "tarball_url": "https://api.github.com/repos/diffplug/durian/tarball/refs/tags/v2.0",
+    "commit": {
+      "sha": "6d2e01da845f5353919413d787953530d243a4a0",
+      "url": "https://api.github.com/repos/diffplug/durian/commits/6d2e01da845f5353919413d787953530d243a4a0"
+    },
+    "node_id": "MDM6UmVmMzQxODYyNzc6cmVmcy90YWdzL3YyLjA="
+  },
+  {
+    "name": "v1.0.1",
+    "zipball_url": "https://api.github.com/repos/diffplug/durian/zipball/refs/tags/v1.0.1",
+    "tarball_url": "https://api.github.com/repos/diffplug/durian/tarball/refs/tags/v1.0.1",
+    "commit": {
+      "sha": "6d21c10a62251a0c9c01be855f1ceb2106d074ea",
+      "url": "https://api.github.com/repos/diffplug/durian/commits/6d21c10a62251a0c9c01be855f1ceb2106d074ea"
+    },
+    "node_id": "MDM6UmVmMzQxODYyNzc6cmVmcy90YWdzL3YxLjAuMQ=="
+  },
+  {
+    "name": "v1.0",
+    "zipball_url": "https://api.github.com/repos/diffplug/durian/zipball/refs/tags/v1.0",
+    "tarball_url": "https://api.github.com/repos/diffplug/durian/tarball/refs/tags/v1.0",
+    "commit": {
+      "sha": "197292bf93812087608e3003fa242da4d4d851b1",
+      "url": "https://api.github.com/repos/diffplug/durian/commits/197292bf93812087608e3003fa242da4d4d851b1"
+    },
+    "node_id": "MDM6UmVmMzQxODYyNzc6cmVmcy90YWdzL3YxLjA="
+  },
+  {
+    "name": "v0.1",
+    "zipball_url": "https://api.github.com/repos/diffplug/durian/zipball/refs/tags/v0.1",
+    "tarball_url": "https://api.github.com/repos/diffplug/durian/tarball/refs/tags/v0.1",
+    "commit": {
+      "sha": "ed78d23b6b129103a900787395a7a8a0ac7b0b49",
+      "url": "https://api.github.com/repos/diffplug/durian/commits/ed78d23b6b129103a900787395a7a8a0ac7b0b49"
+    },
+    "node_id": "MDM6UmVmMzQxODYyNzc6cmVmcy90YWdzL3YwLjE="
+  },
+  {
+    "name": "posts/weirdGradleEnvIssue",
+    "zipball_url": "https://api.github.com/repos/diffplug/durian/zipball/refs/tags/posts/weirdGradleEnvIssue",
+    "tarball_url": "https://api.github.com/repos/diffplug/durian/tarball/refs/tags/posts/weirdGradleEnvIssue",
+    "commit": {
+      "sha": "356deb28fd17a2946f8172a90f6140442af4562f",
+      "url": "https://api.github.com/repos/diffplug/durian/commits/356deb28fd17a2946f8172a90f6140442af4562f"
+    },
+    "node_id": "MDM6UmVmMzQxODYyNzc6cmVmcy90YWdzL3Bvc3RzL3dlaXJkR3JhZGxlRW52SXNzdWU="
+  },
+  {
+    "name": "guava/v19.0.0",
+    "zipball_url": "https://api.github.com/repos/diffplug/durian/zipball/refs/tags/guava/v19.0.0",
+    "tarball_url": "https://api.github.com/repos/diffplug/durian/tarball/refs/tags/guava/v19.0.0",
+    "commit": {
+      "sha": "d9eee9f63a23ef06dab2cca3e459e8bb734d2a5c",
+      "url": "https://api.github.com/repos/diffplug/durian/commits/d9eee9f63a23ef06dab2cca3e459e8bb734d2a5c"
+    },
+    "node_id": "MDM6UmVmMzQxODYyNzc6cmVmcy90YWdzL2d1YXZhL3YxOS4wLjA="
+  },
+  {
+    "name": "durian/v1.1.0",
+    "zipball_url": "https://api.github.com/repos/diffplug/durian/zipball/refs/tags/durian/v1.1.0",
+    "tarball_url": "https://api.github.com/repos/diffplug/durian/tarball/refs/tags/durian/v1.1.0",
+    "commit": {
+      "sha": "0eb48436f140cc1797b28328551a13ffeb6c3f39",
+      "url": "https://api.github.com/repos/diffplug/durian/commits/0eb48436f140cc1797b28328551a13ffeb6c3f39"
+    },
+    "node_id": "MDM6UmVmMzQxODYyNzc6cmVmcy90YWdzL2R1cmlhbi92MS4xLjA="
+  },
+  {
+    "name": "durian/v1.0.0",
+    "zipball_url": "https://api.github.com/repos/diffplug/durian/zipball/refs/tags/durian/v1.0.0",
+    "tarball_url": "https://api.github.com/repos/diffplug/durian/tarball/refs/tags/durian/v1.0.0",
+    "commit": {
+      "sha": "bb018d6ef51967ea04cea6210d0a12d8b07185cd",
+      "url": "https://api.github.com/repos/diffplug/durian/commits/bb018d6ef51967ea04cea6210d0a12d8b07185cd"
+    },
+    "node_id": "MDM6UmVmMzQxODYyNzc6cmVmcy90YWdzL2R1cmlhbi92MS4wLjA="
+  }
+]
+
+ succeeded in 421ms:
+# Durian: Guava's spikier (unofficial) cousin
+
+Durian has two branches:
+
+- [master-guava](https://github.com/diffplug/durian/tree/master-guava) maintains Google's Guava exactly as published by Google, but split into separate packages, so that you can grab its packages a la carte.
+- [master-durian](https://github.com/diffplug/durian/tree/master-durian) maintains a fork of Guava where all JRE duplicate classes (Function, Optional, etc) have been replaced with their Java 8 equivalents.  Additional utilities useful for Java 8's method references and closures have been added.  It uses semantic versioning, and can be used alongside Guava.
+
+See [this blog post TODO] for a full (but brief) motivation.  Here are a few of the most useful pieces which have been added:
+
+- [One-liner exception handling TODO] for Java 8 functional interfaces.
+- [Member variables TODO] for Java 8 lambdas.
+- A [simple replacement TODO] for the mess of `PrintStream`, `Writer`, etc when you just want to pipe some strings around.
+- Guava's `Suppliers`, `Predicates`, and `Functions` converted to Java 8, and a `Consumers` class to round it out.
+
+## Branch `master-guava`, maven group `com.diffplug.guava`
+
+This group contains Guava exactly as published by Google, but split into separate packages according to this graph:
+
+![Package split](_imgs/pkg-split.png)
+
+These are maintained on Maven Central from Guava R19 forward.
+
+<!---freshmark guava
+var kinds = ['core', 'collect', 'io', 'parse', 'reflect', 'testlib', 'concurrent', 'eventbus', 'cache']
+var mavenCentral = function(kind) {
+	return link('com.diffplug.guava:guava-' + kind, 'https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.guava%22%20AND%20a%3A%22guava-' + kind + '%22')
+}
+output = kinds.map(mavenCentral).join('\n')
+-->
+[com.diffplug.guava:guava-core](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.guava%22%20AND%20a%3A%22guava-core%22)
+[com.diffplug.guava:guava-collect](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.guava%22%20AND%20a%3A%22guava-collect%22)
+[com.diffplug.guava:guava-io](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.guava%22%20AND%20a%3A%22guava-io%22)
+[com.diffplug.guava:guava-parse](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.guava%22%20AND%20a%3A%22guava-parse%22)
+[com.diffplug.guava:guava-reflect](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.guava%22%20AND%20a%3A%22guava-reflect%22)
+[com.diffplug.guava:guava-testlib](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.guava%22%20AND%20a%3A%22guava-testlib%22)
+[com.diffplug.guava:guava-concurrent](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.guava%22%20AND%20a%3A%22guava-concurrent%22)
+[com.diffplug.guava:guava-eventbus](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.guava%22%20AND%20a%3A%22guava-eventbus%22)
+[com.diffplug.guava:guava-cache](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.guava%22%20AND%20a%3A%22guava-cache%22)
+<!---freshmark /guava -->
+
+## Branch `master-durian`, maven group `com.diffplug.durian`
+
+In this branch, we've taken the code in Guava, and removed all the classes which have been adopted by the JRE.  We've also removed all deprecated functionality, and added some new functionality which is helpful for Java 8 (e.g. collectors for immutable collections).
+
+<!---freshmark durian
+var kinds = ['core', 'collect', 'io', 'parse', 'reflect', 'testlib', 'concurrent', 'eventbus', 'cache']
+var mavenCentral = function(kind) {
+	return link('com.diffplug.durian:durian-' + kind, 'https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.durian%22%20AND%20a%3A%22durian-' + kind + '%22')
+}
+output = kinds.map(mavenCentral).join('\n')
+-->
+[com.diffplug.durian:durian-core](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.durian%22%20AND%20a%3A%22durian-core%22)
+[com.diffplug.durian:durian-collect](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.durian%22%20AND%20a%3A%22durian-collect%22)
+[com.diffplug.durian:durian-io](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.durian%22%20AND%20a%3A%22durian-io%22)
+[com.diffplug.durian:durian-parse](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.durian%22%20AND%20a%3A%22durian-parse%22)
+[com.diffplug.durian:durian-reflect](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.durian%22%20AND%20a%3A%22durian-reflect%22)
+[com.diffplug.durian:durian-testlib](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.durian%22%20AND%20a%3A%22durian-testlib%22)
+[com.diffplug.durian:durian-concurrent](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.durian%22%20AND%20a%3A%22durian-concurrent%22)
+[com.diffplug.durian:durian-eventbus](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.durian%22%20AND%20a%3A%22durian-eventbus%22)
+[com.diffplug.durian:durian-cache](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.durian%22%20AND%20a%3A%22durian-cache%22)
+<!---freshmark /durian -->
+
+### Duplicated pieces which have been removed
+
+TODO: commits where the stuff was added
+
+- Replaced `com.google.common.base.Objects` with `j.u.Objects`.
+- Replaced `com.google.common.base.Supplier` with `j.u.f.Supplier`.
+- Replaced `com.google.common.base.Function` with `j.u.f.Function`.
+- Replaced `com.google.common.base.Predicate` with `j.u.f.Predicate`.
+- Replaced `com.google.common.base.Optional` with `j.u.Optional`.
+- Replaced `com.google.common.base.Charsets` with `j.u.StandardCharsets`.
+- Replaced `com.google.common.collect.Iterators.emptyIterator()` with `j.u.Iterators.emptyIterator`
+- Replaced `com.google.common.collect.Sets.newSetFromMap()` with `j.u.Collections.newSetFromMap()`
+- Replaced `com.google.common.collect.Sets.newSetFromMap()` with `j.u.Collections.newSetFromMap()`
+
+### New pieces which have been added
+
+- TODO
+
+ succeeded in 447ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/diffplug/
+com/diffplug/common/
+com/diffplug/common/primitives/
+com/diffplug/common/primitives/Doubles.java
+com/diffplug/common/primitives/Chars.java
+com/diffplug/common/primitives/UnsignedBytes.java
+com/diffplug/common/primitives/Bytes.java
+com/diffplug/common/primitives/SignedBytes.java
+com/diffplug/common/primitives/package-info.java
+com/diffplug/common/primitives/Longs.java
+com/diffplug/common/primitives/Primitives.java
+com/diffplug/common/primitives/ParseRequest.java
+com/diffplug/common/primitives/UnsignedInts.java
+com/diffplug/common/primitives/Ints.java
+com/diffplug/common/primitives/UnsignedLong.java
+com/diffplug/common/primitives/UnsignedInteger.java
+com/diffplug/common/primitives/UnsignedLongs.java
+com/diffplug/common/primitives/Floats.java
+com/diffplug/common/primitives/Booleans.java
+com/diffplug/common/primitives/Shorts.java
+com/diffplug/common/math/
+com/diffplug/common/math/package-info.java
+com/diffplug/common/math/LongMath.java
+com/diffplug/common/math/DoubleUtils.java
+com/diffplug/common/math/BigIntegerMath.java
+com/diffplug/common/math/DoubleMath.java
+com/diffplug/common/math/MathPreconditions.java
+com/diffplug/common/math/IntMath.java
+com/diffplug/common/annotations/
+com/diffplug/common/annotations/GwtCompatible.java
+com/diffplug/common/annotations/GwtIncompatible.java
+com/diffplug/common/annotations/Beta.java
+com/diffplug/common/annotations/package-info.java
+com/diffplug/common/annotations/VisibleForTesting.java
+com/diffplug/common/base/
+com/diffplug/common/base/Defaults.java
+com/diffplug/common/base/Ascii.java
+com/diffplug/common/base/CharMatcher.java
+com/diffplug/common/base/Throwables.java
+com/diffplug/common/base/Either.java
+com/diffplug/common/base/FinalizableSoftReference.java
+com/diffplug/common/base/Platform.java
+com/diffplug/common/base/Suppliers.java
+com/diffplug/common/base/package-info.java
+com/diffplug/common/base/Ticker.java
+com/diffplug/common/base/StandardSystemProperty.java
+com/diffplug/common/base/Box.java
+com/diffplug/common/base/Throwing.java
+com/diffplug/common/base/SmallCharMatcher.java
+com/diffplug/common/base/BoxImp.java
+com/diffplug/common/base/Predicates.java
+com/diffplug/common/base/CaseFormat.java
+com/diffplug/common/base/Splitter.java
+com/diffplug/common/base/Comparison.java
+com/diffplug/common/base/Enums.java
+com/diffplug/common/base/FinalizablePhantomReference.java
+com/diffplug/common/base/ConverterNullableImp.java
+com/diffplug/common/base/Preconditions.java
+com/diffplug/common/base/Joiner.java
+com/diffplug/common/base/FinalizableReferenceQueue.java
+com/diffplug/common/base/Converter.java
+com/diffplug/common/base/Unhandled.java
+com/diffplug/common/base/Errors.java
+com/diffplug/common/base/FunctionalEquivalence.java
+com/diffplug/common/base/Consumers.java
+com/diffplug/common/base/PairwiseEquivalence.java
+com/diffplug/common/base/VerifyException.java
+com/diffplug/common/base/AbstractIterator.java
+com/diffplug/common/base/Utf8.java
+com/diffplug/common/base/DurianPlugins.java
+com/diffplug/common/base/Stopwatch.java
+com/diffplug/common/base/FinalizableReference.java
+com/diffplug/common/base/Strings.java
+com/diffplug/common/base/ConverterNullable.java
+com/diffplug/common/base/Verify.java
+com/diffplug/common/base/FinalizableWeakReference.java
+com/diffplug/common/base/Equivalence.java
+com/diffplug/common/base/MoreObjects.java
+com/diffplug/common/base/internal/
+com/diffplug/common/base/internal/Finalizer.java
+com/diffplug/common/base/StringPrinter.java
+com/diffplug/common/base/Functions.java
+
+exec
+/usr/bin/zsh -lc 'tmp=$(mktemp -d); git clone --filter=blob:none --no-checkout https://github.com/diffplug/durian.git "$tmp/durian" && cd "$tmp/durian" && git log --all --decorate --oneline --since='"'2016-05-01' --until='2016-08-01' --date=short --pretty='%h %ad %d %s' | sed -n '1,120p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ succeeded in 1478ms:
+eba5122 2016-06-27  (origin/gh-pages) Publish of Github pages from Gradle.
+05817ce 2016-06-27  build: Bump version to 1.3.0-SNAPSHOT.
+ed0c024 2016-06-27  build: Release 1.2.0.
+b36d748 2016-06-27  build: Annotation dependencies are now optional, matching Guava's original pom.
+9165b8b 2016-06-17  Publish of Github pages from Gradle.
+6acd6f1 2016-06-16  addfeature: Errors.constrainTo(IOException.class).run(() -> throwsThrowable());
+7463d43 2016-06-12  Publish of Github pages from Gradle.
+6fc7195 2016-06-06  addfeature: Added the Immutables class for mutating and creating immutable collections.
+0d999e8 2016-06-12  bugfix:  ImmutableSorted[Set/Map] was not hiding the .builder(int) methods, fixed now.
+5306d90 2016-06-05  addfeature: Added capacity arguments to all immutable builders where it was possible.
+529747d 2016-06-11  bugfix: For a reversed converter, Converter.convertNonNull/revertNonNull were broken.  Now fixed.
+e34944b 2016-06-03  Publish of Github pages from Gradle.
+8cc041c 2016-06-03  build: Bump version to 1.2.0-SNAPSHOT.
+b3a7d38 2016-06-03  Publish of Github pages from Gradle.
+0eb4843 2016-06-03  (tag: durian/v1.1.0) build: Release 1.1.0.
+e669bb0 2016-06-03  Publish of Github pages from Gradle.
+750291b 2016-06-03  addfeature: The tree package, lumped in with the durian-collect jar, with lots of mechanisms for working with trees.
+4b85a91 2016-06-03  addfeature: MoreCollectors, which has the "missing" collectors for Java 8.
+e101343 2016-06-02  Publish of Github pages from Gradle.
+d2ee15e 2016-06-01  addfeature: Either, for cases where a value is one of two possible values.
+c6aafc5 2016-06-01  build: new versions will be automatically published to maven central.
+661053e 2016-06-01  addfeature: Comparison, for handling comparison results in a pattern-matchey way.
+86d123f 2016-06-01  addfeature: StringPrinter, for piping strings around without turning them into bytes.
+0dccf4a 2016-06-02  addfeature: Added Errors and Throwable, a mechanism for converting functions which throw checked exceptions into java 8's standard functional interfaces.
+4f31d15 2016-06-02  Default implementation of Errors.dialog() now calls into swing using reflection, and fails silently to a simple stacktrace.
+b1b1261 2016-06-02  Publish of Github pages from Gradle.
+781fd37 2016-06-01  Added ErrorsExample, which motivates the design of Errors and Throwable/Throwable.Specific.
+a4f3698 2016-06-01  Added the Errors class, which makes it easy to use an error-handling policy to convert functions which throw exceptions into java's built-in functional interfaces which don't.
+fad2941 2016-06-01  Added copies of the functional interfaces which throw Exceptions.
+28301c4 2016-06-01  addfeature: Added a Consumers class for manipulating Consumers.
+bc42724 2016-06-01  addfeature: Added DurianPlugins - a programmatic and pluggable implementation of `public static final`.
+07bda30 2016-05-28  addfeature: Added Box, Box.Nullable, Box.Dbl, Box.Int, Box.Lng.
+d3737da 2016-05-28  addfeature: Added Unhandled, an exception type appropriate for unhandled-case errors.
+b04bf20 2016-06-02  bugfix: eventbus' package-info.java causes the pegdown doclet to hang forever.  Tweaked to fix.
+ad3c751 2016-06-01  build: Added pegdown-doclet so we can use markdown in javadoc.
+6d0e131 2016-06-01  addfeature: Added base.ConverterNullable, and added non-null methods to Converter.
+62893e7 2016-06-01  Hid ConverterNullable's publicly visible classes inside ConverterNullableImp.
+29d3f89 2016-06-01  Publish of Github pages from Gradle.
+e61b81c 2016-06-01  Publish of Github pages from Gradle.
+0681dd8 2016-05-27  Replaced base.Preconditions.checkNotNull() with j.u.Objects.requireNonNull() in Converter.
+bc34fb5 2016-05-27  Converter.from() and ConverterNullable.from() now both have an optional name parameter.
+3cf4c9e 2016-05-27  Converter no longer caches the reverse field.
+e51e93f 2016-05-27  Removed `ConverterNonNull`.
+ff4dec0 2016-05-27  Rather than introducing the `ConverterNonNull` type, it is possible reuse the guts of `Converter` to accomplish the same type system goal by adding `convertNonNull` and `revertNonNull` methods.
+4fe095f 2016-05-26  Added `ConverterNonNull` and `ConverterNullable` interfaces, which `Converter` now implements both of.  The instances generated by their methods have the same equality and serialization characteristics as `Converter`.
+9638016 2016-05-19  Added a comment to mark code which looks dead, but is actually required for Serialization to work.
+3c3afb8 2016-05-19  Removed unused and inaccessible functionality in Converter which was left over from the now-absent LegacyConverter.
+171cd17 2016-05-31  build: bump version to 1.1.0-SNAPSHOT.
+bb018d6 2016-05-31  (tag: durian/v1.0.0) build: publish 1.0.0
+8069da9 2016-05-31  cleanup: Fixed a variety of javadoc errors.
+fcf0e29 2016-05-31  deprecated: Removed testing.ClassSanityTester.setSampleInstances().
+9b8b152 2016-03-05  deprecated: Removed the deprecated parts of util.concurrent.Futures.
+ade15fd 2016-05-17  deprecated: Removed util.concurrent.MoreExecutors.sameThreadExecutor().
+4f0cfc0 2016-03-05  deprecated: Removed reflect.TypeToken.isAssignableFrom().
+8813c40 2016-05-17  deprecated: Removed io.InputSupplier and io.OutputSupplier (scheduled for removal in December 2015).
+bdbf14c 2016-05-31  deprecated: Removed collect.MapConstraint and MapConstraints.
+5857e8a 2016-05-31  Removed collect.MapConstraint.
+2c629d1 2016-05-31  Renamed MapConstraints to MutableClassToInstanceMapConstraints, since MutableClassToInstanceMap was its only user.
+1da6b53 2016-05-17  Removed everything from collect.MapConstraints except what is used by collect.MutableClassToInstanceMap.
+e17e06a 2016-05-19  cleanup: Unused import removal.
+402d3f1 2016-05-31  cleanup: Dead code removal.
+19e226b 2016-05-19  Added comments to reflect.Types.TypeVariableImpl to indicate that seemingly dead code is actually called via reflection.
+47513da 2016-05-19  Removed dead code in xml.XmlEscapers.
+feb5334 2016-05-31  Removed dead code from base.ThrowablesTest.
+e1e797d 2016-05-31  Removed dead code from base.JoinerTest.
+8fbd705 2016-05-31  Removed dead code from base.EnumsTest.
+353c536 2016-05-31  Removed dead code from collect.FluentIterable.
+d6622e9 2016-05-18  Removed unreachable MillerRabin stuff from math.LongMath.
+f3a22a0 2016-05-17  jre-dup: Removed collect.Sets.newSetFromMap().
+4b110e9 2016-05-17  jre-dup: Removed collect.Iterators.emptyIterator().
+61b10f7 2016-05-19  jre-dup: Removed base.Charsets.
+67a032d 2016-03-05  jre-dup: Removed base.Optional.
+912269d 2016-05-31  jre-dup:  Removed base.Predicate, base.Function, base.Supplier.
+8c75499 2016-05-18  Fixed testlib's NullPointerTesterTest, and now all tests pass.
+eb0b9fb 2016-03-05  Replaced base.Predicate with j.u.f.Predicate.
+c106c74 2016-03-05  Replaced base.Function with j.u.f.Function.
+5acced0 2016-03-05  Replaced base.Supplier with j.u.f.Supplier.
+a03fbf6 2016-05-31  jre-dup: Removed base.Objects.
+c657ea2 2016-03-04  Replaced base.Objects with j.u.Objects.
+75ff4ad 2016-03-04  Removed the deprecated base.Objects.toStringHelper().
+72f4eab 2016-03-04  Removed the deprecated base.Objects.firstNonNull().
+2e379f6 2016-03-04  Fixed ClassPathTest and ResourcesTest for the new com.diffplug namespace.
+43b8a65 2016-03-04  Added guava dependency back in to keep the truth testing library happy.  It needs com.google.common.base.Optional, and we no longer supply that ourselves.
+700c359 2016-03-04  Moved all code to com.diffplug to prevent clashes with Guava's namespace.  Also bumped copyright to 2016.
+b3b3473 2016-05-31  Migrated project files to Durian 1.0.0-SNAPSHOT.
+36cf827 2016-03-02  (origin/master-guava) We now fork the test process after every test in the concurrent package.  This prevents problems with the interrupted flag.
+44a4653 2016-03-02  Our build file wasn't running any PackageSanityTests.  Now that we are, there were a few bugs in the tests (now fixed).
+3d05fbc 2016-03-02  Improved the timing error messages for ServiceManagerTest.
+9a4e5b0 2016-03-02  Fixed some tests which fail only on Windows.
+d9eee9f 2016-01-18  (tag: guava/v19.0.0) Generated OSGi metadata and published.
+ec871de 2016-01-17  Removed the tests that crash the JDK compiler: [Immutable/Mutable]TypeToInstanceMapTest.
+2ba679e 2016-01-18  Applied the Spotless formatter.  Automated formatting makes refactorings easier to see and replicate.
+51d864a 2016-01-18  Raw source code of Guava and its testlib as of R19.
+0c83c8b 2016-05-28  (origin/master-migrate) Added tests for Consumers.
+bbe1086 2016-05-28  Sealed up the Throwing "namespace class".
+f8ddce5 2016-05-28  Merged Unhandled.
+cd4796f 2016-05-28  Merged Box.
+c0f8a1a 2016-05-28  Huge improvements to Box's test coverage.
+aef50a1 2016-05-28  Improved StringPrinter docs and test.
+aa63975 2016-05-28  Merged Functions/Predicates/Suppliers.
+6ae00d2 2016-05-28  ### START MERGE WITH DURIAN CORE ### Moved Converter and ConverterNullable into durian core.  We're merging this package and durian-core, so the next several commits will be the incremental steps in this process.
+10631a3 2016-05-28  (HEAD -> master, origin/master, origin/HEAD) Removed the primitive volatile implementations for Box.  AtomicInt/Double/etc are a better fit for those cases.
+cb83cf2 2016-05-28  Rather than Box.of() being volatile and Box.ofFast() being a standard field, now Box.of() is standard, Box.ofVolatile() returns a volatile field.
+c740f5d 2016-05-27  Revert "StringPrinter.stringsToLines is now thread-safe.", because it would be better to force the input Consumer to be synchronized than to pass this performance limitation to every user.
+1b64ea8 2016-05-27  Removed Unhandled.operationException(), because UnsupportedOperationException() is more appropriate.  Also removed Unhandled.exception().
+e01b966 2016-05-27  Moving ThreadTracingBox to the more experimental durian-rx.
+573657d 2016-05-26  Bump version to 4.0.0-SNAPSHOT.
+19be76c 2016-05-26  First cut at a "Tracing" box.
+cee1df8 2016-05-26  All primitive Boxes now implement Box<Autoboxed> as well.
+f631fe5 2016-05-26  Renamed ConverterNonNull to Converter, and renamed its methods to convertNonNull() and revertNonNull().
+d372b95 2016-05-26  Box and Box.Nullable now use ConverterNonNull and ConverterNullable for their map() operation, rather than two separate functions.
+1f59f19 2016-05-26  Added ConverterNonNull and ConverterNullable.
+4a0c40c 2016-05-26  Sealed-up Either by making it impossible to extend.
+ca8ba92 2016-05-25  Box.map() now promises to preserve whatever atomicity that the underlying box's modify() might have promised.
+7897c89 2016-05-20  Added the Truth testing library and added markdown-capability for the javadoc.
+1cb6e0b 2016-05-20  Added toString() methods for all of the Boxes, and added a Box.Long to go with the LongConsumer/LongSupplier.
+8dd69a5 2016-05-20  Added a fast implementation for Box.Nullable.
+e5f49b8 2016-05-19  Added Box.ofFast(), which is a super-high performance version of Box.  Also added Nullable annotations to Box.Nullable, and made non-null the package default.
+5c70377 2016-05-19  StringPrinter.stringsToLines is now thread-safe.
+a90c65c 2016-05-17  build.properties was erroneously including the bin/ directory.
+
+exec
+/usr/bin/zsh -lc 'git -C /tmp/tmp.OtaGLasbUD/durian ls-tree --name-only ed0c024' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ succeeded in 0ms:
+.ci
+.gitignore
+.travis.yml
+CHANGES.md
+CONTRIBUTING.md
+LICENSE
+README.md
+_imgs
+build.gradle
+build.properties
+cache
+collect
+concurrent
+core
+eventbus
+gradle.properties
+gradle
+gradlew
+gradlew.bat
+io
+parse
+reflect
+settings.gradle
+testlib
+
+exec
+/usr/bin/zsh -lc "git -C /tmp/tmp.OtaGLasbUD/durian ls-tree -r --name-only ed0c024 | rg '("'^|/)test(/|$)|Test'"\\.java"'$'"' | sed -n '1,160p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ succeeded in 0ms:
+cache/tests/tests/com/diffplug/common/cache/AbstractCacheTest.java
+cache/tests/tests/com/diffplug/common/cache/AbstractLoadingCacheTest.java
+cache/tests/tests/com/diffplug/common/cache/CacheBuilderGwtTest.java
+cache/tests/tests/com/diffplug/common/cache/CacheBuilderSpecTest.java
+cache/tests/tests/com/diffplug/common/cache/CacheBuilderTest.java
+cache/tests/tests/com/diffplug/common/cache/CacheEvictionTest.java
+cache/tests/tests/com/diffplug/common/cache/CacheExpirationTest.java
+cache/tests/tests/com/diffplug/common/cache/CacheLoaderTest.java
+cache/tests/tests/com/diffplug/common/cache/CacheLoadingTest.java
+cache/tests/tests/com/diffplug/common/cache/CacheManualTest.java
+cache/tests/tests/com/diffplug/common/cache/CacheReferencesTest.java
+cache/tests/tests/com/diffplug/common/cache/CacheRefreshTest.java
+cache/tests/tests/com/diffplug/common/cache/CacheStatsTest.java
+cache/tests/tests/com/diffplug/common/cache/EmptyCachesTest.java
+cache/tests/tests/com/diffplug/common/cache/ForwardingCacheTest.java
+cache/tests/tests/com/diffplug/common/cache/ForwardingLoadingCacheTest.java
+cache/tests/tests/com/diffplug/common/cache/LocalCacheTest.java
+cache/tests/tests/com/diffplug/common/cache/LocalLoadingCacheTest.java
+cache/tests/tests/com/diffplug/common/cache/LongAdderTest.java
+cache/tests/tests/com/diffplug/common/cache/NullCacheTest.java
+cache/tests/tests/com/diffplug/common/cache/PopulatedCachesTest.java
+cache/tests/tests/com/diffplug/common/cache/RemovalNotificationTest.java
+collect/tests/tests/com/diffplug/common/collect/AbstractBiMapTest.java
+collect/tests/tests/com/diffplug/common/collect/AbstractImmutableSetTest.java
+collect/tests/tests/com/diffplug/common/collect/AbstractImmutableTableTest.java
+collect/tests/tests/com/diffplug/common/collect/AbstractIteratorTest.java
+collect/tests/tests/com/diffplug/common/collect/AbstractMapEntryTest.java
+collect/tests/tests/com/diffplug/common/collect/AbstractMultimapAsMapImplementsMapTest.java
+collect/tests/tests/com/diffplug/common/collect/AbstractRangeSetTest.java
+collect/tests/tests/com/diffplug/common/collect/AbstractSequentialIteratorTest.java
+collect/tests/tests/com/diffplug/common/collect/AbstractTableReadTest.java
+collect/tests/tests/com/diffplug/common/collect/AbstractTableTest.java
+collect/tests/tests/com/diffplug/common/collect/ArrayListMultimapTest.java
+collect/tests/tests/com/diffplug/common/collect/ArrayTableTest.java
+collect/tests/tests/com/diffplug/common/collect/Collections2Test.java
+collect/tests/tests/com/diffplug/common/collect/ComparisonChainTest.java
+collect/tests/tests/com/diffplug/common/collect/ComputingConcurrentHashMapTest.java
+collect/tests/tests/com/diffplug/common/collect/ConcurrentHashMultisetBasherTest.java
+collect/tests/tests/com/diffplug/common/collect/ConcurrentHashMultisetTest.java
+collect/tests/tests/com/diffplug/common/collect/ConstrainedMapImplementsMapTest.java
+collect/tests/tests/com/diffplug/common/collect/ConstrainedMapTest.java
+collect/tests/tests/com/diffplug/common/collect/ConstraintsTest.java
+collect/tests/tests/com/diffplug/common/collect/ContiguousSetTest.java
+collect/tests/tests/com/diffplug/common/collect/CountTest.java
+collect/tests/tests/com/diffplug/common/collect/DiscreteDomainTest.java
+collect/tests/tests/com/diffplug/common/collect/EmptyImmutableTableTest.java
+collect/tests/tests/com/diffplug/common/collect/EnumBiMapTest.java
+collect/tests/tests/com/diffplug/common/collect/EnumHashBiMapTest.java
+collect/tests/tests/com/diffplug/common/collect/EnumMultisetTest.java
+collect/tests/tests/com/diffplug/common/collect/EvictingQueueTest.java
+collect/tests/tests/com/diffplug/common/collect/FauxveridesTest.java
+collect/tests/tests/com/diffplug/common/collect/FilteredCollectionsTest.java
+collect/tests/tests/com/diffplug/common/collect/FilteredMultimapTest.java
+collect/tests/tests/com/diffplug/common/collect/FluentIterableTest.java
+collect/tests/tests/com/diffplug/common/collect/ForMapMultimapAsMapImplementsMapTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingBlockingDequeTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingCollectionTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingConcurrentMapTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingDequeTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingListIteratorTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingListMultimapTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingListTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingMapTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingMultimapTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingMultisetTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingNavigableMapTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingNavigableSetTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingObjectTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingQueueTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingSetMultimapTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingSetTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingSortedMapImplementsMapTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingSortedMapTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingSortedMultisetTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingSortedSetMultimapTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingSortedSetTest.java
+collect/tests/tests/com/diffplug/common/collect/ForwardingTableTest.java
+collect/tests/tests/com/diffplug/common/collect/GeneralRangeTest.java
+collect/tests/tests/com/diffplug/common/collect/HashBasedTableTest.java
+collect/tests/tests/com/diffplug/common/collect/HashBiMapTest.java
+collect/tests/tests/com/diffplug/common/collect/HashMultimapTest.java
+collect/tests/tests/com/diffplug/common/collect/HashMultisetTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutableBiMapTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutableClassToInstanceMapTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutableCollectionTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutableEnumMapTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutableListMultimapTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutableListTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutableMapTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutableMultimapAsMapImplementsMapTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutableMultimapTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutableMultisetTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutableRangeMapTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutableRangeSetTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutableSetMultimapAsMapImplementsMapTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutableSetMultimapTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutableSetTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutableSortedMapTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutableSortedMultisetTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutableSortedSetTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutableTableTest.java
+collect/tests/tests/com/diffplug/common/collect/ImmutablesTest.java
+collect/tests/tests/com/diffplug/common/collect/InternersTest.java
+collect/tests/tests/com/diffplug/common/collect/IterablesTest.java
+collect/tests/tests/com/diffplug/common/collect/IteratorsTest.java
+collect/tests/tests/com/diffplug/common/collect/LinkedHashMultimapTest.java
+collect/tests/tests/com/diffplug/common/collect/LinkedHashMultisetTest.java
+collect/tests/tests/com/diffplug/common/collect/LinkedListMultimapTest.java
+collect/tests/tests/com/diffplug/common/collect/ListsTest.java
+collect/tests/tests/com/diffplug/common/collect/MapMakerInternalMapTest.java
+collect/tests/tests/com/diffplug/common/collect/MapMakerTest.java
+collect/tests/tests/com/diffplug/common/collect/MapsCollectionTest.java
+collect/tests/tests/com/diffplug/common/collect/MapsSortedTransformValuesTest.java
+collect/tests/tests/com/diffplug/common/collect/MapsTest.java
+collect/tests/tests/com/diffplug/common/collect/MapsTransformValuesTest.java
+collect/tests/tests/com/diffplug/common/collect/MapsTransformValuesUnmodifiableIteratorTest.java
+collect/tests/tests/com/diffplug/common/collect/MinMaxPriorityQueueTest.java
+collect/tests/tests/com/diffplug/common/collect/MoreCollectorsTest.java
+collect/tests/tests/com/diffplug/common/collect/MultimapBuilderTest.java
+collect/tests/tests/com/diffplug/common/collect/MultimapsCollectionTest.java
+collect/tests/tests/com/diffplug/common/collect/MultimapsFilterEntriesAsMapTest.java
+collect/tests/tests/com/diffplug/common/collect/MultimapsTest.java
+collect/tests/tests/com/diffplug/common/collect/MultimapsTransformValuesAsMapTest.java
+collect/tests/tests/com/diffplug/common/collect/MultisetsCollectionTest.java
+collect/tests/tests/com/diffplug/common/collect/MultisetsImmutableEntryTest.java
+collect/tests/tests/com/diffplug/common/collect/MultisetsTest.java
+collect/tests/tests/com/diffplug/common/collect/MutableClassToInstanceMapConstraintsTest.java
+collect/tests/tests/com/diffplug/common/collect/MutableClassToInstanceMapTest.java
+collect/tests/tests/com/diffplug/common/collect/NewCustomTableTest.java
+collect/tests/tests/com/diffplug/common/collect/ObjectArraysTest.java
+collect/tests/tests/com/diffplug/common/collect/OrderingTest.java
+collect/tests/tests/com/diffplug/common/collect/PeekingIteratorTest.java
+collect/tests/tests/com/diffplug/common/collect/QueuesTest.java
+collect/tests/tests/com/diffplug/common/collect/RangeNonGwtTest.java
+collect/tests/tests/com/diffplug/common/collect/RangeTest.java
+collect/tests/tests/com/diffplug/common/collect/RegularImmutableAsListTest.java
+collect/tests/tests/com/diffplug/common/collect/RegularImmutableTableTest.java
+collect/tests/tests/com/diffplug/common/collect/SetOperationsTest.java
+collect/tests/tests/com/diffplug/common/collect/SetsTest.java
+collect/tests/tests/com/diffplug/common/collect/SimpleAbstractMultisetTest.java
+collect/tests/tests/com/diffplug/common/collect/SingletonImmutableTableTest.java
+collect/tests/tests/com/diffplug/common/collect/SortedIterablesTest.java
+collect/tests/tests/com/diffplug/common/collect/SortedListsTest.java
+collect/tests/tests/com/diffplug/common/collect/SubMapMultimapAsMapImplementsMapTest.java
+collect/tests/tests/com/diffplug/common/collect/SynchronizedBiMapTest.java
+collect/tests/tests/com/diffplug/common/collect/SynchronizedDequeTest.java
+collect/tests/tests/com/diffplug/common/collect/SynchronizedMapTest.java
+collect/tests/tests/com/diffplug/common/collect/SynchronizedMultimapTest.java
+collect/tests/tests/com/diffplug/common/collect/SynchronizedNavigableMapTest.java
+collect/tests/tests/com/diffplug/common/collect/SynchronizedNavigableSetTest.java
+collect/tests/tests/com/diffplug/common/collect/SynchronizedQueueTest.java
+collect/tests/tests/com/diffplug/common/collect/SynchronizedSetTest.java
+collect/tests/tests/com/diffplug/common/collect/TableCollectionTest.java
+collect/tests/tests/com/diffplug/common/collect/TablesTest.java
+collect/tests/tests/com/diffplug/common/collect/TablesTransformValuesTest.java
+collect/tests/tests/com/diffplug/common/collect/TransposedTableTest.java
+collect/tests/tests/com/diffplug/common/collect/TreeBasedTableTest.java
+collect/tests/tests/com/diffplug/common/collect/TreeMultimapExplicitTest.java
+collect/tests/tests/com/diffplug/common/collect/TreeMultimapNaturalTest.java
+collect/tests/tests/com/diffplug/common/collect/TreeMultisetTest.java
+
+exec
+/usr/bin/zsh -lc "git -C /tmp/tmp.OtaGLasbUD/durian show --stat --oneline --decorate ed0c024 | sed -n '1,80p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ succeeded in 681ms:
+ed0c024 build: Release 1.2.0.
+ cache/sources/META-INF/MANIFEST.MF      | 5 ++---
+ collect/sources/META-INF/MANIFEST.MF    | 5 ++---
+ concurrent/sources/META-INF/MANIFEST.MF | 5 ++---
+ core/sources/META-INF/MANIFEST.MF       | 5 ++---
+ eventbus/sources/META-INF/MANIFEST.MF   | 5 ++---
+ gradle.properties                       | 4 ++--
+ io/sources/META-INF/MANIFEST.MF         | 5 ++---
+ parse/sources/META-INF/MANIFEST.MF      | 5 ++---
+ reflect/sources/META-INF/MANIFEST.MF    | 5 ++---
+ testlib/META-INF/MANIFEST.MF            | 5 ++---
+ 10 files changed, 20 insertions(+), 29 deletions(-)
+
+exec
+/usr/bin/zsh -lc "git -C /tmp/tmp.OtaGLasbUD/durian ls-tree -r --name-only ed0c024 core | sed -n '1,180p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ succeeded in 0ms:
+core/sources/META-INF/MANIFEST.MF
+core/sources/sources/com/diffplug/common/annotations/Beta.java
+core/sources/sources/com/diffplug/common/annotations/GwtCompatible.java
+core/sources/sources/com/diffplug/common/annotations/GwtIncompatible.java
+core/sources/sources/com/diffplug/common/annotations/VisibleForTesting.java
+core/sources/sources/com/diffplug/common/annotations/package-info.java
+core/sources/sources/com/diffplug/common/base/AbstractIterator.java
+core/sources/sources/com/diffplug/common/base/Ascii.java
+core/sources/sources/com/diffplug/common/base/Box.java
+core/sources/sources/com/diffplug/common/base/BoxImp.java
+core/sources/sources/com/diffplug/common/base/CaseFormat.java
+core/sources/sources/com/diffplug/common/base/CharMatcher.java
+core/sources/sources/com/diffplug/common/base/Comparison.java
+core/sources/sources/com/diffplug/common/base/Consumers.java
+core/sources/sources/com/diffplug/common/base/Converter.java
+core/sources/sources/com/diffplug/common/base/ConverterNullable.java
+core/sources/sources/com/diffplug/common/base/ConverterNullableImp.java
+core/sources/sources/com/diffplug/common/base/Defaults.java
+core/sources/sources/com/diffplug/common/base/DurianPlugins.java
+core/sources/sources/com/diffplug/common/base/Either.java
+core/sources/sources/com/diffplug/common/base/Enums.java
+core/sources/sources/com/diffplug/common/base/Equivalence.java
+core/sources/sources/com/diffplug/common/base/Errors.java
+core/sources/sources/com/diffplug/common/base/FinalizablePhantomReference.java
+core/sources/sources/com/diffplug/common/base/FinalizableReference.java
+core/sources/sources/com/diffplug/common/base/FinalizableReferenceQueue.java
+core/sources/sources/com/diffplug/common/base/FinalizableSoftReference.java
+core/sources/sources/com/diffplug/common/base/FinalizableWeakReference.java
+core/sources/sources/com/diffplug/common/base/FunctionalEquivalence.java
+core/sources/sources/com/diffplug/common/base/Functions.java
+core/sources/sources/com/diffplug/common/base/Joiner.java
+core/sources/sources/com/diffplug/common/base/MoreObjects.java
+core/sources/sources/com/diffplug/common/base/PairwiseEquivalence.java
+core/sources/sources/com/diffplug/common/base/Platform.java
+core/sources/sources/com/diffplug/common/base/Preconditions.java
+core/sources/sources/com/diffplug/common/base/Predicates.java
+core/sources/sources/com/diffplug/common/base/SmallCharMatcher.java
+core/sources/sources/com/diffplug/common/base/Splitter.java
+core/sources/sources/com/diffplug/common/base/StandardSystemProperty.java
+core/sources/sources/com/diffplug/common/base/Stopwatch.java
+core/sources/sources/com/diffplug/common/base/StringPrinter.java
+core/sources/sources/com/diffplug/common/base/Strings.java
+core/sources/sources/com/diffplug/common/base/Suppliers.java
+core/sources/sources/com/diffplug/common/base/Throwables.java
+core/sources/sources/com/diffplug/common/base/Throwing.java
+core/sources/sources/com/diffplug/common/base/Ticker.java
+core/sources/sources/com/diffplug/common/base/Unhandled.java
+core/sources/sources/com/diffplug/common/base/Utf8.java
+core/sources/sources/com/diffplug/common/base/Verify.java
+core/sources/sources/com/diffplug/common/base/VerifyException.java
+core/sources/sources/com/diffplug/common/base/internal/Finalizer.java
+core/sources/sources/com/diffplug/common/base/package-info.java
+core/sources/sources/com/diffplug/common/math/BigIntegerMath.java
+core/sources/sources/com/diffplug/common/math/DoubleMath.java
+core/sources/sources/com/diffplug/common/math/DoubleUtils.java
+core/sources/sources/com/diffplug/common/math/IntMath.java
+core/sources/sources/com/diffplug/common/math/LongMath.java
+core/sources/sources/com/diffplug/common/math/MathPreconditions.java
+core/sources/sources/com/diffplug/common/math/package-info.java
+core/sources/sources/com/diffplug/common/primitives/Booleans.java
+core/sources/sources/com/diffplug/common/primitives/Bytes.java
+core/sources/sources/com/diffplug/common/primitives/Chars.java
+core/sources/sources/com/diffplug/common/primitives/Doubles.java
+core/sources/sources/com/diffplug/common/primitives/Floats.java
+core/sources/sources/com/diffplug/common/primitives/Ints.java
+core/sources/sources/com/diffplug/common/primitives/Longs.java
+core/sources/sources/com/diffplug/common/primitives/ParseRequest.java
+core/sources/sources/com/diffplug/common/primitives/Primitives.java
+core/sources/sources/com/diffplug/common/primitives/Shorts.java
+core/sources/sources/com/diffplug/common/primitives/SignedBytes.java
+core/sources/sources/com/diffplug/common/primitives/UnsignedBytes.java
+core/sources/sources/com/diffplug/common/primitives/UnsignedInteger.java
+core/sources/sources/com/diffplug/common/primitives/UnsignedInts.java
+core/sources/sources/com/diffplug/common/primitives/UnsignedLong.java
+core/sources/sources/com/diffplug/common/primitives/UnsignedLongs.java
+core/sources/sources/com/diffplug/common/primitives/package-info.java
+core/tests/tests/com/diffplug/common/base/AbstractIteratorTest.java
+core/tests/tests/com/diffplug/common/base/AsciiTest.java
+core/tests/tests/com/diffplug/common/base/BenchmarkHelpers.java
+core/tests/tests/com/diffplug/common/base/BoxTest.java
+core/tests/tests/com/diffplug/common/base/CaseFormatTest.java
+core/tests/tests/com/diffplug/common/base/CharMatcherTest.java
+core/tests/tests/com/diffplug/common/base/CharsetsTest.java
+core/tests/tests/com/diffplug/common/base/ComparisonTest.java
+core/tests/tests/com/diffplug/common/base/ConsumersTest.java
+core/tests/tests/com/diffplug/common/base/ConverterNullableTest.java
+core/tests/tests/com/diffplug/common/base/ConverterTest.java
+core/tests/tests/com/diffplug/common/base/DefaultsTest.java
+core/tests/tests/com/diffplug/common/base/DurianPluginsTest.java
+core/tests/tests/com/diffplug/common/base/EitherTest.java
+core/tests/tests/com/diffplug/common/base/EnumsTest.java
+core/tests/tests/com/diffplug/common/base/EquivalenceTest.java
+core/tests/tests/com/diffplug/common/base/ErrorsExample.java
+core/tests/tests/com/diffplug/common/base/ErrorsMultipleInputs.png
+core/tests/tests/com/diffplug/common/base/ErrorsMultipleOutputs.png
+core/tests/tests/com/diffplug/common/base/ErrorsTest.java
+core/tests/tests/com/diffplug/common/base/FinalizableReferenceQueueClassLoaderUnloadingTest.java
+core/tests/tests/com/diffplug/common/base/FinalizableReferenceQueueTest.java
+core/tests/tests/com/diffplug/common/base/FunctionsTest.java
+core/tests/tests/com/diffplug/common/base/JoinerTest.java
+core/tests/tests/com/diffplug/common/base/ObjectsTest.java
+core/tests/tests/com/diffplug/common/base/OptionalTest.java
+core/tests/tests/com/diffplug/common/base/PackageSanityTests.java
+core/tests/tests/com/diffplug/common/base/PreconditionsTest.java
+core/tests/tests/com/diffplug/common/base/PredicatesTest.java
+core/tests/tests/com/diffplug/common/base/SplitterTest.java
+core/tests/tests/com/diffplug/common/base/StandardSystemPropertyTest.java
+core/tests/tests/com/diffplug/common/base/StopwatchTest.java
+core/tests/tests/com/diffplug/common/base/StringPrinterTest.java
+core/tests/tests/com/diffplug/common/base/StringsTest.java
+core/tests/tests/com/diffplug/common/base/SuppliersTest.java
+core/tests/tests/com/diffplug/common/base/SuppressUnderAndroid.java
+core/tests/tests/com/diffplug/common/base/ThrowablesTest.java
+core/tests/tests/com/diffplug/common/base/ToStringHelperTest.java
+core/tests/tests/com/diffplug/common/base/Utf8Test.java
+core/tests/tests/com/diffplug/common/base/VerifyTest.java
+core/tests/tests/com/diffplug/common/math/BigIntegerMathTest.java
+core/tests/tests/com/diffplug/common/math/DoubleMathTest.java
+core/tests/tests/com/diffplug/common/math/DoubleUtilsTest.java
+core/tests/tests/com/diffplug/common/math/IntMathTest.java
+core/tests/tests/com/diffplug/common/math/LongMathTest.java
+core/tests/tests/com/diffplug/common/math/MathBenchmarking.java
+core/tests/tests/com/diffplug/common/math/MathPreconditionsTest.java
+core/tests/tests/com/diffplug/common/math/MathTesting.java
+core/tests/tests/com/diffplug/common/math/PackageSanityTests.java
+core/tests/tests/com/diffplug/common/math/SuppressUnderAndroid.java
+core/tests/tests/com/diffplug/common/math/TestPlatform.java
+core/tests/tests/com/diffplug/common/primitives/BooleansTest.java
+core/tests/tests/com/diffplug/common/primitives/ByteArrayAsListTest.java
+core/tests/tests/com/diffplug/common/primitives/BytesTest.java
+core/tests/tests/com/diffplug/common/primitives/CharArrayAsListTest.java
+core/tests/tests/com/diffplug/common/primitives/CharsTest.java
+core/tests/tests/com/diffplug/common/primitives/DoubleArrayAsListTest.java
+core/tests/tests/com/diffplug/common/primitives/DoublesTest.java
+core/tests/tests/com/diffplug/common/primitives/FloatArrayAsListTest.java
+core/tests/tests/com/diffplug/common/primitives/FloatsTest.java
+core/tests/tests/com/diffplug/common/primitives/IntArrayAsListTest.java
+core/tests/tests/com/diffplug/common/primitives/IntsTest.java
+core/tests/tests/com/diffplug/common/primitives/LongArrayAsListTest.java
+core/tests/tests/com/diffplug/common/primitives/LongsTest.java
+core/tests/tests/com/diffplug/common/primitives/PackageSanityTests.java
+core/tests/tests/com/diffplug/common/primitives/PrimitivesTest.java
+core/tests/tests/com/diffplug/common/primitives/ShortArrayAsListTest.java
+core/tests/tests/com/diffplug/common/primitives/ShortsTest.java
+core/tests/tests/com/diffplug/common/primitives/SignedBytesTest.java
+core/tests/tests/com/diffplug/common/primitives/UnsignedBytesTest.java
+core/tests/tests/com/diffplug/common/primitives/UnsignedIntegerTest.java
+core/tests/tests/com/diffplug/common/primitives/UnsignedIntsTest.java
+core/tests/tests/com/diffplug/common/primitives/UnsignedLongTest.java
+core/tests/tests/com/diffplug/common/primitives/UnsignedLongsTest.java
+
+exec
+/usr/bin/zsh -lc "git -C /tmp/tmp.OtaGLasbUD/durian show ed0c024:core/sources/com/diffplug/common/base/Errors.java | sed -n '1,80p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ succeeded in 0ms:
+fatal: path 'core/sources/com/diffplug/common/base/Errors.java' does not exist in 'ed0c024'
+
+exec
+/usr/bin/zsh -lc 'git -C /tmp/tmp.OtaGLasbUD/durian show ed0c024:gradle.properties && git -C /tmp/tmp.OtaGLasbUD/durian show ed0c024:core/sources/META-INF/MANIFEST.MF' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ succeeded in 0ms:
+stable=1.2.0
+version=1.2.0
+group=com.diffplug.durian
+description=Durian - Guava's spikier (unofficial) cousin
+org=diffplug
+
+# libs that we'll break guava into, along with their dependencies
+DEPKEY=durianlib.deps.
+durianlib.deps.core=
+durianlib.deps.collect=core
+durianlib.deps.io=core,collect
+durianlib.deps.parse=core,collect,io
+durianlib.deps.reflect=core,collect
+durianlib.deps.concurrent=core,collect
+durianlib.deps.cache=core,collect,concurrent
+durianlib.deps.eventbus=core,collect,reflect,concurrent,cache
+# for any libs that contain multiple packages, list those packages
+PKGKEY=durianlib.pkgs.
+durianlib.pkgs.core=annotations,base,primitives,math
+durianlib.pkgs.collect=collect,tree
+durianlib.pkgs.io=io,hash
+durianlib.pkgs.parse=escape,html,xml,net
+durianlib.pkgs.concurrent=util
+
+# folder for source and test
+SRC=sources
+TEST=tests
+
+# Build requirements
+VER_JAVA=1.8
+VER_FINDBUGS=3.0.1
+VER_GOOMPH=2.1.1
+VER_SPOTLESS=1.3.2
+VER_BINTRAY=1.5
+VER_GRADLE_GIT=1.3.2
+VER_PEGDOWN_DOCLET=1.3
+
+# Testing
+VER_JUNIT=4.12
+VER_TRUTH=0.25
+VER_EASYMOCK=3.0
+VER_MOCKITO=1.8.5
+VER_J2OBJC=0.1
+VER_ANIMAL_SNIFFER=1.14
+Manifest-Version: 1.0
+Bundle-Description: Durian - Guava's spikier (unofficial) cousin
+Bundle-DocURL: https://github.com/diffplug/durian
+Bundle-License: https://github.com/diffplug/durian/blob/v1.2.0/LICENSE
+Bundle-ManifestVersion: 2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-SymbolicName: com.diffplug.durian.core
+Bundle-Vendor: DiffPlug
+Bundle-Version: 1.2.0
+Export-Package: com.diffplug.common.annotations;version="1.2.0",com.di
+ ffplug.common.base;uses:="javax.annotation";version="1.2.0",com.diffp
+ lug.common.math;version="1.2.0",com.diffplug.common.primitives;uses:=
+ "com.diffplug.common.base,javax.annotation";version="1.2.0"
+Import-Package: sun.misc;resolution:=optional,javax.annotation;resolut
+ ion:=optional,com.diffplug.common.base,com.diffplug.common.primitives
+Private-Package: com.diffplug.common.base.internal
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+exec
+/usr/bin/zsh -lc 'git -C /tmp/tmp.OtaGLasbUD/durian rev-parse ed0c024' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ succeeded in 0ms:
+ed0c024120f2feec0cc2ffcfa3e17f13544d2cfe
+
+exec
+/usr/bin/zsh -lc "curl -fsSL -o /dev/null -w '%{http_code}\\n' https://github.com/diffplug/durian/tree/ed0c02413b04f7123bbff5ea808c0e6d34aa4f11/core/tests/tests" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+exec
+/usr/bin/zsh -lc "curl -fsSL -o /dev/null -w '%{http_code}\\n' https://github.com/diffplug/durian/tree/ed0c024/core/tests/tests" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ exited 22 in 657ms:
+curl: (22) The requested URL returned error: 404
+404
+
+ succeeded in 931ms:
+200
+
+exec
+/usr/bin/zsh -lc "curl -fsSL -o /dev/null -w '%{http_code}\\n' https://github.com/diffplug/durian/tree/ed0c024120f2feec0cc2ffcfa3e17f13544d2cfe/core/tests/tests" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+exec
+/usr/bin/zsh -lc "curl -fsSL -o /dev/null -w '%{http_code}\\n' https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/durian-core-1.2.0-sources.jar" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+exec
+/usr/bin/zsh -lc "curl -fsSL -o /dev/null -w '%{http_code}\\n' https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/durian-core-1.2.0-javadoc.jar" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ succeeded in 510ms:
+200
+
+ succeeded in 479ms:
+200
+
+ succeeded in 1033ms:
+200
+
+exec
+/usr/bin/zsh -lc "rg -n '\"language\"|\"source-code-url\"|\"documentation-url\"|\"test-code-url\"' build/discovered-artifact-metadata | sed -n '1,80p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+exec
+/usr/bin/zsh -lc "find build/discovered-artifact-metadata -type f | head -20 | xargs -r sed -n '1,80p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ succeeded in 0ms:
+ succeeded in 0ms:
+{
+  "coordinates" : "com.diffplug.durian:durian-core:1.2.0"
+}
+
+codex
+I found an exact release commit for `1.2.0` even though there is no surviving Git tag for it, and Maven Central has the source and javadoc artifacts. I’m patching the metadata with Maven artifact URLs where available and the exact release commit for the core test suite.
+apply patch
+patch: completed
+/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json
+diff --git a/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json b/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json
+index 76156be07975a4f873eea1efda44aad6b3e7c379..537a3ecbf58d73fe3e3271ab21fedac18de1f3fa
+--- a/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json
++++ b/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.diffplug.durian:durian-core:1.2.0"
++  "coordinates" : "com.diffplug.durian:durian-core:1.2.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/durian-core-1.2.0-sources.jar",
++  "repository-url" : "https://github.com/diffplug/durian",
++  "test-code-url" : "https://github.com/diffplug/durian/tree/ed0c024120f2feec0cc2ffcfa3e17f13544d2cfe/core/tests/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/durian-core-1.2.0-javadoc.jar",
++  "description" : "Durian Core provides Java 8-oriented utility classes derived from Guava's base, primitive, math, and annotation packages, with JRE-duplicate and deprecated APIs removed. It adds helpers such as Either, Box, Throwing, Errors, Consumers, and collectors-friendly utilities for common functional and defensive-programming tasks."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json b/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json
+index 76156be07975a4f873eea1efda44aad6b3e7c379..537a3ecbf58d73fe3e3271ab21fedac18de1f3fa
+--- a/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json
++++ b/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.diffplug.durian:durian-core:1.2.0"
++  "coordinates" : "com.diffplug.durian:durian-core:1.2.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/durian-core-1.2.0-sources.jar",
++  "repository-url" : "https://github.com/diffplug/durian",
++  "test-code-url" : "https://github.com/diffplug/durian/tree/ed0c024120f2feec0cc2ffcfa3e17f13544d2cfe/core/tests/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/durian-core-1.2.0-javadoc.jar",
++  "description" : "Durian Core provides Java 8-oriented utility classes derived from Guava's base, primitive, math, and annotation packages, with JRE-duplicate and deprecated APIs removed. It adds helpers such as Either, Box, Throwing, Errors, Consumers, and collectors-friendly utilities for common functional and defensive-programming tasks."
+ }
+
+exec
+/usr/bin/zsh -lc 'jq . build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ succeeded in 0ms:
+{
+  "coordinates": "com.diffplug.durian:durian-core:1.2.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/durian-core-1.2.0-sources.jar",
+  "repository-url": "https://github.com/diffplug/durian",
+  "test-code-url": "https://github.com/diffplug/durian/tree/ed0c024120f2feec0cc2ffcfa3e17f13544d2cfe/core/tests/tests",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/durian-core-1.2.0-javadoc.jar",
+  "description": "Durian Core provides Java 8-oriented utility classes derived from Guava's base, primitive, math, and annotation packages, with JRE-duplicate and deprecated APIs removed. It adds helpers such as Either, Box, Throwing, Errors, Consumers, and collectors-friendly utilities for common functional and defensive-programming tasks."
+}
+
+exec
+/usr/bin/zsh -lc 'git diff -- build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json b/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json
+index 76156be07975a4f873eea1efda44aad6b3e7c379..537a3ecbf58d73fe3e3271ab21fedac18de1f3fa
+--- a/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json
++++ b/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.diffplug.durian:durian-core:1.2.0"
++  "coordinates" : "com.diffplug.durian:durian-core:1.2.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/durian-core-1.2.0-sources.jar",
++  "repository-url" : "https://github.com/diffplug/durian",
++  "test-code-url" : "https://github.com/diffplug/durian/tree/ed0c024120f2feec0cc2ffcfa3e17f13544d2cfe/core/tests/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/durian-core-1.2.0-javadoc.jar",
++  "description" : "Durian Core provides Java 8-oriented utility classes derived from Guava's base, primitive, math, and annotation packages, with JRE-duplicate and deprecated APIs removed. It adds helpers such as Either, Box, Throwing, Errors, Consumers, and collectors-friendly utilities for common functional and defensive-programming tasks."
+ }
+
+web search: 
+web search: https://github.com/diffplug/durian/tree/ed0c024120f2feec0cc2ffcfa3e17f13544d2cfe/core/tests/tests
+web search: 
+web search: repo.maven.apache.org com/diffplug/durian/durian-core/1.2.0 durian-core-1.2.0-sources.jar durian-core-1.2.0-javadoc.jar
+exec
+/usr/bin/zsh -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf
+ succeeded in 0ms:
+{
+  "coordinates" : "com.diffplug.durian:durian-core:1.2.0",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/durian-core-1.2.0-sources.jar",
+  "repository-url" : "https://github.com/diffplug/durian",
+  "test-code-url" : "https://github.com/diffplug/durian/tree/ed0c024120f2feec0cc2ffcfa3e17f13544d2cfe/core/tests/tests",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/durian-core-1.2.0-javadoc.jar",
+  "description" : "Durian Core provides Java 8-oriented utility classes derived from Guava's base, primitive, math, and annotation packages, with JRE-duplicate and deprecated APIs removed. It adds helpers such as Either, Box, Throwing, Errors, Consumers, and collectors-friendly utilities for common functional and defensive-programming tasks."
+}
+
+diff --git a/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json b/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json
+index 76156be07975a4f873eea1efda44aad6b3e7c379..537a3ecbf58d73fe3e3271ab21fedac18de1f3fa
+--- a/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json
++++ b/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.diffplug.durian:durian-core:1.2.0"
++  "coordinates" : "com.diffplug.durian:durian-core:1.2.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/durian-core-1.2.0-sources.jar",
++  "repository-url" : "https://github.com/diffplug/durian",
++  "test-code-url" : "https://github.com/diffplug/durian/tree/ed0c024120f2feec0cc2ffcfa3e17f13544d2cfe/core/tests/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/durian-core-1.2.0-javadoc.jar",
++  "description" : "Durian Core provides Java 8-oriented utility classes derived from Guava's base, primitive, math, and annotation packages, with JRE-duplicate and deprecated APIs removed. It adds helpers such as Either, Box, Throwing, Errors, Consumers, and collectors-friendly utilities for common functional and defensive-programming tasks."
+ }
+
+web search: 
+web search: site:github.com/diffplug/durian "Durian: Guava's spikier"
+web search: 
+web search: https://github.com/diffplug/durian/tree/ed0c024120f2feec0cc2ffcfa3e17f13544d2cfe/core/tests/tests
+web search: 
+web search: 'Guava's spikier' in https://github.com/diffplug/durian
+codex
+Updated [com.diffplug.durian-durian-core-1.2.0.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json:1) with the discovered Maven source/javadoc URLs, GitHub repository URL, exact release-commit test suite URL, and a two-sentence description.
+
+I left `language` absent because this is a Java library, not Kotlin/Groovy/Scala; the project README also describes Java 8 usage and shows Java as the repository language. ([github.com](https://github.com/diffplug/durian))
+
+Validated the JSON with `jq`.
+diff --git a/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json b/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json
+index 76156be07975a4f873eea1efda44aad6b3e7c379..537a3ecbf58d73fe3e3271ab21fedac18de1f3fa
+--- a/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json
++++ b/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.diffplug.durian:durian-core:1.2.0"
++  "coordinates" : "com.diffplug.durian:durian-core:1.2.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/durian-core-1.2.0-sources.jar",
++  "repository-url" : "https://github.com/diffplug/durian",
++  "test-code-url" : "https://github.com/diffplug/durian/tree/ed0c024120f2feec0cc2ffcfa3e17f13544d2cfe/core/tests/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/1.2.0/durian-core-1.2.0-javadoc.jar",
++  "description" : "Durian Core provides Java 8-oriented utility classes derived from Guava's base, primitive, math, and annotation packages, with JRE-duplicate and deprecated APIs removed. It adds helpers such as Either, Box, Throwing, Errors, Consumers, and collectors-friendly utilities for common functional and defensive-programming tasks."
+ }
+
+2026-05-01T15:49:01.954080Z ERROR codex_core::session: failed to record rollout items: thread 019de438-bf01-7d92-8afb-3b4ec93a6d6a not found
+tokens used
+87,700
+Updated [com.diffplug.durian-durian-core-1.2.0.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf/build/discovered-artifact-metadata/com.diffplug.durian-durian-core-1.2.0.json:1) with the discovered Maven source/javadoc URLs, GitHub repository URL, exact release-commit test suite URL, and a two-sentence description.
+
+I left `language` absent because this is a Java library, not Kotlin/Groovy/Scala; the project README also describes Java 8 usage and shows Java as the repository language. ([github.com](https://github.com/diffplug/durian))
+
+Validated the JSON with `jq`.
+Ran agent for com.diffplug.durian:durian-core:1.2.0 (exit 0). Log: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf/build/agent-artifact-discovery-logs/com.diffplug.durian-durian-core-1.2.0.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3822-6d1fd4bf/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 8s
+9 actionable tasks: 4 executed, 5 from cache
