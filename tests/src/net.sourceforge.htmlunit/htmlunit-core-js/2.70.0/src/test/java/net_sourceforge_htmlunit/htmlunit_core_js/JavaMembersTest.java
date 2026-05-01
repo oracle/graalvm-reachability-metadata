@@ -6,6 +6,9 @@
  */
 package net_sourceforge_htmlunit.htmlunit_core_js;
 
+import java.security.Permission;
+import java.util.List;
+
 import net.sourceforge.htmlunit.corejs.javascript.Context;
 import net.sourceforge.htmlunit.corejs.javascript.ContextAction;
 import net.sourceforge.htmlunit.corejs.javascript.ContextFactory;
@@ -73,6 +76,22 @@ public class JavaMembersTest {
         assertThat(wrapper.has("NAME", wrapper)).isTrue();
     }
 
+    @Test
+    void fallsBackToPublicMethodsWhenDeclaredMethodAccessIsDenied() {
+        Context cx = Context.enter();
+        try {
+            Scriptable scope = cx.initStandardObjects();
+            withDeclaredMemberAccessDenied(
+                    () -> {
+                        NativeJavaClass wrapper = new NativeJavaClass(scope, List.class, true);
+
+                        assertThat(wrapper.has("of", wrapper)).isTrue();
+                    });
+        } finally {
+            Context.exit();
+        }
+    }
+
     private static <T> T withEnhancedJavaAccess(ContextAction<T> action) {
         synchronized (CONTEXT_FACTORY_LOCK) {
             ContextFactory.GlobalSetter setter = GlobalContextFactorySetter.SETTER;
@@ -86,6 +105,23 @@ public class JavaMembersTest {
         }
     }
 
+    @SuppressWarnings("removal")
+    private static void withDeclaredMemberAccessDenied(Runnable action) {
+        SecurityManager previousManager = System.getSecurityManager();
+        try {
+            System.setSecurityManager(new DeclaredMemberDenyingSecurityManager(previousManager));
+        } catch (UnsupportedOperationException unsupported) {
+            action.run();
+            return;
+        }
+
+        try {
+            action.run();
+        } finally {
+            System.setSecurityManager(previousManager);
+        }
+    }
+
     private static final class EnhancedJavaAccessContextFactory extends ContextFactory {
         @Override
         protected boolean hasFeature(Context cx, int featureIndex) {
@@ -93,6 +129,26 @@ public class JavaMembersTest {
                 return true;
             }
             return super.hasFeature(cx, featureIndex);
+        }
+    }
+
+    @SuppressWarnings("removal")
+    private static final class DeclaredMemberDenyingSecurityManager extends SecurityManager {
+        private final SecurityManager delegate;
+
+        private DeclaredMemberDenyingSecurityManager(SecurityManager delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public void checkPermission(Permission permission) {
+            if (permission instanceof RuntimePermission
+                    && "accessDeclaredMembers".equals(permission.getName())) {
+                throw new SecurityException("Declared member access denied for fallback coverage");
+            }
+            if (delegate != null) {
+                delegate.checkPermission(permission);
+            }
         }
     }
 
