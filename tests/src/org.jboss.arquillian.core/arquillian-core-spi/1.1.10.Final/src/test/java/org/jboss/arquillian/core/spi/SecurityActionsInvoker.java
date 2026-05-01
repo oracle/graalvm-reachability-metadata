@@ -9,6 +9,7 @@ package org.jboss.arquillian.core.spi;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,6 +53,15 @@ public final class SecurityActionsInvoker {
         return names;
     }
 
+    public static List<String> annotatedMethodNames() {
+        List<Method> methods = SecurityActions.getMethodsWithAnnotation(AnnotatedChild.class, CoveredMethod.class);
+        List<String> names = new ArrayList<String>();
+        for (Method method : methods) {
+            names.add(method.getName());
+        }
+        return names;
+    }
+
     private static final class MutableTarget {
         private String value;
 
@@ -64,9 +74,17 @@ public final class SecurityActionsInvoker {
     private @interface CoveredField {
     }
 
+    @Retention(RetentionPolicy.RUNTIME)
+    private @interface CoveredMethod {
+    }
+
     private static class AnnotatedParent {
         @CoveredField
         private String parentValue;
+
+        @CoveredMethod
+        private void parentMethod() {
+        }
     }
 
     private static final class AnnotatedChild extends AnnotatedParent {
@@ -74,5 +92,12 @@ public final class SecurityActionsInvoker {
         private String childValue;
 
         private String unannotatedValue;
+
+        @CoveredMethod
+        private void childMethod() {
+        }
+
+        private void unannotatedMethod() {
+        }
     }
 }
