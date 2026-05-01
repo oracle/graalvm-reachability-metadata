@@ -20,8 +20,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.NumberFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -149,9 +152,13 @@ public final class ReadmeBadgeSummarySupport {
     }
 
     public static void writeMetricsOverviewGraph(Path graphFile, ReadmeMetricsHistory history) {
+        writeMetricsOverviewGraph(graphFile, history, Instant.now());
+    }
+
+    public static void writeMetricsOverviewGraph(Path graphFile, ReadmeMetricsHistory history, Instant generatedAt) {
         writeTextWithTrailingNewline(
                 graphFile,
-                buildMetricsOverviewGraph(history),
+                buildMetricsOverviewGraph(history, generatedAt),
                 "Failed to write README metrics graph to "
         );
     }
@@ -391,7 +398,7 @@ public final class ReadmeBadgeSummarySupport {
         }
     }
 
-    private static String buildMetricsOverviewGraph(ReadmeMetricsHistory history) {
+    private static String buildMetricsOverviewGraph(ReadmeMetricsHistory history, Instant generatedAt) {
         List<PanelSpec> panels = List.of(
                 new PanelSpec(
                         "libraries-supported",
@@ -479,6 +486,8 @@ public final class ReadmeBadgeSummarySupport {
                 .append(DASHBOARD_PADDING)
                 .append("\" y=\"92\" fill=\"#5f748c\" font-size=\"17\">Updated ")
                 .append(escapeXml(latestDate.toString()))
+                .append(" | Generated ")
+                .append(escapeXml(formatGeneratedAt(generatedAt)))
                 .append("</text>\n");
         for (int index = 0; index < panels.size(); index++) {
             int panelX = DASHBOARD_PADDING + (index % 2) * (PANEL_WIDTH + DASHBOARD_GAP);
@@ -942,6 +951,10 @@ public final class ReadmeBadgeSummarySupport {
 
     private static String formatPercent(BigDecimal value) {
         return value.setScale(1, RoundingMode.HALF_UP).toPlainString() + "%";
+    }
+
+    private static String formatGeneratedAt(Instant generatedAt) {
+        return DateTimeFormatter.ISO_INSTANT.format(generatedAt.truncatedTo(ChronoUnit.SECONDS));
     }
 
     public record ReadmeBadgeSummary(

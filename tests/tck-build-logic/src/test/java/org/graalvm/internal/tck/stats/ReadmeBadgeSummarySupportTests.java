@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -283,7 +284,11 @@ class ReadmeBadgeSummarySupportTests {
                 )
         );
 
-        ReadmeBadgeSummarySupport.writeMetricsOverviewGraph(graphFile, history);
+        ReadmeBadgeSummarySupport.writeMetricsOverviewGraph(
+                graphFile,
+                history,
+                Instant.parse("2026-04-07T12:34:56Z")
+        );
 
         String svg = Files.readString(graphFile, StandardCharsets.UTF_8);
         assertThat(svg).contains("<svg");
@@ -296,7 +301,7 @@ class ReadmeBadgeSummarySupportTests {
         assertThat(svg).contains("Tested library versions recorded across metadata indexes");
         assertThat(svg).contains("Tested lines of code");
         assertThat(svg).contains("Covered lines reported across library coverage stats");
-        assertThat(svg).contains("Updated 2026-04-07");
+        assertThat(svg).contains("Updated 2026-04-07 | Generated 2026-04-07T12:34:56Z");
         assertThat(svg).contains("35.8%");
         assertThat(svg).contains("text-anchor=\"start\">Apr 5</text>");
         assertThat(svg).contains("text-anchor=\"middle\">Apr 6</text>");
