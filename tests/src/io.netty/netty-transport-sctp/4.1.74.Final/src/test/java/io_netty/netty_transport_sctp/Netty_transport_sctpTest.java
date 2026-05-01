@@ -6,16 +6,45 @@
  */
 package io_netty.netty_transport_sctp;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import com.sun.nio.sctp.Association;
+import com.sun.nio.sctp.AssociationChangeNotification;
+import com.sun.nio.sctp.HandlerResult;
 import com.sun.nio.sctp.MessageInfo;
+import com.sun.nio.sctp.PeerAddressChangeNotification;
+import com.sun.nio.sctp.SctpStandardSocketOptions.InitMaxStreams;
+import com.sun.nio.sctp.SendFailedNotification;
+import com.sun.nio.sctp.ShutdownNotification;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.DefaultChannelId;
+import io.netty.channel.DefaultMessageSizeEstimator;
+import io.netty.channel.FixedRecvByteBufAllocator;
+import io.netty.channel.MessageSizeEstimator;
+import io.netty.channel.RecvByteBufAllocator;
+import io.netty.channel.WriteBufferWaterMark;
 import io.netty.channel.embedded.EmbeddedChannel;
+import io.netty.channel.sctp.SctpChannel;
+import io.netty.channel.sctp.SctpChannelConfig;
 import io.netty.channel.sctp.SctpChannelOption;
 import io.netty.channel.sctp.SctpMessage;
+import io.netty.channel.sctp.SctpNotificationHandler;
+import io.netty.channel.sctp.SctpServerChannel;
 import io.netty.handler.codec.CodecException;
 import io.netty.handler.codec.sctp.SctpInboundByteStreamHandler;
 import io.netty.handler.codec.sctp.SctpMessageCompletionHandler;
@@ -323,6 +352,37 @@ public class Netty_transport_sctpTest {
         assertThat(SctpChannelOption.SCTP_SET_PEER_PRIMARY_ADDR.name()).endsWith("#SCTP_SET_PEER_PRIMARY_ADDR");
     }
 
+    @Test
+    void notificationHandlerForwardsSctpNotificationsAndClosesOnShutdown() {
+        UserEventCollector eventCollector = new UserEventCollector();
+        TestSctpChannel channel = new TestSctpChannel(eventCollector);
+        SctpNotificationHandler handler = new SctpNotificationHandler(channel);
+        Association association = new TestAssociation(1, 2, 3);
+        AssociationChangeNotification associationChange = new TestAssociationChangeNotification(association);
+        PeerAddressChangeNotification peerAddressChange = new TestPeerAddressChangeNotification(
+                association,
+                new InetSocketAddress(InetAddress.getLoopbackAddress(), 4567));
+        SendFailedNotification sendFailed = new TestSendFailedNotification(
+                association,
+                peerAddressChange.address(),
+                ByteBuffer.wrap(new byte[] {1, 2, 3}),
+                99,
+                STREAM_IDENTIFIER);
+        ShutdownNotification shutdown = new TestShutdownNotification(association);
+        try {
+            assertThat(handler.handleNotification(associationChange, null)).isEqualTo(HandlerResult.CONTINUE);
+            assertThat(handler.handleNotification(peerAddressChange, null)).isEqualTo(HandlerResult.CONTINUE);
+            assertThat(handler.handleNotification(sendFailed, null)).isEqualTo(HandlerResult.CONTINUE);
+            assertThat(handler.handleNotification(shutdown, null)).isEqualTo(HandlerResult.RETURN);
+
+            assertThat(eventCollector.events())
+                    .containsExactly(associationChange, peerAddressChange, sendFailed, shutdown);
+            assertThat(channel.isOpen()).isFalse();
+        } finally {
+            channel.finishAndReleaseAll();
+        }
+    }
+
     private static MessageInfo messageInfo(
             int protocolIdentifier,
             int streamIdentifier,
@@ -342,6 +402,386 @@ public class Netty_transport_sctpTest {
         @Override
         protected void decode(ChannelHandlerContext ctx, SctpMessage msg, List<Object> out) {
             out.add(msg.content().toString(StandardCharsets.UTF_8));
+        }
+    }
+
+    private static final class UserEventCollector extends ChannelInboundHandlerAdapter {
+        private final List<Object> events = new ArrayList<>();
+
+        @Override
+        public void userEventTriggered(ChannelHandlerContext ctx, Object evt) {
+            events.add(evt);
+        }
+
+        private List<Object> events() {
+            return events;
+        }
+    }
+
+    private static final class TestSctpChannel extends EmbeddedChannel implements SctpChannel {
+        private TestSctpChannel(ChannelInboundHandlerAdapter handler) {
+            super(DefaultChannelId.newInstance(), false, new TestSctpChannelConfig(), handler);
+        }
+
+        @Override
+        public SctpServerChannel parent() {
+            return null;
+        }
+
+        @Override
+        public Association association() {
+            return null;
+        }
+
+        @Override
+        public InetSocketAddress localAddress() {
+            return null;
+        }
+
+        @Override
+        public Set<InetSocketAddress> allLocalAddresses() {
+            return Set.of();
+        }
+
+        @Override
+        public SctpChannelConfig config() {
+            return (SctpChannelConfig) super.config();
+        }
+
+        @Override
+        public InetSocketAddress remoteAddress() {
+            return null;
+        }
+
+        @Override
+        public Set<InetSocketAddress> allRemoteAddresses() {
+            return Set.of();
+        }
+
+        @Override
+        public ChannelFuture bindAddress(InetAddress localAddress) {
+            return bindAddress(localAddress, newPromise());
+        }
+
+        @Override
+        public ChannelFuture bindAddress(InetAddress localAddress, ChannelPromise promise) {
+            return promise.setSuccess();
+        }
+
+        @Override
+        public ChannelFuture unbindAddress(InetAddress localAddress) {
+            return unbindAddress(localAddress, newPromise());
+        }
+
+        @Override
+        public ChannelFuture unbindAddress(InetAddress localAddress, ChannelPromise promise) {
+            return promise.setSuccess();
+        }
+    }
+
+    @SuppressWarnings({"deprecation", "unchecked"})
+    private static final class TestSctpChannelConfig implements SctpChannelConfig {
+        private boolean autoRead = true;
+        private boolean autoClose = true;
+        private int connectTimeoutMillis = 30000;
+        private int maxMessagesPerRead = 1;
+        private int writeSpinCount = 16;
+        private int sendBufferSize = 8192;
+        private int receiveBufferSize = 8192;
+        private InitMaxStreams initMaxStreams = InitMaxStreams.create(1, 1);
+        private RecvByteBufAllocator recvByteBufAllocator = new FixedRecvByteBufAllocator(2048);
+        private WriteBufferWaterMark writeBufferWaterMark = WriteBufferWaterMark.DEFAULT;
+        private MessageSizeEstimator messageSizeEstimator = DefaultMessageSizeEstimator.DEFAULT;
+
+        @Override
+        public Map<ChannelOption<?>, Object> getOptions() {
+            return Map.of();
+        }
+
+        @Override
+        public boolean setOptions(Map<ChannelOption<?>, ?> options) {
+            return true;
+        }
+
+        @Override
+        public <T> T getOption(ChannelOption<T> option) {
+            return null;
+        }
+
+        @Override
+        public <T> boolean setOption(ChannelOption<T> option, T value) {
+            return true;
+        }
+
+        @Override
+        public boolean isSctpNoDelay() {
+            return false;
+        }
+
+        @Override
+        public SctpChannelConfig setSctpNoDelay(boolean sctpNoDelay) {
+            return this;
+        }
+
+        @Override
+        public int getSendBufferSize() {
+            return sendBufferSize;
+        }
+
+        @Override
+        public SctpChannelConfig setSendBufferSize(int sendBufferSize) {
+            this.sendBufferSize = sendBufferSize;
+            return this;
+        }
+
+        @Override
+        public int getReceiveBufferSize() {
+            return receiveBufferSize;
+        }
+
+        @Override
+        public SctpChannelConfig setReceiveBufferSize(int receiveBufferSize) {
+            this.receiveBufferSize = receiveBufferSize;
+            return this;
+        }
+
+        @Override
+        public InitMaxStreams getInitMaxStreams() {
+            return initMaxStreams;
+        }
+
+        @Override
+        public SctpChannelConfig setInitMaxStreams(InitMaxStreams initMaxStreams) {
+            this.initMaxStreams = initMaxStreams;
+            return this;
+        }
+
+        @Override
+        public int getConnectTimeoutMillis() {
+            return connectTimeoutMillis;
+        }
+
+        @Override
+        public SctpChannelConfig setConnectTimeoutMillis(int connectTimeoutMillis) {
+            this.connectTimeoutMillis = connectTimeoutMillis;
+            return this;
+        }
+
+        @Override
+        public int getMaxMessagesPerRead() {
+            return maxMessagesPerRead;
+        }
+
+        @Override
+        public SctpChannelConfig setMaxMessagesPerRead(int maxMessagesPerRead) {
+            this.maxMessagesPerRead = maxMessagesPerRead;
+            return this;
+        }
+
+        @Override
+        public int getWriteSpinCount() {
+            return writeSpinCount;
+        }
+
+        @Override
+        public SctpChannelConfig setWriteSpinCount(int writeSpinCount) {
+            this.writeSpinCount = writeSpinCount;
+            return this;
+        }
+
+        @Override
+        public ByteBufAllocator getAllocator() {
+            return ByteBufAllocator.DEFAULT;
+        }
+
+        @Override
+        public SctpChannelConfig setAllocator(ByteBufAllocator allocator) {
+            return this;
+        }
+
+        @Override
+        public <T extends RecvByteBufAllocator> T getRecvByteBufAllocator() {
+            return (T) recvByteBufAllocator;
+        }
+
+        @Override
+        public SctpChannelConfig setRecvByteBufAllocator(RecvByteBufAllocator allocator) {
+            recvByteBufAllocator = allocator;
+            return this;
+        }
+
+        @Override
+        public boolean isAutoRead() {
+            return autoRead;
+        }
+
+        @Override
+        public SctpChannelConfig setAutoRead(boolean autoRead) {
+            this.autoRead = autoRead;
+            return this;
+        }
+
+        @Override
+        public boolean isAutoClose() {
+            return autoClose;
+        }
+
+        @Override
+        public SctpChannelConfig setAutoClose(boolean autoClose) {
+            this.autoClose = autoClose;
+            return this;
+        }
+
+        @Override
+        public int getWriteBufferHighWaterMark() {
+            return writeBufferWaterMark.high();
+        }
+
+        @Override
+        public SctpChannelConfig setWriteBufferHighWaterMark(int writeBufferHighWaterMark) {
+            writeBufferWaterMark = new WriteBufferWaterMark(getWriteBufferLowWaterMark(), writeBufferHighWaterMark);
+            return this;
+        }
+
+        @Override
+        public int getWriteBufferLowWaterMark() {
+            return writeBufferWaterMark.low();
+        }
+
+        @Override
+        public SctpChannelConfig setWriteBufferLowWaterMark(int writeBufferLowWaterMark) {
+            writeBufferWaterMark = new WriteBufferWaterMark(writeBufferLowWaterMark, getWriteBufferHighWaterMark());
+            return this;
+        }
+
+        @Override
+        public WriteBufferWaterMark getWriteBufferWaterMark() {
+            return writeBufferWaterMark;
+        }
+
+        @Override
+        public SctpChannelConfig setWriteBufferWaterMark(WriteBufferWaterMark writeBufferWaterMark) {
+            this.writeBufferWaterMark = writeBufferWaterMark;
+            return this;
+        }
+
+        @Override
+        public MessageSizeEstimator getMessageSizeEstimator() {
+            return messageSizeEstimator;
+        }
+
+        @Override
+        public SctpChannelConfig setMessageSizeEstimator(MessageSizeEstimator estimator) {
+            messageSizeEstimator = estimator;
+            return this;
+        }
+    }
+
+    private static final class TestAssociation extends Association {
+        private TestAssociation(int associationId, int maxInboundStreams, int maxOutboundStreams) {
+            super(associationId, maxInboundStreams, maxOutboundStreams);
+        }
+    }
+
+    private static final class TestAssociationChangeNotification extends AssociationChangeNotification {
+        private final Association association;
+
+        private TestAssociationChangeNotification(Association association) {
+            this.association = association;
+        }
+
+        @Override
+        public Association association() {
+            return association;
+        }
+
+        @Override
+        public AssocChangeEvent event() {
+            return AssocChangeEvent.COMM_UP;
+        }
+    }
+
+    private static final class TestPeerAddressChangeNotification extends PeerAddressChangeNotification {
+        private final Association association;
+        private final SocketAddress address;
+
+        private TestPeerAddressChangeNotification(Association association, SocketAddress address) {
+            this.association = association;
+            this.address = address;
+        }
+
+        @Override
+        public SocketAddress address() {
+            return address;
+        }
+
+        @Override
+        public Association association() {
+            return association;
+        }
+
+        @Override
+        public AddressChangeEvent event() {
+            return AddressChangeEvent.ADDR_AVAILABLE;
+        }
+    }
+
+    private static final class TestSendFailedNotification extends SendFailedNotification {
+        private final Association association;
+        private final SocketAddress address;
+        private final ByteBuffer buffer;
+        private final int errorCode;
+        private final int streamNumber;
+
+        private TestSendFailedNotification(
+                Association association,
+                SocketAddress address,
+                ByteBuffer buffer,
+                int errorCode,
+                int streamNumber) {
+            this.association = association;
+            this.address = address;
+            this.buffer = buffer;
+            this.errorCode = errorCode;
+            this.streamNumber = streamNumber;
+        }
+
+        @Override
+        public Association association() {
+            return association;
+        }
+
+        @Override
+        public SocketAddress address() {
+            return address;
+        }
+
+        @Override
+        public ByteBuffer buffer() {
+            return buffer;
+        }
+
+        @Override
+        public int errorCode() {
+            return errorCode;
+        }
+
+        @Override
+        public int streamNumber() {
+            return streamNumber;
+        }
+    }
+
+    private static final class TestShutdownNotification extends ShutdownNotification {
+        private final Association association;
+
+        private TestShutdownNotification(Association association) {
+            this.association = association;
+        }
+
+        @Override
+        public Association association() {
+            return association;
         }
     }
 }
