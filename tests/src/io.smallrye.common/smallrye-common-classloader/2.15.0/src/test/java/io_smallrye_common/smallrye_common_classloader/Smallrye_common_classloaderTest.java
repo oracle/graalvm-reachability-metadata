@@ -8,7 +8,7 @@ package io_smallrye_common.smallrye_common_classloader;
 
 import org.junit.jupiter.api.Test;
 
-class Smallrye_common_classloaderTest {
+public class Smallrye_common_classloaderTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
