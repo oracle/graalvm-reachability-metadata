@@ -438,11 +438,11 @@ public class Jetty_ioTest {
         private final long createdTimeStamp = System.currentTimeMillis() - 5;
         private final long bytesIn;
         private final long bytesOut;
-        private final int messagesIn;
-        private final int messagesOut;
+        private final long messagesIn;
+        private final long messagesOut;
         private final List<Connection.Listener> listeners = new ArrayList<>();
 
-        private TestConnection(long bytesIn, long bytesOut, int messagesIn, int messagesOut) {
+        private TestConnection(long bytesIn, long bytesOut, long messagesIn, long messagesOut) {
             this.bytesIn = bytesIn;
             this.bytesOut = bytesOut;
             this.messagesIn = messagesIn;
@@ -485,12 +485,12 @@ public class Jetty_ioTest {
         }
 
         @Override
-        public int getMessagesIn() {
+        public long getMessagesIn() {
             return messagesIn;
         }
 
         @Override
-        public int getMessagesOut() {
+        public long getMessagesOut() {
             return messagesOut;
         }
 
