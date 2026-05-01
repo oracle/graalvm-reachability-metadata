@@ -17,6 +17,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LogTest {
+    static {
+        Log.getLog();
+    }
+
     @Test
     void initializesDefaultLoggerAndProvidesRootLogger() {
         Logger logger = Log.getLog();
@@ -27,12 +31,17 @@ public class LogTest {
 
     @Test
     void warnUnwindsInvocationTargetException() {
+        Logger previousLogger = Log.getLog();
         CapturingLogger logger = new CapturingLogger();
-        Log.setLog(logger);
         IllegalArgumentException nested = new IllegalArgumentException("nested failure");
         InvocationTargetException wrapper = new InvocationTargetException(nested, "wrapper failure");
 
-        Log.warn(wrapper);
+        try {
+            Log.setLog(logger);
+            Log.warn(wrapper);
+        } finally {
+            Log.setLog(previousLogger);
+        }
 
         assertThat(logger.throwableWarnings).contains(wrapper, nested);
         assertThat(logger.messages).anySatisfy(message -> assertThat(message)
