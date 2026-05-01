@@ -39,7 +39,7 @@ public class JSONPojoConvertorTest {
         json.addConvertor(RoundTripWidget.class, new JSONPojoConvertor(RoundTripWidget.class));
         RoundTripWidget widget = new RoundTripWidget("ajax", 11, true);
 
-        Object parsed = JSON.parse(json.toJSON(widget));
+        Object parsed = new JSON().fromJSON(json.toJSON(widget));
 
         assertThat(parsed).isInstanceOf(Map.class);
         Map<?, ?> properties = (Map<?, ?>) parsed;

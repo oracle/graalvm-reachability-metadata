@@ -18,18 +18,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class JSONPojoConvertorInnerSetterTest {
     @Test
     void setsNullAndScalarValuesThroughPojoConvertor() {
-        SetterTarget target = new SetterTarget();
         JSONPojoConvertor convertor = new JSONPojoConvertor(SetterTarget.class);
 
-        int updated = convertor.setProps(target, properties(
+        SetterTarget target = convert(convertor, properties(
                 "nullableText", null,
                 "status", SetterTarget.Status.STARTED,
                 "secondaryStatus", "STOPPED",
                 "quantity", Long.valueOf(42L),
                 "symbol", "Jetty",
                 "label", "converted"));
-
-        assertThat(updated).isEqualTo(6);
         assertThat(target.nullableText).isNull();
         assertThat(target.status).isEqualTo(SetterTarget.Status.STARTED);
         assertThat(target.secondaryStatus).isEqualTo(SetterTarget.Status.STOPPED);
@@ -40,54 +37,49 @@ public class JSONPojoConvertorInnerSetterTest {
 
     @Test
     void copiesCompatibleObjectArraysToTypedPojoArrays() {
-        SetterTarget target = new SetterTarget();
         JSONPojoConvertor convertor = new JSONPojoConvertor(SetterTarget.class);
 
-        int updated = convertor.setProps(target, properties(
+        SetterTarget target = convert(convertor, properties(
                 "names", new Object[]{"alpha", "beta"},
                 "quantities", new Integer[]{3, 5, 8}));
-
-        assertThat(updated).isEqualTo(2);
         assertThat(target.names).containsExactly("alpha", "beta");
         assertThat(target.quantities).containsExactly(3, 5, 8);
     }
 
     @Test
     void fallsBackToOriginalNumericWrapperArrayWhenElementCannotBeConverted() {
-        SetterTarget target = new SetterTarget();
         JSONPojoConvertor convertor = new JSONPojoConvertor(SetterTarget.class);
         Integer[] values = new Integer[]{1, null, 3};
 
-        int updated = convertor.setProps(target, properties("boxedQuantities", values));
-
-        assertThat(updated).isOne();
+        SetterTarget target = convert(convertor, properties("boxedQuantities", values));
         assertThat(target.boxedQuantities).isSameAs(values).containsExactly(1, null, 3);
     }
 
     @Test
     void fallsBackToOriginalObjectArrayWhenCopyCannotStoreValues() {
-        SetterTarget target = new SetterTarget();
         JSONPojoConvertor convertor = new CopyFailureConvertor(SetterTarget.class);
         Object[] values = new Object[]{"plain-text"};
 
-        int updated = convertor.setProps(target, properties("objects", values));
-
-        assertThat(updated).isOne();
+        SetterTarget target = convert(convertor, properties("objects", values));
         assertThat(target.objects).isSameAs(values).containsExactly("plain-text");
     }
 
     @Test
     void ignoresArrayValuesThatCannotBeAdaptedToPojoArrayTypes() {
-        SetterTarget target = new SetterTarget();
         JSONPojoConvertor convertor = new JSONPojoConvertor(SetterTarget.class);
 
-        int updated = convertor.setProps(target, properties(
+        SetterTarget target = convert(convertor, properties(
                 "names", new Object[]{"alpha", Integer.valueOf(7)},
                 "quantities", new Object[]{Integer.valueOf(1), "not-a-number"}));
-
-        assertThat(updated).isZero();
         assertThat(target.names).isNull();
         assertThat(target.quantities).isNull();
+    }
+
+    private static SetterTarget convert(JSONPojoConvertor convertor, Map<String, Object> properties) {
+        Object converted = convertor.fromJSON(properties);
+
+        assertThat(converted).isInstanceOf(SetterTarget.class);
+        return (SetterTarget) converted;
     }
 
     private static Map<String, Object> properties(Object... entries) {

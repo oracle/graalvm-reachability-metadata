@@ -21,7 +21,7 @@ public class JSONObjectConvertorTest {
         json.addConvertor(WidgetSnapshot.class, new JSONObjectConvertor(false, new String[] {"secret"}));
         WidgetSnapshot snapshot = new WidgetSnapshot("jetty", 38, true, "hidden");
 
-        Object parsed = JSON.parse(json.toJSON(snapshot));
+        Object parsed = json.fromJSON(json.toJSON(snapshot));
 
         assertThat(parsed).isInstanceOf(Map.class);
         Map<?, ?> properties = (Map<?, ?>) parsed;
