@@ -15,3 +15,9 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
     testImplementation 'org.awaitility:awaitility:4.2.0'
 }
+
+test {
+    // Isolate TimestampUtilsTest so it can set java.version before pgjdbc caches JavaVersion.
+    forkEvery = 1
+    jvmArgs '--add-opens=java.base/java.util=ALL-UNNAMED'
+}
