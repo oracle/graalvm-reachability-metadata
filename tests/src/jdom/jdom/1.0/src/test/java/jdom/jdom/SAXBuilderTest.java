@@ -46,7 +46,7 @@ public class SAXBuilderTest {
     void freshLoadedBuilderUsesDefaultJaxpParser() throws Exception {
         try {
             URL jdomJar = SAXBuilder.class.getProtectionDomain().getCodeSource().getLocation();
-            try (ChildFirstJdomClassLoader classLoader = new ChildFirstJdomClassLoader(new URL[] { jdomJar })) {
+            try (ChildFirstJdomClassLoader classLoader = new ChildFirstJdomClassLoader(new URL[] {jdomJar })) {
                 Class<?> builderClass = Class.forName(SAXBuilder.class.getName(), true, classLoader);
                 Object builder = builderClass.getConstructor().newInstance();
                 Method build = builderClass.getMethod("build", Reader.class);
