@@ -41,7 +41,6 @@ public class Spi_annotationsTest {
         assertThat(endpoint.producerOnly()).isTrue();
         assertThat(endpoint.consumerOnly()).isFalse();
         assertThat(endpoint.lenientProperties()).isTrue();
-        assertThat(endpoint.excludeProperties()).isEqualTo("secretToken,legacyOption");
         assertThat(endpoint.generateConfigurer()).isFalse();
     }
 
@@ -60,7 +59,6 @@ public class Spi_annotationsTest {
         assertThat(endpoint.producerOnly()).isFalse();
         assertThat(endpoint.consumerOnly()).isFalse();
         assertThat(endpoint.lenientProperties()).isFalse();
-        assertThat(endpoint.excludeProperties()).isEmpty();
         assertThat(endpoint.generateConfigurer()).isTrue();
     }
 
@@ -252,7 +250,6 @@ public class Spi_annotationsTest {
             label = "testing,core",
             producerOnly = true,
             lenientProperties = true,
-            excludeProperties = "secretToken,legacyOption",
             generateConfigurer = false)
     @UriParams(prefix = "advanced.")
     @Metadata(
