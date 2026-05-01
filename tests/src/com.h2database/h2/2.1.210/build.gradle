@@ -10,10 +10,25 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+configurations {
+    legacyH2 {
+        canBeConsumed = false
+        canBeResolved = true
+    }
+}
+
 dependencies {
-	testImplementation("com.h2database:h2:$libraryVersion")
-	testImplementation("com.ibm.icu:icu4j:71.1")
-	testImplementation("org.assertj:assertj-core:3.22.0")
+    testImplementation("com.h2database:h2:$libraryVersion")
+    testImplementation("com.ibm.icu:icu4j:71.1")
+    testImplementation("org.assertj:assertj-core:3.22.0")
+    legacyH2("com.h2database:h2:1.4.200")
+}
+
+tasks.named("processTestResources") {
+    from(configurations.legacyH2) {
+        into("h2-upgrade")
+        rename { "legacy-h2.jar" }
+    }
 }
 
 tasks.withType(Test).configureEach {
