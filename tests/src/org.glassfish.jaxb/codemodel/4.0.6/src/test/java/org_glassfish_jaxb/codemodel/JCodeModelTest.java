@@ -15,6 +15,27 @@ import org.junit.jupiter.api.Test;
 
 public class JCodeModelTest {
     @Test
+    void refLoadsVisibleClassWithContextClassLoader() {
+        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+
+        try {
+            Thread.currentThread().setContextClassLoader(new DelegatingClassLoader());
+
+            JCodeModel codeModel = new JCodeModel();
+            JClass referencedClass = codeModel.ref("java.lang.Integer");
+
+            assertThat(referencedClass.fullName()).isEqualTo("java.lang.Integer");
+            assertThat(referencedClass.binaryName()).isEqualTo("java.lang.Integer");
+        } catch (Error error) {
+            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+                throw error;
+            }
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
+    }
+
+    @Test
     void refFallsBackToClassForNameWhenContextClassLoaderCannotLoadClass() {
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
 
@@ -32,6 +53,12 @@ public class JCodeModelTest {
             }
         } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
+    }
+
+    private static final class DelegatingClassLoader extends ClassLoader {
+        private DelegatingClassLoader() {
+            super(null);
         }
     }
 
