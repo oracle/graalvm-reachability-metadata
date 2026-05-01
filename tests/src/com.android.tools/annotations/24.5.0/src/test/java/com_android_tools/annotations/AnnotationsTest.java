@@ -81,6 +81,19 @@ public class AnnotationsTest {
     }
 
     @Test
+    void guardedByCanDocumentIntrinsicInstanceAndClassLocks() {
+        IntrinsicLockLedger.resetTotalDeposits();
+        IntrinsicLockLedger ledger = new IntrinsicLockLedger();
+
+        assertEquals(0, ledger.balance());
+        assertEquals(5, ledger.deposit(5));
+        assertEquals(3, ledger.withdraw(2));
+        assertEquals(4, IntrinsicLockLedger.recordGlobalDeposit(4));
+        assertEquals(10, IntrinsicLockLedger.recordGlobalDeposit(6));
+        assertEquals(10, IntrinsicLockLedger.totalDeposits());
+    }
+
+    @Test
     void immutableCanDocumentStableValueObjects() {
         ImmutablePoint origin = new ImmutablePoint(0, 0);
         ImmutablePoint shifted = origin.translate(3, 4);
@@ -206,6 +219,41 @@ public class AnnotationsTest {
             synchronized (lock) {
                 return count;
             }
+        }
+    }
+
+    private static final class IntrinsicLockLedger {
+        @GuardedBy("IntrinsicLockLedger.class")
+        private static int totalDeposits;
+
+        @GuardedBy("this")
+        private int balance;
+
+        synchronized int deposit(int amount) {
+            balance += amount;
+            return balance;
+        }
+
+        synchronized int withdraw(int amount) {
+            balance -= amount;
+            return balance;
+        }
+
+        synchronized int balance() {
+            return balance;
+        }
+
+        static synchronized int recordGlobalDeposit(int amount) {
+            totalDeposits += amount;
+            return totalDeposits;
+        }
+
+        static synchronized int totalDeposits() {
+            return totalDeposits;
+        }
+
+        static synchronized void resetTotalDeposits() {
+            totalDeposits = 0;
         }
     }
 
