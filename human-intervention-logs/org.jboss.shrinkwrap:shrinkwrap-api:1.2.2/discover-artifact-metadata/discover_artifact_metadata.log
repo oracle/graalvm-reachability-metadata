@@ -1,0 +1,907 @@
+Starting a Gradle Daemon, 2 busy and 2 incompatible and 18 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de356-7357-7803-b929-9694b89cfe59
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jboss.shrinkwrap:shrinkwrap-api:1.2.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.2.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
+- Set "coordinates" to "org.jboss.shrinkwrap:shrinkwrap-api:1.2.2".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+2026-05-01T11:39:53.296855Z ERROR rmcp::transport::worker: worker quit with fatal: Client error: HTTP request failed: http/request failed: error sending request for url (https://developers.openai.com/mcp), when send initialized notification
+codex
+I’ll verify the artifact metadata against Maven and the upstream project tag before editing the JSON, with Maven-hosted source/test artifacts preferred where they exist.
+exec
+/usr/bin/zsh -lc "pwd && ls -l build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json && sed -n '1,160p' build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1
+ succeeded in 0ms:
+/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1
+-rw-rw-r-- 1 mihailo mihailo 66 May  1 13:39 build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
+{
+  "coordinates" : "org.jboss.shrinkwrap:shrinkwrap-api:1.2.2"
+}
+
+exec
+/usr/bin/zsh -lc "rg -n 'org\\.jboss\\.shrinkwrap|shrinkwrap-api' build/discovered-artifact-metadata metadata tests -S" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1
+ succeeded in 196ms:
+build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json:2:  "coordinates" : "org.jboss.shrinkwrap:shrinkwrap-api:1.2.2"
+
+web search: 
+web search: Maven org.jboss.shrinkwrap shrinkwrap-api 1.2.2 sources jar tests jar javadoc jar
+codex
+The local file only has coordinates today. I’m checking Maven Central first for versioned source, test, and javadoc artifacts, then I’ll fall back to the upstream tag only for anything Maven does not publish.
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2.pom' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1
+exec
+/usr/bin/zsh -lc 'curl -fsI https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-test-sources.jar ; curl -fsI https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-tests.jar ; curl -fsI https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-sources.jar ; curl -fsI https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-javadoc.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1
+ succeeded in 285ms:
+<?xml version="1.0" encoding="UTF-8"?>
+  <!--
+  vi:ts=2:sw=2:expandtab:
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <!-- Parent -->
+  <parent>
+    <groupId>org.jboss.shrinkwrap</groupId>
+    <artifactId>shrinkwrap-parent</artifactId>
+    <version>1.2.2</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <!-- Model Version -->
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- Artifact Configuration -->
+  <artifactId>shrinkwrap-api</artifactId>
+  <name>ShrinkWrap API</name>
+  <description>Client View of the ShrinkWrap Project</description>
+
+
+  <!-- Properties -->
+  <properties>
+
+    <!-- Versioning -->
+
+  </properties>
+
+  <!-- Dependencies -->
+  <dependencies>
+  
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+
+  </dependencies>
+
+  <!-- Build Configuration -->
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <!-- Surefire -->
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!-- Run in Java5; we build with a JDK7 compiler so ensure we don't use any JDK7 libs-->
+          <jvm>${env.JAVA5_HOME}/bin/java</jvm>
+        </configuration>
+      </plugin>
+      
+      <!-- Checkstyle -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+      
+    </plugins>
+  </build>
+  
+  <reporting>
+    <plugins>
+    
+      <!-- JavaDoc / APIViz -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.6.1</version>
+        <configuration>
+          <doclet>org.jboss.apiviz.APIviz</doclet>
+          <docletArtifact>
+            <groupId>org.jboss.apiviz</groupId>
+            <artifactId>apiviz</artifactId>
+            <version>1.3.2.GA</version>
+          </docletArtifact>
+          <useStandardDocletOptions>true</useStandardDocletOptions>
+          <charset>UTF-8</charset>
+          <encoding>UTF-8</encoding>
+          <docencoding>UTF-8</docencoding>
+          <breakiterator>true</breakiterator>
+          <version>true</version>
+          <author>true</author>
+          <keywords>true</keywords>
+          <additionalparam> 
+            -sourceclasspath ${project.build.outputDirectory}
+          </additionalparam>
+          <stylesheetfile>${basedir}/src/javadoc/stylesheet.css</stylesheetfile>
+          <javadocDirectory>${basedir}/src/javadoc</javadocDirectory>
+          <docfilessubdirs>true</docfilessubdirs>
+        </configuration>
+      </plugin>
+    
+    </plugins>
+  </reporting>
+</project>
+
+
+ succeeded in 314ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jboss/shrinkwrap/shrinkwrap-api/1.2.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jboss/shrinkwrap/shrinkwrap-api/1.2.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="shrinkwrap-api-1.2.2-javadoc.jar" title="shrinkwrap-api-1.2.2-javadoc.jar">shrinkwrap-api-1.2.2-javadoc.jar</a>                  2014-03-25 14:36    419747      
+<a href="shrinkwrap-api-1.2.2-javadoc.jar.md5" title="shrinkwrap-api-1.2.2-javadoc.jar.md5">shrinkwrap-api-1.2.2-javadoc.jar.md5</a>              2014-03-25 14:36        32      
+<a href="shrinkwrap-api-1.2.2-javadoc.jar.sha1" title="shrinkwrap-api-1.2.2-javadoc.jar.sha1">shrinkwrap-api-1.2.2-javadoc.jar.sha1</a>             2014-03-25 14:36        40      
+<a href="shrinkwrap-api-1.2.2-sources.jar" title="shrinkwrap-api-1.2.2-sources.jar">shrinkwrap-api-1.2.2-sources.jar</a>                  2014-03-25 14:36     92873      
+<a href="shrinkwrap-api-1.2.2-sources.jar.md5" title="shrinkwrap-api-1.2.2-sources.jar.md5">shrinkwrap-api-1.2.2-sources.jar.md5</a>              2014-03-25 14:36        32      
+<a href="shrinkwrap-api-1.2.2-sources.jar.sha1" title="shrinkwrap-api-1.2.2-sources.jar.sha1">shrinkwrap-api-1.2.2-sources.jar.sha1</a>             2014-03-25 14:36        40      
+<a href="shrinkwrap-api-1.2.2-tests.jar" title="shrinkwrap-api-1.2.2-tests.jar">shrinkwrap-api-1.2.2-tests.jar</a>                    2014-03-25 14:36     16826      
+<a href="shrinkwrap-api-1.2.2-tests.jar.md5" title="shrinkwrap-api-1.2.2-tests.jar.md5">shrinkwrap-api-1.2.2-tests.jar.md5</a>                2014-03-25 14:36        32      
+<a href="shrinkwrap-api-1.2.2-tests.jar.sha1" title="shrinkwrap-api-1.2.2-tests.jar.sha1">shrinkwrap-api-1.2.2-tests.jar.sha1</a>               2014-03-25 14:36        40      
+<a href="shrinkwrap-api-1.2.2.jar" title="shrinkwrap-api-1.2.2.jar">shrinkwrap-api-1.2.2.jar</a>                          2014-03-25 14:36     65617      
+<a href="shrinkwrap-api-1.2.2.jar.md5" title="shrinkwrap-api-1.2.2.jar.md5">shrinkwrap-api-1.2.2.jar.md5</a>                      2014-03-25 14:36        32      
+<a href="shrinkwrap-api-1.2.2.jar.sha1" title="shrinkwrap-api-1.2.2.jar.sha1">shrinkwrap-api-1.2.2.jar.sha1</a>                     2014-03-25 14:36        40      
+<a href="shrinkwrap-api-1.2.2.pom" title="shrinkwrap-api-1.2.2.pom">shrinkwrap-api-1.2.2.pom</a>                          2014-03-25 14:36      3098      
+<a href="shrinkwrap-api-1.2.2.pom.md5" title="shrinkwrap-api-1.2.2.pom.md5">shrinkwrap-api-1.2.2.pom.md5</a>                      2014-03-25 14:36        32      
+<a href="shrinkwrap-api-1.2.2.pom.sha1" title="shrinkwrap-api-1.2.2.pom.sha1">shrinkwrap-api-1.2.2.pom.sha1</a>                     2014-03-25 14:36        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 1571ms:
+HTTP/2 404 
+date: Fri, 01 May 2026 11:40:08 GMT
+content-type: text/html
+cf-ray: 9f4e8276adb50db0-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Fri, 01 May 2026 11:40:09 GMT
+content-type: application/java-archive
+content-length: 16826
+cf-ray: 9f4e827a3ca455ad-BEG
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "8c69c5dcb5d46e6c33a9df2d2dee1c3a"
+last-modified: Tue, 25 Mar 2014 14:36:48 GMT
+x-checksum-md5: 8c69c5dcb5d46e6c33a9df2d2dee1c3a
+x-checksum-sha1: cc299e6257ffe287c80dca262cdf267ec1132a19
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Fri, 01 May 2026 11:40:09 GMT
+content-type: application/java-archive
+content-length: 92873
+cf-ray: 9f4e827d89000380-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 112622
+etag: "25afb96e4ba7e4ea6471001b836b6c1b"
+last-modified: Tue, 25 Mar 2014 14:36:50 GMT
+x-checksum-md5: 25afb96e4ba7e4ea6471001b836b6c1b
+x-checksum-sha1: 47cdf324d104f5360393cee89e0bef2f212a5cb4
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Fri, 01 May 2026 11:40:09 GMT
+content-type: application/java-archive
+content-length: 419747
+cf-ray: 9f4e827e8f41b01e-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 67537
+etag: "fe53f2fb2fbf3dae542f4c515eb83651"
+last-modified: Tue, 25 Mar 2014 14:36:52 GMT
+x-checksum-md5: fe53f2fb2fbf3dae542f4c515eb83651
+x-checksum-sha1: 2833f92eb50394926b69b9738ede92831838cf74
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-build/1.2.2/shrinkwrap-build-1.2.2.pom' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-parent/1.2.2/shrinkwrap-parent-1.2.2.pom' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1
+ succeeded in 326ms:
+<?xml version="1.0" encoding="UTF-8"?>
+  <!--
+  vi:ts=2:sw=2:expandtab:
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <!-- Parent -->
+  <parent>
+    <groupId>org.jboss</groupId>
+    <artifactId>jboss-parent</artifactId>
+    <version>8</version>
+  </parent>
+
+  <!-- Model Information -->
+  <modelVersion>4.0.0</modelVersion>
+  
+    <!-- Artifact Information  -->
+  <groupId>org.jboss.shrinkwrap</groupId>
+  <artifactId>shrinkwrap-parent</artifactId>
+  <version>1.2.2</version>
+  <packaging>pom</packaging>
+  <name>ShrinkWrap Aggregator and Build Parent</name>
+  <url>http://www.jboss.org</url>
+  <description>ShrinkWrap Aggregator</description>
+  
+  <!-- Properties -->
+  <properties>
+
+    <!-- Versioning -->
+    <version.junit_junit>4.8.2</version.junit_junit>
+    <version.org.apache.maven.plugins_maven-site-plugin>3.0-beta-3</version.org.apache.maven.plugins_maven-site-plugin>
+
+  </properties>
+  
+  <!-- SCM -->
+  <scm>
+    <connection>scm:git:git://github.com/shrinkwrap/shrinkwrap.git</connection>
+    <developerConnection>scm:git:git@github.com:shrinkwrap/shrinkwrap.git</developerConnection>
+    <url>https://github.com/shrinkwrap/shrinkwrap</url>
+  </scm>
+
+  <!-- Issues -->
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.jboss.com/jira/browse/SHRINKWRAP</url>
+  </issueManagement>
+
+  <!-- Licenses -->
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <!-- Plugin Configuration -->
+  <build>
+  
+    <!-- Plugin Management -->
+    <pluginManagement>
+      <plugins>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>2.9.1</version>
+          <configuration>
+            <configLocation>code-style/checkstyle.xml</configLocation>
+            <logViolationsToConsole>true</logViolationsToConsole>
+            <violationSeverity>error</violationSeverity>
+          </configuration>
+          <executions>
+            <execution>
+              <id>checkstyle-report</id>
+              <phase>compile</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+          <dependencies>
+            <dependency>
+              <groupId>org.jboss.shrinkwrap</groupId>
+              <artifactId>shrinkwrap-build-resources</artifactId>
+              <version>${project.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+      
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.2.1</version>
+          <configuration>
+            <finalName>shrinkwrap-${project.version}</finalName>
+            <descriptors>
+              <descriptor>dist.xml</descriptor>
+            </descriptors>
+          </configuration>
+        </plugin>
+        
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${version.org.apache.maven.plugins_maven-site-plugin}</version>
+        </plugin>
+        
+       <!-- So m2e doesn't throw errors for features it doesn't support in the 
+        POM -->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <versionRange>[1.0.0,)</versionRange>
+                    <goals>
+                      <goal>check</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <execute />
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+        
+      </plugins>
+    </pluginManagement>
+  
+    <plugins>
+
+      <!-- Release -->
+      <plugin> 
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <pushChanges>false</pushChanges>
+          <localCheckout>true</localCheckout>
+        </configuration>
+      </plugin>
+
+      <!-- Compiler -->
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <inherited>true</inherited>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+          <showDeprecation>false</showDeprecation>
+          <showWarnings>true</showWarnings>
+          <optimize>true</optimize>
+          <compilerVersion>1.7</compilerVersion>
+          <fork>true</fork>
+          <compilerArguments>
+            <source>1.5</source>
+            <target>1.5</target>
+          </compilerArguments>
+        </configuration>
+      </plugin>
+
+      <!-- Surefire -->
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          <!-- Needed to not break Coburtura in Oracle JDKs -->
+          <argLine>-XX:-UseSplitVerifier</argLine>
+          <trimStackTrace>false</trimStackTrace>
+          <printSummary>true</printSummary>
+          <includes>
+            <include>**/*TestCase.java</include>
+            <include>**/*TestSuite.java</include>
+          </includes>
+          <forkMode>always</forkMode>
+        </configuration>
+      </plugin>
+
+      <!-- Enforce Maven Environment -->
+      <plugin>
+        <artifactId>maven-enforcer-plugin
+                      </artifactId>
+        <executions>
+          <execution>
+            <id>enforce-maven-environment</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <rules>
+            <requireMavenVersion>
+              <version>[2.2.0,)</version>
+              <!--
+                Must be more that 2.2 to support
+                Assembly "includeModuleDirectory":
+                http://maven.apache.org/plugins/maven-assembly-plugin/assembly.html
+              -->
+            </requireMavenVersion>
+            <requireJavaVersion>
+              <version>1.7.0</version> <!-- Must be JDK7 -->
+            </requireJavaVersion>
+            <requireProperty>
+              <property>env.JAVA_HOME</property>
+              <message>"JAVA_HOME needs to be set (to Java7)"</message>
+            </requireProperty>
+            <requireProperty>
+              <property>env.JAVA5_HOME</property>
+              <message>"JAVA5_HOME needs to be set to run some tests in the JRE5 runtime"</message>
+            </requireProperty>
+          </rules>
+        </configuration>
+      </plugin>
+      
+      <!-- m2e Config -->
+      <plugin>
+        <groupId>org.eclipse.m2e</groupId>
+        <artifactId>lifecycle-mapping</artifactId>
+      </plugin>
+
+    </plugins>
+  </build>
+  
+  <!-- Dependency Management -->
+  <dependencyManagement>
+    <dependencies>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${version.junit_junit}</version>
+        <scope>test</scope>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+  <!-- Aggregate Modules -->
+  <modules>
+    <module>api</module>
+    <module>api-nio2</module>
+    <module>bom</module>
+    <module>build-resources</module>
+    <module>depchain</module>
+    <module>depchain-java7</module>
+    <module>dist</module>
+    <module>impl-base</module>
+    <module>impl-nio2</module>
+    <module>spi</module>
+  </modules>
+  
+  <!-- Reporting -->
+  <reporting>
+    <plugins>
+
+      <!-- Cobertura (Code Coverage) -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.5.2</version>
+        <configuration>
+          <formats>
+            <format>html</format>
+            <format>xml</format>
+          </formats>
+        </configuration>
+      </plugin>
+
+      <!-- FindBugs -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>2.3.1</version>
+        <configuration>
+          <xmlOutput>true</xmlOutput>
+          <findbugsXmlOutputDirectory>target/site</findbugsXmlOutputDirectory>
+        </configuration>
+      </plugin>
+    
+      <!-- SHRINKWRAP-157 Workaround -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>project-team</report>
+              <report>mailing-list</report>
+              <report>cim</report>
+              <report>issue-tracking</report>
+              <report>license</report>
+              <report>scm</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+
+    </plugins>
+  </reporting>
+
+  <repositories>
+    <repository>
+      <id>jboss-public-repository</id>
+      <name>JBoss Repository</name>
+      <url> https://repository.jboss.org/nexus/content/groups/public</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </repository>
+    <repository>
+       <id>jboss-deprecated-repository</id>
+       <name>JBoss Deprecated Maven Repository</name>
+       <url>https://repository.jboss.org/nexus/content/repositories/deprecated/</url>
+       <layout>default</layout>
+       <releases>
+          <enabled>true</enabled>
+          <updatePolicy>never</updatePolicy>
+       </releases>
+       <snapshots>
+         <enabled>false</enabled>
+         <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>jboss-public-repository</id>
+      <name>JBoss Repository</name>
+      <url> https://repository.jboss.org/nexus/content/groups/public</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories> 
+
+</project>
+
+ exited 22 in 404ms:
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: 
+web search: 
+web search: site:mvnrepository.com/artifact/org.jboss.shrinkwrap/shrinkwrap-api/1.2.2 shrinkwrap-api 1.2.2
+web search: 
+web search: https://github.com/shrinkwrap/shrinkwrap/tree/1.2.2
+web search: 
+web search: repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-sources.jar
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2 shrinkwrap-api-1.2.2-tests.jar
+web search: 
+web search: https://central.sonatype.com/artifact/org.jboss.shrinkwrap/shrinkwrap-api
+web search: 
+web search: 
+web search: 
+web search: central.sonatype.com/artifact/org.jboss.shrinkwrap/shrinkwrap-api/1.2.2 "1.2.2"
+codex
+Maven Central has versioned `sources`, `tests`, and `javadoc` artifacts for `shrinkwrap-api:1.2.2`, and the parent POM points SCM at `github.com/shrinkwrap/shrinkwrap`. I’ll now update the metadata with those Maven artifact URLs and omit `language` because this is a Java library, not Kotlin/Groovy/Scala-specific.
+exec
+/usr/bin/zsh -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' build/discovered-artifact-metadata | head -40" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc "find build/discovered-artifact-metadata -name '*.json' | head -5 | xargs -r -n1 sed -n '1,80p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jboss.shrinkwrap:shrinkwrap-api:1.2.2"
+}
+
+exec
+/usr/bin/zsh -lc "git ls-remote --tags https://github.com/shrinkwrap/shrinkwrap.git 'refs/tags/*1.2.2*'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1
+exec
+/usr/bin/zsh -lc 'curl -fsI https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-sources.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1
+exec
+/usr/bin/zsh -lc 'curl -fsI https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-tests.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1
+exec
+/usr/bin/zsh -lc 'curl -fsI https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-javadoc.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1
+ succeeded in 145ms:
+HTTP/2 200 
+date: Fri, 01 May 2026 11:40:55 GMT
+content-type: application/java-archive
+content-length: 92873
+cf-ray: 9f4e83a0ff969857-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 112668
+etag: "25afb96e4ba7e4ea6471001b836b6c1b"
+last-modified: Tue, 25 Mar 2014 14:36:50 GMT
+x-checksum-md5: 25afb96e4ba7e4ea6471001b836b6c1b
+x-checksum-sha1: 47cdf324d104f5360393cee89e0bef2f212a5cb4
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 184ms:
+HTTP/2 200 
+date: Fri, 01 May 2026 11:40:55 GMT
+content-type: application/java-archive
+content-length: 419747
+cf-ray: 9f4e83a13bdde295-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 67583
+etag: "fe53f2fb2fbf3dae542f4c515eb83651"
+last-modified: Tue, 25 Mar 2014 14:36:52 GMT
+x-checksum-md5: fe53f2fb2fbf3dae542f4c515eb83651
+x-checksum-sha1: 2833f92eb50394926b69b9738ede92831838cf74
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 196ms:
+HTTP/2 200 
+date: Fri, 01 May 2026 11:40:55 GMT
+content-type: application/java-archive
+content-length: 16826
+cf-ray: 9f4e83a13f021f09-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 46
+etag: "8c69c5dcb5d46e6c33a9df2d2dee1c3a"
+last-modified: Tue, 25 Mar 2014 14:36:48 GMT
+x-checksum-md5: 8c69c5dcb5d46e6c33a9df2d2dee1c3a
+x-checksum-sha1: cc299e6257ffe287c80dca262cdf267ec1132a19
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 638ms:
+f4ff2bbbbfd0053b2c8d07ed2ae67dabb86f7d52	refs/tags/1.2.2
+2fac9d65db5e52f4992fee410ca84a3fd919544d	refs/tags/1.2.2^{}
+
+web search: 
+web search: ShrinkWrap API description create Java archives
+codex
+I’m making a narrow metadata-only edit: the three version-specific content URLs will point at Maven Central classifiers for `1.2.2`, and `repository-url` will use the SCM URL from the published parent POM.
+apply patch
+patch: completed
+/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
+diff --git a/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json b/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
+index 82f94cf0664e178f415bfe8dc332b0b98d181911..01fe3027c90628d97e87b4df36028765dc265ba9
+--- a/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
++++ b/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.shrinkwrap:shrinkwrap-api:1.2.2"
++  "coordinates" : "org.jboss.shrinkwrap:shrinkwrap-api:1.2.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-sources.jar",
++  "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-javadoc.jar",
++  "description" : "ShrinkWrap API provides a fluent Java API for creating and manipulating deployment archives such as JAR, WAR, and EAR files in code. It is commonly used with Arquillian tests to assemble precise deployable archives without requiring a separate packaging build step."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json b/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
+index 82f94cf0664e178f415bfe8dc332b0b98d181911..01fe3027c90628d97e87b4df36028765dc265ba9
+--- a/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
++++ b/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.shrinkwrap:shrinkwrap-api:1.2.2"
++  "coordinates" : "org.jboss.shrinkwrap:shrinkwrap-api:1.2.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-sources.jar",
++  "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-javadoc.jar",
++  "description" : "ShrinkWrap API provides a fluent Java API for creating and manipulating deployment archives such as JAR, WAR, and EAR files in code. It is commonly used with Arquillian tests to assemble precise deployable archives without requiring a separate packaging build step."
+ }
+
+exec
+/usr/bin/zsh -lc 'jq . build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1
+exec
+/usr/bin/zsh -lc 'git diff -- build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1
+diff --git a/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json b/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
+index 82f94cf0664e178f415bfe8dc332b0b98d181911..01fe3027c90628d97e87b4df36028765dc265ba9
+--- a/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
++++ b/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.shrinkwrap:shrinkwrap-api:1.2.2"
++  "coordinates" : "org.jboss.shrinkwrap:shrinkwrap-api:1.2.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-sources.jar",
++  "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-javadoc.jar",
++  "description" : "ShrinkWrap API provides a fluent Java API for creating and manipulating deployment archives such as JAR, WAR, and EAR files in code. It is commonly used with Arquillian tests to assemble precise deployable archives without requiring a separate packaging build step."
+ }
+
+ succeeded in 132ms:
+{
+  "coordinates": "org.jboss.shrinkwrap:shrinkwrap-api:1.2.2",
+  "source-code-url": "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-sources.jar",
+  "repository-url": "https://github.com/shrinkwrap/shrinkwrap",
+  "test-code-url": "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-tests.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-javadoc.jar",
+  "description": "ShrinkWrap API provides a fluent Java API for creating and manipulating deployment archives such as JAR, WAR, and EAR files in code. It is commonly used with Arquillian tests to assemble precise deployable archives without requiring a separate packaging build step."
+}
+
+ succeeded in 156ms:
+exec
+/usr/bin/zsh -lc 'git status --short -- build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1
+diff --git a/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json b/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
+index 82f94cf0664e178f415bfe8dc332b0b98d181911..01fe3027c90628d97e87b4df36028765dc265ba9
+--- a/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
++++ b/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.shrinkwrap:shrinkwrap-api:1.2.2"
++  "coordinates" : "org.jboss.shrinkwrap:shrinkwrap-api:1.2.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-sources.jar",
++  "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-javadoc.jar",
++  "description" : "ShrinkWrap API provides a fluent Java API for creating and manipulating deployment archives such as JAR, WAR, and EAR files in code. It is commonly used with Arquillian tests to assemble precise deployable archives without requiring a separate packaging build step."
+ }
+
+ succeeded in 191ms:
+exec
+/usr/bin/zsh -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jboss.shrinkwrap:shrinkwrap-api:1.2.2",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-sources.jar",
+  "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-tests.jar",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-javadoc.jar",
+  "description" : "ShrinkWrap API provides a fluent Java API for creating and manipulating deployment archives such as JAR, WAR, and EAR files in code. It is commonly used with Arquillian tests to assemble precise deployable archives without requiring a separate packaging build step."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json b/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
+index 82f94cf0664e178f415bfe8dc332b0b98d181911..01fe3027c90628d97e87b4df36028765dc265ba9
+--- a/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
++++ b/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.shrinkwrap:shrinkwrap-api:1.2.2"
++  "coordinates" : "org.jboss.shrinkwrap:shrinkwrap-api:1.2.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-sources.jar",
++  "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-javadoc.jar",
++  "description" : "ShrinkWrap API provides a fluent Java API for creating and manipulating deployment archives such as JAR, WAR, and EAR files in code. It is commonly used with Arquillian tests to assemble precise deployable archives without requiring a separate packaging build step."
+ }
+
+web search: 
+web search: https://github.com/shrinkwrap/shrinkwrap/tree/1.2.2
+web search: 
+web search: "shrinkwrap-api-1.2.2-sources.jar" "shrinkwrap-api-1.2.2-tests.jar" "shrinkwrap-api-1.2.2-javadoc.jar"
+web search: 
+web search: https://mvnrepository.com/artifact/org.jboss.shrinkwrap/shrinkwrap-api/1.2.2
+web search: 
+web search: https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/
+web search: 
+web search: 
+codex
+Updated [org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json) with the Maven Central `1.2.2` sources, tests, and javadoc artifact URLs; Maven Central lists all three classifiers for that exact version. ([repo1.maven.org](https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/))
+
+Set `repository-url` to the upstream ShrinkWrap GitHub repo and left `language` absent because this is a Java library, not Kotlin/Groovy/Scala-specific; the repo tag page is `1.2.2` and GitHub reports Java as the project language. ([github.com](https://github.com/shrinkwrap/shrinkwrap/tree/1.2.2))
+
+Verified the JSON parses with `jq .`. No unit tests were run.
+diff --git a/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json b/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
+index 82f94cf0664e178f415bfe8dc332b0b98d181911..01fe3027c90628d97e87b4df36028765dc265ba9
+--- a/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
++++ b/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.shrinkwrap:shrinkwrap-api:1.2.2"
++  "coordinates" : "org.jboss.shrinkwrap:shrinkwrap-api:1.2.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-sources.jar",
++  "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/shrinkwrap-api-1.2.2-javadoc.jar",
++  "description" : "ShrinkWrap API provides a fluent Java API for creating and manipulating deployment archives such as JAR, WAR, and EAR files in code. It is commonly used with Arquillian tests to assemble precise deployable archives without requiring a separate packaging build step."
+ }
+
+2026-05-01T11:41:33.632128Z ERROR codex_core::session: failed to record rollout items: thread 019de356-7357-7803-b929-9694b89cfe59 not found
+tokens used
+76,027
+Updated [org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1/build/discovered-artifact-metadata/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.json) with the Maven Central `1.2.2` sources, tests, and javadoc artifact URLs; Maven Central lists all three classifiers for that exact version. ([repo1.maven.org](https://repo1.maven.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/1.2.2/))
+
+Set `repository-url` to the upstream ShrinkWrap GitHub repo and left `language` absent because this is a Java library, not Kotlin/Groovy/Scala-specific; the repo tag page is `1.2.2` and GitHub reports Java as the project language. ([github.com](https://github.com/shrinkwrap/shrinkwrap/tree/1.2.2))
+
+Verified the JSON parses with `jq .`. No unit tests were run.
+Ran agent for org.jboss.shrinkwrap:shrinkwrap-api:1.2.2 (exit 0). Log: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1/build/agent-artifact-discovery-logs/org.jboss.shrinkwrap-shrinkwrap-api-1.2.2.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3759-f164c2f1/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 58s
+9 actionable tasks: 4 executed, 5 from cache
