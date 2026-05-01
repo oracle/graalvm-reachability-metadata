@@ -155,6 +155,23 @@ public class Jackson_datatype_jsr310Test {
         assertThat(mapper.readValue(durationJson, Duration.class)).isEqualTo(duration);
     }
 
+    @Test
+    void honorsDurationJsonFormatUnitPatterns() throws Exception {
+        ObjectMapper mapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .disable(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS);
+        DurationUnits values = new DurationUnits(Duration.ofMinutes(90), Duration.ofHours(5));
+
+        String json = mapper.writeValueAsString(values);
+
+        assertThat(json).contains("\"minutes\":90").contains("\"hours\":5");
+
+        DurationUnits restored = mapper.readValue("{\"minutes\":45,\"hours\":3}", DurationUnits.class);
+
+        assertThat(restored.minutes).isEqualTo(Duration.ofMinutes(45));
+        assertThat(restored.hours).isEqualTo(Duration.ofHours(3));
+    }
+
     private static ObjectMapper isoMapper() {
         return new ObjectMapper()
                 .registerModule(new JavaTimeModule())
@@ -236,6 +253,21 @@ public class Jackson_datatype_jsr310Test {
             this.meetingTime = meetingTime;
             this.compactDate = compactDate;
             this.billingMonth = billingMonth;
+        }
+    }
+
+    public static final class DurationUnits {
+        @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT, pattern = "MINUTES")
+        public Duration minutes;
+
+        @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT, pattern = "HOURS")
+        public Duration hours;
+
+        public DurationUnits() {}
+
+        DurationUnits(Duration minutes, Duration hours) {
+            this.minutes = minutes;
+            this.hours = hours;
         }
     }
 }
