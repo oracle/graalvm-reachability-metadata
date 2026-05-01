@@ -8,7 +8,7 @@ package com_diffplug_durian.durian_core;
 
 import org.junit.jupiter.api.Test;
 
-class Durian_coreTest {
+public class Durian_coreTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
