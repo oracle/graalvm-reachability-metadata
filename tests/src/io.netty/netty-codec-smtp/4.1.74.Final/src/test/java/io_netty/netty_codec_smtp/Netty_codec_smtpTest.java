@@ -201,6 +201,25 @@ public class Netty_codec_smtpTest {
     }
 
     @Test
+    void responseDecoderAccumulatesMultiLineResponsesAcrossInboundWrites() {
+        EmbeddedChannel channel = new EmbeddedChannel(new SmtpResponseDecoder(128));
+        try {
+            assertThat(channel.writeInbound(copiedBuffer("250-mail.example.org\r\n"))).isFalse();
+            assertThat(channel.<SmtpResponse>readInbound()).isNull();
+            assertThat(channel.writeInbound(copiedBuffer("250-ENHANCEDSTATUSCODES\r\n"))).isFalse();
+            assertThat(channel.<SmtpResponse>readInbound()).isNull();
+            assertThat(channel.writeInbound(copiedBuffer("250 HELP\r\n"))).isTrue();
+
+            SmtpResponse response = channel.readInbound();
+            assertThat(response.code()).isEqualTo(250);
+            assertThat(response.details()).containsExactly("mail.example.org", "ENHANCEDSTATUSCODES", "HELP");
+            assertThat(channel.<SmtpResponse>readInbound()).isNull();
+        } finally {
+            channel.finishAndReleaseAll();
+        }
+    }
+
+    @Test
     void responseDecoderWaitsForCompleteLinesAndRejectsMalformedLines() {
         EmbeddedChannel partialChannel = new EmbeddedChannel(new SmtpResponseDecoder(128));
         try {
