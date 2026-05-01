@@ -188,6 +188,7 @@ class ClaimedIssue:
     issue_coordinates: str
     current_coordinates: str | None = None
     new_version: str | None = None
+    authenticated_user: str | None = None
 
 
 @dataclass(frozen=True)
@@ -224,6 +225,13 @@ class IssueReference:
     @property
     def repo(self) -> str:
         return f"{self.owner}/{self.repo_name}"
+
+
+@dataclass(frozen=True)
+class ActiveSiblingBlocker:
+    number: int
+    assignees: tuple[str, ...]
+    project_status: str | None
 
 
 @dataclass(frozen=True)
@@ -3200,6 +3208,7 @@ def claim_issue_for_processing(
         issue_coordinates=issue_coordinates,
         current_coordinates=current_coordinates,
         new_version=new_version,
+        authenticated_user=authenticated_user,
     )
 
 
@@ -3258,6 +3267,31 @@ def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> None:
 def revert_claimed_issue(claimed_issue: ClaimedIssue, reason: str) -> None:
     """Reset a failed claimed issue back to Todo and clear its assignment."""
     revert_issue_claim(claimed_issue.item_id, claimed_issue.issue["number"], reason)
+
+
+def clear_unworked_sibling_assignments_after_failure(
+        claimed_issue: ClaimedIssue,
+        reason: str,
+) -> None:
+    """Best-effort cleanup of self-assigned sibling issues that are still Todo."""
+    if not claimed_issue.authenticated_user:
+        return
+    try:
+        blockers = get_active_sibling_blockers(claimed_issue.issue["number"])
+        clear_unworked_self_assigned_sibling_blockers(
+            blockers,
+            claimed_issue.authenticated_user,
+            f"issue #{claimed_issue.issue['number']} failed due to {reason}",
+        )
+    except Exception as exc:
+        print(
+            (
+                f"ERROR: Failed to clear unworked sibling assignments for "
+                f"issue #{claimed_issue.issue['number']}: {exc!r}"
+            ),
+            file=sys.stderr,
+        )
+        traceback.print_exc()
 
 
 def finalize_successful_issue(
@@ -3366,6 +3400,7 @@ def handle_failed_claimed_issue(
         )
         traceback.print_exc()
     revert_claimed_issue(claimed_issue, reason)
+    clear_unworked_sibling_assignments_after_failure(claimed_issue, reason)
 
 
 def handle_completed_run(run_result: WorkflowRunResult) -> bool:
@@ -3957,7 +3992,7 @@ def resolve_next_issue_claim_candidate_batch(
     ]
 
 
-def get_active_sibling_blocker_numbers(issue_number: int) -> list[int]:
+def get_active_sibling_blockers(issue_number: int) -> list[ActiveSiblingBlocker]:
     """
     Return active open issues that block the same downstream issues as issue_number.
 
@@ -3965,7 +4000,7 @@ def get_active_sibling_blocker_numbers(issue_number: int) -> list[int]:
     prerequisite is already being processed.
     """
     owner, repo_name = REPO.split("/")
-    active_siblings: set[int] = set()
+    active_siblings: dict[int, ActiveSiblingBlocker] = {}
 
     for dependent_issue in get_open_dependent_issues(issue_number):
         cursor: str | None = None
@@ -3993,6 +4028,7 @@ def get_active_sibling_blocker_numbers(issue_number: int) -> list[int]:
                           login
                         }}
                       }}
+{_project_item_status_preflight_fields()}
                     }}
                     pageInfo {{
                       hasNextPage
@@ -4025,7 +4061,11 @@ def get_active_sibling_blocker_numbers(issue_number: int) -> list[int]:
                     continue
                 blocker_assignees = _get_issue_node_assignees(blocker)
                 if blocker_assignees:
-                    active_siblings.add(blocker_number)
+                    active_siblings[blocker_number] = ActiveSiblingBlocker(
+                        number=blocker_number,
+                        assignees=tuple(blocker_assignees),
+                        project_status=_get_issue_node_project_status(blocker),
+                    )
 
             page_info = blocked_by.get("pageInfo", {}) if isinstance(blocked_by, dict) else {}
             if not page_info.get("hasNextPage"):
@@ -4034,7 +4074,74 @@ def get_active_sibling_blocker_numbers(issue_number: int) -> list[int]:
             if not cursor:
                 break
 
-    return sorted(active_siblings)
+    return [
+        active_siblings[issue_number]
+        for issue_number in sorted(active_siblings)
+    ]
+
+
+def get_active_sibling_blocker_numbers(issue_number: int) -> list[int]:
+    """Return active sibling blocker issue numbers for compatibility with callers."""
+    return [
+        blocker.number
+        for blocker in get_active_sibling_blockers(issue_number)
+    ]
+
+
+def clear_unworked_self_assigned_sibling_blockers(
+        blockers: list[ActiveSiblingBlocker],
+        authenticated_user: str,
+        reason: str,
+) -> list[int]:
+    """Clear our assignment from sibling blockers that are still Todo and not being worked."""
+    cleared_issue_numbers: list[int] = []
+    for blocker in blockers:
+        if not is_assigned_only_to_authenticated_user(blocker.assignees, authenticated_user):
+            continue
+        if blocker.project_status != STATUS_TODO:
+            continue
+
+        current_assignees = get_issue_assignees(blocker.number)
+        if not is_assigned_only_to_authenticated_user(current_assignees, authenticated_user):
+            continue
+        _item_id, current_status = get_project_item_state(blocker.number)
+        if current_status != STATUS_TODO:
+            continue
+
+        print(
+            (
+                f"\n[issue-claim] Clearing assignment from unworked sibling issue "
+                f"#{blocker.number} because {reason}"
+            ),
+            file=sys.stderr,
+        )
+        clear_issue_assignees(blocker.number)
+        verified_assignees = get_issue_assignees(blocker.number)
+        if verified_assignees:
+            raise RuntimeError(
+                f"Issue #{blocker.number} assignment cleanup failed: "
+                f"assignees={verified_assignees!r}"
+            )
+        invalidate_issue_claim_cache_entry(blocker.number)
+        cleared_issue_numbers.append(blocker.number)
+
+    return cleared_issue_numbers
+
+
+def get_active_sibling_blockers_after_releasing_unworked_self_assignments(
+        issue_number: int,
+        authenticated_user: str,
+) -> list[ActiveSiblingBlocker]:
+    """Return sibling blockers after clearing stale self-assignments that are still Todo."""
+    blockers = get_active_sibling_blockers(issue_number)
+    cleared_issue_numbers = clear_unworked_self_assigned_sibling_blockers(
+        blockers,
+        authenticated_user,
+        f"issue #{issue_number} is ready to run",
+    )
+    if not cleared_issue_numbers:
+        return blockers
+    return get_active_sibling_blockers(issue_number)
 
 
 def is_issue_blocked(issue_number: int) -> bool:
@@ -4172,9 +4279,13 @@ def try_claim_issue_with_local_lock(issue: dict, authenticated_user: str) -> Opt
                 ])
             return None
 
-        active_sibling_blockers = get_active_sibling_blocker_numbers(number)
+        active_sibling_blockers = get_active_sibling_blockers_after_releasing_unworked_self_assignments(
+            number,
+            authenticated_user,
+        )
         if active_sibling_blockers:
-            blockers_text = ", ".join(f"#{blocker}" for blocker in active_sibling_blockers)
+            blocker_numbers = [blocker.number for blocker in active_sibling_blockers]
+            blockers_text = ", ".join(f"#{blocker}" for blocker in blocker_numbers)
             print()
             log_stage(
                 "issue-claim",
@@ -4190,7 +4301,7 @@ def try_claim_issue_with_local_lock(issue: dict, authenticated_user: str) -> Opt
                 IssueClaimCacheObservation(
                     issue_number=number,
                     reason=ISSUE_CLAIM_CACHE_REASON_ACTIVE_SIBLING_BLOCKED,
-                    open_blockers=tuple(active_sibling_blockers),
+                    open_blockers=tuple(blocker_numbers),
                 )
             ])
             return None

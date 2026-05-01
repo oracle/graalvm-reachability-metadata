@@ -138,7 +138,10 @@ def _preflight(
     )
 
 
-def _claimed_issue(label: str = forge_metadata.LABEL_LIBRARY_NEW) -> forge_metadata.ClaimedIssue:
+def _claimed_issue(
+        label: str = forge_metadata.LABEL_LIBRARY_NEW,
+        authenticated_user: str | None = None,
+) -> forge_metadata.ClaimedIssue:
     return forge_metadata.ClaimedIssue(
         issue={
             "number": 1412,
@@ -151,6 +154,7 @@ def _claimed_issue(label: str = forge_metadata.LABEL_LIBRARY_NEW) -> forge_metad
         scratch_metrics_repo_path="/tmp/metrics-worktree",
         in_metadata_repo=False,
         issue_coordinates="org.example:lib:1.0.0",
+        authenticated_user=authenticated_user,
     )
 
 
@@ -1251,7 +1255,49 @@ class ActiveSiblingBlockerTests(unittest.TestCase):
                     forge_metadata.get_active_sibling_blocker_numbers(1391),
                     [1462],
                 )
-        self.assertNotIn("projectItems", gh_json.call_args.args[-1])
+        self.assertIn("projectItems", gh_json.call_args.args[-1])
+
+    def test_clear_unworked_self_assigned_sibling_blockers_clears_todo_issue(self) -> None:
+        blockers = [
+            forge_metadata.ActiveSiblingBlocker(
+                number=1462,
+                assignees=("automation-user",),
+                project_status=forge_metadata.STATUS_TODO,
+            ),
+            forge_metadata.ActiveSiblingBlocker(
+                number=1463,
+                assignees=("other-user",),
+                project_status=forge_metadata.STATUS_TODO,
+            ),
+            forge_metadata.ActiveSiblingBlocker(
+                number=1464,
+                assignees=("automation-user",),
+                project_status=forge_metadata.STATUS_IN_PROGRESS,
+            ),
+        ]
+
+        with patch.object(forge_metadata, "get_issue_assignees", side_effect=[
+            ["automation-user"],
+            [],
+        ]) as get_issue_assignees, \
+                patch.object(
+                    forge_metadata,
+                    "get_project_item_state",
+                    return_value=("item-1462", forge_metadata.STATUS_TODO),
+                ) as get_project_item_state, \
+                patch.object(forge_metadata, "clear_issue_assignees") as clear_issue_assignees:
+            self.assertEqual(
+                forge_metadata.clear_unworked_self_assigned_sibling_blockers(
+                    blockers,
+                    "automation-user",
+                    "test",
+                ),
+                [1462],
+            )
+
+        get_issue_assignees.assert_has_calls([call(1462), call(1462)])
+        get_project_item_state.assert_called_once_with(1462)
+        clear_issue_assignees.assert_called_once_with(1462)
 
     def test_active_sibling_check_uses_dependent_issue_repository(self) -> None:
         with patch.object(
@@ -1359,7 +1405,11 @@ class IssueClaimLockTests(unittest.TestCase):
                         "get_project_item_state",
                         return_value=("project-item", forge_metadata.STATUS_TODO),
                     ), \
-                    patch.object(forge_metadata, "get_active_sibling_blocker_numbers", return_value=[]), \
+                    patch.object(
+                        forge_metadata,
+                        "get_active_sibling_blockers_after_releasing_unworked_self_assignments",
+                        return_value=[],
+                    ), \
                     patch.object(forge_metadata, "set_issue_assignee") as set_issue_assignee, \
                     patch.object(forge_metadata, "set_item_status") as set_item_status, \
                     patch.object(forge_metadata.random, "uniform", return_value=0), \
@@ -1394,9 +1444,20 @@ class IssueClaimLockTests(unittest.TestCase):
                     ), \
                     patch.object(
                         forge_metadata,
-                        "get_active_sibling_blocker_numbers",
-                        return_value=[3759, 3763],
-                    ) as get_active_sibling_blocker_numbers, \
+                        "get_active_sibling_blockers_after_releasing_unworked_self_assignments",
+                        return_value=[
+                            forge_metadata.ActiveSiblingBlocker(
+                                number=3759,
+                                assignees=("other-user",),
+                                project_status=forge_metadata.STATUS_IN_PROGRESS,
+                            ),
+                            forge_metadata.ActiveSiblingBlocker(
+                                number=3763,
+                                assignees=("other-user",),
+                                project_status=forge_metadata.STATUS_IN_PROGRESS,
+                            ),
+                        ],
+                    ) as get_active_sibling_blockers, \
                     patch.object(forge_metadata, "set_issue_assignee") as set_issue_assignee, \
                     patch.object(
                         forge_metadata,
@@ -1413,8 +1474,63 @@ class IssueClaimLockTests(unittest.TestCase):
                 self.assertEqual(cache[1412].open_blockers, (3759, 3763))
 
         set_issue_assignee.assert_called_once_with(1412, "automation-user")
-        get_active_sibling_blocker_numbers.assert_called_once_with(1412)
+        get_active_sibling_blockers.assert_called_once_with(1412, "automation-user")
         revert_issue_claim_if_still_owned_by_user.assert_called_once()
+
+    def test_try_claim_issue_clears_unworked_self_assigned_sibling_before_running(self) -> None:
+        issue = {
+            "number": 1412,
+            "title": "Add support for org.example:lib:1.0.0",
+            "labels": [],
+            "assignees": [],
+        }
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+                    patch.object(forge_metadata, "get_open_blocking_issue_numbers", return_value=[]), \
+                    patch.object(
+                        forge_metadata,
+                        "get_issue_assignees",
+                        side_effect=[
+                            [],
+                            ["automation-user"],
+                            ["automation-user"],
+                            [],
+                        ],
+                    ), \
+                    patch.object(
+                        forge_metadata,
+                        "get_project_item_state",
+                        side_effect=[
+                            ("project-item", forge_metadata.STATUS_TODO),
+                            ("sibling-item", forge_metadata.STATUS_TODO),
+                        ],
+                    ), \
+                    patch.object(
+                        forge_metadata,
+                        "get_active_sibling_blockers",
+                        side_effect=[
+                            [
+                                forge_metadata.ActiveSiblingBlocker(
+                                    number=1462,
+                                    assignees=("automation-user",),
+                                    project_status=forge_metadata.STATUS_TODO,
+                                ),
+                            ],
+                            [],
+                        ],
+                    ), \
+                    patch.object(forge_metadata, "clear_issue_assignees") as clear_issue_assignees, \
+                    patch.object(forge_metadata, "set_issue_assignee"), \
+                    patch.object(forge_metadata, "set_item_status") as set_item_status, \
+                    patch.object(forge_metadata.random, "uniform", return_value=0), \
+                    patch.object(forge_metadata.time, "sleep"):
+                self.assertEqual(
+                    forge_metadata.try_claim_issue(issue, "automation-user"),
+                    "project-item",
+                )
+
+        clear_issue_assignees.assert_called_once_with(1462)
+        set_item_status.assert_called_once_with("project-item", forge_metadata.STATUS_IN_PROGRESS)
 
     def test_try_claim_issue_uses_combined_project_status_lookup(self) -> None:
         issue = {
@@ -1433,7 +1549,11 @@ class IssueClaimLockTests(unittest.TestCase):
                         return_value=("project-item", forge_metadata.STATUS_TODO),
                     ) as get_project_item_state, \
                     patch.object(forge_metadata, "get_item_status") as get_item_status, \
-                    patch.object(forge_metadata, "get_active_sibling_blocker_numbers", return_value=[]), \
+                    patch.object(
+                        forge_metadata,
+                        "get_active_sibling_blockers_after_releasing_unworked_self_assignments",
+                        return_value=[],
+                    ), \
                     patch.object(forge_metadata, "set_issue_assignee") as set_issue_assignee, \
                     patch.object(forge_metadata, "set_item_status") as set_item_status, \
                     patch.object(forge_metadata.random, "uniform", return_value=0), \
@@ -1473,6 +1593,42 @@ class IssueClaimLockTests(unittest.TestCase):
 
         set_item_status.assert_called_once_with("item-1", forge_metadata.STATUS_TODO)
         clear_issue_assignees.assert_called_once_with(1412)
+
+    def test_failed_claimed_issue_clears_unworked_sibling_assignments(self) -> None:
+        claimed_issue = _claimed_issue(authenticated_user="automation-user")
+        blockers = [
+            forge_metadata.ActiveSiblingBlocker(
+                number=1462,
+                assignees=("automation-user",),
+                project_status=forge_metadata.STATUS_TODO,
+            ),
+        ]
+
+        with patch.object(forge_metadata, "preserve_failed_work_for_follow_up") as preserve_failed_work, \
+                patch.object(forge_metadata, "apply_failed_run_follow_up") as apply_failed_run_follow_up, \
+                patch.object(forge_metadata, "refresh_preserved_branch_logs") as refresh_preserved_branch_logs, \
+                patch.object(forge_metadata, "revert_claimed_issue") as revert_claimed_issue, \
+                patch.object(
+                    forge_metadata,
+                    "get_active_sibling_blockers",
+                    return_value=blockers,
+                ) as get_active_sibling_blockers, \
+                patch.object(
+                    forge_metadata,
+                    "clear_unworked_self_assigned_sibling_blockers",
+                ) as clear_unworked_self_assigned_sibling_blockers:
+            forge_metadata.handle_failed_claimed_issue(claimed_issue, "workflow failure", started_at=10.0)
+
+        preserve_failed_work.assert_called_once_with(claimed_issue)
+        apply_failed_run_follow_up.assert_called_once()
+        refresh_preserved_branch_logs.assert_called_once()
+        revert_claimed_issue.assert_called_once_with(claimed_issue, "workflow failure")
+        get_active_sibling_blockers.assert_called_once_with(1412)
+        clear_unworked_self_assigned_sibling_blockers.assert_called_once_with(
+            blockers,
+            "automation-user",
+            "issue #1412 failed due to workflow failure",
+        )
 
 
 class InterruptHandlingTests(unittest.TestCase):
