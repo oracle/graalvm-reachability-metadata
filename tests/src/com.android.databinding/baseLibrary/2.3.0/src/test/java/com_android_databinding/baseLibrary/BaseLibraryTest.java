@@ -627,16 +627,7 @@ public class BaseLibraryTest {
     }
 
     @Untaggable({"transientBindingTag"})
-    @BindingBuildInfo(
-            buildId = "base-library-test",
-            modulePackage = "com_android_databinding.baseLibrary",
-            sdkRoot = "/android-sdk",
-            minSdk = 21,
-            layoutInfoDir = "build/layout-info",
-            exportClassListTo = "build/generated-bindings.txt",
-            isLibrary = true,
-            enableDebugLogs = true,
-            printEncodedError = false)
+    @BindingBuildInfo(buildId = "base-library-test")
     private static final class GeneratedBindingBuildInfo {
     }
 
