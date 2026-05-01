@@ -58,6 +58,28 @@ final class Scalac_scoverage_runtime_2_13Test {
   }
 
   @Test
+  def invokedAppendsToAnExistingThreadMeasurementFileWithoutTruncatingIt(): Unit = {
+    val measurementsDirectory: File = newMeasurementsDirectory("append-existing")
+    val measurementFile: File = Invoker.measurementFile(measurementsDirectory)
+    val dataDir: String = measurementsDirectory.getAbsolutePath
+
+    Files.writeString(
+      measurementFile.toPath,
+      Seq("610", "").mkString(System.lineSeparator()),
+      StandardCharsets.UTF_8
+    )
+
+    Invoker.invoked(611, dataDir)
+    Invoker.invoked(612, dataDir)
+
+    assertThat(Files.readAllLines(measurementFile.toPath, StandardCharsets.UTF_8)).containsExactly(
+      "610",
+      "611",
+      "612"
+    )
+  }
+
+  @Test
   def invokedKeepsIndependentMeasurementStateForEachDataDirectory(): Unit = {
     val firstDirectory: File = newMeasurementsDirectory("first-data-dir")
     val secondDirectory: File = newMeasurementsDirectory("second-data-dir")
