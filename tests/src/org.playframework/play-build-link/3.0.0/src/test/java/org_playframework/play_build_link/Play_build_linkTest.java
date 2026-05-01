@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -131,6 +132,17 @@ public class Play_build_linkTest {
     }
 
     @Test
+    void buildLinkReloadReturnsDocumentedReloadOutcomes() {
+        ClassLoader applicationClassLoader = Thread.currentThread().getContextClassLoader();
+        IllegalStateException compileError = new IllegalStateException("compile failed");
+        BuildLink buildLink = new ReloadOutcomeBuildLink(null, applicationClassLoader, compileError);
+
+        assertThat(buildLink.reload()).isNull();
+        assertThat(buildLink.reload()).isSameAs(applicationClassLoader);
+        assertThat(buildLink.reload()).isSameAs(compileError);
+    }
+
+    @Test
     void buildDocHandlerCanAcceptOrIgnoreDocumentationRequests() {
         BuildDocHandler docHandler = request -> {
             if ("/docs/home".equals(request)) {
@@ -244,6 +256,38 @@ public class Play_build_linkTest {
 
         private Integer lastSourceLine() {
             return lastSourceLine;
+        }
+    }
+
+    private static final class ReloadOutcomeBuildLink implements BuildLink {
+        private final List<Object> reloadOutcomes;
+        private int reloadIndex;
+
+        private ReloadOutcomeBuildLink(Object... reloadOutcomes) {
+            this.reloadOutcomes = Arrays.asList(reloadOutcomes);
+        }
+
+        @Override
+        public Object reload() {
+            return reloadOutcomes.get(reloadIndex++);
+        }
+
+        @Override
+        public Object[] findSource(String name, Integer line) {
+            return null;
+        }
+
+        @Override
+        public File projectPath() {
+            return new File(".").getAbsoluteFile();
+        }
+
+        @Override
+        public void forceReload() {}
+
+        @Override
+        public Map<String, String> settings() {
+            return Collections.emptyMap();
         }
     }
 
