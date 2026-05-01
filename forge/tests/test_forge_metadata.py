@@ -1262,7 +1262,11 @@ class IssueClaimLockTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata, "get_open_blocking_issue_numbers", return_value=[]), \
-                    patch.object(forge_metadata, "get_issue_assignees", return_value=[]), \
+                    patch.object(
+                        forge_metadata,
+                        "get_issue_assignees",
+                        side_effect=[[], ["automation-user"]],
+                    ), \
                     patch.object(
                         forge_metadata,
                         "get_project_item_state",
@@ -1272,8 +1276,14 @@ class IssueClaimLockTests(unittest.TestCase):
                         forge_metadata,
                         "get_active_sibling_blocker_numbers",
                         return_value=[3759, 3763],
-                    ), \
-                    patch.object(forge_metadata, "set_issue_assignee") as set_issue_assignee:
+                    ) as get_active_sibling_blocker_numbers, \
+                    patch.object(forge_metadata, "set_issue_assignee") as set_issue_assignee, \
+                    patch.object(
+                        forge_metadata,
+                        "revert_issue_claim_if_still_owned_by_user",
+                    ) as revert_issue_claim_if_still_owned_by_user, \
+                    patch.object(forge_metadata.random, "uniform", return_value=0), \
+                    patch.object(forge_metadata.time, "sleep"):
                 self.assertIsNone(forge_metadata.try_claim_issue(issue, "automation-user"))
                 cache = forge_metadata.read_issue_claim_cache()
                 self.assertEqual(
@@ -1282,7 +1292,9 @@ class IssueClaimLockTests(unittest.TestCase):
                 )
                 self.assertEqual(cache[1412].open_blockers, (3759, 3763))
 
-        set_issue_assignee.assert_not_called()
+        set_issue_assignee.assert_called_once_with(1412, "automation-user")
+        get_active_sibling_blocker_numbers.assert_called_once_with(1412)
+        revert_issue_claim_if_still_owned_by_user.assert_called_once()
 
     def test_try_claim_issue_uses_combined_project_status_lookup(self) -> None:
         issue = {

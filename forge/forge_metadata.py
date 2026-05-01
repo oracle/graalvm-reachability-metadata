@@ -4113,23 +4113,6 @@ def try_claim_issue_with_local_lock(issue: dict, authenticated_user: str) -> Opt
         ])
         return None
 
-    active_sibling_blockers = get_active_sibling_blocker_numbers(number)
-    if active_sibling_blockers:
-        blockers_text = ", ".join(f"#{blocker}" for blocker in active_sibling_blockers)
-        print()
-        log_stage(
-            "issue-claim",
-            f"Issue #{number} shares a blocked downstream issue with active issue(s) {blockers_text}. Skipping.",
-        )
-        record_issue_claim_cache_observations([
-            IssueClaimCacheObservation(
-                issue_number=number,
-                reason=ISSUE_CLAIM_CACHE_REASON_ACTIVE_SIBLING_BLOCKED,
-                open_blockers=tuple(active_sibling_blockers),
-            )
-        ])
-        return None
-
     try:
         # SET ourselves as the sole assignee
         print()
