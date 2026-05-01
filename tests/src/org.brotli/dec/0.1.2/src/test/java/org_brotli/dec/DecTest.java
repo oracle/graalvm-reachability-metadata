@@ -27,6 +27,12 @@ public class DecTest {
     private static final String TEXT = (
             "Brotli streams can be decoded a few bytes at a time. Привет, 世界!\n").repeat(4);
 
+    private static final String CUSTOM_DICTIONARY_TEXT =
+            "common-prefix-https://www.example.com/assets/ shared dictionary seed";
+
+    private static final String CUSTOM_DICTIONARY_PAYLOAD =
+            "common-prefix-common-prefix-tail https://www.example.com/assets/app.css";
+
     private static final byte[] EMPTY_COMPRESSED = decodeBase64("Bg==");
 
     private static final byte[] TEXT_COMPRESSED = decodeBase64("""
@@ -50,6 +56,10 @@ public class DecTest {
             npOMMFk0u0T+qhTf1x19PSRhhr3WeeaRr1ImgEXkMVeBx53ytWgW3yfMwPVY02wn0jPuFqqFE4ds
             gmKMv9W7jAVoFT3EV+HjpnWUhchjgALSiDPPw0ZpJwzgegRp2C5LivVIf8LZQDaxYxAN4J/hp2qb
             PgepoAV5y7xdNA7SIGlEkkcccuS4WylsBAfYLn4K5pU5Kb1EDgI=
+            """);
+
+    private static final byte[] CUSTOM_DICTIONARY_COMPRESSED = decodeBase64("""
+            E0YA4IzUSK09qwYJg6NTaWwpjCbt1McEANxZMbNCAA==
             """);
 
     @Test
@@ -116,6 +126,18 @@ public class DecTest {
             byte[] decoded = readStreamFully(inputStream);
 
             assertThat(new String(decoded, StandardCharsets.UTF_8)).isEqualTo(TEXT);
+        }
+    }
+
+    @Test
+    void decodesStreamWithNonEmptyCustomDictionary() throws IOException {
+        byte[] customDictionary = CUSTOM_DICTIONARY_TEXT.getBytes(StandardCharsets.UTF_8);
+
+        try (BrotliInputStream inputStream = new BrotliInputStream(
+                new ByteArrayInputStream(CUSTOM_DICTIONARY_COMPRESSED), 4, customDictionary)) {
+            byte[] decoded = readStreamFully(inputStream);
+
+            assertThat(new String(decoded, StandardCharsets.UTF_8)).isEqualTo(CUSTOM_DICTIONARY_PAYLOAD);
         }
     }
 
