@@ -8,7 +8,7 @@ package com_sun_xml_dtd_parser.dtd_parser;
 
 import org.junit.jupiter.api.Test;
 
-class Dtd_parserTest {
+public class Dtd_parserTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
