@@ -1,0 +1,920 @@
+Starting a Gradle Daemon, 4 busy and 2 incompatible and 43 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de250-9d24-72d3-8791-0598be841b03
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.sf.kxml:kxml2:2.3.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.3.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json
+- Set "coordinates" to "net.sf.kxml:kxml2:2.3.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and upstream release sources, then update the JSON in place with exact-version URLs or `N/A` where the version-specific target is not reliable.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+ succeeded in 0ms:
+{
+  "coordinates" : "net.sf.kxml:kxml2:2.3.0"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'net\\.sf\\.kxml-kxml2-2\\.3\\.0\\.json"'$|kxml'"'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json
+
+web search: 
+web search: net.sf.kxml kxml2 2.3.0 source jar maven
+web search: 
+web search: https://repo1.maven.org/maven2/net/sf/kxml/kxml2/2.3.0/
+codex
+Maven Central has version-specific source and Javadoc artifacts for `2.3.0`, which are the preferred exact-version targets. I’m checking whether there is a Maven test artifact or whether the upstream source archive includes a usable test suite.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0.pom' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+ succeeded in 0ms:
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.sf.kxml</groupId>
+    <artifactId>kxml2</artifactId>
+    <version>2.3.0</version>
+    <packaging>jar</packaging>
+    <name>kXML 2 is a small XML pull parser based on the common XML pull API</name>
+    <url>http://kxml.sourceforge.net/</url>
+    <description>kXML is a small XML pull parser, specially designed for constrained environments such as Applets, Personal Java or MIDP devices. In contrast to kXML 1, kXML 2 is based on the common XML pull API.</description>
+    <licenses>
+        <license>
+            <name>BSD style</name>
+            <url>http://kxml.cvs.sourceforge.net/viewvc/kxml/kxml2/license.txt?view=markup</url>
+            <distribution>repo</distribution>
+            <comments>The license applies to the kXML2 classes (all classes below the org.kxml2 package).</comments>
+        </license>
+        <license>
+            <name>Public Domain</name>
+            <url>http://creativecommons.org/licenses/publicdomain</url>
+            <distribution>repo</distribution>
+            <comments>The license applies to the XmlPull API (all classes directly in the org.xmlpull.v1 package)</comments>
+        </license>
+    </licenses>
+    <scm>
+        <url>http://kxml.cvs.sourceforge.net/viewvc/kxml/kxml2/</url>
+    </scm>
+    <organization>
+        <name>Stefan Haustein, Oberhausen, Rhld., Germany</name>
+        <url>http://kxml.sourceforge.net/</url>
+    </organization>
+    <dependencies/>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-sources.jar -o /tmp/kxml2-2.3.0-sources.jar && jar tf /tmp/kxml2-2.3.0-sources.jar | sed -n '1,200p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/services/
+META-INF/services/org.xmlpull.v1.XmlPullParserFactory
+org/
+org/kxml2/
+org/kxml2/io/
+org/kxml2/io/KXmlParser.java
+org/kxml2/io/KXmlSerializer.java
+org/kxml2/kdom/
+org/kxml2/kdom/Document.java
+org/kxml2/kdom/Element.java
+org/kxml2/kdom/Node.java
+org/kxml2/wap/
+org/kxml2/wap/syncml/
+org/kxml2/wap/syncml/SyncML.java
+org/kxml2/wap/wml/
+org/kxml2/wap/wml/Wml.java
+org/kxml2/wap/wv/
+org/kxml2/wap/wv/WV.java
+org/kxml2/wap/Wbxml.java
+org/kxml2/wap/WbxmlParser.java
+org/kxml2/wap/WbxmlSerializer.java
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://downloads.sourceforge.net/project/kxml/kxml2/2.3.0/kxml2-src-2.3.0.zip -o /tmp/kxml2-src-2.3.0.zip && unzip -l /tmp/kxml2-src-2.3.0.zip | sed -n '1,240p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+ succeeded in 2406ms:
+Archive:  /tmp/kxml2-src-2.3.0.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2006-05-29 17:50   bin/
+        0  2006-05-29 17:50   bin/META-INF/
+        0  2006-05-29 17:50   bin/META-INF/services/
+        0  2006-05-29 17:50   bin/org/
+        0  2006-05-29 17:50   bin/org/kxml2/
+        0  2006-05-29 17:50   bin/org/kxml2/io/
+        0  2006-05-29 17:50   bin/org/kxml2/kdom/
+        0  2006-06-22 18:09   bin/org/kxml2/wap/
+        0  2006-05-29 17:50   bin/org/kxml2/wap/syncml/
+        0  2006-05-29 17:50   bin/org/kxml2/wap/wml/
+        0  2006-05-29 17:50   bin/org/kxml2/wap/wv/
+        0  2006-06-08 14:31   contrib/
+        0  2006-06-22 18:31   dist/
+        0  2006-05-24 10:45   lib/
+        0  2006-05-24 10:45   samples/
+        0  2006-05-24 10:45   samples_midp/
+        0  2006-05-24 10:45   src/
+        0  2006-05-24 10:45   src/META-INF/
+        0  2006-05-24 10:45   src/META-INF/services/
+        0  2006-05-24 10:45   src/org/
+        0  2006-05-24 10:45   src/org/kxml2/
+        0  2006-05-24 10:45   src/org/kxml2/io/
+        0  2006-05-24 10:45   src/org/kxml2/kdom/
+        0  2006-06-22 18:09   src/org/kxml2/wap/
+        0  2006-05-24 10:45   src/org/kxml2/wap/syncml/
+        0  2006-05-24 10:45   src/org/kxml2/wap/wml/
+        0  2006-05-24 10:45   src/org/kxml2/wap/wv/
+        0  2006-05-24 10:45   www/
+        0  2006-06-23 12:11   www/kxml2/
+        0  2006-06-23 12:11   www/kxml2/javadoc/
+        0  2006-06-23 12:11   www/kxml2/javadoc/org/
+        0  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/
+        0  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/io/
+        0  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/io/class-use/
+        0  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/kdom/
+        0  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/kdom/class-use/
+        0  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/
+        0  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/class-use/
+        0  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/syncml/
+        0  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/syncml/class-use/
+        0  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/wml/
+        0  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/wml/class-use/
+        0  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/wv/
+        0  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/wv/class-use/
+        0  2006-06-23 12:11   www/kxml2/javadoc/resources/
+     1299  2006-05-29 17:50   bin/EventList.class
+     1668  2006-05-29 17:50   bin/KDomRoundtrip.class
+     1678  2006-05-29 17:50   bin/LongStringTest.class
+       56  2002-08-31 18:59   bin/META-INF/services/org.xmlpull.v1.XmlPullParserFactory
+     1313  2006-05-29 17:50   bin/Node.class
+     4164  2006-05-29 17:50   bin/Roundtrip.class
+     2284  2006-05-30 12:24   bin/WbxmlRoundtrip.class
+     2599  2006-05-29 17:50   bin/Weblogs.class
+     1991  2006-05-29 17:50   bin/YesNoGame.class
+      339  2004-06-15 21:31   bin/bogdan.xml
+    20885  2006-05-29 17:50   bin/org/kxml2/io/KXmlParser.class
+     9572  2006-05-29 17:50   bin/org/kxml2/io/KXmlSerializer.class
+     2699  2006-05-29 17:50   bin/org/kxml2/kdom/Document.class
+     5381  2006-05-29 17:50   bin/org/kxml2/kdom/Element.class
+     5543  2006-05-29 17:50   bin/org/kxml2/kdom/Node.class
+      735  2006-05-29 17:50   bin/org/kxml2/wap/Wbxml.class
+    17218  2006-06-20 17:21   bin/org/kxml2/wap/WbxmlParser.class
+     9075  2006-06-20 17:54   bin/org/kxml2/wap/WbxmlSerializer.class
+     4001  2006-05-29 17:50   bin/org/kxml2/wap/syncml/SyncML.class
+     4413  2006-05-29 17:50   bin/org/kxml2/wap/wml/Wml.class
+    14450  2006-05-29 17:50   bin/org/kxml2/wap/wv/WV.class
+      238  2002-10-10 23:33   bin/sample.xml
+      243  2002-10-10 23:33   bin/simple.xml
+     2068  2006-06-22 18:31   build.xml
+    32056  2006-05-30 10:57   contrib/WbxmlParser.java
+    14790  2006-05-30 10:57   contrib/WbxmlSerializer.java
+     4629  2006-05-30 10:57   contrib/Wml.java
+    43858  2006-06-19 16:21   dist/kxml2-2.2.3.jar
+    43858  2006-06-23 12:11   dist/kxml2-2.3.0.jar
+    10649  2006-06-19 16:21   dist/kxml2-min-2.2.3.jar
+    10649  2006-06-23 12:11   dist/kxml2-min-2.3.0.jar
+     7188  2003-06-16 18:03   lib/xmlpull_1_1_3_1.jar
+     1096  2003-04-08 18:56   license.txt
+      638  2002-06-29 20:24   samples/EventList.java
+      976  2002-07-09 11:45   samples/KDomRoundtrip.java
+     1014  2005-11-21 01:15   samples/LongStringTest.java
+     4721  2004-06-15 21:31   samples/Roundtrip.java
+     1580  2006-05-30 12:24   samples/WbxmlRoundtrip.java
+     2232  2003-02-03 12:38   samples/Weblogs.java
+     2802  2003-02-03 12:38   samples/YesNoGame.java
+      339  2004-06-15 21:31   samples/bogdan.xml
+      238  2002-10-10 23:33   samples/sample.xml
+      243  2002-10-10 23:33   samples/simple.xml
+     2982  2003-06-16 18:03   samples_midp/Newsreader.java
+       56  2002-08-31 18:59   src/META-INF/services/org.xmlpull.v1.XmlPullParserFactory
+    40153  2005-11-21 00:19   src/org/kxml2/io/KXmlParser.java
+    15583  2004-05-04 15:39   src/org/kxml2/io/KXmlSerializer.java
+     4003  2004-04-26 15:31   src/org/kxml2/kdom/Document.java
+     8901  2004-05-16 12:48   src/org/kxml2/kdom/Element.java
+    11736  2004-04-26 15:31   src/org/kxml2/kdom/Node.java
+     2106  2003-04-02 00:02   src/org/kxml2/wap/Wbxml.java
+    32102  2006-06-20 17:21   src/org/kxml2/wap/WbxmlParser.java
+    14186  2006-06-20 17:54   src/org/kxml2/wap/WbxmlSerializer.java
+     6288  2005-08-22 14:39   src/org/kxml2/wap/syncml/SyncML.java
+     4088  2003-10-19 23:31   src/org/kxml2/wap/wml/Wml.java
+    29683  2005-11-21 00:55   src/org/kxml2/wap/wv/WV.java
+     3826  2005-03-12 16:39   www/about.shtml
+       18  2005-03-07 00:43   www/epilog.shtml
+      318  2005-03-13 11:36   www/favicon.ico
+     2373  2005-12-04 21:53   www/index.shtml
+     2706  2005-12-04 21:48   www/kxml2/index.shtml
+     1783  2006-06-23 12:11   www/kxml2/javadoc/allclasses-frame.html
+     1563  2006-06-23 12:11   www/kxml2/javadoc/allclasses-noframe.html
+    16080  2006-06-23 12:11   www/kxml2/javadoc/constant-values.html
+     4983  2006-06-23 12:11   www/kxml2/javadoc/deprecated-list.html
+     9613  2006-06-23 12:11   www/kxml2/javadoc/help-doc.html
+    70279  2006-06-23 12:11   www/kxml2/javadoc/index-all.html
+     1316  2006-06-23 12:11   www/kxml2/javadoc/index.html
+    38131  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/io/KXmlParser.html
+    28923  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/io/KXmlSerializer.html
+     5612  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/io/class-use/KXmlParser.html
+     5652  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/io/class-use/KXmlSerializer.html
+      962  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/io/package-frame.html
+     6094  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/io/package-summary.html
+     5879  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/io/package-tree.html
+     5317  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/io/package-use.html
+    19923  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/kdom/Document.html
+    28305  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/kdom/Element.html
+    27229  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/kdom/Node.html
+     5612  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/kdom/class-use/Document.html
+     9559  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/kdom/class-use/Element.html
+     8982  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/kdom/class-use/Node.html
+     1042  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/kdom/package-frame.html
+     6629  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/kdom/package-summary.html
+     6052  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/kdom/package-tree.html
+     6783  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/kdom/package-use.html
+    18047  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/Wbxml.html
+    44084  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/WbxmlParser.html
+    32592  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/WbxmlSerializer.html
+     5592  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/class-use/Wbxml.html
+    10703  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/class-use/WbxmlParser.html
+     9371  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/class-use/WbxmlSerializer.html
+     1253  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/package-frame.html
+     6685  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/package-summary.html
+     6201  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/package-tree.html
+     8532  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/package-use.html
+    13692  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/syncml/SyncML.html
+     5703  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/syncml/class-use/SyncML.html
+      896  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/syncml/package-frame.html
+     6126  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/syncml/package-summary.html
+     5904  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/syncml/package-tree.html
+     5410  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/syncml/package-use.html
+    12403  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/wml/Wml.html
+     5643  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/wml/class-use/Wml.html
+      875  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/wml/package-frame.html
+     6199  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/wml/package-summary.html
+     5886  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/wml/package-tree.html
+     5392  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/wml/package-use.html
+    16892  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/wv/WV.html
+     5623  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/wv/class-use/WV.html
+      868  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/wv/package-frame.html
+     6134  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/wv/package-summary.html
+     5734  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/wv/package-tree.html
+     5386  2006-06-23 12:11   www/kxml2/javadoc/org/kxml2/wap/wv/package-use.html
+     1609  2006-06-23 12:11   www/kxml2/javadoc/overview-frame.html
+     6151  2006-06-23 12:11   www/kxml2/javadoc/overview-summary.html
+     7049  2006-06-23 12:11   www/kxml2/javadoc/overview-tree.html
+       98  2006-06-23 12:11   www/kxml2/javadoc/package-list
+       57  2006-06-23 12:11   www/kxml2/javadoc/resources/inherit.gif
+     1202  2006-06-23 12:11   www/kxml2/javadoc/stylesheet.css
+      770  2005-03-10 23:15   www/kxml2/samples.shtml
+     2050  2005-03-12 19:42   www/prolog.shtml
+      125  2005-11-21 00:55   www/upload.txt
+---------                     -------
+  1077816                     168 files
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/sf/kxml/kxml2/2.3.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+ succeeded in 0ms:
+<html>
+<head><title>Index of /maven2/net/sf/kxml/kxml2/2.3.0/</title></head>
+<body bgcolor=white>
+<h1>Index of /maven2/net/sf/kxml/kxml2/2.3.0/</h1>
+<hr>
+<pre>
+<a href=../>../</a>
+<a href="kxml2-2.3.0.jar">kxml2-2.3.0.jar</a>                                    2009-04-21 01:04                43858
+<a href="kxml2-2.3.0.jar.md5">kxml2-2.3.0.jar.md5</a>                                2009-04-21 01:04                  123
+<a href="kxml2-2.3.0.jar.sha1">kxml2-2.3.0.jar.sha1</a>                               2009-04-21 01:04                  131
+<a href="kxml2-2.3.0-javadoc.jar">kxml2-2.3.0-javadoc.jar</a>                            2009-04-21 01:04               105510
+<a href="kxml2-2.3.0-javadoc.jar.md5">kxml2-2.3.0-javadoc.jar.md5</a>                        2009-04-21 01:04                  131
+<a href="kxml2-2.3.0-javadoc.jar.sha1">kxml2-2.3.0-javadoc.jar.sha1</a>                       2009-04-21 01:04                  139
+<a href="kxml2-2.3.0.pom">kxml2-2.3.0.pom</a>                                    2009-04-21 01:04                 1490
+<a href="kxml2-2.3.0.pom.md5">kxml2-2.3.0.pom.md5</a>                                2009-04-21 01:04                  123
+<a href="kxml2-2.3.0.pom.sha1">kxml2-2.3.0.pom.sha1</a>                               2009-04-21 01:04                  131
+<a href="kxml2-2.3.0-sources.jar">kxml2-2.3.0-sources.jar</a>                            2009-04-21 01:04                44383
+<a href="kxml2-2.3.0-sources.jar.md5">kxml2-2.3.0-sources.jar.md5</a>                        2009-04-21 01:04                  131
+<a href="kxml2-2.3.0-sources.jar.sha1">kxml2-2.3.0-sources.jar.sha1</a>                       2009-04-21 01:04                  139
+</pre>
+<hr>
+</body>
+</html>
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20 | xargs -r sed -n '1,120p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+ succeeded in 0ms:
+{
+  "coordinates" : "net.sf.kxml:kxml2:2.3.0"
+}
+
+exec
+/usr/bin/bash -lc "unzip -p /tmp/kxml2-src-2.3.0.zip www/kxml2/index.shtml | sed -n '1,180p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+ succeeded in 0ms:
+<html>
+<head><title>kXML 2</title></head>
+<body bgcolor="#ffffff">
+<!--#include virtual="../prolog.shtml" -->
+
+<h1>kXML 2</h1>
+
+<p>kXML 2 implements the XmlPull API. Please find general information about
+XmlPull parsers including the interface documentation at 
+<a href="http://xmlpull.org">xmlpull.org</a>.</p>
+
+<p>kXML 2 is licensed under the BSD license.</p>
+
+<p>Naveen Balani has written a <a 
+href="http://www-128.ibm.com/developerworks/edu/wi-dw-wi-kxml-i.html">nice 
+introduction to kxml 2</a> for IBM Developer Works.</p>
+
+
+<h2>Recommended Calling Conventions</h2>
+
+When handing an XMLpull parser to subroutines, it is recommended that the current 
+position is on a start tag (allowing the subroutine to analyze the attributes). 
+The post condition should usually be that the current position is the matching end tag.
+
+
+<h2>Parsing Element-Only and Text-Only Content</h2>
+
+<p>General XML content can be parsed with the XML pull API using a loop advanving
+to the next event and a switch statement that depends on the event type. However, 
+when using XML for data transfer (in contrast to text documents), most XML elements 
+contain either only text or only other elements (possibly with further sub-elements). 
+For those common cases, the parsing process can be simplified significantly by
+using the XmlPull API methods <em>nextTag</em> and <em>nextText</em>. 
+
+Additionally, the method <em>require()</em> may optionally be used to assert a 
+certain parser state.  The following sample illustrates both situations and methods. 
+The outer element <em>elements</em> has element-only content; the contained 
+<em>text</em>-elements have text-only content:</p>
+
+<pre>
+&lt;elements&gt;
+  &lt;text&gt;text1&lt;/text&gt;
+  &lt;text&gt;text2&lt;/text&gt;
+&lt;/elements&gt;  
+</pre>  
+
+<p>Parsing Code</p>
+<pre>
+parser.nextTag();
+parser.require(XmlPullParser.START_TAG, null, "elements");
+
+while(parser.nextTag() == XmlPullParser.START_TAG) {
+  parser.require(XmlPullParser.START_TAG, null, "text");
+
+   // handle element content
+   System.out.println("text content: "+ parser.nextText());
+
+  parser.require(XmlPullParser.END_TAG, null, "text");
+}
+
+parser.require(XmlPullParser.END_TAG, null, "elements");
+</pre>
+
+<p><em>nextTag()</em> advances to the next 
+start or end tag, skipping insignificant events such as white space, 
+comments and PIs. <em>nextText()</em> requires that the current position 
+is a start tag. It returns the text content of the corresponding element. 
+The post condition is that the current position is an end tag.
+Please note that the calls <em>require()</em> are optional assertions, 
+they may be left out completely. </p>
+
+<!--#include virtual="../epilog.shtml" -->
+</body>
+</html>
+web search: 
+web search: kxml2 tests sourceforge CVS kxml2 samples Roundtrip
+web search: 
+web search: https://sourceforge.net/projects/kxml/files/kxml2/2.3.0/
+exec
+/usr/bin/bash -lc 'curl -I -L --max-time 20 http://kxml.cvs.sourceforge.net/viewvc/kxml/kxml2/' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+exec
+/usr/bin/bash -lc 'curl -I -L --max-time 20 https://sourceforge.net/p/kxml/code/HEAD/tree/kxml2/' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+exec
+/usr/bin/bash -lc 'curl -I -L --max-time 20 http://kxml.sourceforge.net/' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+ succeeded in 248ms:
+HTTP/2 404 
+date: Fri, 01 May 2026 06:54:29 GMT
+content-type: text/html; charset=utf-8
+content-length: 43606
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1777483952>; rel=preload; as=style
+content-security-policy: script-src-attr 'none' 'report-sample'; script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'; object-src 'none'; frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; fenced-frame-src https:; form-action 'self'; frame-ancestors 'self'; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; upgrade-insecure-requests
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+set-cookie: VISITOR=df871d4d-bf0a-4905-b1e3-de963b57a9e4; Max-Age=315360000; Path=/; expires=Mon, 28-Apr-2036 06:54:29 GMT; secure; HttpOnly
+set-cookie: _csrf_token=7334abfaec7ac02ca480a57c7d385edb27bc902f74b93aa2580d2d5a40a4522e2d7caaca670c0985; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=nJ5P_WsMxFc5oOABGjk6pT.b5LxNPeCFrMKDGR0Bbis-1777618468.8717093-1.0.1.1-o0v7CIPMsPHcq0VQCBRtcoJDRIFCmmrK08VVtEnBqQZC6Zrca.GyMveILOWj20maRPhiwWnJXMOyUkNi044N1lrK.zXZtQDK0AYvHLulOioR7TUVknJQvbHXd3yY3AdE; HttpOnly; Secure; Path=/; Domain=sourceforge.net; Expires=Fri, 01 May 2026 07:24:29 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9f4ce0067aa3be85-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+  0 43606    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+ succeeded in 564ms:
+
+  0   162    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+  0  105k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/1.1 301 Moved Permanently
+Server: nginx
+Date: Fri, 01 May 2026 06:54:29 GMT
+Content-Type: text/html
+Content-Length: 162
+Connection: keep-alive
+Location: https://sourceforge.net/projects/kxml/
+
+HTTP/2 200 
+date: Fri, 01 May 2026 06:54:29 GMT
+content-type: text/html; charset=utf-8
+content-length: 107665
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/js/min/sf.sandiego-cmp-top.js?1777491863>; rel=preload; as=script, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1777491863>; rel=preload; as=style, <https://a.fsdn.com/con/css/sandiego.css?1777491863>; rel=preload; as=style, <https://a.fsdn.com/con/js/min/sf.sandiego-head.js?1777491863>; rel=preload; as=script
+cross-origin-opener-policy: same-origin
+permissions-policy: geolocation=(), microphone=(), camera=(), payment=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: geolocation 'none'; microphone 'none'; camera 'none'; payment 'none'; document-domain 'none'; display-capture 'none'; autoplay 'none'
+x-frame-options: SAMEORIGIN
+content-security-policy: object-src 'none'; upgrade-insecure-requests; script-src 'self' *.licdn.com a.fsdn.com *.google.com http://c.sf-syn.com http://b.sf-syn.com *.cloudflareinsights.com *.google-analytics.com *.tiny.cloud *.recaptcha.net recaptcha.net *.gstatic.com *.googletagservices.com *.googlesyndication.com *.doubleclick.net *.googletagmanager.com *.consentmanager.net *.microsofttranslator.com translate.googleapis.com translate.google.cn *.gstatic.cn *.tds.bid esm.sh blob: *.adnxs.com *.bing.com *.slashdotmedia.com ml314.com j.6sc.co *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com fe.sitedataprocessing.com a.usbrowserspeed.com d-code.liadm.com frontend.id-visitors.com *.identitymatrix.ai 'unsafe-inline' 'unsafe-eval'; script-src-attr 'unsafe-hashes' 'sha256-4d6SN0yYeMqJ0cKMQtg6WeJWMAytzagOyddgGs8IrQg=' 'sha256-tBDVzvq7nAZRA5cnijB1/8uEyvj+5hEDBhcx7F72AGE=' 'report-sample'; fenced-frame-src https:; frame-src 'self' a.fsdn.com *.google.com http://c.sf-syn.com http://b.sf-syn.com *.googletagmanager.com *.doubleclick.net *.gstatic.com *.recaptcha.net recaptcha.net *.youtube.com www.youtube-nocookie.com *.consentmanager.net player.twitch.tv app.hubspot.com; form-action 'self' lists.sourceforge.net aistudio.google.com; frame-ancestors 'self'
+x-content-type-options: nosniff
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=e0e6d3d4-27b3-47ba-8afa-81c2f7ebc63c; Max-Age=315360000; Path=/; expires=Mon, 28-Apr-2036 06:54:29 GMT; secure; HttpOnly
+set-cookie: __cf_bm=t9HAVv_WWQwpSspJYa55iyM.a_U7Ge68lO_NBQZvugg-1777618469.1759872-1.0.1.1-pMznPEpjnt1symqfP6B6FXpxJZ9ckKbszr.LqmEPEO795KCKR9_nMc_m4xbTY0LnYc3yYF6GdyMTCSBYRg5bfgPXF3zGvO1L5FZh0X2eXTnJ.g2J4JEeRcWGE.0ORQqZ; HttpOnly; Secure; Path=/; Domain=sourceforge.net; Expires=Fri, 01 May 2026 07:24:29 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9f4ce0085fba9808-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 548ms:
+
+  0   138    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/1.1 301 Moved Permanently
+Date: Fri, 01 May 2026 06:54:28 GMT
+Connection: keep-alive
+Location: https://kxml.sourceforge.net/
+Content-Security-Policy: upgrade-insecure-requests
+Server: cloudflare
+CF-RAY: 9f4ce006fc4103b1-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 302 
+date: Fri, 01 May 2026 06:54:29 GMT
+content-type: text/html
+content-length: 138
+location: https://sourceforge.net/projects/kxml/
+server: cloudflare
+content-security-policy: upgrade-insecure-requests
+expires: Fri, 01 May 2026 06:55:29 GMT
+cache-control: max-age=60
+x-from: sfp-staticweb-1
+cf-cache-status: DYNAMIC
+set-cookie: __cf_bm=L2RFHbGO7gCisXz2bjSFLTSOebGfrLD2eUgNgS0FMsQ-1777618469.0028565-1.0.1.1-92nHfn9kxXZmPSrh0d1yTdNOwK44KiBeDINS5Rr4FCaIGjl21GSzXGa8DsnOoUsS8WjizOXyzsZX64J_4hO43bIsJbSbfCguPllPc.ppeZOetU2flL8FwdEokdSdOtlc; HttpOnly; Secure; Path=/; Domain=sourceforge.net; Expires=Fri, 01 May 2026 07:24:29 GMT
+cf-ray: 9f4ce0074e7c039d-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Fri, 01 May 2026 06:54:29 GMT
+content-type: text/html; charset=utf-8
+content-length: 107665
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/js/min/sf.sandiego-cmp-top.js?1777491863>; rel=preload; as=script, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1777491863>; rel=preload; as=style, <https://a.fsdn.com/con/css/sandiego.css?1777491863>; rel=preload; as=style, <https://a.fsdn.com/con/js/min/sf.sandiego-head.js?1777491863>; rel=preload; as=script
+cross-origin-opener-policy: same-origin
+permissions-policy: geolocation=(), microphone=(), camera=(), payment=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: geolocation 'none'; microphone 'none'; camera 'none'; payment 'none'; document-domain 'none'; display-capture 'none'; autoplay 'none'
+x-frame-options: SAMEORIGIN
+content-security-policy: script-src 'self' *.licdn.com a.fsdn.com *.google.com http://c.sf-syn.com http://b.sf-syn.com *.cloudflareinsights.com *.google-analytics.com *.tiny.cloud *.recaptcha.net recaptcha.net *.gstatic.com *.googletagservices.com *.googlesyndication.com *.doubleclick.net *.googletagmanager.com *.consentmanager.net *.microsofttranslator.com translate.googleapis.com translate.google.cn *.gstatic.cn *.tds.bid esm.sh blob: *.adnxs.com *.bing.com *.slashdotmedia.com ml314.com j.6sc.co *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com fe.sitedataprocessing.com a.usbrowserspeed.com d-code.liadm.com frontend.id-visitors.com *.identitymatrix.ai 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self'; frame-src 'self' a.fsdn.com *.google.com http://c.sf-syn.com http://b.sf-syn.com *.googletagmanager.com *.doubleclick.net *.gstatic.com *.recaptcha.net recaptcha.net *.youtube.com www.youtube-nocookie.com *.consentmanager.net player.twitch.tv app.hubspot.com; upgrade-insecure-requests; object-src 'none'; form-action 'self' lists.sourceforge.net aistudio.google.com; script-src-attr 'unsafe-hashes' 'sha256-4d6SN0yYeMqJ0cKMQtg6WeJWMAytzagOyddgGs8IrQg=' 'sha256-tBDVzvq7nAZRA5cnijB1/8uEyvj+5hEDBhcx7F72AGE=' 'report-sample'; fenced-frame-src https:
+x-content-type-options: nosniff
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=390bf583-f5fe-43d1-99bc-c793cb521d40; Max-Age=315360000; Path=/; expires=Mon, 28-Apr-2036 06:54:29 GMT; secure; HttpOnly
+set-cookie: __cf_bm=NNedTtOvkzzNnVSp5Sk.SyehgfQhEwGHB8KYS.YZN4c-1777618469.198668-1.0.1.1-L.HQBxiiotBJFHCzJpLGx7VSzsFdn7Q3tARKZK5Dz83xSDcRcJ8GeuyaBzFS9GNTGEmaddF7AeRzYZwMkufH.5_lOFFc.JkfXP_S.BW_yxGbHF3DYmfpbLFiGl48HQv8; HttpOnly; Secure; Path=/; Domain=sourceforge.net; Expires=Fri, 01 May 2026 07:24:29 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9f4ce0087c2bbac5-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+  0  105k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+web search: 
+web search: SourceForge kxml code repository CVS kxml2
+web search: 
+web search: https://central.sonatype.com/artifact/net.sf.kxml/kxml2
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 net sf kxml kxml2 2.3.0 kxml2-2.3.0-sources.jar javadoc
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"' -n --glob '*.json' | head -40" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.apiguardian/apiguardian-api/index.json:6:    "repository-url" : "https://github.com/apiguardian-team/apiguardian",
+metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+metadata/org.apache.arrow/arrow-format/index.json:6:    "repository-url" : "https://github.com/apache/arrow",
+metadata/org.apache.arrow/arrow-format/index.json:30:    "repository-url" : "https://github.com/apache/arrow",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:6:    "repository-url" : "https://github.com/jbossinterceptors/jbossinterceptors",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.15.2",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/websocket",
+metadata/org.springframework/spring-instrument/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-annotations",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:38:    "repository-url" : "https://github.com/FasterXML/jackson-annotations",
+metadata/org.playframework/play-exceptions/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "repository-url": "https://github.com/ben-manes/caffeine/tree/v3.1.2",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:32:    "repository-url": "https://github.com/ben-manes/caffeine/tree/v2.9.3",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/websocket",
+metadata/com.github.mwiede/jsch/index.json:6:    "repository-url" : "https://github.com/mwiede/jsch",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-core",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:129:    "repository-url" : "https://github.com/FasterXML/jackson-core",
+metadata/org.awaitility/awaitility/index.json:6:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:22:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:6:    "repository-url" : "https://github.com/apache/jackrabbit",
+metadata/com.rabbitmq/amqp-client/index.json:6:    "repository-url" : "https://github.com/rabbitmq/rabbitmq-java-client",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:20:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.junit.platform/junit-platform-commons/index.json:6:    "repository-url" : "https://github.com/junit-team/junit5",
+metadata/io.zipkin.zipkin2/zipkin/index.json:6:    "repository-url" : "https://github.com/openzipkin/zipkin",
+metadata/org.scalatest/scalatest-compatible/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:6:    "repository-url" : "https://github.com/JetBrains/kotlin",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/log4j/log4j/index.json:8:    "repository-url": "https://github.com/apache/logging-log4j1",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:6:    "repository-url" : "https://github.com/JetBrains/kotlin",
+metadata/org.openjfx/javafx-base/index.json:6:    "repository-url" : "https://github.com/javafxports/openjdk-jfx",
+metadata/com.sun.mail/jakarta.mail/index.json:10:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+
+exec
+/usr/bin/bash -lc "rg '\"test-code-url\"' -n --glob '*.json' | head -40" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/8.0.01/src/jvmTest",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-tests.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.arrow/arrow-format/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.arrow/arrow-format/index.json:31:    "test-code-url" : "N/A",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.junit.platform/junit-platform-commons/index.json:7:    "test-code-url" : "N/A",
+metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/2.0.1/mail/src/test",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine/src/snakeyaml-engine-3.0.1/src/test/java/",
+metadata/com.google.auth/google-auth-library-credentials/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+metadata/org.clojure/google-closure-library-third-party/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20250515-f04e4c0e/google-closure-library-third-party-0.0-20250515-f04e4c0e-sources.jar",
+metadata/org.clojure/google-closure-library-third-party/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20150505-021ed5b3/google-closure-library-third-party-0.0-20150505-021ed5b3-sources.jar",
+metadata/org.postgresql/postgresql/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-jdbc-src.tar.gz",
+metadata/org.postgresql/postgresql/index.json:29:    "test-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-jdbc-src.tar.gz",
+metadata/javax.servlet/javax.servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.eclipse.aether/aether-util/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/1.0.2.v20150114/aether-1.0.2.v20150114-source-release.zip",
+metadata/org.eclipse.aether/aether-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/1.0.2.v20150114/aether-1.0.2.v20150114-source-release.zip",
+metadata/org.eclipse.aether/aether-spi/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/1.0.2.v20150114/aether-1.0.2.v20150114-source-release.zip",
+metadata/org.eclipse.aether/aether-impl/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/1.0.2.v20150114/aether-1.0.2.v20150114-source-release.zip",
+metadata/com.github.spotbugs/spotbugs-annotations/index.json:8:    "test-code-url": "N/A",
+metadata/org.codehaus.woodstox/stax2-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.dom4j/dom4j/index.json:7:    "test-code-url" : "https://github.com/dom4j/dom4j/tree/version-2.1.1/src/test",
+metadata/org.latencyutils/LatencyUtils/index.json:7:    "test-code-url" : "https://github.com/LatencyUtils/LatencyUtils/tree/LatencyUtils-2.0.3/src/test",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-tests.jar",
+metadata/jakarta.validation/jakarta.validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/3.0.0/src/test",
+metadata/org.xmlunit/xmlunit-placeholders/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/xmlunit/xmlunit-placeholders/2.10.2/xmlunit-placeholders-2.10.2-tests.jar",
+metadata/org.xmlunit/xmlunit-core/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1-tests.jar",
+metadata/aopalliance/aopalliance/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.annotation/jsr250-api/index.json:8:    "test-code-url": "N/A",
+metadata/javax.annotation/javax.annotation-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.santuario/xmlsec/index.json:10:    "test-code-url": "https://github.com/apache/santuario-xml-security-java/tree/xmlsec-4.0.4/src/test",
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\".*repo1.maven.org|\"documentation-url\".*javadoc.jar|\"test-code-url\".*N/A' -n --glob '*.json' | head -80" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+ succeeded in 0ms:
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/5.12.0/amqp-client-5.12.0-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/5.12.0/amqp-client-5.12.0-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/5.3.31/spring-instrument-5.3.31-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/5.3.31/spring-instrument-5.3.31-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/12.0.0/jetty-alpn-java-server-12.0.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/11.0.24/jetty-alpn-java-server-11.0.24-javadoc.jar",
+metadata/com.google.android/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-sources.jar",
+metadata/com.google.android/annotations/index.json:8:    "test-code-url": "N/A",
+metadata/com.google.android/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/10.0.0/jetty-util-ajax-10.0.0-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/10.0.0/jetty-util-ajax-10.0.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/9.4.38.v20210224/jetty-util-ajax-9.4.38.v20210224-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/9.4.38.v20210224/jetty-util-ajax-9.4.38.v20210224-javadoc.jar",
+metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/1.0.3/compress-lzf-1.0.3-sources.jar",
+metadata/com.ning/compress-lzf/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/1.0.3/compress-lzf-1.0.3-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/9.4.0.M0/jetty-io-9.4.0.M0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/9.3.19.v20170502/jetty-io-9.3.19.v20170502-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-sources.jar",
+metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.4.0.M0/jetty-http-9.4.0.M0-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.4.0.M0/jetty-http-9.4.0.M0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.3.19.v20170502/jetty-http-9.3.19.v20170502-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.3.19.v20170502/jetty-http-9.3.19.v20170502-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/2.0.8/oro-2.0.8-sources.jar",
+metadata/oro/oro/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.commons/commons-compress/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-sources.jar",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:62:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:65:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-javadoc.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-javadoc.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apiguardian/apiguardian-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-javadoc.jar",
+metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-sources.jar",
+metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:34:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-javadoc.jar",
+metadata/org.apache.commons/commons-text/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.commons/commons-pool2/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:28:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:55:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:58:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-javadoc.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/1.5.0/jackrabbit-jcr-commons-1.5.0-sources.jar",
+metadata/org.apache.commons/commons-lang3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-javadoc.jar",
+metadata/org.apache.arrow/arrow-format/index.json:7:    "test-code-url" : "N/A",
+
+exec
+/usr/bin/bash -lc "rg '\"language\"' -n metadata build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:56:      "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:186:        "language": {
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://sourceforge.net/p/kxml/cvs/HEAD/tree/kxml2/ \\
+  https://sourceforge.net/p/kxml/code/ci/master/tree/kxml2/ \\
+  https://sourceforge.net/p/kxml/code/HEAD/tree/ \\
+  https://sourceforge.net/p/kxml/code/ci/default/tree/ \\
+  https://sourceforge.net/projects/kxml/; do printf '\\n%s\\n' \""'$url"; curl -sS -L -o /dev/null -w '"'%{http_code} %{url_effective}\\n' --max-time 15 \""'$url"; done' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-sources.jar \\
+  https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-javadoc.jar \\
+  https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-tests.jar \\
+  https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-test-sources.jar; do printf '\\n%s\\n' \""'$url"; curl -sS -L -o /dev/null -w '"'%{http_code} %{size_download}\\n' --max-time 15 \""'$url"; done' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+ succeeded in 703ms:
+200 105510
+
+https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-tests.jar
+404 554
+
+https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-test-sources.jar
+404 554
+
+ succeeded in 1728ms:
+200 https://sourceforge.net/projects/kxml/
+
+https://sourceforge.net/p/kxml/code/ci/master/tree/kxml2/
+404 https://sourceforge.net/p/kxml/code/ci/master/tree/kxml2/
+
+https://sourceforge.net/p/kxml/code/HEAD/tree/
+404 https://sourceforge.net/p/kxml/code/HEAD/tree/
+
+https://sourceforge.net/p/kxml/code/ci/default/tree/
+404 https://sourceforge.net/p/kxml/code/ci/default/tree/
+
+https://sourceforge.net/projects/kxml/
+200 https://sourceforge.net/projects/kxml/
+
+codex
+There is no `-tests.jar` or `-test-sources.jar` for `2.3.0`, and the upstream source archive only exposes samples rather than a clear test suite. I’m going to record `test-code-url` as `N/A`, keep source/Javadoc on Maven Central, and use the live SourceForge project URL for the repository.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json
+diff --git a/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json b/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json
+index 354adb607a7f9a92e2c4aa39c0fbebbb6d778b62..d8136aa16fb97d19ae663520f0a1331ee7133d68
+--- a/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json
++++ b/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.kxml:kxml2:2.3.0"
++  "coordinates" : "net.sf.kxml:kxml2:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-sources.jar",
++  "repository-url" : "https://sourceforge.net/projects/kxml/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-javadoc.jar",
++  "description" : "kXML 2 is a small XML pull parser implementation for Java based on the common XML Pull API. It is designed for constrained environments such as applets, Personal Java, and MIDP devices, and includes parser, serializer, kDOM, and WBXML support."
+ }
+
+diff --git a/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json b/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json
+index 354adb607a7f9a92e2c4aa39c0fbebbb6d778b62..d8136aa16fb97d19ae663520f0a1331ee7133d68
+--- a/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json
++++ b/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.kxml:kxml2:2.3.0"
++  "coordinates" : "net.sf.kxml:kxml2:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-sources.jar",
++  "repository-url" : "https://sourceforge.net/projects/kxml/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-javadoc.jar",
++  "description" : "kXML 2 is a small XML pull parser implementation for Java based on the common XML Pull API. It is designed for constrained environments such as applets, Personal Java, and MIDP devices, and includes parser, serializer, kDOM, and WBXML support."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'python -m json.tool build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+ succeeded in 0ms:
+{
+    "coordinates": "net.sf.kxml:kxml2:2.3.0",
+    "source-code-url": "https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-sources.jar",
+    "repository-url": "https://sourceforge.net/projects/kxml/",
+    "test-code-url": "N/A",
+    "documentation-url": "https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-javadoc.jar",
+    "description": "kXML 2 is a small XML pull parser implementation for Java based on the common XML Pull API. It is designed for constrained environments such as applets, Personal Java, and MIDP devices, and includes parser, serializer, kDOM, and WBXML support."
+}
+
+diff --git a/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json b/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json
+index 354adb607a7f9a92e2c4aa39c0fbebbb6d778b62..d8136aa16fb97d19ae663520f0a1331ee7133d68
+--- a/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json
++++ b/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.kxml:kxml2:2.3.0"
++  "coordinates" : "net.sf.kxml:kxml2:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-sources.jar",
++  "repository-url" : "https://sourceforge.net/projects/kxml/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-javadoc.jar",
++  "description" : "kXML 2 is a small XML pull parser implementation for Java based on the common XML Pull API. It is designed for constrained environments such as applets, Personal Java, and MIDP devices, and includes parser, serializer, kDOM, and WBXML support."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+ succeeded in 0ms:
+{
+  "coordinates" : "net.sf.kxml:kxml2:2.3.0",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-sources.jar",
+  "repository-url" : "https://sourceforge.net/projects/kxml/",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-javadoc.jar",
+  "description" : "kXML 2 is a small XML pull parser implementation for Java based on the common XML Pull API. It is designed for constrained environments such as applets, Personal Java, and MIDP devices, and includes parser, serializer, kDOM, and WBXML support."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f
+ succeeded in 0ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json b/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json
+index 354adb607a7f9a92e2c4aa39c0fbebbb6d778b62..d8136aa16fb97d19ae663520f0a1331ee7133d68
+--- a/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json
++++ b/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.kxml:kxml2:2.3.0"
++  "coordinates" : "net.sf.kxml:kxml2:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-sources.jar",
++  "repository-url" : "https://sourceforge.net/projects/kxml/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-javadoc.jar",
++  "description" : "kXML 2 is a small XML pull parser implementation for Java based on the common XML Pull API. It is designed for constrained environments such as applets, Personal Java, and MIDP devices, and includes parser, serializer, kDOM, and WBXML support."
+ }
+
+web search: 
+web search: https://sourceforge.net/projects/kxml/files/kxml2/2.3.0/
+web search: 
+web search: "kxml2-2.3.0-sources.jar"
+web search: 
+web search: "net.sf.kxml" "kxml2" "kXML 2 is a small XML pull parser"
+codex
+Updated [net.sf.kxml-kxml2-2.3.0.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json).
+
+Set source and documentation to the exact `2.3.0` Maven source/Javadoc artifacts, repository to the SourceForge project, and `test-code-url` to `N/A` because no Maven test artifact or clear upstream test suite was found. I left `language` absent since this is not Kotlin, Groovy, or Scala-specific. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sf/kxml/kxml2/2.3.0/?utm_source=openai))
+
+Verified the JSON parses with `python -m json.tool`.
+diff --git a/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json b/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json
+index 354adb607a7f9a92e2c4aa39c0fbebbb6d778b62..d8136aa16fb97d19ae663520f0a1331ee7133d68
+--- a/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json
++++ b/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.kxml:kxml2:2.3.0"
++  "coordinates" : "net.sf.kxml:kxml2:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-sources.jar",
++  "repository-url" : "https://sourceforge.net/projects/kxml/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0-javadoc.jar",
++  "description" : "kXML 2 is a small XML pull parser implementation for Java based on the common XML Pull API. It is designed for constrained environments such as applets, Personal Java, and MIDP devices, and includes parser, serializer, kDOM, and WBXML support."
+ }
+
+tokens used
+89,739
+Updated [net.sf.kxml-kxml2-2.3.0.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f/build/discovered-artifact-metadata/net.sf.kxml-kxml2-2.3.0.json).
+
+Set source and documentation to the exact `2.3.0` Maven source/Javadoc artifacts, repository to the SourceForge project, and `test-code-url` to `N/A` because no Maven test artifact or clear upstream test suite was found. I left `language` absent since this is not Kotlin, Groovy, or Scala-specific. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sf/kxml/kxml2/2.3.0/?utm_source=openai))
+
+Verified the JSON parses with `python -m json.tool`.
+Ran agent for net.sf.kxml:kxml2:2.3.0 (exit 0). Log: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f/build/agent-artifact-discovery-logs/net.sf.kxml-kxml2-2.3.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3684-5d24b17f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 47s
+9 actionable tasks: 4 executed, 5 from cache
