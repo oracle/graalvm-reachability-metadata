@@ -4156,9 +4156,14 @@ def format_issue_processing_message(issue: dict) -> str:
     )
 
 
-def get_issue_scan_batch_size(remaining_limit: int, available_slots: int) -> int:
+def get_issue_scan_batch_size(_remaining_limit: int, _available_slots: int) -> int:
     """Return how many issue candidates to fetch for the next scan."""
-    return max(1, min(DEFAULT_ISSUE_SCAN_BATCH_SIZE, remaining_limit, available_slots))
+    return DEFAULT_ISSUE_SCAN_BATCH_SIZE
+
+
+def get_issue_preflight_batch_size() -> int:
+    """Return how many candidates to preflight from one sorted issue scan."""
+    return ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE
 
 
 def resolve_random_issue_scan_offset(label: str) -> int:
@@ -4246,11 +4251,13 @@ def process_issues_with_label(
                     record_issue_claim_cache_observations(payload_cache_observations)
 
                     cached_skips = get_cached_issue_claim_skips(issues)
-                    issues_needing_preflight = [
+                    preflight_candidates = [
                         issue
                         for issue in issues
                         if issue["number"] not in cached_skips
+                        and issue_needs_claim_preflight(issue)
                     ]
+                    issues_needing_preflight = preflight_candidates[:get_issue_preflight_batch_size()]
                     issue_preflights = get_issue_claim_preflights_or_empty(issues_needing_preflight)
                     preflight_cache_observations = [
                         observation

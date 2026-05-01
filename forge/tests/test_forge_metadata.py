@@ -348,15 +348,15 @@ class IssueClaimPreflightTests(unittest.TestCase):
     def test_issue_scan_batch_size_returns_candidate_batch_size(self) -> None:
         self.assertEqual(
             forge_metadata.get_issue_scan_batch_size(1, 1),
-            1,
+            forge_metadata.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
         )
         self.assertEqual(
             forge_metadata.get_issue_scan_batch_size(5, 1),
-            1,
+            forge_metadata.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
         )
         self.assertEqual(
             forge_metadata.get_issue_scan_batch_size(100, 4),
-            4,
+            forge_metadata.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
         )
 
     def test_preflight_skips_issue_payloads_that_are_already_locally_unclaimable(self) -> None:
@@ -519,14 +519,14 @@ class IssueClaimPreflightTests(unittest.TestCase):
             [
                 call(
                     forge_metadata.LABEL_LIBRARY_NEW,
-                    1,
+                    forge_metadata.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
                     0,
                     0,
                     False,
                 ),
                 call(
                     forge_metadata.LABEL_LIBRARY_NEW,
-                    1,
+                    forge_metadata.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
                     0,
                     1,
                     True,
@@ -855,6 +855,59 @@ class IssueClaimCacheTests(unittest.TestCase):
 
         self.assertEqual(processed, 0)
         claim_issue_for_processing.assert_not_called()
+
+    def test_process_loop_only_preflights_one_chunk_from_scan_window(self) -> None:
+        issues = [
+            {
+                "number": issue_number,
+                "title": f"Add support for org.example:lib{issue_number}:1.0.0",
+                "labels": [],
+                "assignees": [],
+            }
+            for issue_number in range(1, 7)
+        ]
+
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+                    patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                    patch.object(
+                        forge_metadata,
+                        "get_prioritized_issues_with_label",
+                        return_value=(issues, 0, len(issues), True, True),
+                    ), \
+                    patch.object(
+                        forge_metadata,
+                        "get_issue_claim_preflights_or_empty",
+                        return_value={1: _preflight(issue_number=1)},
+                    ) as get_issue_claim_preflights_or_empty, \
+                    patch.object(
+                        forge_metadata,
+                        "claim_issue_for_processing",
+                        return_value=_claimed_issue(),
+                    ), \
+                    patch.object(
+                        forge_metadata,
+                        "process_claimed_issue_lifecycle",
+                        return_value=True,
+                    ):
+                self.assertEqual(
+                    forge_metadata.process_issues_with_label(
+                        forge_metadata.LABEL_LIBRARY_NEW,
+                        1,
+                        0,
+                        "/tmp/reachability",
+                        "/tmp/metrics",
+                        None,
+                        False,
+                        "automation-user",
+                        1,
+                    ),
+                    1,
+                )
+
+        get_issue_claim_preflights_or_empty.assert_called_once_with(
+            issues[:forge_metadata.ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE]
+        )
 
 
 class ProjectItemStatusTests(unittest.TestCase):
