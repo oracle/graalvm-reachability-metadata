@@ -17,6 +17,12 @@ dependencies {
     testRuntimeOnly 'org.bouncycastle:bcpkix-jdk15on:1.70'
 }
 
+test {
+    // Isolate TimestampUtilsTest so it can set java.version before pgjdbc caches JavaVersion.
+    forkEvery = 1
+    jvmArgs '--add-opens=java.base/java.util=ALL-UNNAMED'
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
