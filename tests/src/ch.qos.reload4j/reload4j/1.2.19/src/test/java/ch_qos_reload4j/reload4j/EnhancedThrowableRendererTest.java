@@ -8,7 +8,13 @@ package ch_qos_reload4j.reload4j;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.security.CodeSource;
+
 import org.apache.log4j.EnhancedThrowableRenderer;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.spi.ThrowableRenderer;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
@@ -68,6 +74,28 @@ public class EnhancedThrowableRendererTest {
         }
     }
 
+    @Test
+    void resolvesStackClassWithRendererClassLoaderAfterClassForNameMiss() throws Exception {
+        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+        try (AlternatingEnhancedThrowableRendererClassLoader rendererClassLoader =
+                new AlternatingEnhancedThrowableRendererClassLoader()) {
+            Thread.currentThread().setContextClassLoader(rendererClassLoader);
+            ThrowableRenderer renderer = (ThrowableRenderer) OptionConverter.instantiateByClassName(
+                    EnhancedThrowableRenderer.class.getName(), ThrowableRenderer.class, null);
+            assertThat(renderer).isNotNull();
+
+            Thread.currentThread().setContextClassLoader(new RejectingLoadClassLoader(TEST_CLASS_NAME));
+            String[] renderedLines = renderer.doRender(throwableWithStackFrame(TEST_CLASS_NAME));
+
+            assertThat(renderedLines[1]).startsWith(expectedTestStackLinePrefix()).endsWith("]");
+            assertThat(rendererClassLoader.rendererFallbackLoadAttempted).isTrue();
+        } catch (Error error) {
+            rethrowIfNotNativeImageDynamicClassLoadingError(error);
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
+    }
+
     private static Throwable throwableWithStackFrame(String className) {
         Throwable throwable = new IllegalStateException("enhanced throwable");
         throwable.setStackTrace(new StackTraceElement[] {
@@ -86,6 +114,46 @@ public class EnhancedThrowableRendererTest {
     private static void rethrowIfNotNativeImageDynamicClassLoadingError(Error error) {
         if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
             throw error;
+        }
+    }
+
+    private static final class AlternatingEnhancedThrowableRendererClassLoader extends URLClassLoader {
+        private boolean classForNameLoadRejected;
+        private boolean rendererFallbackLoadAttempted;
+
+        private AlternatingEnhancedThrowableRendererClassLoader() {
+            super(reload4jUrls(), EnhancedThrowableRendererTest.class.getClassLoader());
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            synchronized (getClassLoadingLock(name)) {
+                if (EnhancedThrowableRenderer.class.getName().equals(name)) {
+                    Class<?> loadedClass = findLoadedClass(name);
+                    if (loadedClass == null) {
+                        loadedClass = findClass(name);
+                    }
+                    if (resolve) {
+                        resolveClass(loadedClass);
+                    }
+                    return loadedClass;
+                }
+                if (TEST_CLASS_NAME.equals(name)) {
+                    if (!classForNameLoadRejected) {
+                        classForNameLoadRejected = true;
+                        throw new ClassNotFoundException(name);
+                    }
+                    rendererFallbackLoadAttempted = true;
+                    return EnhancedThrowableRendererTest.class;
+                }
+                return super.loadClass(name, resolve);
+            }
+        }
+
+        private static URL[] reload4jUrls() {
+            CodeSource codeSource = EnhancedThrowableRenderer.class.getProtectionDomain().getCodeSource();
+            assertThat(codeSource).isNotNull();
+            return new URL[] { codeSource.getLocation() };
         }
     }
 
