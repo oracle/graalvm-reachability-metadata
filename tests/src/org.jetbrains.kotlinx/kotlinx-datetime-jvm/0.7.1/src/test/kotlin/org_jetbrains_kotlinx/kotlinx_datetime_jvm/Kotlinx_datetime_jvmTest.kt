@@ -21,6 +21,7 @@ import kotlinx.datetime.asTimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.atTime
 import kotlinx.datetime.format
+import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.format.DayOfWeekNames
 import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.Padding
@@ -251,6 +252,24 @@ public class Kotlinx_datetime_jvmTest {
         assertThat(localDateTimeFormat.parse("2024-02-29 09:08:07.123456")).isEqualTo(
             LocalDateTime(parsedDate, parsedTime)
         )
+    }
+
+    @Test
+    fun dateTimeComponentsParseAndFormatTimeZoneIdentifiers(): Unit {
+        val zonedDateTimeFormat = DateTimeComponents.Format {
+            dateTime(LocalDateTime.Formats.ISO)
+            char(' ')
+            timeZoneId()
+        }
+        val components: DateTimeComponents = zonedDateTimeFormat.parse("2024-07-01T09:15:00 Europe/Paris")
+
+        assertThat(components.toLocalDateTime()).isEqualTo(LocalDateTime(2024, 7, 1, 9, 15))
+        assertThat(components.timeZoneId).isEqualTo("Europe/Paris")
+
+        val timeZone: TimeZone = TimeZone.of(components.timeZoneId!!)
+        assertThat(components.toLocalDateTime().toInstant(timeZone)).isEqualTo(Instant.parse("2024-07-01T07:15:00Z"))
+
+        assertThat(zonedDateTimeFormat.format(components)).isEqualTo("2024-07-01T09:15:00 Europe/Paris")
     }
 
     @Test
