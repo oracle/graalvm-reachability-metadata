@@ -113,6 +113,30 @@ public class Jetty_alpn_clientTest {
     }
 
     @Test
+    void onFillableUpgradesWhenProtocolSelectionCompletesDuringRead() throws Exception {
+        RecordingEndPoint endPoint = new RecordingEndPoint();
+        endPoint.fillResult = 1;
+        StubConnection negotiatedConnection = new StubConnection(endPoint);
+        RecordingClientConnectionFactory connectionFactory = new RecordingClientConnectionFactory(negotiatedConnection);
+        ALPNClientConnection[] connectionRef = new ALPNClientConnection[1];
+        endPoint.afterFill = () -> connectionRef[0].selected("h2");
+        ALPNClientConnection connection = newConnection(
+                endPoint,
+                connectionFactory,
+                new HashMap<>(),
+                List.of("h2", "http/1.1"));
+        connectionRef[0] = connection;
+
+        connection.onFillable();
+
+        assertThat(connection.getProtocol()).isEqualTo("h2");
+        assertThat(endPoint.fillCalls).isEqualTo(1);
+        assertThat(endPoint.fillInterestedCallbacks).isEmpty();
+        assertThat(connectionFactory.newConnectionCalls).isEqualTo(1);
+        assertThat(endPoint.upgradedConnection).isSameAs(negotiatedConnection);
+    }
+
+    @Test
     void onFillableFallsBackToDelegateConnectionWhenEndpointReachesEofBeforeSelection() throws Exception {
         RecordingEndPoint endPoint = new RecordingEndPoint();
         endPoint.fillResult = -1;
@@ -213,6 +237,7 @@ public class Jetty_alpn_clientTest {
         private long idleTimeout;
         private Connection connection;
         private Connection upgradedConnection;
+        private Runnable afterFill;
         private int fillCalls;
         private int flushCalls;
         private int fillResult;
@@ -263,6 +288,9 @@ public class Jetty_alpn_clientTest {
         @Override
         public int fill(ByteBuffer buffer) throws IOException {
             fillCalls++;
+            if (afterFill != null) {
+                afterFill.run();
+            }
             return fillResult;
         }
 
