@@ -28,6 +28,7 @@ import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.commons.CodeSizeEvaluator;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.commons.InstructionAdapter;
+import org.objectweb.asm.commons.JSRInlinerAdapter;
 import org.objectweb.asm.commons.LocalVariablesSorter;
 import org.objectweb.asm.commons.Method;
 import org.objectweb.asm.commons.SerialVersionUIDAdder;
@@ -243,6 +244,18 @@ public class Asm_commonsTest implements Opcodes {
                         "advice:enter:describe", "missing", "advice:exit:" + ATHROW, "advice:exit:" + ARETURN);
     }
 
+    @Test
+    void jsrInlinerAdapterRewritesFinallySubroutinesForNormalAndExceptionalPaths() {
+        byte[] inlinedClass = inlineJsrSubroutines(createClassWithJsrFinallyMethod());
+        MethodInstructionCollector collector = collectInstructions(inlinedClass, "choose");
+
+        assertThat(collector.opcodes).doesNotContain(JSR, RET);
+        assertThat(collector.methodCalls)
+                .filteredOn("184 sample/LegacyFinally.cleanup()V"::equals)
+                .hasSize(2);
+        assertThat(collector.constants).containsExactly("boom");
+    }
+
     private static byte[] createAnnotatedAbstractClass() {
         ClassWriter classWriter = new ClassWriter(0);
         classWriter.visit(
@@ -355,6 +368,74 @@ public class Asm_commonsTest implements Opcodes {
         return classWriter.toByteArray();
     }
 
+    private static byte[] createClassWithJsrFinallyMethod() {
+        ClassWriter classWriter = new ClassWriter(0);
+        classWriter.visit(V1_5, ACC_PUBLIC, "sample/LegacyFinally", null, "java/lang/Object", null);
+        MethodVisitor cleanup = classWriter.visitMethod(ACC_PRIVATE | ACC_STATIC, "cleanup", "()V", null, null);
+        cleanup.visitCode();
+        cleanup.visitInsn(RETURN);
+        cleanup.visitMaxs(0, 0);
+        cleanup.visitEnd();
+
+        MethodVisitor methodVisitor = classWriter.visitMethod(ACC_PUBLIC | ACC_STATIC, "choose", "(Z)I", null, null);
+        Label start = new Label();
+        Label noThrow = new Label();
+        Label end = new Label();
+        Label handler = new Label();
+        Label finallySubroutine = new Label();
+        methodVisitor.visitTryCatchBlock(start, end, handler, null);
+        methodVisitor.visitCode();
+        methodVisitor.visitLabel(start);
+        methodVisitor.visitVarInsn(ILOAD, 0);
+        methodVisitor.visitJumpInsn(IFEQ, noThrow);
+        methodVisitor.visitTypeInsn(NEW, "java/lang/IllegalStateException");
+        methodVisitor.visitInsn(DUP);
+        methodVisitor.visitLdcInsn("boom");
+        methodVisitor.visitMethodInsn(
+                INVOKESPECIAL,
+                "java/lang/IllegalStateException",
+                "<init>",
+                "(Ljava/lang/String;)V",
+                false);
+        methodVisitor.visitInsn(ATHROW);
+        methodVisitor.visitLabel(noThrow);
+        methodVisitor.visitIntInsn(BIPUSH, 7);
+        methodVisitor.visitVarInsn(ISTORE, 1);
+        methodVisitor.visitLabel(end);
+        methodVisitor.visitJumpInsn(JSR, finallySubroutine);
+        methodVisitor.visitVarInsn(ILOAD, 1);
+        methodVisitor.visitInsn(IRETURN);
+        methodVisitor.visitLabel(handler);
+        methodVisitor.visitVarInsn(ASTORE, 2);
+        methodVisitor.visitJumpInsn(JSR, finallySubroutine);
+        methodVisitor.visitVarInsn(ALOAD, 2);
+        methodVisitor.visitInsn(ATHROW);
+        methodVisitor.visitLabel(finallySubroutine);
+        methodVisitor.visitVarInsn(ASTORE, 3);
+        methodVisitor.visitMethodInsn(INVOKESTATIC, "sample/LegacyFinally", "cleanup", "()V", false);
+        methodVisitor.visitVarInsn(RET, 3);
+        methodVisitor.visitMaxs(3, 4);
+        methodVisitor.visitEnd();
+        classWriter.visitEnd();
+        return classWriter.toByteArray();
+    }
+
+    private static byte[] inlineJsrSubroutines(byte[] originalClass) {
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        new ClassReader(originalClass).accept(new ClassVisitor(ASM9, classWriter) {
+            @Override
+            public MethodVisitor visitMethod(
+                    int access, String name, String descriptor, String signature, String[] exceptions) {
+                MethodVisitor methodVisitor = super.visitMethod(access, name, descriptor, signature, exceptions);
+                if (!"choose".equals(name)) {
+                    return methodVisitor;
+                }
+                return new JSRInlinerAdapter(methodVisitor, access, name, descriptor, signature, exceptions);
+            }
+        }, 0);
+        return classWriter.toByteArray();
+    }
+
     private static void emitEmptyStaticInitializer(ClassVisitor classVisitor) {
         MethodVisitor methodVisitor = classVisitor.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
         methodVisitor.visitCode();
@@ -438,12 +519,28 @@ public class Asm_commonsTest implements Opcodes {
     private static final class MethodInstructionCollector extends MethodVisitor {
         private final List<String> methodCalls = new ArrayList<>();
         private final List<Object> constants = new ArrayList<>();
+        private final List<Integer> opcodes = new ArrayList<>();
         private int tableSwitchMin;
         private int tableSwitchMax;
         private int tableSwitchLabelCount;
 
         private MethodInstructionCollector() {
             super(ASM9);
+        }
+
+        @Override
+        public void visitInsn(int opcode) {
+            opcodes.add(opcode);
+        }
+
+        @Override
+        public void visitVarInsn(int opcode, int varIndex) {
+            opcodes.add(opcode);
+        }
+
+        @Override
+        public void visitJumpInsn(int opcode, Label label) {
+            opcodes.add(opcode);
         }
 
         @Override
