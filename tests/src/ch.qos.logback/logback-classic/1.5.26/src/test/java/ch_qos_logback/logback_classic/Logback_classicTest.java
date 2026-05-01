@@ -21,12 +21,14 @@ import ch.qos.logback.classic.AsyncAppender;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.encoder.JsonEncoder;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.filter.ThresholdFilter;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.OutputStreamAppender;
+import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.spi.BasicSequenceNumberGenerator;
 import org.junit.jupiter.api.AfterEach;
@@ -84,6 +86,34 @@ public class Logback_classicTest {
                 .contains("ERROR|formatting|SECURITY|request-42|login failed|java.lang.IllegalStateException: denied")
                 .contains("at ")
                 .doesNotContain("PARSER_ERROR");
+    }
+
+    @Test
+    void jsonEncoderWritesStructuredEventsWithMdcMarkersArgumentsAndKeyValuePairs() {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        JsonEncoder encoder = jsonEncoder();
+        OutputStreamAppender<ILoggingEvent> appender = outputStreamAppender("json", encoder, outputStream);
+        Logger logger = logger("json.structured", appender);
+        Marker marker = MarkerFactory.getMarker("AUDIT");
+
+        MDC.put("requestId", "request-99");
+        logger.atInfo()
+                .addMarker(marker)
+                .addKeyValue("operation", "checkout")
+                .addArgument("cart-7")
+                .log("processed {}");
+
+        String json = outputStream.toString(StandardCharsets.UTF_8);
+        assertThat(json)
+                .contains("\"level\":\"INFO\"")
+                .contains("\"loggerName\":\"json.structured\"")
+                .contains("\"markers\": [\"AUDIT\"]")
+                .contains("\"mdc\": {\"requestId\":\"request-99\"}")
+                .contains("\"kvpList\": [{\"operation\":\"checkout\"}]")
+                .contains("\"message\":\"processed {}\"")
+                .contains("\"formattedMessage\":\"processed cart-7\"")
+                .contains("\"arguments\": [\"cart-7\"]")
+                .contains("\"throwable\":null");
     }
 
     @Test
@@ -245,8 +275,21 @@ public class Logback_classicTest {
         return encoder;
     }
 
+    private JsonEncoder jsonEncoder() {
+        JsonEncoder encoder = new JsonEncoder();
+        encoder.setContext(context);
+        encoder.setWithTimestamp(false);
+        encoder.setWithNanoseconds(false);
+        encoder.setWithSequenceNumber(false);
+        encoder.setWithThreadName(false);
+        encoder.setWithContext(false);
+        encoder.setWithFormattedMessage(true);
+        encoder.start();
+        return encoder;
+    }
+
     private OutputStreamAppender<ILoggingEvent> outputStreamAppender(
-            String name, PatternLayoutEncoder encoder, ByteArrayOutputStream outputStream) {
+            String name, Encoder<ILoggingEvent> encoder, ByteArrayOutputStream outputStream) {
         OutputStreamAppender<ILoggingEvent> appender = new OutputStreamAppender<>();
         appender.setContext(context);
         appender.setName(name);
