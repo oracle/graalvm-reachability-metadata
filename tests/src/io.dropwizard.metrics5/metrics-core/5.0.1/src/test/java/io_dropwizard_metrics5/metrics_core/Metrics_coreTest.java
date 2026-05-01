@@ -69,7 +69,7 @@ public class Metrics_coreTest {
         MetricName serviceName = MetricName.build("service", "requests");
         MetricName taggedName = serviceName.tagged("env", "test", "region", "eu");
         MetricName resolvedName = MetricName.build("service").resolve("latency");
-        MetricName joinedName = MetricName.join(MetricName.build("root"), MetricName.build("child", "leaf"));
+        MetricName joinedName = MetricName.build("root").append(MetricName.build("child", "leaf"));
         TreeMap<MetricName, Integer> sortedNames = new TreeMap<>();
 
         sortedNames.put(MetricName.build("zeta"), 3);
@@ -317,7 +317,7 @@ public class Metrics_coreTest {
     @Test
     void consoleReporterRendersMetricsAndSkipsDisabledRateAttributes() {
         MetricRegistry registry = new MetricRegistry();
-        registry.register("reporting.gauge", (Gauge<Integer>) () -> 42);
+        registry.registerGauge("reporting.gauge", (Gauge<Integer>) () -> 42);
 
         Counter counter = registry.counter("reporting.counter");
         counter.inc(7);
@@ -362,7 +362,7 @@ public class Metrics_coreTest {
 
         Timer timer = registry.timer("csv.timer");
         timer.update(8, TimeUnit.MILLISECONDS);
-        registry.register("skip.gauge", (Gauge<Integer>) () -> 99);
+        registry.registerGauge("skip.gauge", (Gauge<Integer>) () -> 99);
 
         StepClock clock = new StepClock();
         clock.addNanos(TimeUnit.SECONDS.toNanos(123));
@@ -397,10 +397,10 @@ public class Metrics_coreTest {
                 + "m5_rate,m15_rate,rate_unit,duration_unit";
         assertThat(timerLines).hasSize(3).first().isEqualTo(timerHeader);
         assertThat(timerLines.get(1))
-                .startsWith("123,1,8000000,8.000000,8.000000,8.000000,0.000000,8.000000,8.000000")
+                .startsWith("123,1,8.000000,8.000000,8.000000,8.000000,0.000000,8.000000,8.000000")
                 .endsWith(",calls/second,milliseconds");
         assertThat(timerLines.get(2))
-                .startsWith("124,2,18000000,10.000000,9.000000,8.000000,1.000000,10.000000,10.000000")
+                .startsWith("124,2,18.000000,10.000000,9.000000,8.000000,1.000000,10.000000,10.000000")
                 .endsWith(",calls/second,milliseconds");
         assertThat(Files.exists(reportDirectory.resolve("skip.gauge.csv"))).isFalse();
         reporter.stop();
