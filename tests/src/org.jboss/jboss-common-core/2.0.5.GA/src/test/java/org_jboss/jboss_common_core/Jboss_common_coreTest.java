@@ -6,11 +6,95 @@
  */
 package org_jboss.jboss_common_core;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
-class Jboss_common_coreTest {
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+
+import org.jboss.util.Heap;
+import org.jboss.util.JBossStringBuilder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+public class Jboss_common_coreTest {
+    @TempDir
+    private Path temporaryDirectory;
+
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void jbossStringBuilderSupportsMutableCharSequenceOperations() {
+        JBossStringBuilder builder = new JBossStringBuilder("common");
+
+        builder.insert(0, "jboss-")
+                .append('-')
+                .append(2)
+                .append('.')
+                .append(0);
+        assertThat(builder.toString()).isEqualTo("jboss-common-2.0");
+        assertThat(builder.length()).isEqualTo(16);
+        assertThat(builder.charAt(6)).isEqualTo('c');
+        assertThat(builder.indexOf("common")).isEqualTo(6);
+        assertThat(builder.lastIndexOf("-")).isEqualTo(12);
+        assertThat(builder.substring(6, 12)).isEqualTo("common");
+        assertThat(builder.subSequence(0, 5).toString()).isEqualTo("jboss");
+
+        char[] copied = new char[6];
+        builder.getChars(6, 12, copied, 0);
+        assertThat(copied).containsExactly('c', 'o', 'm', 'm', 'o', 'n');
+
+        builder.replace(6, 12, "core");
+        assertThat(builder.toString()).isEqualTo("jboss-core-2.0");
+        builder.delete(10, 14).deleteCharAt(0).setCharAt(0, 'B');
+        assertThat(builder.toString()).isEqualTo("Boss-core");
+        builder.reverse();
+        assertThat(builder.toString()).isEqualTo("eroc-ssoB");
+    }
+
+    @Test
+    void heapOrdersNaturalAndComparatorBackedValues() {
+        Heap naturalHeap = new Heap();
+        naturalHeap.insert(5);
+        naturalHeap.insert(1);
+        naturalHeap.insert(3);
+        assertThat(naturalHeap.peek()).isEqualTo(1);
+        assertThat(naturalHeap.extract()).isEqualTo(1);
+        assertThat(naturalHeap.extract()).isEqualTo(3);
+        assertThat(naturalHeap.extract()).isEqualTo(5);
+        assertThat(naturalHeap.extract()).isNull();
+
+        Heap lengthHeap = new Heap(
+                (left, right) -> Integer.compare(((String) left).length(), ((String) right).length()));
+        lengthHeap.insert("longest");
+        lengthHeap.insert("mid");
+        lengthHeap.insert("s");
+        assertThat(lengthHeap.extract()).isEqualTo("s");
+        assertThat(lengthHeap.extract()).isEqualTo("mid");
+        lengthHeap.clear();
+        assertThat(lengthHeap.peek()).isNull();
+    }
+
+    @Test
+    void fileUtilitiesCopyEncodeDecodeAndDeleteTrees() throws Exception {
+        Path source = temporaryDirectory.resolve("source.txt");
+        Path copied = temporaryDirectory.resolve("nested").resolve("copied.txt");
+        java.nio.file.Files.write(source, "JBoss file utility copy".getBytes(StandardCharsets.UTF_8));
+
+        org.jboss.util.file.Files.copy(source.toUri().toURL(), copied.toFile());
+        assertThat(java.nio.file.Files.readString(copied)).isEqualTo("JBoss file utility copy");
+
+        Path copiedAgain = temporaryDirectory.resolve("copied-again.txt");
+        org.jboss.util.file.Files.copy(copied.toFile(), copiedAgain.toFile(), 4);
+        assertThat(java.nio.file.Files.readAllBytes(copiedAgain))
+                .isEqualTo(java.nio.file.Files.readAllBytes(source));
+
+        String originalName = "module:org.jboss/common core";
+        String encodedName = org.jboss.util.file.Files.encodeFileName(originalName, '#');
+        assertThat(encodedName).doesNotContain(":", "/", " ");
+        assertThat(org.jboss.util.file.Files.decodeFileName(encodedName, '#')).isEqualTo(originalName);
+
+        Path tree = temporaryDirectory.resolve("tree");
+        java.nio.file.Files.createDirectories(tree.resolve("child"));
+        java.nio.file.Files.writeString(tree.resolve("child").resolve("leaf.txt"), "leaf");
+        assertThat(org.jboss.util.file.Files.delete(tree.toFile())).isTrue();
+        assertThat(tree).doesNotExist();
     }
 }
