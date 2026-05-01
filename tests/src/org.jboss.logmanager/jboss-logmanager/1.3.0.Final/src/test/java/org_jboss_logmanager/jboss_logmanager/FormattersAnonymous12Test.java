@@ -25,6 +25,26 @@ public class FormattersAnonymous12Test {
         assertThat(formatted).contains("\tat " + className + ".invoke");
     }
 
+    @Test
+    void extendedExceptionFormattingFallsBackToDefaultClassLookupWhenThreadContextLoaderCannotLoadFrameClass() {
+        String className = FormattersAnonymous12Test.class.getName();
+        ClassLoader rejectingClassLoader = new RejectingClassLoader(className);
+
+        String formatted = formatWithTccl(rejectingClassLoader, newFailure(className));
+
+        assertThat(formatted).contains("\tat " + className + ".invoke");
+    }
+
+    @Test
+    void extendedExceptionFormattingAttemptsBootstrapLookupWhenOtherClassLookupsFail() {
+        String className = "missing.example.FrameClass";
+        ClassLoader rejectingClassLoader = new RejectingClassLoader(className);
+
+        String formatted = formatWithTccl(rejectingClassLoader, newFailure(className));
+
+        assertThat(formatted).contains("\tat " + className + ".invoke");
+    }
+
     private static String formatWithTccl(final ClassLoader contextClassLoader, final Throwable thrown) {
         ClassLoader originalTccl = Thread.currentThread().getContextClassLoader();
         try {
@@ -48,5 +68,22 @@ public class FormattersAnonymous12Test {
                 new StackTraceElement(className, "invoke", "GeneratedFrame.java", 17)
         });
         return failure;
+    }
+
+    private static final class RejectingClassLoader extends ClassLoader {
+        private final String rejectedClassName;
+
+        private RejectingClassLoader(final String rejectedClassName) {
+            super(FormattersAnonymous12Test.class.getClassLoader());
+            this.rejectedClassName = rejectedClassName;
+        }
+
+        @Override
+        protected Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
+            if (rejectedClassName.equals(name)) {
+                throw new ClassNotFoundException(name);
+            }
+            return super.loadClass(name, resolve);
+        }
     }
 }
