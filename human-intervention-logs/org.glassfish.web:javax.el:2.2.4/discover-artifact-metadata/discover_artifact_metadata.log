@@ -1,0 +1,1251 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de13a-89d8-7dd0-96de-51a1a777f572
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.glassfish.web:javax.el:2.2.4
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.2.4".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+- Set "coordinates" to "org.glassfish.web:javax.el:2.2.4".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven first, then fall back to the upstream GlassFish tag if Maven does not publish the exact source or tests artifact. After that I’ll update only the requested JSON file.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json && rg -n \"org.glassfish.web:javax.el|javax.el\" build/discovered-artifact-metadata metadata tests || true" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f
+{
+  "coordinates" : "org.glassfish.web:javax.el:2.2.4"
+}
+build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json:2:  "coordinates" : "org.glassfish.web:javax.el:2.2.4"
+metadata/javax.el/javax.el-api/3.0.0/reachability-metadata.json:5:        "typeReached" : "javax.el.BeanELResolver"
+metadata/javax.el/javax.el-api/3.0.0/reachability-metadata.json:11:        "typeReached" : "javax.el.ELProcessor"
+metadata/javax.el/javax.el-api/3.0.0/reachability-metadata.json:17:        "typeReached" : "javax.el.ELProcessor"
+metadata/javax.el/javax.el-api/3.0.0/reachability-metadata.json:23:        "typeReached" : "javax.el.ImportHandler"
+metadata/javax.el/javax.el-api/3.0.0/reachability-metadata.json:29:        "typeReached" : "javax.el.BeanELResolver"
+metadata/javax.el/javax.el-api/3.0.0/reachability-metadata.json:35:        "typeReached" : "javax.el.BeanELResolver"
+metadata/javax.el/javax.el-api/3.0.0/reachability-metadata.json:41:        "typeReached" : "javax.el.BeanELResolver"
+metadata/javax.el/javax.el-api/3.0.0/reachability-metadata.json:47:        "typeReached" : "javax.el.ELProcessor"
+metadata/javax.el/javax.el-api/3.0.0/reachability-metadata.json:53:        "typeReached" : "javax.el.ELProcessor"
+metadata/javax.el/javax.el-api/3.0.0/reachability-metadata.json:59:        "typeReached" : "javax.el.ImportHandler"
+metadata/javax.el/javax.el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0-sources.jar",
+metadata/javax.el/javax.el-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0-javadoc.jar",
+metadata/javax.el/javax.el-api/index.json:18:      "javax.el"
+metadata/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/reachability-metadata.json:5:        "typeReached" : "javax.el.BeanELResolver"
+metadata/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/reachability-metadata.json:11:        "typeReached" : "javax.el.Jre9Compat"
+metadata/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/reachability-metadata.json:29:        "typeReached" : "javax.el.Jre9Compat"
+metadata/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/reachability-metadata.json:43:        "typeReached" : "javax.el.BeanELResolver"
+metadata/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/reachability-metadata.json:49:        "typeReached" : "javax.el.BeanELResolver"
+metadata/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/reachability-metadata.json:55:        "typeReached" : "javax.el.BeanELResolver"
+metadata/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/reachability-metadata.json:85:        "typeReached" : "javax.el.Util"
+metadata/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/reachability-metadata.json:97:        "typeReached" : "javax.el.Jre9Compat"
+metadata/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/reachability-metadata.json:181:        "typeReached" : "javax.el.CompositeELResolver"
+metadata/org.apache.tomcat.embed/tomcat-embed-el/index.json:44:      "javax.el",
+metadata/javax.servlet.jsp/jsp-api/index.json:14:      "javax.el",
+metadata/javax.servlet.jsp/jsp-api/2.1/reachability-metadata.json:5:        "typeReached" : "javax.el.BeanELResolver$BeanProperties"
+metadata/javax.servlet.jsp/jsp-api/2.1/reachability-metadata.json:11:        "typeReached" : "javax.el.BeanELResolver$BeanProperties"
+metadata/javax.servlet.jsp/jsp-api/2.1/reachability-metadata.json:17:        "typeReached" : "javax.el.BeanELResolver$BeanProperties"
+metadata/javax.servlet.jsp/jsp-api/2.1/reachability-metadata.json:23:        "typeReached" : "javax.el.BeanELResolver$BeanProperties"
+tests/src/javax.el/javax.el-api/3.0.0/build.gradle:14:    testImplementation "javax.el:javax.el-api:$libraryVersion"
+tests/src/javax.el/javax.el-api/3.0.0/settings.gradle:20:rootProject.name = 'javax.el.javax.el-api_tests'
+tests/src/javax.el/javax.el-api/3.0.0/user-code-filter.json:7:      "includeClasses" : "javax.el.**"
+tests/src/javax.el/javax.el-api/3.0.0/gradle.properties:4:library.coordinates = javax.el:javax.el-api:3.0.0
+tests/src/javax.el/javax.el-api/3.0.0/gradle.properties:6:metadata.dir = javax.el/javax.el-api/3.0.0/
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/services/javax.el.ExpressionFactory:1:javax_el.javax_el_api.FactoryFinderTest$ServiceExpressionFactory
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/StaticFieldELResolverTest.java:7:package javax_el.javax_el_api;
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/StaticFieldELResolverTest.java:9:import javax.el.ELClass;
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/StaticFieldELResolverTest.java:10:import javax.el.ELContext;
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/StaticFieldELResolverTest.java:11:import javax.el.ELManager;
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/StaticFieldELResolverTest.java:12:import javax.el.StaticFieldELResolver;
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/BeanELResolverTest.java:7:package javax_el.javax_el_api;
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/BeanELResolverTest.java:9:import javax.el.BeanELResolver;
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/BeanELResolverTest.java:10:import javax.el.ELContext;
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/BeanELResolverTest.java:11:import javax.el.ELManager;
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/FactoryFinderTest.java:7:package javax_el.javax_el_api;
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/FactoryFinderTest.java:11:import javax.el.ELContext;
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/FactoryFinderTest.java:12:import javax.el.ExpressionFactory;
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/FactoryFinderTest.java:13:import javax.el.MethodExpression;
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/FactoryFinderTest.java:14:import javax.el.ValueExpression;
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/FactoryFinderTest.java:22:    private static final String EXPRESSION_FACTORY_PROPERTY = "javax.el.ExpressionFactory";
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/FactoryFinderTest.java:58:        properties.setProperty("javax.el.cacheSize", "32");
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/FactoryFinderTest.java:66:        assertThat(serviceExpressionFactory.getProperties()).containsEntry("javax.el.cacheSize", "32");
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/ImportHandlerTest.java:7:package javax_el.javax_el_api;
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/ImportHandlerTest.java:11:import javax.el.ImportHandler;
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:5:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:7:      "type" : "javax_el.javax_el_api.BeanELResolverTest$InheritedNameBean"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:11:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:13:      "type" : "javax_el.javax_el_api.BeanELResolverTest$InheritedNameBeanBeanInfo"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:17:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:19:      "type" : "javax_el.javax_el_api.BeanELResolverTest$InheritedNameBeanCustomizer"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:23:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:25:      "type" : "javax_el.javax_el_api.BeanELResolverTest$InterfaceBackedBean"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:29:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:31:      "type" : "javax_el.javax_el_api.BeanELResolverTest$InterfaceBackedBeanBeanInfo"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:35:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:37:      "type" : "javax_el.javax_el_api.BeanELResolverTest$InterfaceBackedBeanCustomizer"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:41:        "typeReached" : "javax.el.ELUtil"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:43:      "type" : "javax_el.javax_el_api.BeanELResolverTest$MethodTarget",
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:55:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:57:      "type" : "javax_el.javax_el_api.BeanELResolverTest$NameContract",
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:73:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:75:      "type" : "javax_el.javax_el_api.BeanELResolverTest$PublicNameBase"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:79:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:81:      "type" : "javax_el.javax_el_api.BeanELResolverTest$PublicNameBaseBeanInfo"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:85:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:87:      "type" : "javax_el.javax_el_api.BeanELResolverTest$PublicNameBaseCustomizer"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:91:        "typeReached" : "javax.el.ELProcessor"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:93:      "type" : "javax_el.javax_el_api.ELProcessorTest$FunctionLibrary"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:97:        "typeReached" : "javax.el.ExpressionFactory"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:99:      "type" : "javax_el.javax_el_api.FactoryFinderTest$ServiceExpressionFactory",
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:109:        "typeReached" : "javax.el.FactoryFinder"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:111:      "type" : "javax_el.javax_el_api.FactoryFinderTest$ServiceExpressionFactory"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:115:        "typeReached" : "javax.el.ELUtil"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:117:      "type" : "javax_el.javax_el_api.StaticFieldELResolverTest$ConstructorTarget",
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:129:        "typeReached" : "javax.el.StaticFieldELResolver"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:131:      "type" : "javax_el.javax_el_api.StaticFieldELResolverTest$StaticFieldTarget",
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:142:        "typeReached" : "javax.el.FactoryFinder"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:144:      "glob" : "META-INF/services/javax.el.ExpressionFactory"
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/ELProcessorTest.java:7:package javax_el.javax_el_api;
+tests/src/javax.el/javax.el-api/3.0.0/src/test/java/javax_el/javax_el_api/ELProcessorTest.java:11:import javax.el.ELProcessor;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/user-code-filter.json:7:      "includeClasses" : "javax.el.**"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:5:        "typeReached" : "javax.el.ImportHandler"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:16:        "typeReached" : "javax.el.ImportHandler"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:30:        "typeReached" : "javax.el.Util"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:44:        "typeReached" : "javax.el.StaticFieldELResolver"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:55:        "typeReached" : "javax.el.Util"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:69:        "typeReached" : "javax.el.Util"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:84:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:90:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:96:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:102:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:108:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:114:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:120:        "typeReached" : "javax.el.Util"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:134:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:152:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:158:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:164:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:170:        "typeReached" : "javax.el.ELProcessor"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:191:        "typeReached" : "javax.el.ELManager"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:223:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:237:        "typeReached" : "javax.el.BeanELResolver$BeanProperty"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:243:        "typeReached" : "javax.el.ELProcessor"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:261:        "typeReached" : "javax.el.ExpressionFactory"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:279:        "typeReached" : "javax.el.ExpressionFactory"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:285:        "typeReached" : "javax.el.StaticFieldELResolver"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:291:        "typeReached" : "javax.el.StaticFieldELResolver"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:306:        "typeReached" : "javax.el.StaticFieldELResolver"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:320:        "typeReached" : "javax.el.Util"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:326:        "typeReached" : "javax.el.StaticFieldELResolver"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:342:        "typeReached" : "javax.el.ExpressionFactory"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/resources/META-INF/native-image/reachability-metadata.json:344:      "glob" : "META-INF/services/javax.el.ExpressionFactory"
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/ImportHandlerTest.java:9:import javax.el.ImportHandler;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/AstFunctionTest.java:9:import javax.el.ELContext;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/AstFunctionTest.java:10:import javax.el.ELManager;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/AstFunctionTest.java:11:import javax.el.ELProcessor;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/AstFunctionTest.java:12:import javax.el.ValueExpression;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/JavaxElExpressionFactoryTest.java:11:import javax.el.ELContext;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/JavaxElExpressionFactoryTest.java:12:import javax.el.ExpressionFactory;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/JavaxElExpressionFactoryTest.java:13:import javax.el.MethodExpression;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/JavaxElExpressionFactoryTest.java:14:import javax.el.ValueExpression;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/JavaxElExpressionFactoryTest.java:22:    private static final String EXPRESSION_FACTORY_PROPERTY = "javax.el.ExpressionFactory";
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/JavaxElExpressionFactoryTest.java:57:        properties.setProperty("javax.el.cacheSize", "32");
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/JavaxElExpressionFactoryTest.java:65:        assertThat(serviceExpressionFactory.getProperties()).containsEntry("javax.el.cacheSize", "32");
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/ReflectionUtilTest.java:11:import javax.el.MethodNotFoundException;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/AstValueTest.java:9:import javax.el.ELContext;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/AstValueTest.java:10:import javax.el.ELManager;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/AstValueTest.java:11:import javax.el.MethodExpression;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/ELProcessorTest.java:11:import javax.el.ELProcessor;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/BeanELResolverTest.java:9:import javax.el.BeanELResolver;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/BeanELResolverTest.java:10:import javax.el.ELContext;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/BeanELResolverTest.java:11:import javax.el.ELManager;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/AstIdentifierTest.java:9:import javax.el.ELContext;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/AstIdentifierTest.java:10:import javax.el.ELManager;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/AstIdentifierTest.java:11:import javax.el.ValueExpression;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/JavaxElUtilTest.java:9:import javax.el.ELClass;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/JavaxElUtilTest.java:10:import javax.el.ELContext;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/JavaxElUtilTest.java:11:import javax.el.ELManager;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/JavaxElUtilTest.java:12:import javax.el.StaticFieldELResolver;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/StaticFieldELResolverTest.java:9:import javax.el.ELClass;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/StaticFieldELResolverTest.java:10:import javax.el.ELContext;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/StaticFieldELResolverTest.java:11:import javax.el.ELManager;
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/src/test/java/org_apache_tomcat_embed/tomcat_embed_el/StaticFieldELResolverTest.java:12:import javax.el.StaticFieldELResolver;
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:5:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:11:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:17:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:23:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:29:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:35:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:41:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:59:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:77:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:83:        "typeReached" : "javax.el.BeanELResolver"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:89:        "typeReached" : "javax.el.BeanELResolver$BeanProperties"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:95:        "typeReached" : "javax.el.BeanELResolver$BeanProperties"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:101:        "typeReached" : "javax.el.BeanELResolver$BeanProperties"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:107:        "typeReached" : "javax.el.BeanELResolver$BeanProperties"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:113:        "typeReached" : "javax.el.BeanELResolver$BeanProperties"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:119:        "typeReached" : "javax.el.BeanELResolver$BeanProperties"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:125:        "typeReached" : "javax.el.BeanELResolver$BeanProperties"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:131:        "typeReached" : "javax.el.BeanELResolver$BeanProperties"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:137:        "typeReached" : "javax.el.BeanELResolver$BeanProperties"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/resources/META-INF/native-image/reachability-metadata.json:143:        "typeReached" : "javax.el.BeanELResolver$BeanProperties"
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/java/javax_servlet_jsp/jsp_api/BeanELResolverTest.java:9:import javax.el.BeanELResolver;
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/java/javax_servlet_jsp/jsp_api/BeanELResolverTest.java:10:import javax.el.ELContext;
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/java/javax_servlet_jsp/jsp_api/BeanELResolverTest.java:11:import javax.el.ELResolver;
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/java/javax_servlet_jsp/jsp_api/BeanELResolverTest.java:12:import javax.el.FunctionMapper;
+tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/java/javax_servlet_jsp/jsp_api/BeanELResolverTest.java:13:import javax.el.VariableMapper;
+tests/src/javax.servlet.jsp/jsp-api/2.1/user-code-filter.json:7:      "includeClasses" : "javax.el.**"
+
+web search: 
+web search: Maven Central org.glassfish.web javax.el 2.2.4 sources javadoc tests
+web search: 
+web search: https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/
+web search: 
+web search: 
+web search: 
+web search: 
+codex
+Maven Central publishes both the 2.2.4 sources jar and javadoc jar for this artifact, but I don’t see a test jar in the directory listing. I’m checking the POM and upstream tags now to avoid guessing the repository and test-suite locations.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4.pom' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+    Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+
+    The contents of this file are subject to the terms of either the GNU
+    General Public License Version 2 only ("GPL") or the Common Development
+    and Distribution License("CDDL") (collectively, the "License").  You
+    may not use this file except in compliance with the License.  You can
+    obtain a copy of the License at
+    https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+    or packager/legal/LICENSE.txt.  See the License for the specific
+    language governing permissions and limitations under the License.
+
+    When distributing the software, include this License Header Notice in each
+    file and include the License file at packager/legal/LICENSE.txt.
+
+    GPL Classpath Exception:
+    Oracle designates this particular file as subject to the "Classpath"
+    exception as provided by Oracle in the GPL Version 2 section of the License
+    file that accompanied this code.
+
+    Modifications:
+    If applicable, add the following below the License Header, with the fields
+    enclosed by brackets [] replaced by your own identifying information:
+    "Portions Copyright [year] [name of copyright owner]"
+
+    Contributor(s):
+    If you wish your version of this file to be governed by only the CDDL or
+    only the GPL Version 2, indicate your decision by adding "[Contributor]
+    elects to include this software in this distribution under the [CDDL or GPL
+    Version 2] license."  If you don't indicate a single choice of license, a
+    recipient has the option to distribute your version of this file under
+    either the CDDL, the GPL Version 2 or to extend the choice of license to
+    its licensees as provided above.  However, if you add GPL Version 2 code
+    and therefore, elected the GPL Version 2 license, then the option applies
+    only if the new code is made subject to such option by the copyright
+    holder.
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>net.java</groupId>
+        <artifactId>jvnet-parent</artifactId>
+        <version>1</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.glassfish.web</groupId>
+    <artifactId>javax.el</artifactId>
+    <version>2.2.4</version>
+    <packaging>jar</packaging>
+    <name>Expression Language 2.2 Implementation</name>
+
+    <url>http://uel.java.net</url>
+    <organization>
+        <name>GlassFish Community</name>
+        <url>http://glassfish.org</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>CDDL + GPLv2 with classpath exception</name>
+            <url>http://glassfish.dev.java.net/nonav/public/CDDL+GPL.html</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+    <issueManagement>
+        <system>jira</system>
+        <url>http://java.net/jira/browse/UEL</url>
+    </issueManagement>
+    <mailingLists>
+        <mailingList>
+            <name>EL Developer</name>
+            <archive>dev@uel.java.net</archive>
+        </mailingList>
+    </mailingLists>
+    <scm>
+        <connection>scm:svn:https://svn.java.net/svn/uel~svn/tags/javax.el-2.2.4</connection>
+        <developerConnection>scm:svn:https://svn.java.net/svn/uel~svn/tags/javax.el-2.2.4</developerConnection>
+        <url>http://java.net/projects/uel/sources/svn/show/tags/javax.el-2.2.4</url>
+    </scm>
+
+    <properties>
+        <spec.version>2.2</spec.version>
+        <extensionName>javax.el</extensionName>
+        <bundle.symbolicName>org.glassfish.web.javax.el</bundle.symbolicName>
+        <vendorName>Oracle Corporation</vendorName>
+        <findbugs.version>2.4.0</findbugs.version>
+        <findbugs.exclude>${project.basedir}/exclude.xml</findbugs.exclude>
+        <findbugs.threshold>High</findbugs.threshold>
+    </properties>
+
+    <developers>
+        <developer>
+            <id>kchung</id>
+            <name>Kin-man Chung</name>
+            <url>http://blogs.sun.com/kchung/</url>
+            <organization>Sun Microsystems, Inc.</organization>
+            <roles>
+                <role>lead</role>
+            </roles>
+        </developer>
+    </developers>  
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>
+                            ${project.build.outputDirectory}/META-INF/MANIFEST.MF
+                        </manifestFile>
+                        <manifestEntries>
+                            <Extension-Name>${extensionName}</Extension-Name>
+                            <!--Specification-Title>${specificationTitle}</Specification-Title-->
+                            <Specification-Version>${spec.version}</Specification-Version>
+                            <Specification-Vendor>${vendorName}</Specification-Vendor>
+                            <!--Implementation-Title>${implementationTitle}</Implementation-Title-->
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Vendor>${vendorName}</Implementation-Vendor>
+                            <!--Implementation-Vendor-Id>com.sun</Implementation-Vendor-Id-->
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!-- Configure maven-bundle-plugin to generate OSGi manifest.
+                 Please note: we use the manifest goal only and not the bundle goal.
+                  The bundle goal can lead to very surprising results if the
+                  package names are not correctly specified. So,
+                  we use the jar plugin to generate the jar.-->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>1.4.3</version>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+                        <Export-Package>
+                            com.sun.el
+                        </Export-Package>
+                        <Private-Package>
+                            com.sun.el.lang,
+                            com.sun.el.parser,
+                            com.sun.el.util
+                        </Private-Package>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.6</source>
+                        <target>1.6</target>
+                        <compilerArgument>-Xlint:unchecked</compilerArgument>
+                    </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version> 2.1 </version>
+                <configuration>
+                    <includePom>true</includePom>
+                </configuration>
+                <executions>
+                    <execution>
+                       <id>attach-sources</id>
+                       <goals>
+                           <goal>jar-no-fork</goal>
+                       </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        <configuration>
+                            <groups>
+                                <group>
+                                    <title>Expresion Language API Documentation</title>
+                                    <packages>javax.el</packages>
+                                </group>
+                            </groups>
+                            <bottom> Copyright (c) 1999-2011 Oracle and/or its affiliates. All Rights Reserved. Use is subject to license terms. </bottom>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>${findbugs.version}</version>
+                <configuration>
+                    <threshold>${findbugs.threshold}</threshold>
+                    <excludeFilterFile>${findbugs.exclude}</excludeFilterFile>
+                    <findbugsXmlOutput>true</findbugsXmlOutput>
+                    <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>                           
+                <artifactId>maven-release-plugin</artifactId>                         
+                <configuration>                                                       
+                    <mavenExecutorId>forked-path</mavenExecutorId>                
+                    <useReleaseProfile>false</useReleaseProfile>                  
+                    <arguments>${release.arguments}</arguments>
+                </configuration>                                                      
+            </plugin>                    
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>${findbugs.version}</version>
+                <configuration>
+                    <threshold>${findbugs.threshold}</threshold>
+                    <excludeFilterFile>${findbugs.exclude}</excludeFilterFile>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <repositories>
+        <repository>
+            <id>jvnet-nexus-release</id>
+            <url>https://maven.java.net/content/repositories/releases</url>
+            <snapshots>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+            <version>2.2.4</version>
+        </dependency>
+    </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/glassfish/web/javax.el/2.2.4</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/glassfish/web/javax.el/2.2.4</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="javax.el-2.2.4-javadoc.jar" title="javax.el-2.2.4-javadoc.jar">javax.el-2.2.4-javadoc.jar</a>                        2012-07-10 17:30    402480      
+<a href="javax.el-2.2.4-javadoc.jar.asc" title="javax.el-2.2.4-javadoc.jar.asc">javax.el-2.2.4-javadoc.jar.asc</a>                    2012-07-10 17:30       485      
+<a href="javax.el-2.2.4-javadoc.jar.asc.md5" title="javax.el-2.2.4-javadoc.jar.asc.md5">javax.el-2.2.4-javadoc.jar.asc.md5</a>                2012-07-10 17:30        32      
+<a href="javax.el-2.2.4-javadoc.jar.asc.sha1" title="javax.el-2.2.4-javadoc.jar.asc.sha1">javax.el-2.2.4-javadoc.jar.asc.sha1</a>               2012-07-10 17:30        40      
+<a href="javax.el-2.2.4-javadoc.jar.md5" title="javax.el-2.2.4-javadoc.jar.md5">javax.el-2.2.4-javadoc.jar.md5</a>                    2012-07-10 17:30        32      
+<a href="javax.el-2.2.4-javadoc.jar.sha1" title="javax.el-2.2.4-javadoc.jar.sha1">javax.el-2.2.4-javadoc.jar.sha1</a>                   2012-07-10 17:30        40      
+<a href="javax.el-2.2.4-sources.jar" title="javax.el-2.2.4-sources.jar">javax.el-2.2.4-sources.jar</a>                        2012-07-10 17:30    135184      
+<a href="javax.el-2.2.4-sources.jar.asc" title="javax.el-2.2.4-sources.jar.asc">javax.el-2.2.4-sources.jar.asc</a>                    2012-07-10 17:30       485      
+<a href="javax.el-2.2.4-sources.jar.asc.md5" title="javax.el-2.2.4-sources.jar.asc.md5">javax.el-2.2.4-sources.jar.asc.md5</a>                2012-07-10 17:30        32      
+<a href="javax.el-2.2.4-sources.jar.asc.sha1" title="javax.el-2.2.4-sources.jar.asc.sha1">javax.el-2.2.4-sources.jar.asc.sha1</a>               2012-07-10 17:30        40      
+<a href="javax.el-2.2.4-sources.jar.md5" title="javax.el-2.2.4-sources.jar.md5">javax.el-2.2.4-sources.jar.md5</a>                    2012-07-10 17:30        32      
+<a href="javax.el-2.2.4-sources.jar.sha1" title="javax.el-2.2.4-sources.jar.sha1">javax.el-2.2.4-sources.jar.sha1</a>                   2012-07-10 17:30        40      
+<a href="javax.el-2.2.4.jar" title="javax.el-2.2.4.jar">javax.el-2.2.4.jar</a>                                2012-07-10 17:30    117583      
+<a href="javax.el-2.2.4.jar.asc" title="javax.el-2.2.4.jar.asc">javax.el-2.2.4.jar.asc</a>                            2012-07-10 17:30       485      
+<a href="javax.el-2.2.4.jar.asc.md5" title="javax.el-2.2.4.jar.asc.md5">javax.el-2.2.4.jar.asc.md5</a>                        2012-07-10 17:30        32      
+<a href="javax.el-2.2.4.jar.asc.sha1" title="javax.el-2.2.4.jar.asc.sha1">javax.el-2.2.4.jar.asc.sha1</a>                       2012-07-10 17:30        40      
+<a href="javax.el-2.2.4.jar.md5" title="javax.el-2.2.4.jar.md5">javax.el-2.2.4.jar.md5</a>                            2012-07-10 17:30        32      
+<a href="javax.el-2.2.4.jar.sha1" title="javax.el-2.2.4.jar.sha1">javax.el-2.2.4.jar.sha1</a>                           2012-07-10 17:30        40      
+<a href="javax.el-2.2.4.pom" title="javax.el-2.2.4.pom">javax.el-2.2.4.pom</a>                                2012-07-10 17:30     11702      
+<a href="javax.el-2.2.4.pom.asc" title="javax.el-2.2.4.pom.asc">javax.el-2.2.4.pom.asc</a>                            2012-07-10 17:30       485      
+<a href="javax.el-2.2.4.pom.asc.md5" title="javax.el-2.2.4.pom.asc.md5">javax.el-2.2.4.pom.asc.md5</a>                        2012-07-10 17:30        32      
+<a href="javax.el-2.2.4.pom.asc.sha1" title="javax.el-2.2.4.pom.asc.sha1">javax.el-2.2.4.pom.asc.sha1</a>                       2012-07-10 17:30        40      
+<a href="javax.el-2.2.4.pom.md5" title="javax.el-2.2.4.pom.md5">javax.el-2.2.4.pom.md5</a>                            2012-07-10 17:30        32      
+<a href="javax.el-2.2.4.pom.sha1" title="javax.el-2.2.4.pom.sha1">javax.el-2.2.4.pom.sha1</a>                           2012-07-10 17:30        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|test-code-url|documentation-url|repository-url|description|language' metadata/*/*/index.json | head -80" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f
+ succeeded in 0ms:
+metadata/aopalliance/aopalliance/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar",
+metadata/aopalliance/aopalliance/index.json:6:    "repository-url" : "https://sourceforge.net/p/aopalliance/code/",
+metadata/aopalliance/aopalliance/index.json:7:    "test-code-url" : "N/A",
+metadata/aopalliance/aopalliance/index.json:8:    "documentation-url" : "https://sourceforge.net/projects/aopalliance/files/aopalliance/1.0/aopalliance.zip/download",
+metadata/aopalliance/aopalliance/index.json:9:    "description" : "AOP Alliance defines a small set of standard Java interfaces for aspect-oriented programming, especially method and constructor interception. Libraries use these interfaces to expose portable advice and interceptor contracts without depending on a particular AOP implementation.",
+metadata/com.baomidou/mybatis-plus/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/baomidou/mybatis-plus/3.5.3/mybatis-plus-3.5.3-sources.jar",
+metadata/com.baomidou/mybatis-plus/index.json:6:    "repository-url" : "https://github.com/baomidou/mybatis-plus",
+metadata/com.baomidou/mybatis-plus/index.json:7:    "test-code-url" : "https://github.com/baomidou/mybatis-plus/tree/v3.5.3/mybatis-plus/src/test",
+metadata/com.baomidou/mybatis-plus/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/baomidou/mybatis-plus/3.5.3/mybatis-plus-3.5.3-javadoc.jar",
+metadata/com.baomidou/mybatis-plus/index.json:9:    "description" : "MyBatis-Plus is an enhancement toolkit for MyBatis that reduces boilerplate for CRUD operations, query construction, and mapper development. It adds wrappers, pagination, service utilities, and related extensions to speed up database application development.",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "repository-url": "https://github.com/ben-manes/caffeine/tree/v3.1.2",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:9:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:11:    "description": "Caffeine is a high-performance Java caching library that provides an in-memory cache with a Guava-inspired API. It supports automatic loading, size-based eviction, time-based expiration, refresh, reference-based entries, removal notifications, and cache statistics.",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:32:    "repository-url": "https://github.com/ben-manes/caffeine/tree/v2.9.3",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:34:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:35:    "description": "Caffeine is a high-performance Java caching library that provides an in-memory cache with a Guava-inspired API. It supports automatic loading, size-based eviction, time-based expiration, refresh, reference-based entries, removal notifications, and cache statistics.",
+metadata/com.google.code.findbugs/annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/findbugs/annotations/3.0.1u2/annotations-3.0.1u2-sources.jar",
+metadata/com.google.code.findbugs/annotations/index.json:6:    "repository-url" : "https://github.com/findbugsproject/findbugs/",
+metadata/com.google.code.findbugs/annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.code.findbugs/annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/findbugs/annotations/3.0.1u2/annotations-3.0.1u2-javadoc.jar",
+metadata/com.google.code.findbugs/annotations/index.json:9:    "description" : "FindBugs Annotations provides Java annotation types that let developers declare nullability, threading, and other static-analysis contracts in source code. These annotations are consumed by FindBugs-compatible tooling to detect likely defects without changing runtime behavior.",
+metadata/com.graphql-java/graphql-java/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/19.2/graphql-java-19.2-sources.jar",
+metadata/com.graphql-java/graphql-java/index.json:9:    "repository-url": "https://github.com/graphql-java/graphql-java",
+metadata/com.graphql-java/graphql-java/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java/tree/v19.2/src/test",
+metadata/com.graphql-java/graphql-java/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/19.2/graphql-java-19.2-javadoc.jar",
+metadata/com.graphql-java/graphql-java/index.json:12:    "description": "GraphQL Java is a Java implementation of GraphQL. It provides APIs to define a schema and execute GraphQL queries against it.",
+metadata/com.mchange/mchange-commons-java/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/mchange-commons-java/0.2.15/mchange-commons-java-0.2.15-sources.jar",
+metadata/com.mchange/mchange-commons-java/index.json:6:    "repository-url" : "https://github.com/swaldman/mchange-commons-java",
+metadata/com.mchange/mchange-commons-java/index.json:7:    "test-code-url" : "https://github.com/swaldman/mchange-commons-java/tree/mchange-commons-java-0.2.15/src/test",
+metadata/com.mchange/mchange-commons-java/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/mchange-commons-java/0.2.15/mchange-commons-java-0.2.15-javadoc.jar",
+metadata/com.mchange/mchange-commons-java/index.json:9:    "description" : "mchange-commons-java is a general-purpose Java utility library that provides reusable support code for configuration, concurrency, I/O, logging, reflection, SQL, and related infrastructure tasks. It supplies low-level helper components used across mchange projects rather than a standalone end-user framework.",
+metadata/com.atomikos/transactions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/atomikos/transactions/6.0.0/transactions-6.0.0-sources.jar",
+metadata/com.atomikos/transactions/index.json:6:    "repository-url" : "https://atomikos.repositoryhosting.com/hg/atomikos/development/file/6.0.0",
+metadata/com.atomikos/transactions/index.json:7:    "test-code-url" : "https://atomikos.repositoryhosting.com/hg/atomikos/development/file/6.0.0/public/transactions/src/test",
+metadata/com.atomikos/transactions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/atomikos/transactions/6.0.0/transactions-6.0.0-javadoc.jar",
+metadata/com.atomikos/transactions/index.json:9:    "description" : "Atomikos Transactions Core provides the core transaction manager and two-phase commit coordination classes used for distributed transactions. It also includes recovery and log persistence components for durable transaction state and crash recovery.",
+metadata/com.vaadin.external.google/android-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1-sources.jar",
+metadata/com.vaadin.external.google/android-json/index.json:6:    "repository-url" : "http://developer.android.com/sdk/",
+metadata/com.vaadin.external.google/android-json/index.json:7:    "test-code-url" : "N/A",
+metadata/com.vaadin.external.google/android-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1-javadoc.jar",
+metadata/com.vaadin.external.google/android-json/index.json:9:    "description" : "This artifact provides the org.json-compatible JSON implementation extracted from the Android SDK for Java applications. It offers core classes such as JSONObject and JSONArray for parsing, generating, and manipulating JSON data.",
+metadata/info.picocli/picocli/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-sources.jar",
+metadata/info.picocli/picocli/index.json:6:    "repository-url" : "https://github.com/remkop/picocli",
+metadata/info.picocli/picocli/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-test-sources.jar",
+metadata/info.picocli/picocli/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-javadoc.jar",
+metadata/info.picocli/picocli/index.json:9:    "description" : "Picocli is a Java command line parser for building command line applications with annotation-based and programmatic APIs. It generates usage help with ANSI colors, supports nested subcommands and autocomplete, and can be embedded as source or used as a dependency.",
+metadata/com.fasterxml/classmate/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/classmate/1.5.1/classmate-1.5.1-sources.jar",
+metadata/com.fasterxml/classmate/index.json:6:    "repository-url" : "https://github.com/FasterXML/java-classmate",
+metadata/com.fasterxml/classmate/index.json:7:    "test-code-url" : "https://github.com/FasterXML/java-classmate/tree/classmate-1.5.1/src/test",
+metadata/com.fasterxml/classmate/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/classmate/1.5.1/classmate-1.5.1-javadoc.jar",
+metadata/com.fasterxml/classmate/index.json:20:    "description" : "ClassMate is a Java library for introspecting types with full generic information, including resolved field and method types. It is especially useful for POJO and bean introspection."
+metadata/com.google.cloud.tools/jib-build-plan/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/cloud/tools/jib-build-plan/0.4.0/jib-build-plan-0.4.0-sources.jar",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:7:    "repository-url": "https://github.com/GoogleContainerTools/jib",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:8:    "test-code-url": "https://github.com/GoogleContainerTools/jib/tree/v0.4.0-build-plan/jib-build-plan/src/test",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:9:    "documentation-url": "https://javadoc.io/doc/com.google.cloud.tools/jib-build-plan/0.4.0",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-gson/0.12.0/jjwt-gson-0.12.0-sources.jar",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:6:    "repository-url" : "https://github.com/jwtk/jjwt",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:7:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/0.12.0/extensions/gson/src/test",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:8:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/0.12.0/README.md",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:9:    "description" : "Provides Gson-based JSON serialization and deserialization support for the JJWT library. When present on the runtime classpath, it lets JJWT automatically use Gson to process JWT headers and claims.",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-gson/0.11.5/jjwt-gson-0.11.5-sources.jar",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:26:    "repository-url" : "https://github.com/jwtk/jjwt",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:27:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/0.11.5/extensions/gson/src/test",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:28:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/0.11.5/README.md",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:29:    "description" : "Provides Gson-based JSON serialization and deserialization support for the JJWT library. When present on the runtime classpath, it lets JJWT automatically use Gson to process JWT headers and claims.",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/19.1/graphql-java-extended-validation-19.1-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:9:    "repository-url": "https://github.com/graphql-java/graphql-java-extended-validation",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java-extended-validation/tree/v19.1/src/test",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/19.1/graphql-java-extended-validation-19.1-javadoc.jar",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:12:    "description": "This library adds extended validation for fields, arguments, and input values in graphql-java schemas. It provides directive-based constraints and validation rules that enforce allowable values during GraphQL execution.",
+metadata/io.netty/netty-resolver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver/5.0.0.Alpha2/netty-resolver-5.0.0.Alpha2-sources.jar",
+metadata/io.netty/netty-resolver/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.netty/netty-resolver/index.json:7:    "test-code-url" : "N/A",
+metadata/io.netty/netty-resolver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver/5.0.0.Alpha2/netty-resolver-5.0.0.Alpha2-javadoc.jar",
+metadata/io.netty/netty-resolver/index.json:9:    "description" : "Netty Resolver provides asynchronous name resolution abstractions used by Netty networking components. It supplies resolver groups and default or no-op InetSocketAddress resolvers that integrate with Netty's Future and EventExecutor APIs.",
+metadata/io.netty/netty-resolver/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver/4.1.79.Final/netty-resolver-4.1.79.Final-sources.jar",
+
+web search: 
+web search: "javax.el-2.2.4" GitHub
+web search: 
+web search: GlassFish Expression Language implementation repository uel.java.net migrated github
+web search: 
+web search: "uel.java.net" "github.com" "javax.el"
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/javaee/uel-ri.git | sed -n '1,160p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f
+exec
+/usr/bin/bash -lc "git ls-remote --heads https://github.com/javaee/uel-ri.git | sed -n '1,80p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/javaee/uel-ri/master/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f
+ succeeded in 278ms:
+88f3d6ab72d8d4bbf5a113638a0f888d4824f6e4	refs/tags/2.1.2-b02
+70710b03c2e97d9b5d1284f06f7e08b3ca3379a2	refs/tags/2.1.2-b03
+008d21ba79f74548060f589b4fd83fdfa3815f91	refs/tags/2.1.2-b04
+0e025db4a7ae80f527fe6fcfbd5fd34c4efd7370	refs/tags/2.1.2-b05
+7caad837a21bed42cd4780a9f96defe28ef8fc19	refs/tags/2.2
+fc9bb5e1ee121df2a29a7a624916c3c05c819de8	refs/tags/javax.el-1.1.2
+d51885df03484971149a6f8a083cd4cdf2c6e84c	refs/tags/javax.el-1.1.3
+4eeabb78532dc45960378fb3604798e54d98a034	refs/tags/javax.el-1.1.3^{}
+3f9d2291b90823173a7840c1d494b79c0813b7c9	refs/tags/javax.el-2.2.1
+891c988531376faed62bbcf78387720fbbcaea50	refs/tags/javax.el-2.2.2
+c08acdc4c7e47617c386a24529edf1d847373673	refs/tags/javax.el-2.2.3
+6d18a71c03b476b60c7dc71b352a873fd1cebcfb	refs/tags/javax.el-2.2.4
+a0a920b766b98ffd73ab363000b14ffcff74a81b	refs/tags/javax.el-2.2.5
+96bdcd392350a4b41f94d3d34a528b5270092ac8	refs/tags/javax.el-2.2.6
+c23729e2c8e00b3bc2759d7a80bf4bbe2800139d	refs/tags/javax.el-3.0.1-b01
+ee0bb8e623e4c5ab148665b2d81b1d397a06d95d	refs/tags/javax.el-3.0.1-b02
+167cd1e7f338836b797582d7ccdf488de447ba61	refs/tags/javax.el-3.0.1-b03
+9b0f636085ba7103593f570e84d5c847189f50f8	refs/tags/javax.el-3.0.1-b04
+b2119f4523a307827a057ecf160fc490dac5f6f6	refs/tags/javax.el-3.0.1-b05
+dcd3531246e7c50e773996fe80254fd08b84988a	refs/tags/javax.el-3.0.1-b06
+7e56d0927d31b2484a723d8602605c34fa9b4b9f	refs/tags/javax.el-3.0.1-b07
+3db30bd3a76056b1fdcc49388f7ef8a5f08706d0	refs/tags/javax.el-3.0.1-b08
+879650ef69aa6c2fd602d77f3008a8f8751b4add	refs/tags/javax.el-3.0.1-b09
+5e6346e5e5a991ee1cd66643a955c89509d06165	refs/tags/javax.el-3.0.1-b09^{}
+907ff87e36e5c8e2fc48a42ecaf4ae61812b828a	refs/tags/javax.el-3.0.1-b10
+2a0ef6e757529d2a5816be535c63fb7c5a01e25c	refs/tags/javax.el-3.0.1-b10^{}
+03c31d7f5971804a801c265a4e126ac50232fcaa	refs/tags/javax.el-3.0.1-b11
+717f483bcd10c09e4900b70d3e2cb8ddf0587944	refs/tags/javax.el-3.0.1-b11^{}
+4cd206ba940c645182592575b0457e4c48ab9c4c	refs/tags/javax.el-3.0.1-b12
+92a1f7cd18ccb1287953a45e3f48771cb8c45517	refs/tags/javax.el-3.0.1-b12^{}
+9dde20de8fcbe6166648b80a5521401fafc99728	refs/tags/javax.el-api-1.1.2
+ea9b0d2b74075e0d6a1517a636ee6a353a56f7ca	refs/tags/javax.el-api-2.2.1
+d625f5f5ffe86633a52e46b8ce73e297e9380fb6	refs/tags/javax.el-api-2.2.2
+7e04ee79924c6ed60ba848b004c8d8e659bac028	refs/tags/javax.el-api-2.2.3
+69601d77f35a4018e0190eae15a9fec8d6ebb4d0	refs/tags/javax.el-api-2.2.4
+80e7111daadf1fc340dc9b529744d65ded7b51e4	refs/tags/javax.el-api-2.2.5
+a3ee6c9f9b1d6ac053f0843c899c9d59a9f2f4fa	refs/tags/javax.el-api-3.0.1-b01
+c57b7eb165d0a2536c182f80d14afe987a44d158	refs/tags/javax.el-api-3.0.1-b02
+4cb8052fc29ef0a42167269eb449b8da93b16952	refs/tags/javax.el-api-3.0.1-b03
+6bb9b964fcbb236701603d929da64f6550b21c40	refs/tags/javax.el-api-3.0.1-b04
+993e3dd9bf04d5b949ccf07b92d222d4a8268012	refs/tags/javax.el-api-3.0.1-b05
+0f35dcd2faab2c7f215ef7a9e8fd7a04458ec286	refs/tags/javax.el-api-3.0.1-b06
+3a25b1a8a6379e4136e716f5af65bcd562f8e78c	refs/tags/javax.el-api-3.0.1-b06^{}
+2fce6859bfc471bce1c5851a4fe449460cc9272e	refs/tags/uel-api-2.2.1-b01
+aa11d2488777db2e908a9e9188c235c4b50b20fb	refs/tags/uel-api-2.2.1-b02
+1f0f15979574f5b7b5669b30ef854f2ce0116f7f	refs/tags/uel-api-2.2.1-b03
+fc4040f851ae5b38fcde1d9c8e5419716688f88f	refs/tags/uel-api-2.2.1-b04
+7afe935c5cc3e7493cb7f76f05499e03b38d6a30	refs/tags/uel-impl-2.2.1-b01
+5a3e109abc8f3ceec625d50507a13af818e0abc1	refs/tags/uel-impl-2.2.1-b02
+c81469e9d6e0a5ae08fdb00a6ee438c097b0552f	refs/tags/uel-impl-2.2.1-b03
+16ba29f9ea8a045781479121d118b7c72f209a69	refs/tags/uel-impl-2.2.1-b04
+cbfc18214139449391633fc949a59a7bb132949d	refs/tags/uel-impl-2.2.1-b05
+9918c4705ca99cbd56fc82d4184dda511f8fe2cf	refs/tags/uel-pom-2.2.1-b01
+9fa3c170e7993fd25109dfefb3ac428cc1738e5d	refs/tags/uel-pom-2.2.1-b02
+40b3b36a5e50311ba088afc6c63c54ede27e07b5	refs/tags/uel-pom-2.2.1-b03
+
+ succeeded in 212ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+    Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+
+    The contents of this file are subject to the terms of either the GNU
+    General Public License Version 2 only ("GPL") or the Common Development
+    and Distribution License("CDDL") (collectively, the "License").  You
+    may not use this file except in compliance with the License.  You can
+    obtain a copy of the License at
+    https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+    or packager/legal/LICENSE.txt.  See the License for the specific
+    language governing permissions and limitations under the License.
+
+    When distributing the software, include this License Header Notice in each
+    file and include the License file at packager/legal/LICENSE.txt.
+
+    GPL Classpath Exception:
+    Oracle designates this particular file as subject to the "Classpath"
+    exception as provided by Oracle in the GPL Version 2 section of the License
+    file that accompanied this code.
+
+    Modifications:
+    If applicable, add the following below the License Header, with the fields
+    enclosed by brackets [] replaced by your own identifying information:
+    "Portions Copyright [year] [name of copyright owner]"
+
+    Contributor(s):
+    If you wish your version of this file to be governed by only the CDDL or
+    only the GPL Version 2, indicate your decision by adding "[Contributor]
+    elects to include this software in this distribution under the [CDDL or GPL
+    Version 2] license."  If you don't indicate a single choice of license, a
+    recipient has the option to distribute your version of this file under
+    either the CDDL, the GPL Version 2 or to extend the choice of license to
+    its licensees as provided above.  However, if you add GPL Version 2 code
+    and therefore, elected the GPL Version 2 license, then the option applies
+    only if the new code is made subject to such option by the copyright
+    holder.
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>net.java</groupId>
+        <artifactId>jvnet-parent</artifactId>
+        <version>3</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.glassfish</groupId>
+    <artifactId>javax.el</artifactId>
+    <version>3.0.1-b13-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>Expression Language 3.0</name>
+
+    <properties>
+        <!-- the bundle build number must be the same as the maven number -->
+        <bundle.version>3.0.0</bundle.version>
+        <!-- The most current api version -->
+        <spec.version>3.0</spec.version>
+        <extensionName>javax.el</extensionName>
+        <bundle.symbolicName>com.sun.el.javax.el</bundle.symbolicName>
+        <vendorName>Oracle Corporation</vendorName>
+        <findbugs.version>2.5.2</findbugs.version>
+        <findbugs.exclude>${project.basedir}/exclude.xml</findbugs.exclude>
+        <findbugs.threshold>High</findbugs.threshold>
+        <tlda-license.url>http://hudson-sca.us.oracle.com/job/tlda-license/lastSuccessfulBuild/artifact</tlda-license.url>
+    </properties>
+
+    <url>http://uel.java.net</url>
+    <organization>
+        <name>GlassFish Community</name>
+        <url>http://glassfish.org</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>CDDL + GPLv2 with classpath exception</name>
+            <url>https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+    <issueManagement>
+        <system>jira</system>
+        <url>http://java.net/jira/browse/EL_SPEC</url>
+    </issueManagement>
+    <mailingLists>
+        <mailingList>
+            <name>EL Developer</name>
+            <archive>dev@uel.java.net</archive>
+        </mailingList>
+    </mailingLists>
+    <scm>
+        <connection>scm:git:https://github.com/javaee/uel-ri.git</connection>
+        <developerConnection>scm:git:https://github.com/javaee/uel-ri.git</developerConnection>
+        <url>https://github.com/javaee/uel-ri.git</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>kchung</id>
+            <name>Kin-man Chung</name>
+            <organization>Oracle</organization>
+            <roles>
+                <role>lead</role>
+            </roles>
+        </developer>
+    </developers>  
+
+    <build>
+        <plugins>
+            <!-- Use this to include both the api and impl sources -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>api/src/main/java</source>
+                                <source>impl/src/main/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Configure maven-bundle-plugin to generate OSGi manifest.
+                 Please note: we use the manifest goal only and not the bundle goal.
+                  The bundle goal can lead to very surprising results if the
+                  package names are not correctly specified. So,
+                  we use the jar plugin to generate the jar.-->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>1.4.3</version>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+                        <Bundle-Description>
+                            Expression Language ${spec.version} API and Implementation
+                        
+                        </Bundle-Description>
+                        <Bundle-Version>${bundle.version}</Bundle-Version>
+                        <Extension-Name>${extensionName}</Extension-Name>
+                        <Specification-Version>${spec.version}</Specification-Version>
+                        <Specification-Vendor>${vendorName}</Specification-Vendor>
+                        <Implementation-Version>${project.version}</Implementation-Version>
+                        <Implementation-Vendor>${vendorName}</Implementation-Vendor>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <compilerArgument>-Xlint:unchecked</compilerArgument>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version> 2.2.1 </version>
+                <configuration>
+                    <includePom>true</includePom>
+                </configuration>
+                <executions>
+                    <execution>
+                       <id>attach-sources</id>
+                       <goals>
+                           <goal>jar-no-fork</goal>
+                       </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.8.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        <configuration>
+                            <sourcepath>api/src;impl/src</sourcepath>
+                            <groups>
+                                <group>
+                                    <title>Expresion Language 3.0 API and Implementation</title>
+                                    <packages>com.sun.el</packages>
+                                </group>
+
+ succeeded in 312ms:
+2a60adc6486542f72c4f184f34d538890e8779ed	refs/heads/dependabot/maven/junit-junit-4.13.1
+868ed5f74cc1aaed7cdf56766ec04d3c8772febc	refs/heads/gh-pages
+9df613fe903d37058d79e3e3874dae1b4ea6b6f5	refs/heads/master
+
+codex
+The original POM points to the old java.net Subversion tag, and that project has a GitHub mirror with a matching `javax.el-2.2.4` tag. I’m inspecting that tag’s tree for a version-specific test path; if it has no tests, I’ll mark the test URL as `N/A` rather than inventing one.
+2026-05-01T01:50:46.284406Z ERROR codex_core::tools::router: error=exec_command failed for `/usr/bin/bash -lc "git ls-tree -r --name-only javax.el-2.2.4 2>/dev/null | sed -n '1,200p'"`: CreateProcess { message: "Rejected(\"Failed to create unified exec process: No such file or directory (os error 2)\")" }
+2026-05-01T01:50:46.289809Z ERROR codex_core::tools::router: error=exec_command failed for `/usr/bin/bash -lc "git ls-tree -r --name-only javax.el-2.2.4: 2>/dev/null | rg -n '("'^|/)test(/|$)|src/test|junit|Test'"\\.java' || true"`: CreateProcess { message: "Rejected(\"Failed to create unified exec process: No such file or directory (os error 2)\")" }
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/javaee/uel-ri/git/trees/javax.el-2.2.4?recursive=1 | jq -r '.tree[].path' | sed -n '1,240p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f
+ succeeded in 244ms:
+build.xml
+exclude.xml
+pom.xml
+src
+src/main
+src/main/java
+src/main/java/com
+src/main/java/com/sun
+src/main/java/com/sun/el
+src/main/java/com/sun/el/ExpressionFactoryImpl.java
+src/main/java/com/sun/el/Messages.properties
+src/main/java/com/sun/el/MethodExpressionImpl.java
+src/main/java/com/sun/el/MethodExpressionLiteral.java
+src/main/java/com/sun/el/ValueExpressionImpl.java
+src/main/java/com/sun/el/ValueExpressionLiteral.java
+src/main/java/com/sun/el/lang
+src/main/java/com/sun/el/lang/ELArithmetic.java
+src/main/java/com/sun/el/lang/ELSupport.java
+src/main/java/com/sun/el/lang/EvaluationContext.java
+src/main/java/com/sun/el/lang/ExpressionBuilder.java
+src/main/java/com/sun/el/lang/FunctionMapperFactory.java
+src/main/java/com/sun/el/lang/FunctionMapperImpl.java
+src/main/java/com/sun/el/lang/VariableMapperFactory.java
+src/main/java/com/sun/el/lang/VariableMapperImpl.java
+src/main/java/com/sun/el/parser
+src/main/java/com/sun/el/parser/ArithmeticNode.java
+src/main/java/com/sun/el/parser/AstAnd.java
+src/main/java/com/sun/el/parser/AstBracketSuffix.java
+src/main/java/com/sun/el/parser/AstChoice.java
+src/main/java/com/sun/el/parser/AstCompositeExpression.java
+src/main/java/com/sun/el/parser/AstDeferredExpression.java
+src/main/java/com/sun/el/parser/AstDiv.java
+src/main/java/com/sun/el/parser/AstDotSuffix.java
+src/main/java/com/sun/el/parser/AstDynamicExpression.java
+src/main/java/com/sun/el/parser/AstEmpty.java
+src/main/java/com/sun/el/parser/AstEqual.java
+src/main/java/com/sun/el/parser/AstFalse.java
+src/main/java/com/sun/el/parser/AstFloatingPoint.java
+src/main/java/com/sun/el/parser/AstFunction.java
+src/main/java/com/sun/el/parser/AstGreaterThan.java
+src/main/java/com/sun/el/parser/AstGreaterThanEqual.java
+src/main/java/com/sun/el/parser/AstIdentifier.java
+src/main/java/com/sun/el/parser/AstInteger.java
+src/main/java/com/sun/el/parser/AstLessThan.java
+src/main/java/com/sun/el/parser/AstLessThanEqual.java
+src/main/java/com/sun/el/parser/AstLiteralExpression.java
+src/main/java/com/sun/el/parser/AstMethodArguments.java
+src/main/java/com/sun/el/parser/AstMinus.java
+src/main/java/com/sun/el/parser/AstMod.java
+src/main/java/com/sun/el/parser/AstMult.java
+src/main/java/com/sun/el/parser/AstNegative.java
+src/main/java/com/sun/el/parser/AstNot.java
+src/main/java/com/sun/el/parser/AstNotEqual.java
+src/main/java/com/sun/el/parser/AstNull.java
+src/main/java/com/sun/el/parser/AstOr.java
+src/main/java/com/sun/el/parser/AstPlus.java
+src/main/java/com/sun/el/parser/AstString.java
+src/main/java/com/sun/el/parser/AstTrue.java
+src/main/java/com/sun/el/parser/AstValue.java
+src/main/java/com/sun/el/parser/BooleanNode.java
+src/main/java/com/sun/el/parser/ELParser.java
+src/main/java/com/sun/el/parser/ELParser.jjt
+src/main/java/com/sun/el/parser/ELParserConstants.java
+src/main/java/com/sun/el/parser/ELParserTokenManager.java
+src/main/java/com/sun/el/parser/ELParserTreeConstants.java
+src/main/java/com/sun/el/parser/JJTELParserState.java
+src/main/java/com/sun/el/parser/Node.java
+src/main/java/com/sun/el/parser/NodeVisitor.java
+src/main/java/com/sun/el/parser/ParseException.java
+src/main/java/com/sun/el/parser/SimpleCharStream.java
+src/main/java/com/sun/el/parser/SimpleNode.java
+src/main/java/com/sun/el/parser/Token.java
+src/main/java/com/sun/el/parser/TokenMgrError.java
+src/main/java/com/sun/el/util
+src/main/java/com/sun/el/util/MessageFactory.java
+src/main/java/com/sun/el/util/ReflectionUtil.java
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -5 | xargs -r -n1 sed -n '1,40p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f
+ succeeded in 0ms:
+{
+  "coordinates" : "org.glassfish.web:javax.el:2.2.4"
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/javaee/uel-ri/git/trees/javax.el-2.2.4?recursive=1' | jq -r '.tree[].path' | rg -n '("'^|/)test(/|$)|src/test|junit|Test'"\\.java' || true" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/javaee/uel-ri/javax.el-2.2.4/pom.xml | sed -n '50,105p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f
+ succeeded in 162ms:
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.glassfish.web</groupId>
+    <artifactId>javax.el</artifactId>
+    <version>2.2.4</version>
+    <packaging>jar</packaging>
+    <name>Expression Language 2.2 Implementation</name>
+
+    <url>http://uel.java.net</url>
+    <organization>
+        <name>GlassFish Community</name>
+        <url>http://glassfish.org</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>CDDL + GPLv2 with classpath exception</name>
+            <url>http://glassfish.dev.java.net/nonav/public/CDDL+GPL.html</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+    <issueManagement>
+        <system>jira</system>
+        <url>http://java.net/jira/browse/UEL</url>
+    </issueManagement>
+    <mailingLists>
+        <mailingList>
+            <name>EL Developer</name>
+            <archive>dev@uel.java.net</archive>
+        </mailingList>
+    </mailingLists>
+    <scm>
+        <connection>scm:svn:https://svn.java.net/svn/uel~svn/tags/javax.el-2.2.4</connection>
+        <developerConnection>scm:svn:https://svn.java.net/svn/uel~svn/tags/javax.el-2.2.4</developerConnection>
+        <url>http://java.net/projects/uel/sources/svn/show/tags/javax.el-2.2.4</url>
+    </scm>
+
+    <properties>
+        <spec.version>2.2</spec.version>
+        <extensionName>javax.el</extensionName>
+        <bundle.symbolicName>org.glassfish.web.javax.el</bundle.symbolicName>
+        <vendorName>Oracle Corporation</vendorName>
+        <findbugs.version>2.4.0</findbugs.version>
+        <findbugs.exclude>${project.basedir}/exclude.xml</findbugs.exclude>
+        <findbugs.threshold>High</findbugs.threshold>
+    </properties>
+
+    <developers>
+        <developer>
+            <id>kchung</id>
+            <name>Kin-man Chung</name>
+            <url>http://blogs.sun.com/kchung/</url>
+            <organization>Sun Microsystems, Inc.</organization>
+            <roles>
+                <role>lead</role>
+            </roles>
+
+codex
+The exact GitHub tag contains only the implementation source tree and build files, and Maven Central has no test-source/test jar for 2.2.4. I’m going to write the Maven source and javadoc artifact URLs, the GitHub repository URL, and `N/A` for the test suite.
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); curl -fsSL -o "$tmpdir/javax.el-2.2.4-sources.jar" https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-sources.jar; jar tf "$tmpdir/javax.el-2.2.4-sources.jar" | rg -n '"'("'^|/)test(/|$)|src/test|junit|Test'"\\.java' || true; rm -rf \""'$tmpdir"' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f
+ succeeded in 0ms:
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+diff --git a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+index 739ad1aa7d4326b85f9adcd16766cd89731b1eac..a33b3b405d805ad38b97fae925b086dd0e1e1161
+--- a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
++++ b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.web:javax.el:2.2.4"
++  "coordinates" : "org.glassfish.web:javax.el:2.2.4",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-sources.jar",
++  "repository-url" : "https://github.com/javaee/uel-ri",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-javadoc.jar",
++  "description" : "GlassFish javax.el is the reference implementation of Java Expression Language 2.2 used to parse and evaluate EL expressions in Java web and component frameworks. It provides the runtime expression factory, parser, evaluator, coercion, and reflection utilities behind the javax.el API."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+index 739ad1aa7d4326b85f9adcd16766cd89731b1eac..a33b3b405d805ad38b97fae925b086dd0e1e1161
+--- a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
++++ b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.web:javax.el:2.2.4"
++  "coordinates" : "org.glassfish.web:javax.el:2.2.4",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-sources.jar",
++  "repository-url" : "https://github.com/javaee/uel-ri",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-javadoc.jar",
++  "description" : "GlassFish javax.el is the reference implementation of Java Expression Language 2.2 used to parse and evaluate EL expressions in Java web and component frameworks. It provides the runtime expression factory, parser, evaluator, coercion, and reflection utilities behind the javax.el API."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f
+ succeeded in 0ms:
+{
+  "coordinates": "org.glassfish.web:javax.el:2.2.4",
+  "source-code-url": "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-sources.jar",
+  "repository-url": "https://github.com/javaee/uel-ri",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-javadoc.jar",
+  "description": "GlassFish javax.el is the reference implementation of Java Expression Language 2.2 used to parse and evaluate EL expressions in Java web and component frameworks. It provides the runtime expression factory, parser, evaluator, coercion, and reflection utilities behind the javax.el API."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+index 739ad1aa7d4326b85f9adcd16766cd89731b1eac..a33b3b405d805ad38b97fae925b086dd0e1e1161
+--- a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
++++ b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.web:javax.el:2.2.4"
++  "coordinates" : "org.glassfish.web:javax.el:2.2.4",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-sources.jar",
++  "repository-url" : "https://github.com/javaee/uel-ri",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-javadoc.jar",
++  "description" : "GlassFish javax.el is the reference implementation of Java Expression Language 2.2 used to parse and evaluate EL expressions in Java web and component frameworks. It provides the runtime expression factory, parser, evaluator, coercion, and reflection utilities behind the javax.el API."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json && sed -n '1,120p' build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f
+ succeeded in 0ms:
+{
+  "coordinates" : "org.glassfish.web:javax.el:2.2.4",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-sources.jar",
+  "repository-url" : "https://github.com/javaee/uel-ri",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-javadoc.jar",
+  "description" : "GlassFish javax.el is the reference implementation of Java Expression Language 2.2 used to parse and evaluate EL expressions in Java web and component frameworks. It provides the runtime expression factory, parser, evaluator, coercion, and reflection utilities behind the javax.el API."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+index 739ad1aa7d4326b85f9adcd16766cd89731b1eac..a33b3b405d805ad38b97fae925b086dd0e1e1161
+--- a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
++++ b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.web:javax.el:2.2.4"
++  "coordinates" : "org.glassfish.web:javax.el:2.2.4",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-sources.jar",
++  "repository-url" : "https://github.com/javaee/uel-ri",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-javadoc.jar",
++  "description" : "GlassFish javax.el is the reference implementation of Java Expression Language 2.2 used to parse and evaluate EL expressions in Java web and component frameworks. It provides the runtime expression factory, parser, evaluator, coercion, and reflection utilities behind the javax.el API."
+ }
+
+web search: 
+web search: https://github.com/javaee/uel-ri/tree/javax.el-2.2.4
+web search: 
+web search: https://raw.githubusercontent.com/javaee/uel-ri/javax.el-2.2.4/pom.xml
+codex
+Updated [org.glassfish.web-javax.el-2.2.4.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json:1).
+
+I set the exact Maven Central source and javadoc jar URLs for `2.2.4`; Maven Central lists those artifacts and no test artifact, and the matching `javaee/uel-ri` tag only shows the main source tree, so `test-code-url` is `N/A`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/))
+
+I omitted `language` because this is a Java library, not Kotlin, Groovy, or Scala. JSON validation with `jq` succeeded.
+diff --git a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+index 739ad1aa7d4326b85f9adcd16766cd89731b1eac..a33b3b405d805ad38b97fae925b086dd0e1e1161
+--- a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
++++ b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.web:javax.el:2.2.4"
++  "coordinates" : "org.glassfish.web:javax.el:2.2.4",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-sources.jar",
++  "repository-url" : "https://github.com/javaee/uel-ri",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-javadoc.jar",
++  "description" : "GlassFish javax.el is the reference implementation of Java Expression Language 2.2 used to parse and evaluate EL expressions in Java web and component frameworks. It provides the runtime expression factory, parser, evaluator, coercion, and reflection utilities behind the javax.el API."
+ }
+
+2026-05-01T01:51:37.782824Z ERROR codex_core::session: failed to record rollout items: thread 019de13a-89d8-7dd0-96de-51a1a777f572 not found
+tokens used
+72,761
+Updated [org.glassfish.web-javax.el-2.2.4.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json:1).
+
+I set the exact Maven Central source and javadoc jar URLs for `2.2.4`; Maven Central lists those artifacts and no test artifact, and the matching `javaee/uel-ri` tag only shows the main source tree, so `test-code-url` is `N/A`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/))
+
+I omitted `language` because this is a Java library, not Kotlin, Groovy, or Scala. JSON validation with `jq` succeeded.
+Ran agent for org.glassfish.web:javax.el:2.2.4 (exit 0). Log: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f/build/agent-artifact-discovery-logs/org.glassfish.web-javax.el-2.2.4.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-e10d868f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 35s
+9 actionable tasks: 4 executed, 5 from cache
