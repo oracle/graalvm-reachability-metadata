@@ -9,14 +9,20 @@ package com_sun_xml_bind_external.relaxng_datatype;
 import com.sun.tools.rngdatatype.Datatype;
 import com.sun.tools.rngdatatype.DatatypeException;
 import com.sun.tools.rngdatatype.DatatypeLibrary;
+import com.sun.tools.rngdatatype.DatatypeStreamingValidator;
 import com.sun.tools.rngdatatype.ValidationContext;
 import com.sun.tools.rngdatatype.helpers.DatatypeLibraryLoader;
 import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProxyDatatypeLibraryFactoryInnerGIHTest {
@@ -38,6 +44,26 @@ public class ProxyDatatypeLibraryFactoryInnerGIHTest {
         assertSame(VALID_LITERAL, datatype.createValue(VALID_LITERAL, context));
         assertTrue(datatype.sameValue(VALID_LITERAL, VALID_LITERAL));
         assertEquals(VALID_LITERAL.hashCode(), datatype.valueHashCode(VALID_LITERAL));
+    }
+
+    @Test
+    void adaptsLegacyValidationContextAndStreamingValidatorThroughInvocationHandler() throws Exception {
+        org.relaxng.datatype.Datatype legacyDatatype = createLegacyDatatypeProxy(new ModernDatatype());
+        org.relaxng.datatype.ValidationContext context = new LegacyValidationContext();
+
+        assertTrue(legacyDatatype.isValid(VALID_LITERAL, context));
+        assertThrows(ClassCastException.class, () -> legacyDatatype.createStreamingValidator(context));
+    }
+
+    private static org.relaxng.datatype.Datatype createLegacyDatatypeProxy(Datatype datatype) throws Exception {
+        Class<?> handlerClass = Class.forName("com.sun.tools.rngdatatype.helpers.ProxyDatatypeLibraryFactory$GIH");
+        Constructor<?> constructor = handlerClass.getDeclaredConstructor(Class.class, Object.class);
+        constructor.setAccessible(true);
+        InvocationHandler handler = (InvocationHandler) constructor.newInstance(Datatype.class, datatype);
+        return (org.relaxng.datatype.Datatype) Proxy.newProxyInstance(
+                org.relaxng.datatype.Datatype.class.getClassLoader(),
+                new Class<?>[]{org.relaxng.datatype.Datatype.class},
+                handler);
     }
 
     public static final class LegacyDatatypeLibraryFactory implements org.relaxng.datatype.DatatypeLibraryFactory {
@@ -127,7 +153,8 @@ public class ProxyDatatypeLibraryFactoryInnerGIHTest {
         }
     }
 
-    private static final class LegacyDatatypeStreamingValidator implements org.relaxng.datatype.DatatypeStreamingValidator {
+    private static final class LegacyDatatypeStreamingValidator
+            implements org.relaxng.datatype.DatatypeStreamingValidator {
         private final StringBuilder literal = new StringBuilder();
 
         @Override
@@ -148,6 +175,75 @@ public class ProxyDatatypeLibraryFactoryInnerGIHTest {
         }
     }
 
+    private static final class ModernDatatype implements Datatype {
+        @Override
+        public boolean isValid(String literal, ValidationContext context) {
+            return VALID_LITERAL.equals(literal) && context != null;
+        }
+
+        @Override
+        public void checkValid(String literal, ValidationContext context) throws DatatypeException {
+            if (!isValid(literal, context)) {
+                throw new DatatypeException();
+            }
+        }
+
+        @Override
+        public DatatypeStreamingValidator createStreamingValidator(ValidationContext context) {
+            assertNotNull(context);
+            return new ModernDatatypeStreamingValidator();
+        }
+
+        @Override
+        public Object createValue(String literal, ValidationContext context) {
+            if (isValid(literal, context)) {
+                return literal;
+            }
+            return null;
+        }
+
+        @Override
+        public boolean sameValue(Object value1, Object value2) {
+            return value1.equals(value2);
+        }
+
+        @Override
+        public int valueHashCode(Object value) {
+            return value.hashCode();
+        }
+
+        @Override
+        public int getIdType() {
+            return ID_TYPE_NULL;
+        }
+
+        @Override
+        public boolean isContextDependent() {
+            return true;
+        }
+    }
+
+    private static final class ModernDatatypeStreamingValidator implements DatatypeStreamingValidator {
+        private final StringBuilder literal = new StringBuilder();
+
+        @Override
+        public void addCharacters(char[] buf, int start, int len) {
+            literal.append(buf, start, len);
+        }
+
+        @Override
+        public boolean isValid() {
+            return VALID_LITERAL.contentEquals(literal);
+        }
+
+        @Override
+        public void checkValid() throws DatatypeException {
+            if (!isValid()) {
+                throw new DatatypeException();
+            }
+        }
+    }
+
     private static final class TestValidationContext implements ValidationContext {
         @Override
         public String resolveNamespacePrefix(String prefix) {
@@ -160,6 +256,31 @@ public class ProxyDatatypeLibraryFactoryInnerGIHTest {
         @Override
         public String getBaseUri() {
             return "urn:relaxng-datatype-proxy-test-base";
+        }
+
+        @Override
+        public boolean isUnparsedEntity(String entityName) {
+            return false;
+        }
+
+        @Override
+        public boolean isNotation(String notationName) {
+            return false;
+        }
+    }
+
+    private static final class LegacyValidationContext implements org.relaxng.datatype.ValidationContext {
+        @Override
+        public String resolveNamespacePrefix(String prefix) {
+            if ("legacy".equals(prefix)) {
+                return "urn:legacy";
+            }
+            return null;
+        }
+
+        @Override
+        public String getBaseUri() {
+            return "urn:legacy-base";
         }
 
         @Override
