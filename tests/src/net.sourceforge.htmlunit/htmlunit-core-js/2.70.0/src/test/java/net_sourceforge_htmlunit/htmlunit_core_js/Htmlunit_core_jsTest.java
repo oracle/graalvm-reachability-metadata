@@ -8,7 +8,7 @@ package net_sourceforge_htmlunit.htmlunit_core_js;
 
 import org.junit.jupiter.api.Test;
 
-class Htmlunit_core_jsTest {
+public class Htmlunit_core_jsTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
