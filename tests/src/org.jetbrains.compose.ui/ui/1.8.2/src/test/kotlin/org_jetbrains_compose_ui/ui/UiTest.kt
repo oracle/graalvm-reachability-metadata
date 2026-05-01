@@ -35,9 +35,14 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.coerceIn
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.text.substring
 import androidx.compose.ui.text.withAnnotation
 import androidx.compose.ui.text.withStyle
@@ -217,6 +222,43 @@ public class UiTest {
         assertThat(paragraph.start).isEqualTo(13)
         assertThat(paragraph.end).isEqualTo(16)
         assertThat(paragraph.item.textAlign).isEqualTo(TextAlign.Center)
+    }
+
+    @Test
+    fun textStylesMergeTypographyAndClassifyLayoutVersusDrawChanges() {
+        val baseStyle = TextStyle(
+            color = Color.DarkGray,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Normal,
+            lineHeight = 24.sp,
+            textAlign = TextAlign.Start,
+            textIndent = TextIndent(firstLine = 12.sp, restLine = 6.sp)
+        )
+        val overrideStyle = TextStyle(
+            color = Color.Magenta,
+            fontWeight = FontWeight.Bold,
+            fontStyle = FontStyle.Italic,
+            textDecoration = TextDecoration.Underline + TextDecoration.LineThrough
+        )
+
+        val merged = baseStyle.merge(overrideStyle)
+
+        assertThat(merged.color).isEqualTo(Color.Magenta)
+        assertThat(merged.fontSize).isEqualTo(16.sp)
+        assertThat(merged.fontWeight).isEqualTo(FontWeight.Bold)
+        assertThat(merged.fontStyle).isEqualTo(FontStyle.Italic)
+        assertThat(merged.lineHeight).isEqualTo(24.sp)
+        assertThat(merged.textAlign).isEqualTo(TextAlign.Start)
+        assertThat(merged.textIndent).isEqualTo(TextIndent(firstLine = 12.sp, restLine = 6.sp))
+        assertThat(merged.textDecoration?.contains(TextDecoration.Underline)).isTrue()
+        assertThat(merged.textDecoration?.contains(TextDecoration.LineThrough)).isTrue()
+
+        val drawOnlyChange = merged.copy(color = Color.Cyan)
+        assertThat(merged.hasSameLayoutAffectingAttributes(drawOnlyChange)).isTrue()
+        assertThat(merged.hasSameDrawAffectingAttributes(drawOnlyChange)).isFalse()
+
+        val layoutChange = merged.copy(fontSize = 18.sp)
+        assertThat(merged.hasSameLayoutAffectingAttributes(layoutChange)).isFalse()
     }
 
     @Test
