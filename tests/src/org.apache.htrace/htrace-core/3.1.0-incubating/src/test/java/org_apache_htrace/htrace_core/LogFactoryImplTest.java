@@ -6,6 +6,9 @@
  */
 package org_apache_htrace.htrace_core;
 
+import java.net.URL;
+import java.net.URLClassLoader;
+
 import org.apache.htrace.commons.logging.Log;
 import org.apache.htrace.commons.logging.LogConfigurationException;
 import org.apache.htrace.commons.logging.LogFactory;
@@ -20,6 +23,31 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class LogFactoryImplTest {
     static {
         System.setProperty("org.apache.htrace.commons.logging.diagnostics.dest", "STDERR");
+    }
+
+    @Test
+    void constructsFreshImplementationLoadedByContextClassLoader() {
+        String previousFactory = System.getProperty(LogFactory.FACTORY_PROPERTY);
+        ClassLoader previousContextClassLoader = Thread.currentThread().getContextClassLoader();
+        ReloadingLogFactoryClassLoader classLoader = null;
+        try {
+            classLoader = new ReloadingLogFactoryClassLoader(previousContextClassLoader);
+            System.setProperty(LogFactory.FACTORY_PROPERTY, LogFactoryImpl.class.getName());
+            Thread.currentThread().setContextClassLoader(classLoader);
+
+            LogFactory factory = LogFactory.getFactory();
+
+            assertThat(factory.getClass().getName()).isEqualTo(LogFactoryImpl.class.getName());
+            assertThat(factory.getClass().getClassLoader()).isSameAs(classLoader);
+        } catch (Error error) {
+            rethrowUnlessUnsupportedFeature(error);
+        } finally {
+            if (classLoader != null) {
+                LogFactory.release(classLoader);
+            }
+            Thread.currentThread().setContextClassLoader(previousContextClassLoader);
+            restoreProperty(LogFactory.FACTORY_PROPERTY, previousFactory);
+        }
     }
 
     @Test
@@ -69,9 +97,40 @@ public class LogFactoryImplTest {
         }
     }
 
+    private static void restoreProperty(String name, String value) {
+        if (value == null) {
+            System.clearProperty(name);
+            return;
+        }
+        System.setProperty(name, value);
+    }
+
     private static void rethrowUnlessUnsupportedFeature(Error error) {
         if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
             throw error;
+        }
+    }
+
+    private static final class ReloadingLogFactoryClassLoader extends URLClassLoader {
+        private static final String LOG_FACTORY_IMPL_CLASS = "org.apache.htrace.commons.logging.impl.LogFactoryImpl";
+
+        private ReloadingLogFactoryClassLoader(ClassLoader parent) {
+            super(new URL[] {LogFactoryImpl.class.getProtectionDomain().getCodeSource().getLocation()}, parent);
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            if (!LOG_FACTORY_IMPL_CLASS.equals(name)) {
+                return super.loadClass(name, resolve);
+            }
+            Class<?> loadedClass = findLoadedClass(name);
+            if (loadedClass == null) {
+                loadedClass = findClass(name);
+            }
+            if (resolve) {
+                resolveClass(loadedClass);
+            }
+            return loadedClass;
         }
     }
 
