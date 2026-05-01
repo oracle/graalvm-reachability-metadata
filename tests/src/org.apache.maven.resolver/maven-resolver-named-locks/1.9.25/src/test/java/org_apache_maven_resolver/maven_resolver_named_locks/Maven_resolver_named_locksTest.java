@@ -199,6 +199,25 @@ public class Maven_resolver_named_locksTest {
                 .isSameAs(failure);
     }
 
+    @Test
+    void retryStopsImmediatelyWhenFailurePredicateRejectsException() {
+        AtomicInteger attempts = new AtomicInteger();
+        IllegalArgumentException failure = new IllegalArgumentException("permanent");
+
+        assertThatThrownBy(() -> Retry.retry(
+                        5,
+                        0L,
+                        () -> {
+                            attempts.incrementAndGet();
+                            throw failure;
+                        },
+                        exception -> false,
+                        "fallback"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasCause(failure);
+        assertThat(attempts).hasValue(1);
+    }
+
     private static void assertStatefulLockCoordinatesReadersAndWriters(NamedLockFactorySupport factory, String lockName)
             throws Exception {
         NamedLock owner = factory.getLock(lockName);
