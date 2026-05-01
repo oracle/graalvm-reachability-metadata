@@ -72,6 +72,13 @@ public class Kotlin_parcelize_runtimeTest {
     }
 
     @Test
+    public fun parcelableCreatorRejectsParcelableTypesWithoutCreatorFields() {
+        assertThatThrownBy { parcelableCreator<MissingCreatorFieldParcelable>() }
+            .isInstanceOf(NoSuchFieldException::class.java)
+            .hasMessageContaining("CREATOR")
+    }
+
+    @Test
     public fun parcelizeAndTypeParcelerAnnotationsCanBeRepeatedOnRegularDomainTypes() {
         val carrier: RepeatedTypeParcelerCarrier = RepeatedTypeParcelerCarrier(
             name = "parcelized",
@@ -173,4 +180,10 @@ public class WrongCreatorFieldParcelable : Parcelable {
         @JvmField
         public val CREATOR: String = "not-a-parcelable-creator"
     }
+}
+
+public class MissingCreatorFieldParcelable : Parcelable {
+    override fun describeContents(): Int = 0
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) = Unit
 }
