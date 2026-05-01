@@ -69,6 +69,15 @@ public class Maven_api_annotationsTest {
     }
 
     @Test
+    void nullableAnnotationCanMarkLocalVariablesInSelectionFlows() {
+        PluginAliasSelector selector = new PluginAliasSelector(List.of("compiler", "surefire", "jar"));
+
+        assertThat(selector.selectAlias("sure")).contains("surefire");
+        assertThat(selector.selectAlias("deploy")).isEmpty();
+        assertThat(selector.displayAlias("deploy", "default-plugin")).isEqualTo("default-plugin");
+    }
+
+    @Test
     void typeRoleAnnotationsCanBeUsedOnCollaboratingApiTypes() {
         ImmutableProvider provider = new ImmutableProvider("central");
         MutableConsumer consumer = new MutableConsumer();
@@ -196,6 +205,32 @@ public class Maven_api_annotationsTest {
         @Nonnull
         private Optional<String> describeOptional(@Nullable String value) {
             return Optional.ofNullable(value).map(nonNullValue -> prefix + ":" + nonNullValue);
+        }
+    }
+
+    private static final class PluginAliasSelector {
+        private final List<String> aliases;
+
+        private PluginAliasSelector(@Nonnull List<String> aliases) {
+            this.aliases = List.copyOf(aliases);
+        }
+
+        @Nonnull
+        private Optional<String> selectAlias(@Nonnull String prefix) {
+            @Nullable String selectedAlias = null;
+            for (String alias : aliases) {
+                if (alias.startsWith(prefix)) {
+                    selectedAlias = alias;
+                    break;
+                }
+            }
+            return Optional.ofNullable(selectedAlias);
+        }
+
+        @Nonnull
+        private String displayAlias(@Nonnull String prefix, @Nonnull String fallback) {
+            @Nullable String selectedAlias = selectAlias(prefix).orElse(null);
+            return selectedAlias == null ? fallback : selectedAlias.toUpperCase(Locale.ROOT);
         }
     }
 
