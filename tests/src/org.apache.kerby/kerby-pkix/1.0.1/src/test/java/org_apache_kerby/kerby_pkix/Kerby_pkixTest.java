@@ -36,6 +36,8 @@ import org.apache.kerby.x509.type.AuthorityKeyIdentifier;
 import org.apache.kerby.x509.type.BasicConstraints;
 import org.apache.kerby.x509.type.Certificate;
 import org.apache.kerby.x509.type.CertificateSerialNumber;
+import org.apache.kerby.x509.type.DSAParameter;
+import org.apache.kerby.x509.type.DhParameter;
 import org.apache.kerby.x509.type.DirectoryString;
 import org.apache.kerby.x509.type.DisplayText;
 import org.apache.kerby.x509.type.Extension;
@@ -191,6 +193,41 @@ public class Kerby_pkixTest {
         AttributeTypeAndValue decodedIssuerCommonName = decodedIssuerName.getDirectoryName().getName()
                 .getElements().get(0).getElements().get(0);
         assertThat(attributeValue(decodedIssuerCommonName)).isEqualTo("issuer-authority.example.test");
+    }
+
+    @Test
+    void x509KeyAgreementParameterTypesRoundTripDomainParameters() throws Exception {
+        BigInteger dsaP = new BigInteger("1461501637330902918203684832716283019655932542983");
+        BigInteger dsaQ = new BigInteger("73075081866545145910184241635814150982796627149");
+        BigInteger dsaG = new BigInteger("9988776655443322110099887766554433221100");
+
+        DSAParameter dsaParameter = new DSAParameter();
+        dsaParameter.setP(dsaP);
+        dsaParameter.setQ(dsaQ);
+        dsaParameter.setG(dsaG);
+
+        DSAParameter decodedDsaParameter = new DSAParameter();
+        decodedDsaParameter.decode(Asn1.encode(dsaParameter));
+
+        assertThat(decodedDsaParameter.getP()).isEqualTo(dsaP);
+        assertThat(decodedDsaParameter.getQ()).isEqualTo(dsaQ);
+        assertThat(decodedDsaParameter.getG()).isEqualTo(dsaG);
+
+        BigInteger dhP = new BigInteger("24519928653854221733733552434404946937899825954937634816");
+        BigInteger dhG = BigInteger.valueOf(2L);
+        BigInteger dhQ = new BigInteger("12259964326927110866866776217202473468949912977468817408");
+
+        DhParameter dhParameter = new DhParameter();
+        dhParameter.setP(dhP);
+        dhParameter.setG(dhG);
+        dhParameter.setQ(dhQ);
+
+        DhParameter decodedDhParameter = new DhParameter();
+        decodedDhParameter.decode(Asn1.encode(dhParameter));
+
+        assertThat(decodedDhParameter.getP()).isEqualTo(dhP);
+        assertThat(decodedDhParameter.getG()).isEqualTo(dhG);
+        assertThat(decodedDhParameter.getQ()).isEqualTo(dhQ);
     }
 
     @Test
