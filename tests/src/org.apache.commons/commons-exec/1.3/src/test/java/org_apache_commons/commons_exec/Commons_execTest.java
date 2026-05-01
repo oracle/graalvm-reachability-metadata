@@ -24,6 +24,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
@@ -35,6 +38,8 @@ import org.apache.commons.exec.OS;
 import org.apache.commons.exec.ProcessDestroyer;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
+import org.apache.commons.exec.TimeoutObserver;
+import org.apache.commons.exec.Watchdog;
 import org.apache.commons.exec.environment.EnvironmentUtils;
 import org.apache.commons.exec.util.MapUtils;
 import org.apache.commons.exec.util.StringUtils;
@@ -210,6 +215,34 @@ public class Commons_execTest {
     }
 
     @Test
+    void watchdogNotifiesRegisteredObserversAndHonorsRemovalAndStop() throws Exception {
+        CountDownLatch timeoutNotification = new CountDownLatch(1);
+        RecordingTimeoutObserver notifiedObserver = new RecordingTimeoutObserver(timeoutNotification);
+        RecordingTimeoutObserver removedObserver = new RecordingTimeoutObserver(new CountDownLatch(1));
+        Watchdog watchdog = new Watchdog(100L);
+
+        watchdog.addTimeoutObserver(notifiedObserver);
+        watchdog.addTimeoutObserver(removedObserver);
+        watchdog.removeTimeoutObserver(removedObserver);
+        watchdog.start();
+
+        assertThat(timeoutNotification.await(5L, TimeUnit.SECONDS)).isTrue();
+        assertThat(notifiedObserver.notifications()).isEqualTo(1);
+        assertThat(notifiedObserver.lastWatchdog()).isSameAs(watchdog);
+        assertThat(removedObserver.notifications()).isZero();
+
+        CountDownLatch stoppedNotification = new CountDownLatch(1);
+        RecordingTimeoutObserver stoppedObserver = new RecordingTimeoutObserver(stoppedNotification);
+        Watchdog stoppedWatchdog = new Watchdog(1_000L);
+        stoppedWatchdog.addTimeoutObserver(stoppedObserver);
+        stoppedWatchdog.start();
+        stoppedWatchdog.stop();
+
+        assertThat(stoppedNotification.await(200L, TimeUnit.MILLISECONDS)).isFalse();
+        assertThat(stoppedObserver.notifications()).isZero();
+    }
+
+    @Test
     void logOutputStreamCollectsCompleteLinesOnFlushAndClose() throws Exception {
         CapturingLogOutputStream stream = new CapturingLogOutputStream(42);
 
@@ -304,6 +337,31 @@ public class Commons_execTest {
             return List.of();
         }
         return Arrays.asList(normalizedOutput.split("\\n"));
+    }
+
+    private static final class RecordingTimeoutObserver implements TimeoutObserver {
+        private final AtomicInteger notifications = new AtomicInteger();
+        private final CountDownLatch notificationLatch;
+        private volatile Watchdog lastWatchdog;
+
+        private RecordingTimeoutObserver(CountDownLatch notificationLatch) {
+            this.notificationLatch = notificationLatch;
+        }
+
+        private int notifications() {
+            return notifications.get();
+        }
+
+        private Watchdog lastWatchdog() {
+            return lastWatchdog;
+        }
+
+        @Override
+        public void timeoutOccured(Watchdog watchdog) {
+            lastWatchdog = watchdog;
+            notifications.incrementAndGet();
+            notificationLatch.countDown();
+        }
     }
 
     private static final class CapturingLogOutputStream extends LogOutputStream {
