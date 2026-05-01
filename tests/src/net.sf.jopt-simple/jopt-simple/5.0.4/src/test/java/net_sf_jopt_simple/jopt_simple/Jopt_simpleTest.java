@@ -8,7 +8,7 @@ package net_sf_jopt_simple.jopt_simple;
 
 import org.junit.jupiter.api.Test;
 
-class Jopt_simpleTest {
+public class Jopt_simpleTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
