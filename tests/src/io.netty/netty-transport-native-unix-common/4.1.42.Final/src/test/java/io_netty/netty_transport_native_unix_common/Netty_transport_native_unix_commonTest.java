@@ -174,6 +174,20 @@ public class Netty_transport_native_unix_commonTest {
     }
 
     @Test
+    void nativeInetAddressConstructsFromEncodedBytesWithDefaultScope() {
+        byte[] addressBytes = new byte[] {
+                0x20, 0x01, 0x0d, (byte) 0xb8,
+                0, 0, 0, 0,
+                0, 0, 0, 0,
+                0, 0, 0, 9
+        };
+        NativeInetAddress nativeAddress = new NativeInetAddress(addressBytes);
+
+        assertThat(nativeAddress.address()).containsExactly(addressBytes);
+        assertThat(nativeAddress.scopeId()).isZero();
+    }
+
+    @Test
     void nativeInetAddressRejectsUnsupportedSocketAddressPayloadLength() {
         byte[] encoded = new byte[16];
 
