@@ -12,6 +12,7 @@ import io.jsonwebtoken.CompressionCodecs;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.IncorrectClaimException;
+import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtHandlerAdapter;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.JwtParserBuilder;
@@ -202,6 +203,36 @@ public class Jjwt_implTest {
 
         assertThat(parsed.getHeader().getKeyId()).isEqualTo("second");
         assertThat(parsed.getBody().getSubject()).isEqualTo("resolved-by-kid");
+    }
+
+    @Test
+    void unsignedClaimsJwtParsesWithoutVerificationKeyAndDispatchesToClaimsJwtHandler() {
+        String jwt = Jwts.builder()
+                .serializeToJsonWith(JSON)
+                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+                .setSubject("unsigned-claims")
+                .claim("roles", List.of("reader", "writer"))
+                .compact();
+
+        JwtParser parser = parserBuilder().build();
+        Jwt<Header, Claims> parsed = parser.parseClaimsJwt(jwt);
+        String handledSubject = parser.parse(jwt, new JwtHandlerAdapter<String>() {
+            @Override
+            public String onClaimsJwt(Jwt<Header, Claims> jwt) {
+                assertThat(jwt.getHeader().getType()).isEqualTo(Header.JWT_TYPE);
+                return jwt.getBody().getSubject();
+            }
+        });
+
+        Object roles = parsed.getBody().get("roles");
+        assertThat(parser.isSigned(jwt)).isFalse();
+        assertThat(parsed.getHeader().getType()).isEqualTo(Header.JWT_TYPE);
+        assertThat(parsed.getBody().getSubject()).isEqualTo("unsigned-claims");
+        assertThat(roles).isInstanceOf(List.class);
+        assertThat((List<?>) roles).hasSize(2);
+        assertThat(((List<?>) roles).get(0)).isEqualTo("reader");
+        assertThat(((List<?>) roles).get(1)).isEqualTo("writer");
+        assertThat(handledSubject).isEqualTo("unsigned-claims");
     }
 
     @Test
