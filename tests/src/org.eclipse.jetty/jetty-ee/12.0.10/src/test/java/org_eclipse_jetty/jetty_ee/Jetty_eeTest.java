@@ -196,6 +196,31 @@ public class Jetty_eeTest {
     }
 
     @Test
+    void environmentStringArrayAttributesOverrideCopiedDefaultsAndAreReused() {
+        TestEnvironment environment = new TestEnvironment("ee-custom-attributes-test-environment");
+        String[] protectedPatterns = {"custom.protected.", "-custom.protected.internal."};
+        String[] hiddenPatterns = {"custom.hidden.", "-custom.hidden.public."};
+        environment.setAttribute(PROTECTED_ATTRIBUTE, protectedPatterns);
+        environment.setAttribute(HIDDEN_ATTRIBUTE, hiddenPatterns);
+
+        ClassMatcher protectedMatcher = WebAppClassLoading.getProtectedClasses(environment);
+        ClassMatcher hiddenMatcher = WebAppClassLoading.getHiddenClasses(environment);
+
+        assertThat(WebAppClassLoading.getProtectedClasses(environment)).isSameAs(protectedMatcher);
+        assertThat(WebAppClassLoading.getHiddenClasses(environment)).isSameAs(hiddenMatcher);
+        assertThat(environment.getAttribute(PROTECTED_ATTRIBUTE)).isSameAs(protectedMatcher);
+        assertThat(environment.getAttribute(HIDDEN_ATTRIBUTE)).isSameAs(hiddenMatcher);
+        assertThat(protectedMatcher.getPatterns()).containsExactlyInAnyOrder(protectedPatterns);
+        assertThat(hiddenMatcher.getPatterns()).containsExactlyInAnyOrder(hiddenPatterns);
+        assertThat(protectedMatcher.match("custom.protected.Api")).isTrue();
+        assertThat(protectedMatcher.match("custom.protected.internal.Secret")).isFalse();
+        assertThat(protectedMatcher.match(String.class.getName())).isFalse();
+        assertThat(hiddenMatcher.match("custom.hidden.Secret")).isTrue();
+        assertThat(hiddenMatcher.match("custom.hidden.public.Endpoint")).isFalse();
+        assertThat(hiddenMatcher.match(WebAppClassLoading.class.getName())).isFalse();
+    }
+
+    @Test
     void globalAddersAugmentDefaultMatchers() {
         String protectedPattern = "global.protected.jetty.ee.";
         String hiddenPattern = "global.hidden.jetty.ee.";
