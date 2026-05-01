@@ -334,12 +334,12 @@ public class Aether_apiTest {
         assertThat(deployResult.getArtifacts()).containsExactly(rootArtifact);
         assertThat(deployResult.getMetadata()).containsExactly(metadata);
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> new ArtifactDescriptorResult(descriptorRequest).addDependency(null))
-                .withMessageContaining("no dependency specified");
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> new ArtifactDescriptorResult(descriptorRequest).addRepository(null))
-                .withMessageContaining("no repository specified");
+        ArtifactDescriptorResult emptyDescriptorResult = new ArtifactDescriptorResult(descriptorRequest)
+                .addDependency(null)
+                .addRepository(null);
+
+        assertThat(emptyDescriptorResult.getDependencies()).isEmpty();
+        assertThat(emptyDescriptorResult.getRepositories()).isEmpty();
     }
 
     @Test
