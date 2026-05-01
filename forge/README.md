@@ -10,9 +10,10 @@ stored under this directory.
 
 ## Primary Entry Point
 
-Use `do-work.sh` for unattended operation. It continuously updates this Forge
-checkout, runs `do_up_to_date_work.sh`, processes the configured work queues,
-and sleeps before the next cycle.
+Use `do-work.sh` for unattended operation. It is a stable wrapper that forwards
+all arguments to `do_up_to_date_work.sh`; the up-to-date worker owns argument
+parsing, self-updates, queue processing, sleeping, and re-execing the latest
+script before the next cycle.
 
 ```console
 ./do-work.sh [options] [metadata-forge-branch]
@@ -25,20 +26,22 @@ Common options:
 - `--javac-limit N`: process up to `N` Java compilation failure tasks per cycle.
 - `--java-run-limit N`: process up to `N` JVM runtime failure tasks per cycle.
 - `--ni-run-limit N`: process up to `N` Native Image runtime failure tasks per cycle.
+- `--parallelism N`: run up to `N` issue workflows in parallel. Maximum: 4.
 - `--review-limit N`: process up to `N` PR review tasks per label per cycle.
-- `--in-metadata-repo`: deprecated compatibility no-op; in-repo mode is always used.
+- `--once`: run a single update/work cycle through `do_up_to_date_work.sh` and exit.
 
 Examples:
 
 ```console
 ./do-work.sh --new-limit 1 --javac-limit 1
+./do-work.sh --parallelism 2
 DO_WORK_SLEEP_SECONDS=60 ./do-work.sh --branch master
 FORGE_REVIEW_LABEL=library-new-request ./do-work.sh --review-limit 2
 ```
 
 The same limits can be controlled with environment variables such as
 `FORGE_WORK_LIMIT`, `FORGE_JAVAC_WORK_LIMIT`, `FORGE_JAVA_RUN_WORK_LIMIT`,
-`FORGE_NI_RUN_WORK_LIMIT`, `FORGE_REVIEW_LIMIT`,
+`FORGE_NI_RUN_WORK_LIMIT`, `FORGE_PARALLELISM`, `FORGE_REVIEW_LIMIT`,
 `FORGE_BULK_UPDATE_REVIEW_LIMIT`, and `DO_WORK_SLEEP_SECONDS`.
 
 ## Setup
@@ -88,8 +91,8 @@ forge/
 ```
 
 - `forge_metadata.py`: top-level issue and PR automation dispatcher.
-- `do-work.sh`: long-running worker loop.
-- `do_up_to_date_work.sh`: one-shot queue processor used by the worker loop.
+- `do-work.sh`: stable wrapper around `do_up_to_date_work.sh`.
+- `do_up_to_date_work.sh`: long-running up-to-date worker and queue processor.
 - `ai_workflows/`: workflow entry points and strategy implementations.
 - `git_scripts/`: branch, commit, PR, and review helpers.
 - `utility_scripts/`: shared support code.

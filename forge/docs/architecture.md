@@ -11,8 +11,8 @@ once and referenced from the diagrams.
 
 ```text
 forge/
-├─ do-work.sh                  # Long-running worker loop
-├─ do_up_to_date_work.sh       # One cycle: pull, dispatch, sleep
+├─ do-work.sh                  # Stable wrapper
+├─ do_up_to_date_work.sh       # Up-to-date worker loop
 ├─ forge_metadata.py           # Top-level dispatcher (issues, PRs, reviews)
 ├─ ai_workflows/
 │  ├─ add_new_library_support.py   # Entry: new-library generation
@@ -37,8 +37,8 @@ forge/
 ```mermaid
 flowchart TB
     subgraph Drivers["Drivers"]
-        DoWork["do-work.sh<br/>(loop)"]
-        DoCycle["do_up_to_date_work.sh<br/>(one cycle)"]
+        DoWork["do-work.sh<br/>(stable wrapper)"]
+        DoCycle["do_up_to_date_work.sh<br/>(worker loop)"]
         Dispatcher["forge_metadata.py<br/>(dispatcher)"]
     end
 
@@ -138,13 +138,14 @@ Key invariants (unchanged from the functional spec):
 
 ### 3.1 Drivers
 
-- **[do-work.sh](../do-work.sh)** — long-running loop. Updates the Forge
-  checkout, runs one cycle, sleeps `DO_WORK_SLEEP_SECONDS`, repeats. Reads
-  per-queue limits from `FORGE_*` env vars and forwards them to the cycle
-  script.
-- **[do_up_to_date_work.sh](../do_up_to_date_work.sh)** — one cycle.
-  Materializes env vars and invokes `forge_metadata.py` to drain each
-  configured work queue once.
+- **[do-work.sh](../do-work.sh)** — fixed bootstrap wrapper. It is not changed
+  for behavior updates; it forwards `argv` unchanged to
+  `do_up_to_date_work.sh`, where the selected branch and every other option are
+  parsed.
+- **[do_up_to_date_work.sh](../do_up_to_date_work.sh)** — long-running
+  up-to-date worker. Parses arguments, updates the Forge checkout, runs one
+  configured work cycle, sleeps `DO_WORK_SLEEP_SECONDS`, and re-execs the
+  latest script before the next cycle.
 - **[forge_metadata.py](../forge_metadata.py)** — dispatcher. Fetches GitHub
   issues by label, claims them via optimistic locking (assignee + verify),
   creates an isolated worktree, routes the claim to the matching workflow
@@ -276,7 +277,8 @@ codex hand-off contract for non-`SUCCESS` outcomes.
 sequenceDiagram
     autonumber
     participant U as User / CI
-    participant Loop as do-work.sh
+    participant Wrapper as do-work.sh
+    participant Worker as do_up_to_date_work.sh
     participant Disp as forge_metadata.py
     participant GH as GitHub
     participant Entry as add_new_library_support.py
@@ -288,8 +290,9 @@ sequenceDiagram
     participant Met as Metrics store
     participant PR as git_scripts/make_pr_*
 
-    U->>Loop: ./do-work.sh
-    Loop->>Disp: do_up_to_date_work.sh → forge_metadata.py
+    U->>Wrapper: ./do-work.sh
+    Wrapper->>Worker: exec do_up_to_date_work.sh "$@"
+    Worker->>Disp: forge_metadata.py
     Disp->>GH: Fetch issues, claim by label
     Disp->>Entry: Invoke with --coordinates, --strategy-name
     Entry->>Util: Resolve paths, GraalVM/Java home

@@ -55,22 +55,28 @@ supporting tests for the reachability repo.
 
 ## 4. Configuration Contracts
 
-### 4.1 CLI inputs (common to all entry scripts)
+### 4.1 Top-level worker bootstrap
+
+- `do-work.sh` is a fixed bootstrap script and must not be changed for worker
+  behavior updates. Its only user-facing input is the selected branch; it
+  forwards `argv` unchanged to `do_up_to_date_work.sh`, where every option and
+  environment concern is handled.
+- `do_up_to_date_work.sh` owns argument parsing, environment normalization,
+  Forge self-updates, queue dispatch, sleep timing, and re-execing the latest
+  worker script.
+
+### 4.2 CLI inputs (common to all entry scripts)
 
 - `--coordinates <group:artifact:version>` — required.
 - `--reachability-metadata-path` — overrides default reachability-repo clone.
 - `--metrics-repo-path` — overrides default metrics-repo clone.
-- `--in-metadata-repo` — deprecated compatibility no-op. Forge always runs
-  from `graalvm-reachability-metadata/forge`, defaults the target repository
-  to the parent checkout, and stores successful run metrics under
-  `stats/<group>/<artifact>/<version>/execution-metrics.json`.
 - `--strategy-name <name>` — selects an entry from `predefined_strategies.json`.
 - `--docs-path` — additional read-only files for agent context.
 - `-v` / `--verbose` — verbose agent output.
 - `--keep-tests-without-dynamic-access` — only honored by dynamic-access
   strategies; see [dynamic-access-workflow.md](dynamic-access-workflow.md).
 
-### 4.2 Predefined strategy schema
+### 4.3 Predefined strategy schema
 
 Each entry in `strategies/predefined_strategies.json` must provide:
 
@@ -90,13 +96,15 @@ Each entry in `strategies/predefined_strategies.json` must provide:
   entries default to `codex_then_pi`. See
   [workflow-strategies.md §5](workflow-strategies.md#5-post-generation-interventions).
 
-### 4.3 Environment
+### 4.4 Environment
 
 - Either `GRAALVM_HOME` or `JAVA_HOME` must point to a GraalVM distribution.
   Both variables are then aligned to that distribution. If neither does, the
   workflow exits with an error.
 - `gh` CLI authenticated against the reachability repo is required for any
   script in `git_scripts/` or `complete_pipelines/`.
+- `FORGE_PARALLELISM` controls how many issue workflows the top-level worker
+  may run concurrently. Valid values are `1` through `4`; the default is `1`.
 
 ## 5. Outputs
 

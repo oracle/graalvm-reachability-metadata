@@ -14,7 +14,7 @@ Repo layout:
 
 ### Repository mode
 
-Forge is located inside `graalvm-reachability-metadata/forge`. The parent checkout is the default reachability repository, and successful run metrics are written under `stats/<group>/<artifact>/<version>/execution-metrics.json`. Top-level automation still creates one detached metadata-repo worktree per issue run; the run's pending metrics root is the same worktree's `forge/` directory. The old `--in-metadata-repo` flag is accepted as a no-op for compatibility.
+Forge is located inside `graalvm-reachability-metadata/forge`. The parent checkout is the default reachability repository, and successful run metrics are written under `stats/<group>/<artifact>/<version>/execution-metrics.json`. Top-level automation still creates one detached metadata-repo worktree per issue run; the run's pending metrics root is the same worktree's `forge/` directory.
 
 ### Prerequisites
 
