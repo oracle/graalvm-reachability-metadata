@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -197,6 +198,26 @@ public class Jackson_datatype_jdk8Test {
     }
 
     @Test
+    void serializesUnwrappedOptionalBeanProperties() throws Exception {
+        ObjectMapper mapper = jdk8Mapper();
+        UnwrappedOptionalAddress present = new UnwrappedOptionalAddress(
+                "office", Optional.of(new Address("Vienna", "1010")));
+        UnwrappedOptionalAddress absent = new UnwrappedOptionalAddress("remote", Optional.empty());
+
+        JsonNode presentTree = mapper.readTree(mapper.writeValueAsString(present));
+        JsonNode absentTree = mapper.readTree(mapper.writeValueAsString(absent));
+
+        assertThat(presentTree.get("id").asText()).isEqualTo("office");
+        assertThat(presentTree.get("address_city").asText()).isEqualTo("Vienna");
+        assertThat(presentTree.get("address_postalCode").asText()).isEqualTo("1010");
+        assertThat(presentTree.has("address")).isFalse();
+        assertThat(absentTree.get("id").asText()).isEqualTo("remote");
+        assertThat(absentTree.has("address_city")).isFalse();
+        assertThat(absentTree.has("address_postalCode")).isFalse();
+        assertThat(absentTree.has("address")).isFalse();
+    }
+
+    @Test
     void supportsObjectMapperModuleAutoDiscovery() throws Exception {
         ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
         Optional<String> value = Optional.of("auto-discovered");
@@ -313,6 +334,18 @@ public class Jackson_datatype_jdk8Test {
         public GenericContainers(List<Optional<String>> labels, Map<String, Optional<Address>> offices) {
             this.labels = labels;
             this.offices = offices;
+        }
+    }
+
+    public static final class UnwrappedOptionalAddress {
+        public String id;
+
+        @JsonUnwrapped(prefix = "address_")
+        public Optional<Address> address;
+
+        public UnwrappedOptionalAddress(String id, Optional<Address> address) {
+            this.id = id;
+            this.address = address;
         }
     }
 
