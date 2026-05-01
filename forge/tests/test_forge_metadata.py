@@ -810,6 +810,28 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             "review-model",
         )
 
+    def test_process_work_queues_skips_remaining_work_when_shutdown_requested(self) -> None:
+        env = {
+            "FORGE_JAVAC_WORK_LIMIT": "1",
+            "FORGE_REVIEW_LIMIT": "1",
+            "FORGE_REVIEW_LABEL": forge_metadata.LABEL_LIBRARY_NEW,
+        }
+
+        with patch.dict(os.environ, env, clear=True), \
+                patch.object(forge_metadata, "is_shutdown_requested", return_value=True), \
+                patch.object(forge_metadata, "validate_issue_processing_environment") as validate_environment, \
+                patch.object(forge_metadata, "process_issues_with_label") as process_issues, \
+                patch.object(forge_metadata, "process_pull_requests_with_label") as process_reviews:
+            forge_metadata.process_work_queues(
+                "/tmp/reachability",
+                "/tmp/metrics",
+                "automation-user",
+            )
+
+        validate_environment.assert_not_called()
+        process_issues.assert_not_called()
+        process_reviews.assert_not_called()
+
 
 class IssueClaimCacheTests(unittest.TestCase):
     def test_read_cache_ignores_missing_corrupt_and_expired_cache(self) -> None:
@@ -1299,6 +1321,26 @@ class InterruptHandlingTests(unittest.TestCase):
 
         post_issue_comment.assert_not_called()
         add_issue_label.assert_not_called()
+
+    def test_process_issues_with_label_skips_queue_when_shutdown_requested(self) -> None:
+        with patch.object(forge_metadata, "is_shutdown_requested", return_value=True), \
+                patch.object(forge_metadata, "validate_issue_processing_environment") as validate_environment, \
+                patch.object(forge_metadata, "resolve_authenticated_user") as resolve_authenticated_user:
+            processed = forge_metadata.process_issues_with_label(
+                forge_metadata.LABEL_LIBRARY_NEW,
+                1,
+                0,
+                "/tmp/reachability",
+                "/tmp/metrics",
+                None,
+                False,
+                "automation-user",
+                1,
+            )
+
+        self.assertEqual(processed, 0)
+        validate_environment.assert_not_called()
+        resolve_authenticated_user.assert_not_called()
 
 
 class PullRequestReviewTests(unittest.TestCase):

@@ -58,12 +58,19 @@ supporting tests for the reachability repo.
 ### 4.1 Top-level worker bootstrap
 
 - `do-work.sh` is a fixed bootstrap script and must not be changed for worker
-  behavior updates. Its only user-facing input is the selected branch; it
-  forwards `argv` unchanged to `do_up_to_date_work.sh`, where every option and
-  environment concern is handled.
+  behavior updates. It forwards `argv` unchanged to
+  `do_up_to_date_work.sh`, where every option and environment concern is
+  handled.
 - `do_up_to_date_work.sh` owns argument parsing, environment normalization,
   Forge self-updates, queue dispatch, sleep timing, and re-execing the latest
   worker script.
+- `do_up_to_date_work.sh --stop` creates a shared stop marker for the current
+  user at `~/.metadata-forge-stop` by default. Passing `--branch BRANCH` or a
+  positional branch creates a branch-scoped marker next to it, such as
+  `~/.metadata-forge-stop.master`. Running `--clear-stop` removes the matching
+  marker. Existing worker loops check the global marker and the marker for
+  their monitored branch between queue operations and during sleep, then exit
+  without claiming additional work.
 
 ### 4.2 CLI inputs (common to all entry scripts)
 
@@ -105,6 +112,8 @@ Each entry in `strategies/predefined_strategies.json` must provide:
   script in `git_scripts/` or `complete_pipelines/`.
 - `FORGE_PARALLELISM` controls how many issue workflows the top-level worker
   may run concurrently. Valid values are `1` through `4`; the default is `1`.
+- `FORGE_DO_WORK_STOP_FILE` overrides the shared stop marker path used by
+  `do-work` loops. The default is `~/.metadata-forge-stop`.
 
 ## 5. Outputs
 

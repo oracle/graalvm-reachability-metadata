@@ -29,6 +29,18 @@ WORK_STRATEGY_NAME="${FORGE_STRATEGY_NAME:-dynamic_access_main_sources_pi_gpt-5.
 GITHUB_RATE_LIMIT_EXIT_CODE=75
 MAX_PARALLELISM=4
 RUN_ONCE=0
+REQUEST_STOP=0
+CLEAR_STOP=0
+BRANCH_ARG_PROVIDED=0
+SLEEP_POLL_SECONDS="${FORGE_DO_WORK_SLEEP_POLL_SECONDS:-5}"
+
+if [[ -n "${FORGE_DO_WORK_STOP_FILE:-}" ]]; then
+    STOP_FILE="$FORGE_DO_WORK_STOP_FILE"
+elif [[ -n "${HOME:-}" ]]; then
+    STOP_FILE="$HOME/.metadata-forge-stop"
+else
+    STOP_FILE=""
+fi
 
 LOCAL_REPOSITORIES_DIR="$SCRIPT_DIR/local_repositories"
 REACHABILITY_REPO_DIR="$LOCAL_REPOSITORIES_DIR/graalvm-reachability-metadata"
@@ -56,6 +68,14 @@ Options:
       Show this help text.
   --once
       Run one update/work cycle and exit without sleeping.
+  --stop
+      Request Forge do-work loops to exit. Without a branch argument this
+      creates the global stop marker ~/.metadata-forge-stop. With --branch or
+      a positional branch, it creates a branch-scoped marker next to the global
+      marker, for example ~/.metadata-forge-stop.master.
+  --clear-stop, --resume
+      Clear the matching global or branch-scoped stop marker so future do-work
+      loops can run.
   --branch BRANCH
       Branch to monitor on origin. Equivalent to the optional positional
       metadata-forge-branch argument.
@@ -94,6 +114,8 @@ Environment:
   DO_WORK_MONITORED_BRANCH
       Branch to monitor when no branch argument is provided. Defaults to
       DO_MY_WORK_MONITORED_BRANCH, then master.
+  FORGE_DO_WORK_STOP_FILE
+      Path to the shared stop marker. Defaults to ~/.metadata-forge-stop.
   FORGE_RANDOM_WORK_OFFSET
       Set to 1 to start new-library issue scans at a random offset, or 0 to
       scan from the beginning. Defaults to 1.
@@ -158,6 +180,72 @@ require_parallelism() {
 
 log() {
     printf '[%(%Y-%m-%d %H:%M:%S)T] %s\n' -1 "$1"
+}
+
+require_stop_file() {
+    if [[ -z "$STOP_FILE" ]]; then
+        echo "HOME is not set; set FORGE_DO_WORK_STOP_FILE to use --stop or run do-work loops." >&2
+        exit 1
+    fi
+}
+
+request_stop() {
+    local target_file="$1"
+    local scope="$2"
+
+    mkdir -p -- "$(dirname -- "$target_file")"
+    printf 'Metadata Forge shutdown requested at %(%Y-%m-%d %H:%M:%S %Z)T\n' -1 > "$target_file"
+    log "Requested ${scope} Forge do-work loops to stop via ${target_file}."
+}
+
+clear_stop() {
+    local target_file="$1"
+    local scope="$2"
+
+    rm -f -- "$target_file"
+    log "Cleared ${scope} Forge do-work stop marker at ${target_file}."
+}
+
+sanitize_branch_for_stop_file() {
+    local branch="${1#origin/}"
+    local sanitized="${branch//\//_}"
+    sanitized="${sanitized//[!a-zA-Z0-9._-]/_}"
+    printf '%s' "$sanitized"
+}
+
+get_branch_stop_file() {
+    local branch="$1"
+    printf '%s.%s' "$STOP_FILE" "$(sanitize_branch_for_stop_file "$branch")"
+}
+
+is_stop_requested() {
+    [[ -e "$STOP_FILE" || -e "$(get_branch_stop_file "$MONITORED_BRANCH")" ]]
+}
+
+exit_if_stop_requested() {
+    if is_stop_requested; then
+        if [[ -e "$STOP_FILE" ]]; then
+            log "Forge do-work stop marker exists at ${STOP_FILE}; exiting."
+        else
+            log "Forge do-work stop marker exists at $(get_branch_stop_file "$MONITORED_BRANCH"); exiting."
+        fi
+        exit 0
+    fi
+}
+
+interruptible_sleep() {
+    local remaining="$1"
+    local sleep_chunk
+
+    while [[ "$remaining" -gt 0 ]]; do
+        exit_if_stop_requested
+        sleep_chunk="$remaining"
+        if [[ "$sleep_chunk" -gt "$SLEEP_POLL_SECONDS" ]]; then
+            sleep_chunk="$SLEEP_POLL_SECONDS"
+        fi
+        sleep "$sleep_chunk"
+        remaining=$((remaining - sleep_chunk))
+    done
 }
 
 display_github_rate_limits() {
@@ -307,6 +395,8 @@ process_work_queues() {
 run_cycle() {
     local iteration="${DO_UP_TO_DATE_WORK_ITERATION:-0}"
 
+    exit_if_stop_requested
+
     if ! [[ "$iteration" =~ ^[0-9]+$ ]]; then
         iteration=0
     fi
@@ -331,6 +421,8 @@ run_cycle() {
     if ! process_work_queues; then
         log "do_up_to_date_work.sh failed; retrying after sleep."
     fi
+
+    exit_if_stop_requested
 }
 
 ORIGINAL_ARGS=("$@")
@@ -346,13 +438,23 @@ while [[ "$#" -gt 0 ]]; do
             RUN_ONCE=1
             shift
             ;;
+        --stop)
+            REQUEST_STOP=1
+            shift
+            ;;
+        --clear-stop|--resume)
+            CLEAR_STOP=1
+            shift
+            ;;
         --branch)
             require_option_value "$1" "${2:-}"
             BRANCH_ARG="$2"
+            BRANCH_ARG_PROVIDED=1
             shift 2
             ;;
         --branch=*)
             BRANCH_ARG="${1#*=}"
+            BRANCH_ARG_PROVIDED=1
             shift
             ;;
         --javac-limit|--javac-work-limit)
@@ -424,6 +526,9 @@ while [[ "$#" -gt 0 ]]; do
                 exit 1
             fi
             BRANCH_ARG="${1:-}"
+            if [[ -n "$BRANCH_ARG" ]]; then
+                BRANCH_ARG_PROVIDED=1
+            fi
             shift "$#"
             ;;
         -*)
@@ -437,6 +542,7 @@ while [[ "$#" -gt 0 ]]; do
                 exit 1
             fi
             BRANCH_ARG="$1"
+            BRANCH_ARG_PROVIDED=1
             shift
             ;;
     esac
@@ -451,6 +557,31 @@ if [[ "$MONITORED_BRANCH" == "" ]]; then
     exit 1
 fi
 
+require_stop_file
+
+if [[ "$REQUEST_STOP" == "1" && "$CLEAR_STOP" == "1" ]]; then
+    echo "--stop cannot be combined with --clear-stop or --resume." >&2
+    exit 1
+fi
+
+if [[ "$REQUEST_STOP" == "1" ]]; then
+    if [[ "$BRANCH_ARG_PROVIDED" == "1" ]]; then
+        request_stop "$(get_branch_stop_file "$MONITORED_BRANCH")" "branch '${MONITORED_BRANCH}'"
+    else
+        request_stop "$STOP_FILE" "all"
+    fi
+    exit 0
+fi
+
+if [[ "$CLEAR_STOP" == "1" ]]; then
+    if [[ "$BRANCH_ARG_PROVIDED" == "1" ]]; then
+        clear_stop "$(get_branch_stop_file "$MONITORED_BRANCH")" "branch '${MONITORED_BRANCH}'"
+    else
+        clear_stop "$STOP_FILE" "all"
+    fi
+    exit 0
+fi
+
 require_positive_integer "DO_WORK_SLEEP_SECONDS" "$SLEEP_SECONDS"
 require_positive_integer "DO_WORK_CLEAN_LOCAL_REPOSITORIES_EVERY" "$CLEAN_LOCAL_REPOSITORIES_EVERY"
 require_nonnegative_integer "FORGE_JAVAC_WORK_LIMIT" "$JAVAC_WORK_LIMIT"
@@ -460,6 +591,7 @@ require_nonnegative_integer "FORGE_LIBRARY_UPDATE_WORK_LIMIT" "$LIBRARY_UPDATE_W
 require_nonnegative_integer "FORGE_WORK_LIMIT" "$WORK_LIMIT"
 require_nonnegative_integer "FORGE_REVIEW_LIMIT" "$REVIEW_LIMIT"
 require_parallelism "$PARALLELISM"
+require_positive_integer "FORGE_DO_WORK_SLEEP_POLL_SECONDS" "$SLEEP_POLL_SECONDS"
 
 if [[ "$RANDOM_WORK_OFFSET" != "0" && "$RANDOM_WORK_OFFSET" != "1" ]]; then
     echo "FORGE_RANDOM_WORK_OFFSET must be 0 or 1." >&2
@@ -467,6 +599,7 @@ if [[ "$RANDOM_WORK_OFFSET" != "0" && "$RANDOM_WORK_OFFSET" != "1" ]]; then
 fi
 
 export_work_configuration
+exit_if_stop_requested
 run_cycle
 
 if [[ "$RUN_ONCE" == "1" ]]; then
@@ -474,5 +607,5 @@ if [[ "$RUN_ONCE" == "1" ]]; then
 fi
 
 log "Sleeping for ${SLEEP_SECONDS} second(s)."
-sleep "$SLEEP_SECONDS"
+interruptible_sleep "$SLEEP_SECONDS"
 exec "$SCRIPT_DIR/do_up_to_date_work.sh" "${ORIGINAL_ARGS[@]}"

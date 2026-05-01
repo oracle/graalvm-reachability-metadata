@@ -78,6 +78,7 @@ from utility_scripts.repo_path_resolver import (
     resolve_repo_roots,
 )
 from utility_scripts.stage_logger import log_stage
+from utility_scripts.shutdown_signal import get_active_shutdown_signal_path, is_shutdown_requested
 from utility_scripts.strategy_loader import load_strategy_by_name, require_strategy_by_name
 from utility_scripts.task_logs import (
     build_task_log_path,
@@ -170,8 +171,12 @@ CODEX_REVIEW_TIMEOUT_SECONDS = 1800
 DEFAULT_WORKTREE_BASE_REF = "master"
 POST_GENERATION_GRAALVM_ENV_VAR = "GRAALVM_HOME_25_0"
 INTERRUPT_EXIT_CODES = {130, -int(signal.SIGINT)}
+INTERRUPT_REASON_CTRL_C = "Ctrl+C interrupt"
+INTERRUPT_REASON_SHUTDOWN = "shutdown request"
+SHUTDOWN_SIGNAL_POLL_SECONDS = 5.0
 
 _user_interrupt_requested = threading.Event()
+_user_interrupt_reason = INTERRUPT_REASON_CTRL_C
 
 
 @dataclass(frozen=True)
@@ -262,19 +267,52 @@ class FailurePreservationResult:
     committed_changes: bool
 
 
-def mark_user_interrupt_requested() -> None:
-    """Record that the current run is shutting down because of Ctrl+C."""
+def mark_user_interrupt_requested(reason: str = INTERRUPT_REASON_CTRL_C) -> None:
+    """Record that the current run is shutting down before normal completion."""
+    global _user_interrupt_reason
+
+    _user_interrupt_reason = reason
     _user_interrupt_requested.set()
 
 
 def clear_user_interrupt_requested() -> None:
-    """Clear the Ctrl+C marker before starting a new top-level run."""
+    """Clear the shutdown marker before starting a new top-level run."""
+    global _user_interrupt_reason
+
+    _user_interrupt_reason = INTERRUPT_REASON_CTRL_C
     _user_interrupt_requested.clear()
 
 
 def is_user_interrupt_requested() -> bool:
-    """Return True when the current run is unwinding after Ctrl+C."""
+    """Return True when the current run is unwinding before normal completion."""
     return _user_interrupt_requested.is_set()
+
+
+def get_user_interrupt_reason() -> str:
+    """Return the current run's shutdown reason."""
+    return _user_interrupt_reason
+
+
+def is_shutdown_request_interrupt() -> bool:
+    """Return True when the current run is stopping because of the shared marker."""
+    return is_user_interrupt_requested() and get_user_interrupt_reason() == INTERRUPT_REASON_SHUTDOWN
+
+
+def mark_shutdown_requested() -> None:
+    """Record that the shared Forge stop marker requested shutdown."""
+    mark_user_interrupt_requested(INTERRUPT_REASON_SHUTDOWN)
+
+
+def describe_active_shutdown_signal_path() -> str:
+    """Return the active stop marker path for log messages."""
+    return get_active_shutdown_signal_path() or "the configured stop marker"
+
+
+def raise_if_shutdown_requested() -> None:
+    """Raise KeyboardInterrupt when the shared Forge stop marker exists."""
+    if is_shutdown_requested():
+        mark_shutdown_requested()
+        raise KeyboardInterrupt
 
 
 def is_interrupt_exit_code(returncode: int | None) -> bool:
@@ -292,7 +330,7 @@ def is_interrupt_exception(exc: BaseException) -> bool:
 
 
 def _handle_sigint(_signum, _frame) -> None:
-    mark_user_interrupt_requested()
+    mark_user_interrupt_requested(INTERRUPT_REASON_CTRL_C)
     raise KeyboardInterrupt
 
 
@@ -2932,6 +2970,12 @@ def run_pull_request_review_loop(
     """Run pull request reviews once or repeatedly after each configured period."""
     iteration = 1
     while True:
+        if is_shutdown_requested():
+            log_stage(
+                "shutdown",
+                f"Stop marker exists at {describe_active_shutdown_signal_path()}; skipping pull request review loop",
+            )
+            return
         if period_seconds is not None:
             print(f"\n[Starting review iteration {iteration}.]")
         process_pull_requests_with_label(
@@ -2944,8 +2988,25 @@ def run_pull_request_review_loop(
         if period_seconds is None:
             return
         print(f"[Sleeping {period_seconds} second(s) before the next review iteration.]")
-        time.sleep(period_seconds)
+        if sleep_until_shutdown_or_timeout(period_seconds):
+            return
         iteration += 1
+
+
+def sleep_until_shutdown_or_timeout(period_seconds: int) -> bool:
+    """Sleep for up to the requested period and return True if shutdown was requested."""
+    deadline = time.monotonic() + period_seconds
+    while True:
+        if is_shutdown_requested():
+            log_stage(
+                "shutdown",
+                f"Stop marker exists at {describe_active_shutdown_signal_path()}; exiting sleep",
+            )
+            return True
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            return False
+        time.sleep(min(remaining, SHUTDOWN_SIGNAL_POLL_SECONDS))
 
 
 def build_issue_run_id(issue_number: int) -> str:
@@ -4069,6 +4130,13 @@ def process_issues_with_label(
     reflects only issues that were successfully claimed for processing.
     """
     in_metadata_repo = True
+    if is_shutdown_requested():
+        log_stage(
+            "shutdown",
+            f"Stop marker exists at {describe_active_shutdown_signal_path()}; skipping issue queue '{label}'",
+        )
+        return 0
+
     if not environment_already_validated:
         validate_issue_processing_environment()
 
@@ -4087,7 +4155,9 @@ def process_issues_with_label(
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=parallelism)
     try:
         while processed_count < limit or active_futures:
+            raise_if_shutdown_requested()
             while processed_count < limit and len(active_futures) < parallelism:
+                raise_if_shutdown_requested()
                 remaining_limit = limit - processed_count
                 available_slots = min(remaining_limit, parallelism - len(active_futures))
                 if not pending_issues:
@@ -4142,6 +4212,7 @@ def process_issues_with_label(
                         break
 
                 while pending_issues and processed_count < limit and len(active_futures) < parallelism:
+                    raise_if_shutdown_requested()
                     issue, preflight, cached_skip = pending_issues.pop(0)
                     if should_skip_issue_from_preflight(issue, preflight, cached_skip, authenticated_user):
                         continue
@@ -4173,15 +4244,27 @@ def process_issues_with_label(
 
             done_futures, _ = concurrent.futures.wait(
                 active_futures.keys(),
+                timeout=SHUTDOWN_SIGNAL_POLL_SECONDS,
                 return_when=concurrent.futures.FIRST_COMPLETED,
             )
+            if not done_futures:
+                continue
             for future in done_futures:
                 active_futures.pop(future, None)
                 future.result()
     except KeyboardInterrupt:
-        mark_user_interrupt_requested()
+        if is_shutdown_requested():
+            mark_shutdown_requested()
+        else:
+            mark_user_interrupt_requested()
+        interrupt_reason = get_user_interrupt_reason()
+        interrupt_message = (
+            f"Shutdown requested via {describe_active_shutdown_signal_path()}"
+            if interrupt_reason == INTERRUPT_REASON_SHUTDOWN
+            else "Ctrl+C received"
+        )
         print(
-            "\n[Ctrl+C received. Reverting all active claimed issues before exit.]",
+            f"\n[{interrupt_message}. Reverting all active claimed issues before exit.]",
             file=sys.stderr,
         )
         for future, claimed_issue in list(active_futures.items()):
@@ -4190,7 +4273,7 @@ def process_issues_with_label(
                     f"[Cancelled queued issue #{claimed_issue.issue['number']} future before revert.]",
                     file=sys.stderr,
                 )
-            revert_claimed_issue(claimed_issue, "Ctrl+C interrupt in main loop")
+            revert_claimed_issue(claimed_issue, f"{interrupt_reason} in main loop")
         raise
     finally:
         executor.shutdown(wait=False, cancel_futures=True)
@@ -4221,10 +4304,23 @@ def process_work_queues(
     parallelism = get_env_parallelism("FORGE_PARALLELISM", parallelism_default)
     enabled_issue_queues = [queue_config for queue_config in queue_configs if queue_config.limit > 0]
 
+    if is_shutdown_requested():
+        log_stage(
+            "shutdown",
+            f"Stop marker exists at {describe_active_shutdown_signal_path()}; skipping all work queues",
+        )
+        return
+
     if enabled_issue_queues:
         validate_issue_processing_environment()
 
     for queue_config in queue_configs:
+        if is_shutdown_requested():
+            log_stage(
+                "shutdown",
+                f"Stop marker exists at {describe_active_shutdown_signal_path()}; skipping remaining work queues",
+            )
+            return
         if queue_config.limit <= 0:
             print()
             log_stage("work-queue", f"Skipping issue queue '{queue_config.label}' because its limit is 0")
@@ -4259,6 +4355,12 @@ def process_work_queues(
         )
 
     for review_queue_config in review_queue_configs:
+        if is_shutdown_requested():
+            log_stage(
+                "shutdown",
+                f"Stop marker exists at {describe_active_shutdown_signal_path()}; skipping remaining review queues",
+            )
+            return
         if review_queue_config.limit <= 0:
             print()
             log_stage("work-queue", f"Skipping review queue '{review_queue_config.label}' because its limit is 0")
@@ -4491,7 +4593,16 @@ def main() -> None:
                 in_metadata_repo=args.in_metadata_repo,
             )
     except KeyboardInterrupt:
-        mark_user_interrupt_requested()
+        if is_shutdown_requested():
+            mark_shutdown_requested()
+        else:
+            mark_user_interrupt_requested()
+        if is_shutdown_request_interrupt():
+            print(
+                f"\nRun stopped because the Forge stop marker exists at {describe_active_shutdown_signal_path()}.",
+                file=sys.stderr,
+            )
+            sys.exit(0)
         print("\nERROR: Run interrupted by Ctrl+C.", file=sys.stderr)
         sys.exit(130)
     except GitHubRateLimitExceeded as exc:

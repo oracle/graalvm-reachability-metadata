@@ -29,6 +29,9 @@ Common options:
 - `--parallelism N`: run up to `N` issue workflows in parallel. Maximum: 4.
 - `--review-limit N`: process up to `N` PR review tasks per label per cycle.
 - `--once`: run a single update/work cycle through `do_up_to_date_work.sh` and exit.
+- `--stop`: ask all Forge `do-work` loops for the current user to exit by creating `~/.metadata-forge-stop`.
+- `--stop --branch BRANCH`: ask only loops monitoring `BRANCH` to exit, using a branch-scoped marker such as `~/.metadata-forge-stop.master`.
+- `--clear-stop`: remove the matching global or branch-scoped stop marker so future `do-work` loops can run.
 
 Examples:
 
@@ -37,12 +40,17 @@ Examples:
 ./do-work.sh --parallelism 2
 DO_WORK_SLEEP_SECONDS=60 ./do-work.sh --branch master
 FORGE_REVIEW_LABEL=library-new-request ./do-work.sh --review-limit 2
+./do-work.sh --stop
+./do-work.sh --stop --branch master
+./do-work.sh --clear-stop
+./do-work.sh --clear-stop --branch master
 ```
 
 The same limits can be controlled with environment variables such as
 `FORGE_WORK_LIMIT`, `FORGE_JAVAC_WORK_LIMIT`, `FORGE_JAVA_RUN_WORK_LIMIT`,
 `FORGE_NI_RUN_WORK_LIMIT`, `FORGE_PARALLELISM`, `FORGE_REVIEW_LIMIT`,
-`FORGE_BULK_UPDATE_REVIEW_LIMIT`, and `DO_WORK_SLEEP_SECONDS`.
+`FORGE_BULK_UPDATE_REVIEW_LIMIT`, and `DO_WORK_SLEEP_SECONDS`. Set
+`FORGE_DO_WORK_STOP_FILE` to override the shared stop marker path.
 
 ## Setup
 

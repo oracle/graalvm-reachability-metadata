@@ -144,8 +144,9 @@ Key invariants (unchanged from the functional spec):
   parsed.
 - **[do_up_to_date_work.sh](../do_up_to_date_work.sh)** — long-running
   up-to-date worker. Parses arguments, updates the Forge checkout, runs one
-  configured work cycle, sleeps `DO_WORK_SLEEP_SECONDS`, and re-execs the
-  latest script before the next cycle.
+  configured work cycle, sleeps `DO_WORK_SLEEP_SECONDS`, honors the shared
+  stop marker at `~/.metadata-forge-stop` plus branch-scoped markers beside
+  it, and re-execs the latest script before the next cycle.
 - **[forge_metadata.py](../forge_metadata.py)** — dispatcher. Fetches GitHub
   issues by label, claims them via optimistic locking (assignee + verify),
   creates an isolated worktree, routes the claim to the matching workflow
