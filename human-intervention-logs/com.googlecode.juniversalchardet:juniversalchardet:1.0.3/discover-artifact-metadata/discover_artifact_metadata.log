@@ -1,0 +1,1535 @@
+Starting a Gradle Daemon, 3 busy and 2 incompatible and 26 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de2b4-b187-7c60-a3c3-052a763ff278
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.googlecode.juniversalchardet:juniversalchardet:1.0.3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.0.3".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json
+- Set "coordinates" to "com.googlecode.juniversalchardet:juniversalchardet:1.0.3".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the published artifact metadata first, then update the JSON in place with exact-version URLs where they can be tied to `1.0.3`.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json && sed -n '1,200p' build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+-rw-rw-r-- 1 vjovanov vjovanov 81 May  1 10:43 build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json
+{
+  "coordinates" : "com.googlecode.juniversalchardet:juniversalchardet:1.0.3"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "juniversalchardet|com.googlecode.juniversalchardet" .' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+ exited 1 in 0ms:
+web search: 
+web search: com.googlecode.juniversalchardet juniversalchardet 1.0.3 maven source jar javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/
+web search: 
+web search: juniversalchardet svn tags 1.0.3
+codex
+Maven Central has both `-sources.jar` and `-javadoc.jar` for `1.0.3`, so I’m checking those directly before falling back to the original Google Code metadata for repository/test links.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.googlecode.juniversalchardet</groupId>
+	<artifactId>juniversalchardet</artifactId>
+	<version>1.0.3</version>
+	<packaging>jar</packaging>
+	<name>juniversalchardet</name>
+	<description>Java port of universalchardet</description>
+	<url>http://juniversalchardet.googlecode.com/</url>
+	<licenses>
+		<license>
+			<name>Mozilla Public License 1.1 (MPL 1.1)</name>
+			<url>http://www.mozilla.org/MPL/MPL-1.1.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<connection>scm:svn:http://juniversalchardet.googlecode.com/svn/trunk/</connection>
+		<url>http://code.google.com/p/juniversalchardet/source/browse/</url>
+	</scm>
+	<developers>
+		<developer>
+			<id>takscape</id>
+			<email>takscape@gmail.com</email>
+		</developer>
+	</developers>
+	<build>
+		<sourceDirectory>${basedir}/src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<properties>
+		<project.build.sourceEncoding>us-ascii</project.build.sourceEncoding>
+	</properties>
+</project>
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f | sed -n '1,10p' | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+ succeeded in 0ms:
+{
+  "coordinates" : "com.googlecode.juniversalchardet:juniversalchardet:1.0.3"
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3-javadoc.jar -o /tmp/juniversalchardet-1.0.3-javadoc.jar && jar tf /tmp/juniversalchardet-1.0.3-javadoc.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3-sources.jar -o /tmp/juniversalchardet-1.0.3-sources.jar && jar tf /tmp/juniversalchardet-1.0.3-sources.jar | sed -n '1,200p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/mozilla/
+org/mozilla/universalchardet/
+org/mozilla/universalchardet/prober/
+org/mozilla/universalchardet/prober/contextanalysis/
+org/mozilla/universalchardet/prober/distributionanalysis/
+org/mozilla/universalchardet/prober/sequence/
+org/mozilla/universalchardet/prober/statemachine/
+org/mozilla/universalchardet/CharsetListener.java
+org/mozilla/universalchardet/Constants.java
+org/mozilla/universalchardet/prober/Big5Prober.java
+org/mozilla/universalchardet/prober/CharsetProber.java
+org/mozilla/universalchardet/prober/contextanalysis/EUCJPContextAnalysis.java
+org/mozilla/universalchardet/prober/contextanalysis/JapaneseContextAnalysis.java
+org/mozilla/universalchardet/prober/contextanalysis/SJISContextAnalysis.java
+org/mozilla/universalchardet/prober/distributionanalysis/Big5DistributionAnalysis.java
+org/mozilla/universalchardet/prober/distributionanalysis/CharDistributionAnalysis.java
+org/mozilla/universalchardet/prober/distributionanalysis/EUCJPDistributionAnalysis.java
+org/mozilla/universalchardet/prober/distributionanalysis/EUCKRDistributionAnalysis.java
+org/mozilla/universalchardet/prober/distributionanalysis/EUCTWDistributionAnalysis.java
+org/mozilla/universalchardet/prober/distributionanalysis/GB2312DistributionAnalysis.java
+org/mozilla/universalchardet/prober/distributionanalysis/JISDistributionAnalysis.java
+org/mozilla/universalchardet/prober/distributionanalysis/SJISDistributionAnalysis.java
+org/mozilla/universalchardet/prober/EscCharsetProber.java
+org/mozilla/universalchardet/prober/EUCJPProber.java
+org/mozilla/universalchardet/prober/EUCKRProber.java
+org/mozilla/universalchardet/prober/EUCTWProber.java
+org/mozilla/universalchardet/prober/GB18030Prober.java
+org/mozilla/universalchardet/prober/HebrewProber.java
+org/mozilla/universalchardet/prober/Latin1Prober.java
+org/mozilla/universalchardet/prober/MBCSGroupProber.java
+org/mozilla/universalchardet/prober/SBCSGroupProber.java
+org/mozilla/universalchardet/prober/sequence/BulgarianModel.java
+org/mozilla/universalchardet/prober/sequence/CyrillicModel.java
+org/mozilla/universalchardet/prober/sequence/GreekModel.java
+org/mozilla/universalchardet/prober/sequence/HebrewModel.java
+org/mozilla/universalchardet/prober/sequence/Ibm855Model.java
+org/mozilla/universalchardet/prober/sequence/Ibm866Model.java
+org/mozilla/universalchardet/prober/sequence/Koi8rModel.java
+org/mozilla/universalchardet/prober/sequence/Latin5BulgarianModel.java
+org/mozilla/universalchardet/prober/sequence/Latin5Model.java
+org/mozilla/universalchardet/prober/sequence/Latin7Model.java
+org/mozilla/universalchardet/prober/sequence/MacCyrillicModel.java
+org/mozilla/universalchardet/prober/sequence/SequenceModel.java
+org/mozilla/universalchardet/prober/sequence/Win1251BulgarianModel.java
+org/mozilla/universalchardet/prober/sequence/Win1251Model.java
+org/mozilla/universalchardet/prober/sequence/Win1253Model.java
+org/mozilla/universalchardet/prober/SingleByteCharsetProber.java
+org/mozilla/universalchardet/prober/SJISProber.java
+org/mozilla/universalchardet/prober/statemachine/Big5SMModel.java
+org/mozilla/universalchardet/prober/statemachine/CodingStateMachine.java
+org/mozilla/universalchardet/prober/statemachine/EUCJPSMModel.java
+org/mozilla/universalchardet/prober/statemachine/EUCKRSMModel.java
+org/mozilla/universalchardet/prober/statemachine/EUCTWSMModel.java
+org/mozilla/universalchardet/prober/statemachine/GB18030SMModel.java
+org/mozilla/universalchardet/prober/statemachine/HZSMModel.java
+org/mozilla/universalchardet/prober/statemachine/ISO2022CNSMModel.java
+org/mozilla/universalchardet/prober/statemachine/ISO2022JPSMModel.java
+org/mozilla/universalchardet/prober/statemachine/ISO2022KRSMModel.java
+org/mozilla/universalchardet/prober/statemachine/PkgInt.java
+org/mozilla/universalchardet/prober/statemachine/SJISSMModel.java
+org/mozilla/universalchardet/prober/statemachine/SMModel.java
+org/mozilla/universalchardet/prober/statemachine/UCS2BESMModel.java
+org/mozilla/universalchardet/prober/statemachine/UTF8SMModel.java
+org/mozilla/universalchardet/prober/UTF8Prober.java
+org/mozilla/universalchardet/UniversalDetector.java
+
+ succeeded in 114ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/mozilla/
+org/mozilla/universalchardet/
+org/mozilla/universalchardet/class-use/
+org/mozilla/universalchardet/prober/
+org/mozilla/universalchardet/prober/class-use/
+org/mozilla/universalchardet/prober/contextanalysis/
+org/mozilla/universalchardet/prober/contextanalysis/class-use/
+org/mozilla/universalchardet/prober/distributionanalysis/
+org/mozilla/universalchardet/prober/distributionanalysis/class-use/
+org/mozilla/universalchardet/prober/sequence/
+org/mozilla/universalchardet/prober/sequence/class-use/
+org/mozilla/universalchardet/prober/statemachine/
+org/mozilla/universalchardet/prober/statemachine/class-use/
+resources/
+allclasses-frame.html
+allclasses-noframe.html
+constant-values.html
+deprecated-list.html
+help-doc.html
+index-all.html
+index.html
+org/mozilla/universalchardet/CharsetListener.html
+org/mozilla/universalchardet/class-use/CharsetListener.html
+org/mozilla/universalchardet/class-use/Constants.html
+org/mozilla/universalchardet/class-use/UniversalDetector.html
+org/mozilla/universalchardet/class-use/UniversalDetector.InputState.html
+org/mozilla/universalchardet/Constants.html
+org/mozilla/universalchardet/package-frame.html
+org/mozilla/universalchardet/package-summary.html
+org/mozilla/universalchardet/package-tree.html
+org/mozilla/universalchardet/package-use.html
+org/mozilla/universalchardet/prober/Big5Prober.html
+org/mozilla/universalchardet/prober/CharsetProber.html
+org/mozilla/universalchardet/prober/CharsetProber.ProbingState.html
+org/mozilla/universalchardet/prober/class-use/Big5Prober.html
+org/mozilla/universalchardet/prober/class-use/CharsetProber.html
+org/mozilla/universalchardet/prober/class-use/CharsetProber.ProbingState.html
+org/mozilla/universalchardet/prober/class-use/EscCharsetProber.html
+org/mozilla/universalchardet/prober/class-use/EUCJPProber.html
+org/mozilla/universalchardet/prober/class-use/EUCKRProber.html
+org/mozilla/universalchardet/prober/class-use/EUCTWProber.html
+org/mozilla/universalchardet/prober/class-use/GB18030Prober.html
+org/mozilla/universalchardet/prober/class-use/HebrewProber.html
+org/mozilla/universalchardet/prober/class-use/Latin1Prober.html
+org/mozilla/universalchardet/prober/class-use/MBCSGroupProber.html
+org/mozilla/universalchardet/prober/class-use/SBCSGroupProber.html
+org/mozilla/universalchardet/prober/class-use/SingleByteCharsetProber.html
+org/mozilla/universalchardet/prober/class-use/SJISProber.html
+org/mozilla/universalchardet/prober/class-use/UTF8Prober.html
+org/mozilla/universalchardet/prober/contextanalysis/class-use/EUCJPContextAnalysis.html
+org/mozilla/universalchardet/prober/contextanalysis/class-use/JapaneseContextAnalysis.html
+org/mozilla/universalchardet/prober/contextanalysis/class-use/JapaneseContextAnalysis.Order.html
+org/mozilla/universalchardet/prober/contextanalysis/class-use/SJISContextAnalysis.html
+org/mozilla/universalchardet/prober/contextanalysis/EUCJPContextAnalysis.html
+org/mozilla/universalchardet/prober/contextanalysis/JapaneseContextAnalysis.html
+org/mozilla/universalchardet/prober/contextanalysis/JapaneseContextAnalysis.Order.html
+org/mozilla/universalchardet/prober/contextanalysis/package-frame.html
+org/mozilla/universalchardet/prober/contextanalysis/package-summary.html
+org/mozilla/universalchardet/prober/contextanalysis/package-tree.html
+org/mozilla/universalchardet/prober/contextanalysis/package-use.html
+org/mozilla/universalchardet/prober/contextanalysis/SJISContextAnalysis.html
+org/mozilla/universalchardet/prober/distributionanalysis/Big5DistributionAnalysis.html
+org/mozilla/universalchardet/prober/distributionanalysis/CharDistributionAnalysis.html
+org/mozilla/universalchardet/prober/distributionanalysis/class-use/Big5DistributionAnalysis.html
+org/mozilla/universalchardet/prober/distributionanalysis/class-use/CharDistributionAnalysis.html
+org/mozilla/universalchardet/prober/distributionanalysis/class-use/EUCJPDistributionAnalysis.html
+org/mozilla/universalchardet/prober/distributionanalysis/class-use/EUCKRDistributionAnalysis.html
+org/mozilla/universalchardet/prober/distributionanalysis/class-use/EUCTWDistributionAnalysis.html
+org/mozilla/universalchardet/prober/distributionanalysis/class-use/GB2312DistributionAnalysis.html
+org/mozilla/universalchardet/prober/distributionanalysis/class-use/JISDistributionAnalysis.html
+org/mozilla/universalchardet/prober/distributionanalysis/class-use/SJISDistributionAnalysis.html
+org/mozilla/universalchardet/prober/distributionanalysis/EUCJPDistributionAnalysis.html
+org/mozilla/universalchardet/prober/distributionanalysis/EUCKRDistributionAnalysis.html
+org/mozilla/universalchardet/prober/distributionanalysis/EUCTWDistributionAnalysis.html
+org/mozilla/universalchardet/prober/distributionanalysis/GB2312DistributionAnalysis.html
+org/mozilla/universalchardet/prober/distributionanalysis/JISDistributionAnalysis.html
+org/mozilla/universalchardet/prober/distributionanalysis/package-frame.html
+
+web search: 
+web search: 
+web search: 
+web search: Maven Central com.googlecode.juniversalchardet juniversalchardet 1.0.3
+web search: 
+web search: site:code.google.com/archive/p/juniversalchardet juniversalchardet
+web search: 
+web search: https://code.google.com/archive/p/juniversalchardet/
+codex
+The original project metadata points at a Google Code SVN project, but that archive is JavaScript-only in the browser. I’m probing the archived source ZIP/API and the exported GitHub mirror to see whether there is an exact `1.0.3` tag or any bundled tests.
+exec
+/usr/bin/bash -lc 'curl -I -L https://storage.googleapis.com/google-code-archive-source/v2/code.google.com/juniversalchardet/source-archive.zip' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/albfernandez/juniversalchardet/tags | sed -n '1,160p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/albfernandez/juniversalchardet/contents?ref=main | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+ succeeded in 145ms:
+
+  0 3685k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+content-type: application/octet-stream
+x-guploader-uploadid: AAVLpEgBtztGtfPgIXLH8M33KvjcCh5rb1uGMnzsqXvf_IzhTvU2BBTTBqVf5FskKJ97Ins_vWGaRm4
+expires: Fri, 01 May 2026 09:43:44 GMT
+date: Fri, 01 May 2026 08:43:44 GMT
+cache-control: public, max-age=3600
+last-modified: Wed, 17 Feb 2016 21:11:47 GMT
+etag: "c81c4e922c1bca40c1f577f818b00896"
+x-goog-generation: 1455743507532000
+x-goog-metageneration: 1
+x-goog-stored-content-encoding: identity
+x-goog-stored-content-length: 3773468
+x-goog-hash: crc32c=/qwckg==
+x-goog-hash: md5=yBxOkiwbykDB9Xf4GLAIlg==
+x-goog-storage-class: NEARLINE
+accept-ranges: bytes
+content-length: 3773468
+server: UploadServer
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+
+ succeeded in 189ms:
+[
+  {
+    "name": "v2.5.0",
+    "zipball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/zipball/refs/tags/v2.5.0",
+    "tarball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/tarball/refs/tags/v2.5.0",
+    "commit": {
+      "sha": "790939b8bd56892336d61356c139b774494006dc",
+      "url": "https://api.github.com/repos/albfernandez/juniversalchardet/commits/790939b8bd56892336d61356c139b774494006dc"
+    },
+    "node_id": "MDM6UmVmNTI5MDQ1MTY6cmVmcy90YWdzL3YyLjUuMA=="
+  },
+  {
+    "name": "v2.4.0",
+    "zipball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/zipball/refs/tags/v2.4.0",
+    "tarball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/tarball/refs/tags/v2.4.0",
+    "commit": {
+      "sha": "9236c5a034bb5b33d1fcb947e33a76c6b2ebb78b",
+      "url": "https://api.github.com/repos/albfernandez/juniversalchardet/commits/9236c5a034bb5b33d1fcb947e33a76c6b2ebb78b"
+    },
+    "node_id": "MDM6UmVmNTI5MDQ1MTY6cmVmcy90YWdzL3YyLjQuMA=="
+  },
+  {
+    "name": "v2.3.2",
+    "zipball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/zipball/refs/tags/v2.3.2",
+    "tarball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/tarball/refs/tags/v2.3.2",
+    "commit": {
+      "sha": "2344c250dcf7a3561c179319f5d8453efe3005c8",
+      "url": "https://api.github.com/repos/albfernandez/juniversalchardet/commits/2344c250dcf7a3561c179319f5d8453efe3005c8"
+    },
+    "node_id": "MDM6UmVmNTI5MDQ1MTY6cmVmcy90YWdzL3YyLjMuMg=="
+  },
+  {
+    "name": "v2.3.1",
+    "zipball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/zipball/refs/tags/v2.3.1",
+    "tarball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/tarball/refs/tags/v2.3.1",
+    "commit": {
+      "sha": "762d1a8639feb62bf47e3ea63e52d7785f2fe6c2",
+      "url": "https://api.github.com/repos/albfernandez/juniversalchardet/commits/762d1a8639feb62bf47e3ea63e52d7785f2fe6c2"
+    },
+    "node_id": "MDM6UmVmNTI5MDQ1MTY6cmVmcy90YWdzL3YyLjMuMQ=="
+  },
+  {
+    "name": "v2.3.0",
+    "zipball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/zipball/refs/tags/v2.3.0",
+    "tarball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/tarball/refs/tags/v2.3.0",
+    "commit": {
+      "sha": "530de353c2f683c0240ae1fd0b791001629ef71a",
+      "url": "https://api.github.com/repos/albfernandez/juniversalchardet/commits/530de353c2f683c0240ae1fd0b791001629ef71a"
+    },
+    "node_id": "MDM6UmVmNTI5MDQ1MTY6cmVmcy90YWdzL3YyLjMuMA=="
+  },
+  {
+    "name": "v2.2.0",
+    "zipball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/zipball/refs/tags/v2.2.0",
+    "tarball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/tarball/refs/tags/v2.2.0",
+    "commit": {
+      "sha": "d6568eeccab5d128c864c3ff12d6e55196bbc524",
+      "url": "https://api.github.com/repos/albfernandez/juniversalchardet/commits/d6568eeccab5d128c864c3ff12d6e55196bbc524"
+    },
+    "node_id": "MDM6UmVmNTI5MDQ1MTY6cmVmcy90YWdzL3YyLjIuMA=="
+  },
+  {
+    "name": "v2.1.0",
+    "zipball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/zipball/refs/tags/v2.1.0",
+    "tarball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/tarball/refs/tags/v2.1.0",
+    "commit": {
+      "sha": "67df28467307382addaf0b963c7ab7233d640979",
+      "url": "https://api.github.com/repos/albfernandez/juniversalchardet/commits/67df28467307382addaf0b963c7ab7233d640979"
+    },
+    "node_id": "MDM6UmVmNTI5MDQ1MTY6cmVmcy90YWdzL3YyLjEuMA=="
+  },
+  {
+    "name": "v2.0.4",
+    "zipball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/zipball/refs/tags/v2.0.4",
+    "tarball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/tarball/refs/tags/v2.0.4",
+    "commit": {
+      "sha": "8b3bd21e1c6beeae8e1ab2a44e64d542a654eb57",
+      "url": "https://api.github.com/repos/albfernandez/juniversalchardet/commits/8b3bd21e1c6beeae8e1ab2a44e64d542a654eb57"
+    },
+    "node_id": "MDM6UmVmNTI5MDQ1MTY6cmVmcy90YWdzL3YyLjAuNA=="
+  },
+  {
+    "name": "v2.0.3",
+    "zipball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/zipball/refs/tags/v2.0.3",
+    "tarball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/tarball/refs/tags/v2.0.3",
+    "commit": {
+      "sha": "44d3adbb706498539e4ccf42c7fa71c4296d8f5a",
+      "url": "https://api.github.com/repos/albfernandez/juniversalchardet/commits/44d3adbb706498539e4ccf42c7fa71c4296d8f5a"
+    },
+    "node_id": "MDM6UmVmNTI5MDQ1MTY6cmVmcy90YWdzL3YyLjAuMw=="
+  },
+  {
+    "name": "v2.0.2",
+    "zipball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/zipball/refs/tags/v2.0.2",
+    "tarball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/tarball/refs/tags/v2.0.2",
+    "commit": {
+      "sha": "39db22b9d1615c6d4c312534de182867b1d4719d",
+      "url": "https://api.github.com/repos/albfernandez/juniversalchardet/commits/39db22b9d1615c6d4c312534de182867b1d4719d"
+    },
+    "node_id": "MDM6UmVmNTI5MDQ1MTY6cmVmcy90YWdzL3YyLjAuMg=="
+  },
+  {
+    "name": "v2.0.1",
+    "zipball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/zipball/refs/tags/v2.0.1",
+    "tarball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/tarball/refs/tags/v2.0.1",
+    "commit": {
+      "sha": "8a0c5b2b7220043262ac519506fb14b43e9f1a6c",
+      "url": "https://api.github.com/repos/albfernandez/juniversalchardet/commits/8a0c5b2b7220043262ac519506fb14b43e9f1a6c"
+    },
+    "node_id": "MDM6UmVmNTI5MDQ1MTY6cmVmcy90YWdzL3YyLjAuMQ=="
+  },
+  {
+    "name": "v2.0.0",
+    "zipball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/zipball/refs/tags/v2.0.0",
+    "tarball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/tarball/refs/tags/v2.0.0",
+    "commit": {
+      "sha": "c3aa5e5810c97b9cb4c45b408008955b0ace401f",
+      "url": "https://api.github.com/repos/albfernandez/juniversalchardet/commits/c3aa5e5810c97b9cb4c45b408008955b0ace401f"
+    },
+    "node_id": "MDM6UmVmNTI5MDQ1MTY6cmVmcy90YWdzL3YyLjAuMA=="
+  },
+  {
+    "name": "v1.0.3",
+    "zipball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/zipball/refs/tags/v1.0.3",
+    "tarball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/tarball/refs/tags/v1.0.3",
+    "commit": {
+      "sha": "ba430cab541a571676a824c0e6be21042f7a8efe",
+      "url": "https://api.github.com/repos/albfernandez/juniversalchardet/commits/ba430cab541a571676a824c0e6be21042f7a8efe"
+    },
+    "node_id": "MDM6UmVmNTI5MDQ1MTY6cmVmcy90YWdzL3YxLjAuMw=="
+  },
+  {
+    "name": "juniversalchardet-1_0_2",
+    "zipball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/zipball/refs/tags/juniversalchardet-1_0_2",
+    "tarball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/tarball/refs/tags/juniversalchardet-1_0_2",
+    "commit": {
+      "sha": "dae45533eb6aa60629a85fd75d19d4bd8f16e8fb",
+      "url": "https://api.github.com/repos/albfernandez/juniversalchardet/commits/dae45533eb6aa60629a85fd75d19d4bd8f16e8fb"
+    },
+    "node_id": "MDM6UmVmNTI5MDQ1MTY6cmVmcy90YWdzL2p1bml2ZXJzYWxjaGFyZGV0LTFfMF8y"
+  },
+  {
+    "name": "juniversalchardet-1_0_1",
+    "zipball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/zipball/refs/tags/juniversalchardet-1_0_1",
+    "tarball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/tarball/refs/tags/juniversalchardet-1_0_1",
+    "commit": {
+      "sha": "030ebce5f8c573d7e54626dd7468389715e983d2",
+      "url": "https://api.github.com/repos/albfernandez/juniversalchardet/commits/030ebce5f8c573d7e54626dd7468389715e983d2"
+    },
+    "node_id": "MDM6UmVmNTI5MDQ1MTY6cmVmcy90YWdzL2p1bml2ZXJzYWxjaGFyZGV0LTFfMF8x"
+  },
+  {
+    "name": "juniversalchardet-1_0",
+    "zipball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/zipball/refs/tags/juniversalchardet-1_0",
+    "tarball_url": "https://api.github.com/repos/albfernandez/juniversalchardet/tarball/refs/tags/juniversalchardet-1_0",
+    "commit": {
+      "sha": "9fd6ee522224d0d2a22a21c1f576d688f3d3a585",
+      "url": "https://api.github.com/repos/albfernandez/juniversalchardet/commits/9fd6ee522224d0d2a22a21c1f576d688f3d3a585"
+    },
+    "node_id": "MDM6UmVmNTI5MDQ1MTY6cmVmcy90YWdzL2p1bml2ZXJzYWxjaGFyZGV0LTFfMA=="
+
+ succeeded in 158ms:
+[
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "8f1ae21850bf34904454db2faf18cbfefd7a44b6",
+    "size": 0,
+    "url": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/.github?ref=main",
+    "html_url": "https://github.com/albfernandez/juniversalchardet/tree/main/.github",
+    "git_url": "https://api.github.com/repos/albfernandez/juniversalchardet/git/trees/8f1ae21850bf34904454db2faf18cbfefd7a44b6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/.github?ref=main",
+      "git": "https://api.github.com/repos/albfernandez/juniversalchardet/git/trees/8f1ae21850bf34904454db2faf18cbfefd7a44b6",
+      "html": "https://github.com/albfernandez/juniversalchardet/tree/main/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "d9faef4a811c5eaaced570ac68a048295740ad78",
+    "size": 58,
+    "url": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/.gitignore?ref=main",
+    "html_url": "https://github.com/albfernandez/juniversalchardet/blob/main/.gitignore",
+    "git_url": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/d9faef4a811c5eaaced570ac68a048295740ad78",
+    "download_url": "https://raw.githubusercontent.com/albfernandez/juniversalchardet/main/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/.gitignore?ref=main",
+      "git": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/d9faef4a811c5eaaced570ac68a048295740ad78",
+      "html": "https://github.com/albfernandez/juniversalchardet/blob/main/.gitignore"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "5ea2fd45bc0e520e14f3777755142f12fae30cde",
+    "size": 414,
+    "url": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/LICENSE?ref=main",
+    "html_url": "https://github.com/albfernandez/juniversalchardet/blob/main/LICENSE",
+    "git_url": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/5ea2fd45bc0e520e14f3777755142f12fae30cde",
+    "download_url": "https://raw.githubusercontent.com/albfernandez/juniversalchardet/main/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/LICENSE?ref=main",
+      "git": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/5ea2fd45bc0e520e14f3777755142f12fae30cde",
+      "html": "https://github.com/albfernandez/juniversalchardet/blob/main/LICENSE"
+    }
+  },
+  {
+    "name": "LICENSE.GPL-2.0-or-later",
+    "path": "LICENSE.GPL-2.0-or-later",
+    "sha": "9efa6fbc962836e243e20f7f23db062e2c077d28",
+    "size": 17984,
+    "url": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/LICENSE.GPL-2.0-or-later?ref=main",
+    "html_url": "https://github.com/albfernandez/juniversalchardet/blob/main/LICENSE.GPL-2.0-or-later",
+    "git_url": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/9efa6fbc962836e243e20f7f23db062e2c077d28",
+    "download_url": "https://raw.githubusercontent.com/albfernandez/juniversalchardet/main/LICENSE.GPL-2.0-or-later",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/LICENSE.GPL-2.0-or-later?ref=main",
+      "git": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/9efa6fbc962836e243e20f7f23db062e2c077d28",
+      "html": "https://github.com/albfernandez/juniversalchardet/blob/main/LICENSE.GPL-2.0-or-later"
+    }
+  },
+  {
+    "name": "LICENSE.LGPL-2.1-or-later",
+    "path": "LICENSE.LGPL-2.1-or-later",
+    "sha": "f6683e74e0f0130f246dbf7054f4cacc88ca84b0",
+    "size": 26419,
+    "url": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/LICENSE.LGPL-2.1-or-later?ref=main",
+    "html_url": "https://github.com/albfernandez/juniversalchardet/blob/main/LICENSE.LGPL-2.1-or-later",
+    "git_url": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/f6683e74e0f0130f246dbf7054f4cacc88ca84b0",
+    "download_url": "https://raw.githubusercontent.com/albfernandez/juniversalchardet/main/LICENSE.LGPL-2.1-or-later",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/LICENSE.LGPL-2.1-or-later?ref=main",
+      "git": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/f6683e74e0f0130f246dbf7054f4cacc88ca84b0",
+      "html": "https://github.com/albfernandez/juniversalchardet/blob/main/LICENSE.LGPL-2.1-or-later"
+    }
+  },
+  {
+    "name": "LICENSE.MPL-1.1",
+    "path": "LICENSE.MPL-1.1",
+    "sha": "7714141d154290f53e9e60c615a8edc9b51a8df7",
+    "size": 25755,
+    "url": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/LICENSE.MPL-1.1?ref=main",
+    "html_url": "https://github.com/albfernandez/juniversalchardet/blob/main/LICENSE.MPL-1.1",
+    "git_url": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/7714141d154290f53e9e60c615a8edc9b51a8df7",
+    "download_url": "https://raw.githubusercontent.com/albfernandez/juniversalchardet/main/LICENSE.MPL-1.1",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/LICENSE.MPL-1.1?ref=main",
+      "git": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/7714141d154290f53e9e60c615a8edc9b51a8df7",
+      "html": "https://github.com/albfernandez/juniversalchardet/blob/main/LICENSE.MPL-1.1"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "50f07e5824a8644d107f06af41868684b94b984a",
+    "size": 5278,
+    "url": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/README.md?ref=main",
+    "html_url": "https://github.com/albfernandez/juniversalchardet/blob/main/README.md",
+    "git_url": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/50f07e5824a8644d107f06af41868684b94b984a",
+    "download_url": "https://raw.githubusercontent.com/albfernandez/juniversalchardet/main/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/README.md?ref=main",
+      "git": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/50f07e5824a8644d107f06af41868684b94b984a",
+      "html": "https://github.com/albfernandez/juniversalchardet/blob/main/README.md"
+    }
+  },
+  {
+    "name": "build.gradle",
+    "path": "build.gradle",
+    "sha": "4d7daaab3d5e9dceaa07b1991f7dcb482a1f53c0",
+    "size": 665,
+    "url": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/build.gradle?ref=main",
+    "html_url": "https://github.com/albfernandez/juniversalchardet/blob/main/build.gradle",
+    "git_url": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/4d7daaab3d5e9dceaa07b1991f7dcb482a1f53c0",
+    "download_url": "https://raw.githubusercontent.com/albfernandez/juniversalchardet/main/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/build.gradle?ref=main",
+      "git": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/4d7daaab3d5e9dceaa07b1991f7dcb482a1f53c0",
+      "html": "https://github.com/albfernandez/juniversalchardet/blob/main/build.gradle"
+    }
+  },
+  {
+    "name": "mozilla_repositories.txt",
+    "path": "mozilla_repositories.txt",
+    "sha": "7d2418934962a268bdb7ef7eaf630a9763961fd3",
+    "size": 351,
+    "url": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/mozilla_repositories.txt?ref=main",
+    "html_url": "https://github.com/albfernandez/juniversalchardet/blob/main/mozilla_repositories.txt",
+    "git_url": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/7d2418934962a268bdb7ef7eaf630a9763961fd3",
+    "download_url": "https://raw.githubusercontent.com/albfernandez/juniversalchardet/main/mozilla_repositories.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/mozilla_repositories.txt?ref=main",
+      "git": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/7d2418934962a268bdb7ef7eaf630a9763961fd3",
+      "html": "https://github.com/albfernandez/juniversalchardet/blob/main/mozilla_repositories.txt"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "be1f8e5dd0213addeb392514aa0e90db8b4049a8",
+    "size": 5812,
+    "url": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/pom.xml?ref=main",
+    "html_url": "https://github.com/albfernandez/juniversalchardet/blob/main/pom.xml",
+    "git_url": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/be1f8e5dd0213addeb392514aa0e90db8b4049a8",
+    "download_url": "https://raw.githubusercontent.com/albfernandez/juniversalchardet/main/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/pom.xml?ref=main",
+      "git": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/be1f8e5dd0213addeb392514aa0e90db8b4049a8",
+      "html": "https://github.com/albfernandez/juniversalchardet/blob/main/pom.xml"
+    }
+  },
+  {
+    "name": "release-process.md",
+    "path": "release-process.md",
+    "sha": "8d6581b4dee70898f7a47ee03aa4cb633a92b50c",
+    "size": 1482,
+    "url": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/release-process.md?ref=main",
+    "html_url": "https://github.com/albfernandez/juniversalchardet/blob/main/release-process.md",
+    "git_url": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/8d6581b4dee70898f7a47ee03aa4cb633a92b50c",
+    "download_url": "https://raw.githubusercontent.com/albfernandez/juniversalchardet/main/release-process.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/release-process.md?ref=main",
+      "git": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/8d6581b4dee70898f7a47ee03aa4cb633a92b50c",
+      "html": "https://github.com/albfernandez/juniversalchardet/blob/main/release-process.md"
+    }
+  },
+  {
+    "name": "settings.gradle",
+    "path": "settings.gradle",
+    "sha": "3267730d6133534cbe7a939697952dba46a92430",
+    "size": 133,
+    "url": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/settings.gradle?ref=main",
+    "html_url": "https://github.com/albfernandez/juniversalchardet/blob/main/settings.gradle",
+    "git_url": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/3267730d6133534cbe7a939697952dba46a92430",
+    "download_url": "https://raw.githubusercontent.com/albfernandez/juniversalchardet/main/settings.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/settings.gradle?ref=main",
+      "git": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/3267730d6133534cbe7a939697952dba46a92430",
+      "html": "https://github.com/albfernandez/juniversalchardet/blob/main/settings.gradle"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "89019ca264dbec11080f999e163ccdb216872627",
+    "size": 0,
+    "url": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/src?ref=main",
+    "html_url": "https://github.com/albfernandez/juniversalchardet/tree/main/src",
+    "git_url": "https://api.github.com/repos/albfernandez/juniversalchardet/git/trees/89019ca264dbec11080f999e163ccdb216872627",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/src?ref=main",
+      "git": "https://api.github.com/repos/albfernandez/juniversalchardet/git/trees/89019ca264dbec11080f999e163ccdb216872627",
+      "html": "https://github.com/albfernandez/juniversalchardet/tree/main/src"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' metadata build/discovered-artifact-metadata | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/8.0.01/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.15.2",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.15.2/src/test",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-annotations",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:38:    "repository-url" : "https://github.com/FasterXML/jackson-annotations",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:39:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:40:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-jackson/0.1.5/logback-jackson-0.1.5-sources.jar",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:9:    "repository-url": "https://github.com/qos-ch/logback-contrib/tree/v_0.1.5",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:10:    "test-code-url": "https://github.com/qos-ch/logback-contrib/tree/v_0.1.5/json",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-jackson/0.1.5/logback-jackson-0.1.5-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-bytestring-jvm/0.8.2/kotlinx-io-bytestring-jvm-0.8.2-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:6:    "repository-url" : "https://github.com/Kotlin/kotlinx-io",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx-io/tree/0.8.2/bytestring/jvm/test",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-bytestring-jvm/0.8.2/kotlinx-io-bytestring-jvm-0.8.2-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-classic/0.1.5/logback-json-classic-0.1.5-sources.jar",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:9:    "repository-url": "https://github.com/qos-ch/logback-contrib/tree/v_0.1.5",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:10:    "test-code-url": "https://github.com/qos-ch/logback-contrib/tree/v_0.1.5/json/classic/src/test",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-classic/0.1.5/logback-json-classic-0.1.5-javadoc.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:6:    "repository-url" : "https://github.com/apiguardian-team/apiguardian",
+metadata/org.apiguardian/apiguardian-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apiguardian/apiguardian-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-core",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-2.6.0/src/test",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:128:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:129:    "repository-url" : "https://github.com/FasterXML/jackson-core",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:130:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-2.1.3/src/test",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:131:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-javadoc.jar",
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu-jvm/0.19.0/atomicfu-jvm-0.19.0-sources.jar",
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:6:    "repository-url" : "https://github.com/Kotlin/kotlinx-atomicfu",
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/jvmTest",
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:8:    "documentation-url" : "https://github.com/Kotlin/kotlinx-atomicfu/blob/0.19.0/README.md",
+metadata/ch.qos.cal10n/cal10n-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/cal10n/cal10n-api/0.7.2/cal10n-api-0.7.2-sources.jar",
+metadata/ch.qos.cal10n/cal10n-api/index.json:6:    "repository-url" : "https://github.com/qos-ch/cal10n",
+metadata/ch.qos.cal10n/cal10n-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/cal10n/cal10n-api/0.7.2/cal10n-api-0.7.2-tests.jar",
+metadata/ch.qos.cal10n/cal10n-api/index.json:8:    "documentation-url" : "https://github.com/qos-ch/cal10n/blob/v0.7.2/cal10n-site/src/site/pages/documentation.html",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-json-core/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-core/0.1.5/logback-json-core-0.1.5-sources.jar",
+metadata/ch.qos.logback.contrib/logback-json-core/index.json:7:    "repository-url": "https://github.com/qos-ch/logback-contrib",
+metadata/ch.qos.logback.contrib/logback-json-core/index.json:8:    "test-code-url": "N/A",
+metadata/ch.qos.logback.contrib/logback-json-core/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-core/0.1.5/logback-json-core-0.1.5-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-core-jvm/1.9.0/kotlinx-serialization-core-jvm-1.9.0-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:6:    "repository-url" : "https://github.com/Kotlin/kotlinx.serialization",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/core/jvmTest",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:8:    "documentation-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/docs",
+metadata/org.iq80.snappy/snappy/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/iq80/snappy/snappy/0.5/snappy-0.5-sources.jar",
+metadata/org.iq80.snappy/snappy/index.json:6:    "repository-url" : "https://github.com/dain/snappy",
+metadata/org.iq80.snappy/snappy/index.json:7:    "test-code-url" : "https://github.com/dain/snappy/tree/snappy-0.5/src/test",
+metadata/org.iq80.snappy/snappy/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/iq80/snappy/snappy/0.5/snappy-0.5-javadoc.jar",
+metadata/org.iq80.snappy/snappy/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/iq80/snappy/snappy/0.4/snappy-0.4-sources.jar",
+metadata/org.iq80.snappy/snappy/index.json:20:    "repository-url" : "https://github.com/dain/snappy",
+metadata/org.iq80.snappy/snappy/index.json:21:    "test-code-url" : "https://github.com/dain/snappy/tree/snappy-0.4/src/test",
+metadata/org.iq80.snappy/snappy/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/iq80/snappy/snappy/0.4/snappy-0.4-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/2.0.21/kotlin-test-2.0.21-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:6:    "repository-url" : "https://github.com/JetBrains/kotlin",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.0.21/libraries/kotlin.test",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/2.0.21/kotlin-test-2.0.21-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/org.glassfish.hk2.external/javax.inject/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/external/javax.inject/2.5.0-b05/javax.inject-2.5.0-b05-sources.jar",
+metadata/org.glassfish.hk2.external/javax.inject/index.json:6:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/org.glassfish.hk2.external/javax.inject/index.json:7:    "test-code-url" : "N/A",
+metadata/org.glassfish.hk2.external/javax.inject/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/external/javax.inject/2.5.0-b05/javax.inject-2.5.0-b05-javadoc.jar",
+metadata/commons-cli/commons-cli/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/1.5.0/commons-cli-1.5.0-sources.jar",
+metadata/commons-cli/commons-cli/index.json:6:    "repository-url" : "https://github.com/apache/commons-cli",
+metadata/commons-cli/commons-cli/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/1.5.0/commons-cli-1.5.0-test-sources.jar",
+metadata/commons-cli/commons-cli/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/1.5.0/commons-cli-1.5.0-javadoc.jar",
+metadata/javax.interceptor/javax.interceptor-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/1.2/javax.interceptor-api-1.2-sources.jar",
+metadata/javax.interceptor/javax.interceptor-api/index.json:6:    "repository-url" : "https://github.com/javaee/javax.interceptor",
+metadata/javax.interceptor/javax.interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.interceptor/javax.interceptor-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/1.2/javax.interceptor-api-1.2-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-core-jvm/0.8.2/kotlinx-io-core-jvm-0.8.2-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:6:    "repository-url" : "https://github.com/Kotlin/kotlinx-io",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx-io/tree/0.8.2/core/jvm/test",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-core-jvm/0.8.2/kotlinx-io-core-jvm-0.8.2-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:6:    "repository-url" : "https://github.com/JetBrains/kotlin",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.20/compiler/daemon/daemon-tests/test",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-javadoc.jar",
+metadata/javax.money/money-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/money/money-api/1.0.3/money-api-1.0.3-sources.jar",
+metadata/javax.money/money-api/index.json:6:    "repository-url" : "https://github.com/JavaMoney/jsr354-api",
+metadata/javax.money/money-api/index.json:7:    "test-code-url" : "https://github.com/JavaMoney/jsr354-api/tree/1.0.3/src/test",
+metadata/javax.money/money-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/money/money-api/1.0.3/money-api-1.0.3-javadoc.jar",
+metadata/org.apache.arrow/arrow-format/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/15.0.0/arrow-format-15.0.0-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:6:    "repository-url" : "https://github.com/apache/arrow",
+metadata/org.apache.arrow/arrow-format/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.arrow/arrow-format/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/15.0.0/arrow-format-15.0.0-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/googlecode/juniversalchardet/juniversalchardet/1.0.3</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/googlecode/juniversalchardet/juniversalchardet/1.0.3</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="juniversalchardet-1.0.3-javadoc.jar" title="juniversalchardet-1.0.3-javadoc.jar">juniversalchardet-1.0.3-javadoc.jar</a>               2011-09-19 17:38    336512      
+<a href="juniversalchardet-1.0.3-javadoc.jar.asc" title="juniversalchardet-1.0.3-javadoc.jar.asc">juniversalchardet-1.0.3-javadoc.jar.asc</a>           2011-09-19 17:38       499      
+<a href="juniversalchardet-1.0.3-javadoc.jar.asc.md5" title="juniversalchardet-1.0.3-javadoc.jar.asc.md5">juniversalchardet-1.0.3-javadoc.jar.asc.md5</a>       2011-09-19 17:38        32      
+<a href="juniversalchardet-1.0.3-javadoc.jar.asc.sha1" title="juniversalchardet-1.0.3-javadoc.jar.asc.sha1">juniversalchardet-1.0.3-javadoc.jar.asc.sha1</a>      2011-09-19 17:38        40      
+<a href="juniversalchardet-1.0.3-javadoc.jar.md5" title="juniversalchardet-1.0.3-javadoc.jar.md5">juniversalchardet-1.0.3-javadoc.jar.md5</a>           2011-09-19 17:38        32      
+<a href="juniversalchardet-1.0.3-javadoc.jar.sha1" title="juniversalchardet-1.0.3-javadoc.jar.sha1">juniversalchardet-1.0.3-javadoc.jar.sha1</a>          2011-09-19 17:38        40      
+<a href="juniversalchardet-1.0.3-sources.jar" title="juniversalchardet-1.0.3-sources.jar">juniversalchardet-1.0.3-sources.jar</a>               2011-09-19 17:38    220482      
+<a href="juniversalchardet-1.0.3-sources.jar.asc" title="juniversalchardet-1.0.3-sources.jar.asc">juniversalchardet-1.0.3-sources.jar.asc</a>           2011-09-19 17:38       499      
+<a href="juniversalchardet-1.0.3-sources.jar.asc.md5" title="juniversalchardet-1.0.3-sources.jar.asc.md5">juniversalchardet-1.0.3-sources.jar.asc.md5</a>       2011-09-19 17:38        32      
+<a href="juniversalchardet-1.0.3-sources.jar.asc.sha1" title="juniversalchardet-1.0.3-sources.jar.asc.sha1">juniversalchardet-1.0.3-sources.jar.asc.sha1</a>      2011-09-19 17:38        40      
+<a href="juniversalchardet-1.0.3-sources.jar.md5" title="juniversalchardet-1.0.3-sources.jar.md5">juniversalchardet-1.0.3-sources.jar.md5</a>           2011-09-19 17:38        32      
+<a href="juniversalchardet-1.0.3-sources.jar.sha1" title="juniversalchardet-1.0.3-sources.jar.sha1">juniversalchardet-1.0.3-sources.jar.sha1</a>          2011-09-19 17:38        40      
+<a href="juniversalchardet-1.0.3.jar" title="juniversalchardet-1.0.3.jar">juniversalchardet-1.0.3.jar</a>                       2011-09-19 17:38    220813      
+<a href="juniversalchardet-1.0.3.jar.asc" title="juniversalchardet-1.0.3.jar.asc">juniversalchardet-1.0.3.jar.asc</a>                   2011-09-19 17:38       499      
+<a href="juniversalchardet-1.0.3.jar.asc.md5" title="juniversalchardet-1.0.3.jar.asc.md5">juniversalchardet-1.0.3.jar.asc.md5</a>               2011-09-19 17:38        32      
+<a href="juniversalchardet-1.0.3.jar.asc.sha1" title="juniversalchardet-1.0.3.jar.asc.sha1">juniversalchardet-1.0.3.jar.asc.sha1</a>              2011-09-19 17:38        40      
+<a href="juniversalchardet-1.0.3.jar.md5" title="juniversalchardet-1.0.3.jar.md5">juniversalchardet-1.0.3.jar.md5</a>                   2011-09-19 17:38        32      
+<a href="juniversalchardet-1.0.3.jar.sha1" title="juniversalchardet-1.0.3.jar.sha1">juniversalchardet-1.0.3.jar.sha1</a>                  2011-09-19 17:38        40      
+<a href="juniversalchardet-1.0.3.pom" title="juniversalchardet-1.0.3.pom">juniversalchardet-1.0.3.pom</a>                       2011-09-19 17:38      1463      
+<a href="juniversalchardet-1.0.3.pom.asc" title="juniversalchardet-1.0.3.pom.asc">juniversalchardet-1.0.3.pom.asc</a>                   2011-09-19 17:38       499      
+<a href="juniversalchardet-1.0.3.pom.asc.md5" title="juniversalchardet-1.0.3.pom.asc.md5">juniversalchardet-1.0.3.pom.asc.md5</a>               2011-09-19 17:38        32      
+<a href="juniversalchardet-1.0.3.pom.asc.sha1" title="juniversalchardet-1.0.3.pom.asc.sha1">juniversalchardet-1.0.3.pom.asc.sha1</a>              2011-09-19 17:38        40      
+<a href="juniversalchardet-1.0.3.pom.md5" title="juniversalchardet-1.0.3.pom.md5">juniversalchardet-1.0.3.pom.md5</a>                   2011-09-19 17:38        32      
+<a href="juniversalchardet-1.0.3.pom.sha1" title="juniversalchardet-1.0.3.pom.sha1">juniversalchardet-1.0.3.pom.sha1</a>                  2011-09-19 17:38        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/albfernandez/juniversalchardet/contents?ref=v1.0.3 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+ succeeded in 160ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "ccc8e57d07e2ac9c28a1a0dc012a52994b749c8d",
+    "size": 39,
+    "url": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/.gitignore?ref=v1.0.3",
+    "html_url": "https://github.com/albfernandez/juniversalchardet/blob/v1.0.3/.gitignore",
+    "git_url": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/ccc8e57d07e2ac9c28a1a0dc012a52994b749c8d",
+    "download_url": "https://raw.githubusercontent.com/albfernandez/juniversalchardet/v1.0.3/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/.gitignore?ref=v1.0.3",
+      "git": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/ccc8e57d07e2ac9c28a1a0dc012a52994b749c8d",
+      "html": "https://github.com/albfernandez/juniversalchardet/blob/v1.0.3/.gitignore"
+    }
+  },
+  {
+    "name": "MPL-1.1.txt",
+    "path": "MPL-1.1.txt",
+    "sha": "7714141d154290f53e9e60c615a8edc9b51a8df7",
+    "size": 25755,
+    "url": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/MPL-1.1.txt?ref=v1.0.3",
+    "html_url": "https://github.com/albfernandez/juniversalchardet/blob/v1.0.3/MPL-1.1.txt",
+    "git_url": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/7714141d154290f53e9e60c615a8edc9b51a8df7",
+    "download_url": "https://raw.githubusercontent.com/albfernandez/juniversalchardet/v1.0.3/MPL-1.1.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/MPL-1.1.txt?ref=v1.0.3",
+      "git": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/7714141d154290f53e9e60c615a8edc9b51a8df7",
+      "html": "https://github.com/albfernandez/juniversalchardet/blob/v1.0.3/MPL-1.1.txt"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "b86d3621a6715ac755996896e2941e2275da0f44",
+    "size": 3380,
+    "url": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/pom.xml?ref=v1.0.3",
+    "html_url": "https://github.com/albfernandez/juniversalchardet/blob/v1.0.3/pom.xml",
+    "git_url": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/b86d3621a6715ac755996896e2941e2275da0f44",
+    "download_url": "https://raw.githubusercontent.com/albfernandez/juniversalchardet/v1.0.3/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/pom.xml?ref=v1.0.3",
+      "git": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/b86d3621a6715ac755996896e2941e2275da0f44",
+      "html": "https://github.com/albfernandez/juniversalchardet/blob/v1.0.3/pom.xml"
+    }
+  },
+  {
+    "name": "readme.txt",
+    "path": "readme.txt",
+    "sha": "5e6a655813f1070a4f39cc30472de0edf7385049",
+    "size": 3079,
+    "url": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/readme.txt?ref=v1.0.3",
+    "html_url": "https://github.com/albfernandez/juniversalchardet/blob/v1.0.3/readme.txt",
+    "git_url": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/5e6a655813f1070a4f39cc30472de0edf7385049",
+    "download_url": "https://raw.githubusercontent.com/albfernandez/juniversalchardet/v1.0.3/readme.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/readme.txt?ref=v1.0.3",
+      "git": "https://api.github.com/repos/albfernandez/juniversalchardet/git/blobs/5e6a655813f1070a4f39cc30472de0edf7385049",
+      "html": "https://github.com/albfernandez/juniversalchardet/blob/v1.0.3/readme.txt"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "0a65b5dd8fa02b230b6222461f36bf55cb6d047c",
+    "size": 0,
+    "url": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/src?ref=v1.0.3",
+    "html_url": "https://github.com/albfernandez/juniversalchardet/tree/v1.0.3/src",
+    "git_url": "https://api.github.com/repos/albfernandez/juniversalchardet/git/trees/0a65b5dd8fa02b230b6222461f36bf55cb6d047c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/albfernandez/juniversalchardet/contents/src?ref=v1.0.3",
+      "git": "https://api.github.com/repos/albfernandez/juniversalchardet/git/trees/0a65b5dd8fa02b230b6222461f36bf55cb6d047c",
+      "html": "https://github.com/albfernandez/juniversalchardet/tree/v1.0.3/src"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/albfernandez/juniversalchardet/git/trees/v1.0.3?recursive=1 | rg -n '\"path\"|test|junit|Test' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/albfernandez/juniversalchardet/v1.0.3/readme.txt | sed -n '1,180p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/albfernandez/juniversalchardet/v1.0.3/pom.xml | sed -n '1,200p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+ succeeded in 155ms:
+juniversalchardet
+
+
+1. What is it?
+
+juniversalchardet is a Java port of "universalchardet",
+that is the encoding detector library of Mozilla.
+
+The original code of universalchardet is available at
+http://lxr.mozilla.org/seamonkey/source/extensions/universalchardet/
+
+Techniques used by universalchardet are described at
+http://www.mozilla.org/projects/intl/UniversalCharsetDetection.html
+
+
+2. Encodings that can be detected
+
+- Chinese
+  - ISO-2022-CN
+  - BIG-5
+  - EUC-TW
+  - GB18030
+  - HZ-GB-2312
+
+- Cyrillic
+  - ISO-8859-5
+  - KOI8-R
+  - WINDOWS-1251
+  - MACCYRILLIC
+  - IBM866
+  - IBM855
+
+- Greek
+  - ISO-8859-7
+  - WINDOWS-1253
+
+- Hebrew
+  - ISO-8859-8
+  - WINDOWS-1255
+
+- Japanese
+  - ISO-2022-JP
+  - Shift_JIS
+  - EUC-JP
+
+- Korean
+  - ISO-2022-KR
+  - EUC-KR
+
+- Unicode
+  - UTF-8
+  - UTF-16BE / UTF-16LE
+  - UTF-32BE / UTF-32LE / X-ISO-10646-UCS-4-3412 / X-ISO-10646-UCS-4-2143
+
+- Others
+  - WINDOWS-1252
+
+All supported encodings are listed in org.mozilla.universalchardet.Constants.
+
+
+3. How to use it
+
+(1) Construct an instance of org.mozilla.universalchardet.UniversalDetector.
+(2) Feed some data (typically some thousand bytes) to the detector
+    using UniversalDetector.handleData().
+(3) Notify the detector of the end of data by using
+    UniversalDetector.dataEnd().
+(4) Get the detected encoding name by using
+    UniversalDetector.getDetectedCharset().
+(5) Don't forget to call UniversalDetector.reset() before you reuse
+    the detector instance for another guess.
+
+
+------------ Sample Code ------------
+import org.mozilla.universalchardet.UniversalDetector;
+
+public class TestDetector
+{
+  public static void main(String[] args)
+  {
+    byte[] buf = new byte[4096];
+    java.io.FileInputStream fis = new java.io.FileInputStream("test.txt");
+
+    // (1)
+    UniversalDetector detector = new UniversalDetector(null);
+
+    // (2)
+    int nread;
+    while ((nread = fis.read(buf)) > 0 && !detector.isDone()) {
+      detector.handleData(buf, 0, nread);
+    }
+    // (3)
+    detector.dataEnd();
+
+    // (4)
+    String encoding = detector.getDetectedCharset();
+    if (encoding != null) {
+      System.out.println("Detected encoding = " + encoding);
+    } else {
+      System.out.println("No encoding detected.");
+    }
+
+    // (5)
+    detector.reset();
+  }
+}
+
+
+4. Related Woks
+
+- jchardet  http://jchardet.sourceforge.net/
+
+jchardet is another Java port of the Mozilla's encoding dectection library.
+The main difference between jchardet and juniversalchardet is modules
+they are based on. jchardet is based on the "chardet" module that has
+long existed. juniversalchardet is based on the "universalchardet" module
+that is new and generally provides better accuracy on detection results.
+
+
+5. License
+
+The library is subject to the Mozilla Public License Version 1.1.
+Alternatively, the library may be used under the terms of either
+the GNU General Public License Version 2 or later, or the GNU
+Lesser General Public License 2.1 or later.
+
+
+
+ succeeded in 207ms:
+6:      "path": ".gitignore",
+14:      "path": "MPL-1.1.txt",
+22:      "path": "pom.xml",
+30:      "path": "readme.txt",
+38:      "path": "src",
+45:      "path": "src/main",
+52:      "path": "src/main/java",
+59:      "path": "src/main/java/org",
+66:      "path": "src/main/java/org/mozilla",
+73:      "path": "src/main/java/org/mozilla/universalchardet",
+80:      "path": "src/main/java/org/mozilla/universalchardet/CharsetListener.java",
+88:      "path": "src/main/java/org/mozilla/universalchardet/Constants.java",
+96:      "path": "src/main/java/org/mozilla/universalchardet/UniversalDetector.java",
+104:      "path": "src/main/java/org/mozilla/universalchardet/prober",
+111:      "path": "src/main/java/org/mozilla/universalchardet/prober/Big5Prober.java",
+119:      "path": "src/main/java/org/mozilla/universalchardet/prober/CharsetProber.java",
+127:      "path": "src/main/java/org/mozilla/universalchardet/prober/EUCJPProber.java",
+135:      "path": "src/main/java/org/mozilla/universalchardet/prober/EUCKRProber.java",
+143:      "path": "src/main/java/org/mozilla/universalchardet/prober/EUCTWProber.java",
+151:      "path": "src/main/java/org/mozilla/universalchardet/prober/EscCharsetProber.java",
+159:      "path": "src/main/java/org/mozilla/universalchardet/prober/GB18030Prober.java",
+167:      "path": "src/main/java/org/mozilla/universalchardet/prober/HebrewProber.java",
+175:      "path": "src/main/java/org/mozilla/universalchardet/prober/Latin1Prober.java",
+183:      "path": "src/main/java/org/mozilla/universalchardet/prober/MBCSGroupProber.java",
+191:      "path": "src/main/java/org/mozilla/universalchardet/prober/SBCSGroupProber.java",
+199:      "path": "src/main/java/org/mozilla/universalchardet/prober/SJISProber.java",
+207:      "path": "src/main/java/org/mozilla/universalchardet/prober/SingleByteCharsetProber.java",
+215:      "path": "src/main/java/org/mozilla/universalchardet/prober/UTF8Prober.java",
+223:      "path": "src/main/java/org/mozilla/universalchardet/prober/contextanalysis",
+230:      "path": "src/main/java/org/mozilla/universalchardet/prober/contextanalysis/EUCJPContextAnalysis.java",
+238:      "path": "src/main/java/org/mozilla/universalchardet/prober/contextanalysis/JapaneseContextAnalysis.java",
+246:      "path": "src/main/java/org/mozilla/universalchardet/prober/contextanalysis/SJISContextAnalysis.java",
+254:      "path": "src/main/java/org/mozilla/universalchardet/prober/distributionanalysis",
+261:      "path": "src/main/java/org/mozilla/universalchardet/prober/distributionanalysis/Big5DistributionAnalysis.java",
+269:      "path": "src/main/java/org/mozilla/universalchardet/prober/distributionanalysis/CharDistributionAnalysis.java",
+277:      "path": "src/main/java/org/mozilla/universalchardet/prober/distributionanalysis/EUCJPDistributionAnalysis.java",
+285:      "path": "src/main/java/org/mozilla/universalchardet/prober/distributionanalysis/EUCKRDistributionAnalysis.java",
+293:      "path": "src/main/java/org/mozilla/universalchardet/prober/distributionanalysis/EUCTWDistributionAnalysis.java",
+301:      "path": "src/main/java/org/mozilla/universalchardet/prober/distributionanalysis/GB2312DistributionAnalysis.java",
+309:      "path": "src/main/java/org/mozilla/universalchardet/prober/distributionanalysis/JISDistributionAnalysis.java",
+317:      "path": "src/main/java/org/mozilla/universalchardet/prober/distributionanalysis/SJISDistributionAnalysis.java",
+325:      "path": "src/main/java/org/mozilla/universalchardet/prober/sequence",
+332:      "path": "src/main/java/org/mozilla/universalchardet/prober/sequence/BulgarianModel.java",
+340:      "path": "src/main/java/org/mozilla/universalchardet/prober/sequence/CyrillicModel.java",
+348:      "path": "src/main/java/org/mozilla/universalchardet/prober/sequence/GreekModel.java",
+356:      "path": "src/main/java/org/mozilla/universalchardet/prober/sequence/HebrewModel.java",
+364:      "path": "src/main/java/org/mozilla/universalchardet/prober/sequence/Ibm855Model.java",
+372:      "path": "src/main/java/org/mozilla/universalchardet/prober/sequence/Ibm866Model.java",
+380:      "path": "src/main/java/org/mozilla/universalchardet/prober/sequence/Koi8rModel.java",
+388:      "path": "src/main/java/org/mozilla/universalchardet/prober/sequence/Latin5BulgarianModel.java",
+396:      "path": "src/main/java/org/mozilla/universalchardet/prober/sequence/Latin5Model.java",
+404:      "path": "src/main/java/org/mozilla/universalchardet/prober/sequence/Latin7Model.java",
+412:      "path": "src/main/java/org/mozilla/universalchardet/prober/sequence/MacCyrillicModel.java",
+420:      "path": "src/main/java/org/mozilla/universalchardet/prober/sequence/SequenceModel.java",
+428:      "path": "src/main/java/org/mozilla/universalchardet/prober/sequence/Win1251BulgarianModel.java",
+436:      "path": "src/main/java/org/mozilla/universalchardet/prober/sequence/Win1251Model.java",
+444:      "path": "src/main/java/org/mozilla/universalchardet/prober/sequence/Win1253Model.java",
+452:      "path": "src/main/java/org/mozilla/universalchardet/prober/statemachine",
+459:      "path": "src/main/java/org/mozilla/universalchardet/prober/statemachine/Big5SMModel.java",
+467:      "path": "src/main/java/org/mozilla/universalchardet/prober/statemachine/CodingStateMachine.java",
+475:      "path": "src/main/java/org/mozilla/universalchardet/prober/statemachine/EUCJPSMModel.java",
+483:      "path": "src/main/java/org/mozilla/universalchardet/prober/statemachine/EUCKRSMModel.java",
+491:      "path": "src/main/java/org/mozilla/universalchardet/prober/statemachine/EUCTWSMModel.java",
+499:      "path": "src/main/java/org/mozilla/universalchardet/prober/statemachine/GB18030SMModel.java",
+507:      "path": "src/main/java/org/mozilla/universalchardet/prober/statemachine/HZSMModel.java",
+515:      "path": "src/main/java/org/mozilla/universalchardet/prober/statemachine/ISO2022CNSMModel.java",
+523:      "path": "src/main/java/org/mozilla/universalchardet/prober/statemachine/ISO2022JPSMModel.java",
+531:      "path": "src/main/java/org/mozilla/universalchardet/prober/statemachine/ISO2022KRSMModel.java",
+539:      "path": "src/main/java/org/mozilla/universalchardet/prober/statemachine/PkgInt.java",
+547:      "path": "src/main/java/org/mozilla/universalchardet/prober/statemachine/SJISSMModel.java",
+555:      "path": "src/main/java/org/mozilla/universalchardet/prober/statemachine/SMModel.java",
+563:      "path": "src/main/java/org/mozilla/universalchardet/prober/statemachine/UCS2BESMModel.java",
+571:      "path": "src/main/java/org/mozilla/universalchardet/prober/statemachine/UTF8SMModel.java",
+579:      "path": "src/test",
+586:      "path": "src/test/java",
+593:      "path": "src/test/java/org",
+600:      "path": "src/test/java/org/mozilla",
+607:      "path": "src/test/java/org/mozilla/universalchardet",
+614:      "path": "src/test/java/org/mozilla/universalchardet/example",
+621:      "path": "src/test/java/org/mozilla/universalchardet/example/TestDetector.java",
+629:      "path": "src/test/java/org/mozilla/universalchardet/prober",
+636:      "path": "src/test/java/org/mozilla/universalchardet/prober/statemachine",
+643:      "path": "src/test/java/org/mozilla/universalchardet/prober/statemachine/PkgIntTest.java",
+651:      "path": "src/test/resources",
+658:      "path": "src/test/resources/euc.txt",
+666:      "path": "src/test/resources/iso2022jp.txt",
+674:      "path": "src/test/resources/shiftjis.txt",
+682:      "path": "src/test/resources/utf16le.txt",
+690:      "path": "src/test/resources/utf8.txt",
+698:      "path": "src/test/resources/utf8n.txt",
+
+ succeeded in 159ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.github.albfernandez</groupId>
+	<artifactId>juniversalchardet</artifactId>
+	<version>1.0.3</version>
+	<url>https://github.com/albfernandez/juniversalchardet</url>
+	<packaging>jar</packaging>
+	<name>juniversalchardet</name>
+	<description>Juniversalchardet is a Java port of "universalchardet",that is the encoding detector library of Mozilla..</description>
+	<licenses>
+		<license>
+			<name>Mozilla Public License Version 1.1</name>
+			<url>https://www.mozilla.org/en-US/MPL/1.1/</url>
+		</license>
+		<license>
+			<name>GENERAL PUBLIC LICENSE, version 3 (GPL-3.0)</name>
+			<url>http://www.gnu.org/licenses/gpl.txt</url>
+		</license>
+		<license>
+			<name>GNU LESSER GENERAL PUBLIC LICENSE, version 3 (LGPL-3.0)</name>
+			<url>http://www.gnu.org/licenses/lgpl.txt</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>Alberto Fernández</name>
+			<email>infjaf@gmail.com</email>
+			<organization>Alberto Fernández</organization>
+			<organizationUrl>https://github.com/albfernandez/</organizationUrl>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:git:git@github.com:albfernandez/juniversalchardet.git</connection>
+		<developerConnection>scm:git:git@github.com:albfernandez/juniversalchardet.git</developerConnection>
+		<url>git@github.com:albfernandez/juniversalchardet.git</url>
+	</scm>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/albfernandez/juniversalchardet/issues</url>
+	</issueManagement>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
+	
+	
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.3</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
+</project>
+
+codex
+The GitHub mirror does have a `v1.0.3` tag with `src/test`, while Maven Central has no test-source or tests classifier for the `com.googlecode` artifact. I’m doing one last check of the archived Google Code export so the test URL is not based on a looser match than necessary.
+exec
+/usr/bin/bash -lc "rm -rf /tmp/juniversalchardet-archive && mkdir -p /tmp/juniversalchardet-archive && curl -fsSL https://storage.googleapis.com/google-code-archive-source/v2/code.google.com/juniversalchardet/source-archive.zip -o /tmp/juniversalchardet-source-archive.zip && unzip -q /tmp/juniversalchardet-source-archive.zip -d /tmp/juniversalchardet-archive && find /tmp/juniversalchardet-archive -maxdepth 4 -type d | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3-test-sources.jar; curl -fsSL -I https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3-tests.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+ exited 22 in 511ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Fri, 01 May 2026 08:44:07 GMT
+content-type: text/html
+cf-ray: 9f4d809edd1f2373-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Fri, 01 May 2026 08:44:07 GMT
+content-type: text/html
+cf-ray: 9f4d80a08a70be81-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 1154ms:
+/tmp/juniversalchardet-archive
+/tmp/juniversalchardet-archive/juniversalchardet
+/tmp/juniversalchardet-archive/juniversalchardet/trunk
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/example
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/example/.svn
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/.svn
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/.svn/prop-base
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/.svn/text-base
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/.svn/props
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/.svn/tmp
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/c
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/c/dll
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/c/.svn
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/c/universalchardet
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/c/include
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/c/src
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/swig
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/swig/.svn
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/swig/python
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/data
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/data/.svn
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/src
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/src/.svn
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/src/org
+/tmp/juniversalchardet-archive/juniversalchardet/.svn
+/tmp/juniversalchardet-archive/juniversalchardet/.svn/prop-base
+/tmp/juniversalchardet-archive/juniversalchardet/.svn/text-base
+/tmp/juniversalchardet-archive/juniversalchardet/.svn/props
+/tmp/juniversalchardet-archive/juniversalchardet/.svn/tmp
+/tmp/juniversalchardet-archive/juniversalchardet/.svn/tmp/prop-base
+/tmp/juniversalchardet-archive/juniversalchardet/.svn/tmp/text-base
+/tmp/juniversalchardet-archive/juniversalchardet/.svn/tmp/props
+/tmp/juniversalchardet-archive/juniversalchardet/wiki
+/tmp/juniversalchardet-archive/juniversalchardet/wiki/.svn
+/tmp/juniversalchardet-archive/juniversalchardet/wiki/.svn/prop-base
+/tmp/juniversalchardet-archive/juniversalchardet/wiki/.svn/text-base
+/tmp/juniversalchardet-archive/juniversalchardet/wiki/.svn/props
+/tmp/juniversalchardet-archive/juniversalchardet/wiki/.svn/tmp
+/tmp/juniversalchardet-archive/juniversalchardet/tags
+/tmp/juniversalchardet-archive/juniversalchardet/tags/juniversalchardet-1_0_2
+/tmp/juniversalchardet-archive/juniversalchardet/tags/juniversalchardet-1_0_2/.svn
+/tmp/juniversalchardet-archive/juniversalchardet/tags/juniversalchardet-1_0_2/c
+/tmp/juniversalchardet-archive/juniversalchardet/tags/juniversalchardet-1_0_2/swig
+/tmp/juniversalchardet-archive/juniversalchardet/tags/juniversalchardet-1_0_2/data
+/tmp/juniversalchardet-archive/juniversalchardet/tags/juniversalchardet-1_0_2/src
+/tmp/juniversalchardet-archive/juniversalchardet/tags/.svn
+/tmp/juniversalchardet-archive/juniversalchardet/tags/.svn/prop-base
+/tmp/juniversalchardet-archive/juniversalchardet/tags/.svn/text-base
+/tmp/juniversalchardet-archive/juniversalchardet/tags/.svn/props
+/tmp/juniversalchardet-archive/juniversalchardet/tags/.svn/tmp
+/tmp/juniversalchardet-archive/juniversalchardet/tags/juniversalchardet-1_0_1
+/tmp/juniversalchardet-archive/juniversalchardet/tags/juniversalchardet-1_0_1/.svn
+/tmp/juniversalchardet-archive/juniversalchardet/tags/juniversalchardet-1_0_1/c
+/tmp/juniversalchardet-archive/juniversalchardet/tags/juniversalchardet-1_0_1/data
+/tmp/juniversalchardet-archive/juniversalchardet/tags/juniversalchardet-1_0_1/src
+/tmp/juniversalchardet-archive/juniversalchardet/tags/juniversalchardet-1_0
+/tmp/juniversalchardet-archive/juniversalchardet/tags/juniversalchardet-1_0/.svn
+/tmp/juniversalchardet-archive/juniversalchardet/tags/juniversalchardet-1_0/data
+/tmp/juniversalchardet-archive/juniversalchardet/tags/juniversalchardet-1_0/src
+/tmp/juniversalchardet-archive/juniversalchardet/branches
+/tmp/juniversalchardet-archive/juniversalchardet/branches/.svn
+/tmp/juniversalchardet-archive/juniversalchardet/branches/.svn/prop-base
+/tmp/juniversalchardet-archive/juniversalchardet/branches/.svn/text-base
+/tmp/juniversalchardet-archive/juniversalchardet/branches/.svn/props
+/tmp/juniversalchardet-archive/juniversalchardet/branches/.svn/tmp
+
+exec
+/usr/bin/bash -lc "find /tmp/juniversalchardet-archive/juniversalchardet -maxdepth 4 -iname '*test*' -o -iname '*Test*.java' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+ succeeded in 0ms:
+/tmp/juniversalchardet-archive/juniversalchardet/trunk/example/TestDetector.java
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' /tmp/juniversalchardet-archive/juniversalchardet/trunk/pom.xml" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+ exited 2 in 0ms:
+sed: can't read /tmp/juniversalchardet-archive/juniversalchardet/trunk/pom.xml: No such file or directory
+
+exec
+/usr/bin/bash -lc "find /tmp/juniversalchardet-archive/juniversalchardet/tags -maxdepth 2 -name pom.xml -print -exec sh -c 'echo === "'$1; rg -n "<version>|<description>|<url>" "$1"'"' sh {} \\;" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "find /tmp/juniversalchardet-archive/juniversalchardet/wiki -maxdepth 2 -type f | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+ succeeded in 0ms:
+/tmp/juniversalchardet-archive/juniversalchardet/wiki/ApiReference.wiki
+/tmp/juniversalchardet-archive/juniversalchardet/wiki/.svn/entries
+/tmp/juniversalchardet-archive/juniversalchardet/wiki/.svn/all-wcprops
+/tmp/juniversalchardet-archive/juniversalchardet/wiki/ReleaseNote.wiki
+
+codex
+I found no Maven test artifact for `1.0.3`; the exact-version tests are only visible in the GitHub `v1.0.3` tag. I’m updating the metadata with Maven URLs for sources/docs, the tagged GitHub test directory, and no `language` field because this is not Kotlin, Groovy, or Scala-specific.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json
+diff --git a/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json b/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json
+index 16473fd8ae161c9b3782d1ad1aff53bb84b36af0..2931dafef01ee09a77e680a0350c0a5c9ec08887
+--- a/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json
++++ b/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.googlecode.juniversalchardet:juniversalchardet:1.0.3"
++  "coordinates" : "com.googlecode.juniversalchardet:juniversalchardet:1.0.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3-sources.jar",
++  "repository-url" : "https://github.com/albfernandez/juniversalchardet",
++  "test-code-url" : "https://github.com/albfernandez/juniversalchardet/tree/v1.0.3/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3-javadoc.jar",
++  "description" : "juniversalchardet is a Java port of Mozilla's universalchardet character encoding detector. It analyzes byte streams and reports likely charset names for text in Unicode, CJK, Cyrillic, Greek, Hebrew, and related encodings."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json b/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json
+index 16473fd8ae161c9b3782d1ad1aff53bb84b36af0..2931dafef01ee09a77e680a0350c0a5c9ec08887
+--- a/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json
++++ b/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.googlecode.juniversalchardet:juniversalchardet:1.0.3"
++  "coordinates" : "com.googlecode.juniversalchardet:juniversalchardet:1.0.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3-sources.jar",
++  "repository-url" : "https://github.com/albfernandez/juniversalchardet",
++  "test-code-url" : "https://github.com/albfernandez/juniversalchardet/tree/v1.0.3/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3-javadoc.jar",
++  "description" : "juniversalchardet is a Java port of Mozilla's universalchardet character encoding detector. It analyzes byte streams and reports likely charset names for text in Unicode, CJK, Cyrillic, Greek, Hebrew, and related encodings."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+ succeeded in 0ms:
+{
+  "coordinates": "com.googlecode.juniversalchardet:juniversalchardet:1.0.3",
+  "source-code-url": "https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3-sources.jar",
+  "repository-url": "https://github.com/albfernandez/juniversalchardet",
+  "test-code-url": "https://github.com/albfernandez/juniversalchardet/tree/v1.0.3/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3-javadoc.jar",
+  "description": "juniversalchardet is a Java port of Mozilla's universalchardet character encoding detector. It analyzes byte streams and reports likely charset names for text in Unicode, CJK, Cyrillic, Greek, Hebrew, and related encodings."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json b/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json
+index 16473fd8ae161c9b3782d1ad1aff53bb84b36af0..2931dafef01ee09a77e680a0350c0a5c9ec08887
+--- a/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json
++++ b/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.googlecode.juniversalchardet:juniversalchardet:1.0.3"
++  "coordinates" : "com.googlecode.juniversalchardet:juniversalchardet:1.0.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3-sources.jar",
++  "repository-url" : "https://github.com/albfernandez/juniversalchardet",
++  "test-code-url" : "https://github.com/albfernandez/juniversalchardet/tree/v1.0.3/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3-javadoc.jar",
++  "description" : "juniversalchardet is a Java port of Mozilla's universalchardet character encoding detector. It analyzes byte streams and reports likely charset names for text in Unicode, CJK, Cyrillic, Greek, Hebrew, and related encodings."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/
+web search: 
+web search: github albfernandez juniversalchardet v1.0.3 src/test
+web search: 
+web search: https://github.com/albfernandez/juniversalchardet/tree/v1.0.3/src/test
+codex
+Updated [com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json).
+
+I used Maven Central for the exact `1.0.3` sources and javadoc artifacts, and the tagged GitHub `v1.0.3` `src/test` directory for tests. Maven Central lists the `1.0.3` sources and javadoc jars, while the GitHub tag contains the `src/test` tree and describes the library as a Java port of Mozilla’s universalchardet. ([repo1.maven.org](https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/))
+
+No `language` field was added because it is not Kotlin, Groovy, or Scala-specific. Validated the JSON with `jq`; no Gradle task was needed for this metadata-only edit.
+diff --git a/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json b/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json
+index 16473fd8ae161c9b3782d1ad1aff53bb84b36af0..2931dafef01ee09a77e680a0350c0a5c9ec08887
+--- a/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json
++++ b/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.googlecode.juniversalchardet:juniversalchardet:1.0.3"
++  "coordinates" : "com.googlecode.juniversalchardet:juniversalchardet:1.0.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3-sources.jar",
++  "repository-url" : "https://github.com/albfernandez/juniversalchardet",
++  "test-code-url" : "https://github.com/albfernandez/juniversalchardet/tree/v1.0.3/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3-javadoc.jar",
++  "description" : "juniversalchardet is a Java port of Mozilla's universalchardet character encoding detector. It analyzes byte streams and reports likely charset names for text in Unicode, CJK, Cyrillic, Greek, Hebrew, and related encodings."
+ }
+
+tokens used
+87,954
+Updated [com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935/build/discovered-artifact-metadata/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.json).
+
+I used Maven Central for the exact `1.0.3` sources and javadoc artifacts, and the tagged GitHub `v1.0.3` `src/test` directory for tests. Maven Central lists the `1.0.3` sources and javadoc jars, while the GitHub tag contains the `src/test` tree and describes the library as a Java port of Mozilla’s universalchardet. ([repo1.maven.org](https://repo1.maven.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/))
+
+No `language` field was added because it is not Kotlin, Groovy, or Scala-specific. Validated the JSON with `jq`; no Gradle task was needed for this metadata-only edit.
+Ran agent for com.googlecode.juniversalchardet:juniversalchardet:1.0.3 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935/build/agent-artifact-discovery-logs/com.googlecode.juniversalchardet-juniversalchardet-1.0.3.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3675-21edd935/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 44s
+9 actionable tasks: 4 executed, 5 from cache
