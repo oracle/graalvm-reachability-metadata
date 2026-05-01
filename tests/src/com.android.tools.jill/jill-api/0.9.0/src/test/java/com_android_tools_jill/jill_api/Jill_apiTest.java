@@ -116,6 +116,14 @@ public class Jill_apiTest {
     }
 
     @Test
+    void providerCanOmitOptionalBuildAndSourceMetadata() {
+        JillProvider provider = new ProviderWithoutOptionalMetadata();
+
+        assertThat(provider.getTranslatorBuildId()).isNull();
+        assertThat(provider.getTranslatorSourceCodeBase()).isNull();
+    }
+
+    @Test
     void exceptionConstructorsExposeMessagesAndCauses() {
         RuntimeException cause = new RuntimeException("root cause");
 
@@ -157,6 +165,58 @@ public class Jill_apiTest {
         assertThat(JillProvider.SubReleaseKind.valueOf("CANDIDATE"))
                 .isEqualTo(JillProvider.SubReleaseKind.CANDIDATE);
         assertThat(JillProvider.SubReleaseKind.valueOf("RELEASE")).isEqualTo(JillProvider.SubReleaseKind.RELEASE);
+    }
+
+    private static final class ProviderWithoutOptionalMetadata implements JillProvider {
+        @Override
+        public <T extends JillConfig> T createConfig(Class<T> configType) throws ConfigNotSupportedException {
+            throw new ConfigNotSupportedException("No configurations are supported");
+        }
+
+        @Override
+        public <T extends JillConfig> boolean isConfigSupported(Class<T> configType) {
+            return false;
+        }
+
+        @Override
+        public Collection<Class<? extends JillConfig>> getSupportedConfigs() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public String getTranslatorVersion() {
+            return "test-translator";
+        }
+
+        @Override
+        public String getTranslatorReleaseName() {
+            return "test-release";
+        }
+
+        @Override
+        public int getTranslatorReleaseCode() {
+            return 1;
+        }
+
+        @Override
+        public int getTranslatorSubReleaseCode() {
+            return 0;
+        }
+
+        @Override
+        public SubReleaseKind getTranslatorSubReleaseKind() {
+            return SubReleaseKind.RELEASE;
+        }
+
+        @Override
+        public String getTranslatorBuildId() {
+            return null;
+        }
+
+        @Override
+        public String getTranslatorSourceCodeBase() {
+            return null;
+        }
     }
 
     private static final class RecordingJillProvider implements JillProvider {
