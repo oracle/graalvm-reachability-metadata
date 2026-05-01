@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -299,10 +300,22 @@ public class JedisTest {
         CompletableFuture<Void> acceptedConnection = new CompletableFuture<>();
         Thread serverThread = new Thread(() -> {
             try (Socket socket = serverSocket.accept()) {
+                ByteArrayOutputStream receivedCommands = new ByteArrayOutputStream();
+                byte[] buffer = new byte[256];
+                int repliesSent = 0;
+                int read;
+                while ((read = socket.getInputStream().read(buffer)) != -1) {
+                    receivedCommands.write(buffer, 0, read);
+                    int completedCommands = completeRespCommandCount(asString(receivedCommands.toByteArray()));
+                    while (repliesSent < completedCommands) {
+                        socket.getOutputStream().write(bytes("+OK\r\n"));
+                        socket.getOutputStream().flush();
+                        repliesSent++;
+                    }
+                }
                 acceptedConnection.complete(null);
-                socket.getInputStream().read();
             } catch (IOException exception) {
-                if (acceptedConnection.isDone() || serverSocket.isClosed()) {
+                if (serverSocket.isClosed() || exception instanceof SocketException) {
                     acceptedConnection.complete(null);
                 } else {
                     acceptedConnection.completeExceptionally(exception);
@@ -312,6 +325,41 @@ public class JedisTest {
         serverThread.setDaemon(true);
         serverThread.start();
         return acceptedConnection;
+    }
+
+    private static int completeRespCommandCount(String data) {
+        int completedCommands = 0;
+        int index = 0;
+        while (index < data.length()) {
+            if (data.charAt(index) != '*') {
+                return completedCommands;
+            }
+
+            int argumentCountEnd = data.indexOf("\r\n", index);
+            if (argumentCountEnd == -1) {
+                return completedCommands;
+            }
+            int argumentCount = Integer.parseInt(data.substring(index + 1, argumentCountEnd));
+            index = argumentCountEnd + 2;
+
+            for (int argumentIndex = 0; argumentIndex < argumentCount; argumentIndex++) {
+                if (index >= data.length() || data.charAt(index) != '$') {
+                    return completedCommands;
+                }
+                int lengthEnd = data.indexOf("\r\n", index);
+                if (lengthEnd == -1) {
+                    return completedCommands;
+                }
+                int length = Integer.parseInt(data.substring(index + 1, lengthEnd));
+                int argumentEnd = lengthEnd + 2 + length;
+                if (argumentEnd + 2 > data.length()) {
+                    return completedCommands;
+                }
+                index = argumentEnd + 2;
+            }
+            completedCommands++;
+        }
+        return completedCommands;
     }
 
     private static RedisInputStream input(String data) {
