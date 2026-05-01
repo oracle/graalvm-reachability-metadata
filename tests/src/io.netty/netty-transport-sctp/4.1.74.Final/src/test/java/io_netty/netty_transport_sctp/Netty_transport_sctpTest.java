@@ -235,6 +235,28 @@ public class Netty_transport_sctpTest {
     }
 
     @Test
+    void completionHandlerReleasesBufferedFragmentsWhenRemoved() {
+        EmbeddedChannel channel = new EmbeddedChannel(new SctpMessageCompletionHandler());
+        ByteBuf fragmentContent = buffer("orphaned-fragment");
+        SctpMessage incomplete = new SctpMessage(
+                messageInfo(PROTOCOL_IDENTIFIER, STREAM_IDENTIFIER, false, false),
+                fragmentContent);
+        try {
+            assertThat(channel.writeInbound(incomplete)).isFalse();
+            incomplete = null;
+            assertThat(fragmentContent.refCnt()).isOne();
+
+            channel.pipeline().remove(SctpMessageCompletionHandler.class);
+
+            assertThat(fragmentContent.refCnt()).isZero();
+            assertThat(channel.finish()).isFalse();
+        } finally {
+            ReferenceCountUtil.release(incomplete);
+            channel.finishAndReleaseAll();
+        }
+    }
+
+    @Test
     void completionHandlerPassesAlreadyCompleteMessagesThrough() {
         EmbeddedChannel channel = new EmbeddedChannel(new SctpMessageCompletionHandler());
         SctpMessage complete = new SctpMessage(PROTOCOL_IDENTIFIER, STREAM_IDENTIFIER, true, buffer("complete"));
