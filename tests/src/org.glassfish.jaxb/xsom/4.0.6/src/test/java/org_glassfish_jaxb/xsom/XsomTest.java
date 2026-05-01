@@ -10,15 +10,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.sun.xml.xsom.ForeignAttributes;
+import com.sun.xml.xsom.SCD;
 import com.sun.xml.xsom.XSAnnotation;
+import com.sun.xml.xsom.XSAttributeDecl;
 import com.sun.xml.xsom.XSAttributeUse;
 import com.sun.xml.xsom.XSComplexType;
+import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSFacet;
 import com.sun.xml.xsom.XSIdentityConstraint;
 import com.sun.xml.xsom.XSListSimpleType;
 import com.sun.xml.xsom.XSModelGroup;
 import com.sun.xml.xsom.XSModelGroupDecl;
+import com.sun.xml.xsom.XSNotation;
 import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSRestrictionSimpleType;
 import com.sun.xml.xsom.XSSchema;
@@ -34,10 +38,14 @@ import com.sun.xml.xsom.parser.XSOMParser;
 import com.sun.xml.xsom.util.DomAnnotationParserFactory;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.SAXParserFactory;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
@@ -329,6 +337,54 @@ public class XsomTest {
     }
 
     @Test
+    void resolvesSchemaComponentDesignatorsAndNotations() throws Exception {
+        XSSchemaSet schemaSet = parseSingleSchema("memory:/assets.xsd", """
+                <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                           xmlns:tns="urn:shop"
+                           targetNamespace="urn:shop"
+                           elementFormDefault="qualified">
+                  <xs:notation name="png" public="image/png" system="viewer:png"/>
+                  <xs:complexType name="ImageType">
+                    <xs:sequence>
+                      <xs:element name="title" type="xs:string"/>
+                      <xs:element name="caption" type="xs:string" minOccurs="0"/>
+                    </xs:sequence>
+                    <xs:attribute name="format" type="xs:string" use="required"/>
+                  </xs:complexType>
+                  <xs:element name="image" type="tns:ImageType"/>
+                </xs:schema>
+                """);
+        NamespaceContext namespaces = namespaceContext(Map.of(
+                "shop", SHOP_NS,
+                "xs", XML_SCHEMA_NS));
+
+        XSSchema schema = schemaSet.getSchema(SHOP_NS);
+        XSNotation png = schema.getNotation("png");
+        assertThat(png.isGlobal()).isTrue();
+        assertThat(png.getPublicId()).isEqualTo("image/png");
+        assertThat(png.getSystemId()).isEqualTo("viewer:png");
+        assertThat(schemaSet.iterateNotations()).toIterable().contains(png);
+
+        XSComponent imageType = schemaSet.selectSingle("x-schema::shop/type::shop:ImageType", namespaces);
+        assertThat(imageType).isSameAs(schema.getComplexType("ImageType"));
+        XSComponent selectedNotation = SCD.create("x-schema::shop/notation::shop:png", namespaces).selectSingle(schemaSet);
+        assertThat(selectedNotation).isSameAs(png);
+
+        XSComponent titleComponent = schemaSet.selectSingle(
+                "x-schema::shop/type::shop:ImageType/model::sequence/element::shop:title", namespaces);
+        assertThat(titleComponent).isInstanceOf(XSElementDecl.class);
+        XSElementDecl title = (XSElementDecl) titleComponent;
+        assertThat(title.isLocal()).isTrue();
+        assertThat(title.getType()).isSameAs(schemaSet.getSimpleType(XML_SCHEMA_NS, "string"));
+
+        XSComponent formatComponent = imageType.selectSingle("@format", namespaces);
+        assertThat(formatComponent).isInstanceOf(XSAttributeDecl.class);
+        XSAttributeDecl format = (XSAttributeDecl) formatComponent;
+        assertThat(format.getName()).isEqualTo("format");
+        assertThat(format.isLocal()).isTrue();
+    }
+
+    @Test
     void parsesDomAnnotationsForeignAttributesAndXmlStringValues() throws Exception {
         XSOMParser parser = newParser();
         parser.setAnnotationParser(new DomAnnotationParserFactory());
@@ -357,10 +413,12 @@ public class XsomTest {
         assertThat(foreignAttributes.getValue(APP_NS, "version")).isEqualTo("1.2");
         assertThat(foreignAttributes.getLocator().getLineNumber()).isPositive();
 
-        XSAnnotation annotation = annotated.getAnnotation();
+        XSElementDecl annotatedAnnotationAccess = annotated;
+        XSAnnotation annotation = annotatedAnnotationAccess.getAnnotation();
         assertThat(annotation.getLocator().getLineNumber()).isPositive();
-        assertThat(annotation.getAnnotation()).isInstanceOf(Element.class);
-        Element annotationElement = (Element) annotation.getAnnotation();
+        XSAnnotation xsAnnotationAccess = annotation;
+        assertThat(xsAnnotationAccess.getAnnotation()).isInstanceOf(Element.class);
+        Element annotationElement = (Element) xsAnnotationAccess.getAnnotation();
         assertThat(annotationElement.getLocalName()).isEqualTo("annotation");
         assertThat(annotationElement.getElementsByTagNameNS("urn:metadata", "display-name").item(0).getTextContent())
                 .isEqualTo("Annotated value");
@@ -419,6 +477,36 @@ public class XsomTest {
             InputSource source = inputSource(schema, systemId);
             source.setPublicId(publicId);
             return source;
+        };
+    }
+
+    private static NamespaceContext namespaceContext(Map<String, String> namespaces) {
+        return new NamespaceContext() {
+            @Override
+            public String getNamespaceURI(String prefix) {
+                if (prefix == null) {
+                    throw new IllegalArgumentException("prefix");
+                }
+                return namespaces.getOrDefault(prefix, XMLConstants.NULL_NS_URI);
+            }
+
+            @Override
+            public String getPrefix(String namespaceURI) {
+                return namespaces.entrySet().stream()
+                        .filter(entry -> entry.getValue().equals(namespaceURI))
+                        .map(Map.Entry::getKey)
+                        .findFirst()
+                        .orElse(null);
+            }
+
+            @Override
+            public Iterator<String> getPrefixes(String namespaceURI) {
+                String prefix = getPrefix(namespaceURI);
+                if (prefix == null) {
+                    return Collections.emptyIterator();
+                }
+                return Collections.singleton(prefix).iterator();
+            }
         };
     }
 
