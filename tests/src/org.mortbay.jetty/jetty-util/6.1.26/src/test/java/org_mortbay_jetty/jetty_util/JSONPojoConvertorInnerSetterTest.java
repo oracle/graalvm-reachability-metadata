@@ -6,6 +6,7 @@
  */
 package org_mortbay_jetty.jetty_util;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,6 +46,16 @@ public class JSONPojoConvertorInnerSetterTest {
         SetterTarget target = convert(convertor, properties("descriptions", new Object[]{"alpha", Integer.valueOf(7)}));
 
         assertThat(target.descriptions).isNull();
+    }
+
+    @Test
+    void fallsBackToOriginalObjectArrayWhenConfiguredComponentCopyFails() {
+        JSONPojoConvertor convertor = new CopyFailureConvertor(SetterTarget.class);
+        Object[] values = new Object[]{"plain-text"};
+
+        SetterTarget target = convert(convertor, properties("objects", values));
+
+        assertThat(target.objects).isSameAs(values).containsExactly("plain-text");
     }
 
     @Test
@@ -90,6 +101,7 @@ public class JSONPojoConvertorInnerSetterTest {
         private CharSequence[] descriptions;
         private int[] quantities;
         private Integer[] boxedQuantities;
+        private Object[] objects;
 
         public void setNullableText(String nullableText) {
             this.nullableText = nullableText;
@@ -117,6 +129,32 @@ public class JSONPojoConvertorInnerSetterTest {
 
         public void setBoxedQuantities(Integer[] boxedQuantities) {
             this.boxedQuantities = boxedQuantities;
+        }
+
+        public void setObjects(Object[] objects) {
+            this.objects = objects;
+        }
+    }
+
+    public static class CopyFailureConvertor extends JSONPojoConvertor {
+        public CopyFailureConvertor(Class<?> pojoClass) {
+            super(pojoClass);
+        }
+
+        @Override
+        protected void addSetter(String name, Method method) {
+            if ("objects".equals(name)) {
+                _setters.put(name, new CopyFailureSetter(name, method));
+                return;
+            }
+            super.addSetter(name, method);
+        }
+    }
+
+    public static class CopyFailureSetter extends JSONPojoConvertor.Setter {
+        public CopyFailureSetter(String propertyName, Method method) {
+            super(propertyName, method);
+            _componentType = StringBuilder.class;
         }
     }
 }
