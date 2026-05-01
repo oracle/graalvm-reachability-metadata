@@ -32,6 +32,7 @@ import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.LogOutputStream;
 import org.apache.commons.exec.OS;
+import org.apache.commons.exec.ProcessDestroyer;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
 import org.apache.commons.exec.environment.EnvironmentUtils;
@@ -127,6 +128,25 @@ public class Commons_execTest {
         assertThat(lines(stderr)).contains("err:env-value");
         assertThat(executor.getWorkingDirectory()).isEqualTo(temporaryDirectory.toFile());
         assertThat(executor.getStreamHandler()).isInstanceOf(PumpStreamHandler.class);
+    }
+
+    @Test
+    void defaultExecutorRegistersLaunchedProcessesWithProcessDestroyer() throws Exception {
+        RecordingProcessDestroyer destroyer = new RecordingProcessDestroyer();
+        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+
+        DefaultExecutor executor = new DefaultExecutor();
+        executor.setProcessDestroyer(destroyer);
+        executor.setStreamHandler(new PumpStreamHandler(stdout, new ByteArrayOutputStream()));
+
+        int exitValue = executor.execute(shellCommand("printf 'destroyer-ok\\n'", "echo destroyer-ok"));
+
+        assertThat(exitValue).isZero();
+        assertThat(lines(stdout)).containsExactly("destroyer-ok");
+        assertThat(executor.getProcessDestroyer()).isSameAs(destroyer);
+        assertThat(destroyer.addedProcesses()).hasSize(1);
+        assertThat(destroyer.removedProcesses()).containsExactlyElementsOf(destroyer.addedProcesses());
+        assertThat(destroyer.size()).isZero();
     }
 
     @Test
@@ -300,6 +320,38 @@ public class Commons_execTest {
         @Override
         protected void processLine(String line, int level) {
             lines.add(line);
+        }
+    }
+
+    private static final class RecordingProcessDestroyer implements ProcessDestroyer {
+        private final List<Process> activeProcesses = new ArrayList<>();
+        private final List<Process> addedProcesses = new ArrayList<>();
+        private final List<Process> removedProcesses = new ArrayList<>();
+
+        private List<Process> addedProcesses() {
+            return addedProcesses;
+        }
+
+        private List<Process> removedProcesses() {
+            return removedProcesses;
+        }
+
+        @Override
+        public boolean add(Process process) {
+            activeProcesses.add(process);
+            addedProcesses.add(process);
+            return true;
+        }
+
+        @Override
+        public boolean remove(Process process) {
+            removedProcesses.add(process);
+            return activeProcesses.remove(process);
+        }
+
+        @Override
+        public int size() {
+            return activeProcesses.size();
         }
     }
 
