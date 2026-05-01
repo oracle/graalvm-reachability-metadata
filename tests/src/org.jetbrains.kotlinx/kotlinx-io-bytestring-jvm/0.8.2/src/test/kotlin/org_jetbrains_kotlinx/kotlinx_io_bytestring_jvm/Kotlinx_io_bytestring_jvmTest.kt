@@ -89,6 +89,23 @@ public class Kotlinx_io_bytestring_jvmTest {
     }
 
     @Test
+    fun unsignedByteFactoryPreservesUnsignedValuesAsByteContent() {
+        val bytes: ByteString = ByteString(
+            0x00u.toUByte(),
+            0x7fu.toUByte(),
+            0x80u.toUByte(),
+            0xffu.toUByte()
+        )
+
+        assertEquals(4, bytes.size)
+        assertEquals(0x00.toByte(), bytes[0])
+        assertEquals(0x7f.toByte(), bytes[1])
+        assertEquals(0x80.toByte(), bytes[2])
+        assertEquals(0xff.toByte(), bytes[3])
+        assertArrayEquals(byteArrayOf(0x00, 0x7f, 0x80.toByte(), 0xff.toByte()), bytes.toByteArray())
+    }
+
+    @Test
     fun equalityHashingAndComparisonUseByteContentAndUnsignedOrdering() {
         val first: ByteString = ByteString(1.toByte(), 2.toByte(), 3.toByte())
         val sameContent: ByteString = ByteString(byteArrayOf(1, 2, 3))
