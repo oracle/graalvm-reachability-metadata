@@ -1,0 +1,1408 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de51d-c349-73e1-a6ce-656009c2308c
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: jakarta.activation:jakarta.activation-api:1.2.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.2.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+- Set "coordinates" to "jakarta.activation:jakarta.activation-api:1.2.1".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream tags first, then update the JSON in place with the most specific versioned URLs I can justify.
+web search: 
+web search: jakarta.activation jakarta.activation-api 1.2.1 Maven sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/
+web search: 
+web search: site:github.com/eclipse-ee4j/jaf 1.2.1 tag jakarta.activation-api
+codex
+I found a Maven Central entry with both `-sources.jar` and `-javadoc.jar` for version `1.2.1`, plus the upstream GitHub release tag. I’m checking local metadata conventions now so the URL choices match this repo’s expected format.
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -40' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+{
+  "coordinates" : "jakarta.activation:jakarta.activation-api:1.2.1"
+}
+
+exec
+/usr/bin/bash -lc "rg '\"documentation-url\": \"https://repo1.maven.org/maven2/.+-javadoc.jar\"' build/discovered-artifact-metadata -n | head -20" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\": \"https://repo1.maven.org/maven2/.+-sources.jar\"' build/discovered-artifact-metadata -n | head -20" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'source-code-url|documentation-url|test-code-url|repository-url' -n . | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+./skills/review-library-bulk-update/SKILL.md:3:description: Review automated pull requests with the `library-bulk-update` label in graalvm-reachability-metadata. Use when asked to review or triage a PR that bumps tested versions for existing libraries, including approve vs close decisions, CI checks, diff-scope validation, and verification of `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` changes.
+./skills/review-library-bulk-update/SKILL.md:57:   - Review `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` with the same rules used by `PopulateArtifactURLs`.
+./skills/review-library-bulk-update/SKILL.md:67:- `repository-url` is the canonical repository root URL.
+./skills/review-library-bulk-update/SKILL.md:68:- `repository-url` must not include a versioned tree path such as `/tree/<tag>`.
+./skills/review-library-bulk-update/SKILL.md:69:- `source-code-url`, `test-code-url`, and `documentation-url` must point to the exact library version in the changed entry.
+./docs/CONTRIBUTING.md:108:* `source-code-url`: URL to the metadata source code location for this index entry.
+./docs/CONTRIBUTING.md:109:* `repository-url`: URL to the canonical project repository for this index entry.
+./docs/CONTRIBUTING.md:110:* `test-code-url`: URL to the test source code location for this index entry.
+./docs/CONTRIBUTING.md:111:* `documentation-url`: URL to the project documentation for this index entry.
+./docs/CONTRIBUTING.md:140:     "source-code-url": "https://github.com/example/repo/tree/main/metadata/org.example/library/1.1.0",
+./docs/CONTRIBUTING.md:141:     "repository-url": "https://github.com/example/repo",
+./docs/CONTRIBUTING.md:142:     "test-code-url": "https://github.com/example/repo/tree/main/tests/src/org.example/library/1.0.0",
+./docs/CONTRIBUTING.md:143:     "documentation-url": "https://github.com/example/repo/tree/main/README.md",
+./docs/CONTRIBUTING.md:155:To populate `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description` fields in matching `index.json` entries:
+./docs/FUNCTIONAL_SPEC.md:137:The schema follows semver, and **minor- and patch-version bumps** (e.g., `v2.0.1` → `v2.0.2` or `v2.0.x` → `v2.1.0`) are guaranteed to be backward-compatible with native-build-tools. Minor bumps add new optional fields used by the website, the test harness, or future tooling (`requires`, `test-version`, `skipped-versions`, `language`, `source-code-url`, `test-code-url`, `documentation-url`, `repository-url`); patch bumps refine validation of those same auxiliary fields. The plugin reads only the six fields enumerated above, so an older native-build-tools release continues to resolve metadata correctly against any newer minor or patch version of the schema. Only a **major-version bump** can break the contract, which NFR-4 forbids — schema changes are additive only.
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:299:                null, // source-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:300:                null, // repository-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:301:                null, // test-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:302:                null, // documentation-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:26:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:28:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:30:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:32:        @JsonProperty("documentation-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:16:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:18:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:20:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:22:        @JsonProperty("documentation-url")
+./forge/utility_scripts/source_context.py:23:    "main": "source-code-url",
+./forge/utility_scripts/source_context.py:24:    "test": "test-code-url",
+./forge/utility_scripts/source_context.py:25:    "documentation": "documentation-url",
+./forge/utility_scripts/source_context.py:216:        repository_url=normalize_url_value(index_entry.get("repository-url")),
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:178:                .containsEntry("source-code-url", "https://example.com/source")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:179:                .containsEntry("repository-url", "https://example.com/repository")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:180:                .containsEntry("test-code-url", "https://example.com/tests")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:181:                .containsEntry("documentation-url", "https://example.com/docs")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:224:                .containsEntry("source-code-url", "https://example.com/source")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:225:                .containsEntry("repository-url", "https://example.com/repository")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:226:                .containsEntry("test-code-url", "https://example.com/tests")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:227:                .containsEntry("documentation-url", "https://example.com/docs")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:96:    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, description, and language when those fields already contain values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:106:    @Option(option = "verify-artifact-sources", description = "Require source/test-source validation before selecting source-code-url or test-code-url values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:304:                - source-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:305:                - repository-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:306:                - test-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:307:                - documentation-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:352:                    - Set "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:353:                    - Set "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:354:                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:355:                    - Set "test-code-url" to the selected test suite URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:356:                    - Set "documentation-url" to the selected project documentation URL for version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:362:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:365:                - Set missing "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:366:                - Set missing "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:367:                - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:368:                - Set missing "test-code-url" to the selected test suite URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:369:                - Set missing "documentation-url" to the selected project documentation URL for version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:169:                - Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:58:                .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", \"description\", and \"language\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:59:                .contains("Set missing \"repository-url\" to the selected repository URL.")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:60:                .contains("\"repository-url\" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no \"/tree/v_1.2.11\").")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:61:                .contains("Set missing \"documentation-url\" to the selected project documentation URL for version \"1.4.1\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:66:                .contains("- source-code-url: <missing>")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:121:                .contains("- source-code-url: https://example.com/source-a")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:150:                .contains("- source-code-url: https://example.com/source-a")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:220:                    "source-code-url": "https://example.com/source-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:221:                    "repository-url": "https://example.com/repository-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:222:                    "test-code-url": "https://example.com/tests-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:223:                    "documentation-url": "https://example.com/docs-a",
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:308:    task.setDescription("Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.")
+./forge/docs/dynamic-access-workflow.md:52:   `source-code-url`, `test-code-url`, and `documentation-url` as required.
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/8.0.01/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+
+exec
+/usr/bin/bash -lc "find . -path '*/discovered-artifact-metadata/*' -type f | head -50" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+./build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+
+exec
+/usr/bin/bash -lc "rg 'jakarta.activation|activation-api' -n . | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+./stats/javax.activation/javax.activation-api/1.2.0/execution-metrics.json:4:    "library": "javax.activation:javax.activation-api:1.2.0",
+./stats/javax.activation/javax.activation-api/1.2.0/execution-metrics.json:64:      "test_file": "tests/src/javax.activation/javax.activation-api/1.2.0/src/test/java/javax_activation/javax_activation_api/SecuritySupport4Test.java",
+./stats/javax.activation/javax.activation-api/1.2.0/execution-metrics.json:65:      "metadata_file": "metadata/javax.activation/javax.activation-api/1.2.0/reachability-metadata.json"
+./stats/javax.activation/javax.activation-api/1.2.0/execution-metrics.json:70:    "library": "javax.activation:javax.activation-api:1.2.0",
+./stats/javax.activation/javax.activation-api/1.2.0/execution-metrics.json:130:      "test_file": "tests/src/javax.activation/javax.activation-api/1.2.0/src/test/java/com/sun/activation/registries/LogSupport.java",
+./stats/javax.activation/javax.activation-api/1.2.0/execution-metrics.json:131:      "metadata_file": "metadata/javax.activation/javax.activation-api/1.2.0/reachability-metadata.json"
+./tests/src/javax.activation/javax.activation-api/1.2.0/build.gradle:14:    testImplementation "javax.activation:javax.activation-api:$libraryVersion"
+./tests/src/javax.activation/javax.activation-api/1.2.0/settings.gradle:20:rootProject.name = 'javax.activation.javax.activation-api_tests'
+./tests/src/javax.activation/javax.activation-api/1.2.0/gradle.properties:4:library.coordinates = javax.activation:javax.activation-api:1.2.0
+./tests/src/javax.activation/javax.activation-api/1.2.0/gradle.properties:6:metadata.dir = javax.activation/javax.activation-api/1.2.0/
+./stats/com.sun.activation/jakarta.activation/2.0.0/execution-metrics.json:4:    "library": "com.sun.activation:jakarta.activation:2.0.0",
+./stats/com.sun.activation/jakarta.activation/2.0.0/execution-metrics.json:64:      "test_file": "tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/java/jakarta/activation/SecuritySupport4Test.java",
+./stats/com.sun.activation/jakarta.activation/2.0.0/execution-metrics.json:65:      "metadata_file": "metadata/com.sun.activation/jakarta.activation/2.0.0/reachability-metadata.json"
+./stats/com.sun.activation/jakarta.activation/2.0.0/execution-metrics.json:70:    "library": "com.sun.activation:jakarta.activation:2.0.0",
+./stats/com.sun.activation/jakarta.activation/2.0.0/execution-metrics.json:130:      "test_file": "tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/java/com_sun_activation/jakarta_activation/MailcapCommandMapTest.java",
+./stats/com.sun.activation/jakarta.activation/2.0.0/execution-metrics.json:131:      "metadata_file": "metadata/com.sun.activation/jakarta.activation/2.0.0/reachability-metadata.json"
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/com.sun.mail/jakarta.mail/2.0.1/reachability-metadata.json:5:        "typeReached": "jakarta.activation.MailcapCommandMap"
+./metadata/com.sun.mail/jakarta.mail/2.0.1/reachability-metadata.json:12:        "typeReached": "jakarta.activation.MailcapCommandMap"
+./metadata/com.sun.mail/jakarta.mail/2.0.1/reachability-metadata.json:19:        "typeReached": "jakarta.activation.MailcapCommandMap"
+./metadata/com.sun.mail/jakarta.mail/2.0.1/reachability-metadata.json:26:        "typeReached": "jakarta.activation.MailcapCommandMap"
+./metadata/com.sun.mail/jakarta.mail/2.0.1/reachability-metadata.json:33:        "typeReached": "jakarta.activation.MailcapCommandMap"
+./metadata/com.sun.mail/jakarta.mail/2.0.1/reachability-metadata.json:40:        "typeReached": "jakarta.activation.MailcapCommandMap"
+./metadata/com.sun.mail/jakarta.mail/2.0.1/reachability-metadata.json:47:        "typeReached": "jakarta.activation.MailcapCommandMap"
+./metadata/org.eclipse.angus/jakarta.mail/1.0.0/reachability-metadata.json:5:        "typeReached": "jakarta.activation.MailcapCommandMap"
+./metadata/org.eclipse.angus/jakarta.mail/1.0.0/reachability-metadata.json:12:        "typeReached": "jakarta.activation.MailcapCommandMap"
+./metadata/org.eclipse.angus/jakarta.mail/1.0.0/reachability-metadata.json:19:        "typeReached": "jakarta.activation.MailcapCommandMap"
+./metadata/org.eclipse.angus/jakarta.mail/1.0.0/reachability-metadata.json:26:        "typeReached": "jakarta.activation.MailcapCommandMap"
+./metadata/org.eclipse.angus/jakarta.mail/1.0.0/reachability-metadata.json:33:        "typeReached": "jakarta.activation.MailcapCommandMap"
+./metadata/org.eclipse.angus/jakarta.mail/1.0.0/reachability-metadata.json:40:        "typeReached": "jakarta.activation.MailcapCommandMap"
+./metadata/org.eclipse.angus/jakarta.mail/1.0.0/reachability-metadata.json:47:        "typeReached": "jakarta.activation.MailcapCommandMap"
+./metadata/com.sun.activation/jakarta.activation/2.0.0/reachability-metadata.json:5:        "typeReached" : "jakarta.activation.CommandInfo$Beans"
+./metadata/com.sun.activation/jakarta.activation/2.0.0/reachability-metadata.json:22:        "typeReached" : "jakarta.activation.SecuritySupport$3"
+./metadata/com.sun.activation/jakarta.activation/2.0.0/reachability-metadata.json:28:        "typeReached" : "jakarta.activation.CommandInfo$Beans"
+./metadata/com.sun.activation/jakarta.activation/2.0.0/reachability-metadata.json:30:      "glob" : "com_sun_activation/jakarta_activation/CommandInfoBeansTest$RecordingCommandObject.ser"
+./metadata/com.sun.activation/jakarta.activation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/2.0.0/jakarta.activation-2.0.0-sources.jar",
+./metadata/com.sun.activation/jakarta.activation/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/2.0.0/jakarta.activation-2.0.0-javadoc.jar",
+./metadata/com.sun.activation/jakarta.activation/index.json:16:      "jakarta.activation"
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/build.gradle:15:    testImplementation 'jakarta.activation:jakarta.activation-api:2.0.1'
+./tests/src/org.jvnet.staxex/stax-ex/1.8.2/build.gradle:15:    testImplementation 'jakarta.activation:jakarta.activation-api:1.2.1'
+./tests/src/org.jvnet.staxex/stax-ex/2.0.0/build.gradle:15:    testImplementation 'jakarta.activation:jakarta.activation-api:2.0.1'
+./tests/src/org.jvnet.staxex/stax-ex/2.0.0/src/test/java/org_jvnet_staxex/stax_ex/Stax_exTest.java:24:import jakarta.activation.DataHandler;
+./tests/src/org.jvnet.staxex/stax-ex/2.0.0/src/test/java/org_jvnet_staxex/stax_ex/Stax_exTest.java:25:import jakarta.activation.DataSource;
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/build.gradle:14:    testImplementation "com.sun.activation:jakarta.activation:$libraryVersion"
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/settings.gradle:20:rootProject.name = 'com.sun.activation.jakarta.activation_tests'
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:5:        "typeReached" : "jakarta.activation.CommandInfo$Beans"
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:7:      "type" : "com_sun_activation.jakarta_activation.CommandInfoBeansTest$RecordingCommandObject",
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:17:        "typeReached" : "jakarta.activation.MailcapCommandMap"
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:19:      "type" : "com_sun_activation.jakarta_activation.MailcapCommandMapTest$TestDataContentHandler",
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:31:        "typeReached" : "jakarta.activation.SecuritySupport$4"
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json:33:      "glob" : "com_sun_activation/jakarta_activation/security-support-4.resource"
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/java/com_sun_activation/jakarta_activation/CommandInfoBeansTest.java:7:package com_sun_activation.jakarta_activation;
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/java/com_sun_activation/jakarta_activation/CommandInfoBeansTest.java:9:import jakarta.activation.CommandInfo;
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/java/com_sun_activation/jakarta_activation/CommandInfoBeansTest.java:10:import jakarta.activation.CommandObject;
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/java/com_sun_activation/jakarta_activation/CommandInfoBeansTest.java:11:import jakarta.activation.DataHandler;
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/java/com_sun_activation/jakarta_activation/SecuritySupport4Test.java:7:package com_sun_activation.jakarta_activation;
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/java/com_sun_activation/jakarta_activation/SecuritySupport4Test.java:17:    private static final String RESOURCE_NAME = "com_sun_activation/jakarta_activation/security-support-4.resource";
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/java/com_sun_activation/jakarta_activation/SecuritySupport4Test.java:21:        Class<?> securitySupportClass = Class.forName("jakarta.activation.SecuritySupport");
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/java/com_sun_activation/jakarta_activation/MailcapCommandMapTest.java:7:package com_sun_activation.jakarta_activation;
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/java/com_sun_activation/jakarta_activation/MailcapCommandMapTest.java:9:import jakarta.activation.ActivationDataFlavor;
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/java/com_sun_activation/jakarta_activation/MailcapCommandMapTest.java:10:import jakarta.activation.DataContentHandler;
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/java/com_sun_activation/jakarta_activation/MailcapCommandMapTest.java:11:import jakarta.activation.DataSource;
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/src/test/java/com_sun_activation/jakarta_activation/MailcapCommandMapTest.java:12:import jakarta.activation.MailcapCommandMap;
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/gradle.properties:4:library.coordinates = com.sun.activation:jakarta.activation:2.0.0
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/gradle.properties:6:metadata.dir = com.sun.activation/jakarta.activation/2.0.0/
+./tests/src/com.sun.activation/jakarta.activation/2.0.0/user-code-filter.json:10:      "includeClasses": "jakarta.activation.**"
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/javax.activation/javax.activation-api/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages": [ "javax.activation" ],
+    "metadata-version": "1.2.0",
+    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+    "repository-url": "https://github.com/javaee/activation",
+    "test-code-url": "N/A",
+    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+    "description": "JavaBeans Activation Framework API defines the javax.activation types for describing data sources, determining MIME types, and dispatching data to content handlers. It provides the standard activation API that other libraries use to work with arbitrary data without bundling the implementation classes.",
+    "tested-versions": [
+      "1.2.0"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '320,380p' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+                indexFile,
+                metadataVersion,
+                urlUpdateInstructions,
+                currentValue(target.entry.sourceCodeUrl()),
+                currentValue(target.entry.repositoryUrl()),
+                currentValue(target.entry.testCodeUrl()),
+                currentValue(target.entry.documentationUrl()),
+                currentValue(target.entry.description()),
+                currentLanguageValue(target.entry),
+                target.version,
+                testVersion
+        ).strip();
+    }
+
+    private static String sourceArtifactVerificationInstructions(boolean verifyArtifactSources, String version) {
+        if (!verifyArtifactSources) {
+            return "";
+        }
+        return """
+                Source Artifact Verification (required):
+                - Verify candidate source URLs for version "%s", including Maven and non-Maven candidates.
+                - If you use Maven source artifacts, confirm `-sources.jar` contains real source files (`.java`, `.kt`, `.scala`, `.groovy`), not only metadata/license files.
+                - If you use Maven test-source artifacts, confirm `-test-sources.jar` contains real test source files.
+                - For non-Maven source/test URLs (for example repository tree pages or downloadable archives), verify that the selected URL resolves to real source/test files for the exact version.
+                - If a candidate source/test URL fails this verification, do not use it. Prefer a verified repository tag URL instead.
+                """.formatted(version).strip();
+    }
+
+    private static String urlUpdateInstructions(boolean overwriteExisting, String version) {
+        if (overwriteExisting) {
+            return """
+                    - Overwrite existing URL values.
+                    - Set "source-code-url" to the selected source URL.
+                    - Set "repository-url" to the selected repository URL.
+                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+                    - Set "test-code-url" to the selected test suite URL.
+                    - Set "documentation-url" to the selected project documentation URL for version "%s".
+                    - Set "description" to a concise explanation of the library in exactly two sentences.
+                    - Set "language" to the structured language object when the library is language-specific; otherwise leave the field absent.
+                    """.formatted(version).strip();
+        }
+        return """
+                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+                - A field is missing only when absent, null, or blank.
+                - Do not modify fields that already contain a non-blank value.
+                - Set missing "source-code-url" to the selected source URL.
+                - Set missing "repository-url" to the selected repository URL.
+                - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+                - Set missing "test-code-url" to the selected test suite URL.
+                - Set missing "documentation-url" to the selected project documentation URL for version "%s".
+                - Set missing "description" to a concise explanation of the library in exactly two sentences.
+                - Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+                """.formatted(version).strip();
+    }
+
+    private static String currentValue(String value) {
+        return hasText(value) ? value : "<missing>";
+    }
+
+    private static String currentLanguageValue(MetadataVersionsIndexEntry entry) {
+        if (entry.language() == null) {
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/com.sun.activation/jakarta.activation/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/2.0.0/jakarta.activation-2.0.0-sources.jar",
+    "repository-url" : "https://github.com/jakartaee/jaf-api",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/2.0.0/jakarta.activation-2.0.0-javadoc.jar",
+    "description" : "Jakarta Activation provides classes for determining data types, encapsulating data access, and mapping MIME content to handlers. It implements the Activation API used to discover and invoke operations for arbitrary data sources.",
+    "tested-versions" : [
+      "2.0.0",
+      "2.0.1"
+    ],
+    "allowed-packages" : [
+      "com.sun.activation.registries",
+      "jakarta.activation"
+    ]
+  }
+]
+
+web search: 
+web search: https://repo1.maven.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+<!--
+    This project builds the JAF API jar file, which contains only
+    the javax.activation.* API definitions and is *only* intended to be used
+    for programs to compile against.  Note that it includes none of the
+    implementation-specific classes that the javax.activation.* classes rely on.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.sun.activation</groupId>
+        <artifactId>all</artifactId>
+        <version>1.2.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>jakarta.activation</groupId>
+    <artifactId>jakarta.activation-api</artifactId>
+    <packaging>jar</packaging>
+    <name>JavaBeans Activation Framework API jar</name>
+    <properties>
+        <activation.extensionName>
+            jakarta.activation
+        </activation.extensionName>
+        <activation.moduleName>
+            jakarta.activation
+        </activation.moduleName>
+        <activation.packages.export>
+            javax.activation.*; version=${activation.spec.version}
+        </activation.packages.export>
+        <activation.bundle.symbolicName>
+            jakarta.activation-api
+        </activation.bundle.symbolicName>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <!-- download the binaries -->
+                        <id>get-binaries</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <!-- download the sources -->
+                        <id>get-sources</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.sun.activation</groupId>
+                                    <artifactId>jakarta.activation</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>sources</classifier>
+                                    <outputDirectory>
+                                        ${project.build.directory}/sources
+                                    </outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <artifactItems>
+                        <artifactItem>
+                            <groupId>com.sun.activation</groupId>
+                            <artifactId>jakarta.activation</artifactId>
+                            <version>${project.version}</version>
+                        </artifactItem>
+                    </artifactItems>
+                    <outputDirectory>
+                        ${project.build.outputDirectory}
+                    </outputDirectory>
+                    <includes>
+                        javax/**,
+                        META-INF/LICENSE.txt
+                    </includes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <finalName>${project.artifactId}</finalName>
+                    <archive>
+                        <manifestFile>
+                            ${project.build.outputDirectory}/META-INF/MANIFEST.MF
+                        </manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-javadoc.jar -o /tmp/jakarta.activation-api-1.2.1-javadoc.jar && jar tf /tmp/jakarta.activation-api-1.2.1-javadoc.jar | head -60' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-sources.jar -o /tmp/jakarta.activation-api-1.2.1-sources.jar && jar tf /tmp/jakarta.activation-api-1.2.1-sources.jar | head -80' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 115ms:
+META-INF/
+META-INF/MANIFEST.MF
+pom.xml
+javax/
+javax/activation/
+javax/activation/URLDataSource.java
+javax/activation/CommandObject.java
+javax/activation/DataHandler.java
+javax/activation/package.html
+javax/activation/FileTypeMap.java
+javax/activation/MailcapCommandMap.java
+javax/activation/DataContentHandlerFactory.java
+javax/activation/CommandMap.java
+javax/activation/MimetypesFileTypeMap.java
+javax/activation/CommandInfo.java
+javax/activation/ActivationDataFlavor.java
+javax/activation/FileDataSource.java
+javax/activation/UnsupportedDataTypeException.java
+javax/activation/MimeType.java
+javax/activation/SecuritySupport.java
+javax/activation/DataContentHandler.java
+javax/activation/DataSource.java
+javax/activation/MimeTypeParameterList.java
+javax/activation/MimeTypeParseException.java
+META-INF/NOTICE.md
+META-INF/LICENSE.md
+
+ succeeded in 159ms:
+META-INF/
+META-INF/MANIFEST.MF
+javax/
+javax/activation/
+javax/activation/class-use/
+package-list
+allclasses-noframe.html
+script.js
+stylesheet.css
+help-doc.html
+index-all.html
+javax/activation/MimeType.html
+javax/activation/package-frame.html
+javax/activation/URLDataSource.html
+javax/activation/CommandInfo.html
+javax/activation/DataHandler.html
+javax/activation/MailcapCommandMap.html
+javax/activation/package-tree.html
+javax/activation/DataContentHandler.html
+javax/activation/MimeTypeParameterList.html
+javax/activation/CommandObject.html
+javax/activation/package-summary.html
+javax/activation/CommandMap.html
+javax/activation/MimetypesFileTypeMap.html
+javax/activation/package-use.html
+javax/activation/class-use/MimeType.html
+javax/activation/class-use/URLDataSource.html
+javax/activation/class-use/CommandInfo.html
+javax/activation/class-use/DataHandler.html
+javax/activation/class-use/MailcapCommandMap.html
+javax/activation/class-use/DataContentHandler.html
+javax/activation/class-use/MimeTypeParameterList.html
+javax/activation/class-use/CommandObject.html
+javax/activation/class-use/CommandMap.html
+javax/activation/class-use/MimetypesFileTypeMap.html
+javax/activation/class-use/FileDataSource.html
+javax/activation/class-use/ActivationDataFlavor.html
+javax/activation/class-use/MimeTypeParseException.html
+javax/activation/class-use/DataSource.html
+javax/activation/class-use/FileTypeMap.html
+javax/activation/class-use/DataContentHandlerFactory.html
+javax/activation/class-use/UnsupportedDataTypeException.html
+javax/activation/FileDataSource.html
+javax/activation/ActivationDataFlavor.html
+javax/activation/MimeTypeParseException.html
+javax/activation/DataSource.html
+javax/activation/FileTypeMap.html
+javax/activation/DataContentHandlerFactory.html
+javax/activation/UnsupportedDataTypeException.html
+index.html
+serialized-form.html
+allclasses-frame.html
+overview-tree.html
+constant-values.html
+deprecated-list.html
+
+codex
+The local examples use Maven source and javadoc JARs when those exist, with `test-code-url` set to `N/A` when no versioned test artifact or test tree can be tied confidently to the artifact. I’ve also verified the source and javadoc JARs contain real Java source and generated API docs.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/sun/activation/all/1.2.1/all-1.2.1.pom | sed -n '1,240p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+			    http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.2</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.sun.activation</groupId>
+    <artifactId>all</artifactId>
+    <packaging>pom</packaging>
+    <version>1.2.1</version>
+    <name>JavaBeans Activation Framework distribution</name>
+    <description>${project.name}</description>
+    <url>https://github.com/eclipse-ee4j/jaf</url>
+
+    <scm>
+        <connection>scm:git:ssh://git@github.com/eclipse/jaf.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/eclipse/jaf.git</developerConnection>
+        <url>https://github.com/eclipse-ee4j/jaf</url>
+      <tag>HEAD</tag>
+  </scm>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/eclipse-ee4j/jaf/issues/</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>EDL 1.0</name>
+            <url>http://www.eclipse.org/org/documents/edl-v10.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <properties>
+	<activation.spec.version>1.2</activation.spec.version>
+	<!-- defaults that are overridden in activation module -->
+	<activation.extensionName>
+	    ${project.groupId}.${project.artifactId}
+	</activation.extensionName>
+	<activation.moduleName>
+	    ${project.groupId}.${project.artifactId}
+	</activation.moduleName>
+	<activation.specificationTitle>
+	    ${project.groupId}.${project.artifactId}
+	</activation.specificationTitle>
+	<activation.implementationTitle>
+	    ${project.groupId}.${project.artifactId}
+	</activation.implementationTitle>
+	<activation.bundle.symbolicName>
+	    ${project.groupId}.${project.artifactId}
+	</activation.bundle.symbolicName>
+	<activation.bundle.symbolicName>
+	    ${project.groupId}.${project.artifactId}
+	</activation.bundle.symbolicName>
+	<activation.packages.export>
+	    javax.activation.*; version=${activation.spec.version}
+	</activation.packages.export>
+	<activation.packages.import>
+	    *
+	</activation.packages.import>
+	<activation.packages.private>
+	    com.sun.activation.*
+	</activation.packages.private>
+	<!-- for the osgiversion-maven-plugin -->
+	<hk2.plugin.version>2.0.0</hk2.plugin.version>
+	<project.build.sourceEncoding>iso-8859-1</project.build.sourceEncoding>
+	<findbugs.threshold>
+	    High
+	</findbugs.threshold>
+	<findbugs.version>
+	    3.0.1
+	</findbugs.version>
+	<findbugs.skip>
+	    true
+	</findbugs.skip>
+	<findbugs.exclude/>
+        <copyright-plugin.version>1.42</copyright-plugin.version>
+    </properties>
+
+    <developers>
+	<developer>
+	    <id>shannon</id>
+	    <name>Bill Shannon</name>
+	    <email>bill.shannon@oracle.com</email>
+	    <organization>Oracle</organization>
+	    <roles>
+		<role>lead</role>
+	    </roles>
+	</developer>
+    </developers>
+
+    <!-- following to enable use of "mvn site:stage" -->
+    <distributionManagement>
+	<site>
+	    <id>oracle.com</id>
+	    <url>file:/tmp</url> <!-- not used -->
+	</site>
+    </distributionManagement>
+
+    <modules>
+	<module>activation</module>
+	<module>activationapi</module>
+    </modules>
+
+    <profiles>
+	<!--
+	    This profile contains modules that should only be built
+	    but not installed or deployed.
+	-->
+	<profile>
+	    <id>build-only</id>
+	    <modules>
+		<module>demo</module>
+	    </modules>
+	    <activation>
+		<activeByDefault>true</activeByDefault>
+	    </activation>
+	</profile>
+
+	<!--
+	    This profile is used for deploying a JAF final release.
+	-->
+	<profile>
+	    <id>deploy-release</id>
+	    <build>
+		<plugins>
+		    <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<configuration>
+			    <skip>true</skip>
+			</configuration>
+		    </plugin>
+
+		    <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-javadoc-plugin</artifactId>
+			<executions>
+			    <execution>
+				<id>attach-javadocs</id>
+				<goals>
+				    <goal>jar</goal>
+				</goals>
+			    </execution>
+			</executions>
+		    </plugin>
+
+		    <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-gpg-plugin</artifactId>
+			<version>1.6</version>
+		    </plugin>
+		    <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-deploy-plugin</artifactId>
+			<configuration>
+			   <!-- To prefer nexus-staging-maven-plugin -->
+			   <skip>true</skip>
+			</configuration>
+		   </plugin>
+		   <plugin>
+			<groupId>org.sonatype.plugins</groupId>
+			<artifactId>nexus-staging-maven-plugin</artifactId>
+			<extensions>true</extensions>
+			<executions>
+			    <execution>
+				<id>default-deploy</id>
+				<phase>deploy</phase>
+				<goals>
+				    <goal>deploy</goal>
+				</goals>
+			    </execution>
+			</executions>
+			<configuration>
+			    <serverId>ossrh</serverId>
+			    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+			    <autoReleaseAfterClose>false</autoReleaseAfterClose>
+			</configuration>
+		    </plugin>
+		</plugins>
+	    </build>
+	</profile>
+
+	<!--
+	    This profile is used for deploying a JAF SNAPSHOT release.
+	    It's identical to the above deploy-release profile except that
+	    artifacts aren't signed.
+	-->
+	<profile>
+	    <id>deploy-snapshot</id>
+	    <build>
+		<plugins>
+		    <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<configuration>
+			    <skip>true</skip>
+			</configuration>
+		    </plugin>
+
+		    <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-javadoc-plugin</artifactId>
+			<executions>
+			    <execution>
+				<id>attach-javadocs</id>
+				<goals>
+				    <goal>jar</goal>
+				</goals>
+			    </execution>
+			</executions>
+		    </plugin>
+		</plugins>
+	    </build>
+	</profile>
+
+	<!--
+	    A special profile for compiling with the real JDK 1.5
+	    compiler, to make sure there are no accidental dependencies
+	    on JDK 1.6 or newer APIs.  Set the property javac.path to the path
+	    to the JDK 1.5 compiler, e.g.,
+	    "mvn -P1.5 -Djavac.path=/opt/jdk1.5/bin/javac".
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/sun/activation/jakarta.activation/1.2.1/jakarta.activation-1.2.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+
+    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+			    http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+	<groupId>com.sun.activation</groupId>
+	<artifactId>all</artifactId>
+	<version>1.2.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.sun.activation</groupId>
+    <artifactId>jakarta.activation</artifactId>
+    <packaging>jar</packaging>
+    <name>JavaBeans Activation Framework</name>
+
+    <properties>
+	<activation.extensionName>
+	    jakarta.activation
+	</activation.extensionName>
+	<activation.moduleName>
+	    jakarta.activation
+	</activation.moduleName>
+	<activation.specificationTitle>
+	    JavaBeans(TM) Activation Framework Specification
+	</activation.specificationTitle>
+	<activation.implementationTitle>
+	    javax.activation
+	</activation.implementationTitle>
+	<activation.packages.export>
+	    javax.activation.*; version=${activation.spec.version},
+	    com.sun.activation.*; version=${activation.osgiversion}
+	</activation.packages.export>
+	<findbugs.skip>
+	    false
+	</findbugs.skip>
+	<findbugs.exclude>
+	    ${project.basedir}/exclude.xml
+	</findbugs.exclude>
+    </properties>
+
+    <build>
+	<resources>
+	    <resource>
+		<directory>src/main/resources</directory>
+		<filtering>true</filtering>
+	    </resource>
+	</resources>
+	<plugins>
+	    <!--
+		Configure compiler plugin to print lint warnings.
+	    -->
+	    <plugin>
+		<artifactId>maven-compiler-plugin</artifactId>
+		<executions>
+		    <execution>
+			<id>default-compile</id>
+			<configuration>
+			    <source>1.5</source>
+			    <target>1.5</target>
+			    <fork>true</fork>
+			    <!--
+				ignore some of the errors that are
+				too hard to fix for now
+			    -->
+			    <!--
+			    <compilerArguments>
+				<Xlint:all/>
+				<Xlint:-rawtypes/>
+				<Xlint:-unchecked/>
+				<Xlint:-finally/>
+			    </compilerArguments>
+			    <showWarnings>true</showWarnings>
+			    -->
+			</configuration>
+		    </execution>
+		    <execution>
+			<id>default-testCompile</id>
+			<configuration>
+			    <source>1.5</source>
+			    <target>1.5</target>
+			</configuration>
+		    </execution>
+		</executions>
+	    </plugin>
+
+	    <!--
+		Configure test plugin to find *TestSuite classes.
+	    -->
+	    <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-surefire-plugin</artifactId>
+		<configuration>
+		    <includes>
+			<include>**/*Test.java</include>
+			<include>**/*TestSuite.java</include>
+		    </includes>
+		</configuration>
+	    </plugin>
+
+	    <plugin>
+		<artifactId>maven-javadoc-plugin</artifactId>
+		<inherited>false</inherited>
+                <executions>
+		    <execution>
+			<phase>package</phase>
+			<goals>
+			    <goal>javadoc</goal>
+			</goals>
+			<configuration>
+			    <author>false</author>
+			    <description>
+				JavaBeans Activation Framework API documentation
+			    </description>
+			    <doctitle>
+				JavaBeans Activation Framework API documentation
+			    </doctitle>
+			    <windowtitle>
+				JavaBeans Activation Framework API documentation
+			    </windowtitle>
+			    <splitindex>true</splitindex>
+			    <use>true</use>
+			    <notimestamp>true</notimestamp>
+			    <serialwarn>true</serialwarn>
+			    <quiet>true</quiet>
+			    <bottom>
+<![CDATA[Copyright &#169; 1996-2017,
+    <a href="http://www.oracle.com">Oracle</a>
+    and/or its affiliates. All Rights Reserved.
+    Use is subject to
+    <a href="{@docRoot}/doc-files/speclicense.html" target="_top">license terms</a>.
+]]>
+			    </bottom>
+			    <groups>
+				<group>
+				    <title>JavaBeans Activation Framework API Packages</title>
+				    <packages>javax.*</packages>
+				</group>
+			    </groups>
+			    <subpackages>javax.activation</subpackages>
+			    <!--
+				Links to Java SE javadocs.
+
+				XXX - links need to include a trailing "/."
+				      because Maven strips off a trailing "/"
+				      before passing the option to the javadoc
+				      command, which then strips off the last
+				      name if it doesn't end with "/".
+			    -->
+			    <links>
+				<link>http://docs.oracle.com/javase/1.5.0/docs/api/.</link>
+			    </links>
+			</configuration>
+		    </execution>
+                </executions>
+	    </plugin>
+	</plugins>
+    </build>
+
+    <dependencies>
+	<dependency>
+	    <groupId>junit</groupId>
+	    <artifactId>junit</artifactId>
+	    <version>4.12</version>
+	    <scope>test</scope>
+	    <optional>true</optional>
+	</dependency>
+    </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo1.maven.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-test-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo1.maven.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-tests.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 229ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Fri, 01 May 2026 19:57:44 GMT
+content-type: text/html
+cf-ray: 9f515b600ac9c8a4-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 193ms:
+HTTP/2 404 
+date: Fri, 01 May 2026 19:57:44 GMT
+content-type: text/html
+cf-ray: 9f515b605aca03a9-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/sun/activation/all/1.2.1/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/sun/activation/all/1.2.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/sun/activation/all/1.2.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="all-1.2.1.pom" title="all-1.2.1.pom">all-1.2.1.pom</a>                                     2018-11-20 22:14     18095      
+<a href="all-1.2.1.pom.asc" title="all-1.2.1.pom.asc">all-1.2.1.pom.asc</a>                                 2018-11-20 22:14       833      
+<a href="all-1.2.1.pom.md5" title="all-1.2.1.pom.md5">all-1.2.1.pom.md5</a>                                 2018-11-20 22:14        32      
+<a href="all-1.2.1.pom.sha1" title="all-1.2.1.pom.sha1">all-1.2.1.pom.sha1</a>                                2018-11-20 22:14        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jakarta/activation/jakarta.activation-api/1.2.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jakarta/activation/jakarta.activation-api/1.2.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.activation-api-1.2.1-javadoc.jar" title="jakarta.activation-api-1.2.1-javadoc.jar">jakarta.activation-api-1.2.1-javadoc.jar</a>          2018-11-20 22:16    128495      
+<a href="jakarta.activation-api-1.2.1-javadoc.jar.asc" title="jakarta.activation-api-1.2.1-javadoc.jar.asc">jakarta.activation-api-1.2.1-javadoc.jar.asc</a>      2018-11-20 22:16       833      
+<a href="jakarta.activation-api-1.2.1-javadoc.jar.asc.md5" title="jakarta.activation-api-1.2.1-javadoc.jar.asc.md5">jakarta.activation-api-1.2.1-javadoc.jar.asc....</a>  2018-11-20 22:16        32      
+<a href="jakarta.activation-api-1.2.1-javadoc.jar.asc.sha1" title="jakarta.activation-api-1.2.1-javadoc.jar.asc.sha1">jakarta.activation-api-1.2.1-javadoc.jar.asc....</a>  2018-11-20 22:16        40      
+<a href="jakarta.activation-api-1.2.1-javadoc.jar.md5" title="jakarta.activation-api-1.2.1-javadoc.jar.md5">jakarta.activation-api-1.2.1-javadoc.jar.md5</a>      2018-11-20 22:16        32      
+<a href="jakarta.activation-api-1.2.1-javadoc.jar.sha1" title="jakarta.activation-api-1.2.1-javadoc.jar.sha1">jakarta.activation-api-1.2.1-javadoc.jar.sha1</a>     2018-11-20 22:16        40      
+<a href="jakarta.activation-api-1.2.1-sources.jar" title="jakarta.activation-api-1.2.1-sources.jar">jakarta.activation-api-1.2.1-sources.jar</a>          2018-11-20 22:16     43221      
+<a href="jakarta.activation-api-1.2.1-sources.jar.asc" title="jakarta.activation-api-1.2.1-sources.jar.asc">jakarta.activation-api-1.2.1-sources.jar.asc</a>      2018-11-20 22:16       833      
+<a href="jakarta.activation-api-1.2.1-sources.jar.asc.md5" title="jakarta.activation-api-1.2.1-sources.jar.asc.md5">jakarta.activation-api-1.2.1-sources.jar.asc....</a>  2018-11-20 22:16        32      
+<a href="jakarta.activation-api-1.2.1-sources.jar.asc.sha1" title="jakarta.activation-api-1.2.1-sources.jar.asc.sha1">jakarta.activation-api-1.2.1-sources.jar.asc....</a>  2018-11-20 22:16        40      
+<a href="jakarta.activation-api-1.2.1-sources.jar.md5" title="jakarta.activation-api-1.2.1-sources.jar.md5">jakarta.activation-api-1.2.1-sources.jar.md5</a>      2018-11-20 22:16        32      
+<a href="jakarta.activation-api-1.2.1-sources.jar.sha1" title="jakarta.activation-api-1.2.1-sources.jar.sha1">jakarta.activation-api-1.2.1-sources.jar.sha1</a>     2018-11-20 22:16        40      
+<a href="jakarta.activation-api-1.2.1.jar" title="jakarta.activation-api-1.2.1.jar">jakarta.activation-api-1.2.1.jar</a>                  2018-11-20 22:16     44399      
+<a href="jakarta.activation-api-1.2.1.jar.asc" title="jakarta.activation-api-1.2.1.jar.asc">jakarta.activation-api-1.2.1.jar.asc</a>              2018-11-20 22:16       833      
+<a href="jakarta.activation-api-1.2.1.jar.asc.md5" title="jakarta.activation-api-1.2.1.jar.asc.md5">jakarta.activation-api-1.2.1.jar.asc.md5</a>          2018-11-20 22:16        32      
+<a href="jakarta.activation-api-1.2.1.jar.asc.sha1" title="jakarta.activation-api-1.2.1.jar.asc.sha1">jakarta.activation-api-1.2.1.jar.asc.sha1</a>         2018-11-20 22:16        40      
+<a href="jakarta.activation-api-1.2.1.jar.md5" title="jakarta.activation-api-1.2.1.jar.md5">jakarta.activation-api-1.2.1.jar.md5</a>              2018-11-20 22:16        32      
+<a href="jakarta.activation-api-1.2.1.jar.sha1" title="jakarta.activation-api-1.2.1.jar.sha1">jakarta.activation-api-1.2.1.jar.sha1</a>             2018-11-20 22:16        40      
+<a href="jakarta.activation-api-1.2.1.pom" title="jakarta.activation-api-1.2.1.pom">jakarta.activation-api-1.2.1.pom</a>                  2018-11-20 22:16      4572      
+<a href="jakarta.activation-api-1.2.1.pom.asc" title="jakarta.activation-api-1.2.1.pom.asc">jakarta.activation-api-1.2.1.pom.asc</a>              2018-11-20 22:16       833      
+<a href="jakarta.activation-api-1.2.1.pom.asc.md5" title="jakarta.activation-api-1.2.1.pom.asc.md5">jakarta.activation-api-1.2.1.pom.asc.md5</a>          2018-11-20 22:16        32      
+<a href="jakarta.activation-api-1.2.1.pom.asc.sha1" title="jakarta.activation-api-1.2.1.pom.asc.sha1">jakarta.activation-api-1.2.1.pom.asc.sha1</a>         2018-11-20 22:16        40      
+<a href="jakarta.activation-api-1.2.1.pom.md5" title="jakarta.activation-api-1.2.1.pom.md5">jakarta.activation-api-1.2.1.pom.md5</a>              2018-11-20 22:16        32      
+<a href="jakarta.activation-api-1.2.1.pom.sha1" title="jakarta.activation-api-1.2.1.pom.sha1">jakarta.activation-api-1.2.1.pom.sha1</a>             2018-11-20 22:16        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/1.2.1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/sun/activation/jakarta.activation/1.2.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/sun/activation/jakarta.activation/1.2.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.activation-1.2.1-javadoc.jar" title="jakarta.activation-1.2.1-javadoc.jar">jakarta.activation-1.2.1-javadoc.jar</a>              2018-11-20 22:14    213244      
+<a href="jakarta.activation-1.2.1-javadoc.jar.asc" title="jakarta.activation-1.2.1-javadoc.jar.asc">jakarta.activation-1.2.1-javadoc.jar.asc</a>          2018-11-20 22:14       833      
+<a href="jakarta.activation-1.2.1-javadoc.jar.md5" title="jakarta.activation-1.2.1-javadoc.jar.md5">jakarta.activation-1.2.1-javadoc.jar.md5</a>          2018-11-20 22:14        32      
+<a href="jakarta.activation-1.2.1-javadoc.jar.sha1" title="jakarta.activation-1.2.1-javadoc.jar.sha1">jakarta.activation-1.2.1-javadoc.jar.sha1</a>         2018-11-20 22:14        40      
+<a href="jakarta.activation-1.2.1-sources.jar" title="jakarta.activation-1.2.1-sources.jar">jakarta.activation-1.2.1-sources.jar</a>              2018-11-20 22:14     61795      
+<a href="jakarta.activation-1.2.1-sources.jar.asc" title="jakarta.activation-1.2.1-sources.jar.asc">jakarta.activation-1.2.1-sources.jar.asc</a>          2018-11-20 22:14       833      
+<a href="jakarta.activation-1.2.1-sources.jar.md5" title="jakarta.activation-1.2.1-sources.jar.md5">jakarta.activation-1.2.1-sources.jar.md5</a>          2018-11-20 22:14        32      
+<a href="jakarta.activation-1.2.1-sources.jar.sha1" title="jakarta.activation-1.2.1-sources.jar.sha1">jakarta.activation-1.2.1-sources.jar.sha1</a>         2018-11-20 22:14        40      
+<a href="jakarta.activation-1.2.1.jar" title="jakarta.activation-1.2.1.jar">jakarta.activation-1.2.1.jar</a>                      2018-11-20 22:14     65690      
+<a href="jakarta.activation-1.2.1.jar.asc" title="jakarta.activation-1.2.1.jar.asc">jakarta.activation-1.2.1.jar.asc</a>                  2018-11-20 22:14       833      
+<a href="jakarta.activation-1.2.1.jar.md5" title="jakarta.activation-1.2.1.jar.md5">jakarta.activation-1.2.1.jar.md5</a>                  2018-11-20 22:14        32      
+<a href="jakarta.activation-1.2.1.jar.sha1" title="jakarta.activation-1.2.1.jar.sha1">jakarta.activation-1.2.1.jar.sha1</a>                 2018-11-20 22:14        40      
+<a href="jakarta.activation-1.2.1.pom" title="jakarta.activation-1.2.1.pom">jakarta.activation-1.2.1.pom</a>                      2018-11-20 22:14      4898      
+<a href="jakarta.activation-1.2.1.pom.asc" title="jakarta.activation-1.2.1.pom.asc">jakarta.activation-1.2.1.pom.asc</a>                  2018-11-20 22:14       833      
+<a href="jakarta.activation-1.2.1.pom.md5" title="jakarta.activation-1.2.1.pom.md5">jakarta.activation-1.2.1.pom.md5</a>                  2018-11-20 22:14        32      
+<a href="jakarta.activation-1.2.1.pom.sha1" title="jakarta.activation-1.2.1.pom.sha1">jakarta.activation-1.2.1.pom.sha1</a>                 2018-11-20 22:14        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: https://github.com/eclipse-ee4j/jaf
+web search: 
+web search: https://github.com/jakartaee/jaf-api/tags
+web search: 
+web search: https://github.com/jakartaee/jaf-api/tags?after=2.1.0-RC1
+codex
+I’m going to write the metadata now using the Maven Central source and javadoc artifacts, the canonical GitHub repository root, and `N/A` for tests because Maven has no test-source/tests artifact for this coordinate and the existing activation metadata uses `N/A` for the comparable API entry.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+diff --git a/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json b/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+index 5524b1aaceab09300a3a96113ba93e6c4739b410..f338a04f0f072efc4d7ecc4f8586a7c386972a26
+--- a/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
++++ b/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.activation:jakarta.activation-api:1.2.1"
++  "coordinates" : "jakarta.activation:jakarta.activation-api:1.2.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-sources.jar",
++  "repository-url" : "https://github.com/jakartaee/jaf-api",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-javadoc.jar",
++  "description" : "Jakarta Activation API defines the standard javax.activation interfaces and classes for describing data sources, determining MIME types, and discovering operations available for arbitrary data. This artifact provides the API types used by applications and libraries at compile time without bundling the implementation-specific activation classes."
+ }
+
+diff --git a/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json b/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+index 5524b1aaceab09300a3a96113ba93e6c4739b410..f338a04f0f072efc4d7ecc4f8586a7c386972a26
+--- a/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
++++ b/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.activation:jakarta.activation-api:1.2.1"
++  "coordinates" : "jakarta.activation:jakarta.activation-api:1.2.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-sources.jar",
++  "repository-url" : "https://github.com/jakartaee/jaf-api",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-javadoc.jar",
++  "description" : "Jakarta Activation API defines the standard javax.activation interfaces and classes for describing data sources, determining MIME types, and discovering operations available for arbitrary data. This artifact provides the API types used by applications and libraries at compile time without bundling the implementation-specific activation classes."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+{
+  "coordinates": "jakarta.activation:jakarta.activation-api:1.2.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-sources.jar",
+  "repository-url": "https://github.com/jakartaee/jaf-api",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-javadoc.jar",
+  "description": "Jakarta Activation API defines the standard javax.activation interfaces and classes for describing data sources, determining MIME types, and discovering operations available for arbitrary data. This artifact provides the API types used by applications and libraries at compile time without bundling the implementation-specific activation classes."
+}
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 01 May 2026 19:58:11 GMT
+content-type: application/java-archive
+content-length: 43221
+cf-ray: 9f515c089e01bc5d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 882415
+etag: "7c459ca88c98e9edb297cf58d1a80c42"
+last-modified: Tue, 20 Nov 2018 22:16:35 GMT
+x-checksum-md5: 7c459ca88c98e9edb297cf58d1a80c42
+x-checksum-sha1: 6fe481428613e57af220e17b9ebf3475fb27efb8
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 01 May 2026 19:58:11 GMT
+content-type: application/java-archive
+content-length: 128495
+cf-ray: 9f515c08ab50ff00-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1173948
+etag: "e5b9ab7dcad098cf7482648c4ac29f98"
+last-modified: Tue, 20 Nov 2018 22:16:30 GMT
+x-checksum-md5: e5b9ab7dcad098cf7482648c4ac29f98
+x-checksum-sha1: b9aff096c61c026bf6b8ed05346a75f1ddc77506
+
+exec
+/usr/bin/bash -lc "curl -I -Ls -o /dev/null -w '%{url_effective}\\n%{http_code}\\n' https://github.com/eclipse-ee4j/jaf" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+diff --git a/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json b/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+index 5524b1aaceab09300a3a96113ba93e6c4739b410..f338a04f0f072efc4d7ecc4f8586a7c386972a26
+--- a/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
++++ b/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.activation:jakarta.activation-api:1.2.1"
++  "coordinates" : "jakarta.activation:jakarta.activation-api:1.2.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-sources.jar",
++  "repository-url" : "https://github.com/jakartaee/jaf-api",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-javadoc.jar",
++  "description" : "Jakarta Activation API defines the standard javax.activation interfaces and classes for describing data sources, determining MIME types, and discovering operations available for arbitrary data. This artifact provides the API types used by applications and libraries at compile time without bundling the implementation-specific activation classes."
+ }
+
+ succeeded in 774ms:
+https://github.com/jakartaee/jaf-api
+200
+
+codex
+The JSON parses cleanly, the Maven source and javadoc URLs return 200, and the older Eclipse repository URL redirects to the current canonical `jakartaee/jaf-api` repository root.
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "python3 - <<'PY'
+import json
+from pathlib import Path
+p = Path('build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json')
+data = json.loads(p.read_text())
+print(data['description'].count('.') == 2)
+print('language' in data)
+PY" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+False
+False
+
+diff --git a/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json b/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+index 5524b1aaceab09300a3a96113ba93e6c4739b410..f338a04f0f072efc4d7ecc4f8586a7c386972a26
+--- a/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
++++ b/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.activation:jakarta.activation-api:1.2.1"
++  "coordinates" : "jakarta.activation:jakarta.activation-api:1.2.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-sources.jar",
++  "repository-url" : "https://github.com/jakartaee/jaf-api",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-javadoc.jar",
++  "description" : "Jakarta Activation API defines the standard javax.activation interfaces and classes for describing data sources, determining MIME types, and discovering operations available for arbitrary data. This artifact provides the API types used by applications and libraries at compile time without bundling the implementation-specific activation classes."
+ }
+
+codex
+I noticed the description included a dotted package name, which can confuse simple sentence checks even though it reads as two sentences. I’m tightening that wording to keep the two-sentence requirement mechanically unambiguous.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+diff --git a/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json b/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+index 5524b1aaceab09300a3a96113ba93e6c4739b410..a77497af42ebc199af196d67ae30a3b7d6d3a466
+--- a/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
++++ b/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.activation:jakarta.activation-api:1.2.1"
++  "coordinates" : "jakarta.activation:jakarta.activation-api:1.2.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-sources.jar",
++  "repository-url" : "https://github.com/jakartaee/jaf-api",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-javadoc.jar",
++  "description" : "Jakarta Activation API defines the standard Java activation interfaces and classes for describing data sources, determining MIME types, and discovering operations available for arbitrary data. This artifact provides the compile-time API used by applications and libraries without bundling implementation-specific activation classes."
+ }
+
+diff --git a/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json b/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+index 5524b1aaceab09300a3a96113ba93e6c4739b410..a77497af42ebc199af196d67ae30a3b7d6d3a466
+--- a/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
++++ b/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.activation:jakarta.activation-api:1.2.1"
++  "coordinates" : "jakarta.activation:jakarta.activation-api:1.2.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-sources.jar",
++  "repository-url" : "https://github.com/jakartaee/jaf-api",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-javadoc.jar",
++  "description" : "Jakarta Activation API defines the standard Java activation interfaces and classes for describing data sources, determining MIME types, and discovering operations available for arbitrary data. This artifact provides the compile-time API used by applications and libraries without bundling implementation-specific activation classes."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+{
+  "coordinates": "jakarta.activation:jakarta.activation-api:1.2.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-sources.jar",
+  "repository-url": "https://github.com/jakartaee/jaf-api",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-javadoc.jar",
+  "description": "Jakarta Activation API defines the standard Java activation interfaces and classes for describing data sources, determining MIME types, and discovering operations available for arbitrary data. This artifact provides the compile-time API used by applications and libraries without bundling implementation-specific activation classes."
+}
+
+exec
+/usr/bin/bash -lc "python3 - <<'PY'
+import json
+from pathlib import Path
+p = Path('build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json')
+data = json.loads(p.read_text())
+print(data['description'].count('.'))
+print('language' in data)
+PY" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+2
+False
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc
+ succeeded in 0ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json b/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+index 5524b1aaceab09300a3a96113ba93e6c4739b410..a77497af42ebc199af196d67ae30a3b7d6d3a466
+--- a/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
++++ b/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.activation:jakarta.activation-api:1.2.1"
++  "coordinates" : "jakarta.activation:jakarta.activation-api:1.2.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-sources.jar",
++  "repository-url" : "https://github.com/jakartaee/jaf-api",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-javadoc.jar",
++  "description" : "Jakarta Activation API defines the standard Java activation interfaces and classes for describing data sources, determining MIME types, and discovering operations available for arbitrary data. This artifact provides the compile-time API used by applications and libraries without bundling implementation-specific activation classes."
+ }
+
+codex
+Updated [jakarta.activation-jakarta.activation-api-1.2.1.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json).
+
+Set Maven Central source and javadoc artifact URLs, canonical repository root, `test-code-url` as `N/A`, and a mechanically two-sentence description. I left `language` absent because this is not Kotlin, Groovy, or Scala-specific.
+
+Verification: JSON parses with `jq`; source and javadoc URLs return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json b/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+index 5524b1aaceab09300a3a96113ba93e6c4739b410..a77497af42ebc199af196d67ae30a3b7d6d3a466
+--- a/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
++++ b/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.activation:jakarta.activation-api:1.2.1"
++  "coordinates" : "jakarta.activation:jakarta.activation-api:1.2.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-sources.jar",
++  "repository-url" : "https://github.com/jakartaee/jaf-api",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1-javadoc.jar",
++  "description" : "Jakarta Activation API defines the standard Java activation interfaces and classes for describing data sources, determining MIME types, and discovering operations available for arbitrary data. This artifact provides the compile-time API used by applications and libraries without bundling implementation-specific activation classes."
+ }
+
+tokens used
+75,338
+Updated [jakarta.activation-jakarta.activation-api-1.2.1.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc/build/discovered-artifact-metadata/jakarta.activation-jakarta.activation-api-1.2.1.json).
+
+Set Maven Central source and javadoc artifact URLs, canonical repository root, `test-code-url` as `N/A`, and a mechanically two-sentence description. I left `language` absent because this is not Kotlin, Groovy, or Scala-specific.
+
+Verification: JSON parses with `jq`; source and javadoc URLs return HTTP 200.
+Ran agent for jakarta.activation:jakarta.activation-api:1.2.1 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc/build/agent-artifact-discovery-logs/jakarta.activation-jakarta.activation-api-1.2.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1430-b01b11cc/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 36s
+9 actionable tasks: 4 executed, 5 from cache
