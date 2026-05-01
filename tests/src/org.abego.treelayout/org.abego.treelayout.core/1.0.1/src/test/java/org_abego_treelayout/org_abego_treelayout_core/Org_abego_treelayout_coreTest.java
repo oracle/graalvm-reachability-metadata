@@ -188,6 +188,22 @@ public class Org_abego_treelayout_coreTest {
     }
 
     @Test
+    void customConfigurationCanVaryLevelAndSiblingGaps() {
+        DefaultTreeForTreeLayout<String> tree = new DefaultTreeForTreeLayout<>("root");
+        tree.addChildren("root", "left", "middle", "right");
+        tree.addChild("middle", "leaf");
+        TreeLayout<String> layout = new TreeLayout<>(tree, new FixedNodeExtentProvider<>(10.0, 6.0),
+                new VariableGapConfiguration());
+        Map<String, Rectangle2D.Double> bounds = layout.getNodeBounds();
+
+        assertThat(bounds.get("left").getMinY() - bounds.get("root").getMaxY()).isCloseTo(5.0, within(EPSILON));
+        assertThat(bounds.get("leaf").getMinY() - bounds.get("middle").getMaxY()).isCloseTo(11.0, within(EPSILON));
+        assertThat(bounds.get("middle").getMinX() - bounds.get("left").getMaxX()).isCloseTo(2.0, within(EPSILON));
+        assertThat(bounds.get("right").getMinX() - bounds.get("middle").getMaxX()).isCloseTo(9.0, within(EPSILON));
+        assertRectangle(layout.getBounds(), 0.0, 0.0, 41.0, 34.0);
+    }
+
+    @Test
     void checkTreeUsesEqualityByDefaultAndIdentityWhenRequested() {
         EqualNode root = new EqualNode("root");
         EqualNode first = new EqualNode("duplicate");
@@ -281,6 +297,39 @@ public class Org_abego_treelayout_coreTest {
         @Override
         public double getHeight(String treeNode) {
             return extents.get(treeNode)[1];
+        }
+    }
+
+    private static final class VariableGapConfiguration implements Configuration<String> {
+        @Override
+        public Location getRootLocation() {
+            return Location.Top;
+        }
+
+        @Override
+        public AlignmentInLevel getAlignmentInLevel() {
+            return AlignmentInLevel.Center;
+        }
+
+        @Override
+        public double getGapBetweenLevels(int nextLevel) {
+            return nextLevel == 1 ? 5.0 : 11.0;
+        }
+
+        @Override
+        public double getGapBetweenNodes(String node1, String node2) {
+            if (isPair(node1, node2, "left", "middle")) {
+                return 2.0;
+            }
+            if (isPair(node1, node2, "middle", "right")) {
+                return 9.0;
+            }
+            return 4.0;
+        }
+
+        private boolean isPair(String node1, String node2, String expected1, String expected2) {
+            return node1.equals(expected1) && node2.equals(expected2)
+                    || node1.equals(expected2) && node2.equals(expected1);
         }
     }
 
