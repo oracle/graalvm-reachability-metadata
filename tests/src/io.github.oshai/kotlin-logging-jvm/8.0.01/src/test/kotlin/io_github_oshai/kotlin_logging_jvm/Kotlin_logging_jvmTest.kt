@@ -6,6 +6,10 @@
  */
 package io_github_oshai.kotlin_logging_jvm
 
+import ch.qos.logback.classic.Logger
+import ch.qos.logback.classic.Level as LogbackLevel
+import ch.qos.logback.classic.spi.ILoggingEvent
+import ch.qos.logback.core.read.ListAppender
 import io.github.oshai.kotlinlogging.Appender
 import io.github.oshai.kotlinlogging.DefaultMessageFormatter
 import io.github.oshai.kotlinlogging.DirectLoggerFactory
@@ -20,13 +24,18 @@ import io.github.oshai.kotlinlogging.KotlinLoggingConfiguration
 import io.github.oshai.kotlinlogging.Level
 import io.github.oshai.kotlinlogging.Levels
 import io.github.oshai.kotlinlogging.Marker
+import io.github.oshai.kotlinlogging.slf4j.toKLogger
+import io.github.oshai.kotlinlogging.slf4j.toKotlinLogging
+import io.github.oshai.kotlinlogging.slf4j.toSlf4j
 import io.github.oshai.kotlinlogging.withLoggingContext
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.slf4j.LoggerFactory
 import org.slf4j.MDC
+import org.slf4j.event.Level as Slf4jLevel
 
 public class Kotlin_logging_jvmTest {
     private lateinit var originalLoggerFactory: KLoggerFactory
@@ -331,6 +340,49 @@ public class Kotlin_logging_jvmTest {
         assertThat(appender.events.map { it.loggerName })
             .containsExactly("factory.explicit", "factory.secondary", "factory.child")
         assertThat(appender.events.map { it.message }).containsExactly("explicit", "secondary", "child")
+    }
+
+    @Test
+    fun slf4jInteropConvertsMarkersLevelsAndForwardsToWrappedLogger() {
+        val underlyingLogger = LoggerFactory.getLogger("slf4j.bridge") as Logger
+        val appender = ListAppender<ILoggingEvent>()
+        val originalLevel = underlyingLogger.level
+        val originalAdditive = underlyingLogger.isAdditive
+        val marker: Marker = KMarkerFactory.getMarker("SLF4J_BRIDGE")
+        val slf4jMarker = marker.toSlf4j()
+        val roundTrippedMarker = slf4jMarker.toKotlinLogging()
+        val cause = IllegalStateException("slf4j bridge failure")
+
+        appender.start()
+        underlyingLogger.addAppender(appender)
+        underlyingLogger.level = LogbackLevel.TRACE
+        underlyingLogger.isAdditive = false
+        try {
+            assertThat(slf4jMarker.name).isEqualTo("SLF4J_BRIDGE")
+            assertThat(roundTrippedMarker.getName()).isEqualTo("SLF4J_BRIDGE")
+            assertThat(listOf(Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR).map { it.toSlf4j() })
+                .containsExactly(Slf4jLevel.TRACE, Slf4jLevel.DEBUG, Slf4jLevel.INFO, Slf4jLevel.WARN, Slf4jLevel.ERROR)
+            assertThatThrownBy { Level.OFF.toSlf4j() }
+                .isInstanceOf(IllegalArgumentException::class.java)
+                .hasMessageContaining("OFF")
+
+            val logger = underlyingLogger.toKLogger()
+            logger.warn(roundTrippedMarker, cause) { "forwarded through slf4j" }
+
+            assertThat(logger.name).isEqualTo("slf4j.bridge")
+            assertThat(appender.list).hasSize(1)
+            val event = appender.list.single()
+            assertThat(event.level).isEqualTo(LogbackLevel.WARN)
+            assertThat(event.loggerName).isEqualTo("slf4j.bridge")
+            assertThat(event.formattedMessage).isEqualTo("forwarded through slf4j")
+            assertThat(event.markerList.map { it.name }).containsExactly("SLF4J_BRIDGE")
+            assertThat(event.throwableProxy.message).isEqualTo("slf4j bridge failure")
+        } finally {
+            underlyingLogger.detachAppender(appender)
+            underlyingLogger.level = originalLevel
+            underlyingLogger.isAdditive = originalAdditive
+            appender.stop()
+        }
     }
 
     private fun markerName(marker: Marker?): String? {
