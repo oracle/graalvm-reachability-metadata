@@ -154,7 +154,7 @@ public class Jetty_alpn_java_serverTest {
                 encryptedEndPoint,
                 sslEngine);
         encryptedEndPoint.setConnection(sslConnection);
-        EndPoint decryptedEndPoint = sslConnection.getDecryptedEndPoint();
+        EndPoint decryptedEndPoint = sslConnection.getSslEndPoint();
         ALPNServerConnection alpnConnection = new ALPNServerConnection(
                 connector,
                 decryptedEndPoint,
