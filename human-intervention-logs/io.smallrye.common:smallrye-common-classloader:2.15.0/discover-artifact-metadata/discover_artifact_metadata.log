@@ -1,0 +1,1429 @@
+Starting a Gradle Daemon, 3 busy and 2 incompatible and 50 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de245-3837-7cc1-b818-e382dfff4db6
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.smallrye.common:smallrye-common-classloader:2.15.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.15.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json
+- Set "coordinates" to "io.smallrye.common:smallrye-common-classloader:2.15.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven/repository sources first, then update the JSON in place with exact-version URLs and a two-sentence description.
+web search: 
+web search: io.smallrye.common smallrye-common-classloader 2.15.0 Maven Central sources tests javadoc
+web search: 
+web search: 
+web search: 
+web search: site:github.com/smallrye/smallrye-common smallrye-common-classloader 2.15.0
+codex
+Maven Central has the artifact entry; I’m checking the actual 2.15.0 directory and POM now so the Maven-hosted source/doc artifacts are preferred when present.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,160p' build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941
+{
+  "coordinates" : "io.smallrye.common:smallrye-common-classloader:2.15.0"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/2.15.0/smallrye-common-classloader-2.15.0.pom' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.smallrye.common</groupId>
+        <artifactId>smallrye-common-parent</artifactId>
+        <version>2.15.0</version>
+    </parent>
+
+    <artifactId>smallrye-common-classloader</artifactId>
+    <name>SmallRye Common: Classloader</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.dmlloyd</groupId>
+            <artifactId>jdk-classfile-backport</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-impl-base</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>coverage</id>
+            <properties>
+                <argLine>@{jacocoArgLine}</argLine>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>report</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/2.15.0/' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/smallrye/common/smallrye-common-classloader/2.15.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/smallrye/common/smallrye-common-classloader/2.15.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="smallrye-common-classloader-2.15.0-javadoc.jar" title="smallrye-common-classloader-2.15.0-javadoc.jar">smallrye-common-classloader-2.15.0-javadoc.ja...</a>  2026-01-06 13:33    113312      
+<a href="smallrye-common-classloader-2.15.0-javadoc.jar.asc" title="smallrye-common-classloader-2.15.0-javadoc.jar.asc">smallrye-common-classloader-2.15.0-javadoc.ja...</a>  2026-01-06 13:33       821      
+<a href="smallrye-common-classloader-2.15.0-javadoc.jar.md5" title="smallrye-common-classloader-2.15.0-javadoc.jar.md5">smallrye-common-classloader-2.15.0-javadoc.ja...</a>  2026-01-06 13:33        32      
+<a href="smallrye-common-classloader-2.15.0-javadoc.jar.sha1" title="smallrye-common-classloader-2.15.0-javadoc.jar.sha1">smallrye-common-classloader-2.15.0-javadoc.ja...</a>  2026-01-06 13:33        40      
+<a href="smallrye-common-classloader-2.15.0-javadoc.jar.sha256" title="smallrye-common-classloader-2.15.0-javadoc.jar.sha256">smallrye-common-classloader-2.15.0-javadoc.ja...</a>  2026-01-06 13:33        64      
+<a href="smallrye-common-classloader-2.15.0-javadoc.jar.sha512" title="smallrye-common-classloader-2.15.0-javadoc.jar.sha512">smallrye-common-classloader-2.15.0-javadoc.ja...</a>  2026-01-06 13:33       128      
+<a href="smallrye-common-classloader-2.15.0-sources.jar" title="smallrye-common-classloader-2.15.0-sources.jar">smallrye-common-classloader-2.15.0-sources.ja...</a>  2026-01-06 13:33      6646      
+<a href="smallrye-common-classloader-2.15.0-sources.jar.asc" title="smallrye-common-classloader-2.15.0-sources.jar.asc">smallrye-common-classloader-2.15.0-sources.ja...</a>  2026-01-06 13:33       821      
+<a href="smallrye-common-classloader-2.15.0-sources.jar.md5" title="smallrye-common-classloader-2.15.0-sources.jar.md5">smallrye-common-classloader-2.15.0-sources.ja...</a>  2026-01-06 13:33        32      
+<a href="smallrye-common-classloader-2.15.0-sources.jar.sha1" title="smallrye-common-classloader-2.15.0-sources.jar.sha1">smallrye-common-classloader-2.15.0-sources.ja...</a>  2026-01-06 13:33        40      
+<a href="smallrye-common-classloader-2.15.0-sources.jar.sha256" title="smallrye-common-classloader-2.15.0-sources.jar.sha256">smallrye-common-classloader-2.15.0-sources.ja...</a>  2026-01-06 13:33        64      
+<a href="smallrye-common-classloader-2.15.0-sources.jar.sha512" title="smallrye-common-classloader-2.15.0-sources.jar.sha512">smallrye-common-classloader-2.15.0-sources.ja...</a>  2026-01-06 13:33       128      
+<a href="smallrye-common-classloader-2.15.0.jar" title="smallrye-common-classloader-2.15.0.jar">smallrye-common-classloader-2.15.0.jar</a>            2026-01-06 13:33     10140      
+<a href="smallrye-common-classloader-2.15.0.jar.asc" title="smallrye-common-classloader-2.15.0.jar.asc">smallrye-common-classloader-2.15.0.jar.asc</a>        2026-01-06 13:33       821      
+<a href="smallrye-common-classloader-2.15.0.jar.md5" title="smallrye-common-classloader-2.15.0.jar.md5">smallrye-common-classloader-2.15.0.jar.md5</a>        2026-01-06 13:33        32      
+<a href="smallrye-common-classloader-2.15.0.jar.sha1" title="smallrye-common-classloader-2.15.0.jar.sha1">smallrye-common-classloader-2.15.0.jar.sha1</a>       2026-01-06 13:33        40      
+<a href="smallrye-common-classloader-2.15.0.jar.sha256" title="smallrye-common-classloader-2.15.0.jar.sha256">smallrye-common-classloader-2.15.0.jar.sha256</a>     2026-01-06 13:33        64      
+<a href="smallrye-common-classloader-2.15.0.jar.sha512" title="smallrye-common-classloader-2.15.0.jar.sha512">smallrye-common-classloader-2.15.0.jar.sha512</a>     2026-01-06 13:33       128      
+<a href="smallrye-common-classloader-2.15.0.pom" title="smallrye-common-classloader-2.15.0.pom">smallrye-common-classloader-2.15.0.pom</a>            2026-01-06 13:33      2167      
+<a href="smallrye-common-classloader-2.15.0.pom.asc" title="smallrye-common-classloader-2.15.0.pom.asc">smallrye-common-classloader-2.15.0.pom.asc</a>        2026-01-06 13:33       821      
+<a href="smallrye-common-classloader-2.15.0.pom.md5" title="smallrye-common-classloader-2.15.0.pom.md5">smallrye-common-classloader-2.15.0.pom.md5</a>        2026-01-06 13:33        32      
+<a href="smallrye-common-classloader-2.15.0.pom.sha1" title="smallrye-common-classloader-2.15.0.pom.sha1">smallrye-common-classloader-2.15.0.pom.sha1</a>       2026-01-06 13:33        40      
+<a href="smallrye-common-classloader-2.15.0.pom.sha256" title="smallrye-common-classloader-2.15.0.pom.sha256">smallrye-common-classloader-2.15.0.pom.sha256</a>     2026-01-06 13:33        64      
+<a href="smallrye-common-classloader-2.15.0.pom.sha512" title="smallrye-common-classloader-2.15.0.pom.sha512">smallrye-common-classloader-2.15.0.pom.sha512</a>     2026-01-06 13:33       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-parent/2.15.0/smallrye-common-parent-2.15.0.pom' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.smallrye</groupId>
+        <artifactId>smallrye-parent</artifactId>
+        <version>48</version>
+    </parent>
+
+    <groupId>io.smallrye.common</groupId>
+    <artifactId>smallrye-common-parent</artifactId>
+    <version>2.15.0</version>
+
+    <packaging>pom</packaging>
+    <name>SmallRye Common: Parent</name>
+    <url>http://smallrye.io</url>
+    <description>Common utilities for SmallRye</description>
+    <properties>
+        <!-- Plugins -->
+        <version.bridger>1.6.Final</version.bridger>
+        <version.sundrio>0.230.2</version.sundrio>
+        <version.jandex>3.5.3</version.jandex>
+
+        <!-- Dependencies -->
+        <version.classfile.api>25.1</version.classfile.api>
+        <version.graalvm>25.0.1</version.graalvm>
+        <version.vertx>4.5.23</version.vertx>
+        <version.maven-resolver>1.9.22</version.maven-resolver>
+        <version.shrinkwrap>1.2.6</version.shrinkwrap>
+        <version.org.jboss.logging>3.6.0.Final</version.org.jboss.logging>
+
+        <!-- Sonar settings -->
+        <sonar.projectName>SmallRye Common</sonar.projectName>
+        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    </properties>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/smallrye/smallrye-common/issues</url>
+    </issueManagement>
+
+    <scm>
+        <connection>scm:git:git@github.com:smallrye/smallrye-common.git</connection>
+        <developerConnection>scm:git:git@github.com:smallrye/smallrye-common.git</developerConnection>
+        <url>https://github.com/smallrye/smallrye-common/</url>
+        <tag>2.15.0</tag>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>smallrye-common-team</id>
+            <name>SmallRye Common Team</name>
+            <organization>smallrye-common</organization>
+            <organizationUrl>https://smallrye.io/</organizationUrl>
+        </developer>
+    </developers>
+
+    <modules>
+        <!-- Submodule list. Keep alphabetical. Also, add submodules to README.md. -->
+        <module>annotation</module>
+        <module>classloader</module>
+        <module>constraint</module>
+        <module>cpu</module>
+        <module>expression</module>
+        <module>function</module>
+        <module>io</module>
+        <module>net</module>
+        <module>os</module>
+        <module>process</module>
+        <module>ref</module>
+        <module>resource</module>
+        <module>search</module>
+        <module>version</module>
+        <module>vertx-context</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- External build dependencies -->
+            <dependency>
+                <groupId>org.graalvm.sdk</groupId>
+                <artifactId>nativeimage</artifactId>
+                <version>${version.graalvm}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- External test dependencies -->
+            <dependency>
+                <groupId>org.jboss.shrinkwrap</groupId>
+                <artifactId>shrinkwrap-bom</artifactId>
+                <version>${version.shrinkwrap}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.github.dmlloyd</groupId>
+                <artifactId>jdk-classfile-backport</artifactId>
+                <version>${version.classfile.api}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- Internal module dependencies -->
+            <dependency>
+                <groupId>io.smallrye.common</groupId>
+                <artifactId>smallrye-common-constraint</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.smallrye.common</groupId>
+                <artifactId>smallrye-common-expression</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.smallrye.common</groupId>
+                <artifactId>smallrye-common-function</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.smallrye.common</groupId>
+                <artifactId>smallrye-common-net</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.smallrye.common</groupId>
+                <artifactId>smallrye-common-os</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.smallrye.common</groupId>
+                <artifactId>smallrye-common-vertx-context</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>io.smallrye</groupId>
+                    <artifactId>jandex-maven-plugin</artifactId>
+                    <version>${version.jandex}</version>
+                    <executions>
+                        <execution>
+                            <id>make-index</id>
+                            <goals>
+                                <goal>jandex</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.jboss.bridger</groupId>
+                    <artifactId>bridger</artifactId>
+                    <version>${version.bridger}</version>
+                    <executions>
+                        <execution>
+                            <id>bridger</id>
+                            <phase>process-classes</phase>
+                            <goals>
+                                <goal>transform</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <configuration>
+                        <failOnWarnings>true</failOnWarnings>
+                        <doclint>all</doclint>
+                        <sourceFileExcludes>
+                            <sourceFileExclude>**/*_$$logger.java</sourceFileExclude>
+                            <sourceFileExclude>**/*_$$bundle.java</sourceFileExclude>
+                        </sourceFileExcludes>
+                        <!-- work around problem when the generated sources are included -->
+                        <sourcepath>${project.build.sourceDirectory}</sourcepath>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.6.2</version>
+                <configuration>
+                    <rules>
+                      <requireJavaVersion>
+                        <version>22</version>
+                      </requireJavaVersion>
+                    </rules>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.sundr</groupId>
+                <artifactId>sundr-maven-plugin</artifactId>
+                <version>${version.sundrio}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate-bom</goal>
+                        </goals>
+                        <configuration>
+                            <boms>
+                                <bom>
+                                    <artifactId>smallrye-common-bom</artifactId>
+                                    <name>Smallrye Common: BOM</name>
+                                    <description>Centralized dependencyManagement for the SmallRye Common Project</description>
+                                    <properties>
+                                        <skipStagingRepositoryClose>true</skipStagingRepositoryClose>
+                                        <sonar.skip>true</sonar.skip>
+                                    </properties>
+                                </bom>
+                            </boms>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/smallrye/smallrye-common/git/matching-refs/tags' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/2.15.0/smallrye-common-classloader-2.15.0-javadoc.jar -o /tmp/smallrye-common-classloader-2.15.0-javadoc.jar && jar tf /tmp/smallrye-common-classloader-2.15.0-javadoc.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+io.smallrye.common.classloader/
+io.smallrye.common.classloader/io/
+io.smallrye.common.classloader/io/smallrye/
+io.smallrye.common.classloader/io/smallrye/common/
+io.smallrye.common.classloader/io/smallrye/common/classloader/
+io.smallrye.common.classloader/io/smallrye/common/classloader/class-use/
+resources/
+script-dir/
+src/
+src/io.smallrye.common.classloader/
+legal/
+type-search-index.js
+stylesheet.css
+help-doc.html
+allpackages-index.html
+search-page.js
+io.smallrye.common.classloader/module-summary.html
+io.smallrye.common.classloader/io/smallrye/common/classloader/package-summary.html
+io.smallrye.common.classloader/io/smallrye/common/classloader/DefineClassPermission.html
+io.smallrye.common.classloader/io/smallrye/common/classloader/package-tree.html
+io.smallrye.common.classloader/io/smallrye/common/classloader/ClassPathUtils.html
+io.smallrye.common.classloader/io/smallrye/common/classloader/package-use.html
+io.smallrye.common.classloader/io/smallrye/common/classloader/ClassDefiner.html
+io.smallrye.common.classloader/io/smallrye/common/classloader/class-use/DefineClassPermission.html
+io.smallrye.common.classloader/io/smallrye/common/classloader/class-use/ClassPathUtils.html
+io.smallrye.common.classloader/io/smallrye/common/classloader/class-use/ClassDefiner.html
+index.html
+script.js
+search.js
+serialized-form.html
+resources/x.png
+resources/glass.png
+module-search-index.js
+copy.svg
+package-search-index.js
+allclasses-index.html
+tag-search-index.js
+overview-tree.html
+element-list
+link.svg
+search.html
+script-dir/jquery-ui.min.js
+script-dir/jquery-3.7.1.min.js
+script-dir/jquery-ui.min.css
+index-all.html
+legal/LICENSE
+legal/jqueryUI.md
+legal/ASSEMBLY_EXCEPTION
+legal/ADDITIONAL_LICENSE_INFO
+legal/jquery.md
+member-search-index.js
+
+ succeeded in 235ms:
+[
+  {
+    "ref": "refs/tags/1.0.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjAuMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.0.0",
+    "object": {
+      "sha": "384d76086c8be72440d52cbb23678f6b25fbd61e",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/384d76086c8be72440d52cbb23678f6b25fbd61e"
+    }
+  },
+  {
+    "ref": "refs/tags/1.0.1",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjAuMQ==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.0.1",
+    "object": {
+      "sha": "a50c93dcdab9466d10709974b776404c920c0044",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/a50c93dcdab9466d10709974b776404c920c0044"
+    }
+  },
+  {
+    "ref": "refs/tags/1.0.2",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjAuMg==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.0.2",
+    "object": {
+      "sha": "a78a2963ebe2e2c03ce91701b19d2d5ba1863d0b",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/a78a2963ebe2e2c03ce91701b19d2d5ba1863d0b"
+    }
+  },
+  {
+    "ref": "refs/tags/1.1.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjEuMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.1.0",
+    "object": {
+      "sha": "3c22bdd79374b54aeb079e96a81fda7d02baebbc",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/3c22bdd79374b54aeb079e96a81fda7d02baebbc"
+    }
+  },
+  {
+    "ref": "refs/tags/1.10.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjEwLjA=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.10.0",
+    "object": {
+      "sha": "044e466c111280804d52c6db7e3ff3564f311b00",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/044e466c111280804d52c6db7e3ff3564f311b00"
+    }
+  },
+  {
+    "ref": "refs/tags/1.11.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjExLjA=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.11.0",
+    "object": {
+      "sha": "adfcec5161c55090d386bef282b6322a8b8efd64",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/adfcec5161c55090d386bef282b6322a8b8efd64"
+    }
+  },
+  {
+    "ref": "refs/tags/1.12.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjEyLjA=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.12.0",
+    "object": {
+      "sha": "3d951bb04692a8c4f1077c636c66c6dcc3ebbb44",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/3d951bb04692a8c4f1077c636c66c6dcc3ebbb44"
+    }
+  },
+  {
+    "ref": "refs/tags/1.13.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjEzLjA=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.13.0",
+    "object": {
+      "sha": "62809a018877298234748cf357de3ccd09718d03",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/62809a018877298234748cf357de3ccd09718d03"
+    }
+  },
+  {
+    "ref": "refs/tags/1.13.1",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjEzLjE=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.13.1",
+    "object": {
+      "sha": "35f7d492775774a6617841a0edc0e05f23d0dbcc",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/35f7d492775774a6617841a0edc0e05f23d0dbcc"
+    }
+  },
+  {
+    "ref": "refs/tags/1.13.2",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjEzLjI=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.13.2",
+    "object": {
+      "sha": "f14de2cde263f129ef9802bb37d2f680d303613c",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/f14de2cde263f129ef9802bb37d2f680d303613c"
+    }
+  },
+  {
+    "ref": "refs/tags/1.2.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjIuMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.2.0",
+    "object": {
+      "sha": "d83e575a93204f449f1d2da05bedd721689f83b8",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/d83e575a93204f449f1d2da05bedd721689f83b8"
+    }
+  },
+  {
+    "ref": "refs/tags/1.3.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjMuMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.3.0",
+    "object": {
+      "sha": "4aeab76d0cd4928555ba1728d2e818be5c32a94e",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/4aeab76d0cd4928555ba1728d2e818be5c32a94e"
+    }
+  },
+  {
+    "ref": "refs/tags/1.4.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjQuMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.4.0",
+    "object": {
+      "sha": "e4b5ac7e573384d081617d53dc32df963a1f9129",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/e4b5ac7e573384d081617d53dc32df963a1f9129"
+    }
+  },
+  {
+    "ref": "refs/tags/1.4.1",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjQuMQ==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.4.1",
+    "object": {
+      "sha": "1dcef310103f41f2280f4ed8b640e488f0650c9c",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/1dcef310103f41f2280f4ed8b640e488f0650c9c"
+    }
+  },
+  {
+    "ref": "refs/tags/1.5.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjUuMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.5.0",
+    "object": {
+      "sha": "f238957387bc5a99f7c5494aa0eed47b8fc71661",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/f238957387bc5a99f7c5494aa0eed47b8fc71661"
+    }
+  },
+  {
+    "ref": "refs/tags/1.6.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjYuMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.6.0",
+    "object": {
+      "sha": "2b6cdc0f1a5905ae3ceca3e307e9c41520de4f44",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/2b6cdc0f1a5905ae3ceca3e307e9c41520de4f44"
+    }
+  },
+  {
+    "ref": "refs/tags/1.7.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjcuMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.7.0",
+    "object": {
+      "sha": "cb63d2d50d5b033a51e837ca85fb8a560ef75d0c",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/cb63d2d50d5b033a51e837ca85fb8a560ef75d0c"
+    }
+  },
+  {
+    "ref": "refs/tags/1.7.1",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjcuMQ==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.7.1",
+    "object": {
+      "sha": "6f0f465da18d77b5e05dda86f475d223ca52e136",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/6f0f465da18d77b5e05dda86f475d223ca52e136"
+    }
+  },
+  {
+    "ref": "refs/tags/1.8.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjguMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.8.0",
+    "object": {
+      "sha": "be69a8588ce836d1ccb3f55958c54554bde5f6f8",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/be69a8588ce836d1ccb3f55958c54554bde5f6f8"
+    }
+  },
+  {
+    "ref": "refs/tags/1.9.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8xLjkuMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/1.9.0",
+    "object": {
+      "sha": "1e23a9d1affdf051dec33686a67d7aaee28cee2a",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/1e23a9d1affdf051dec33686a67d7aaee28cee2a"
+    }
+  },
+  {
+    "ref": "refs/tags/2.0.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjAuMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.0.0",
+    "object": {
+      "sha": "177c43725ade839dfe8489fad99eb655a0c75aba",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/177c43725ade839dfe8489fad99eb655a0c75aba"
+    }
+  },
+  {
+    "ref": "refs/tags/2.0.0-RC1",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjAuMC1SQzE=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.0.0-RC1",
+    "object": {
+      "sha": "10f4df5fac92b69d0ec46af28f81e316d4c72a41",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/10f4df5fac92b69d0ec46af28f81e316d4c72a41"
+    }
+  },
+  {
+    "ref": "refs/tags/2.0.0-RC2",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjAuMC1SQzI=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.0.0-RC2",
+    "object": {
+      "sha": "2fbacd06d2e577c6f2203da80b42ff4705efe0ac",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/2fbacd06d2e577c6f2203da80b42ff4705efe0ac"
+    }
+  },
+  {
+    "ref": "refs/tags/2.0.0-RC3",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjAuMC1SQzM=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.0.0-RC3",
+    "object": {
+      "sha": "c6806970069aa1f3c60bba2d866e95337ac49856",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/c6806970069aa1f3c60bba2d866e95337ac49856"
+    }
+  },
+  {
+    "ref": "refs/tags/2.1.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjEuMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.1.0",
+    "object": {
+      "sha": "10c203c5a82cce0da53a8cae106fbdbc3a4758bd",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/10c203c5a82cce0da53a8cae106fbdbc3a4758bd"
+    }
+  },
+  {
+    "ref": "refs/tags/2.1.1",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjEuMQ==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.1.1",
+    "object": {
+      "sha": "eea129b250af57f813064ebbf76726f99fbb11b8",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/eea129b250af57f813064ebbf76726f99fbb11b8"
+    }
+  },
+  {
+    "ref": "refs/tags/2.1.2",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjEuMg==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.1.2",
+    "object": {
+      "sha": "b316d4551af668b0b6663c6f3727bec48b56f34a",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/b316d4551af668b0b6663c6f3727bec48b56f34a"
+    }
+  },
+  {
+    "ref": "refs/tags/2.10.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjEwLjA=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.10.0",
+    "object": {
+      "sha": "361f9624e94dddead4e07dcf9ce61d3eea7b6bb2",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/361f9624e94dddead4e07dcf9ce61d3eea7b6bb2"
+    }
+  },
+  {
+    "ref": "refs/tags/2.11.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjExLjA=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.11.0",
+    "object": {
+      "sha": "8edddb58d7debab35baf6685e53a44bd695e4089",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/8edddb58d7debab35baf6685e53a44bd695e4089"
+    }
+  },
+  {
+    "ref": "refs/tags/2.12.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjEyLjA=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.12.0",
+    "object": {
+      "sha": "cb4ec4e66424f8d25a9d1690c5385c572ed73bf5",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/cb4ec4e66424f8d25a9d1690c5385c572ed73bf5"
+    }
+  },
+  {
+    "ref": "refs/tags/2.12.2",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjEyLjI=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.12.2",
+    "object": {
+      "sha": "69cb93980115e2e662727326b87682ae4d7755cb",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/69cb93980115e2e662727326b87682ae4d7755cb"
+    }
+  },
+  {
+    "ref": "refs/tags/2.13.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjEzLjA=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.13.0",
+    "object": {
+      "sha": "513410a2be6263a6949f090da7a4badfe62fe36a",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/513410a2be6263a6949f090da7a4badfe62fe36a"
+    }
+  },
+  {
+    "ref": "refs/tags/2.13.1",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjEzLjE=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.13.1",
+    "object": {
+      "sha": "748c2b70431df0da0d90ab6b0c69e34f1b52024d",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/748c2b70431df0da0d90ab6b0c69e34f1b52024d"
+    }
+  },
+  {
+    "ref": "refs/tags/2.13.2",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjEzLjI=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.13.2",
+    "object": {
+      "sha": "c1999c7b4b6c3443f368661d3adceb8e22e7cbd4",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/c1999c7b4b6c3443f368661d3adceb8e22e7cbd4"
+    }
+  },
+  {
+    "ref": "refs/tags/2.13.3",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjEzLjM=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.13.3",
+    "object": {
+      "sha": "37d2495bd934b3098222d32eb227863c4fbc7e89",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/37d2495bd934b3098222d32eb227863c4fbc7e89"
+    }
+  },
+  {
+    "ref": "refs/tags/2.13.4",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjEzLjQ=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.13.4",
+    "object": {
+      "sha": "18e611f0e0a49c9190f18dd865f6283f5c2b5561",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/18e611f0e0a49c9190f18dd865f6283f5c2b5561"
+    }
+  },
+  {
+    "ref": "refs/tags/2.13.5",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjEzLjU=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.13.5",
+    "object": {
+      "sha": "aae3d80e0875f0e3002d0704e694b75e5b518e17",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/aae3d80e0875f0e3002d0704e694b75e5b518e17"
+    }
+  },
+  {
+    "ref": "refs/tags/2.13.6",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjEzLjY=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.13.6",
+    "object": {
+      "sha": "87a51d0886548512c8b102916b8437e3de25c9c8",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/87a51d0886548512c8b102916b8437e3de25c9c8"
+    }
+  },
+  {
+    "ref": "refs/tags/2.13.7",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjEzLjc=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.13.7",
+    "object": {
+      "sha": "eb3edaac4f76217da47c4a4ac3d1a6fbb11e79e8",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/eb3edaac4f76217da47c4a4ac3d1a6fbb11e79e8"
+    }
+  },
+  {
+    "ref": "refs/tags/2.13.8",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjEzLjg=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.13.8",
+    "object": {
+      "sha": "2998b1fc77a22f0335d78d062be09797de8b400d",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/2998b1fc77a22f0335d78d062be09797de8b400d"
+    }
+  },
+  {
+    "ref": "refs/tags/2.13.9",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjEzLjk=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.13.9",
+    "object": {
+      "sha": "c259e28f220550b2d344857569aee9726bbd65d5",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/c259e28f220550b2d344857569aee9726bbd65d5"
+    }
+  },
+  {
+    "ref": "refs/tags/2.13.beta1",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjEzLmJldGEx",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.13.beta1",
+    "object": {
+      "sha": "14fdcd8b724e4f2dda5b22ffde28a5e1272af1d1",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/14fdcd8b724e4f2dda5b22ffde28a5e1272af1d1"
+    }
+  },
+  {
+    "ref": "refs/tags/2.13.beta2",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjEzLmJldGEy",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.13.beta2",
+    "object": {
+      "sha": "d104d44f98fedee1d4be5d1f445ec2714e5278d3",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/d104d44f98fedee1d4be5d1f445ec2714e5278d3"
+    }
+  },
+  {
+    "ref": "refs/tags/2.14.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjE0LjA=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.14.0",
+    "object": {
+      "sha": "213f8d85ad99138cc0b8879f3a08de1d3813cf25",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/213f8d85ad99138cc0b8879f3a08de1d3813cf25"
+    }
+  },
+  {
+    "ref": "refs/tags/2.15.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjE1LjA=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.15.0",
+    "object": {
+      "sha": "fa3da1c4a43217e42ad26885a3357cb35efc053f",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/fa3da1c4a43217e42ad26885a3357cb35efc053f"
+    }
+  },
+  {
+    "ref": "refs/tags/2.16.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjE2LjA=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.16.0",
+    "object": {
+      "sha": "4f8e5ef0f761ae25a69ae81a1de91ac3d4aeabb8",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/4f8e5ef0f761ae25a69ae81a1de91ac3d4aeabb8"
+    }
+  },
+  {
+    "ref": "refs/tags/2.17.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjE3LjA=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.17.0",
+    "object": {
+      "sha": "37e33943fa83ebddf54b83bb996b44345ce973a5",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/37e33943fa83ebddf54b83bb996b44345ce973a5"
+    }
+  },
+  {
+    "ref": "refs/tags/2.17.1",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjE3LjE=",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.17.1",
+    "object": {
+      "sha": "0d9a7cf58e6786c046b4abe5bdb7b93f0f77e918",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/0d9a7cf58e6786c046b4abe5bdb7b93f0f77e918"
+    }
+  },
+  {
+    "ref": "refs/tags/2.2.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjIuMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.2.0",
+    "object": {
+      "sha": "8dc7250c7d8e14ab527c666546875acd9d19daf0",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/8dc7250c7d8e14ab527c666546875acd9d19daf0"
+    }
+  },
+  {
+    "ref": "refs/tags/2.3.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjMuMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.3.0",
+    "object": {
+      "sha": "82b92d0905cab8578144a4a7c3885a9dcfdce6aa",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/82b92d0905cab8578144a4a7c3885a9dcfdce6aa"
+    }
+  },
+  {
+    "ref": "refs/tags/2.4.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjQuMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.4.0",
+    "object": {
+      "sha": "a127c22bf5c2696996d7303ebfcfdc0ead42f9a5",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/a127c22bf5c2696996d7303ebfcfdc0ead42f9a5"
+    }
+  },
+  {
+    "ref": "refs/tags/2.5.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjUuMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.5.0",
+    "object": {
+      "sha": "73113a70217dff2feb06ab91384da5f181c08d67",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/73113a70217dff2feb06ab91384da5f181c08d67"
+    }
+  },
+  {
+    "ref": "refs/tags/2.6.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjYuMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.6.0",
+    "object": {
+      "sha": "83e7488f22b80b23ce420b017213b4bfcb84b29a",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/83e7488f22b80b23ce420b017213b4bfcb84b29a"
+    }
+  },
+  {
+    "ref": "refs/tags/2.6.1",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjYuMQ==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.6.1",
+    "object": {
+      "sha": "8224768671c59b4b966ad7cab9bcc372640fbee6",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/8224768671c59b4b966ad7cab9bcc372640fbee6"
+    }
+  },
+  {
+    "ref": "refs/tags/2.7.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjcuMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.7.0",
+    "object": {
+      "sha": "53728e17e22c708963f52664eba72f3c40f2f2d8",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/53728e17e22c708963f52664eba72f3c40f2f2d8"
+    }
+  },
+  {
+    "ref": "refs/tags/2.8.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjguMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.8.0",
+    "object": {
+      "sha": "353a5220683e6966d8b9389fd1e5f3a0875e93ed",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/353a5220683e6966d8b9389fd1e5f3a0875e93ed"
+    }
+  },
+  {
+    "ref": "refs/tags/2.9.0",
+    "node_id": "MDM6UmVmMjEwNDE4ODk2OnJlZnMvdGFncy8yLjkuMA==",
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/git/refs/tags/2.9.0",
+    "object": {
+      "sha": "c3743478f9f39898d8d935f6c36df52efca6a1c1",
+      "type": "tag",
+      "url": "https://api.github.com/repos/smallrye/smallrye-common/git/tags/c3743478f9f39898d8d935f6c36df52efca6a1c1"
+    }
+  }
+]
+
+web search: 
+web search: https://github.com/smallrye/smallrye-common/tree/2.15.0/classloader
+web search: 
+web search: repo.maven.apache.org io/smallrye/common/smallrye-common-classloader/2.15.0 smallrye-common-classloader-2.15.0-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-classloader/
+codex
+The 2.15.0 POM points SCM to `smallrye/smallrye-common` with tag `2.15.0`; Maven has source and Javadoc JARs, but no test-sources JAR, so the test URL should use the tagged GitHub test directory.
+exec
+/usr/bin/bash -lc "rg -n 'smallrye-common-classloader|source-code-url|test-code-url|documentation-url' build/discovered-artifact-metadata metadata repository? 2>/dev/null | head -80" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941
+ succeeded in 0ms:
+build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json:2:  "coordinates" : "io.smallrye.common:smallrye-common-classloader:2.15.0"
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/2.27.7/jsch-2.27.7-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-2.27.7/src/test",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/2.27.7/jsch-2.27.7-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/2.23.2/zipkin-tests/src/test",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.70/bcpkix-jdk15on-1.70-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:10:    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.70/bcpkix-jdk15on-1.70-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-sources.jar",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-1.2.17/tests",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/8.0.01/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.3/paranamer-2.3-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-2.3/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.3/paranamer-2.3-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/2.0.0/api-i18n-2.0.0-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/2.0.0/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/2.0.0/api-i18n-2.0.0-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/1.0.0-M20/api-i18n-1.0.0-M20-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/1.0.0-M20/",
+metadata/javax.el/javax.el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0-sources.jar",
+metadata/javax.el/javax.el-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.el/javax.el-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:7:    "test-code-url" : "https://github.com/javafxports/openjdk-jfx/tree/11.0.2+1/tests",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:9:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:34:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-javadoc.jar",
+metadata/org.hibernate.models/hibernate-models/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/hibernate/models/hibernate-models/1.0.0.CR3/hibernate-models-1.0.0.CR3-sources.jar",
+metadata/org.hibernate.models/hibernate-models/index.json:7:    "test-code-url" : "https://github.com/hibernate/hibernate-models/tree/1.0.0.CR3/hibernate-models/src/test",
+metadata/org.hibernate.models/hibernate-models/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/hibernate/models/hibernate-models/1.0.0.CR3/hibernate-models-1.0.0.CR3-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+metadata/com.github.virtuald/curvesapi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/virtuald/curvesapi/1.06/curvesapi-1.06-sources.jar",
+metadata/com.github.virtuald/curvesapi/index.json:7:    "test-code-url" : "https://github.com/virtuald/curvesapi/tree/1.06/src/test/java",
+metadata/com.github.virtuald/curvesapi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/virtuald/curvesapi/1.06/curvesapi-1.06-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-2.15.2/toml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-javadoc.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/1.5.0/jackrabbit-jcr-commons-1.5.0-sources.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/1.5.0/jackrabbit-jcr-commons/src/test/java",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/1.5.0/jackrabbit-jcr-commons/README.txt",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-javadoc.jar",
+metadata/org.glassfish.jaxb/txw2/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/txw2/2.3.1/txw2-2.3.1-sources.jar",
+metadata/org.glassfish.jaxb/txw2/index.json:7:    "test-code-url" : "https://github.com/javaee/jaxb-v2/tree/2.3.1/jaxb-ri/txw/runtime/src/test/java",
+metadata/org.glassfish.jaxb/txw2/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/txw2/2.3.1/txw2-2.3.1-javadoc.jar",
+metadata/findbugs/annotations/index.json:5:    "source-code-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-1.0.0-source.zip/download",
+metadata/findbugs/annotations/index.json:7:    "test-code-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-1.0.0-source.zip/download",
+metadata/findbugs/annotations/index.json:8:    "documentation-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-1.0.0-source.zip/download",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8-sources.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:8:    "test-code-url": "https://github.com/rnorth/duct-tape/tree/1.0.8/src/test/java",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:9:    "documentation-url": "https://github.com/rnorth/duct-tape/blob/1.0.8/docs/index.md",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/2.7.18/spring-boot-configuration-processor-2.7.18-sources.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/smallrye/smallrye-common/2.15.0/classloader/src/main/java/io/smallrye/common/classloader/ClassDefiner.java | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/smallrye/smallrye-common/contents/classloader/src/test/java/io/smallrye/common/classloader?ref=2.15.0' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/smallrye/smallrye-common/contents/classloader/src/main/java/io/smallrye/common/classloader?ref=2.15.0' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941
+ succeeded in 166ms:
+[
+  {
+    "name": "ClassDefinerTest.java",
+    "path": "classloader/src/test/java/io/smallrye/common/classloader/ClassDefinerTest.java",
+    "sha": "88a07b9249a4a14a94e6ab1e4a2d8073174418cc",
+    "size": 2219,
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/contents/classloader/src/test/java/io/smallrye/common/classloader/ClassDefinerTest.java?ref=2.15.0",
+    "html_url": "https://github.com/smallrye/smallrye-common/blob/2.15.0/classloader/src/test/java/io/smallrye/common/classloader/ClassDefinerTest.java",
+    "git_url": "https://api.github.com/repos/smallrye/smallrye-common/git/blobs/88a07b9249a4a14a94e6ab1e4a2d8073174418cc",
+    "download_url": "https://raw.githubusercontent.com/smallrye/smallrye-common/2.15.0/classloader/src/test/java/io/smallrye/common/classloader/ClassDefinerTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/smallrye-common/contents/classloader/src/test/java/io/smallrye/common/classloader/ClassDefinerTest.java?ref=2.15.0",
+      "git": "https://api.github.com/repos/smallrye/smallrye-common/git/blobs/88a07b9249a4a14a94e6ab1e4a2d8073174418cc",
+      "html": "https://github.com/smallrye/smallrye-common/blob/2.15.0/classloader/src/test/java/io/smallrye/common/classloader/ClassDefinerTest.java"
+    }
+  },
+  {
+    "name": "ClassPathUtilsTest.java",
+    "path": "classloader/src/test/java/io/smallrye/common/classloader/ClassPathUtilsTest.java",
+    "sha": "28facb0e6047363c680a1e741654d6deae527466",
+    "size": 4465,
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/contents/classloader/src/test/java/io/smallrye/common/classloader/ClassPathUtilsTest.java?ref=2.15.0",
+    "html_url": "https://github.com/smallrye/smallrye-common/blob/2.15.0/classloader/src/test/java/io/smallrye/common/classloader/ClassPathUtilsTest.java",
+    "git_url": "https://api.github.com/repos/smallrye/smallrye-common/git/blobs/28facb0e6047363c680a1e741654d6deae527466",
+    "download_url": "https://raw.githubusercontent.com/smallrye/smallrye-common/2.15.0/classloader/src/test/java/io/smallrye/common/classloader/ClassPathUtilsTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/smallrye-common/contents/classloader/src/test/java/io/smallrye/common/classloader/ClassPathUtilsTest.java?ref=2.15.0",
+      "git": "https://api.github.com/repos/smallrye/smallrye-common/git/blobs/28facb0e6047363c680a1e741654d6deae527466",
+      "html": "https://github.com/smallrye/smallrye-common/blob/2.15.0/classloader/src/test/java/io/smallrye/common/classloader/ClassPathUtilsTest.java"
+    }
+  }
+]
+
+ succeeded in 168ms:
+package io.smallrye.common.classloader;
+
+import java.lang.invoke.MethodHandles;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
+/**
+ * A utility to define classes within a target lookup.
+ */
+@SuppressWarnings("removal")
+public class ClassDefiner {
+    private ClassDefiner() {
+    }
+
+    /**
+     * Define a class.
+     *
+     * @param lookup the lookup of the class (must not be {@code null})
+     * @param parent the host class to define the new class to (must not be {@code null})
+     * @param className the name of the new class (must not be {@code null})
+     * @param classBytes the bytes of the new class (must not be {@code null})
+     * @return the defined class (not {@code null})
+     */
+    public static Class<?> defineClass(MethodHandles.Lookup lookup, Class<?> parent, String className, byte[] classBytes) {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkPermission(DefineClassPermission.getInstance());
+        }
+
+        return AccessController.doPrivileged(new PrivilegedAction<Class<?>>() {
+            @Override
+            public Class<?> run() {
+                try {
+                    MethodHandles.Lookup privateLookupIn = MethodHandles.privateLookupIn(parent, lookup);
+                    return privateLookupIn.defineClass(classBytes);
+                } catch (IllegalAccessException e) {
+                    throw new IllegalAccessError(e.getMessage());
+                }
+            }
+        });
+    }
+}
+
+ succeeded in 158ms:
+[
+  {
+    "name": "ClassDefiner.java",
+    "path": "classloader/src/main/java/io/smallrye/common/classloader/ClassDefiner.java",
+    "sha": "f478d9c1555c1ee27985e50f4bac35e3bd6ea039",
+    "size": 1524,
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/contents/classloader/src/main/java/io/smallrye/common/classloader/ClassDefiner.java?ref=2.15.0",
+    "html_url": "https://github.com/smallrye/smallrye-common/blob/2.15.0/classloader/src/main/java/io/smallrye/common/classloader/ClassDefiner.java",
+    "git_url": "https://api.github.com/repos/smallrye/smallrye-common/git/blobs/f478d9c1555c1ee27985e50f4bac35e3bd6ea039",
+    "download_url": "https://raw.githubusercontent.com/smallrye/smallrye-common/2.15.0/classloader/src/main/java/io/smallrye/common/classloader/ClassDefiner.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/smallrye-common/contents/classloader/src/main/java/io/smallrye/common/classloader/ClassDefiner.java?ref=2.15.0",
+      "git": "https://api.github.com/repos/smallrye/smallrye-common/git/blobs/f478d9c1555c1ee27985e50f4bac35e3bd6ea039",
+      "html": "https://github.com/smallrye/smallrye-common/blob/2.15.0/classloader/src/main/java/io/smallrye/common/classloader/ClassDefiner.java"
+    }
+  },
+  {
+    "name": "ClassPathUtils.java",
+    "path": "classloader/src/main/java/io/smallrye/common/classloader/ClassPathUtils.java",
+    "sha": "1fcd251a2515fa401612abc91826241bf17c67fa",
+    "size": 12190,
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/contents/classloader/src/main/java/io/smallrye/common/classloader/ClassPathUtils.java?ref=2.15.0",
+    "html_url": "https://github.com/smallrye/smallrye-common/blob/2.15.0/classloader/src/main/java/io/smallrye/common/classloader/ClassPathUtils.java",
+    "git_url": "https://api.github.com/repos/smallrye/smallrye-common/git/blobs/1fcd251a2515fa401612abc91826241bf17c67fa",
+    "download_url": "https://raw.githubusercontent.com/smallrye/smallrye-common/2.15.0/classloader/src/main/java/io/smallrye/common/classloader/ClassPathUtils.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/smallrye-common/contents/classloader/src/main/java/io/smallrye/common/classloader/ClassPathUtils.java?ref=2.15.0",
+      "git": "https://api.github.com/repos/smallrye/smallrye-common/git/blobs/1fcd251a2515fa401612abc91826241bf17c67fa",
+      "html": "https://github.com/smallrye/smallrye-common/blob/2.15.0/classloader/src/main/java/io/smallrye/common/classloader/ClassPathUtils.java"
+    }
+  },
+  {
+    "name": "DefineClassPermission.java",
+    "path": "classloader/src/main/java/io/smallrye/common/classloader/DefineClassPermission.java",
+    "sha": "4d16546561d013513a0ecf6e8a04377648f30472",
+    "size": 1377,
+    "url": "https://api.github.com/repos/smallrye/smallrye-common/contents/classloader/src/main/java/io/smallrye/common/classloader/DefineClassPermission.java?ref=2.15.0",
+    "html_url": "https://github.com/smallrye/smallrye-common/blob/2.15.0/classloader/src/main/java/io/smallrye/common/classloader/DefineClassPermission.java",
+    "git_url": "https://api.github.com/repos/smallrye/smallrye-common/git/blobs/4d16546561d013513a0ecf6e8a04377648f30472",
+    "download_url": "https://raw.githubusercontent.com/smallrye/smallrye-common/2.15.0/classloader/src/main/java/io/smallrye/common/classloader/DefineClassPermission.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/smallrye-common/contents/classloader/src/main/java/io/smallrye/common/classloader/DefineClassPermission.java?ref=2.15.0",
+      "git": "https://api.github.com/repos/smallrye/smallrye-common/git/blobs/4d16546561d013513a0ecf6e8a04377648f30472",
+      "html": "https://github.com/smallrye/smallrye-common/blob/2.15.0/classloader/src/main/java/io/smallrye/common/classloader/DefineClassPermission.java"
+    }
+  }
+]
+
+codex
+I’m going to write the metadata with Maven source/Javadoc URLs, the tagged GitHub test directory, and no `language` field because this is a plain Java utility artifact, not a Kotlin, Groovy, or Scala-specific library.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json
+diff --git a/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json b/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json
+index 6387d768c2720d801e10e41b8c4e74876b8af8ea..40364fddee468ed36943b29039f30d42eb9853b0
+--- a/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json
++++ b/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.common:smallrye-common-classloader:2.15.0"
++  "coordinates" : "io.smallrye.common:smallrye-common-classloader:2.15.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/2.15.0/smallrye-common-classloader-2.15.0-sources.jar",
++  "repository-url" : "https://github.com/smallrye/smallrye-common",
++  "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.15.0/classloader/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/2.15.0/smallrye-common-classloader-2.15.0-javadoc.jar",
++  "description" : "SmallRye Common Classloader provides utilities for working with Java class loaders, including defining classes dynamically with security checks. It also includes helper APIs for inspecting and using class path resources and JAR entries in SmallRye-based Java applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json b/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json
+index 6387d768c2720d801e10e41b8c4e74876b8af8ea..40364fddee468ed36943b29039f30d42eb9853b0
+--- a/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json
++++ b/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.common:smallrye-common-classloader:2.15.0"
++  "coordinates" : "io.smallrye.common:smallrye-common-classloader:2.15.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/2.15.0/smallrye-common-classloader-2.15.0-sources.jar",
++  "repository-url" : "https://github.com/smallrye/smallrye-common",
++  "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.15.0/classloader/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/2.15.0/smallrye-common-classloader-2.15.0-javadoc.jar",
++  "description" : "SmallRye Common Classloader provides utilities for working with Java class loaders, including defining classes dynamically with security checks. It also includes helper APIs for inspecting and using class path resources and JAR entries in SmallRye-based Java applications."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941
+ succeeded in 0ms:
+{
+  "coordinates": "io.smallrye.common:smallrye-common-classloader:2.15.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/2.15.0/smallrye-common-classloader-2.15.0-sources.jar",
+  "repository-url": "https://github.com/smallrye/smallrye-common",
+  "test-code-url": "https://github.com/smallrye/smallrye-common/tree/2.15.0/classloader/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/2.15.0/smallrye-common-classloader-2.15.0-javadoc.jar",
+  "description": "SmallRye Common Classloader provides utilities for working with Java class loaders, including defining classes dynamically with security checks. It also includes helper APIs for inspecting and using class path resources and JAR entries in SmallRye-based Java applications."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json b/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json
+index 6387d768c2720d801e10e41b8c4e74876b8af8ea..40364fddee468ed36943b29039f30d42eb9853b0
+--- a/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json
++++ b/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.common:smallrye-common-classloader:2.15.0"
++  "coordinates" : "io.smallrye.common:smallrye-common-classloader:2.15.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/2.15.0/smallrye-common-classloader-2.15.0-sources.jar",
++  "repository-url" : "https://github.com/smallrye/smallrye-common",
++  "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.15.0/classloader/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/2.15.0/smallrye-common-classloader-2.15.0-javadoc.jar",
++  "description" : "SmallRye Common Classloader provides utilities for working with Java class loaders, including defining classes dynamically with security checks. It also includes helper APIs for inspecting and using class path resources and JAR entries in SmallRye-based Java applications."
+ }
+
+codex
+The JSON parses cleanly. I’m doing one last status check because the file is under `build/`, which can affect whether Git reports a diff.
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json && git ls-files -- build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json b/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json
+index 6387d768c2720d801e10e41b8c4e74876b8af8ea..40364fddee468ed36943b29039f30d42eb9853b0
+--- a/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json
++++ b/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.common:smallrye-common-classloader:2.15.0"
++  "coordinates" : "io.smallrye.common:smallrye-common-classloader:2.15.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/2.15.0/smallrye-common-classloader-2.15.0-sources.jar",
++  "repository-url" : "https://github.com/smallrye/smallrye-common",
++  "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.15.0/classloader/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/2.15.0/smallrye-common-classloader-2.15.0-javadoc.jar",
++  "description" : "SmallRye Common Classloader provides utilities for working with Java class loaders, including defining classes dynamically with security checks. It also includes helper APIs for inspecting and using class path resources and JAR entries in SmallRye-based Java applications."
+ }
+
+web search: 
+web search: https://github.com/smallrye/smallrye-common/tree/2.15.0/classloader/src/test
+web search: 
+web search: "smallrye-common-classloader-2.15.0-sources.jar"
+web search: 
+web search: Maven Repository io.smallrye.common smallrye-common-classloader 2.15.0
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/smallrye/common/
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/2.15.0/
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-parent/
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-parent/2.15.0/
+web search: 
+web search: 
+codex
+Updated [io.smallrye.common-smallrye-common-classloader-2.15.0.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json:1) with the Maven Central sources/Javadoc artifacts and the tagged GitHub test suite for `2.15.0`. Maven Central lists both the `2.15.0` sources and Javadoc JARs, and GitHub exposes the `2.15.0` `classloader/src/test` tree. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/2.15.0/))
+
+I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library. Verified the file with `jq`.
+diff --git a/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json b/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json
+index 6387d768c2720d801e10e41b8c4e74876b8af8ea..40364fddee468ed36943b29039f30d42eb9853b0
+--- a/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json
++++ b/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.common:smallrye-common-classloader:2.15.0"
++  "coordinates" : "io.smallrye.common:smallrye-common-classloader:2.15.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/2.15.0/smallrye-common-classloader-2.15.0-sources.jar",
++  "repository-url" : "https://github.com/smallrye/smallrye-common",
++  "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.15.0/classloader/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/2.15.0/smallrye-common-classloader-2.15.0-javadoc.jar",
++  "description" : "SmallRye Common Classloader provides utilities for working with Java class loaders, including defining classes dynamically with security checks. It also includes helper APIs for inspecting and using class path resources and JAR entries in SmallRye-based Java applications."
+ }
+
+2026-05-01T06:42:45.044022Z ERROR codex_core::session: failed to record rollout items: thread 019de245-3837-7cc1-b818-e382dfff4db6 not found
+tokens used
+84,337
+Updated [io.smallrye.common-smallrye-common-classloader-2.15.0.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941/build/discovered-artifact-metadata/io.smallrye.common-smallrye-common-classloader-2.15.0.json:1) with the Maven Central sources/Javadoc artifacts and the tagged GitHub test suite for `2.15.0`. Maven Central lists both the `2.15.0` sources and Javadoc JARs, and GitHub exposes the `2.15.0` `classloader/src/test` tree. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/2.15.0/))
+
+I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library. Verified the file with `jq`.
+Ran agent for io.smallrye.common:smallrye-common-classloader:2.15.0 (exit 0). Log: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941/build/agent-artifact-discovery-logs/io.smallrye.common-smallrye-common-classloader-2.15.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3736-aa355941/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 27s
+9 actionable tasks: 4 executed, 5 from cache
