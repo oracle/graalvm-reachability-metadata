@@ -20,10 +20,12 @@ import io.netty.channel.kqueue.KQueueChannelOption;
 import io.netty.channel.kqueue.KQueueDatagramChannel;
 import io.netty.channel.kqueue.KQueueDomainDatagramChannel;
 import io.netty.channel.kqueue.KQueueDomainSocketChannel;
+import io.netty.channel.kqueue.KQueueDomainSocketChannelConfig;
 import io.netty.channel.kqueue.KQueueEventLoopGroup;
 import io.netty.channel.kqueue.KQueueServerDomainSocketChannel;
 import io.netty.channel.kqueue.KQueueServerSocketChannel;
 import io.netty.channel.kqueue.KQueueSocketChannel;
+import io.netty.channel.unix.DomainSocketReadMode;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -112,6 +114,33 @@ public class Netty_transport_classes_kqueueTest {
     @Test
     void eventLoopGroupConstructorRespectsTransportAvailability() {
         assertEventLoopGroupConstructorMatchesAvailability(() -> new KQueueEventLoopGroup(1));
+    }
+
+    @Test
+    void domainSocketChannelConfigControlsReadModeAndHalfClosure() {
+        if (KQueue.isAvailable()) {
+            KQueueDomainSocketChannel channel = new KQueueDomainSocketChannel();
+            try {
+                KQueueDomainSocketChannelConfig config = channel.config();
+
+                assertThat(config.getReadMode()).isEqualTo(DomainSocketReadMode.BYTES);
+                assertThat(config.setReadMode(DomainSocketReadMode.FILE_DESCRIPTORS)).isSameAs(config);
+                assertThat(config.getReadMode()).isEqualTo(DomainSocketReadMode.FILE_DESCRIPTORS);
+
+                assertThat(config.isAllowHalfClosure()).isFalse();
+                assertThat(config.setAllowHalfClosure(true)).isSameAs(config);
+                assertThat(config.isAllowHalfClosure()).isTrue();
+
+                assertThatThrownBy(() -> config.setReadMode(null))
+                        .isInstanceOf(NullPointerException.class)
+                        .hasMessageContaining("mode");
+            } finally {
+                channel.close().syncUninterruptibly();
+            }
+            return;
+        }
+
+        assertThatThrownBy(KQueueDomainSocketChannel::new).isInstanceOf(UnsatisfiedLinkError.class);
     }
 
     private static void assertChannelConstructorMatchesAvailability(Supplier<? extends Channel> constructor) {
