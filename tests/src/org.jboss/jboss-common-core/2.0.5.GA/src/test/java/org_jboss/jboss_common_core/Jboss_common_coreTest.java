@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
+import org.jboss.util.Base64;
 import org.jboss.util.Heap;
 import org.jboss.util.JBossStringBuilder;
 import org.junit.jupiter.api.Test;
@@ -70,6 +71,25 @@ public class Jboss_common_coreTest {
         assertThat(lengthHeap.extract()).isEqualTo("mid");
         lengthHeap.clear();
         assertThat(lengthHeap.peek()).isNull();
+    }
+
+    @Test
+    void base64EncodesAndDecodesByteRanges() {
+        String message = "JBoss common core utilities";
+        byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
+        byte[] prefixBytes = "prefix:".getBytes(StandardCharsets.UTF_8);
+        String source = "prefix:" + message + ":suffix";
+        byte[] sourceBytes = source.getBytes(StandardCharsets.UTF_8);
+
+        String encoded = Base64.encodeBytes(
+                sourceBytes,
+                prefixBytes.length,
+                messageBytes.length,
+                Base64.DONT_BREAK_LINES);
+
+        assertThat(encoded).doesNotContain("\n", "\r");
+        assertThat(encoded).isEqualTo(java.util.Base64.getEncoder().encodeToString(messageBytes));
+        assertThat(Base64.decode(encoded)).isEqualTo(messageBytes);
     }
 
     @Test
