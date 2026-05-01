@@ -36,21 +36,20 @@ public class DescTest {
     void getClazzDelegatesToContextClassLoaderWhenEnabled() {
         boolean originalUseContextClassLoader = Desc.useContextClassLoader;
         ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
-        RuntimeException failure;
+        RecordingClassLoader contextClassLoader = new RecordingClassLoader(originalContextClassLoader);
+        Class<?> resolvedClass;
         try {
             Desc.useContextClassLoader = true;
-            Thread.currentThread().setContextClassLoader(new EmptyClassLoader());
+            Thread.currentThread().setContextClassLoader(contextClassLoader);
 
-            failure = captureGetClazzFailure(TARGET_CLASS_NAME);
+            resolvedClass = Desc.getClazz(TARGET_CLASS_NAME);
         } finally {
             Desc.useContextClassLoader = originalUseContextClassLoader;
             Thread.currentThread().setContextClassLoader(originalContextClassLoader);
         }
 
-        assertThat(failure)
-                .hasMessageContaining(TARGET_CLASS_NAME)
-                .hasMessageContaining("Desc.useContextClassLoader: true")
-                .hasCauseInstanceOf(ClassNotFoundException.class);
+        assertThat(resolvedClass).isSameAs(DescTest.class);
+        assertThat(contextClassLoader.loadedName).isEqualTo(TARGET_CLASS_NAME);
     }
 
     @Test
@@ -81,19 +80,23 @@ public class DescTest {
         assertThat(arrayType).isSameAs(String[].class);
     }
 
-    private static RuntimeException captureGetClazzFailure(String className) {
-        try {
-            Desc.getClazz(className);
-        } catch (RuntimeException exception) {
-            return exception;
-        }
-
-        throw new AssertionError("Expected Desc.getClazz to fail");
-    }
-
     private static final class EmptyClassLoader extends ClassLoader {
         private EmptyClassLoader() {
             super(null);
+        }
+    }
+
+    private static final class RecordingClassLoader extends ClassLoader {
+        private String loadedName;
+
+        private RecordingClassLoader(ClassLoader parent) {
+            super(parent);
+        }
+
+        @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            loadedName = name;
+            return super.loadClass(name);
         }
     }
 }
