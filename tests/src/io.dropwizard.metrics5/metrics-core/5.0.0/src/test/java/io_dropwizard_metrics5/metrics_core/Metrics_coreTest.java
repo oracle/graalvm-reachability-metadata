@@ -35,6 +35,7 @@ import io.dropwizard.metrics5.CsvReporter;
 import io.dropwizard.metrics5.DerivativeGauge;
 import io.dropwizard.metrics5.EWMA;
 import io.dropwizard.metrics5.ExponentiallyDecayingReservoir;
+import io.dropwizard.metrics5.FixedNameCsvFileProvider;
 import io.dropwizard.metrics5.Gauge;
 import io.dropwizard.metrics5.Histogram;
 import io.dropwizard.metrics5.InstrumentedExecutorService;
@@ -402,6 +403,37 @@ public class Metrics_coreTest {
                 .startsWith("124,2,18000000,10.000000,9.000000,8.000000,1.000000,10.000000,10.000000")
                 .endsWith(",calls/second,milliseconds");
         assertThat(Files.exists(reportDirectory.resolve("skip.gauge.csv"))).isFalse();
+        reporter.stop();
+    }
+
+    @Test
+    void csvReporterUsesFixedNameFileProviderForSlashDelimitedMetricNames() throws Exception {
+        MetricRegistry registry = new MetricRegistry();
+        Counter counter = registry.counter(MetricName.build("/api/requests"));
+        counter.inc(12);
+        registry.register(MetricName.build("/api/inflight"), (Gauge<Integer>) () -> 3);
+
+        StepClock clock = new StepClock();
+        clock.addNanos(TimeUnit.SECONDS.toNanos(5));
+        Path reportDirectory = Files.createTempDirectory("metrics5-core-fixed-csv-");
+
+        CsvReporter reporter = CsvReporter.forRegistry(registry)
+                .withClock(clock)
+                .withCsvFileProvider(new FixedNameCsvFileProvider())
+                .build(reportDirectory.toFile());
+        reporter.report();
+
+        List<String> reportFiles;
+        try (Stream<Path> paths = Files.list(reportDirectory)) {
+            reportFiles = paths.map(path -> path.getFileName().toString()).sorted().toList();
+        }
+
+        assertThat(reportFiles).containsExactly("api.inflight.csv", "api.requests.csv");
+        assertThat(Files.readAllLines(reportDirectory.resolve("api.inflight.csv"), StandardCharsets.UTF_8))
+                .containsExactly("t,value", "5,3");
+        assertThat(Files.readAllLines(reportDirectory.resolve("api.requests.csv"), StandardCharsets.UTF_8))
+                .containsExactly("t,count", "5,12");
+        assertThat(Files.isDirectory(reportDirectory.resolve("api"))).isFalse();
         reporter.stop();
     }
 
