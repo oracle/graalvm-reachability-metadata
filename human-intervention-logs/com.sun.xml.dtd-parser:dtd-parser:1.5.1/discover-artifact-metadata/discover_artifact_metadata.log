@@ -1,0 +1,1447 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de472-c319-7002-9dd0-030511a2fef9
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.sun.xml.dtd-parser:dtd-parser:1.5.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.5.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+- Set "coordinates" to "com.sun.xml.dtd-parser:dtd-parser:1.5.1".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream project, then patch the JSON in place with version-specific URLs where they exist.
+web search: 
+web search: com.sun.xml.dtd-parser dtd-parser 1.5.1 Maven sources repository
+codex
+Maven Central already exposes a versioned Javadoc entry for `1.5.1`; I’m checking the published POM and artifact directory next because that is the strongest source for repository and source/test artifacts.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+{
+  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1.pom' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<!--
+
+    Copyright (c) 1998, 2023 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.8</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.sun.xml.dtd-parser</groupId>
+    <artifactId>dtd-parser</artifactId>
+    <version>1.5.1</version>
+    <packaging>jar</packaging>
+    <name>DTD Parser</name>
+    <description>SAX-like API for parsing XML DTDs.</description>
+    <url>https://github.com/eclipse-ee4j/jaxb-dtd-parser</url>
+
+    <scm>
+        <connection>scm:git:ssh://git@github.com/eclipse-ee4j/jaxb-dtd-parser.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/eclipse-ee4j/jaxb-dtd-parser.git</developerConnection>
+        <url>https://github.com/eclipse-ee4j/jaxb-dtd-parser</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>Eclipse Distribution License - v 1.0</name>
+            <url>https://www.eclipse.org/org/documents/edl-v10.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>bravehorsie</id>
+            <name>Roman Grigoriadi</name>
+            <email>Roman.Grigoriadi@oracle.com</email>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/eclipse-ee4j/jaxb-dtd-parser/issues</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>Eclipse Implementation of JAXB mailing list</name>
+            <post>jaxb-impl-dev@eclipse.org</post>
+            <subscribe>https://dev.eclipse.org/mailman/listinfo/jaxb-impl-dev</subscribe>
+            <unsubscribe>https://dev.eclipse.org/mailman/listinfo/jaxb-impl-dev</unsubscribe>
+            <archive>https://dev.eclipse.org/mhonarc/lists/jaxb-impl-dev</archive>
+        </mailingList>
+    </mailingLists>
+
+    <properties>
+        <copyright.exclude>${project.basedir}/../etc/copyright-exclude</copyright.exclude>
+        <copyright.ignoreyear>false</copyright.ignoreyear>
+        <copyright.scmonly>true</copyright.scmonly>
+        <copyright.update>false</copyright.update>
+        <spotbugs.exclude>${project.basedir}/../etc/spotbugs-exclude.xml</spotbugs.exclude>
+        <spotbugs.skip>false</spotbugs.skip>
+        <spotbugs.threshold>Low</spotbugs.threshold>
+        <spotbugs.version>4.7.3.6</spotbugs.version>
+        <legal.doc.source>${project.basedir}/..</legal.doc.source>
+
+        <maven.compiler.release>11</maven.compiler.release>
+        <maven.compiler.testRelease>${maven.compiler.release}</maven.compiler.testRelease>
+    </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.4.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.11.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs.version}</version>
+                    <configuration>
+                        <skip>${spotbugs.skip}</skip>
+                        <threshold>${spotbugs.threshold}</threshold>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.copyright</groupId>
+                    <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.4.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>5.1.9</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.2.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.6.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.8.11</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork>
+                    <excludeFilterFile>${spotbugs.exclude}</excludeFilterFile>
+                    <failThreshold>High</failThreshold>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.glassfish.copyright</groupId>
+                <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                <configuration>
+                    <excludeFile>${copyright.exclude}</excludeFile>
+                    <!-- skip files not under SCM-->
+                    <scmOnly>${copyright.scmonly}</scmOnly>
+                    <!-- for use with repair -->
+                    <update>${copyright.update}</update>
+                    <!-- check that year is correct -->
+                    <ignoreYear>${copyright.ignoreyear}</ignoreYear>
+                    <quiet>false</quiet>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <configuration>
+                    <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+                    <revisionOnScmFailure>false</revisionOnScmFailure>
+                    <shortRevisionLength>7</shortRevisionLength>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-legal-resource</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${legal.doc.source}</directory>
+                                    <includes>
+                                        <include>NOTICE.md</include>
+                                        <include>LICENSE.md</include>
+                                    </includes>
+                                    <targetPath>META-INF</targetPath>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-Xlint:all</arg>
+                        <arg>-Xdoclint:all,-missing</arg>
+                        <arg>-Werror</arg>
+                    </compilerArgs>
+                    <showDeprecation>true</showDeprecation>
+                    <showWarnings>true</showWarnings>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <addDefaultEntries>false</addDefaultEntries>
+                                </manifest>
+                            </archive>
+                            <instructions>
+                                <_noextraheaders>true</_noextraheaders>
+                                <Implementation-Build-Id>${project.version} - ${buildNumber}</Implementation-Build-Id>
+                            </instructions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Implementation-Build-Id>${project.version} - ${buildNumber}</Implementation-Build-Id>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                        </manifest>
+                    </archive>
+                    <notimestamp>true</notimestamp>
+                    <quiet>true</quiet>
+                    <doclint>all,-missing</doclint>
+                    <failOnWarnings>true</failOnWarnings>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>coverage</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>default-report</id>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/sun/xml/dtd-parser/dtd-parser/1.5.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/sun/xml/dtd-parser/dtd-parser/1.5.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="dtd-parser-1.5.1-javadoc.jar" title="dtd-parser-1.5.1-javadoc.jar">dtd-parser-1.5.1-javadoc.jar</a>                      2023-10-20 04:41    479637      
+<a href="dtd-parser-1.5.1-javadoc.jar.asc" title="dtd-parser-1.5.1-javadoc.jar.asc">dtd-parser-1.5.1-javadoc.jar.asc</a>                  2023-10-20 04:41       833      
+<a href="dtd-parser-1.5.1-javadoc.jar.md5" title="dtd-parser-1.5.1-javadoc.jar.md5">dtd-parser-1.5.1-javadoc.jar.md5</a>                  2023-10-20 04:41        32      
+<a href="dtd-parser-1.5.1-javadoc.jar.sha1" title="dtd-parser-1.5.1-javadoc.jar.sha1">dtd-parser-1.5.1-javadoc.jar.sha1</a>                 2023-10-20 04:41        40      
+<a href="dtd-parser-1.5.1-sources.jar" title="dtd-parser-1.5.1-sources.jar">dtd-parser-1.5.1-sources.jar</a>                      2023-10-20 04:41     71707      
+<a href="dtd-parser-1.5.1-sources.jar.asc" title="dtd-parser-1.5.1-sources.jar.asc">dtd-parser-1.5.1-sources.jar.asc</a>                  2023-10-20 04:41       833      
+<a href="dtd-parser-1.5.1-sources.jar.md5" title="dtd-parser-1.5.1-sources.jar.md5">dtd-parser-1.5.1-sources.jar.md5</a>                  2023-10-20 04:41        32      
+<a href="dtd-parser-1.5.1-sources.jar.sha1" title="dtd-parser-1.5.1-sources.jar.sha1">dtd-parser-1.5.1-sources.jar.sha1</a>                 2023-10-20 04:41        40      
+<a href="dtd-parser-1.5.1.jar" title="dtd-parser-1.5.1.jar">dtd-parser-1.5.1.jar</a>                              2023-10-20 04:41     64102      
+<a href="dtd-parser-1.5.1.jar.asc" title="dtd-parser-1.5.1.jar.asc">dtd-parser-1.5.1.jar.asc</a>                          2023-10-20 04:41       833      
+<a href="dtd-parser-1.5.1.jar.md5" title="dtd-parser-1.5.1.jar.md5">dtd-parser-1.5.1.jar.md5</a>                          2023-10-20 04:41        32      
+<a href="dtd-parser-1.5.1.jar.sha1" title="dtd-parser-1.5.1.jar.sha1">dtd-parser-1.5.1.jar.sha1</a>                         2023-10-20 04:41        40      
+<a href="dtd-parser-1.5.1.pom" title="dtd-parser-1.5.1.pom">dtd-parser-1.5.1.pom</a>                              2023-10-20 04:41     13762      
+<a href="dtd-parser-1.5.1.pom.asc" title="dtd-parser-1.5.1.pom.asc">dtd-parser-1.5.1.pom.asc</a>                          2023-10-20 04:41       833      
+<a href="dtd-parser-1.5.1.pom.md5" title="dtd-parser-1.5.1.pom.md5">dtd-parser-1.5.1.pom.md5</a>                          2023-10-20 04:41        32      
+<a href="dtd-parser-1.5.1.pom.sha1" title="dtd-parser-1.5.1.pom.sha1">dtd-parser-1.5.1.pom.sha1</a>                         2023-10-20 04:41        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: site:github.com/eclipse-ee4j/jaxb-dtd-parser dtd-parser 1.5.1 tag
+codex
+The POM confirms the upstream repository and the artifact directory contains `1.5.1` sources and Javadoc jars, but I don’t see a published test-sources jar on Maven Central. I’m resolving the upstream tag so the test suite URL can point to the exact released code.
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://github.com/eclipse-ee4j/jaxb-dtd-parser.git' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/tags?per_page=100' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-sources.jar.sha1 && printf '\\n' && curl -fsSL https://repo1.maven.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-javadoc.jar.sha1" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 215ms:
+[
+  {
+    "name": "initial-contribution",
+    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/zipball/refs/tags/initial-contribution",
+    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/tarball/refs/tags/initial-contribution",
+    "commit": {
+      "sha": "3a90ed910caa6883c9f3e9b9bdf9d3f43a61acfd",
+      "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/commits/3a90ed910caa6883c9f3e9b9bdf9d3f43a61acfd"
+    },
+    "node_id": "MDM6UmVmMTQ2NTc0MjI1OnJlZnMvdGFncy9pbml0aWFsLWNvbnRyaWJ1dGlvbg=="
+  },
+  {
+    "name": "1.5.1",
+    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/zipball/refs/tags/1.5.1",
+    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/tarball/refs/tags/1.5.1",
+    "commit": {
+      "sha": "499f21ef96b536f10000af378efca776b1938c89",
+      "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/commits/499f21ef96b536f10000af378efca776b1938c89"
+    },
+    "node_id": "MDM6UmVmMTQ2NTc0MjI1OnJlZnMvdGFncy8xLjUuMQ=="
+  },
+  {
+    "name": "1.5.0",
+    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/zipball/refs/tags/1.5.0",
+    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/tarball/refs/tags/1.5.0",
+    "commit": {
+      "sha": "bf534ec5701fdc4d6ac362bf0466b414b00fc474",
+      "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/commits/bf534ec5701fdc4d6ac362bf0466b414b00fc474"
+    },
+    "node_id": "MDM6UmVmMTQ2NTc0MjI1OnJlZnMvdGFncy8xLjUuMA=="
+  },
+  {
+    "name": "1.4.5",
+    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/zipball/refs/tags/1.4.5",
+    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/tarball/refs/tags/1.4.5",
+    "commit": {
+      "sha": "4bbd8f7b4df5f5989ad9800d5400822f12f57f04",
+      "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/commits/4bbd8f7b4df5f5989ad9800d5400822f12f57f04"
+    },
+    "node_id": "MDM6UmVmMTQ2NTc0MjI1OnJlZnMvdGFncy8xLjQuNQ=="
+  },
+  {
+    "name": "1.4.4",
+    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/zipball/refs/tags/1.4.4",
+    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/tarball/refs/tags/1.4.4",
+    "commit": {
+      "sha": "b4b14d5df86bc7da35f21322b4c1cc14b2c90d62",
+      "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/commits/b4b14d5df86bc7da35f21322b4c1cc14b2c90d62"
+    },
+    "node_id": "MDM6UmVmMTQ2NTc0MjI1OnJlZnMvdGFncy8xLjQuNA=="
+  },
+  {
+    "name": "1.4.3",
+    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/zipball/refs/tags/1.4.3",
+    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/tarball/refs/tags/1.4.3",
+    "commit": {
+      "sha": "acc434da5c12a471cadb487a1ffce0b099358251",
+      "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/commits/acc434da5c12a471cadb487a1ffce0b099358251"
+    },
+    "node_id": "MDM6UmVmMTQ2NTc0MjI1OnJlZnMvdGFncy8xLjQuMw=="
+  },
+  {
+    "name": "1.4.2",
+    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/zipball/refs/tags/1.4.2",
+    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/tarball/refs/tags/1.4.2",
+    "commit": {
+      "sha": "073ce7b809fa3d035e874009ba1514dd9b681f9a",
+      "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/commits/073ce7b809fa3d035e874009ba1514dd9b681f9a"
+    },
+    "node_id": "MDM6UmVmMTQ2NTc0MjI1OnJlZnMvdGFncy8xLjQuMg=="
+  },
+  {
+    "name": "1.4.1",
+    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/zipball/refs/tags/1.4.1",
+    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/tarball/refs/tags/1.4.1",
+    "commit": {
+      "sha": "6311975df010749c45208d306443e5384b80a5e4",
+      "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/commits/6311975df010749c45208d306443e5384b80a5e4"
+    },
+    "node_id": "MDM6UmVmMTQ2NTc0MjI1OnJlZnMvdGFncy8xLjQuMQ=="
+  }
+]
+
+ succeeded in 297ms:
+df3c79da0c0bec11775ac50a83a346fd1038c895	refs/tags/1.4.1
+6311975df010749c45208d306443e5384b80a5e4	refs/tags/1.4.1^{}
+db036a9f00a50c6a70ec44dd7a0cb2803ff94fd0	refs/tags/1.4.2
+073ce7b809fa3d035e874009ba1514dd9b681f9a	refs/tags/1.4.2^{}
+360e2b70c2165fd3ebb44bf0e2f29e3fea0f6a40	refs/tags/1.4.3
+acc434da5c12a471cadb487a1ffce0b099358251	refs/tags/1.4.3^{}
+e33eeccc4e60b00ee4c1c2e5c484d9aa2ced6077	refs/tags/1.4.4
+b4b14d5df86bc7da35f21322b4c1cc14b2c90d62	refs/tags/1.4.4^{}
+d27ca81be300d075f2dd6d0b414f407bf3c02043	refs/tags/1.4.5
+4bbd8f7b4df5f5989ad9800d5400822f12f57f04	refs/tags/1.4.5^{}
+25382b2ca3c4b6918d139b7126a4e7f17718ba8e	refs/tags/1.5.0
+bf534ec5701fdc4d6ac362bf0466b414b00fc474	refs/tags/1.5.0^{}
+31e11059350c9b30811791b1910a36d458a333b8	refs/tags/1.5.1
+499f21ef96b536f10000af378efca776b1938c89	refs/tags/1.5.1^{}
+3a90ed910caa6883c9f3e9b9bdf9d3f43a61acfd	refs/tags/initial-contribution
+
+ succeeded in 313ms:
+a31da348e367eb915ff812d403bac613a0593d81
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/contents?ref=1.5.1' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/contents/src?ref=1.5.1' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ exited 22 in 0ms:
+curl: (22) The requested URL returned error: 403
+
+ exited 22 in 0ms:
+curl: (22) The requested URL returned error: 403
+
+codex
+GitHub’s API endpoint is rate-limiting this environment, so I’m switching to the Git transport for the tag contents. That will let me verify whether `src/test` exists at `1.5.1` without relying on the API.
+exec
+/usr/bin/bash -lc 'git clone --depth 1 --branch 1.5.1 https://github.com/eclipse-ee4j/jaxb-dtd-parser.git /tmp/codex-jaxb-dtd-parser-1.5.1' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 543ms:
+Note: switching to '499f21ef96b536f10000af378efca776b1938c89'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+
+exec
+/usr/bin/bash -lc 'find /tmp/codex-jaxb-dtd-parser-1.5.1 -maxdepth 3 -type d | sort' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+/tmp/codex-jaxb-dtd-parser-1.5.1
+/tmp/codex-jaxb-dtd-parser-1.5.1/.git
+/tmp/codex-jaxb-dtd-parser-1.5.1/.git/branches
+/tmp/codex-jaxb-dtd-parser-1.5.1/.git/hooks
+/tmp/codex-jaxb-dtd-parser-1.5.1/.git/info
+/tmp/codex-jaxb-dtd-parser-1.5.1/.git/logs
+/tmp/codex-jaxb-dtd-parser-1.5.1/.git/objects
+/tmp/codex-jaxb-dtd-parser-1.5.1/.git/objects/info
+/tmp/codex-jaxb-dtd-parser-1.5.1/.git/objects/pack
+/tmp/codex-jaxb-dtd-parser-1.5.1/.git/refs
+/tmp/codex-jaxb-dtd-parser-1.5.1/.git/refs/heads
+/tmp/codex-jaxb-dtd-parser-1.5.1/.git/refs/tags
+/tmp/codex-jaxb-dtd-parser-1.5.1/.github
+/tmp/codex-jaxb-dtd-parser-1.5.1/.github/workflows
+/tmp/codex-jaxb-dtd-parser-1.5.1/dtd-parser
+/tmp/codex-jaxb-dtd-parser-1.5.1/dtd-parser/src
+/tmp/codex-jaxb-dtd-parser-1.5.1/dtd-parser/src/main
+/tmp/codex-jaxb-dtd-parser-1.5.1/dtd-parser/src/test
+/tmp/codex-jaxb-dtd-parser-1.5.1/etc
+
+exec
+/usr/bin/bash -lc 'find /tmp/codex-jaxb-dtd-parser-1.5.1 -maxdepth 2 -type f | sort' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+/tmp/codex-jaxb-dtd-parser-1.5.1/.git/HEAD
+/tmp/codex-jaxb-dtd-parser-1.5.1/.git/config
+/tmp/codex-jaxb-dtd-parser-1.5.1/.git/description
+/tmp/codex-jaxb-dtd-parser-1.5.1/.git/index
+/tmp/codex-jaxb-dtd-parser-1.5.1/.git/packed-refs
+/tmp/codex-jaxb-dtd-parser-1.5.1/.git/shallow
+/tmp/codex-jaxb-dtd-parser-1.5.1/.gitignore
+/tmp/codex-jaxb-dtd-parser-1.5.1/CONTRIBUTING.md
+/tmp/codex-jaxb-dtd-parser-1.5.1/LICENSE.md
+/tmp/codex-jaxb-dtd-parser-1.5.1/NOTICE.md
+/tmp/codex-jaxb-dtd-parser-1.5.1/README.md
+/tmp/codex-jaxb-dtd-parser-1.5.1/dtd-parser/pom.xml
+/tmp/codex-jaxb-dtd-parser-1.5.1/etc/copyright-exclude
+/tmp/codex-jaxb-dtd-parser-1.5.1/etc/spotbugs-exclude.xml
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' /tmp/codex-jaxb-dtd-parser-1.5.1/README.md" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+[//]: # " Copyright (c) 2020, 2021 Oracle and/or its affiliates. All rights reserved. "
+[//]: # "  "
+[//]: # " This program and the accompanying materials are made available under the "
+[//]: # " terms of the Eclipse Distribution License v. 1.0, which is available at "
+[//]: # " http://www.eclipse.org/org/documents/edl-v10.php. "
+[//]: # "  "
+[//]: # " SPDX-License-Identifier: BSD-3-Clause "
+
+# DTD Parser
+
+[![Build Status](https://github.com/eclipse-ee4j/jaxb-dtd-parser/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/eclipse-ee4j/jaxb-dtd-parser/actions/workflows/maven.yml?branch=master)
+[![Jakarta Staging (Snapshots)](https://img.shields.io/nexus/s/https/jakarta.oss.sonatype.org/com.sun.xml.dtd-parser/dtd-parser.svg)](https://jakarta.oss.sonatype.org/content/repositories/staging/com/sun/xml/dtd-parser/dtd-parser/)
+
+SAX-like API for parsing XML DTDs.
+
+This project is part of [Eclipse Implementation of JAXB](https://projects.eclipse.org/projects/ee4j.jaxb-impl).
+
+## License
+
+DTD Parser is licensed under a license - [EDL 1.0](LICENSE.md).
+
+
+## Contributing
+
+We use [contribution policy](CONTRIBUTING.md), which means we can only accept contributions under
+the terms of [Eclipse Contributor Agreement](http://www.eclipse.org/legal/ECA.php).
+
+
+## Links
+
+* [Javadoc](https://javadoc.io/doc/com.sun.xml.dtd-parser/dtd-parser/latest/)
+* [Mailing list](https://accounts.eclipse.org/mailing-list/jaxb-impl-dev)
+* [Nightly build job](https://ci.eclipse.org/jaxb-impl/job/dtd-parser-master-build/)
+
+exec
+/usr/bin/bash -lc 'find /tmp/codex-jaxb-dtd-parser-1.5.1/dtd-parser/src/test -maxdepth 5 -type f | sort' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'find /tmp/codex-jaxb-dtd-parser-1.5.1/dtd-parser/src/main -maxdepth 5 -type f | sort | head -50' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+/tmp/codex-jaxb-dtd-parser-1.5.1/dtd-parser/src/main/java/module-info.java
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' /tmp/codex-jaxb-dtd-parser-1.5.1/dtd-parser/pom.xml" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<!--
+
+    Copyright (c) 1998, 2023 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.8</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.sun.xml.dtd-parser</groupId>
+    <artifactId>dtd-parser</artifactId>
+    <version>1.5.1</version>
+    <packaging>jar</packaging>
+    <name>DTD Parser</name>
+    <description>SAX-like API for parsing XML DTDs.</description>
+    <url>https://github.com/eclipse-ee4j/jaxb-dtd-parser</url>
+
+    <scm>
+        <connection>scm:git:ssh://git@github.com/eclipse-ee4j/jaxb-dtd-parser.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/eclipse-ee4j/jaxb-dtd-parser.git</developerConnection>
+        <url>https://github.com/eclipse-ee4j/jaxb-dtd-parser</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>Eclipse Distribution License - v 1.0</name>
+            <url>https://www.eclipse.org/org/documents/edl-v10.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>bravehorsie</id>
+            <name>Roman Grigoriadi</name>
+            <email>Roman.Grigoriadi@oracle.com</email>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/eclipse-ee4j/jaxb-dtd-parser/issues</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>Eclipse Implementation of JAXB mailing list</name>
+            <post>jaxb-impl-dev@eclipse.org</post>
+            <subscribe>https://dev.eclipse.org/mailman/listinfo/jaxb-impl-dev</subscribe>
+            <unsubscribe>https://dev.eclipse.org/mailman/listinfo/jaxb-impl-dev</unsubscribe>
+            <archive>https://dev.eclipse.org/mhonarc/lists/jaxb-impl-dev</archive>
+        </mailingList>
+    </mailingLists>
+
+    <properties>
+        <copyright.exclude>${project.basedir}/../etc/copyright-exclude</copyright.exclude>
+        <copyright.ignoreyear>false</copyright.ignoreyear>
+        <copyright.scmonly>true</copyright.scmonly>
+        <copyright.update>false</copyright.update>
+        <spotbugs.exclude>${project.basedir}/../etc/spotbugs-exclude.xml</spotbugs.exclude>
+        <spotbugs.skip>false</spotbugs.skip>
+        <spotbugs.threshold>Low</spotbugs.threshold>
+        <spotbugs.version>4.7.3.6</spotbugs.version>
+        <legal.doc.source>${project.basedir}/..</legal.doc.source>
+
+        <maven.compiler.release>11</maven.compiler.release>
+        <maven.compiler.testRelease>${maven.compiler.release}</maven.compiler.testRelease>
+    </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.4.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.11.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs.version}</version>
+                    <configuration>
+                        <skip>${spotbugs.skip}</skip>
+                        <threshold>${spotbugs.threshold}</threshold>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.copyright</groupId>
+                    <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.4.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+
+codex
+At tag `1.5.1`, the repository has an empty `dtd-parser/src/test` directory, and Maven Central does not publish a test-sources artifact for this version. I’m going to mark the test suite URL as `N/A` rather than point at an empty directory.
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+
+exec
+/usr/bin/bash -lc "find metadata -name '*.json' | head -50" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+metadata/org.eclipse.jetty/jetty-alpn-server/11.0.24/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json
+metadata/org.eclipse.jetty/jetty-server/12.0.1/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-server/index.json
+metadata/org.eclipse.jetty/jetty-server/11.0.12/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-server/12.1.3/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-client/12.1.5/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-client/index.json
+metadata/org.eclipse.jetty/jetty-client/11.0.12/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-client/12.0.0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-util/index.json
+metadata/org.eclipse.jetty/jetty-util/12.0.9/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-http/index.json
+metadata/org.eclipse.jetty/jetty-http/9.4.1.v20170120/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-http/9.4.0.M0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-http/9.3.19.v20170502/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-io/index.json
+metadata/org.eclipse.jetty/jetty-io/9.4.0.M0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-io/9.3.19.v20170502/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json
+metadata/org.eclipse.jetty/jetty-util-ajax/9.4.38.v20210224/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-util-ajax/10.0.0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-alpn-java-server/11.0.24/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json
+metadata/org.eclipse.jetty/jetty-alpn-java-server/12.0.0/reachability-metadata.json
+metadata/org.scalatest/scalatest-compatible/index.json
+metadata/org.scalatest/scalatest-compatible/3.2.19/reachability-metadata.json
+metadata/org.awaitility/awaitility/4.2.0/reachability-metadata.json
+metadata/org.awaitility/awaitility/index.json
+metadata/org.awaitility/awaitility/4.2.1/reachability-metadata.json
+metadata/org.springframework/spring-instrument/5.3.31/reachability-metadata.json
+metadata/org.springframework/spring-instrument/index.json
+metadata/com.rabbitmq/amqp-client/5.12.0/reachability-metadata.json
+metadata/com.rabbitmq/amqp-client/index.json
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.18.1/reachability-metadata.json
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/2.15.2/reachability-metadata.json
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/1.5.0/reachability-metadata.json
+metadata/com.github.ben-manes.caffeine/caffeine/3.1.2/reachability-metadata.json
+metadata/com.github.ben-manes.caffeine/caffeine/index.json
+metadata/com.github.ben-manes.caffeine/caffeine/2.9.3/reachability-metadata.json
+metadata/org.openjfx/javafx-base/index.json
+metadata/org.openjfx/javafx-base/11.0.2/reachability-metadata.json
+metadata/org.apache.directory.api/api-i18n/index.json
+metadata/org.apache.directory.api/api-i18n/2.0.0/reachability-metadata.json
+metadata/org.apache.directory.api/api-i18n/1.0.0/reachability-metadata.json
+metadata/com.thoughtworks.paranamer/paranamer/index.json
+metadata/com.thoughtworks.paranamer/paranamer/2.3/reachability-metadata.json
+
+exec
+/usr/bin/bash -lc "rg --files | rg 'discovered-artifact-metadata|artifact-metadata|metadata/.+\\.json' | head -100" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+metadata/com.google.j2objc/j2objc-annotations/1.3/reachability-metadata.json
+metadata/com.google.j2objc/j2objc-annotations/index.json
+metadata/oro/oro/2.0.8/reachability-metadata.json
+metadata/oro/oro/index.json
+metadata/com.itextpdf/kernel/8.0.3/reachability-metadata.json
+metadata/com.itextpdf/kernel/index.json
+metadata/com.itextpdf/forms/8.0.3/reachability-metadata.json
+metadata/com.itextpdf/forms/index.json
+metadata/com.rabbitmq/amqp-client/index.json
+metadata/com.rabbitmq/amqp-client/5.12.0/reachability-metadata.json
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json
+metadata/org.eclipse.jetty/jetty-alpn-java-server/12.0.0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json
+metadata/org.springframework/spring-instrument/index.json
+metadata/com.itextpdf/layout/8.0.3/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-alpn-java-server/11.0.24/reachability-metadata.json
+metadata/com.itextpdf/layout/index.json
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-server/12.1.3/reachability-metadata.json
+metadata/io.github.oshai/kotlin-logging-jvm/8.0.01/reachability-metadata.json
+metadata/io.github.oshai/kotlin-logging-jvm/index.json
+metadata/org.eclipse.jetty/jetty-server/11.0.12/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-server/index.json
+metadata/org.eclipse.jetty/jetty-util-ajax/10.0.0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-server/12.0.1/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-util-ajax/9.4.38.v20210224/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json
+metadata/com.itextpdf/svg/8.0.3/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json
+metadata/com.itextpdf/svg/index.json
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json
+metadata/org.apache.yetus/audience-annotations/0.12.0/reachability-metadata.json
+metadata/org.apache.yetus/audience-annotations/index.json
+metadata/org.apache.yetus/audience-annotations/0.14.0/reachability-metadata.json
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-alpn-server/11.0.24/reachability-metadata.json
+metadata/com.itextpdf/io/8.0.3/reachability-metadata.json
+metadata/org.springframework/spring-instrument/5.3.31/reachability-metadata.json
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json
+metadata/com.itextpdf/io/index.json
+metadata/javax.transaction/transaction-api/1.1/reachability-metadata.json
+metadata/javax.transaction/transaction-api/index.json
+metadata/org.apache.directory.api/api-i18n/1.0.0/reachability-metadata.json
+metadata/org.apache.directory.api/api-i18n/2.0.0/reachability-metadata.json
+metadata/org.apache.directory.api/api-i18n/index.json
+metadata/org.yaml/snakeyaml/1.32/reachability-metadata.json
+metadata/org.yaml/snakeyaml/index.json
+metadata/javax.transaction/jta/1.1/reachability-metadata.json
+metadata/javax.transaction/jta/index.json
+metadata/org.awaitility/awaitility/4.2.1/reachability-metadata.json
+metadata/org.awaitility/awaitility/index.json
+metadata/org.awaitility/awaitility/4.2.0/reachability-metadata.json
+metadata/org.openjfx/javafx-base/11.0.2/reachability-metadata.json
+metadata/org.openjfx/javafx-base/index.json
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json
+metadata/org.mortbay.jetty/servlet-api/index.json
+metadata/jakarta.interceptor/jakarta.interceptor-api/2.0.0/reachability-metadata.json
+metadata/org.scalatest/scalatest-compatible/3.2.19/reachability-metadata.json
+metadata/jakarta.interceptor/jakarta.interceptor-api/1.2.3/reachability-metadata.json
+metadata/org.scalatest/scalatest-compatible/index.json
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json
+metadata/javax.validation/validation-api/2.0.0.Final/reachability-metadata.json
+metadata/com.github.ben-manes.caffeine/caffeine/2.9.3/reachability-metadata.json
+metadata/com.github.ben-manes.caffeine/caffeine/index.json
+metadata/javax.validation/validation-api/1.0.0.GA/reachability-metadata.json
+metadata/javax.validation/validation-api/index.json
+metadata/com.github.ben-manes.caffeine/caffeine/3.1.2/reachability-metadata.json
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/1.5.0/reachability-metadata.json
+metadata/org.scala-lang/scala3-interfaces/3.3.1/reachability-metadata.json
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json
+metadata/org.scala-lang/scala3-interfaces/index.json
+metadata/javax.validation/validation-api/1.1.0.Final/reachability-metadata.json
+metadata/com.thoughtworks.paranamer/paranamer/2.8.1/reachability-metadata.json
+metadata/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/reachability-metadata.json
+metadata/org.apache.tomcat.embed/tomcat-embed-el/index.json
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/2.15.2/reachability-metadata.json
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json
+metadata/com.thoughtworks.paranamer/paranamer/2.3/reachability-metadata.json
+metadata/com.thoughtworks.paranamer/paranamer/index.json
+metadata/org.apache.activemq/artemis-jms-client/2.29.0/reachability-metadata.json
+metadata/org.apache.activemq/artemis-jms-client/index.json
+metadata/org.apache.activemq/artemis-jms-client/2.28.0/reachability-metadata.json
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.18.1/reachability-metadata.json
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json
+metadata/org.apache.tomcat.embed/tomcat-embed-core/10.1.0/reachability-metadata.json
+metadata/org.apache.activemq/artemis-jms-client/2.32.0/reachability-metadata.json
+metadata/org.apache.activemq/artemis-jms-client/2.36.0/reachability-metadata.json
+metadata/log4j/log4j/1.2.17/reachability-metadata.json
+metadata/log4j/log4j/index.json
+metadata/org.apache.tomcat.embed/tomcat-embed-core/10.0.20/reachability-metadata.json
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json
+metadata/org.jline/jline-terminal-jna/3.20.0/reachability-metadata.json
+metadata/org.jline/jline-terminal-jna/index.json
+metadata/org.apache.activemq/activemq-openwire-legacy/5.18.1/reachability-metadata.json
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json
+metadata/org.apache.activemq/activemq-client/5.18.1/reachability-metadata.json
+metadata/dom4j/dom4j/1.6.1/reachability-metadata.json
+metadata/org.apache.activemq/activemq-client/6.0.0/reachability-metadata.json
+metadata/dom4j/dom4j/index.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' metadata/io.github.oshai/kotlin-logging-jvm/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.0.01",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-sources.jar",
+    "repository-url" : "https://github.com/oshai/kotlin-logging",
+    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/8.0.01/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-javadoc.jar",
+    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.1"
+    },
+    "tested-versions" : [
+      "8.0.01"
+    ],
+    "allowed-packages" : [
+      "io.github.oshai.kotlinlogging"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' metadata/org.scalatest/scalatest-compatible/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.2.19",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-sources.jar",
+    "repository-url" : "https://github.com/scalatest/scalatest",
+    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalatest-test/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-javadoc.jar",
+    "description" : "scalatest-compatible provides the org.scalatest.compatible.Assertion marker interface used by ScalaTest-compatible assertion types. It lets third-party libraries define assertion results that can appear as the final expression in ScalaTest test bodies while avoiding Scala binary compatibility concerns.",
+    "tested-versions" : [
+      "3.2.19",
+      "3.2.20",
+      "3.3.0-alpha.1",
+      "3.3.0-alpha.2",
+      "3.3.0-SNAP2",
+      "3.3.0-SNAP3",
+      "3.3.0-SNAP4"
+    ],
+    "allowed-packages" : [
+      "org.scalatest.compatible"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'documentation-url|source-code-url|test-code-url|repository-url|\"language\"' metadata build -g '*.json' | head -120" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+metadata/org.opengauss/opengauss-jdbc/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.0-og/opengauss-jdbc-3.1.0-og-sources.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:9:    "repository-url": "https://gitee.com/opengauss/openGauss-connector-jdbc",
+metadata/org.opengauss/opengauss-jdbc/index.json:10:    "test-code-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/pgjdbc/src/test",
+metadata/org.opengauss/opengauss-jdbc/index.json:11:    "documentation-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/docs",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/8.0.01/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/io.smallrye.common/smallrye-common-expression/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/2.2.0/smallrye-common-expression-2.2.0-sources.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.2.0/expression/src/test/java",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/2.2.0/smallrye-common-expression-2.2.0-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/2.5-20081211/servlet-api-2.5-20081211-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:6:    "repository-url" : "http://svn.codehaus.org/jetty/servlet-api",
+metadata/org.mortbay.jetty/servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/2.5-20081211/servlet-api-2.5-20081211-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/2.10.0/smallrye-common-cpu-2.10.0-sources.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.10.0/cpu/src/test/java/io/smallrye/common/cpu",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/2.10.0/smallrye-common-cpu-2.10.0-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:39:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/2.2.0/smallrye-common-cpu-2.2.0-sources.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:40:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:41:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:42:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/2.2.0/smallrye-common-cpu-2.2.0-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-os/2.2.0/smallrye-common-os-2.2.0-sources.jar",
+metadata/io.smallrye.common/smallrye-common-os/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-os/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.2.0/os/src/test/java",
+metadata/io.smallrye.common/smallrye-common-os/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-os/2.2.0/smallrye-common-os-2.2.0-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/2.0.0.Final/validation-api-2.0.0.Final-sources.jar",
+metadata/javax.validation/validation-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/validation",
+metadata/javax.validation/validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/2.0.0.Final/src/test",
+metadata/javax.validation/validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/2.0.0.Final/validation-api-2.0.0.Final-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.1.0.Final/validation-api-1.1.0.Final-sources.jar",
+metadata/javax.validation/validation-api/index.json:21:    "repository-url" : "https://github.com/jakartaee/validation",
+metadata/javax.validation/validation-api/index.json:22:    "test-code-url" : "https://github.com/jakartaee/validation/tree/1.1.0.Final/src/test",
+metadata/javax.validation/validation-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.1.0.Final/validation-api-1.1.0.Final-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-sources.jar",
+metadata/javax.validation/validation-api/index.json:35:    "repository-url" : "https://github.com/jakartaee/validation",
+metadata/javax.validation/validation-api/index.json:36:    "test-code-url" : "https://github.com/jakartaee/validation/tree/1.0.0.GA/src/test",
+metadata/javax.validation/validation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-javadoc.jar",
+metadata/org.hibernate.models/hibernate-models/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/hibernate/models/hibernate-models/1.0.0.CR3/hibernate-models-1.0.0.CR3-sources.jar",
+metadata/org.hibernate.models/hibernate-models/index.json:6:    "repository-url" : "https://github.com/hibernate/hibernate-models",
+metadata/org.hibernate.models/hibernate-models/index.json:7:    "test-code-url" : "https://github.com/hibernate/hibernate-models/tree/1.0.0.CR3/hibernate-models/src/test",
+metadata/org.hibernate.models/hibernate-models/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/hibernate/models/hibernate-models/1.0.0.CR3/hibernate-models-1.0.0.CR3-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-constraint/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-constraint/2.2.0/smallrye-common-constraint-2.2.0-sources.jar",
+metadata/io.smallrye.common/smallrye-common-constraint/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-constraint/index.json:7:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-constraint/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-constraint/2.2.0/smallrye-common-constraint-2.2.0-javadoc.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8-sources.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:7:    "repository-url": "https://github.com/rnorth/duct-tape",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:8:    "test-code-url": "https://github.com/rnorth/duct-tape/tree/1.0.8/src/test/java",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:9:    "documentation-url": "https://github.com/rnorth/duct-tape/blob/1.0.8/docs/index.md",
+metadata/io.smallrye.common/smallrye-common-ref/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-ref/2.2.0/smallrye-common-ref-2.2.0-sources.jar",
+metadata/io.smallrye.common/smallrye-common-ref/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-ref/index.json:7:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-ref/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-ref/2.2.0/smallrye-common-ref-2.2.0-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.15.2",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.15.2/src/test",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-javadoc.jar",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/2.0.0-M15/apacheds-i18n-2.0.0-M15-sources.jar",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/apacheds/tags/2.0.0-M15",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/2.0.0-M15/apacheds-i18n-2.0.0-M15-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-function/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-function/2.10.0/smallrye-common-function-2.10.0-sources.jar",
+metadata/io.smallrye.common/smallrye-common-function/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-function/index.json:7:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-function/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.smallrye.common/smallrye-common-function/2.10.0/",
+metadata/io.smallrye.common/smallrye-common-function/index.json:39:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-function/2.2.0/smallrye-common-function-2.2.0-sources.jar",
+metadata/io.smallrye.common/smallrye-common-function/index.json:40:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-function/index.json:41:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-function/index.json:42:    "documentation-url" : "https://javadoc.io/doc/io.smallrye.common/smallrye-common-function/2.2.0/",
+metadata/org.apiguardian/apiguardian-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:6:    "repository-url" : "https://github.com/apiguardian-team/apiguardian",
+metadata/org.apiguardian/apiguardian-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apiguardian/apiguardian-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-resource/2.14.0/smallrye-common-resource-2.14.0-sources.jar",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common/",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.14.0/resource/src/test",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-resource/2.14.0/smallrye-common-resource-2.14.0-javadoc.jar",
+metadata/com.github.package-url/packageurl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/1.5.0/packageurl-java-1.5.0-sources.jar",
+metadata/com.github.package-url/packageurl-java/index.json:6:    "repository-url" : "https://github.com/package-url/packageurl-java",
+metadata/com.github.package-url/packageurl-java/index.json:7:    "test-code-url" : "https://github.com/package-url/packageurl-java/tree/packageurl-java-1.5.0/src/test",
+metadata/com.github.package-url/packageurl-java/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/1.5.0/packageurl-java-1.5.0-javadoc.jar",
+metadata/org.slf4j/slf4j-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:5:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.slf4j/slf4j-api/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3-tests.jar",
+metadata/org.slf4j/slf4j-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.3/slf4j-site-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:20:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.slf4j/slf4j-api/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-tests.jar",
+metadata/org.slf4j/slf4j-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/com.google.guava/listenablefuture/index.json:6:    "source-code-url": "https://github.com/google/guava/tree/v27.0/futures/listenablefuture9999",
+metadata/com.google.guava/listenablefuture/index.json:7:    "repository-url": "https://github.com/google/guava",
+metadata/com.google.guava/listenablefuture/index.json:8:    "test-code-url": "N/A",
+metadata/com.google.guava/listenablefuture/index.json:9:    "documentation-url": "N/A",
+metadata/org.slf4j/slf4j-simple/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/1.8.0-alpha0/slf4j-simple-1.8.0-alpha0-sources.jar",
+metadata/org.slf4j/slf4j-simple/index.json:6:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.slf4j/slf4j-simple/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/541e6f7d181ff3405ae9495724430825aefff6a9/slf4j-simple/src/test/java",
+
+codex
+I have enough confidence for the metadata now: repository from the published POM, sources and Javadoc from Maven Central, no test suite for this exact version, and no Kotlin/Groovy/Scala language marker. I’m patching the discovered metadata JSON with those values.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+diff --git a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+index 1180b1a677da9b158b6214772bc0a60a7a65576c..14d3e8eb5bc41d4a1bff25b912a795c3d9a36dbc
+--- a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
++++ b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1"
++  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-javadoc.jar",
++  "description" : "DTD Parser provides a SAX-like Java API for parsing XML Document Type Definitions. It is part of the Eclipse JAXB implementation and helps tools inspect DTD declarations and structures without treating the DTD as ordinary XML content."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+index 1180b1a677da9b158b6214772bc0a60a7a65576c..14d3e8eb5bc41d4a1bff25b912a795c3d9a36dbc
+--- a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
++++ b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1"
++  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-javadoc.jar",
++  "description" : "DTD Parser provides a SAX-like Java API for parsing XML Document Type Definitions. It is part of the Eclipse JAXB implementation and helps tools inspect DTD declarations and structures without treating the DTD as ordinary XML content."
+ }
+
+codex
+The JSON is updated. I’m doing a quick validation pass now: parse the file and confirm the Maven URLs resolve.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+{
+  "coordinates": "com.sun.xml.dtd-parser:dtd-parser:1.5.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-sources.jar",
+  "repository-url": "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-javadoc.jar",
+  "description": "DTD Parser provides a SAX-like Java API for parsing XML Document Type Definitions. It is part of the Eclipse JAXB implementation and helps tools inspect DTD declarations and structures without treating the DTD as ordinary XML content."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-sources.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 01 May 2026 16:51:23 GMT
+content-type: application/java-archive
+content-length: 71707
+cf-ray: 9f504a68dd408628-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1218632
+etag: "c1b05987f94f7dee1ecb37009875801d"
+last-modified: Fri, 20 Oct 2023 04:41:03 GMT
+x-checksum-md5: c1b05987f94f7dee1ecb37009875801d
+x-checksum-sha1: dd8e0f3cc8195098fe44e353e5ec476ff9dcc02a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-javadoc.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 01 May 2026 16:51:23 GMT
+content-type: application/java-archive
+content-length: 479637
+cf-ray: 9f504a68e916c4a5-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 376134
+etag: "cfdd1200ddfffe81c023e86dd97640ac"
+last-modified: Fri, 20 Oct 2023 04:41:03 GMT
+x-checksum-md5: cfdd1200ddfffe81c023e86dd97640ac
+x-checksum-sha1: a31da348e367eb915ff812d403bac613a0593d81
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+diff --git a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+index 1180b1a677da9b158b6214772bc0a60a7a65576c..14d3e8eb5bc41d4a1bff25b912a795c3d9a36dbc
+--- a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
++++ b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1"
++  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-javadoc.jar",
++  "description" : "DTD Parser provides a SAX-like Java API for parsing XML Document Type Definitions. It is part of the Eclipse JAXB implementation and helps tools inspect DTD declarations and structures without treating the DTD as ordinary XML content."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'find /tmp/codex-jaxb-dtd-parser-1.5.1/dtd-parser/src/test -type f | wc -l' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+1
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/eclipse-ee4j/jaxb-dtd-parser' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+diff --git a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+index 1180b1a677da9b158b6214772bc0a60a7a65576c..14d3e8eb5bc41d4a1bff25b912a795c3d9a36dbc
+--- a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
++++ b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1"
++  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-javadoc.jar",
++  "description" : "DTD Parser provides a SAX-like Java API for parsing XML Document Type Definitions. It is part of the Eclipse JAXB implementation and helps tools inspect DTD declarations and structures without treating the DTD as ordinary XML content."
+ }
+
+ succeeded in 687ms:
+HTTP/2 200 
+date: Fri, 01 May 2026 16:51:29 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"6106fe9a8025514742266585e0ee8733"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=D%2BjDmXFVxJMpLOMGloZ4tbeECd84P7vqfO2YSfw2%2BaGRfBWVGl7GzrEkINqY1iErkX4FaBtr3d1RJ%2BaliPeEziUjJ%2Ba1Ky%2B828RcYLxSg2qm0RELeVyKudrDIa9GcIQ2tyldnB8TVPXEFZNTas%2FB9asGgb6gXA2%2FgOLFHiwbNeH9RuFT8SrCg%2B62bnqFqa%2Fhez7MJgjA81gFgjiLPwfFFz0%2Fvm3pqPTBUap831sPDmUBK4VxuyIYgv3qeb4JqK%2BvdukiajQjyQlThUOP8uCaRQ%3D%3D--ppFns406kAys97t8--X76ttBsij6VnZ%2BD7LaDN5A%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.330979936.1777654288; expires=Sat, 01 May 2027 16:51:28 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 01 May 2027 16:51:28 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5103:3C4DFD:6A5576:4C0357:69F4DA10
+
+
+codex
+One more check found a test file deeper under `src/test` than my initial depth-limited listing showed. I’m correcting the test URL to the version-tagged GitHub test tree instead of `N/A`.
+exec
+/usr/bin/bash -lc 'find /tmp/codex-jaxb-dtd-parser-1.5.1/dtd-parser/src/test -type f | sort' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+/tmp/codex-jaxb-dtd-parser-1.5.1/dtd-parser/src/test/java/com/sun/xml/dtdparser/AttributeUseTest.java
+
+diff --git a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+index 1180b1a677da9b158b6214772bc0a60a7a65576c..14d3e8eb5bc41d4a1bff25b912a795c3d9a36dbc
+--- a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
++++ b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1"
++  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-javadoc.jar",
++  "description" : "DTD Parser provides a SAX-like Java API for parsing XML Document Type Definitions. It is part of the Eclipse JAXB implementation and helps tools inspect DTD declarations and structures without treating the DTD as ordinary XML content."
+ }
+
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+diff --git a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+index 1180b1a677da9b158b6214772bc0a60a7a65576c..c00ecbd952b87c1a2da5b2f56272f217e4ede4cf
+--- a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
++++ b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1"
++  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/1.5.1/dtd-parser/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-javadoc.jar",
++  "description" : "DTD Parser provides a SAX-like Java API for parsing XML Document Type Definitions. It is part of the Eclipse JAXB implementation and helps tools inspect DTD declarations and structures without treating the DTD as ordinary XML content."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+index 1180b1a677da9b158b6214772bc0a60a7a65576c..c00ecbd952b87c1a2da5b2f56272f217e4ede4cf
+--- a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
++++ b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1"
++  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/1.5.1/dtd-parser/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-javadoc.jar",
++  "description" : "DTD Parser provides a SAX-like Java API for parsing XML Document Type Definitions. It is part of the Eclipse JAXB implementation and helps tools inspect DTD declarations and structures without treating the DTD as ordinary XML content."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+{
+  "coordinates": "com.sun.xml.dtd-parser:dtd-parser:1.5.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-sources.jar",
+  "repository-url": "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
+  "test-code-url": "https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/1.5.1/dtd-parser/src/test/java",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-javadoc.jar",
+  "description": "DTD Parser provides a SAX-like Java API for parsing XML Document Type Definitions. It is part of the Eclipse JAXB implementation and helps tools inspect DTD declarations and structures without treating the DTD as ordinary XML content."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/1.5.1/dtd-parser/src/test/java' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730
+ succeeded in 0ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+index 1180b1a677da9b158b6214772bc0a60a7a65576c..c00ecbd952b87c1a2da5b2f56272f217e4ede4cf
+--- a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
++++ b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1"
++  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/1.5.1/dtd-parser/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-javadoc.jar",
++  "description" : "DTD Parser provides a SAX-like Java API for parsing XML Document Type Definitions. It is part of the Eclipse JAXB implementation and helps tools inspect DTD declarations and structures without treating the DTD as ordinary XML content."
+ }
+
+ succeeded in 638ms:
+HTTP/2 200 
+date: Fri, 01 May 2026 16:51:42 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"ef39b65ce361251f08d3e79e8b46e512"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=L9ST8hVVqCD3MGa6u7o0UqwjoUoiFKrJDro%2Fhb%2BXJTLQKIvzQojS70cMtvUCsdA7U%2ByL2LxqNbdRNHaKDYcDpD9CWyDaHQk3d5KB%2B%2B%2B%2BSZ%2Fis5mHwb%2BChfnZVF1X3OqmLRAO85pMizFBE2dOyupbVpq4UpL6TRVAjzomWi1tYsK33Ei5yDGdeL3%2FzRp8DeskR23FcwI8R2iPWzrG0%2FZJCOMS165p67TsCVkA0m7hY90cJrxxaW%2FtlkWNdmCeR5GwMf2LNzZathTFbgEZ0yc1zQ%3D%3D--xfCrbU9Jo6rY7RFI--%2FWaWuJm7POikIDQnbTFEGA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1248847474.1777654301; expires=Sat, 01 May 2027 16:51:41 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 01 May 2027 16:51:41 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5120:2305FB:6E9B8D:4F9A18:69F4DA1D
+
+
+web search: 
+web search: https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/1.5.1/dtd-parser/src/test/java
+web search: 
+web search: repo.maven.apache.org maven2 com sun xml dtd-parser dtd-parser 1.5.1 dtd-parser-1.5.1-sources.jar
+web search: 
+web search: https://mvnrepository.com/artifact/com.sun.xml.dtd-parser/dtd-parser/1.5.1
+codex
+Updated [com.sun.xml.dtd-parser-dtd-parser-1.5.1.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json) with the Maven Central source/Javadoc artifacts, upstream repository, version-tagged test tree, and a two-sentence description. The artifact is a Java XML DTD parser, not a Kotlin/Groovy/Scala-specific library, so I left `language` absent. ([mvnrepository.com](https://mvnrepository.com/artifact/com.sun.xml.dtd-parser/dtd-parser/1.5.1))
+
+Validation: `jq .` passed, and the source, Javadoc, repository, and test URLs resolved successfully.
+diff --git a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+index 1180b1a677da9b158b6214772bc0a60a7a65576c..c00ecbd952b87c1a2da5b2f56272f217e4ede4cf
+--- a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
++++ b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1"
++  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/1.5.1/dtd-parser/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-javadoc.jar",
++  "description" : "DTD Parser provides a SAX-like Java API for parsing XML Document Type Definitions. It is part of the Eclipse JAXB implementation and helps tools inspect DTD declarations and structures without treating the DTD as ordinary XML content."
+ }
+
+tokens used
+62,944
+Updated [com.sun.xml.dtd-parser-dtd-parser-1.5.1.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json) with the Maven Central source/Javadoc artifacts, upstream repository, version-tagged test tree, and a two-sentence description. The artifact is a Java XML DTD parser, not a Kotlin/Groovy/Scala-specific library, so I left `language` absent. ([mvnrepository.com](https://mvnrepository.com/artifact/com.sun.xml.dtd-parser/dtd-parser/1.5.1))
+
+Validation: `jq .` passed, and the source, Javadoc, repository, and test URLs resolved successfully.
+Ran agent for com.sun.xml.dtd-parser:dtd-parser:1.5.1 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730/build/agent-artifact-discovery-logs/com.sun.xml.dtd-parser-dtd-parser-1.5.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-1799a730/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 49s
+9 actionable tasks: 4 executed, 5 from cache
