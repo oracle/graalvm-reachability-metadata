@@ -1,0 +1,1269 @@
+Starting a Gradle Daemon, 9 busy and 4 incompatible and 210 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de4f5-c9b6-7b12-9323-54b453d32e8d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.aesh:readline:2.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
+- Set "coordinates" to "org.aesh:readline:2.6".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven Central first, then cross-check the upstream tag so the version-specific URLs point at the right place before editing the JSON.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,160p' build/discovered-artifact-metadata/org.aesh-readline-2.6.json && rg -n 'org\\.aesh|aesh.*readline|readline' -S metadata tests build/discovered-artifact-metadata 2>/dev/null | head -100" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039
+{
+  "coordinates" : "org.aesh:readline:2.6"
+}
+build/discovered-artifact-metadata/org.aesh-readline-2.6.json:2:  "coordinates" : "org.aesh:readline:2.6"
+tests/src/org.jline/jline-console/3.22.0/src/test/java/org/graalvm/jline/JLineConsoleTests.java:246:        assertEquals("(alpha)", reader.readLine());
+tests/src/org.jline/jline-console/3.22.0/src/test/java/org/graalvm/jline/JLineConsoleTests.java:247:        assertEquals("(beta)", reader.readLine());
+tests/src/org.jline/jline-console/3.22.0/src/test/java/org/graalvm/jline/JLineConsoleTests.java:248:        assertEquals("\"quoted\"", reader.readLine());
+tests/src/org.jline/jline-console/3.22.0/src/test/java/org/graalvm/jline/JLineConsoleTests.java:249:        assertEquals("{block}", reader.readLine());
+tests/src/org.jline/jline-console/3.21.0/src/test/java/org/graalvm/jline/JLineConsoleTests.java:246:        assertEquals("(alpha)", reader.readLine());
+tests/src/org.jline/jline-console/3.21.0/src/test/java/org/graalvm/jline/JLineConsoleTests.java:247:        assertEquals("(beta)", reader.readLine());
+tests/src/org.jline/jline-console/3.21.0/src/test/java/org/graalvm/jline/JLineConsoleTests.java:248:        assertEquals("\"quoted\"", reader.readLine());
+tests/src/org.jline/jline-console/3.21.0/src/test/java/org/graalvm/jline/JLineConsoleTests.java:249:        assertEquals("{block}", reader.readLine());
+tests/src/org.jline/jline-console/3.28.0/src/test/java/org/graalvm/jline/JLineConsoleTests.java:246:        assertEquals("(alpha)", reader.readLine());
+tests/src/org.jline/jline-console/3.28.0/src/test/java/org/graalvm/jline/JLineConsoleTests.java:247:        assertEquals("(beta)", reader.readLine());
+tests/src/org.jline/jline-console/3.28.0/src/test/java/org/graalvm/jline/JLineConsoleTests.java:248:        assertEquals("\"quoted\"", reader.readLine());
+tests/src/org.jline/jline-console/3.28.0/src/test/java/org/graalvm/jline/JLineConsoleTests.java:249:        assertEquals("{block}", reader.readLine());
+tests/src/io.dropwizard.metrics/metrics-graphite/4.2.0/src/test/java/io_dropwizard_metrics/metrics_graphite/Metrics_graphiteTest.java:288:            return reader.readLine();
+tests/src/javax.activation/javax.activation-api/1.2.0/src/test/java/com/sun/activation/registries/MailcapFile.java:74:            while ((line = reader.readLine()) != null) {
+tests/src/org.jetbrains.kotlinx/kotlinx-io-core-jvm/0.8.2/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_io_core_jvm/Kotlinx_io_core_jvmTest.kt:34:import kotlinx.io.readLine
+tests/src/org.jetbrains.kotlinx/kotlinx-io-core-jvm/0.8.2/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_io_core_jvm/Kotlinx_io_core_jvmTest.kt:35:import kotlinx.io.readLineStrict
+tests/src/org.jetbrains.kotlinx/kotlinx-io-core-jvm/0.8.2/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_io_core_jvm/Kotlinx_io_core_jvmTest.kt:134:        assertEquals("alpha", lines.readLineStrict())
+tests/src/org.jetbrains.kotlinx/kotlinx-io-core-jvm/0.8.2/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_io_core_jvm/Kotlinx_io_core_jvmTest.kt:135:        assertEquals("beta", lines.readLine())
+tests/src/org.jetbrains.kotlinx/kotlinx-io-core-jvm/0.8.2/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_io_core_jvm/Kotlinx_io_core_jvmTest.kt:136:        assertEquals("gamma", lines.readLine())
+tests/src/org.jetbrains.kotlinx/kotlinx-io-core-jvm/0.8.2/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_io_core_jvm/Kotlinx_io_core_jvmTest.kt:141:        assertThrows(EOFException::class.java) { unterminated.readLineStrict() }
+tests/src/org.jetbrains.kotlinx/kotlinx-io-core-jvm/0.8.2/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_io_core_jvm/Kotlinx_io_core_jvmTest.kt:145:        assertEquals("last line without newline", finalLine.readLine())
+tests/src/org.apache.httpcomponents/httpclient/4.5.5/src/test/java/org_apache_httpcomponents/httpclient/CloseableHttpResponseProxyTest.java:76:            while ((line = reader.readLine()) != null && !line.isEmpty()) {
+tests/src/org.example/library/0.0.1/library-under-test/src/main/java/org/example/library/BranchingLibrary.java:168:            String line = reader.readLine();
+tests/src/org.example/library/0.0.1/library-under-test/src/main/java/org/example/library/BranchingLibrary.java:171:                line = reader.readLine();
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6.pom' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>readline-all</artifactId>
+    <groupId>org.aesh</groupId>
+    <version>2.6</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>readline</artifactId>
+  <name>Æsh Readline</name>
+  <description>Æsh (Another Extendable SHell) Readline API</description>
+  <developers>
+    <developer>
+      <name>Jean-Francois Denise</name>
+      <email>jdenise@redhat.com</email>
+      <organization>Red Hat</organization>
+      <organizationUrl>http://www.redhat.com</organizationUrl>
+    </developer>
+    <developer>
+      <name>Ståle Pedersen</name>
+      <email>spederse@redhat.com</email>
+      <organization>Red Hat</organization>
+      <organizationUrl>http://www.redhat.com</organizationUrl>
+    </developer>
+  </developers>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git:git://github.com/aeshell/aesh-readline.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/aeshell/aesh-readline.git</developerConnection>
+    <url>https://github.com/aeshell/aesh-readline/tree/master</url>
+  </scm>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          <trimStackTrace>false</trimStackTrace>
+          <includes>
+            <include>**/*TestCase.java</include>
+            <include>**/*Test.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <archive>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
+            <manifestEntries>
+              <Automatic-Module-Name>${javaModuleName}</Automatic-Module-Name>
+            </manifestEntries>
+            <index>true</index>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <excludes>
+                  <exclude>org.fusesource.jansi:jansi</exclude>
+                  <exclude>junit:junit</exclude>
+                </excludes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>validate</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <configLocation>${project.basedir}/../config/checkstyle/checkstyle.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failsOnError>true</failsOnError>
+              <excludes>**/module-info.java</excludes>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.fusesource.jansi</groupId>
+      <artifactId>jansi</artifactId>
+      <version>2.4.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.1</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>hamcrest-core</artifactId>
+          <groupId>org.hamcrest</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+  <properties>
+    <javaModuleName>org.aesh.readline</javaModuleName>
+  </properties>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/aesh/readline/2.6/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/aesh/readline/2.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/aesh/readline/2.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="readline-2.6-sources.jar" title="readline-2.6-sources.jar">readline-2.6-sources.jar</a>                          2024-06-25 19:58    198317      
+<a href="readline-2.6-sources.jar.md5" title="readline-2.6-sources.jar.md5">readline-2.6-sources.jar.md5</a>                      2024-06-25 19:58        32      
+<a href="readline-2.6-sources.jar.sha1" title="readline-2.6-sources.jar.sha1">readline-2.6-sources.jar.sha1</a>                     2024-06-25 19:58        40      
+<a href="readline-2.6-tests.jar" title="readline-2.6-tests.jar">readline-2.6-tests.jar</a>                            2024-06-25 19:58     85557      
+<a href="readline-2.6-tests.jar.md5" title="readline-2.6-tests.jar.md5">readline-2.6-tests.jar.md5</a>                        2024-06-25 19:58        32      
+<a href="readline-2.6-tests.jar.sha1" title="readline-2.6-tests.jar.sha1">readline-2.6-tests.jar.sha1</a>                       2024-06-25 19:58        40      
+<a href="readline-2.6.jar" title="readline-2.6.jar">readline-2.6.jar</a>                                  2024-06-25 19:58    332967      
+<a href="readline-2.6.jar.md5" title="readline-2.6.jar.md5">readline-2.6.jar.md5</a>                              2024-06-25 19:58        32      
+<a href="readline-2.6.jar.sha1" title="readline-2.6.jar.sha1">readline-2.6.jar.sha1</a>                             2024-06-25 19:58        40      
+<a href="readline-2.6.pom" title="readline-2.6.pom">readline-2.6.pom</a>                                  2024-06-25 19:58      4647      
+<a href="readline-2.6.pom.md5" title="readline-2.6.pom.md5">readline-2.6.pom.md5</a>                              2024-06-25 19:58        32      
+<a href="readline-2.6.pom.sha1" title="readline-2.6.pom.sha1">readline-2.6.pom.sha1</a>                             2024-06-25 19:58        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: org.aesh readline 2.6 Maven Central sources tests jar
+codex
+Maven Central has both `readline-2.6-sources.jar` and `readline-2.6-tests.jar`, so I’m using those for the source and test URLs per the preference in the request. I’m checking the upstream release tag now for repository/docs context and to avoid guessing from the POM’s `master` SCM URL.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/aesh/readline-all/2.6/readline-all-2.6.pom' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ~ JBoss, Home of Professional Open Source
+~ Copyright 2014 Red Hat Inc. and/or its affiliates and other contributors
+~ as indicated by the @authors tag. All rights reserved.
+~ See the copyright.txt in the distribution for a
+~ full listing of individual contributors.
+~
+~ Licensed under the Apache License, Version 2.0 (the "License");
+~ you may not use this file except in compliance with the License.
+~ You may obtain a copy of the License at
+~ http://www.apache.org/licenses/LICENSE-2.0
+~ Unless required by applicable law or agreed to in writing, software
+~ distributed under the License is distributed on an "AS IS" BASIS,
+~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~ See the License for the specific language governing permissions and
+~ limitations under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>19</version>
+        <relativePath />
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.aesh</groupId>
+    <artifactId>readline-all</artifactId>
+    <packaging>pom</packaging>
+    <version>2.6</version>
+    <name>Æsh Readline and terminal</name>
+    <description>Æsh (Another Extendable SHell) Readline and Terminal API</description>
+    <scm>
+        <connection>scm:git:git://github.com/aeshell/aesh-readline.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/aeshell/aesh-readline.git</developerConnection>
+        <url>https://github.com/aeshell/aesh-readline/tree/master</url>
+    </scm>
+
+    <modules>
+        <module>terminal-api</module>
+        <module>readline</module>
+        <module>terminal-ssh</module>
+        <module>terminal-telnet</module>
+        <module>terminal-http</module>
+    </modules>
+    
+    <!-- Licenses -->
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+  
+    <properties>
+      <version.org.slf4j>1.7.12</version.org.slf4j>
+      <netty.version>4.1.36.Final</netty.version>
+      <jackson.version>2.6.1</jackson.version>
+      <jansi.version>2.4.0</jansi.version>
+      <junit.version>4.12</junit.version>
+
+      <!-- maven-compiler-plugin -->
+      <maven.compiler.target>1.8</maven.compiler.target>
+      <maven.compiler.source>1.8</maven.compiler.source>
+    </properties>
+ 
+    <developers>
+        <developer>
+            <name>Jean-Francois Denise</name>
+            <email>jdenise@redhat.com</email>
+            <organization>Red Hat</organization>
+            <organizationUrl>http://www.redhat.com</organizationUrl>
+        </developer>
+        <developer>
+            <name>Ståle Pedersen</name>
+            <email>spederse@redhat.com</email>
+            <organization>Red Hat</organization>
+            <organizationUrl>http://www.redhat.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <build>
+      <pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <version>3.0.0-M2</version>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.0.0</version>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>3.0.0</version>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.2.0</version>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.8.0</version>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.0.0</version>
+          </plugin>
+        </plugins>
+     </pluginManagement>
+   </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/aeshell/aesh-readline.git | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-javadoc.jar; curl -fsSI https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-test-sources.jar; curl -fsSI https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-tests.jar; curl -fsSI https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-sources.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039
+ succeeded in 362ms:
+9ea4a081d968a877a245570c0d492a14ff3d5dc1	refs/tags/1.0
+776b0a35d5fb53ce3aca2f0a812dd2a801d8aed7	refs/tags/1.1
+eb7f88843c959037306f220d2eb1cdf76659f9f0	refs/tags/1.10
+fbc0f98111ae1d7ca53287fea89c369e028a54a3	refs/tags/1.11
+2f8c222120e32fd0e6a594d9fc41e8180f92ba85	refs/tags/1.12
+e1fed6fc57cab71703412a83f7865601961843ab	refs/tags/1.13
+45e5a5f26ed79aeb608e75a56336e19208c5a7ee	refs/tags/1.14
+750306656e959b30c12a07ea3ab5e6d9439cf02d	refs/tags/1.15
+14c54d05f34ec4600386691df13ab48c6591f6de	refs/tags/1.16
+3d7258f6490a422658ec85c8457514390c03232d	refs/tags/1.17
+250adebc87859cd6cfb7eab0e5c78e7cbfa59f23	refs/tags/1.2
+da2602e60ea92a239676cc29687208ffbabcbe66	refs/tags/1.3
+12bd1d49c864ae6e821042cbec3c624f822d9276	refs/tags/1.4
+ae6853c7514174f2a4e5dc300f15e59eb4e5a338	refs/tags/1.5
+68656e7f7eaeafd2e8dea04c21271a21e2ece9dc	refs/tags/1.6
+aeab3d96ed029aba04d11a6369459e4137e42e61	refs/tags/1.7
+85f0138d71cd4e92fe30ea4d198c1bfb0da98b5d	refs/tags/1.8
+40a91e8d7b0bc7b93308d731027860b463d2248a	refs/tags/1.9
+8a33724ff6e9901c64b2a015fcf24ab4a707be2b	refs/tags/2.0
+d79ed508c2b1903d18191801c00fcb767ed36859	refs/tags/2.1
+bb4b7559c3a987cb1a1d093aae358da38ffbf65f	refs/tags/2.2
+522895e0e905b26106f887e25b98534468006792	refs/tags/2.5
+d171b39f4eafe3afb5ac43359bb91d4472881d8c	refs/tags/2.5^{}
+f1eabd0d9d6969a96cddef8f3db6099762b0c3dc	refs/tags/2.6
+d89da56200c476df7e7a6d9cd2edc036ef251399	refs/tags/2.6^{}
+b7689e6d63ac4dd1a03ca778e2f92ceafb3772a8	refs/tags/2.7
+4593abaa23724cefa0a38d9affbe0c8e004fd85d	refs/tags/2.7^{}
+9db6e3d760ea54b2d4d82779fc54fb8f56b3d881	refs/tags/3.0
+fe2bf4a9c490f6f31682b7dee167da566cc3311e	refs/tags/3.0^{}
+27597079f7e6f309da8bea1f47012e8cb969da5a	refs/tags/3.1
+97d5678f980ea01db1b16183a19a6eabefba753f	refs/tags/3.1^{}
+c6d5643acf14130c31311537946f285baedd6f73	refs/tags/3.2
+7321b3f46aac9b6b3d3cc59f57da3ebeb9dd27ab	refs/tags/3.2^{}
+ddd17f3dd5212703e870b8130be0cc6a16c28899	refs/tags/3.3
+b656126b796890f1f1dd4d6b74771da6484c569f	refs/tags/3.3^{}
+2ae36612d8f6dcb45a5c3c60ce5664f91c22a1e1	refs/tags/3.4
+bcb8f43cdf8cda8a1c56073d5c3cc944bc8c60d0	refs/tags/3.4^{}
+d50f6d86769ceebfd17e9e8df999dc37bcdad22e	refs/tags/v3.6
+c8827a9845ca44fadcfa362c499ed23a7cbf7fa6	refs/tags/v3.6^{}
+
+ succeeded in 618ms:
+HTTP/2 404 
+date: Fri, 01 May 2026 19:13:44 GMT
+content-type: text/html
+cf-ray: 9f511aeaaeacbc62-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/aesh/readline/2.6/readline-2.6-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Fri, 01 May 2026 19:13:44 GMT
+content-type: text/html
+cf-ray: 9f511aec0cac4f9a-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/aesh/readline/2.6/readline-2.6-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Fri, 01 May 2026 19:13:44 GMT
+content-type: application/java-archive
+content-length: 85557
+cf-ray: 9f511aedbf93c4a5-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 223158
+etag: "e41ca54487ee6d3da6a78d7c72cf6f24"
+last-modified: Tue, 25 Jun 2024 19:58:22 GMT
+x-checksum-md5: e41ca54487ee6d3da6a78d7c72cf6f24
+x-checksum-sha1: 6cf99eac9cc4ac570a48ca1a685cf0a31b0aebc9
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Fri, 01 May 2026 19:13:44 GMT
+content-type: application/java-archive
+content-length: 198317
+cf-ray: 9f511aee4faf0219-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1832924
+etag: "b40b6484b7939d44861b83b059adb700"
+last-modified: Tue, 25 Jun 2024 19:58:20 GMT
+x-checksum-md5: b40b6484b7939d44861b83b059adb700
+x-checksum-sha1: 8abe0820530ebbda57ad02e6c20c42e15ca7d65a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: aesh readline documentation
+2026-05-01T19:13:52.979504Z ERROR codex_core::tools::router: error=exec_command failed for `/usr/bin/bash -lc 'git ls-tree -r --name-only 2.6'`: CreateProcess { message: "Rejected(\"Failed to create unified exec process: No such file or directory (os error 2)\")" }
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/aeshell/aesh-readline/git/trees/2.6?recursive=1 | sed -n '1,240p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/aeshell/aesh-readline/2.6/README.md | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039
+ succeeded in 194ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 298ms:
+{
+  "sha": "d89da56200c476df7e7a6d9cd2edc036ef251399",
+  "url": "https://api.github.com/repos/aeshell/aesh-readline/git/trees/d89da56200c476df7e7a6d9cd2edc036ef251399",
+  "tree": [
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eb3e2cbeb4ed33f89a8a40dd16cd28efe5322386",
+      "size": 292,
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/blobs/eb3e2cbeb4ed33f89a8a40dd16cd28efe5322386"
+    },
+    {
+      "path": ".travis.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "99cd40feb8a0f6700aeaa0de4ed7ae1e3f4621f8",
+      "size": 83,
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/blobs/99cd40feb8a0f6700aeaa0de4ed7ae1e3f4621f8"
+    },
+    {
+      "path": "LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+      "size": 11358,
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/blobs/d645695673349e3947e8e5ae42332d0ac3164cd7"
+    },
+    {
+      "path": "README.asciidoc",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "528f42dbedee6597b3917176ab85999a206536bf",
+      "size": 5749,
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/blobs/528f42dbedee6597b3917176ab85999a206536bf"
+    },
+    {
+      "path": "config",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f6f4ebe7abface98b79d8a8aff73e742cc4b5acb",
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/trees/f6f4ebe7abface98b79d8a8aff73e742cc4b5acb"
+    },
+    {
+      "path": "config/checkstyle",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0b3f743306b1fc12b68e2ab7a32bfe9cf63f7eb2",
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/trees/0b3f743306b1fc12b68e2ab7a32bfe9cf63f7eb2"
+    },
+    {
+      "path": "config/checkstyle/checkstyle.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d9185f8d60da9aa6e0769c92622e4e94d7aa14f",
+      "size": 2450,
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/blobs/1d9185f8d60da9aa6e0769c92622e4e94d7aa14f"
+    },
+    {
+      "path": "config/codestyles",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "fe019ccc9a69353b893426ce921e7ce2f45ea96d",
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/trees/fe019ccc9a69353b893426ce921e7ce2f45ea96d"
+    },
+    {
+      "path": "config/codestyles/aesh_eclipse.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "19089a8256e20035b78b65445529767dfe58ff97",
+      "size": 33716,
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/blobs/19089a8256e20035b78b65445529767dfe58ff97"
+    },
+    {
+      "path": "config/codestyles/aesh_intellij.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5021171cbe196f33b8c418f5a13313118c313cf8",
+      "size": 5282,
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/blobs/5021171cbe196f33b8c418f5a13313118c313cf8"
+    },
+    {
+      "path": "config/logging",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5f80b44cbf61fec4543eedf5e451e23ad655f6a0",
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/trees/5f80b44cbf61fec4543eedf5e451e23ad655f6a0"
+    },
+    {
+      "path": "config/logging/logging.properties",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "d423490e3a19f3688d6119e4f1ebbe47a0c5086c",
+      "size": 2488,
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/blobs/d423490e3a19f3688d6119e4f1ebbe47a0c5086c"
+    },
+    {
+      "path": "pom.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b38b2ea0e5f3d2ad2feeda808861e39ecfcd5e8d",
+      "size": 4498,
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/blobs/b38b2ea0e5f3d2ad2feeda808861e39ecfcd5e8d"
+    },
+    {
+      "path": "readline",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7e411c83ccc7ab539f0032c332e09b3371c05730",
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/trees/7e411c83ccc7ab539f0032c332e09b3371c05730"
+    },
+    {
+      "path": "readline/pom.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1123adcde480028da058a497b9b02b666889e569",
+      "size": 6597,
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/blobs/1123adcde480028da058a497b9b02b666889e569"
+    },
+    {
+      "path": "readline/src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c13becb140ec66e992456fbd003c07b11f5eca78",
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/trees/c13becb140ec66e992456fbd003c07b11f5eca78"
+    },
+    {
+      "path": "readline/src/main",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2657e631e387106a4877b912853d8ad7edbe493e",
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/trees/2657e631e387106a4877b912853d8ad7edbe493e"
+    },
+    {
+      "path": "readline/src/main/java",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6805b0ecee741d5ea348eafb8677b9635e63bb89",
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/trees/6805b0ecee741d5ea348eafb8677b9635e63bb89"
+    },
+    {
+      "path": "readline/src/main/java/org",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "54bb474f24adcc0c488f087b41ba5a25f350e6c8",
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/trees/54bb474f24adcc0c488f087b41ba5a25f350e6c8"
+    },
+    {
+      "path": "readline/src/main/java/org/aesh",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9ffe6c7f7440a3dcf07816e55d983911d0886763",
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/trees/9ffe6c7f7440a3dcf07816e55d983911d0886763"
+    },
+    {
+      "path": "readline/src/main/java/org/aesh/readline",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4e1fbfcc061452118005aefbd16269507856297d",
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/trees/4e1fbfcc061452118005aefbd16269507856297d"
+    },
+    {
+      "path": "readline/src/main/java/org/aesh/readline/AeshConsoleBuffer.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "283abe605393d46b5df5618a5ca2dd6034dd57e2",
+      "size": 6586,
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/blobs/283abe605393d46b5df5618a5ca2dd6034dd57e2"
+    },
+    {
+      "path": "readline/src/main/java/org/aesh/readline/Buffer.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "224a89230918843f294e4d8b553f691247b5b67c",
+      "size": 31903,
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/blobs/224a89230918843f294e4d8b553f691247b5b67c"
+    },
+    {
+      "path": "readline/src/main/java/org/aesh/readline/ConsoleBuffer.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5f7f0457719a24f76f3a05224f68db5947531985",
+      "size": 4721,
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/blobs/5f7f0457719a24f76f3a05224f68db5947531985"
+    },
+    {
+      "path": "readline/src/main/java/org/aesh/readline/InputProcessor.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "04d8233e231d89ab0d93b318e34d89730c20173b",
+      "size": 2168,
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/blobs/04d8233e231d89ab0d93b318e34d89730c20173b"
+    },
+    {
+      "path": "readline/src/main/java/org/aesh/readline/Prompt.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7de14f1f3575b422e9b5da6d281494e2740eeeee",
+      "size": 5387,
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/blobs/7de14f1f3575b422e9b5da6d281494e2740eeeee"
+    },
+    {
+      "path": "readline/src/main/java/org/aesh/readline/Readline.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "50ede5b47bd3e382efba713c9454c8ff01bb4d5e",
+      "size": 14524,
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/blobs/50ede5b47bd3e382efba713c9454c8ff01bb4d5e"
+    },
+    {
+      "path": "readline/src/main/java/org/aesh/readline/ReadlineBuilder.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "704eac2952ca26397f840f72cb4aacf1b714fd1f",
+      "size": 3261,
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/blobs/704eac2952ca26397f840f72cb4aacf1b714fd1f"
+    },
+    {
+      "path": "readline/src/main/java/org/aesh/readline/ReadlineFlag.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dcb7b87b8c62b6897c3307fb9abce3962c29f5bc",
+      "size": 873,
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/blobs/dcb7b87b8c62b6897c3307fb9abce3962c29f5bc"
+    },
+    {
+      "path": "readline/src/main/java/org/aesh/readline/action",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "14f976393e92ed7ec6d3a4d09e2d825542f2a4e2",
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/trees/14f976393e92ed7ec6d3a4d09e2d825542f2a4e2"
+    },
+    {
+      "path": "readline/src/main/java/org/aesh/readline/action/Action.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "256859f252bb5044eaef7f34fdcc58ac3a5ffc11",
+      "size": 1166,
+      "url": "https://api.github.com/repos/aeshell/aesh-readline/git/blobs/256859f252bb5044eaef7f34fdcc58ac3a5ffc11"
+    },
+
+codex
+There is no Maven javadoc jar for `org.aesh:readline:2.6`, so for documentation I’m using the upstream README pinned to the `2.6` tag. The library is plain Java rather than one of the Kotlin/Groovy/Scala language-specific cases, so I won’t add a `language` field.
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -name '*.json' | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039
+ succeeded in 0ms:
+{
+  "coordinates" : "org.aesh:readline:2.6"
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/aeshell/aesh-readline/2.6/README.asciidoc | sed -n '1,160p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-sources.jar -o /tmp/readline-2.6-sources.jar && jar tf /tmp/readline-2.6-sources.jar | sed -n '1,120p'; curl -fsSL https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-tests.jar -o /tmp/readline-2.6-tests.jar && jar tf /tmp/readline-2.6-tests.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039
+ succeeded in 175ms:
+== Æsh (Another Extendable SHell) Readline
+
+
+image:https://travis-ci.org/aeshell/aesh-readline.svg?branch=master["Build Status", link="https://travis-ci.org/aeshell/aesh-readline"]
+
+Æsh Readline is a library for handling console input with the goal to support most GNU Readline features. 
+
+For examples, have a look here: [Aesh Examples](https://github.com/aeshell/aesh-examples)
+
+Features:
+---------
+- *Line editing*
+- *History (search, persistence)*
+- *Completion*
+- *Masking*
+- *Undo and Redo*
+- *Paste buffer*
+- *Emacs and Vi editing mode*
+- *Supports POSIX OS's and Windows*
+- *Easy to configure* (history file & buffer size, edit mode, streams, possible to override terminal implementations, etc)
+- *Support standard out and standard error*
+- *Redirect*
+- *Alias*
+- *Pipeline*
+
+Scope:
+------
+The scope of Æsh Readline is to provide an easy to use Readline library. In the future Æsh will depend on Æsh Readline for terminal handling. Æsh will evolve further into Command handling and parsing.
+
+How to build:
+-------------
+- Æsh Readline uses Maven (https://maven.apache.org/) as its build tool.
+
+Æsh Developer List:
+-------------------
+https://groups.google.com/forum/#!forum/aesh-dev
+
+Examples
+-------------
+- We've added some small examples that can be used as a simple introduction and 
+  to also show what Æsh-Readline can do. After you have built the source, go to: examples/target/ and run:
+java -cp aesh-readline-examples-(version-number).jar examples.Example
+There are several example classes to choose from: examples.Example, examples.SimpleExample, examples.ShellExample and examples.Snake.
+
+
+To get going:
+-------------
+[source,java]
+----
+import org.aesh.readline.Readline;
+import org.aesh.readline.ReadlineBuilder;
+import org.aesh.tty.terminal.TerminalConnection;
+
+import java.io.IOException;
+
+
+public class SimpleExample {
+
+    public static void main(String... args) {
+        TerminalConnection connection = new TerminalConnection();
+        read(connection, ReadlineBuilder.builder().enableHistory(false).build(), "[aesh@rules]$ ");
+        connection.openBlocking();
+    }
+
+    private static void read(TerminalConnection connection, Readline readline, String prompt) {
+        readline.readline(connection, prompt, input -> {
+            if(input != null && input.equals("exit")) {
+                connection.write("we're exiting\n");
+                connection.close();
+            }
+            else {
+                connection.write("=====> "+input+"\n");
+                read(connection, readline, prompt);
+            }
+        });
+    }
+}
+----
+[source,java]
+
+Keys that are mapped by default in Æsh Readline
+--------------------------------------
+Note: C equals Control and M is Meta/Alt
+
+EMACS Mode
+----------
+* Move back one char : C-b or left arrow
+* Move forward one char : C-f or right arrow
+* Delete the character left of cursor : backspace
+* Delete the character on cursor : C-d
+* Undo : C-_ or C-x C-u
+* Move to the start of the line : C-a or home
+* Move to the end of the line : C-e or end
+* Move forward a word, where a word is composed of letters and digits : M-f
+* Move backward a word : M-b
+* Previous line : up arrow
+* Next line : down arrow
+* Clear the screen, reprinting the current line at the top : C-l
+* Delete next word to the right of cursor : M-d
+* Complete : tab
+* Kill the text from the current cursor position to the end of the line : C-k
+* Kill from the cursor to the end of the current word, or, if between words, to the end of the next word : M-d
+* Kill from the cursor to the previous whitespace : C-w
+* Yank the most recently killed text back into the buffer at the cursor : C-y
+* Search backward in the history for a particular string : C-r
+* Search forward in the history for a particular string : C-s
+* Switch to VI editing mode: M-C-j
+
+
+VI Mode
+-------
+In command mode: About every vi command is supported, here's a few:
+
+* Move back one char : h
+* Move forward one char : l
+* Delete the character left of cursor : X
+* Delete the character on cursor : x
+* Undo : u
+* Move to the start of the line : 0
+* Move to the end of the line : $
+* Move forward a word, where a word is composed of letters and digits : w
+* Move backward a word : b
+* Previous line : k
+* Next line : n
+* Clear the screen, reprinting the current line at the top : C-l
+* Delete next word to the right of cursor : dw 
+* Kill the text from the current cursor position to the end of the line : D and d$
+* Kill from the cursor to the end of the current word, or, if between words, to the end of the next word : db
+* Kill from the cursor to the previous whitespace : dB
+* Yank the most recently killed text back into the buffer at the cursor : p (after cursor), P (before cursor)
+* Add text into yank buffer : y + movement action
+* Enable change mode : c
+* Repeat previous action : .
+* \+++ (read a vi manual)
+
+In edit mode:
+
+* Search backward in the history for a particular string : C-r
+* Search forward in the history for a particular string : C-s
+* Delete the character left of cursor : backspace
+
+Supported runtime properties:
+-----------------------------
+* aesh.terminal : specify Terminal object
+* aesh.editmode : specify either VI or EMACS edit mode
+* aesh.readinputrc : specify if Æsh should read settings from inputrc
+* aesh.inputrc : specify the inputrc file (must exist)
+* aesh.historyfile : specify the history file (must exist)
+* aesh.historypersistent : specify if Æsh should persist history file on exit
+* aesh.historydisabled : specify if history should be disabled
+* aesh.historysize : specify the maximum size of the history file
+* aesh.logging : specify if logging should be enabled
+* aesh.logfile : specify the log file
+* aesh.disablecompletion : specify if completion should be disabled
+
+ succeeded in 249ms:
+META-INF/MANIFEST.MF
+META-INF/
+org/
+org/aesh/
+org/aesh/readline/
+org/aesh/readline/action/
+org/aesh/readline/action/mappings/
+org/aesh/readline/alias/
+org/aesh/readline/completion/
+org/aesh/readline/cursor/
+org/aesh/readline/editing/
+org/aesh/readline/history/
+org/aesh/readline/paste/
+org/aesh/readline/terminal/
+org/aesh/readline/terminal/formatting/
+org/aesh/readline/terminal/impl/
+org/aesh/readline/terminal/utils/
+org/aesh/readline/tty/
+org/aesh/readline/tty/terminal/
+org/aesh/readline/undo/
+org/aesh/readline/util/
+META-INF/maven/
+META-INF/maven/org.aesh/
+META-INF/maven/org.aesh/readline/
+org/aesh/readline/ReadlineFlag.java
+org/aesh/readline/action/mappings/CopyBackwardWord.java
+org/aesh/readline/action/mappings/EndOfLine.java
+org/aesh/readline/action/mappings/Undo.java
+org/aesh/readline/completion/CompletionHandler.java
+org/aesh/readline/cursor/CursorLocator.java
+org/aesh/readline/editing/EditMode.java
+org/aesh/readline/terminal/formatting/CharacterType.java
+org/aesh/readline/terminal/impl/Pty.java
+org/aesh/readline/util/ShortHelper.java
+org/aesh/readline/Buffer.java
+org/aesh/readline/action/mappings/DeleteForwardWord.java
+org/aesh/readline/action/mappings/MoveForwardBigWord.java
+org/aesh/readline/alias/AliasCompletion.java
+org/aesh/readline/editing/InputrcParser.java
+org/aesh/readline/terminal/formatting/TerminalTextStyle.java
+org/aesh/readline/terminal/impl/AbstractWindowsTerminal.java
+org/aesh/readline/terminal/impl/NativeSignalHandler.java
+org/aesh/readline/util/IntArrayBuilder.java
+org/aesh/readline/ReadlineBuilder.java
+org/aesh/readline/action/mappings/BeginningOfLine.java
+org/aesh/readline/action/mappings/Enter.java
+org/aesh/readline/action/mappings/UpCaseChar.java
+org/aesh/readline/action/mappings/ViEditingMode.java
+org/aesh/readline/paste/PasteManager.java
+org/aesh/readline/terminal/impl/LineDisciplineTerminal.java
+org/aesh/readline/action/Action.java
+org/aesh/readline/action/mappings/CapitalizeForwardWord.java
+org/aesh/readline/action/mappings/ForwardBigWord.java
+org/aesh/readline/action/mappings/ForwardSearchHistory.java
+org/aesh/readline/action/mappings/Yank.java
+org/aesh/readline/terminal/impl/CygwinPty.java
+org/aesh/readline/terminal/impl/PosixSysTerminal.java
+org/aesh/readline/util/Parser.java
+org/aesh/readline/InputProcessor.java
+org/aesh/readline/action/mappings/ChangeCaseChar.java
+org/aesh/readline/action/mappings/ChangeForwardBigWord.java
+org/aesh/readline/action/mappings/DeletePrevChar.java
+org/aesh/readline/action/mappings/DownCaseForwardWord.java
+org/aesh/readline/action/mappings/NoAction.java
+org/aesh/readline/completion/CompleteOperation.java
+org/aesh/readline/completion/Completion.java
+org/aesh/readline/history/History.java
+org/aesh/readline/terminal/impl/AbstractPosixTerminal.java
+META-INF/maven/org.aesh/readline/pom.properties
+org/aesh/readline/Prompt.java
+org/aesh/readline/action/mappings/ChangeAction.java
+org/aesh/readline/action/mappings/ForwardChar.java
+org/aesh/readline/completion/SimpleCompletionHandler.java
+org/aesh/readline/history/SearchDirection.java
+org/aesh/readline/terminal/TerminalBuilder.java
+org/aesh/readline/ConsoleBuffer.java
+org/aesh/readline/action/mappings/ChangeBackwardBigWord.java
+org/aesh/readline/action/mappings/DeleteChar.java
+org/aesh/readline/action/mappings/Interrupt.java
+org/aesh/readline/action/mappings/SearchHistory.java
+org/aesh/readline/editing/Emacs.java
+org/aesh/readline/terminal/formatting/TerminalCharacter.java
+org/aesh/readline/terminal/impl/WinSysTerminal.java
+META-INF/INDEX.LIST
+org/aesh/readline/Readline.java
+org/aesh/readline/action/mappings/ChangeBackwardWord.java
+org/aesh/readline/action/mappings/DeleteEndOfLine.java
+org/aesh/readline/action/mappings/MoveBackwardBigWord.java
+org/aesh/readline/action/SearchAction.java
+org/aesh/readline/undo/UndoAction.java
+org/aesh/readline/AeshConsoleBuffer.java
+org/aesh/readline/action/mappings/ChangeEndOfLine.java
+org/aesh/readline/action/mappings/DeleteLine.java
+org/aesh/readline/action/mappings/MoveForwardWord.java
+org/aesh/readline/alias/AliasConflictException.java
+org/aesh/readline/editing/Variable.java
+org/aesh/readline/terminal/formatting/TerminalColor.java
+org/aesh/readline/terminal/utils/LinePipedInputStream.java
+org/aesh/readline/terminal/utils/Signals.java
+org/aesh/readline/action/ActionDecoder.java
+org/aesh/readline/action/mappings/ChangeForwardWord.java
+org/aesh/readline/action/mappings/DeleteStartOfLine.java
+org/aesh/readline/action/mappings/NextHistory.java
+org/aesh/readline/alias/AliasPreProcessor.java
+org/aesh/readline/editing/VariableValues.java
+org/aesh/readline/terminal/formatting/TerminalString.java
+org/aesh/readline/terminal/utils/ShutdownHooks.java
+org/aesh/readline/action/ActionEvent.java
+org/aesh/readline/action/mappings/Clear.java
+org/aesh/readline/action/mappings/MovementAction.java
+org/aesh/readline/alias/AliasManager.java
+org/aesh/readline/editing/Vi.java
+org/aesh/readline/terminal/impl/ExternalTerminal.java
+org/aesh/readline/undo/UndoManager.java
+org/aesh/readline/action/KeyAction.java
+org/aesh/readline/action/mappings/Complete.java
+org/aesh/readline/action/mappings/EmacsEditingMode.java
+org/aesh/readline/action/mappings/PrevHistory.java
+org/aesh/readline/completion/CompleteOperationImpl.java
+org/aesh/readline/history/InMemoryHistory.java
+META-INF/MANIFEST.MF
+META-INF/
+org/
+org/aesh/
+org/aesh/readline/
+org/aesh/readline/util/
+org/aesh/readline/terminal/
+org/aesh/readline/terminal/formatting/
+org/aesh/readline/terminal/impl/
+org/aesh/readline/terminal/utils/
+org/aesh/readline/history/
+org/aesh/readline/alias/
+org/aesh/readline/tty/
+org/aesh/readline/tty/terminal/
+org/aesh/readline/editing/
+org/aesh/readline/completion/
+org/aesh/readline/example/
+org/aesh/parser/
+META-INF/maven/
+META-INF/maven/org.aesh/
+META-INF/maven/org.aesh/readline/
+org/aesh/readline/util/WcWidthTest.class
+org/aesh/readline/terminal/SignalTest.class
+org/aesh/readline/editing/KeyMapperTest.class
+META-INF/maven/org.aesh/readline/pom.xml
+org/aesh/readline/util/IntArrayBuilderTest.class
+org/aesh/readline/history/HistoryTest.class
+org/aesh/readline/editing/InputrcParserTest.class
+org/aesh/readline/BufferTest.class
+META-INF/maven/org.aesh/readline/pom.properties
+inputrc1
+org/aesh/readline/alias/AliasManagerTest.class
+org/aesh/readline/example/SimpleTestExample.class
+org/aesh/readline/PasteReadlineTest.class
+ttytype_hpux.txt
+org/aesh/readline/ThreadSafetyTest.class
+org/aesh/readline/util/ShortHelperTest.class
+org/aesh/readline/tty/terminal/TestTerminalConnection.class
+org/aesh/readline/ConsoleBufferTest$SimpleConnection.class
+org/aesh/readline/terminal/formatting/TerminalStringTest.class
+org/aesh/readline/PromptTest.class
+inputrc2
+org/aesh/readline/tty/terminal/TestConnection.class
+org/aesh/readline/TestReadline.class
+org/aesh/readline/MaskingReadlineTest.class
+alias1
+org/aesh/readline/alias/ReadlineAliasTest.class
+org/aesh/readline/completion/CompleteOperationTest.class
+org/aesh/readline/ConsoleBufferTest.class
+input_stream.txt
+org/aesh/readline/EOFTest.class
+org/aesh/readline/terminal/formatting/TerminalTextStyleTest.class
+org/aesh/readline/CursorLocatorTest.class
+org/aesh/readline/terminal/formatting/TerminalColorTest.class
+org/aesh/readline/ParsingReadlineTest.class
+org/aesh/readline/terminal/formatting/TerminalCharacterTest.class
+org/aesh/readline/editing/EmacsModeTest.class
+org/aesh/readline/ThreadSafetyTest$1.class
+org/aesh/readline/terminal/impl/ExecPtyTest.class
+org/aesh/readline/editing/ViModeTest.class
+org/aesh/readline/TestTerminal.class
+org/aesh/readline/ReadlineTest.class
+org/aesh/readline/terminal/utils/LinePipedInputStreamTest.class
+org/aesh/parser/ParserTest.class
+META-INF/INDEX.LIST
+org/aesh/readline/terminal/DeviceTest.class
+org/aesh/readline/CompletionReadlineTest.class
+org/aesh/readline/terminal/KeyTest.class
+
+web search: 
+web search: https://github.com/aeshell/aesh-readline/tree/2.6
+web search: 
+web search: repo1.maven.org maven2 org aesh readline 2.6 readline-2.6-sources.jar readline-2.6-tests.jar
+codex
+I’m updating the metadata file now with the Maven source/test artifacts, the GitHub repository, and the tag-pinned README documentation URL.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
+diff --git a/build/discovered-artifact-metadata/org.aesh-readline-2.6.json b/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
+index eb5204a5b43e845dccf607677b71e889cd2a059d..f272bd7039653088e8b8b1ff1a98349463107404
+--- a/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
++++ b/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.aesh:readline:2.6"
++  "coordinates" : "org.aesh:readline:2.6",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-sources.jar",
++  "repository-url" : "https://github.com/aeshell/aesh-readline",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-tests.jar",
++  "documentation-url" : "https://github.com/aeshell/aesh-readline/blob/2.6/README.asciidoc",
++  "description" : "Aesh Readline provides a Java readline API for building interactive command-line input with editable buffers, prompts, history, completion, and key handling. It is part of the Aesh shell tooling and pairs with Aesh terminal modules to support console applications across terminal environments."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.aesh-readline-2.6.json b/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
+index eb5204a5b43e845dccf607677b71e889cd2a059d..f272bd7039653088e8b8b1ff1a98349463107404
+--- a/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
++++ b/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.aesh:readline:2.6"
++  "coordinates" : "org.aesh:readline:2.6",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-sources.jar",
++  "repository-url" : "https://github.com/aeshell/aesh-readline",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-tests.jar",
++  "documentation-url" : "https://github.com/aeshell/aesh-readline/blob/2.6/README.asciidoc",
++  "description" : "Aesh Readline provides a Java readline API for building interactive command-line input with editable buffers, prompts, history, completion, and key handling. It is part of the Aesh shell tooling and pairs with Aesh terminal modules to support console applications across terminal environments."
+ }
+
+web search: 
+web search: https://github.com/aeshell/aesh-readline/tree/2.6
+exec
+/usr/bin/bash -lc 'jq -e . build/discovered-artifact-metadata/org.aesh-readline-2.6.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039
+ succeeded in 0ms:
+{
+  "coordinates": "org.aesh:readline:2.6",
+  "source-code-url": "https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-sources.jar",
+  "repository-url": "https://github.com/aeshell/aesh-readline",
+  "test-code-url": "https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-tests.jar",
+  "documentation-url": "https://github.com/aeshell/aesh-readline/blob/2.6/README.asciidoc",
+  "description": "Aesh Readline provides a Java readline API for building interactive command-line input with editable buffers, prompts, history, completion, and key handling. It is part of the Aesh shell tooling and pairs with Aesh terminal modules to support console applications across terminal environments."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.aesh-readline-2.6.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.aesh-readline-2.6.json b/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
+index eb5204a5b43e845dccf607677b71e889cd2a059d..f272bd7039653088e8b8b1ff1a98349463107404
+--- a/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
++++ b/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.aesh:readline:2.6"
++  "coordinates" : "org.aesh:readline:2.6",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-sources.jar",
++  "repository-url" : "https://github.com/aeshell/aesh-readline",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-tests.jar",
++  "documentation-url" : "https://github.com/aeshell/aesh-readline/blob/2.6/README.asciidoc",
++  "description" : "Aesh Readline provides a Java readline API for building interactive command-line input with editable buffers, prompts, history, completion, and key handling. It is part of the Aesh shell tooling and pairs with Aesh terminal modules to support console applications across terminal environments."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.aesh-readline-2.6.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039
+diff --git a/build/discovered-artifact-metadata/org.aesh-readline-2.6.json b/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
+index eb5204a5b43e845dccf607677b71e889cd2a059d..f272bd7039653088e8b8b1ff1a98349463107404
+--- a/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
++++ b/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.aesh:readline:2.6"
++  "coordinates" : "org.aesh:readline:2.6",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-sources.jar",
++  "repository-url" : "https://github.com/aeshell/aesh-readline",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-tests.jar",
++  "documentation-url" : "https://github.com/aeshell/aesh-readline/blob/2.6/README.asciidoc",
++  "description" : "Aesh Readline provides a Java readline API for building interactive command-line input with editable buffers, prompts, history, completion, and key handling. It is part of the Aesh shell tooling and pairs with Aesh terminal modules to support console applications across terminal environments."
+ }
+
+ succeeded in 157ms:
+exec
+/usr/bin/bash -lc 'git ls-files --error-unmatch build/discovered-artifact-metadata/org.aesh-readline-2.6.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039
+ exited 1 in 0ms:
+error: pathspec 'build/discovered-artifact-metadata/org.aesh-readline-2.6.json' did not match any file(s) known to git
+Did you forget to 'git add'?
+
+diff --git a/build/discovered-artifact-metadata/org.aesh-readline-2.6.json b/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
+index eb5204a5b43e845dccf607677b71e889cd2a059d..f272bd7039653088e8b8b1ff1a98349463107404
+--- a/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
++++ b/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.aesh:readline:2.6"
++  "coordinates" : "org.aesh:readline:2.6",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-sources.jar",
++  "repository-url" : "https://github.com/aeshell/aesh-readline",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-tests.jar",
++  "documentation-url" : "https://github.com/aeshell/aesh-readline/blob/2.6/README.asciidoc",
++  "description" : "Aesh Readline provides a Java readline API for building interactive command-line input with editable buffers, prompts, history, completion, and key handling. It is part of the Aesh shell tooling and pairs with Aesh terminal modules to support console applications across terminal environments."
+ }
+
+web search: 
+web search: org.aesh readline 2.6 Maven Central
+web search: 
+web search: https://mvnrepository.com/artifact/org.aesh/readline
+web search: 
+web search: 'README.asciidoc' in https://github.com/aeshell/aesh-readline/tree/2.6
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/org/aesh/readline/2.6/
+codex
+Updated [org.aesh-readline-2.6.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039/build/discovered-artifact-metadata/org.aesh-readline-2.6.json) with the discovered URLs and two-sentence description.
+
+No `language` field was added because this is not a Kotlin, Groovy, or Scala-specific library. I also validated the JSON with `jq -e .`.
+diff --git a/build/discovered-artifact-metadata/org.aesh-readline-2.6.json b/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
+index eb5204a5b43e845dccf607677b71e889cd2a059d..f272bd7039653088e8b8b1ff1a98349463107404
+--- a/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
++++ b/build/discovered-artifact-metadata/org.aesh-readline-2.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.aesh:readline:2.6"
++  "coordinates" : "org.aesh:readline:2.6",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-sources.jar",
++  "repository-url" : "https://github.com/aeshell/aesh-readline",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/aesh/readline/2.6/readline-2.6-tests.jar",
++  "documentation-url" : "https://github.com/aeshell/aesh-readline/blob/2.6/README.asciidoc",
++  "description" : "Aesh Readline provides a Java readline API for building interactive command-line input with editable buffers, prompts, history, completion, and key handling. It is part of the Aesh shell tooling and pairs with Aesh terminal modules to support console applications across terminal environments."
+ }
+
+tokens used
+80,616
+Updated [org.aesh-readline-2.6.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039/build/discovered-artifact-metadata/org.aesh-readline-2.6.json) with the discovered URLs and two-sentence description.
+
+No `language` field was added because this is not a Kotlin, Groovy, or Scala-specific library. I also validated the JSON with `jq -e .`.
+Ran agent for org.aesh:readline:2.6 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039/build/agent-artifact-discovery-logs/org.aesh-readline-2.6.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3751-44599039/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 37s
+9 actionable tasks: 4 executed, 5 from cache
