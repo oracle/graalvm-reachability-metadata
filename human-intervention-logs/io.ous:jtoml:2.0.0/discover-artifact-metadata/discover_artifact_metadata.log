@@ -1,0 +1,3243 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de4e0-e511-7df2-aa59-3e16faf46605
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.ous:jtoml:2.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+- Set "coordinates" to "io.ous:jtoml:2.0.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven Central first, then fall back to the tagged upstream repository for tests and docs if Maven does not publish those artifacts.
+web search: 
+web search: io.ous jtoml 2.0.0 Maven Central
+web search: 
+web search: https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/
+web search: 
+web search: 
+web search: 
+web search: "jtoml" "github.com" "io.ous"
+web search: 
+web search: https://github.com/asafh/jtoml
+web search: 
+web search: https://github.com/asafh/jtoml/tags
+codex
+Maven Central confirms `2.0.0` publishes source and javadoc jars, so those are better exact-version URLs than GitHub for source and API docs. I’m checking whether an exact `2.0.0` test artifact or upstream tag exists before deciding whether `test-code-url` is reliable.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,160p' build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db
+{
+  "coordinates" : "io.ous:jtoml:2.0.0"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.ous</groupId>
+  <artifactId>jtoml</artifactId>
+  <version>2.0.0</version>
+  <packaging>jar</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Java Parser for TOML</description>
+  <url>https://github.com/asafh/jtoml</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>scm:git:git@github.com:asafh/jtoml.git</url>
+        <connection>scm:git:git@github.com:asafh/jtoml.git</connection>
+        <developerConnection>scm:git:git@github.com:asafh/jtoml.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <name>Asaf Haddad</name>
+            <email>hello@ous.im</email>
+            <organization>ous.im</organization>
+            <organizationUrl>http://www.ous.im</organizationUrl>
+        </developer>
+    </developers>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+      <version>1.9.13</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/asafh/jtoml/git/matching-refs/tags' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db
+ succeeded in 238ms:
+[
+  {
+    "ref": "refs/tags/1.0.0",
+    "node_id": "MDM6UmVmODUwNjYwMjpyZWZzL3RhZ3MvMS4wLjA=",
+    "url": "https://api.github.com/repos/asafh/jtoml/git/refs/tags/1.0.0",
+    "object": {
+      "sha": "55ff7c7380417b68c7ab9d1dcd695df6f1dec048",
+      "type": "tag",
+      "url": "https://api.github.com/repos/asafh/jtoml/git/tags/55ff7c7380417b68c7ab9d1dcd695df6f1dec048"
+    }
+  },
+  {
+    "ref": "refs/tags/jtoml-1.0.0",
+    "node_id": "MDM6UmVmODUwNjYwMjpyZWZzL3RhZ3MvanRvbWwtMS4wLjA=",
+    "url": "https://api.github.com/repos/asafh/jtoml/git/refs/tags/jtoml-1.0.0",
+    "object": {
+      "sha": "b1916e6730ea5a5e664cde12bf3fd159333c65a2",
+      "type": "tag",
+      "url": "https://api.github.com/repos/asafh/jtoml/git/tags/b1916e6730ea5a5e664cde12bf3fd159333c65a2"
+    }
+  },
+  {
+    "ref": "refs/tags/jtoml-1.0.1",
+    "node_id": "MDM6UmVmODUwNjYwMjpyZWZzL3RhZ3MvanRvbWwtMS4wLjE=",
+    "url": "https://api.github.com/repos/asafh/jtoml/git/refs/tags/jtoml-1.0.1",
+    "object": {
+      "sha": "03701dc4f8fb2a001b3a6c3fd0c455993c7b54f4",
+      "type": "tag",
+      "url": "https://api.github.com/repos/asafh/jtoml/git/tags/03701dc4f8fb2a001b3a6c3fd0c455993c7b54f4"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-sources.jar -o /tmp/jtoml-2.0.0-sources.jar && jar tf /tmp/jtoml-2.0.0-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/asafh/jtoml/commits?per_page=100' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db
+ succeeded in 136ms:
+META-INF/
+META-INF/MANIFEST.MF
+io/
+io/ous/
+io/ous/jtoml/
+io/ous/jtoml/impl/
+io/ous/jtoml/impl/ObjectDeserializer.java
+io/ous/jtoml/impl/Parser.java
+io/ous/jtoml/impl/StringCharacterIterator.java
+io/ous/jtoml/impl/SymbolToken.java
+io/ous/jtoml/impl/Token.java
+io/ous/jtoml/impl/Tokenizer.java
+io/ous/jtoml/impl/ValuedToken.java
+io/ous/jtoml/JToml.java
+io/ous/jtoml/ParseException.java
+io/ous/jtoml/Toml.java
+io/ous/jtoml/TomlTable.java
+
+ succeeded in 191ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/ous/jtoml/2.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/ous/jtoml/2.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jtoml-2.0.0-javadoc.jar" title="jtoml-2.0.0-javadoc.jar">jtoml-2.0.0-javadoc.jar</a>                           2017-01-14 15:05     91364      
+<a href="jtoml-2.0.0-javadoc.jar.asc" title="jtoml-2.0.0-javadoc.jar.asc">jtoml-2.0.0-javadoc.jar.asc</a>                       2017-01-14 15:05       499      
+<a href="jtoml-2.0.0-javadoc.jar.asc.md5" title="jtoml-2.0.0-javadoc.jar.asc.md5">jtoml-2.0.0-javadoc.jar.asc.md5</a>                   2017-01-14 15:05        32      
+<a href="jtoml-2.0.0-javadoc.jar.asc.sha1" title="jtoml-2.0.0-javadoc.jar.asc.sha1">jtoml-2.0.0-javadoc.jar.asc.sha1</a>                  2017-01-14 15:05        40      
+<a href="jtoml-2.0.0-javadoc.jar.md5" title="jtoml-2.0.0-javadoc.jar.md5">jtoml-2.0.0-javadoc.jar.md5</a>                       2017-01-14 15:05        32      
+<a href="jtoml-2.0.0-javadoc.jar.sha1" title="jtoml-2.0.0-javadoc.jar.sha1">jtoml-2.0.0-javadoc.jar.sha1</a>                      2017-01-14 15:05        40      
+<a href="jtoml-2.0.0-sources.jar" title="jtoml-2.0.0-sources.jar">jtoml-2.0.0-sources.jar</a>                           2017-01-14 15:05     13382      
+<a href="jtoml-2.0.0-sources.jar.asc" title="jtoml-2.0.0-sources.jar.asc">jtoml-2.0.0-sources.jar.asc</a>                       2017-01-14 15:05       499      
+<a href="jtoml-2.0.0-sources.jar.asc.md5" title="jtoml-2.0.0-sources.jar.asc.md5">jtoml-2.0.0-sources.jar.asc.md5</a>                   2017-01-14 15:05        32      
+<a href="jtoml-2.0.0-sources.jar.asc.sha1" title="jtoml-2.0.0-sources.jar.asc.sha1">jtoml-2.0.0-sources.jar.asc.sha1</a>                  2017-01-14 15:05        40      
+<a href="jtoml-2.0.0-sources.jar.md5" title="jtoml-2.0.0-sources.jar.md5">jtoml-2.0.0-sources.jar.md5</a>                       2017-01-14 15:05        32      
+<a href="jtoml-2.0.0-sources.jar.sha1" title="jtoml-2.0.0-sources.jar.sha1">jtoml-2.0.0-sources.jar.sha1</a>                      2017-01-14 15:05        40      
+<a href="jtoml-2.0.0.jar" title="jtoml-2.0.0.jar">jtoml-2.0.0.jar</a>                                   2017-01-14 15:05     24744      
+<a href="jtoml-2.0.0.jar.asc" title="jtoml-2.0.0.jar.asc">jtoml-2.0.0.jar.asc</a>                               2017-01-14 15:05       499      
+<a href="jtoml-2.0.0.jar.asc.md5" title="jtoml-2.0.0.jar.asc.md5">jtoml-2.0.0.jar.asc.md5</a>                           2017-01-14 15:05        32      
+<a href="jtoml-2.0.0.jar.asc.sha1" title="jtoml-2.0.0.jar.asc.sha1">jtoml-2.0.0.jar.asc.sha1</a>                          2017-01-14 15:05        40      
+<a href="jtoml-2.0.0.jar.md5" title="jtoml-2.0.0.jar.md5">jtoml-2.0.0.jar.md5</a>                               2017-01-14 15:05        32      
+<a href="jtoml-2.0.0.jar.sha1" title="jtoml-2.0.0.jar.sha1">jtoml-2.0.0.jar.sha1</a>                              2017-01-14 15:05        40      
+<a href="jtoml-2.0.0.pom" title="jtoml-2.0.0.pom">jtoml-2.0.0.pom</a>                                   2017-01-14 15:05      3957      
+<a href="jtoml-2.0.0.pom.asc" title="jtoml-2.0.0.pom.asc">jtoml-2.0.0.pom.asc</a>                               2017-01-14 15:05       499      
+<a href="jtoml-2.0.0.pom.asc.md5" title="jtoml-2.0.0.pom.asc.md5">jtoml-2.0.0.pom.asc.md5</a>                           2017-01-14 15:05        32      
+<a href="jtoml-2.0.0.pom.asc.sha1" title="jtoml-2.0.0.pom.asc.sha1">jtoml-2.0.0.pom.asc.sha1</a>                          2017-01-14 15:05        40      
+<a href="jtoml-2.0.0.pom.md5" title="jtoml-2.0.0.pom.md5">jtoml-2.0.0.pom.md5</a>                               2017-01-14 15:05        32      
+<a href="jtoml-2.0.0.pom.sha1" title="jtoml-2.0.0.pom.sha1">jtoml-2.0.0.pom.sha1</a>                              2017-01-14 15:05        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 405ms:
+[
+  {
+    "sha": "954caf117074b409561da3788759b86d0b0e8bdb",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjo5NTRjYWYxMTcwNzRiNDA5NTYxZGEzNzg4NzU5Yjg2ZDBiMGU4YmRi",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh@users.noreply.github.com",
+        "date": "2017-01-14T15:08:12Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh@users.noreply.github.com",
+        "date": "2017-01-14T15:08:12Z"
+      },
+      "message": "Merge branch 'feat_support_v0.4.0'",
+      "tree": {
+        "sha": "ecd93f51560483475b742177f2ce06169a78b728",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/ecd93f51560483475b742177f2ce06169a78b728"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/954caf117074b409561da3788759b86d0b0e8bdb",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/954caf117074b409561da3788759b86d0b0e8bdb",
+    "html_url": "https://github.com/asafh/jtoml/commit/954caf117074b409561da3788759b86d0b0e8bdb",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/954caf117074b409561da3788759b86d0b0e8bdb/comments",
+    "author": {
+      "login": "asafh",
+      "id": 1410718,
+      "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/asafh",
+      "html_url": "https://github.com/asafh",
+      "followers_url": "https://api.github.com/users/asafh/followers",
+      "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+      "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+      "organizations_url": "https://api.github.com/users/asafh/orgs",
+      "repos_url": "https://api.github.com/users/asafh/repos",
+      "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/asafh/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "asafh",
+      "id": 1410718,
+      "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/asafh",
+      "html_url": "https://github.com/asafh",
+      "followers_url": "https://api.github.com/users/asafh/followers",
+      "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+      "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+      "organizations_url": "https://api.github.com/users/asafh/orgs",
+      "repos_url": "https://api.github.com/users/asafh/repos",
+      "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/asafh/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "c65ca9b5d20303fc3852bcd5ccaf9ddadcfa1e98",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/c65ca9b5d20303fc3852bcd5ccaf9ddadcfa1e98",
+        "html_url": "https://github.com/asafh/jtoml/commit/c65ca9b5d20303fc3852bcd5ccaf9ddadcfa1e98"
+      },
+      {
+        "sha": "efabdcff2a8b818b8c696104466d2c987c60787d",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/efabdcff2a8b818b8c696104466d2c987c60787d",
+        "html_url": "https://github.com/asafh/jtoml/commit/efabdcff2a8b818b8c696104466d2c987c60787d"
+      }
+    ]
+  },
+  {
+    "sha": "efabdcff2a8b818b8c696104466d2c987c60787d",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjplZmFiZGNmZjJhOGI4MThiOGM2OTYxMDQ0NjZkMmM5ODdjNjA3ODdk",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh@users.noreply.github.com",
+        "date": "2017-01-14T15:07:09Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh@users.noreply.github.com",
+        "date": "2017-01-14T15:07:09Z"
+      },
+      "message": "New Sonatype compliance",
+      "tree": {
+        "sha": "ecd93f51560483475b742177f2ce06169a78b728",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/ecd93f51560483475b742177f2ce06169a78b728"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/efabdcff2a8b818b8c696104466d2c987c60787d",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/efabdcff2a8b818b8c696104466d2c987c60787d",
+    "html_url": "https://github.com/asafh/jtoml/commit/efabdcff2a8b818b8c696104466d2c987c60787d",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/efabdcff2a8b818b8c696104466d2c987c60787d/comments",
+    "author": {
+      "login": "asafh",
+      "id": 1410718,
+      "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/asafh",
+      "html_url": "https://github.com/asafh",
+      "followers_url": "https://api.github.com/users/asafh/followers",
+      "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+      "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+      "organizations_url": "https://api.github.com/users/asafh/orgs",
+      "repos_url": "https://api.github.com/users/asafh/repos",
+      "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/asafh/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "asafh",
+      "id": 1410718,
+      "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/asafh",
+      "html_url": "https://github.com/asafh",
+      "followers_url": "https://api.github.com/users/asafh/followers",
+      "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+      "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+      "organizations_url": "https://api.github.com/users/asafh/orgs",
+      "repos_url": "https://api.github.com/users/asafh/repos",
+      "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/asafh/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "eca85586c724333bfaa1167f31173d8e59c770c4",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/eca85586c724333bfaa1167f31173d8e59c770c4",
+        "html_url": "https://github.com/asafh/jtoml/commit/eca85586c724333bfaa1167f31173d8e59c770c4"
+      }
+    ]
+  },
+  {
+    "sha": "eca85586c724333bfaa1167f31173d8e59c770c4",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjplY2E4NTU4NmM3MjQzMzNiZmFhMTE2N2YzMTE3M2Q4ZTU5Yzc3MGM0",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh@users.noreply.github.com",
+        "date": "2017-01-14T14:14:20Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh@users.noreply.github.com",
+        "date": "2017-01-14T14:14:20Z"
+      },
+      "message": "Updating version to release version 2.0.0",
+      "tree": {
+        "sha": "b34c43a39de49acb57f90276e655f6b6d39b3711",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/b34c43a39de49acb57f90276e655f6b6d39b3711"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/eca85586c724333bfaa1167f31173d8e59c770c4",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/eca85586c724333bfaa1167f31173d8e59c770c4",
+    "html_url": "https://github.com/asafh/jtoml/commit/eca85586c724333bfaa1167f31173d8e59c770c4",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/eca85586c724333bfaa1167f31173d8e59c770c4/comments",
+    "author": {
+      "login": "asafh",
+      "id": 1410718,
+      "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/asafh",
+      "html_url": "https://github.com/asafh",
+      "followers_url": "https://api.github.com/users/asafh/followers",
+      "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+      "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+      "organizations_url": "https://api.github.com/users/asafh/orgs",
+      "repos_url": "https://api.github.com/users/asafh/repos",
+      "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/asafh/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "asafh",
+      "id": 1410718,
+      "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/asafh",
+      "html_url": "https://github.com/asafh",
+      "followers_url": "https://api.github.com/users/asafh/followers",
+      "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+      "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+      "organizations_url": "https://api.github.com/users/asafh/orgs",
+      "repos_url": "https://api.github.com/users/asafh/repos",
+      "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/asafh/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "39e987e44366184062d16825439d240ea67b352d",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/39e987e44366184062d16825439d240ea67b352d",
+        "html_url": "https://github.com/asafh/jtoml/commit/39e987e44366184062d16825439d240ea67b352d"
+      }
+    ]
+  },
+  {
+    "sha": "c65ca9b5d20303fc3852bcd5ccaf9ddadcfa1e98",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjpjNjVjYTliNWQyMDMwM2ZjMzg1MmJjZDVjY2FmOWRkYWRjZmExZTk4",
+    "commit": {
+      "author": {
+        "name": "asafh",
+        "email": "asafh@users.noreply.github.com",
+        "date": "2017-01-14T14:10:38Z"
+      },
+      "committer": {
+        "name": "GitHub",
+        "email": "noreply@github.com",
+        "date": "2017-01-14T14:10:38Z"
+      },
+      "message": "Merge pull request #7 from asafh/feat_support_v0.4.0\n\nSupporting TOML v0.4.0",
+      "tree": {
+        "sha": "66a6c9f0619e4e2a63d44e365b93d6527563060e",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/66a6c9f0619e4e2a63d44e365b93d6527563060e"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/c65ca9b5d20303fc3852bcd5ccaf9ddadcfa1e98",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/c65ca9b5d20303fc3852bcd5ccaf9ddadcfa1e98",
+    "html_url": "https://github.com/asafh/jtoml/commit/c65ca9b5d20303fc3852bcd5ccaf9ddadcfa1e98",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/c65ca9b5d20303fc3852bcd5ccaf9ddadcfa1e98/comments",
+    "author": {
+      "login": "asafh",
+      "id": 1410718,
+      "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/asafh",
+      "html_url": "https://github.com/asafh",
+      "followers_url": "https://api.github.com/users/asafh/followers",
+      "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+      "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+      "organizations_url": "https://api.github.com/users/asafh/orgs",
+      "repos_url": "https://api.github.com/users/asafh/repos",
+      "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/asafh/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "web-flow",
+      "id": 19864447,
+      "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/web-flow",
+      "html_url": "https://github.com/web-flow",
+      "followers_url": "https://api.github.com/users/web-flow/followers",
+      "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+      "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+      "organizations_url": "https://api.github.com/users/web-flow/orgs",
+      "repos_url": "https://api.github.com/users/web-flow/repos",
+      "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/web-flow/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "b140f0e6966f281c67e53b5255e4ec458935698d",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/b140f0e6966f281c67e53b5255e4ec458935698d",
+        "html_url": "https://github.com/asafh/jtoml/commit/b140f0e6966f281c67e53b5255e4ec458935698d"
+      },
+      {
+        "sha": "39e987e44366184062d16825439d240ea67b352d",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/39e987e44366184062d16825439d240ea67b352d",
+        "html_url": "https://github.com/asafh/jtoml/commit/39e987e44366184062d16825439d240ea67b352d"
+      }
+    ]
+  },
+  {
+    "sha": "39e987e44366184062d16825439d240ea67b352d",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjozOWU5ODdlNDQzNjYxODQwNjJkMTY4MjU0MzlkMjQwZWE2N2IzNTJk",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh@users.noreply.github.com",
+        "date": "2017-01-14T14:07:46Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh@users.noreply.github.com",
+        "date": "2017-01-14T14:07:46Z"
+      },
+      "message": "Adding ' Constant",
+      "tree": {
+        "sha": "66a6c9f0619e4e2a63d44e365b93d6527563060e",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/66a6c9f0619e4e2a63d44e365b93d6527563060e"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/39e987e44366184062d16825439d240ea67b352d",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/39e987e44366184062d16825439d240ea67b352d",
+    "html_url": "https://github.com/asafh/jtoml/commit/39e987e44366184062d16825439d240ea67b352d",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/39e987e44366184062d16825439d240ea67b352d/comments",
+    "author": {
+      "login": "asafh",
+      "id": 1410718,
+      "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/asafh",
+      "html_url": "https://github.com/asafh",
+      "followers_url": "https://api.github.com/users/asafh/followers",
+      "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+      "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+      "organizations_url": "https://api.github.com/users/asafh/orgs",
+      "repos_url": "https://api.github.com/users/asafh/repos",
+      "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/asafh/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "asafh",
+      "id": 1410718,
+      "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/asafh",
+      "html_url": "https://github.com/asafh",
+      "followers_url": "https://api.github.com/users/asafh/followers",
+      "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+      "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+      "organizations_url": "https://api.github.com/users/asafh/orgs",
+      "repos_url": "https://api.github.com/users/asafh/repos",
+      "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/asafh/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "e4956d2f29b130d24dfa16bb2da836c8400fd61b",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/e4956d2f29b130d24dfa16bb2da836c8400fd61b",
+        "html_url": "https://github.com/asafh/jtoml/commit/e4956d2f29b130d24dfa16bb2da836c8400fd61b"
+      }
+    ]
+  },
+  {
+    "sha": "e4956d2f29b130d24dfa16bb2da836c8400fd61b",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjplNDk1NmQyZjI5YjEzMGQyNGRmYTE2YmIyZGE4MzZjODQwMGZkNjFi",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-07T17:18:30Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-07T17:18:30Z"
+      },
+      "message": "Spec Test improvement",
+      "tree": {
+        "sha": "896708db556182959aec562839f9ae194b65866a",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/896708db556182959aec562839f9ae194b65866a"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/e4956d2f29b130d24dfa16bb2da836c8400fd61b",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/e4956d2f29b130d24dfa16bb2da836c8400fd61b",
+    "html_url": "https://github.com/asafh/jtoml/commit/e4956d2f29b130d24dfa16bb2da836c8400fd61b",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/e4956d2f29b130d24dfa16bb2da836c8400fd61b/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "fbf8d35e28288b0d036266f260dba4e9c415bdc1",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/fbf8d35e28288b0d036266f260dba4e9c415bdc1",
+        "html_url": "https://github.com/asafh/jtoml/commit/fbf8d35e28288b0d036266f260dba4e9c415bdc1"
+      }
+    ]
+  },
+  {
+    "sha": "fbf8d35e28288b0d036266f260dba4e9c415bdc1",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjpmYmY4ZDM1ZTI4Mjg4YjBkMDM2MjY2ZjI2MGRiYTRlOWM0MTViZGMx",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-07T01:20:06Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-07T01:20:06Z"
+      },
+      "message": "Invalid tests.",
+      "tree": {
+        "sha": "879c975efbc07d145db247f944546795234ef76b",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/879c975efbc07d145db247f944546795234ef76b"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/fbf8d35e28288b0d036266f260dba4e9c415bdc1",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/fbf8d35e28288b0d036266f260dba4e9c415bdc1",
+    "html_url": "https://github.com/asafh/jtoml/commit/fbf8d35e28288b0d036266f260dba4e9c415bdc1",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/fbf8d35e28288b0d036266f260dba4e9c415bdc1/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "8b7375bf3b04c5aad3d5758425fbd78f9c590ea6",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/8b7375bf3b04c5aad3d5758425fbd78f9c590ea6",
+        "html_url": "https://github.com/asafh/jtoml/commit/8b7375bf3b04c5aad3d5758425fbd78f9c590ea6"
+      }
+    ]
+  },
+  {
+    "sha": "8b7375bf3b04c5aad3d5758425fbd78f9c590ea6",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjo4YjczNzViZjNiMDRjNWFhZDNkNTc1ODQyNWZiZDc4ZjljNTkwZWE2",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-06T21:43:14Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-06T21:43:14Z"
+      },
+      "message": "Error location",
+      "tree": {
+        "sha": "a9e5bc74567d7fdd4587b7f76aed9a389067d50f",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/a9e5bc74567d7fdd4587b7f76aed9a389067d50f"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/8b7375bf3b04c5aad3d5758425fbd78f9c590ea6",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/8b7375bf3b04c5aad3d5758425fbd78f9c590ea6",
+    "html_url": "https://github.com/asafh/jtoml/commit/8b7375bf3b04c5aad3d5758425fbd78f9c590ea6",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/8b7375bf3b04c5aad3d5758425fbd78f9c590ea6/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "d27c660e87434b375813f57e7d749e10022c1054",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/d27c660e87434b375813f57e7d749e10022c1054",
+        "html_url": "https://github.com/asafh/jtoml/commit/d27c660e87434b375813f57e7d749e10022c1054"
+      }
+    ]
+  },
+  {
+    "sha": "d27c660e87434b375813f57e7d749e10022c1054",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjpkMjdjNjYwZTg3NDM0YjM3NTgxM2Y1N2U3ZDc0OWUxMDAyMmMxMDU0",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-06T21:21:12Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-06T21:21:12Z"
+      },
+      "message": "Moving TomlTable. Code coverage increase.",
+      "tree": {
+        "sha": "8e27481979c1848bad8b7fd4b9c360aac6d2a096",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/8e27481979c1848bad8b7fd4b9c360aac6d2a096"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/d27c660e87434b375813f57e7d749e10022c1054",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/d27c660e87434b375813f57e7d749e10022c1054",
+    "html_url": "https://github.com/asafh/jtoml/commit/d27c660e87434b375813f57e7d749e10022c1054",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/d27c660e87434b375813f57e7d749e10022c1054/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "a175ddefcdb93403744bb7210b3a153c06f88b0f",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/a175ddefcdb93403744bb7210b3a153c06f88b0f",
+        "html_url": "https://github.com/asafh/jtoml/commit/a175ddefcdb93403744bb7210b3a153c06f88b0f"
+      }
+    ]
+  },
+  {
+    "sha": "a175ddefcdb93403744bb7210b3a153c06f88b0f",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjphMTc1ZGRlZmNkYjkzNDAzNzQ0YmI3MjEwYjNhMTUzYzA2Zjg4YjBm",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-06T21:09:43Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-06T21:09:43Z"
+      },
+      "message": "v0.4.0 unit tests + passes. Streaming parsing",
+      "tree": {
+        "sha": "677f78540be9ce07f83a0c05a16bce8995d418d2",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/677f78540be9ce07f83a0c05a16bce8995d418d2"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/a175ddefcdb93403744bb7210b3a153c06f88b0f",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/a175ddefcdb93403744bb7210b3a153c06f88b0f",
+    "html_url": "https://github.com/asafh/jtoml/commit/a175ddefcdb93403744bb7210b3a153c06f88b0f",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/a175ddefcdb93403744bb7210b3a153c06f88b0f/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "5f6d4ee409ef4b16cea49c96aea4f7a30e53f2e0",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/5f6d4ee409ef4b16cea49c96aea4f7a30e53f2e0",
+        "html_url": "https://github.com/asafh/jtoml/commit/5f6d4ee409ef4b16cea49c96aea4f7a30e53f2e0"
+      }
+    ]
+  },
+  {
+    "sha": "5f6d4ee409ef4b16cea49c96aea4f7a30e53f2e0",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjo1ZjZkNGVlNDA5ZWY0YjE2Y2VhNDljOTZhZWE0ZjdhMzBlNTNmMmUw",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-05T00:53:12Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-05T00:53:12Z"
+      },
+      "message": "Removing irrelevant code",
+      "tree": {
+        "sha": "4832e239f939f598bfd7529b289f7ae678c6d518",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/4832e239f939f598bfd7529b289f7ae678c6d518"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/5f6d4ee409ef4b16cea49c96aea4f7a30e53f2e0",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/5f6d4ee409ef4b16cea49c96aea4f7a30e53f2e0",
+    "html_url": "https://github.com/asafh/jtoml/commit/5f6d4ee409ef4b16cea49c96aea4f7a30e53f2e0",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/5f6d4ee409ef4b16cea49c96aea4f7a30e53f2e0/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "b3bc8b4e750c25608b07a5ff4beb5ed337766f19",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/b3bc8b4e750c25608b07a5ff4beb5ed337766f19",
+        "html_url": "https://github.com/asafh/jtoml/commit/b3bc8b4e750c25608b07a5ff4beb5ed337766f19"
+      }
+    ]
+  },
+  {
+    "sha": "b3bc8b4e750c25608b07a5ff4beb5ed337766f19",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjpiM2JjOGI0ZTc1MGMyNTYwOGIwN2E1ZmY0YmViNWVkMzM3NzY2ZjE5",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-04T23:44:40Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-04T23:44:40Z"
+      },
+      "message": "Readme update",
+      "tree": {
+        "sha": "d2c9686275fc2d62962468bb05e862fbfa0a3df0",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/d2c9686275fc2d62962468bb05e862fbfa0a3df0"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/b3bc8b4e750c25608b07a5ff4beb5ed337766f19",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/b3bc8b4e750c25608b07a5ff4beb5ed337766f19",
+    "html_url": "https://github.com/asafh/jtoml/commit/b3bc8b4e750c25608b07a5ff4beb5ed337766f19",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/b3bc8b4e750c25608b07a5ff4beb5ed337766f19/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "4476be5806ab012d76534eb1b6b7a304332c463b",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/4476be5806ab012d76534eb1b6b7a304332c463b",
+        "html_url": "https://github.com/asafh/jtoml/commit/4476be5806ab012d76534eb1b6b7a304332c463b"
+      }
+    ]
+  },
+  {
+    "sha": "4476be5806ab012d76534eb1b6b7a304332c463b",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjo0NDc2YmU1ODA2YWIwMTJkNzY1MzRlYjFiNmI3YTMwNDMzMmM0NjNi",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-04T23:31:51Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-04T23:31:51Z"
+      },
+      "message": "Cleanup, removing verbose classes.",
+      "tree": {
+        "sha": "accb29c2440f108088a90c2ee82dd1dbe4398a24",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/accb29c2440f108088a90c2ee82dd1dbe4398a24"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/4476be5806ab012d76534eb1b6b7a304332c463b",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/4476be5806ab012d76534eb1b6b7a304332c463b",
+    "html_url": "https://github.com/asafh/jtoml/commit/4476be5806ab012d76534eb1b6b7a304332c463b",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/4476be5806ab012d76534eb1b6b7a304332c463b/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "cc16c04c89c1aed366fc3babbd49cb27fb186464",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/cc16c04c89c1aed366fc3babbd49cb27fb186464",
+        "html_url": "https://github.com/asafh/jtoml/commit/cc16c04c89c1aed366fc3babbd49cb27fb186464"
+      }
+    ]
+  },
+  {
+    "sha": "cc16c04c89c1aed366fc3babbd49cb27fb186464",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjpjYzE2YzA0Yzg5YzFhZWQzNjZmYzNiYWJiZDQ5Y2IyN2ZiMTg2NDY0",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-04T23:23:54Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-04T23:23:54Z"
+      },
+      "message": "Cleanup, removing verbose classes.",
+      "tree": {
+        "sha": "2b801ddb051625167fff964c9d37fd89f810874b",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/2b801ddb051625167fff964c9d37fd89f810874b"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/cc16c04c89c1aed366fc3babbd49cb27fb186464",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/cc16c04c89c1aed366fc3babbd49cb27fb186464",
+    "html_url": "https://github.com/asafh/jtoml/commit/cc16c04c89c1aed366fc3babbd49cb27fb186464",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/cc16c04c89c1aed366fc3babbd49cb27fb186464/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "14f79262983ceb9f574e20561b7763898febf61f",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/14f79262983ceb9f574e20561b7763898febf61f",
+        "html_url": "https://github.com/asafh/jtoml/commit/14f79262983ceb9f574e20561b7763898febf61f"
+      }
+    ]
+  },
+  {
+    "sha": "14f79262983ceb9f574e20561b7763898febf61f",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjoxNGY3OTI2Mjk4M2NlYjlmNTc0ZTIwNTYxYjc3NjM4OThmZWJmNjFm",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-04T23:06:51Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-04T23:06:51Z"
+      },
+      "message": "Cleanups",
+      "tree": {
+        "sha": "b1f18d2314d3a5eea37eb94b5b0ad87a39f83ae1",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/b1f18d2314d3a5eea37eb94b5b0ad87a39f83ae1"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/14f79262983ceb9f574e20561b7763898febf61f",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/14f79262983ceb9f574e20561b7763898febf61f",
+    "html_url": "https://github.com/asafh/jtoml/commit/14f79262983ceb9f574e20561b7763898febf61f",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/14f79262983ceb9f574e20561b7763898febf61f/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "2e9b69432cde48bda194aa913e9ace7fa385c76c",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/2e9b69432cde48bda194aa913e9ace7fa385c76c",
+        "html_url": "https://github.com/asafh/jtoml/commit/2e9b69432cde48bda194aa913e9ace7fa385c76c"
+      }
+    ]
+  },
+  {
+    "sha": "2e9b69432cde48bda194aa913e9ace7fa385c76c",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjoyZTliNjk0MzJjZGU0OGJkYTE5NGFhOTEzZTlhY2U3ZmEzODVjNzZj",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-04T22:33:35Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-04T22:33:35Z"
+      },
+      "message": "Streaming tokenization",
+      "tree": {
+        "sha": "6f743a67048027dcd60cc7f4a45a55620a40c4a6",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/6f743a67048027dcd60cc7f4a45a55620a40c4a6"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/2e9b69432cde48bda194aa913e9ace7fa385c76c",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/2e9b69432cde48bda194aa913e9ace7fa385c76c",
+    "html_url": "https://github.com/asafh/jtoml/commit/2e9b69432cde48bda194aa913e9ace7fa385c76c",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/2e9b69432cde48bda194aa913e9ace7fa385c76c/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "9f5b108575fce53250c0b75f50a5a2821800630d",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/9f5b108575fce53250c0b75f50a5a2821800630d",
+        "html_url": "https://github.com/asafh/jtoml/commit/9f5b108575fce53250c0b75f50a5a2821800630d"
+      }
+    ]
+  },
+  {
+    "sha": "9f5b108575fce53250c0b75f50a5a2821800630d",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjo5ZjViMTA4NTc1ZmNlNTMyNTBjMGI3NWY1MGE1YTI4MjE4MDA2MzBk",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-04T22:02:24Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2015-03-04T22:02:24Z"
+      },
+      "message": "Tokenizer, working with v0.1.0 tests",
+      "tree": {
+        "sha": "ea77509a0d26b87d24928756afa05eaadf48020f",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/ea77509a0d26b87d24928756afa05eaadf48020f"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/9f5b108575fce53250c0b75f50a5a2821800630d",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/9f5b108575fce53250c0b75f50a5a2821800630d",
+    "html_url": "https://github.com/asafh/jtoml/commit/9f5b108575fce53250c0b75f50a5a2821800630d",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/9f5b108575fce53250c0b75f50a5a2821800630d/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "b140f0e6966f281c67e53b5255e4ec458935698d",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/b140f0e6966f281c67e53b5255e4ec458935698d",
+        "html_url": "https://github.com/asafh/jtoml/commit/b140f0e6966f281c67e53b5255e4ec458935698d"
+      }
+    ]
+  },
+  {
+    "sha": "b140f0e6966f281c67e53b5255e4ec458935698d",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjpiMTQwZjBlNjk2NmYyODFjNjdlNTNiNTI1NWU0ZWM0NTg5MzU2OThk",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-07-24T21:28:24Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-07-24T21:28:24Z"
+      },
+      "message": "[maven-release-plugin] prepare for next development iteration",
+      "tree": {
+        "sha": "6677aee1e7806230478932809fe8a3c35744a64e",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/6677aee1e7806230478932809fe8a3c35744a64e"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/b140f0e6966f281c67e53b5255e4ec458935698d",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/b140f0e6966f281c67e53b5255e4ec458935698d",
+    "html_url": "https://github.com/asafh/jtoml/commit/b140f0e6966f281c67e53b5255e4ec458935698d",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/b140f0e6966f281c67e53b5255e4ec458935698d/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "e2817c679b469145b5c1e5eb98f1d59d7837f0dc",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/e2817c679b469145b5c1e5eb98f1d59d7837f0dc",
+        "html_url": "https://github.com/asafh/jtoml/commit/e2817c679b469145b5c1e5eb98f1d59d7837f0dc"
+      }
+    ]
+  },
+  {
+    "sha": "e2817c679b469145b5c1e5eb98f1d59d7837f0dc",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjplMjgxN2M2NzliNDY5MTQ1YjVjMWU1ZWI5OGYxZDU5ZDc4MzdmMGRj",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-07-24T21:28:14Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-07-24T21:28:14Z"
+      },
+      "message": "[maven-release-plugin] prepare release jtoml-1.0.1",
+      "tree": {
+        "sha": "a142276a71c43a7cee3ebccaeae41893709cf3e5",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/a142276a71c43a7cee3ebccaeae41893709cf3e5"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/e2817c679b469145b5c1e5eb98f1d59d7837f0dc",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/e2817c679b469145b5c1e5eb98f1d59d7837f0dc",
+    "html_url": "https://github.com/asafh/jtoml/commit/e2817c679b469145b5c1e5eb98f1d59d7837f0dc",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/e2817c679b469145b5c1e5eb98f1d59d7837f0dc/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "ac626522ec8eb18b9e80f66de1a136c653ffcb2e",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/ac626522ec8eb18b9e80f66de1a136c653ffcb2e",
+        "html_url": "https://github.com/asafh/jtoml/commit/ac626522ec8eb18b9e80f66de1a136c653ffcb2e"
+      }
+    ]
+  },
+  {
+    "sha": "ac626522ec8eb18b9e80f66de1a136c653ffcb2e",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjphYzYyNjUyMmVjOGViMThiOWU4MGY2NmRlMWExMzZjNjUzZmZjYjJl",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-07-22T15:12:21Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-07-22T15:12:21Z"
+      },
+      "message": "Merge branch 'master' of https://github.com/asafh/jtoml",
+      "tree": {
+        "sha": "ac04e93f40331863596a02c4fee461ea7e8e25cd",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/ac04e93f40331863596a02c4fee461ea7e8e25cd"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/ac626522ec8eb18b9e80f66de1a136c653ffcb2e",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/ac626522ec8eb18b9e80f66de1a136c653ffcb2e",
+    "html_url": "https://github.com/asafh/jtoml/commit/ac626522ec8eb18b9e80f66de1a136c653ffcb2e",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/ac626522ec8eb18b9e80f66de1a136c653ffcb2e/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "2199bc936fdbe5e6322e540309160745b04f5fe8",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/2199bc936fdbe5e6322e540309160745b04f5fe8",
+        "html_url": "https://github.com/asafh/jtoml/commit/2199bc936fdbe5e6322e540309160745b04f5fe8"
+      },
+      {
+        "sha": "3cc2e2708f4c45e433fe27582b5c9da06d8f8624",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/3cc2e2708f4c45e433fe27582b5c9da06d8f8624",
+        "html_url": "https://github.com/asafh/jtoml/commit/3cc2e2708f4c45e433fe27582b5c9da06d8f8624"
+      }
+    ]
+  },
+  {
+    "sha": "2199bc936fdbe5e6322e540309160745b04f5fe8",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjoyMTk5YmM5MzZmZGJlNWU2MzIyZTU0MDMwOTE2MDc0NWIwNGY1ZmU4",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-07-22T15:10:33Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-07-22T15:10:33Z"
+      },
+      "message": "Issue #1: Adding Enum Deserialization support",
+      "tree": {
+        "sha": "1a4664d4aca4503f808680ce1bea932ac3579ef9",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/1a4664d4aca4503f808680ce1bea932ac3579ef9"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/2199bc936fdbe5e6322e540309160745b04f5fe8",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/2199bc936fdbe5e6322e540309160745b04f5fe8",
+    "html_url": "https://github.com/asafh/jtoml/commit/2199bc936fdbe5e6322e540309160745b04f5fe8",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/2199bc936fdbe5e6322e540309160745b04f5fe8/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "60904c3621c05eb52e68b05a9158e75ed1d84950",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/60904c3621c05eb52e68b05a9158e75ed1d84950",
+        "html_url": "https://github.com/asafh/jtoml/commit/60904c3621c05eb52e68b05a9158e75ed1d84950"
+      }
+    ]
+  },
+  {
+    "sha": "3cc2e2708f4c45e433fe27582b5c9da06d8f8624",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjozY2MyZTI3MDhmNGM0NWU0MzNmZTI3NTgyYjVjOWRhMDZkOGY4NjI0",
+    "commit": {
+      "author": {
+        "name": "asafh",
+        "email": "asafh@liveperson.com",
+        "date": "2013-07-22T08:07:34Z"
+      },
+      "committer": {
+        "name": "asafh",
+        "email": "asafh@liveperson.com",
+        "date": "2013-07-22T08:07:34Z"
+      },
+      "message": "Issue #3: StringReader should never throw an IOException",
+      "tree": {
+        "sha": "f1636991073e405de50f8ce5d471bd3f888b2b92",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/f1636991073e405de50f8ce5d471bd3f888b2b92"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/3cc2e2708f4c45e433fe27582b5c9da06d8f8624",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/3cc2e2708f4c45e433fe27582b5c9da06d8f8624",
+    "html_url": "https://github.com/asafh/jtoml/commit/3cc2e2708f4c45e433fe27582b5c9da06d8f8624",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/3cc2e2708f4c45e433fe27582b5c9da06d8f8624/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "60904c3621c05eb52e68b05a9158e75ed1d84950",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/60904c3621c05eb52e68b05a9158e75ed1d84950",
+        "html_url": "https://github.com/asafh/jtoml/commit/60904c3621c05eb52e68b05a9158e75ed1d84950"
+      }
+    ]
+  },
+  {
+    "sha": "60904c3621c05eb52e68b05a9158e75ed1d84950",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjo2MDkwNGMzNjIxYzA1ZWI1MmU2OGIwNWE5MTU4ZTc1ZWQxZDg0OTUw",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-07-21T18:16:32Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-07-21T18:16:32Z"
+      },
+      "message": "[maven-release-plugin] prepare for next development iteration",
+      "tree": {
+        "sha": "6b2c5463dd62aebeffd4089911b2391778811db1",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/6b2c5463dd62aebeffd4089911b2391778811db1"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/60904c3621c05eb52e68b05a9158e75ed1d84950",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/60904c3621c05eb52e68b05a9158e75ed1d84950",
+    "html_url": "https://github.com/asafh/jtoml/commit/60904c3621c05eb52e68b05a9158e75ed1d84950",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/60904c3621c05eb52e68b05a9158e75ed1d84950/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "03059be8d7c96b598b03ba1e023916a32da1b39c",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/03059be8d7c96b598b03ba1e023916a32da1b39c",
+        "html_url": "https://github.com/asafh/jtoml/commit/03059be8d7c96b598b03ba1e023916a32da1b39c"
+      }
+    ]
+  },
+  {
+    "sha": "03059be8d7c96b598b03ba1e023916a32da1b39c",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjowMzA1OWJlOGQ3Yzk2YjU5OGIwM2JhMWUwMjM5MTZhMzJkYTFiMzlj",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-07-21T18:16:23Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-07-21T18:16:23Z"
+      },
+      "message": "[maven-release-plugin] prepare release jtoml-1.0.0",
+      "tree": {
+        "sha": "a1febe2e00a8353149df5ab0360ecb18519173b7",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/a1febe2e00a8353149df5ab0360ecb18519173b7"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/03059be8d7c96b598b03ba1e023916a32da1b39c",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/03059be8d7c96b598b03ba1e023916a32da1b39c",
+    "html_url": "https://github.com/asafh/jtoml/commit/03059be8d7c96b598b03ba1e023916a32da1b39c",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/03059be8d7c96b598b03ba1e023916a32da1b39c/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "d68e3843055f2659b9c843e081d8f39f0fc11790",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/d68e3843055f2659b9c843e081d8f39f0fc11790",
+        "html_url": "https://github.com/asafh/jtoml/commit/d68e3843055f2659b9c843e081d8f39f0fc11790"
+      }
+    ]
+  },
+  {
+    "sha": "d68e3843055f2659b9c843e081d8f39f0fc11790",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjpkNjhlMzg0MzA1NWYyNjU5YjljODQzZTA4MWQ4ZjM5ZjBmYzExNzkw",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-07-21T18:15:39Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-07-21T18:15:39Z"
+      },
+      "message": "Deploying 1.0.0 SNAPSHOT",
+      "tree": {
+        "sha": "7d99659e80dcba84bb3c5f9deb801bdc96ddc182",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/7d99659e80dcba84bb3c5f9deb801bdc96ddc182"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/d68e3843055f2659b9c843e081d8f39f0fc11790",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/d68e3843055f2659b9c843e081d8f39f0fc11790",
+    "html_url": "https://github.com/asafh/jtoml/commit/d68e3843055f2659b9c843e081d8f39f0fc11790",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/d68e3843055f2659b9c843e081d8f39f0fc11790/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "fd53bd4e174d0f295a3203c7c65420f53a401084",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/fd53bd4e174d0f295a3203c7c65420f53a401084",
+        "html_url": "https://github.com/asafh/jtoml/commit/fd53bd4e174d0f295a3203c7c65420f53a401084"
+      }
+    ]
+  },
+  {
+    "sha": "fd53bd4e174d0f295a3203c7c65420f53a401084",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjpmZDUzYmQ0ZTE3NGQwZjI5NWEzMjAzYzdjNjU0MjBmNTNhNDAxMDg0",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-06-30T21:47:32Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-06-30T21:47:32Z"
+      },
+      "message": "[maven-release-plugin] prepare release 1.0.0",
+      "tree": {
+        "sha": "a1febe2e00a8353149df5ab0360ecb18519173b7",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/a1febe2e00a8353149df5ab0360ecb18519173b7"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/fd53bd4e174d0f295a3203c7c65420f53a401084",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/fd53bd4e174d0f295a3203c7c65420f53a401084",
+    "html_url": "https://github.com/asafh/jtoml/commit/fd53bd4e174d0f295a3203c7c65420f53a401084",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/fd53bd4e174d0f295a3203c7c65420f53a401084/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "f8d84401b25403ef895cc1c1e4464e7f03f1ea18",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/f8d84401b25403ef895cc1c1e4464e7f03f1ea18",
+        "html_url": "https://github.com/asafh/jtoml/commit/f8d84401b25403ef895cc1c1e4464e7f03f1ea18"
+      }
+    ]
+  },
+  {
+    "sha": "f8d84401b25403ef895cc1c1e4464e7f03f1ea18",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjpmOGQ4NDQwMWIyNTQwM2VmODk1Y2MxYzFlNDQ2NGU3ZjAzZjFlYTE4",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-06-30T21:03:11Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-06-30T21:03:11Z"
+      },
+      "message": "[maven-release-plugin] prepare for next development iteration",
+      "tree": {
+        "sha": "6b2c5463dd62aebeffd4089911b2391778811db1",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/6b2c5463dd62aebeffd4089911b2391778811db1"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/f8d84401b25403ef895cc1c1e4464e7f03f1ea18",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/f8d84401b25403ef895cc1c1e4464e7f03f1ea18",
+    "html_url": "https://github.com/asafh/jtoml/commit/f8d84401b25403ef895cc1c1e4464e7f03f1ea18",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/f8d84401b25403ef895cc1c1e4464e7f03f1ea18/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "a811d81e3ae9e8e0adebd3fe97b6eabf1c787d3c",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/a811d81e3ae9e8e0adebd3fe97b6eabf1c787d3c",
+        "html_url": "https://github.com/asafh/jtoml/commit/a811d81e3ae9e8e0adebd3fe97b6eabf1c787d3c"
+      }
+    ]
+  },
+  {
+    "sha": "a811d81e3ae9e8e0adebd3fe97b6eabf1c787d3c",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjphODExZDgxZTNhZTllOGUwYWRlYmQzZmU5N2I2ZWFiZjFjNzg3ZDNj",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-06-30T21:03:02Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-06-30T21:03:02Z"
+      },
+      "message": "[maven-release-plugin] prepare release 1.0.0",
+      "tree": {
+        "sha": "a1febe2e00a8353149df5ab0360ecb18519173b7",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/a1febe2e00a8353149df5ab0360ecb18519173b7"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/a811d81e3ae9e8e0adebd3fe97b6eabf1c787d3c",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/a811d81e3ae9e8e0adebd3fe97b6eabf1c787d3c",
+    "html_url": "https://github.com/asafh/jtoml/commit/a811d81e3ae9e8e0adebd3fe97b6eabf1c787d3c",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/a811d81e3ae9e8e0adebd3fe97b6eabf1c787d3c/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "84d72b793464c3edfb2fadaae6feccf085003667",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/84d72b793464c3edfb2fadaae6feccf085003667",
+        "html_url": "https://github.com/asafh/jtoml/commit/84d72b793464c3edfb2fadaae6feccf085003667"
+      }
+    ]
+  },
+  {
+    "sha": "84d72b793464c3edfb2fadaae6feccf085003667",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjo4NGQ3MmI3OTM0NjRjM2VkZmIyZmFkYWFlNmZlY2NmMDg1MDAzNjY3",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-06-30T20:59:59Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-06-30T20:59:59Z"
+      },
+      "message": "Snapshot deployment first.",
+      "tree": {
+        "sha": "4bf486dbd0f42028e5bee29bb6ae181ef24046f0",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/4bf486dbd0f42028e5bee29bb6ae181ef24046f0"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/84d72b793464c3edfb2fadaae6feccf085003667",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/84d72b793464c3edfb2fadaae6feccf085003667",
+    "html_url": "https://github.com/asafh/jtoml/commit/84d72b793464c3edfb2fadaae6feccf085003667",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/84d72b793464c3edfb2fadaae6feccf085003667/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "9f7fefcbdf62551e63dfee0ec956b2510cd01374",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/9f7fefcbdf62551e63dfee0ec956b2510cd01374",
+        "html_url": "https://github.com/asafh/jtoml/commit/9f7fefcbdf62551e63dfee0ec956b2510cd01374"
+      }
+    ]
+  },
+  {
+    "sha": "9f7fefcbdf62551e63dfee0ec956b2510cd01374",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjo5ZjdmZWZjYmRmNjI1NTFlNjNkZmVlMGVjOTU2YjI1MTBjZDAxMzc0",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-06-30T20:35:51Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-06-30T20:35:51Z"
+      },
+      "message": "Organizing for Sonatype repo",
+      "tree": {
+        "sha": "a4793a086f1ca5c93b144bb69fc2742df4e57bb9",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/a4793a086f1ca5c93b144bb69fc2742df4e57bb9"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/9f7fefcbdf62551e63dfee0ec956b2510cd01374",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/9f7fefcbdf62551e63dfee0ec956b2510cd01374",
+    "html_url": "https://github.com/asafh/jtoml/commit/9f7fefcbdf62551e63dfee0ec956b2510cd01374",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/9f7fefcbdf62551e63dfee0ec956b2510cd01374/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "3918d1a4fa416c373b5cf8aabf790cdf2b783543",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/3918d1a4fa416c373b5cf8aabf790cdf2b783543",
+        "html_url": "https://github.com/asafh/jtoml/commit/3918d1a4fa416c373b5cf8aabf790cdf2b783543"
+      }
+    ]
+  },
+  {
+    "sha": "3918d1a4fa416c373b5cf8aabf790cdf2b783543",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjozOTE4ZDFhNGZhNDE2YzM3M2I1Y2Y4YWFiZjc5MGNkZjJiNzgzNTQz",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-06-19T05:53:49Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-06-19T05:53:49Z"
+      },
+      "message": "Merge remote-tracking branch 'origin/master'",
+      "tree": {
+        "sha": "79c139b6a6e3e073ddd065ead4958a3314185842",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/79c139b6a6e3e073ddd065ead4958a3314185842"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/3918d1a4fa416c373b5cf8aabf790cdf2b783543",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/3918d1a4fa416c373b5cf8aabf790cdf2b783543",
+    "html_url": "https://github.com/asafh/jtoml/commit/3918d1a4fa416c373b5cf8aabf790cdf2b783543",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/3918d1a4fa416c373b5cf8aabf790cdf2b783543/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "f8b280254cc51eade2482fb036f6dde3d99c8cf9",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/f8b280254cc51eade2482fb036f6dde3d99c8cf9",
+        "html_url": "https://github.com/asafh/jtoml/commit/f8b280254cc51eade2482fb036f6dde3d99c8cf9"
+      },
+      {
+        "sha": "9fb90c9d58019eee729759876ce86e1b71129b92",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/9fb90c9d58019eee729759876ce86e1b71129b92",
+        "html_url": "https://github.com/asafh/jtoml/commit/9fb90c9d58019eee729759876ce86e1b71129b92"
+      }
+    ]
+  },
+  {
+    "sha": "f8b280254cc51eade2482fb036f6dde3d99c8cf9",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjpmOGIyODAyNTRjYzUxZWFkZTI0ODJmYjAzNmY2ZGRlM2Q5OWM4Y2Y5",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-06-19T05:51:53Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-06-19T05:51:53Z"
+      },
+      "message": "Preparing for distribution",
+      "tree": {
+        "sha": "56ce0c91ec2f63162c6881aaa1e3045ecb952c98",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/56ce0c91ec2f63162c6881aaa1e3045ecb952c98"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/f8b280254cc51eade2482fb036f6dde3d99c8cf9",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/f8b280254cc51eade2482fb036f6dde3d99c8cf9",
+    "html_url": "https://github.com/asafh/jtoml/commit/f8b280254cc51eade2482fb036f6dde3d99c8cf9",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/f8b280254cc51eade2482fb036f6dde3d99c8cf9/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "aa0838f20c7fa292466d3539d9d9be46648b09ff",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/aa0838f20c7fa292466d3539d9d9be46648b09ff",
+        "html_url": "https://github.com/asafh/jtoml/commit/aa0838f20c7fa292466d3539d9d9be46648b09ff"
+      }
+    ]
+  },
+  {
+    "sha": "9fb90c9d58019eee729759876ce86e1b71129b92",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjo5ZmI5MGM5ZDU4MDE5ZWVlNzI5NzU5ODc2Y2U4NmUxYjcxMTI5Yjky",
+    "commit": {
+      "author": {
+        "name": "asafh",
+        "email": "delici@ous.im",
+        "date": "2013-03-08T16:06:42Z"
+      },
+      "committer": {
+        "name": "asafh",
+        "email": "delici@ous.im",
+        "date": "2013-03-08T16:06:42Z"
+      },
+      "message": "Update README.md",
+      "tree": {
+        "sha": "e6677812b93ed486c5924d9413147b7d7259462c",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/e6677812b93ed486c5924d9413147b7d7259462c"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/9fb90c9d58019eee729759876ce86e1b71129b92",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/9fb90c9d58019eee729759876ce86e1b71129b92",
+    "html_url": "https://github.com/asafh/jtoml/commit/9fb90c9d58019eee729759876ce86e1b71129b92",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/9fb90c9d58019eee729759876ce86e1b71129b92/comments",
+    "author": {
+      "login": "asafh",
+      "id": 1410718,
+      "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/asafh",
+      "html_url": "https://github.com/asafh",
+      "followers_url": "https://api.github.com/users/asafh/followers",
+      "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+      "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+      "organizations_url": "https://api.github.com/users/asafh/orgs",
+      "repos_url": "https://api.github.com/users/asafh/repos",
+      "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/asafh/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "asafh",
+      "id": 1410718,
+      "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/asafh",
+      "html_url": "https://github.com/asafh",
+      "followers_url": "https://api.github.com/users/asafh/followers",
+      "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+      "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+      "organizations_url": "https://api.github.com/users/asafh/orgs",
+      "repos_url": "https://api.github.com/users/asafh/repos",
+      "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/asafh/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "6c38eaaafadf6b2a6544121405accf6926cab61b",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/6c38eaaafadf6b2a6544121405accf6926cab61b",
+        "html_url": "https://github.com/asafh/jtoml/commit/6c38eaaafadf6b2a6544121405accf6926cab61b"
+      }
+    ]
+  },
+  {
+    "sha": "6c38eaaafadf6b2a6544121405accf6926cab61b",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjo2YzM4ZWFhYWZhZGY2YjJhNjU0NDEyMTQwNWFjY2Y2OTI2Y2FiNjFi",
+    "commit": {
+      "author": {
+        "name": "asafh",
+        "email": "delici@ous.im",
+        "date": "2013-03-01T18:51:50Z"
+      },
+      "committer": {
+        "name": "asafh",
+        "email": "delici@ous.im",
+        "date": "2013-03-01T18:51:50Z"
+      },
+      "message": "Update README.md",
+      "tree": {
+        "sha": "bdb30869f9fbe2afe3adb77bae71603cd13a9bc4",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/bdb30869f9fbe2afe3adb77bae71603cd13a9bc4"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/6c38eaaafadf6b2a6544121405accf6926cab61b",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/6c38eaaafadf6b2a6544121405accf6926cab61b",
+    "html_url": "https://github.com/asafh/jtoml/commit/6c38eaaafadf6b2a6544121405accf6926cab61b",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/6c38eaaafadf6b2a6544121405accf6926cab61b/comments",
+    "author": {
+      "login": "asafh",
+      "id": 1410718,
+      "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/asafh",
+      "html_url": "https://github.com/asafh",
+      "followers_url": "https://api.github.com/users/asafh/followers",
+      "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+      "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+      "organizations_url": "https://api.github.com/users/asafh/orgs",
+      "repos_url": "https://api.github.com/users/asafh/repos",
+      "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/asafh/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "asafh",
+      "id": 1410718,
+      "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/asafh",
+      "html_url": "https://github.com/asafh",
+      "followers_url": "https://api.github.com/users/asafh/followers",
+      "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+      "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+      "organizations_url": "https://api.github.com/users/asafh/orgs",
+      "repos_url": "https://api.github.com/users/asafh/repos",
+      "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/asafh/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "aa0838f20c7fa292466d3539d9d9be46648b09ff",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/aa0838f20c7fa292466d3539d9d9be46648b09ff",
+        "html_url": "https://github.com/asafh/jtoml/commit/aa0838f20c7fa292466d3539d9d9be46648b09ff"
+      }
+    ]
+  },
+  {
+    "sha": "aa0838f20c7fa292466d3539d9d9be46648b09ff",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjphYTA4MzhmMjBjN2ZhMjkyNDY2ZDM1MzlkOWQ5YmU0NjY0OGIwOWZm",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-03-01T18:43:51Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-03-01T18:43:51Z"
+      },
+      "message": "Organizing Imports",
+      "tree": {
+        "sha": "feec5e226bbae8ca0ff11f59d7052101d10ccba4",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/feec5e226bbae8ca0ff11f59d7052101d10ccba4"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/aa0838f20c7fa292466d3539d9d9be46648b09ff",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/aa0838f20c7fa292466d3539d9d9be46648b09ff",
+    "html_url": "https://github.com/asafh/jtoml/commit/aa0838f20c7fa292466d3539d9d9be46648b09ff",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/aa0838f20c7fa292466d3539d9d9be46648b09ff/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "1a24f7038d3f5a0db4804d9a3470285376b1c68a",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/1a24f7038d3f5a0db4804d9a3470285376b1c68a",
+        "html_url": "https://github.com/asafh/jtoml/commit/1a24f7038d3f5a0db4804d9a3470285376b1c68a"
+      }
+    ]
+  },
+  {
+    "sha": "1a24f7038d3f5a0db4804d9a3470285376b1c68a",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjoxYTI0ZjcwMzhkM2Y1YTBkYjQ4MDRkOWEzNDcwMjg1Mzc2YjFjNjhh",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-03-01T18:23:04Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-03-01T18:23:04Z"
+      },
+      "message": "Moving toMap methods, clearing up Javadoc",
+      "tree": {
+        "sha": "91923823ebe93948fa6a5e5ffac0b323b24643e7",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/91923823ebe93948fa6a5e5ffac0b323b24643e7"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/1a24f7038d3f5a0db4804d9a3470285376b1c68a",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/1a24f7038d3f5a0db4804d9a3470285376b1c68a",
+    "html_url": "https://github.com/asafh/jtoml/commit/1a24f7038d3f5a0db4804d9a3470285376b1c68a",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/1a24f7038d3f5a0db4804d9a3470285376b1c68a/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "5bd7bc4e998d3163fc64d53ab4e6ca6b2d2ddec9",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/5bd7bc4e998d3163fc64d53ab4e6ca6b2d2ddec9",
+        "html_url": "https://github.com/asafh/jtoml/commit/5bd7bc4e998d3163fc64d53ab4e6ca6b2d2ddec9"
+      }
+    ]
+  },
+  {
+    "sha": "5bd7bc4e998d3163fc64d53ab4e6ca6b2d2ddec9",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjo1YmQ3YmM0ZTk5OGQzMTYzZmM2NGQ1M2FiNGU2Y2E2YjJkMmRkZWM5",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-03-01T18:12:15Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-03-01T18:12:15Z"
+      },
+      "message": "Merge branch 'master' of https://github.com/asafh/jtoml",
+      "tree": {
+        "sha": "b4c1398dc0c09211323885373d3f3ae94ed135fd",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/b4c1398dc0c09211323885373d3f3ae94ed135fd"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/5bd7bc4e998d3163fc64d53ab4e6ca6b2d2ddec9",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/5bd7bc4e998d3163fc64d53ab4e6ca6b2d2ddec9",
+    "html_url": "https://github.com/asafh/jtoml/commit/5bd7bc4e998d3163fc64d53ab4e6ca6b2d2ddec9",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/5bd7bc4e998d3163fc64d53ab4e6ca6b2d2ddec9/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "bf1f809636df850d120f581ec1bbaca6849c5206",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/bf1f809636df850d120f581ec1bbaca6849c5206",
+        "html_url": "https://github.com/asafh/jtoml/commit/bf1f809636df850d120f581ec1bbaca6849c5206"
+      },
+      {
+        "sha": "40ced9d3169c5ca97ca3a51fc3c29c4b58359b71",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/40ced9d3169c5ca97ca3a51fc3c29c4b58359b71",
+        "html_url": "https://github.com/asafh/jtoml/commit/40ced9d3169c5ca97ca3a51fc3c29c4b58359b71"
+      }
+    ]
+  },
+  {
+    "sha": "bf1f809636df850d120f581ec1bbaca6849c5206",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjpiZjFmODA5NjM2ZGY4NTBkMTIwZjU4MWVjMWJiYWNhNjg0OWM1MjA2",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-03-01T18:12:02Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-03-01T18:12:02Z"
+      },
+      "message": "Reordering methods",
+      "tree": {
+        "sha": "cb98fb48f1b6a8201a8ed72b3191920dc40c09e4",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/cb98fb48f1b6a8201a8ed72b3191920dc40c09e4"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/bf1f809636df850d120f581ec1bbaca6849c5206",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/bf1f809636df850d120f581ec1bbaca6849c5206",
+    "html_url": "https://github.com/asafh/jtoml/commit/bf1f809636df850d120f581ec1bbaca6849c5206",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/bf1f809636df850d120f581ec1bbaca6849c5206/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "30601048cfb55fadc590843f6ba52838b6fc4c96",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/30601048cfb55fadc590843f6ba52838b6fc4c96",
+        "html_url": "https://github.com/asafh/jtoml/commit/30601048cfb55fadc590843f6ba52838b6fc4c96"
+      }
+    ]
+  },
+  {
+    "sha": "40ced9d3169c5ca97ca3a51fc3c29c4b58359b71",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjo0MGNlZDlkMzE2OWM1Y2E5N2NhM2E1MWZjM2MyOWM0YjU4MzU5Yjcx",
+    "commit": {
+      "author": {
+        "name": "asafh",
+        "email": "delici@ous.im",
+        "date": "2013-03-01T18:11:02Z"
+      },
+      "committer": {
+        "name": "asafh",
+        "email": "delici@ous.im",
+        "date": "2013-03-01T18:11:02Z"
+      },
+      "message": "Create LICENSE.txt",
+      "tree": {
+        "sha": "72f3831af8628f9ccd62f368ac9947752ede0acf",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/72f3831af8628f9ccd62f368ac9947752ede0acf"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/40ced9d3169c5ca97ca3a51fc3c29c4b58359b71",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/40ced9d3169c5ca97ca3a51fc3c29c4b58359b71",
+    "html_url": "https://github.com/asafh/jtoml/commit/40ced9d3169c5ca97ca3a51fc3c29c4b58359b71",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/40ced9d3169c5ca97ca3a51fc3c29c4b58359b71/comments",
+    "author": {
+      "login": "asafh",
+      "id": 1410718,
+      "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/asafh",
+      "html_url": "https://github.com/asafh",
+      "followers_url": "https://api.github.com/users/asafh/followers",
+      "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+      "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+      "organizations_url": "https://api.github.com/users/asafh/orgs",
+      "repos_url": "https://api.github.com/users/asafh/repos",
+      "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/asafh/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "asafh",
+      "id": 1410718,
+      "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/asafh",
+      "html_url": "https://github.com/asafh",
+      "followers_url": "https://api.github.com/users/asafh/followers",
+      "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+      "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+      "organizations_url": "https://api.github.com/users/asafh/orgs",
+      "repos_url": "https://api.github.com/users/asafh/repos",
+      "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/asafh/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "004f6021fe65e93b7adbc65f48d5921a0c0e5420",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/004f6021fe65e93b7adbc65f48d5921a0c0e5420",
+        "html_url": "https://github.com/asafh/jtoml/commit/004f6021fe65e93b7adbc65f48d5921a0c0e5420"
+      }
+    ]
+  },
+  {
+    "sha": "004f6021fe65e93b7adbc65f48d5921a0c0e5420",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjowMDRmNjAyMWZlNjVlOTNiN2FkYmM2NWY0OGQ1OTIxYTBjMGU1NDIw",
+    "commit": {
+      "author": {
+        "name": "asafh",
+        "email": "delici@ous.im",
+        "date": "2013-03-01T18:10:30Z"
+      },
+      "committer": {
+        "name": "asafh",
+        "email": "delici@ous.im",
+        "date": "2013-03-01T18:10:30Z"
+      },
+      "message": "Create README.md",
+      "tree": {
+        "sha": "6f3fe28636846471665f407354a3f715e156df9a",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/6f3fe28636846471665f407354a3f715e156df9a"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/004f6021fe65e93b7adbc65f48d5921a0c0e5420",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/004f6021fe65e93b7adbc65f48d5921a0c0e5420",
+    "html_url": "https://github.com/asafh/jtoml/commit/004f6021fe65e93b7adbc65f48d5921a0c0e5420",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/004f6021fe65e93b7adbc65f48d5921a0c0e5420/comments",
+    "author": {
+      "login": "asafh",
+      "id": 1410718,
+      "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/asafh",
+      "html_url": "https://github.com/asafh",
+      "followers_url": "https://api.github.com/users/asafh/followers",
+      "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+      "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+      "organizations_url": "https://api.github.com/users/asafh/orgs",
+      "repos_url": "https://api.github.com/users/asafh/repos",
+      "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/asafh/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "asafh",
+      "id": 1410718,
+      "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/asafh",
+      "html_url": "https://github.com/asafh",
+      "followers_url": "https://api.github.com/users/asafh/followers",
+      "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+      "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+      "organizations_url": "https://api.github.com/users/asafh/orgs",
+      "repos_url": "https://api.github.com/users/asafh/repos",
+      "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/asafh/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "30601048cfb55fadc590843f6ba52838b6fc4c96",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/30601048cfb55fadc590843f6ba52838b6fc4c96",
+        "html_url": "https://github.com/asafh/jtoml/commit/30601048cfb55fadc590843f6ba52838b6fc4c96"
+      }
+    ]
+  },
+  {
+    "sha": "30601048cfb55fadc590843f6ba52838b6fc4c96",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjozMDYwMTA0OGNmYjU1ZmFkYzU5MDg0M2Y2YmE1MjgzOGI2ZmM0Yzk2",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-03-01T17:32:47Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-03-01T17:32:47Z"
+      },
+      "message": "Cleaning",
+      "tree": {
+        "sha": "45a13e1f0d85adca1dfa656f5e82eb89faf5f3ca",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/45a13e1f0d85adca1dfa656f5e82eb89faf5f3ca"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/30601048cfb55fadc590843f6ba52838b6fc4c96",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/30601048cfb55fadc590843f6ba52838b6fc4c96",
+    "html_url": "https://github.com/asafh/jtoml/commit/30601048cfb55fadc590843f6ba52838b6fc4c96",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/30601048cfb55fadc590843f6ba52838b6fc4c96/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "a96ee155f1693b959b8f9c8c3ca5a62432050da7",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/a96ee155f1693b959b8f9c8c3ca5a62432050da7",
+        "html_url": "https://github.com/asafh/jtoml/commit/a96ee155f1693b959b8f9c8c3ca5a62432050da7"
+      }
+    ]
+  },
+  {
+    "sha": "a96ee155f1693b959b8f9c8c3ca5a62432050da7",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjphOTZlZTE1NWYxNjkzYjk1OWI4ZjljOGMzY2E1YTYyNDMyMDUwZGE3",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-03-01T17:30:06Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-03-01T17:30:06Z"
+      },
+      "message": "Optimizing ConsumableType order, Date fixes, cosmetic changes",
+      "tree": {
+        "sha": "c54943f474b6c7e64359a76fc0444517b3c60bbd",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/c54943f474b6c7e64359a76fc0444517b3c60bbd"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/a96ee155f1693b959b8f9c8c3ca5a62432050da7",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/a96ee155f1693b959b8f9c8c3ca5a62432050da7",
+    "html_url": "https://github.com/asafh/jtoml/commit/a96ee155f1693b959b8f9c8c3ca5a62432050da7",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/a96ee155f1693b959b8f9c8c3ca5a62432050da7/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "628bb9c17c158d23ad481b1d45e48e37484b781b",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/628bb9c17c158d23ad481b1d45e48e37484b781b",
+        "html_url": "https://github.com/asafh/jtoml/commit/628bb9c17c158d23ad481b1d45e48e37484b781b"
+      }
+    ]
+  },
+  {
+    "sha": "628bb9c17c158d23ad481b1d45e48e37484b781b",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjo2MjhiYjljMTdjMTU4ZDIzYWQ0ODFiMWQ0NWU0OGUzNzQ4NGI3ODFi",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-03-01T17:19:33Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-03-01T17:19:33Z"
+      },
+      "message": "Added Unit Tests based on agrison/jtoml's Unit Tests",
+      "tree": {
+        "sha": "bf69bf074a0d55e6e21b772136baf81bc9a94893",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/bf69bf074a0d55e6e21b772136baf81bc9a94893"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/628bb9c17c158d23ad481b1d45e48e37484b781b",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/628bb9c17c158d23ad481b1d45e48e37484b781b",
+    "html_url": "https://github.com/asafh/jtoml/commit/628bb9c17c158d23ad481b1d45e48e37484b781b",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/628bb9c17c158d23ad481b1d45e48e37484b781b/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "5f11b84c5c9e36baeaa509fd1c734c7cc470cd18",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/5f11b84c5c9e36baeaa509fd1c734c7cc470cd18",
+        "html_url": "https://github.com/asafh/jtoml/commit/5f11b84c5c9e36baeaa509fd1c734c7cc470cd18"
+      }
+    ]
+  },
+  {
+    "sha": "5f11b84c5c9e36baeaa509fd1c734c7cc470cd18",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjo1ZjExYjg0YzVjOWUzNmJhZWFhNTA5ZmQxYzczNGM3Y2M0NzBjZDE4",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-03-01T17:18:52Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-03-01T17:18:52Z"
+      },
+      "message": "Javadoc, Renames, Added ObjectDeserializer to read KeyGroups as arbitrary objects",
+      "tree": {
+        "sha": "fbb7f700f56260b6e6415251dadd6c9ea2b7e197",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/fbb7f700f56260b6e6415251dadd6c9ea2b7e197"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/5f11b84c5c9e36baeaa509fd1c734c7cc470cd18",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/5f11b84c5c9e36baeaa509fd1c734c7cc470cd18",
+    "html_url": "https://github.com/asafh/jtoml/commit/5f11b84c5c9e36baeaa509fd1c734c7cc470cd18",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/5f11b84c5c9e36baeaa509fd1c734c7cc470cd18/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "f71a659df56721df6120e12b28d634bf142be8b1",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/f71a659df56721df6120e12b28d634bf142be8b1",
+        "html_url": "https://github.com/asafh/jtoml/commit/f71a659df56721df6120e12b28d634bf142be8b1"
+      }
+    ]
+  },
+  {
+    "sha": "f71a659df56721df6120e12b28d634bf142be8b1",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjpmNzFhNjU5ZGY1NjcyMWRmNjEyMGUxMmIyOGQ2MzRiZjE0MmJlOGIx",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-02-28T20:06:10Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-02-28T20:06:10Z"
+      },
+      "message": "Renaming, toMap fnctions",
+      "tree": {
+        "sha": "25a852e31dc8032f663c6d4daf3301cc821d7542",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/25a852e31dc8032f663c6d4daf3301cc821d7542"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/f71a659df56721df6120e12b28d634bf142be8b1",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/f71a659df56721df6120e12b28d634bf142be8b1",
+    "html_url": "https://github.com/asafh/jtoml/commit/f71a659df56721df6120e12b28d634bf142be8b1",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/f71a659df56721df6120e12b28d634bf142be8b1/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "822667eaa95af3ead5e59e352448c3cc239591fa",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/822667eaa95af3ead5e59e352448c3cc239591fa",
+        "html_url": "https://github.com/asafh/jtoml/commit/822667eaa95af3ead5e59e352448c3cc239591fa"
+      }
+    ]
+  },
+  {
+    "sha": "822667eaa95af3ead5e59e352448c3cc239591fa",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjo4MjI2NjdlYWE5NWFmM2VhZDVlNTllMzUyNDQ4YzNjYzIzOTU5MWZh",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-02-28T01:04:28Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-02-28T01:04:28Z"
+      },
+      "message": "Javadocs",
+      "tree": {
+        "sha": "ccb09c2dba9f03e10df2427d095116d21ba179e8",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/ccb09c2dba9f03e10df2427d095116d21ba179e8"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/822667eaa95af3ead5e59e352448c3cc239591fa",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/822667eaa95af3ead5e59e352448c3cc239591fa",
+    "html_url": "https://github.com/asafh/jtoml/commit/822667eaa95af3ead5e59e352448c3cc239591fa",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/822667eaa95af3ead5e59e352448c3cc239591fa/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "2a70bc3af543d0a27615f71be44d9032f864f97f",
+        "url": "https://api.github.com/repos/asafh/jtoml/commits/2a70bc3af543d0a27615f71be44d9032f864f97f",
+        "html_url": "https://github.com/asafh/jtoml/commit/2a70bc3af543d0a27615f71be44d9032f864f97f"
+      }
+    ]
+  },
+  {
+    "sha": "2a70bc3af543d0a27615f71be44d9032f864f97f",
+    "node_id": "MDY6Q29tbWl0ODUwNjYwMjoyYTcwYmMzYWY1NDNkMGEyNzYxNWY3MWJlNDRkOTAzMmY4NjRmOTdm",
+    "commit": {
+      "author": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-02-28T00:58:39Z"
+      },
+      "committer": {
+        "name": "Asafh",
+        "email": "asafh.gh@ous.im",
+        "date": "2013-02-28T00:58:39Z"
+      },
+      "message": "Initial Commit",
+      "tree": {
+        "sha": "3e211476eea3a44e6b3b04c40de39fe810ab18e9",
+        "url": "https://api.github.com/repos/asafh/jtoml/git/trees/3e211476eea3a44e6b3b04c40de39fe810ab18e9"
+      },
+      "url": "https://api.github.com/repos/asafh/jtoml/git/commits/2a70bc3af543d0a27615f71be44d9032f864f97f",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/commits/2a70bc3af543d0a27615f71be44d9032f864f97f",
+    "html_url": "https://github.com/asafh/jtoml/commit/2a70bc3af543d0a27615f71be44d9032f864f97f",
+    "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/2a70bc3af543d0a27615f71be44d9032f864f97f/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg '\"test-code-url\"' build/discovered-artifact-metadata | head -20" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/asafh/jtoml/contents/src/test/java?ref=eca85586c724333bfaa1167f31173d8e59c770c4' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/asafh/jtoml/contents?ref=eca85586c724333bfaa1167f31173d8e59c770c4' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db
+ succeeded in 166ms:
+[
+  {
+    "name": "io",
+    "path": "src/test/java/io",
+    "sha": "8097a5514b4704173b96a42db990481e439c80c6",
+    "size": 0,
+    "url": "https://api.github.com/repos/asafh/jtoml/contents/src/test/java/io?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+    "html_url": "https://github.com/asafh/jtoml/tree/eca85586c724333bfaa1167f31173d8e59c770c4/src/test/java/io",
+    "git_url": "https://api.github.com/repos/asafh/jtoml/git/trees/8097a5514b4704173b96a42db990481e439c80c6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/asafh/jtoml/contents/src/test/java/io?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+      "git": "https://api.github.com/repos/asafh/jtoml/git/trees/8097a5514b4704173b96a42db990481e439c80c6",
+      "html": "https://github.com/asafh/jtoml/tree/eca85586c724333bfaa1167f31173d8e59c770c4/src/test/java/io"
+    }
+  }
+]
+
+ succeeded in 174ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "3d13621b2e86ebbf1b7cd5d1f45a16ea768cd064",
+    "size": 82,
+    "url": "https://api.github.com/repos/asafh/jtoml/contents/.gitignore?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+    "html_url": "https://github.com/asafh/jtoml/blob/eca85586c724333bfaa1167f31173d8e59c770c4/.gitignore",
+    "git_url": "https://api.github.com/repos/asafh/jtoml/git/blobs/3d13621b2e86ebbf1b7cd5d1f45a16ea768cd064",
+    "download_url": "https://raw.githubusercontent.com/asafh/jtoml/eca85586c724333bfaa1167f31173d8e59c770c4/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/asafh/jtoml/contents/.gitignore?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+      "git": "https://api.github.com/repos/asafh/jtoml/git/blobs/3d13621b2e86ebbf1b7cd5d1f45a16ea768cd064",
+      "html": "https://github.com/asafh/jtoml/blob/eca85586c724333bfaa1167f31173d8e59c770c4/.gitignore"
+    }
+  },
+  {
+    "name": "LICENSE.txt",
+    "path": "LICENSE.txt",
+    "sha": "ef31425df75ebcf452090d7203d6db1915156842",
+    "size": 581,
+    "url": "https://api.github.com/repos/asafh/jtoml/contents/LICENSE.txt?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+    "html_url": "https://github.com/asafh/jtoml/blob/eca85586c724333bfaa1167f31173d8e59c770c4/LICENSE.txt",
+    "git_url": "https://api.github.com/repos/asafh/jtoml/git/blobs/ef31425df75ebcf452090d7203d6db1915156842",
+    "download_url": "https://raw.githubusercontent.com/asafh/jtoml/eca85586c724333bfaa1167f31173d8e59c770c4/LICENSE.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/asafh/jtoml/contents/LICENSE.txt?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+      "git": "https://api.github.com/repos/asafh/jtoml/git/blobs/ef31425df75ebcf452090d7203d6db1915156842",
+      "html": "https://github.com/asafh/jtoml/blob/eca85586c724333bfaa1167f31173d8e59c770c4/LICENSE.txt"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "16db5325f5b6a6473c96ba615064060d8f5c21d7",
+    "size": 2226,
+    "url": "https://api.github.com/repos/asafh/jtoml/contents/README.md?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+    "html_url": "https://github.com/asafh/jtoml/blob/eca85586c724333bfaa1167f31173d8e59c770c4/README.md",
+    "git_url": "https://api.github.com/repos/asafh/jtoml/git/blobs/16db5325f5b6a6473c96ba615064060d8f5c21d7",
+    "download_url": "https://raw.githubusercontent.com/asafh/jtoml/eca85586c724333bfaa1167f31173d8e59c770c4/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/asafh/jtoml/contents/README.md?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+      "git": "https://api.github.com/repos/asafh/jtoml/git/blobs/16db5325f5b6a6473c96ba615064060d8f5c21d7",
+      "html": "https://github.com/asafh/jtoml/blob/eca85586c724333bfaa1167f31173d8e59c770c4/README.md"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "4cb052bba1d7550203711b76958aaa42aca18513",
+    "size": 1610,
+    "url": "https://api.github.com/repos/asafh/jtoml/contents/pom.xml?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+    "html_url": "https://github.com/asafh/jtoml/blob/eca85586c724333bfaa1167f31173d8e59c770c4/pom.xml",
+    "git_url": "https://api.github.com/repos/asafh/jtoml/git/blobs/4cb052bba1d7550203711b76958aaa42aca18513",
+    "download_url": "https://raw.githubusercontent.com/asafh/jtoml/eca85586c724333bfaa1167f31173d8e59c770c4/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/asafh/jtoml/contents/pom.xml?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+      "git": "https://api.github.com/repos/asafh/jtoml/git/blobs/4cb052bba1d7550203711b76958aaa42aca18513",
+      "html": "https://github.com/asafh/jtoml/blob/eca85586c724333bfaa1167f31173d8e59c770c4/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "d5cfc703dd44a2e9ad6ef0719091f82fe65d1323",
+    "size": 0,
+    "url": "https://api.github.com/repos/asafh/jtoml/contents/src?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+    "html_url": "https://github.com/asafh/jtoml/tree/eca85586c724333bfaa1167f31173d8e59c770c4/src",
+    "git_url": "https://api.github.com/repos/asafh/jtoml/git/trees/d5cfc703dd44a2e9ad6ef0719091f82fe65d1323",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/asafh/jtoml/contents/src?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+      "git": "https://api.github.com/repos/asafh/jtoml/git/trees/d5cfc703dd44a2e9ad6ef0719091f82fe65d1323",
+      "html": "https://github.com/asafh/jtoml/tree/eca85586c724333bfaa1167f31173d8e59c770c4/src"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db
+ succeeded in 0ms:
+build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/asafh/jtoml/commits/eca85586c724333bfaa1167f31173d8e59c770c4' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/asafh/jtoml/contents/src/test/java/io/ous/jtoml?ref=eca85586c724333bfaa1167f31173d8e59c770c4' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db
+ succeeded in 181ms:
+[
+  {
+    "name": "ExampleTomlTest.java",
+    "path": "src/test/java/io/ous/jtoml/ExampleTomlTest.java",
+    "sha": "f3cc10b570a1e1393950f43ef3476ec56c959148",
+    "size": 3302,
+    "url": "https://api.github.com/repos/asafh/jtoml/contents/src/test/java/io/ous/jtoml/ExampleTomlTest.java?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+    "html_url": "https://github.com/asafh/jtoml/blob/eca85586c724333bfaa1167f31173d8e59c770c4/src/test/java/io/ous/jtoml/ExampleTomlTest.java",
+    "git_url": "https://api.github.com/repos/asafh/jtoml/git/blobs/f3cc10b570a1e1393950f43ef3476ec56c959148",
+    "download_url": "https://raw.githubusercontent.com/asafh/jtoml/eca85586c724333bfaa1167f31173d8e59c770c4/src/test/java/io/ous/jtoml/ExampleTomlTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/asafh/jtoml/contents/src/test/java/io/ous/jtoml/ExampleTomlTest.java?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+      "git": "https://api.github.com/repos/asafh/jtoml/git/blobs/f3cc10b570a1e1393950f43ef3476ec56c959148",
+      "html": "https://github.com/asafh/jtoml/blob/eca85586c724333bfaa1167f31173d8e59c770c4/src/test/java/io/ous/jtoml/ExampleTomlTest.java"
+    }
+  },
+  {
+    "name": "InvalidTest.java",
+    "path": "src/test/java/io/ous/jtoml/InvalidTest.java",
+    "sha": "be1339254f664e110a681b51bd8d28fae7e46b71",
+    "size": 4068,
+    "url": "https://api.github.com/repos/asafh/jtoml/contents/src/test/java/io/ous/jtoml/InvalidTest.java?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+    "html_url": "https://github.com/asafh/jtoml/blob/eca85586c724333bfaa1167f31173d8e59c770c4/src/test/java/io/ous/jtoml/InvalidTest.java",
+    "git_url": "https://api.github.com/repos/asafh/jtoml/git/blobs/be1339254f664e110a681b51bd8d28fae7e46b71",
+    "download_url": "https://raw.githubusercontent.com/asafh/jtoml/eca85586c724333bfaa1167f31173d8e59c770c4/src/test/java/io/ous/jtoml/InvalidTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/asafh/jtoml/contents/src/test/java/io/ous/jtoml/InvalidTest.java?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+      "git": "https://api.github.com/repos/asafh/jtoml/git/blobs/be1339254f664e110a681b51bd8d28fae7e46b71",
+      "html": "https://github.com/asafh/jtoml/blob/eca85586c724333bfaa1167f31173d8e59c770c4/src/test/java/io/ous/jtoml/InvalidTest.java"
+    }
+  },
+  {
+    "name": "SpecificationTest.java",
+    "path": "src/test/java/io/ous/jtoml/SpecificationTest.java",
+    "sha": "131a0d1298d21a11b205409330dcac88b2e0834e",
+    "size": 14790,
+    "url": "https://api.github.com/repos/asafh/jtoml/contents/src/test/java/io/ous/jtoml/SpecificationTest.java?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+    "html_url": "https://github.com/asafh/jtoml/blob/eca85586c724333bfaa1167f31173d8e59c770c4/src/test/java/io/ous/jtoml/SpecificationTest.java",
+    "git_url": "https://api.github.com/repos/asafh/jtoml/git/blobs/131a0d1298d21a11b205409330dcac88b2e0834e",
+    "download_url": "https://raw.githubusercontent.com/asafh/jtoml/eca85586c724333bfaa1167f31173d8e59c770c4/src/test/java/io/ous/jtoml/SpecificationTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/asafh/jtoml/contents/src/test/java/io/ous/jtoml/SpecificationTest.java?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+      "git": "https://api.github.com/repos/asafh/jtoml/git/blobs/131a0d1298d21a11b205409330dcac88b2e0834e",
+      "html": "https://github.com/asafh/jtoml/blob/eca85586c724333bfaa1167f31173d8e59c770c4/src/test/java/io/ous/jtoml/SpecificationTest.java"
+    }
+  },
+  {
+    "name": "Utils.java",
+    "path": "src/test/java/io/ous/jtoml/Utils.java",
+    "sha": "b91f2ca4271f98b2b0934ef6962198570ef86b2d",
+    "size": 574,
+    "url": "https://api.github.com/repos/asafh/jtoml/contents/src/test/java/io/ous/jtoml/Utils.java?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+    "html_url": "https://github.com/asafh/jtoml/blob/eca85586c724333bfaa1167f31173d8e59c770c4/src/test/java/io/ous/jtoml/Utils.java",
+    "git_url": "https://api.github.com/repos/asafh/jtoml/git/blobs/b91f2ca4271f98b2b0934ef6962198570ef86b2d",
+    "download_url": "https://raw.githubusercontent.com/asafh/jtoml/eca85586c724333bfaa1167f31173d8e59c770c4/src/test/java/io/ous/jtoml/Utils.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/asafh/jtoml/contents/src/test/java/io/ous/jtoml/Utils.java?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+      "git": "https://api.github.com/repos/asafh/jtoml/git/blobs/b91f2ca4271f98b2b0934ef6962198570ef86b2d",
+      "html": "https://github.com/asafh/jtoml/blob/eca85586c724333bfaa1167f31173d8e59c770c4/src/test/java/io/ous/jtoml/Utils.java"
+    }
+  }
+]
+
+ succeeded in 278ms:
+{
+  "sha": "eca85586c724333bfaa1167f31173d8e59c770c4",
+  "node_id": "MDY6Q29tbWl0ODUwNjYwMjplY2E4NTU4NmM3MjQzMzNiZmFhMTE2N2YzMTE3M2Q4ZTU5Yzc3MGM0",
+  "commit": {
+    "author": {
+      "name": "Asafh",
+      "email": "asafh@users.noreply.github.com",
+      "date": "2017-01-14T14:14:20Z"
+    },
+    "committer": {
+      "name": "Asafh",
+      "email": "asafh@users.noreply.github.com",
+      "date": "2017-01-14T14:14:20Z"
+    },
+    "message": "Updating version to release version 2.0.0",
+    "tree": {
+      "sha": "b34c43a39de49acb57f90276e655f6b6d39b3711",
+      "url": "https://api.github.com/repos/asafh/jtoml/git/trees/b34c43a39de49acb57f90276e655f6b6d39b3711"
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/git/commits/eca85586c724333bfaa1167f31173d8e59c770c4",
+    "comment_count": 0,
+    "verification": {
+      "verified": false,
+      "reason": "unsigned",
+      "signature": null,
+      "payload": null,
+      "verified_at": null
+    }
+  },
+  "url": "https://api.github.com/repos/asafh/jtoml/commits/eca85586c724333bfaa1167f31173d8e59c770c4",
+  "html_url": "https://github.com/asafh/jtoml/commit/eca85586c724333bfaa1167f31173d8e59c770c4",
+  "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/eca85586c724333bfaa1167f31173d8e59c770c4/comments",
+  "author": {
+    "login": "asafh",
+    "id": 1410718,
+    "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+    "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/asafh",
+    "html_url": "https://github.com/asafh",
+    "followers_url": "https://api.github.com/users/asafh/followers",
+    "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+    "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+    "organizations_url": "https://api.github.com/users/asafh/orgs",
+    "repos_url": "https://api.github.com/users/asafh/repos",
+    "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/asafh/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "committer": {
+    "login": "asafh",
+    "id": 1410718,
+    "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+    "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/asafh",
+    "html_url": "https://github.com/asafh",
+    "followers_url": "https://api.github.com/users/asafh/followers",
+    "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+    "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+    "organizations_url": "https://api.github.com/users/asafh/orgs",
+    "repos_url": "https://api.github.com/users/asafh/repos",
+    "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/asafh/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "parents": [
+    {
+      "sha": "39e987e44366184062d16825439d240ea67b352d",
+      "url": "https://api.github.com/repos/asafh/jtoml/commits/39e987e44366184062d16825439d240ea67b352d",
+      "html_url": "https://github.com/asafh/jtoml/commit/39e987e44366184062d16825439d240ea67b352d"
+    }
+  ],
+  "stats": {
+    "total": 2,
+    "additions": 1,
+    "deletions": 1
+  },
+  "files": [
+    {
+      "sha": "4cb052bba1d7550203711b76958aaa42aca18513",
+      "filename": "pom.xml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/asafh/jtoml/blob/eca85586c724333bfaa1167f31173d8e59c770c4/pom.xml",
+      "raw_url": "https://github.com/asafh/jtoml/raw/eca85586c724333bfaa1167f31173d8e59c770c4/pom.xml",
+      "contents_url": "https://api.github.com/repos/asafh/jtoml/contents/pom.xml?ref=eca85586c724333bfaa1167f31173d8e59c770c4",
+      "patch": "@@ -7,7 +7,7 @@\n     </parent>\n   <groupId>io.ous</groupId>\n   <artifactId>jtoml</artifactId>\n-  <version>2.0.0-SNAPSHOT</version>\n+  <version>2.0.0</version>\n   <packaging>jar</packaging>\n \n   <name>jtoml</name>"
+    }
+  ]
+}
+
+exec
+/usr/bin/bash -lc "rg 'source-code-url|documentation-url|test-code-url|repository-url' -g '*.json' metadata build src | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db
+ succeeded in 0ms:
+rg: src: No such file or directory (os error 2)
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-2.15.2/toml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.18.1/jackson-dataformat-yaml-2.18.1-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-2.18.1/yaml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.18.1/jackson-dataformat-yaml-2.18.1-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/5.12.0/amqp-client-5.12.0-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:    "repository-url" : "https://github.com/rabbitmq/rabbitmq-java-client",
+metadata/com.rabbitmq/amqp-client/index.json:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v5.12.0/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/5.12.0/amqp-client-5.12.0-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/5.3.31/spring-instrument-5.3.31-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-instrument/index.json:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/5.3.31/spring-instrument-5.3.31-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-sources.jar",
+metadata/org.awaitility/awaitility/index.json:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-tests.jar",
+metadata/org.awaitility/awaitility/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-sources.jar",
+metadata/org.awaitility/awaitility/index.json:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-tests.jar",
+metadata/org.awaitility/awaitility/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/8.0.01/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/12.0.0/jetty-alpn-java-server-12.0.0-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.0/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/12.0.0/jetty-alpn-java-server-12.0.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/11.0.24/jetty-alpn-java-server-11.0.24-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-11.0.24/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/11.0.24/jetty-alpn-java-server-11.0.24-javadoc.jar",
+metadata/com.google.guava/listenablefuture/index.json:    "source-code-url": "https://github.com/google/guava/tree/v27.0/futures/listenablefuture9999",
+metadata/com.google.guava/listenablefuture/index.json:    "repository-url": "https://github.com/google/guava",
+metadata/com.google.guava/listenablefuture/index.json:    "test-code-url": "N/A",
+metadata/com.google.guava/listenablefuture/index.json:    "documentation-url": "N/A",
+metadata/com.google.guava/failureaccess/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-sources.jar",
+metadata/com.google.guava/failureaccess/index.json:    "repository-url" : "https://github.com/google/guava",
+metadata/com.google.guava/failureaccess/index.json:    "test-code-url" : "N/A",
+metadata/com.google.guava/failureaccess/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-javadoc.jar",
+metadata/com.google.android/annotations/index.json:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-sources.jar",
+metadata/com.google.android/annotations/index.json:    "repository-url": "https://android.googlesource.com/platform/sdk",
+metadata/com.google.android/annotations/index.json:    "test-code-url": "N/A",
+metadata/com.google.android/annotations/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-javadoc.jar",
+metadata/com.ning/compress-lzf/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/1.0.3/compress-lzf-1.0.3-sources.jar",
+metadata/com.ning/compress-lzf/index.json:    "repository-url" : "https://github.com/ning/compress",
+metadata/com.ning/compress-lzf/index.json:    "test-code-url" : "https://github.com/ning/compress/tree/compress-lzf-1.0.3/src/test",
+metadata/com.ning/compress-lzf/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/1.0.3/compress-lzf-1.0.3-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-sources.jar",
+metadata/org.jctools/jctools-core/index.json:    "repository-url": "https://github.com/JCTools/JCTools",
+metadata/org.jctools/jctools-core/index.json:    "test-code-url": "https://github.com/JCTools/JCTools/tree/v2.1.2/jctools-core/src/test",
+metadata/org.jctools/jctools-core/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-javadoc.jar",
+metadata/org.jline/jline-terminal-jna/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.20.0/jline-terminal-jna-3.20.0-sources.jar",
+metadata/org.jline/jline-terminal-jna/index.json:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.jline/jline-terminal-jna/index.json:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.20.0/terminal-jna/src/test",
+metadata/org.jline/jline-terminal-jna/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.20.0/jline-terminal-jna-3.20.0-javadoc.jar",
+metadata/org.jline/jline-console/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/3.28.0/jline-console-3.28.0-sources.jar",
+metadata/org.jline/jline-console/index.json:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.jline/jline-console/index.json:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-3.28.0/console/src/test",
+metadata/org.jline/jline-console/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/3.28.0/jline-console-3.28.0-javadoc.jar",
+metadata/org.jline/jline-console/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/3.22.0/jline-console-3.22.0-sources.jar",
+metadata/org.jline/jline-console/index.json:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.jline/jline-console/index.json:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.22.0/console/src/test",
+metadata/org.jline/jline-console/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/3.22.0/jline-console-3.22.0-javadoc.jar",
+metadata/org.jline/jline/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0-sources.jar",
+metadata/org.jline/jline/index.json:    "repository-url": "https://github.com/jline/jline3",
+metadata/org.jline/jline/index.json:    "test-code-url": "https://github.com/jline/jline3/tree/jline-parent-3.21.0",
+metadata/org.jline/jline/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg 'discovered-artifact-metadata|source-code-url' -g '*.*' . | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db
+ succeeded in 0ms:
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:                null, // source-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:    private static final String DISCOVERY_DIR = "discovered-artifact-metadata";
+./docs/CONTRIBUTING.md:* `source-code-url`: URL to the metadata source code location for this index entry.
+./docs/CONTRIBUTING.md:     "source-code-url": "https://github.com/example/repo/tree/main/metadata/org.example/library/1.1.0",
+./docs/CONTRIBUTING.md:To populate `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description` fields in matching `index.json` entries:
+./docs/FUNCTIONAL_SPEC.md:The schema follows semver, and **minor- and patch-version bumps** (e.g., `v2.0.1` → `v2.0.2` or `v2.0.x` → `v2.1.0`) are guaranteed to be backward-compatible with native-build-tools. Minor bumps add new optional fields used by the website, the test harness, or future tooling (`requires`, `test-version`, `skipped-versions`, `language`, `source-code-url`, `test-code-url`, `documentation-url`, `repository-url`); patch bumps refine validation of those same auxiliary fields. The plugin reads only the six fields enumerated above, so an older native-build-tools release continues to resolve metadata correctly against any newer minor or patch version of the schema. Only a **major-version bump** can break the contract, which NFR-4 forbids — schema changes are additive only.
+./forge/utility_scripts/source_context.py:    "main": "source-code-url",
+./forge/docs/dynamic-access-workflow.md:   `source-code-url`, `test-code-url`, and `documentation-url` as required.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, description, and language when those fields already contain values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:    @Option(option = "verify-artifact-sources", description = "Require source/test-source validation before selecting source-code-url or test-code-url values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                - source-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                    - Set "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                - Set missing "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:                - Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:    task.setDescription("Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:                .containsEntry("source-code-url", "https://example.com/source")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:                .containsEntry("source-code-url", "https://example.com/source")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:                .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", \"description\", and \"language\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:                .contains("- source-code-url: <missing>")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:                .contains("- source-code-url: https://example.com/source-a")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:                .contains("- source-code-url: https://example.com/source-a")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:                    "source-code-url": "https://example.com/source-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:                .contains("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:        Path discoveryFile = tempDir.resolve("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+./skills/review-library-bulk-update/SKILL.md:description: Review automated pull requests with the `library-bulk-update` label in graalvm-reachability-metadata. Use when asked to review or triage a PR that bumps tested versions for existing libraries, including approve vs close decisions, CI checks, diff-scope validation, and verification of `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` changes.
+./skills/review-library-bulk-update/SKILL.md:   - Review `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` with the same rules used by `PopulateArtifactURLs`.
+./skills/review-library-bulk-update/SKILL.md:- `source-code-url`, `test-code-url`, and `documentation-url` must point to the exact library version in the changed entry.
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-sources.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/javax.activation/activation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/15.0.0/arrow-format-15.0.0-sources.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/2.0.0.Final/jboss-interceptor-spi-2.0.0.Final-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/jakarta.websocket-client-api-2.1.0-sources.jar",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/2.1.0/jakarta.websocket-api-2.1.0-sources.jar",
+./metadata/org.junit.platform/junit-platform-commons/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20250515-f04e4c0e/google-closure-library-third-party-0.0-20250515-f04e4c0e-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20150505-021ed5b3/google-closure-library-third-party-0.0-20150505-021ed5b3-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+./metadata/org.eclipse.aether/aether-util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114-sources.jar",
+./metadata/org.eclipse.aether/aether-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-sources.jar",
+./metadata/org.eclipse.aether/aether-spi/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-spi/1.0.2.v20150114/aether-spi-1.0.2.v20150114-sources.jar",
+./metadata/org.eclipse.aether/aether-impl/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-impl/1.0.2.v20150114/aether-impl-1.0.2.v20150114-sources.jar",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:    "source-code-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-sources.jar",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-sources.jar",
+./metadata/org.dom4j/dom4j/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/dom4j/dom4j/2.1.1/dom4j-2.1.1-sources.jar",
+./metadata/org.latencyutils/LatencyUtils/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/latencyutils/LatencyUtils/2.0.3/LatencyUtils-2.0.3-sources.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-sources.jar",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-sources.jar",
+./metadata/org.xmlunit/xmlunit-placeholders/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/xmlunit/xmlunit-placeholders/2.10.2/xmlunit-placeholders-2.10.2-sources.jar",
+./metadata/org.xmlunit/xmlunit-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1-sources.jar",
+./metadata/aopalliance/aopalliance/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar",
+./metadata/javax.annotation/jsr250-api/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/javax/annotation/jsr250-api/1.0/jsr250-api-1.0-sources.jar",
+./metadata/javax.annotation/javax.annotation-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/annotation/javax.annotation-api/1.2/javax.annotation-api-1.2-sources.jar",
+./metadata/org.apache.santuario/xmlsec/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/4.0.4/xmlsec-4.0.4-sources.jar",
+./metadata/javax.jcr/jcr/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/jcr/jcr/1.0/jcr-1.0-sources.jar",
+./metadata/org.sonatype.aether/aether-util/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/1.7/aether-util-1.7-sources.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.13.1/aether-api-1.13.1-sources.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.9/aether-api-1.9-sources.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-sources.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.7/aether-api-1.7-sources.jar",
+./metadata/org.sonatype.aether/aether-spi/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-sources.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-sources.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-sources.jar",
+./metadata/com.vaadin.external.google/android-json/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1-sources.jar",
+
+codex
+The upstream repo has no `2.0.0` tag, but it does have an exact commit whose message updates the POM to release `2.0.0`, and the test tree is present at that commit. I’m going to use Maven Central for sources and javadocs, the GitHub repo for `repository-url`, and that release-version commit for the test suite.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+diff --git a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+index 7eceff4bb5464912b69fa0369af9ad772794449a..46a74b57493a0f46e28fea6347327f8ab9a552a4
+--- a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
++++ b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.ous:jtoml:2.0.0"
++  "coordinates" : "io.ous:jtoml:2.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-sources.jar",
++  "repository-url" : "https://github.com/asafh/jtoml",
++  "test-code-url" : "https://github.com/asafh/jtoml/tree/eca85586c724333bfaa1167f31173d8e59c770c4/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-javadoc.jar",
++  "description" : "JToml is a Java parser for TOML configuration files. It reads TOML documents into table-oriented Java objects and maps parsed values onto application data structures."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+index 7eceff4bb5464912b69fa0369af9ad772794449a..46a74b57493a0f46e28fea6347327f8ab9a552a4
+--- a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
++++ b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.ous:jtoml:2.0.0"
++  "coordinates" : "io.ous:jtoml:2.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-sources.jar",
++  "repository-url" : "https://github.com/asafh/jtoml",
++  "test-code-url" : "https://github.com/asafh/jtoml/tree/eca85586c724333bfaa1167f31173d8e59c770c4/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-javadoc.jar",
++  "description" : "JToml is a Java parser for TOML configuration files. It reads TOML documents into table-oriented Java objects and maps parsed values onto application data structures."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db
+ succeeded in 0ms:
+{
+  "coordinates": "io.ous:jtoml:2.0.0",
+  "source-code-url": "https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-sources.jar",
+  "repository-url": "https://github.com/asafh/jtoml",
+  "test-code-url": "https://github.com/asafh/jtoml/tree/eca85586c724333bfaa1167f31173d8e59c770c4/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-javadoc.jar",
+  "description": "JToml is a Java parser for TOML configuration files. It reads TOML documents into table-oriented Java objects and maps parsed values onto application data structures."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+index 7eceff4bb5464912b69fa0369af9ad772794449a..46a74b57493a0f46e28fea6347327f8ab9a552a4
+--- a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
++++ b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.ous:jtoml:2.0.0"
++  "coordinates" : "io.ous:jtoml:2.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-sources.jar",
++  "repository-url" : "https://github.com/asafh/jtoml",
++  "test-code-url" : "https://github.com/asafh/jtoml/tree/eca85586c724333bfaa1167f31173d8e59c770c4/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-javadoc.jar",
++  "description" : "JToml is a Java parser for TOML configuration files. It reads TOML documents into table-oriented Java objects and maps parsed values onto application data structures."
+ }
+
+codex
+The JSON parses cleanly. I’m doing one status check because this file appears outside Git’s tracked diff, which is common for generated discovery output but worth confirming before I close out.
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db
+diff --git a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+index 7eceff4bb5464912b69fa0369af9ad772794449a..46a74b57493a0f46e28fea6347327f8ab9a552a4
+--- a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
++++ b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.ous:jtoml:2.0.0"
++  "coordinates" : "io.ous:jtoml:2.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-sources.jar",
++  "repository-url" : "https://github.com/asafh/jtoml",
++  "test-code-url" : "https://github.com/asafh/jtoml/tree/eca85586c724333bfaa1167f31173d8e59c770c4/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-javadoc.jar",
++  "description" : "JToml is a Java parser for TOML configuration files. It reads TOML documents into table-oriented Java objects and maps parsed values onto application data structures."
+ }
+
+ succeeded in 148ms:
+web search: 
+web search: https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/
+web search: 
+web search: https://github.com/asafh/jtoml
+codex
+Updated [io.ous-jtoml-2.0.0.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json) with the discovered metadata.
+
+I used Maven Central for the exact `2.0.0` source and javadoc artifacts, and the upstream GitHub repo for the repository URL. ([repo1.maven.org](https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/)) The test URL points at the `src/test` tree on the commit that changes the project version to `2.0.0`; no `language` field was added because this is a Java library, not Kotlin/Groovy/Scala-specific. ([github.com](https://github.com/asafh/jtoml/commit/eca85586c724333bfaa1167f31173d8e59c770c4))
+
+Validated the JSON with `jq`.
+diff --git a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+index 7eceff4bb5464912b69fa0369af9ad772794449a..46a74b57493a0f46e28fea6347327f8ab9a552a4
+--- a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
++++ b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.ous:jtoml:2.0.0"
++  "coordinates" : "io.ous:jtoml:2.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-sources.jar",
++  "repository-url" : "https://github.com/asafh/jtoml",
++  "test-code-url" : "https://github.com/asafh/jtoml/tree/eca85586c724333bfaa1167f31173d8e59c770c4/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-javadoc.jar",
++  "description" : "JToml is a Java parser for TOML configuration files. It reads TOML documents into table-oriented Java objects and maps parsed values onto application data structures."
+ }
+
+tokens used
+70,747
+Updated [io.ous-jtoml-2.0.0.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json) with the discovered metadata.
+
+I used Maven Central for the exact `2.0.0` source and javadoc artifacts, and the upstream GitHub repo for the repository URL. ([repo1.maven.org](https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/)) The test URL points at the `src/test` tree on the commit that changes the project version to `2.0.0`; no `language` field was added because this is a Java library, not Kotlin/Groovy/Scala-specific. ([github.com](https://github.com/asafh/jtoml/commit/eca85586c724333bfaa1167f31173d8e59c770c4))
+
+Validated the JSON with `jq`.
+Ran agent for io.ous:jtoml:2.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db/build/agent-artifact-discovery-logs/io.ous-jtoml-2.0.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-ca3785db/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 27s
+9 actionable tasks: 4 executed, 5 from cache
