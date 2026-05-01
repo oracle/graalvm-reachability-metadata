@@ -8,7 +8,7 @@ package org_apache_commons.commons_math3;
 
 import org.junit.jupiter.api.Test;
 
-class Commons_math3Test {
+public class Commons_math3Test {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
