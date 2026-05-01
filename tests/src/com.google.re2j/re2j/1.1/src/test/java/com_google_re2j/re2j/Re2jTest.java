@@ -37,6 +37,22 @@ public class Re2jTest {
     }
 
     @Test
+    void supportsScopedInlineFlagsAndWordBoundaries() {
+        Pattern marker = Pattern.compile("(?i:\\b(?:todo|fixme)\\b):\\s+([a-z]+)");
+        Matcher matcher = marker.matcher("TODO: cleanup todoing: skip FixMe: refactor FIXME: RETRY");
+
+        assertThat(matcher.find()).isTrue();
+        assertThat(matcher.group()).isEqualTo("TODO: cleanup");
+        assertThat(matcher.group(1)).isEqualTo("cleanup");
+
+        assertThat(matcher.find()).isTrue();
+        assertThat(matcher.group()).isEqualTo("FixMe: refactor");
+        assertThat(matcher.group(1)).isEqualTo("refactor");
+
+        assertThat(matcher.find()).isFalse();
+    }
+
+    @Test
     void findsMatchesAndReportsCapturingGroupsAndOffsets() {
         Pattern pattern = Pattern.compile("([A-Za-z]+)-(\\d+)(?:-([A-Za-z]+))?");
         Matcher matcher = pattern.matcher("id-42 next-7-beta");
