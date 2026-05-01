@@ -196,6 +196,28 @@ public class Org_osgi_namespace_implementationTest {
     }
 
     @Test
+    void qualifiedImplementationVersionParticipatesInVersionRangeSelection() {
+        SyntheticResource resource = new SyntheticResource();
+        resource.addImplementationCapability(TRANSACTION_IMPLEMENTATION, "1.0.0", Map.of());
+        Capability qualifiedImplementation = resource.addImplementationCapability(
+                TRANSACTION_IMPLEMENTATION,
+                "1.0.0.enterprise",
+                Map.of(VENDOR_ATTRIBUTE, "aries"));
+        resource.addImplementationCapability(TRANSACTION_IMPLEMENTATION, "1.0.1", Map.of());
+        Requirement requirement = resource.addRequirement(
+                ImplementationNamespace.IMPLEMENTATION_NAMESPACE,
+                Map.of(Namespace.REQUIREMENT_FILTER_DIRECTIVE,
+                        implementationFilter(TRANSACTION_IMPLEMENTATION, "1.0.0.enterprise", "1.0.1")),
+                Map.of());
+
+        assertThat(implementationCapabilitiesSatisfying(
+                resource, requirement, TRANSACTION_IMPLEMENTATION, "1.0.0.enterprise", "1.0.1"))
+                .containsExactly(qualifiedImplementation);
+        assertThat(capabilityVersion(qualifiedImplementation))
+                .isEqualTo(new Version(1, 0, 0, "enterprise"));
+    }
+
+    @Test
     void requirementFilterCanSelectAlternativeImplementations() throws Exception {
         SyntheticResource resource = new SyntheticResource();
         Capability httpImplementation = resource.addImplementationCapability(HTTP_WHITEBOARD_IMPLEMENTATION, "1.1.0", Map.of());
