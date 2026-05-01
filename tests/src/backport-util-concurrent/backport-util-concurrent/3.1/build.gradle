@@ -9,6 +9,12 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String nanoTimerProviderProperty = "edu.emory.mathcs.backport.java.util.concurrent.NanoTimerProvider"
+String nanoTimerProviderClass = "backport_util_concurrent.backport_util_concurrent.UtilsTest"
+
+tasks.withType(Test).configureEach {
+    systemProperty nanoTimerProviderProperty, nanoTimerProviderClass
+}
 
 dependencies {
     testImplementation "backport-util-concurrent:backport-util-concurrent:$libraryVersion"
@@ -16,6 +22,11 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            runtimeArgs("-D${nanoTimerProviderProperty}=${nanoTimerProviderClass}")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
