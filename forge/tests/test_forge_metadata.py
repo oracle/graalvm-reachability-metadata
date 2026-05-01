@@ -568,13 +568,13 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             configs = forge_metadata.get_work_queue_configs_from_environment()
 
         self.assertEqual(
-            [(config.label, config.limit, config.strategy_name) for config in configs],
+            [(config.label, config.limit, config.strategy_name, config.random_offset) for config in configs],
             [
-                (forge_metadata.LABEL_JAVAC_FAIL, 0, None),
-                (forge_metadata.LABEL_JAVA_RUN_FAIL, 2, None),
-                (forge_metadata.LABEL_NI_RUN_FAIL, 0, None),
-                (forge_metadata.LABEL_LIBRARY_UPDATE, 0, None),
-                (forge_metadata.LABEL_LIBRARY_NEW, 3, "custom-strategy"),
+                (forge_metadata.LABEL_JAVAC_FAIL, 0, None, False),
+                (forge_metadata.LABEL_JAVA_RUN_FAIL, 2, None, False),
+                (forge_metadata.LABEL_NI_RUN_FAIL, 0, None, False),
+                (forge_metadata.LABEL_LIBRARY_UPDATE, 0, None, False),
+                (forge_metadata.LABEL_LIBRARY_NEW, 3, "custom-strategy", True),
             ],
         )
 
@@ -600,6 +600,43 @@ class WorkQueueSchedulerTests(unittest.TestCase):
                 (forge_metadata.LABEL_PR_LIBRARY_BULK_UPDATE, 4, "review-model"),
             ],
         )
+
+    def test_random_work_offset_can_be_disabled_from_environment(self) -> None:
+        env = {
+            "FORGE_JAVAC_WORK_LIMIT": "0",
+            "FORGE_JAVA_RUN_WORK_LIMIT": "0",
+            "FORGE_NI_RUN_WORK_LIMIT": "0",
+            "FORGE_WORK_LIMIT": "1",
+            "FORGE_RANDOM_WORK_OFFSET": "0",
+        }
+
+        with patch.dict(os.environ, env, clear=True):
+            configs = forge_metadata.get_work_queue_configs_from_environment()
+
+        self.assertFalse(configs[-1].random_offset)
+
+    def test_random_work_offset_can_be_disabled_from_cli_override(self) -> None:
+        env = {
+            "FORGE_JAVAC_WORK_LIMIT": "0",
+            "FORGE_JAVA_RUN_WORK_LIMIT": "0",
+            "FORGE_NI_RUN_WORK_LIMIT": "0",
+            "FORGE_WORK_LIMIT": "1",
+            "FORGE_RANDOM_WORK_OFFSET": "1",
+        }
+
+        with patch.dict(os.environ, env, clear=True):
+            configs = forge_metadata.get_work_queue_configs_from_environment(
+                random_offset_override=False,
+            )
+
+        self.assertFalse(configs[-1].random_offset)
+
+    def test_run_work_queues_accepts_random_offset_flags(self) -> None:
+        random_args = forge_metadata.parse_args(["--run-work-queues", "--random-offset"])
+        no_random_args = forge_metadata.parse_args(["--run-work-queues", "--no-random-offset"])
+
+        self.assertTrue(random_args.random_offset)
+        self.assertFalse(no_random_args.random_offset)
 
     def test_review_label_environment_overrides_default_review_queues(self) -> None:
         env = {
@@ -698,6 +735,39 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             environment_already_validated=True,
         )
         process_reviews.assert_not_called()
+
+    def test_process_work_queues_resolves_auth_for_review_only_queue(self) -> None:
+        env = {
+            "FORGE_JAVAC_WORK_LIMIT": "0",
+            "FORGE_JAVA_RUN_WORK_LIMIT": "0",
+            "FORGE_NI_RUN_WORK_LIMIT": "0",
+            "FORGE_WORK_LIMIT": "0",
+            "FORGE_REVIEW_LIMIT": "1",
+            "FORGE_REVIEW_LABEL": forge_metadata.LABEL_LIBRARY_NEW,
+            "FORGE_REVIEW_MODEL": "review-model",
+        }
+
+        with patch.dict(os.environ, env, clear=True), \
+                patch.object(
+                    forge_metadata,
+                    "resolve_authenticated_user",
+                    return_value="automation-user",
+                ) as resolve_authenticated_user, \
+                patch.object(forge_metadata, "process_pull_requests_with_label") as process_reviews:
+            forge_metadata.process_work_queues(
+                "/tmp/reachability",
+                "/tmp/metrics",
+                None,
+            )
+
+        resolve_authenticated_user.assert_called_once_with(None)
+        process_reviews.assert_called_once_with(
+            forge_metadata.LABEL_LIBRARY_NEW,
+            1,
+            "/tmp/reachability",
+            "automation-user",
+            "review-model",
+        )
 
 
 class IssueClaimCacheTests(unittest.TestCase):

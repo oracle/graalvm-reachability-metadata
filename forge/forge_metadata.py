@@ -1004,6 +1004,17 @@ def get_authenticated_user() -> str:
     return result.stdout.strip()
 
 
+def resolve_authenticated_user(authenticated_user: str | None = None) -> str:
+    """Resolve and log the authenticated GitHub username when remote work needs it."""
+    if authenticated_user is not None:
+        return authenticated_user
+    ensure_gh_authenticated()
+    resolved_user = get_authenticated_user()
+    print()
+    log_stage("github-auth", f"Authenticated as: {resolved_user}")
+    return resolved_user
+
+
 def is_authored_by_user(pr: dict, username: str) -> bool:
     """Return True when the GitHub pull request author matches the authenticated user."""
     author = pr.get("author")
@@ -2792,6 +2803,7 @@ def get_env_zero_one_bool(name: str, default: bool) -> bool:
 
 def get_work_queue_configs_from_environment(
         work_strategy_name_override: str | None = None,
+        random_offset_override: bool | None = None,
 ) -> list[WorkQueueConfig]:
     """Return issue work queue configuration from the FORGE_* environment."""
     work_label = os.environ.get("FORGE_WORK_LABEL", LABEL_LIBRARY_NEW)
@@ -2828,7 +2840,11 @@ def get_work_queue_configs_from_environment(
                 or os.environ.get("FORGE_STRATEGY_NAME")
                 or DEFAULT_WORK_QUEUE_STRATEGY_NAME
             ),
-            random_offset=get_env_zero_one_bool("FORGE_RANDOM_WORK_OFFSET", False),
+            random_offset=(
+                random_offset_override
+                if random_offset_override is not None
+                else get_env_zero_one_bool("FORGE_RANDOM_WORK_OFFSET", True)
+            ),
         ),
     ]
 
@@ -4183,7 +4199,7 @@ def process_issues_with_label(
         canonical_metrics_repo_path: str,
         strategy_name: str | None,
         keep_tests_without_dynamic_access: bool,
-        authenticated_user: str,
+        authenticated_user: str | None,
         parallelism: int,
         in_metadata_repo: bool = True,
         environment_already_validated: bool = False,
@@ -4197,6 +4213,8 @@ def process_issues_with_label(
     in_metadata_repo = True
     if not environment_already_validated:
         validate_issue_processing_environment()
+
+    authenticated_user = resolve_authenticated_user(authenticated_user)
 
     processed_count = 0
     current_offset = offset
@@ -4335,15 +4353,16 @@ def process_issues_with_label(
 def process_work_queues(
         base_reachability_metadata_path: str,
         canonical_metrics_repo_path: str,
-        authenticated_user: str,
+        authenticated_user: str | None,
         work_strategy_name_override: str | None = None,
         keep_tests_without_dynamic_access_override: bool = False,
         parallelism_default: int = DEFAULT_PARALLELISM,
         in_metadata_repo: bool = True,
+        random_offset_override: bool | None = None,
 ) -> None:
     """Process all configured issue and review queues in one Python process."""
     in_metadata_repo = True
-    queue_configs = get_work_queue_configs_from_environment(work_strategy_name_override)
+    queue_configs = get_work_queue_configs_from_environment(work_strategy_name_override, random_offset_override)
     review_queue_configs = get_review_queue_configs_from_environment()
     validate_work_queue_strategies(queue_configs)
 
@@ -4363,6 +4382,7 @@ def process_work_queues(
             log_stage("work-queue", f"Skipping issue queue '{queue_config.label}' because its limit is 0")
             continue
 
+        authenticated_user = resolve_authenticated_user(authenticated_user)
         print()
         log_stage(
             "work-queue",
@@ -4396,6 +4416,7 @@ def process_work_queues(
             log_stage("work-queue", f"Skipping review queue '{review_queue_config.label}' because its limit is 0")
             continue
 
+        authenticated_user = resolve_authenticated_user(authenticated_user)
         print()
         log_stage(
             "work-queue",
@@ -4480,11 +4501,20 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--random-offset",
+        dest="random_offset",
         action="store_true",
+        default=None,
         help=(
-            "Start issue scanning at a random open issue offset for the selected label. "
+            "Start issue scanning at a random open issue offset for the selected label "
+            "or run-work-queues work queue. "
             f"The random range is capped at GitHub search's first {GITHUB_SEARCH_MAX_RESULTS} results."
         ),
+    )
+    parser.add_argument(
+        "--no-random-offset",
+        dest="random_offset",
+        action="store_false",
+        help="Disable random issue scan offsets for run-work-queues or selected-label runs.",
     )
     parser.add_argument(
         "--parallelism",
@@ -4496,9 +4526,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     args = parser.parse_args(argv)
     if args.period is not None and args.review_pr is None:
         parser.error("--period can only be used with --review-pr")
-    if args.random_offset and args.label is None:
-        parser.error("--random-offset can only be used with --label")
-    if args.random_offset and args.offset != 0:
+    if args.random_offset is not None and args.label is None and not args.run_work_queues:
+        parser.error("--random-offset/--no-random-offset can only be used with --label or --run-work-queues")
+    if args.random_offset is True and args.offset != 0:
         parser.error("--random-offset cannot be combined with --offset")
     return args
 
@@ -4551,7 +4581,6 @@ def main() -> None:
             require_strategy_by_name(args.strategy_name)
         if args.review_pr is None and not args.run_work_queues:
             validate_issue_processing_environment()
-        ensure_gh_authenticated()
         reachability_metadata_path, metrics_repo_path = resolve_repo_roots(
             args.reachability_metadata_path,
             None,
@@ -4562,21 +4591,19 @@ def main() -> None:
             print("ERROR: GITHUB_PROJECT_NUMBER env var is not set.", file=sys.stderr)
             sys.exit(1)
 
-        authenticated_user = get_authenticated_user()
-        print()
-        log_stage("github-auth", f"Authenticated as: {authenticated_user}")
-
         if args.run_work_queues:
             process_work_queues(
                 reachability_metadata_path,
                 metrics_repo_path,
-                authenticated_user,
+                None,
                 args.strategy_name,
                 args.keep_tests_without_dynamic_access,
                 args.parallelism,
                 in_metadata_repo=args.in_metadata_repo,
+                random_offset_override=args.random_offset,
             )
         elif args.review_pr is not None:
+            authenticated_user = resolve_authenticated_user()
             run_pull_request_review_loop(
                 args.review_pr,
                 args.limit,
@@ -4586,6 +4613,7 @@ def main() -> None:
                 args.period,
             )
         elif args.issue_number is not None:
+            authenticated_user = resolve_authenticated_user()
             process_single_issue(
                 args.issue_number,
                 reachability_metadata_path,
@@ -4596,8 +4624,9 @@ def main() -> None:
                 in_metadata_repo=args.in_metadata_repo,
             )
         else:
+            authenticated_user = resolve_authenticated_user()
             issue_scan_offset = args.offset
-            if args.random_offset:
+            if args.random_offset is True:
                 issue_scan_offset = resolve_random_issue_scan_offset(args.label)
                 print()
                 log_stage("issue-scan", f"Selected random start offset {issue_scan_offset} for label '{args.label}'")
