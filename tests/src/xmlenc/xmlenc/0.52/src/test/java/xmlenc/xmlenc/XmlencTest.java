@@ -137,6 +137,30 @@ public class XmlencTest {
     }
 
     @Test
+    void outputterCanPreservePreEscapedEntityReferencesWhenEscapingDisabled() throws Exception {
+        StringWriter writer = new StringWriter();
+        XMLOutputter outputter = new XMLOutputter(writer, "UTF-8");
+
+        outputter.startTag("root");
+        outputter.setEscaping(false);
+        outputter.startTag("preescaped");
+        outputter.attribute("name", "Tom &amp; Jerry");
+        outputter.pcdata("1 &lt; 2 &amp;&amp; 3 &gt; 2");
+        outputter.endTag();
+        outputter.setEscaping(true);
+        outputter.startTag("escaped");
+        outputter.attribute("name", "Tom & Jerry");
+        outputter.pcdata("1 < 2 & 3 > 2");
+        outputter.endDocument();
+
+        assertThat(outputter.isEscaping()).isTrue();
+        assertThat(writer.toString()).isEqualTo("<root>"
+                + "<preescaped name=\"Tom &amp; Jerry\">1 &lt; 2 &amp;&amp; 3 &gt; 2</preescaped>"
+                + "<escaped name=\"Tom &amp; Jerry\">1 &lt; 2 &amp; 3 &gt; 2</escaped>"
+                + "</root>");
+    }
+
+    @Test
     void outputterBuildsCompleteEscapedDocumentAndTracksState() throws Exception {
         StringWriter writer = new StringWriter();
         XMLOutputter outputter = new XMLOutputter(writer, "UTF-8");
