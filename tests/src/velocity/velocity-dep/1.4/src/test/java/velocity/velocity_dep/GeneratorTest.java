@@ -7,6 +7,9 @@
 package velocity.velocity_dep;
 
 import java.io.Writer;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -23,6 +26,16 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GeneratorTest {
+    @Test
+    void compilerGeneratedClassLookupResolvesVelocityEngineType() throws Throwable {
+        MethodHandle classLookup = MethodHandles.privateLookupIn(Generator.class, MethodHandles.lookup())
+                .findStatic(Generator.class, "class$", MethodType.methodType(Class.class, String.class));
+
+        Class<?> resolvedClass = (Class<?>) classLookup.invoke(VelocityEngine.class.getName());
+
+        assertEquals(VelocityEngine.class, resolvedClass);
+    }
+
     @Test
     void parsesControlTemplateWithDefaultTexenContextObjects() throws Exception {
         Generator generator = new Generator("missing-texen.properties");
