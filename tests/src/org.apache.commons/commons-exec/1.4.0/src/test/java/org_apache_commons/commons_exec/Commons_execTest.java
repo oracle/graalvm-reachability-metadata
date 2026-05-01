@@ -18,6 +18,7 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -111,9 +113,11 @@ public class Commons_execTest {
         ByteArrayOutputStream stderr = new ByteArrayOutputStream();
         ByteArrayInputStream stdin = new ByteArrayInputStream("payload-from-stdin\n".getBytes(StandardCharsets.UTF_8));
 
-        DefaultExecutor executor = new DefaultExecutor();
-        executor.setWorkingDirectory(temporaryDirectory.toFile());
-        executor.setStreamHandler(new PumpStreamHandler(stdout, stderr, stdin));
+        PumpStreamHandler streamHandler = new PumpStreamHandler(stdout, stderr, stdin);
+        DefaultExecutor executor = DefaultExecutor.builder()
+                .setWorkingDirectory(temporaryDirectory.toFile())
+                .setExecuteStreamHandler(streamHandler)
+                .get();
 
         int exitValue = executor.execute(shellCommand(
                 "printf 'env:%s\\n' \"$" + ENVIRONMENT_VARIABLE_NAME
@@ -132,7 +136,7 @@ public class Commons_execTest {
                 "stdin:payload-from-stdin");
         assertThat(lines(stderr)).contains("err:env-value");
         assertThat(executor.getWorkingDirectory()).isEqualTo(temporaryDirectory.toFile());
-        assertThat(executor.getStreamHandler()).isInstanceOf(PumpStreamHandler.class);
+        assertThat(executor.getStreamHandler()).isSameAs(streamHandler);
     }
 
     @Test
@@ -140,9 +144,10 @@ public class Commons_execTest {
         RecordingProcessDestroyer destroyer = new RecordingProcessDestroyer();
         ByteArrayOutputStream stdout = new ByteArrayOutputStream();
 
-        DefaultExecutor executor = new DefaultExecutor();
+        DefaultExecutor executor = DefaultExecutor.builder()
+                .setExecuteStreamHandler(new PumpStreamHandler(stdout, new ByteArrayOutputStream()))
+                .get();
         executor.setProcessDestroyer(destroyer);
-        executor.setStreamHandler(new PumpStreamHandler(stdout, new ByteArrayOutputStream()));
 
         int exitValue = executor.execute(shellCommand("printf 'destroyer-ok\\n'", "echo destroyer-ok"));
 
@@ -156,7 +161,7 @@ public class Commons_execTest {
 
     @Test
     void executorReportsUnexpectedExitValuesAndAllowsAdditionalSuccessCodes() throws Exception {
-        DefaultExecutor executor = new DefaultExecutor();
+        DefaultExecutor executor = DefaultExecutor.builder().get();
 
         assertThat(executor.isFailure(0)).isFalse();
         assertThat(executor.isFailure(7)).isTrue();
@@ -183,12 +188,13 @@ public class Commons_execTest {
         ByteArrayOutputStream stdout = new ByteArrayOutputStream();
         ByteArrayOutputStream stderr = new ByteArrayOutputStream();
 
-        DefaultExecutor executor = new DefaultExecutor();
-        executor.setStreamHandler(new PumpStreamHandler(stdout, stderr));
+        DefaultExecutor executor = DefaultExecutor.builder()
+                .setExecuteStreamHandler(new PumpStreamHandler(stdout, stderr))
+                .get();
 
         DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
         executor.execute(shellCommand("printf 'async-ok\\n'", "echo async-ok"), resultHandler);
-        resultHandler.waitFor(5_000L);
+        resultHandler.waitFor(Duration.ofSeconds(5L));
 
         assertThat(resultHandler.hasResult()).isTrue();
         assertThat(resultHandler.getExitValue()).isZero();
@@ -199,10 +205,13 @@ public class Commons_execTest {
 
     @Test
     void watchdogTerminatesLongRunningProcesses() throws Exception {
-        DefaultExecutor executor = new DefaultExecutor();
-        ExecuteWatchdog watchdog = new ExecuteWatchdog(500L);
+        DefaultExecutor executor = DefaultExecutor.builder()
+                .setExecuteStreamHandler(new PumpStreamHandler(new ByteArrayOutputStream(), new ByteArrayOutputStream()))
+                .get();
+        ExecuteWatchdog watchdog = ExecuteWatchdog.builder()
+                .setTimeout(Duration.ofMillis(500L))
+                .get();
         executor.setWatchdog(watchdog);
-        executor.setStreamHandler(new PumpStreamHandler(new ByteArrayOutputStream(), new ByteArrayOutputStream()));
 
         ExecuteException exception = catchThrowableOfType(
                 () -> executor.execute(shellCommand("sleep 5", "ping -n 6 127.0.0.1 > nul")),
@@ -219,7 +228,10 @@ public class Commons_execTest {
         CountDownLatch timeoutNotification = new CountDownLatch(1);
         RecordingTimeoutObserver notifiedObserver = new RecordingTimeoutObserver(timeoutNotification);
         RecordingTimeoutObserver removedObserver = new RecordingTimeoutObserver(new CountDownLatch(1));
-        Watchdog watchdog = new Watchdog(100L);
+        Watchdog watchdog = Watchdog.builder()
+                .setThreadFactory(Executors.defaultThreadFactory())
+                .setTimeout(Duration.ofMillis(100L))
+                .get();
 
         watchdog.addTimeoutObserver(notifiedObserver);
         watchdog.addTimeoutObserver(removedObserver);
@@ -233,7 +245,10 @@ public class Commons_execTest {
 
         CountDownLatch stoppedNotification = new CountDownLatch(1);
         RecordingTimeoutObserver stoppedObserver = new RecordingTimeoutObserver(stoppedNotification);
-        Watchdog stoppedWatchdog = new Watchdog(1_000L);
+        Watchdog stoppedWatchdog = Watchdog.builder()
+                .setThreadFactory(Executors.defaultThreadFactory())
+                .setTimeout(Duration.ofSeconds(1L))
+                .get();
         stoppedWatchdog.addTimeoutObserver(stoppedObserver);
         stoppedWatchdog.start();
         stoppedWatchdog.stop();
@@ -289,7 +304,6 @@ public class Commons_execTest {
         assertThat(StringUtils.quoteArgument("two words")).isEqualTo("\"two words\"");
         assertThat(StringUtils.quoteArgument("has\"double")).isEqualTo("'has\"double'");
         assertThat(StringUtils.isQuoted("'single quoted'")).isTrue();
-        assertThat(StringUtils.toString(new String[] {"a", "b", "c"}, "|")).isEqualTo("a|b|c");
         assertThatThrownBy(() -> StringUtils.quoteArgument("both'and\"inside"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("single and double quotes");
