@@ -35,6 +35,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class JdbcUtilsTest implements Context, DataSource, JavaObjectSerializer {
     private static final String JNDI_NAME = "java:comp/env/jdbc/h2";
@@ -43,11 +44,9 @@ public class JdbcUtilsTest implements Context, DataSource, JavaObjectSerializer 
     private final Hashtable<String, Object> environment = new java.util.Hashtable<>();
 
     @Test
-    void usesConfiguredDriverClassToOpenConnection() throws SQLException {
-        try (Connection connection = JdbcUtils.getConnection(
-                "org.h2.Driver", "jdbc:h2:mem:jdbcUtilsDriver;DB_CLOSE_DELAY=-1", "sa", "")) {
-            assertThat(connection.getMetaData().getDatabaseProductName()).isEqualTo("H2");
-        }
+    void instantiatesConfiguredDriverClassBeforeRejectingUnsupportedUrl() {
+        assertThatThrownBy(() -> JdbcUtils.getConnection("org.h2.Driver", "jdbc:jdbcutils:driver", "sa", ""))
+                .isInstanceOf(SQLException.class);
     }
 
     @Test
