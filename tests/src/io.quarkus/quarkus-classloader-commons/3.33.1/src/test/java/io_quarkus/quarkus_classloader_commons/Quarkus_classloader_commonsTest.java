@@ -105,6 +105,13 @@ public class Quarkus_classloader_commonsTest {
     }
 
     @Test
+    void isInJdkPackageDoesNotMatchLookalikePackagePrefixes() {
+        assertThat(ClassLoaderHelper.isInJdkPackage("javassist.ClassPool")).isFalse();
+        assertThat(ClassLoaderHelper.isInJdkPackage("jdk.internalized.Helper")).isFalse();
+        assertThat(ClassLoaderHelper.isInJdkPackage("sun.miscellaneous.Tool")).isFalse();
+    }
+
+    @Test
     void publicMethodsRejectNullInputs() {
         assertThatNullPointerException()
                 .isThrownBy(() -> ClassLoaderHelper.fromClassNameToResourceName(null));
