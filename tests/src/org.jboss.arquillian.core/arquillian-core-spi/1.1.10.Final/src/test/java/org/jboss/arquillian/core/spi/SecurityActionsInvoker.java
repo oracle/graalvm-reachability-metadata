@@ -27,4 +27,22 @@ public final class SecurityActionsInvoker {
                 Manager.class,
                 classLoader);
     }
+
+    public static String setPrivateFieldValue(String originalValue, String updatedValue) {
+        MutableTarget target = new MutableTarget(originalValue);
+        try {
+            SecurityActions.setFieldValue(MutableTarget.class, target, "value", updatedValue);
+        } catch (NoSuchFieldException e) {
+            throw new IllegalStateException("MutableTarget.value should be available", e);
+        }
+        return target.value;
+    }
+
+    private static final class MutableTarget {
+        private String value;
+
+        private MutableTarget(String value) {
+            this.value = value;
+        }
+    }
 }
