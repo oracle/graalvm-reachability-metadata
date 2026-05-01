@@ -25,6 +25,10 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 
 public class Jackson_datatype_jdk8Test {
@@ -205,6 +209,29 @@ public class Jackson_datatype_jdk8Test {
         assertThat(mapper.readValue("null", optionalStringType)).isEmpty();
     }
 
+    @Test
+    void serializesJdk8StreamsAsJsonArrays() throws Exception {
+        ObjectMapper mapper = jdk8Mapper();
+        StreamValues values = new StreamValues(
+                Stream.of("north", "south"),
+                IntStream.of(1, 2, 3),
+                LongStream.of(10L, 20L),
+                DoubleStream.of(0.25D, 0.5D));
+
+        String json = mapper.writeValueAsString(values);
+
+        JsonNode tree = mapper.readTree(json);
+        assertThat(tree.withArray("names").get(0).asText()).isEqualTo("north");
+        assertThat(tree.withArray("names").get(1).asText()).isEqualTo("south");
+        assertThat(tree.withArray("counts").get(0).asInt()).isEqualTo(1);
+        assertThat(tree.withArray("counts").get(1).asInt()).isEqualTo(2);
+        assertThat(tree.withArray("counts").get(2).asInt()).isEqualTo(3);
+        assertThat(tree.withArray("sizes").get(0).asLong()).isEqualTo(10L);
+        assertThat(tree.withArray("sizes").get(1).asLong()).isEqualTo(20L);
+        assertThat(tree.withArray("ratios").get(0).asDouble()).isEqualTo(0.25D);
+        assertThat(tree.withArray("ratios").get(1).asDouble()).isEqualTo(0.5D);
+    }
+
     private static ObjectMapper jdk8Mapper() {
         return new ObjectMapper().registerModule(new Jdk8Module());
     }
@@ -286,6 +313,20 @@ public class Jackson_datatype_jdk8Test {
         public GenericContainers(List<Optional<String>> labels, Map<String, Optional<Address>> offices) {
             this.labels = labels;
             this.offices = offices;
+        }
+    }
+
+    public static final class StreamValues {
+        public Stream<String> names;
+        public IntStream counts;
+        public LongStream sizes;
+        public DoubleStream ratios;
+
+        public StreamValues(Stream<String> names, IntStream counts, LongStream sizes, DoubleStream ratios) {
+            this.names = names;
+            this.counts = counts;
+            this.sizes = sizes;
+            this.ratios = ratios;
         }
     }
 
