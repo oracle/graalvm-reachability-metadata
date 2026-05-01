@@ -4,6 +4,9 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
 plugins {
     id "org.graalvm.internal.tck"
     id "scala"
@@ -11,11 +14,19 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+List<String> illegalConditionalBulkFieldTypes = [
+        'org_apache_pekko.pekko_protobuf_v3_3.MessageSchemaMissingFieldMessage',
+        'org_apache_pekko.pekko_protobuf_v3_3.SchemaUtilCoverageMessage$AttributesDefaultEntryHolder',
+        'org_apache_pekko.pekko_protobuf_v3_3.UnsafeUtilAndroid32MemoryAccessorCoverageMessage$AttributesDefaultEntryHolder',
+        'org_apache_pekko.pekko_protobuf_v3_3.UnsafeUtilAndroid64MemoryAccessorCoverageMessage$AttributesDefaultEntryHolder',
+        'sun.misc.Unsafe'
+]
+
 dependencies {
     testImplementation "org.apache.pekko:pekko-protobuf-v3_3:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
     testImplementation 'org.scala-lang:scala3-library_3:3.3.6'
-    testImplementation 'org.scala-lang:scala3-compiler_3:3.3.6'
+    testCompileOnly 'org.scala-lang:scala3-compiler_3:3.3.6'
 }
 
 java {
@@ -33,4 +44,27 @@ graalvmNative {
             }
         }
     }
+}
+
+tasks.register('sanitizeTestAgentMetadata') {
+    dependsOn(tasks.named('test'))
+
+    doLast {
+        File metadataFile = layout.buildDirectory.file('native/agent-output/test/reachability-metadata.json').get().asFile
+        if (!metadataFile.exists()) {
+            return
+        }
+
+        Map<String, Object> metadata = new JsonSlurper().parse(metadataFile) as Map<String, Object>
+        List<Map<String, Object>> reflectionEntries = (metadata.reflection ?: []) as List<Map<String, Object>>
+        List<Map<String, Object>> sanitizedEntries = reflectionEntries.findAll { Map<String, Object> entry ->
+            !(entry.type in illegalConditionalBulkFieldTypes && entry.allDeclaredFields == true && entry.condition != null)
+        }
+        metadata.reflection = sanitizedEntries
+        metadataFile.text = JsonOutput.prettyPrint(JsonOutput.toJson(metadata)) + System.lineSeparator()
+    }
+}
+
+tasks.named('nativeTestCompile') {
+    dependsOn(tasks.named('sanitizeTestAgentMetadata'))
 }
