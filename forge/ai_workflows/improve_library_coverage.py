@@ -35,7 +35,7 @@ from ai_workflows.workflow_strategies.workflow_strategy import (
 )
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated, load_library_stats
 from utility_scripts import metrics_writer
-from utility_scripts.metrics_writer import create_failure_run_metrics_output
+from utility_scripts.metrics_writer import count_metadata_entries, count_test_only_metadata_entries, create_failure_run_metrics_output
 from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, resolve_repo_roots
 from utility_scripts.schema_validator import validate_run_metrics
 from utility_scripts.source_context import (
@@ -214,13 +214,19 @@ def main(argv=None) -> int:
     checkpoint_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     log_stage("setup", f"Checkpoint commit: {checkpoint_commit}")
 
-    # Snapshot baseline stats before the workflow modifies them
+    # Snapshot baseline stats and metadata entry counts before the workflow modifies them
     baseline_stats = load_library_stats(reachability_repo_path, library)
+    baseline_metadata_entries = count_metadata_entries(reachability_repo_path, group, artifact, version)
+    baseline_test_only_entries = count_test_only_metadata_entries(reachability_repo_path, group, artifact, version)
+    baseline_snapshot = {
+        "stats": baseline_stats,
+        "metadata_entries": baseline_metadata_entries,
+        "test_only_metadata_entries": baseline_test_only_entries,
+    }
     baseline_stats_path = os.path.join(tests_dir, BASELINE_STATS_FILENAME)
-    if baseline_stats is not None:
-        with open(baseline_stats_path, "w", encoding="utf-8") as f:
-            json.dump(baseline_stats, f, indent=2)
-        log_stage("setup", f"Saved baseline stats to {BASELINE_STATS_FILENAME}")
+    with open(baseline_stats_path, "w", encoding="utf-8") as f:
+        json.dump(baseline_snapshot, f, indent=2)
+    log_stage("setup", f"Saved baseline snapshot to {BASELINE_STATS_FILENAME}")
 
     populate_artifact_urls(reachability_repo_path, library)
 

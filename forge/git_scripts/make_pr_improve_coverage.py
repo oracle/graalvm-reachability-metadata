@@ -26,7 +26,12 @@ from git_scripts.common_git import (
     get_configured_reviewers,
 )
 from utility_scripts.library_stats import stats_artifact_dir
-from utility_scripts.metrics_writer import commit_run_metrics_with_retry, read_pending_metrics
+from utility_scripts.metrics_writer import (
+    commit_run_metrics_with_retry,
+    count_metadata_entries,
+    count_test_only_metadata_entries,
+    read_pending_metrics,
+)
 from utility_scripts.repo_path_resolver import (
     add_in_metadata_repo_argument,
     resolve_repo_roots,
@@ -48,21 +53,32 @@ def build_pull_request_body(
         metrics: dict,
         baseline_stats=None,
         library_stats=None,
+        baseline_metadata_entries: int | None = None,
+        current_metadata_entries: int | None = None,
+        baseline_test_only_entries: int | None = None,
+        current_test_only_entries: int | None = None,
         post_generation_intervention: dict | None = None,
 ) -> str:
     """Build the PR body with metrics and optional stats."""
     input_tokens_used = metrics.get("input_tokens_used", 0)
     output_tokens_used = metrics.get("output_tokens_used", 0)
     cached_input_tokens_used = metrics.get("cached_input_tokens_used", 0)
-    entries_found = metrics.get("metadata_entries", 0)
-    test_only_metadata_entries = int(metrics.get("test_only_metadata_entries", 0) or 0)
     iterations = metrics.get("iterations", 0)
     code_coverage_percent = metrics.get("code_coverage_percent", 0)
     generated_loc = metrics.get("generated_loc", 0)
     tested_library_loc = metrics.get("tested_library_loc", 0)
-    test_only_metadata_entries_line = ""
-    if test_only_metadata_entries > 0:
-        test_only_metadata_entries_line = f"- Test-only metadata entries: {test_only_metadata_entries}\n"
+
+    metadata_comparison_lines = ""
+    if baseline_metadata_entries is not None and current_metadata_entries is not None:
+        metadata_comparison_lines += (
+            f"- Metadata entries (before): {baseline_metadata_entries}\n"
+            f"- Metadata entries (after): {current_metadata_entries}\n"
+        )
+        if baseline_test_only_entries or current_test_only_entries:
+            metadata_comparison_lines += (
+                f"- Test-only metadata entries (before): {baseline_test_only_entries or 0}\n"
+                f"- Test-only metadata entries (after): {current_test_only_entries or 0}\n"
+            )
 
     body = f"""
 ## What does this PR do?
@@ -78,8 +94,7 @@ Summary:
 - Input tokens: {input_tokens_used}
 - Cached input tokens: {cached_input_tokens_used}
 - Output tokens: {output_tokens_used}
-- Metadata entries: {entries_found}
-{test_only_metadata_entries_line}\
+{metadata_comparison_lines}\
 - Iterations: {iterations}
 - Library coverage percentage: {code_coverage_percent}
 - Generated lines of code: {generated_loc}
@@ -96,18 +111,18 @@ Summary:
     return body
 
 
-def load_and_remove_baseline_stats(repo_path: str, group: str, artifact: str, version: str) -> dict | None:
-    """Load baseline stats snapshot written by improve_library_coverage.py and delete the file."""
+def load_and_remove_baseline_snapshot(repo_path: str, group: str, artifact: str, version: str) -> dict | None:
+    """Load baseline snapshot written by improve_library_coverage.py and delete the file."""
     baseline_path = os.path.join(repo_path, "tests", "src", group, artifact, version, BASELINE_STATS_FILENAME)
     if not os.path.isfile(baseline_path):
         return None
     try:
         with open(baseline_path, "r", encoding="utf-8") as f:
-            baseline = json.load(f)
+            snapshot = json.load(f)
     except (OSError, json.JSONDecodeError):
-        baseline = None
+        snapshot = None
     os.remove(baseline_path)
-    return baseline
+    return snapshot
 
 
 def stage_and_commit(
@@ -155,7 +170,8 @@ def _fetch_pr_base(repo_path: str) -> str:
 
 def create_pull_request(
         branch: str, coordinates: str, metrics_repo_root: str, repo_path: str,
-        baseline_stats: dict | None = None,
+        group: str, artifact: str, version: str,
+        baseline_snapshot: dict | None = None,
 ) -> None:
     """Create a GitHub pull request for the current branch."""
     if shutil.which("gh") is None:
@@ -183,7 +199,14 @@ def create_pull_request(
     agent_name = get_agent_name(strategy_name)
     title = f"[GenAI] Improve coverage for {coordinates} using {model_display_name}"
 
+    baseline_stats = baseline_snapshot.get("stats") if baseline_snapshot else None
+    baseline_metadata_entries = baseline_snapshot.get("metadata_entries") if baseline_snapshot else None
+    baseline_test_only_entries = baseline_snapshot.get("test_only_metadata_entries") if baseline_snapshot else None
+
     library_stats = load_library_stats(repo_path, coordinates)
+    current_metadata_entries = count_metadata_entries(repo_path, group, artifact, version)
+    current_test_only_entries = count_test_only_metadata_entries(repo_path, group, artifact, version)
+
     body = build_pull_request_body(
         issue_no=issue_no,
         coordinates=coordinates,
@@ -193,6 +216,10 @@ def create_pull_request(
         metrics=metrics,
         baseline_stats=baseline_stats,
         library_stats=library_stats,
+        baseline_metadata_entries=baseline_metadata_entries,
+        current_metadata_entries=current_metadata_entries,
+        baseline_test_only_entries=baseline_test_only_entries,
+        current_test_only_entries=current_test_only_entries,
         post_generation_intervention=matched.get("post_generation_intervention"),
     )
 
@@ -296,9 +323,9 @@ def main(argv=None) -> None:
     ensure_gh_authenticated()
 
     group, artifact, version = parse_coordinate_parts(coordinates)
-    baseline_stats = load_and_remove_baseline_stats(repo_path, group, artifact, version)
+    baseline_snapshot = load_and_remove_baseline_snapshot(repo_path, group, artifact, version)
     branch = push_current_branch_to_origin(coordinates=coordinates, repo_path=repo_path)
-    create_pull_request(branch, coordinates, metrics_repo_path, repo_path, baseline_stats)
+    create_pull_request(branch, coordinates, metrics_repo_path, repo_path, group, artifact, version, baseline_snapshot)
     if not in_metadata_repo:
         metrics_commit_and_push(metrics_repo_path, coordinates)
 
