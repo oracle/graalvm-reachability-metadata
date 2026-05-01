@@ -1,0 +1,615 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de1e6-f0e3-71f2-8227-3a8eca0ffc03
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.geronimo.specs:geronimo-annotation_1.3_spec:1.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json
+- Set "coordinates" to "org.apache.geronimo.specs:geronimo-annotation_1.3_spec:1.1".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from authoritative sources first, then update the JSON in place with the exact-version URLs or `N/A` where confidence is weak.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.geronimo.specs:geronimo-annotation_1.3_spec:1.1"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.apache\\.geronimo\\.specs-geronimo-annotation_1\\.3_spec-1\\.1\\.json"'$'"'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json
+
+exec
+/usr/bin/bash -lc "rg -n \"geronimo-annotation_1\\.3_spec|org.apache.geronimo.specs\" ." in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+ succeeded in 0ms:
+./stats/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/1.1/execution-metrics.json:4:    "library": "org.apache.geronimo.specs:geronimo-interceptor_1.2_spec:1.1",
+./stats/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/1.1/execution-metrics.json:32:      "test_file": "tests/src/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/1.1/src/test/java/org_apache_geronimo_specs/geronimo_interceptor_1_2_spec/Geronimo_interceptor_1_2_specTest.java",
+./stats/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/1.1/execution-metrics.json:33:      "metadata_file": "metadata/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/1.1/reachability-metadata.json"
+./stats/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/1.0/execution-metrics.json:4:    "library": "org.apache.geronimo.specs:geronimo-annotation_1.1_spec:1.0",
+./stats/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/1.0/execution-metrics.json:52:      "test_file": "tests/src/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/1.0/src/test/java/org_apache_geronimo_specs/geronimo_annotation_1_1_spec/Geronimo_annotation_1_1_specTest.java",
+./stats/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/1.0/execution-metrics.json:53:      "metadata_file": "metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/1.0/reachability-metadata.json"
+./stats/org.apache.geronimo.specs/geronimo-osgi-registry/1.0/execution-metrics.json:4:    "library": "org.apache.geronimo.specs:geronimo-osgi-registry:1.0",
+./stats/org.apache.geronimo.specs/geronimo-osgi-registry/1.0/execution-metrics.json:58:      "test_file": "tests/src/org.apache.geronimo.specs/geronimo-osgi-registry/1.0/src/test/java/org_apache_geronimo_specs/geronimo_osgi_registry/ProviderRegistryImplInnerBundleProviderLoaderTest.java",
+./stats/org.apache.geronimo.specs/geronimo-osgi-registry/1.0/execution-metrics.json:59:      "metadata_file": "metadata/org.apache.geronimo.specs/geronimo-osgi-registry/1.0/reachability-metadata.json"
+./stats/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0/execution-metrics.json:4:    "library": "org.apache.geronimo.specs:geronimo-atinject_1.0_spec:1.0",
+./stats/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0/execution-metrics.json:32:      "test_file": "tests/src/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0/src/test/java/org_apache_geronimo_specs/geronimo_atinject_1_0_spec/Geronimo_atinject_1_0_specTest.java",
+./stats/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0/execution-metrics.json:33:      "metadata_file": "metadata/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0/reachability-metadata.json"
+./stats/org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/execution-metrics.json:4:    "library": "org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1",
+./stats/org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/execution-metrics.json:52:      "test_file": "tests/src/org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/src/test/java/org_apache_geronimo_specs/geronimo_jta_1_1_spec/Geronimo_jta_1_1_specTest.java",
+./stats/org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/execution-metrics.json:53:      "metadata_file": "metadata/org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/reachability-metadata.json"
+./metadata/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-interceptor_1.2_spec/1.1/geronimo-interceptor_1.2_spec-1.1-sources.jar",
+./metadata/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-interceptor_1.2_spec/1.1/geronimo-interceptor_1.2_spec-1.1-javadoc.jar",
+./metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.1_spec/1.0/geronimo-annotation_1.1_spec-1.0-sources.jar",
+./metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.1_spec/1.0/geronimo-annotation_1.1_spec-1.0-javadoc.jar",
+./metadata/org.apache.geronimo.specs/geronimo-osgi-registry/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-osgi-registry/1.0/geronimo-osgi-registry-1.0-sources.jar",
+./metadata/org.apache.geronimo.specs/geronimo-osgi-registry/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-osgi-registry-itests/1.0/geronimo-osgi-registry-itests-1.0-sources.jar",
+./metadata/org.apache.geronimo.specs/geronimo-osgi-registry/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-osgi-registry/1.0/geronimo-osgi-registry-1.0-javadoc.jar",
+./metadata/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-atinject_1.0_spec/1.0/geronimo-atinject_1.0_spec-1.0-sources.jar",
+./metadata/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-atinject_1.0_spec/1.0/geronimo-atinject_1.0_spec-1.0-javadoc.jar",
+./metadata/org.apache.geronimo.specs/geronimo-jta_1.1_spec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jta_1.1_spec/1.1/geronimo-jta_1.1_spec-1.1-sources.jar",
+./metadata/org.apache.geronimo.specs/geronimo-jta_1.1_spec/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jta_1.1_spec/1.1/geronimo-jta_1.1_spec-1.1-javadoc.jar",
+./tests/src/org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/build.gradle:14:    testImplementation "org.apache.geronimo.specs:geronimo-jta_1.1_spec:$libraryVersion"
+./tests/src/org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/settings.gradle:20:rootProject.name = 'org.apache.geronimo.specs.geronimo-jta_1.1_spec_tests'
+./tests/src/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/1.1/build.gradle:14:    testImplementation "org.apache.geronimo.specs:geronimo-interceptor_1.2_spec:$libraryVersion"
+./tests/src/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/1.1/settings.gradle:20:rootProject.name = 'org.apache.geronimo.specs.geronimo-interceptor_1.2_spec_tests'
+./tests/src/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/1.0/build.gradle:14:    testImplementation "org.apache.geronimo.specs:geronimo-annotation_1.1_spec:$libraryVersion"
+./tests/src/org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/src/test/java/org_apache_geronimo_specs/geronimo_jta_1_1_spec/Geronimo_jta_1_1_specTest.java:7:package org_apache_geronimo_specs.geronimo_jta_1_1_spec;
+./tests/src/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/1.0/settings.gradle:20:rootProject.name = 'org.apache.geronimo.specs.geronimo-annotation_1.1_spec_tests'
+./tests/src/org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/gradle.properties:4:library.coordinates = org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1
+./tests/src/org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/gradle.properties:6:metadata.dir = org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/
+./tests/src/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/1.1/src/test/java/org_apache_geronimo_specs/geronimo_interceptor_1_2_spec/Geronimo_interceptor_1_2_specTest.java:7:package org_apache_geronimo_specs.geronimo_interceptor_1_2_spec;
+./tests/src/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/1.1/gradle.properties:4:library.coordinates = org.apache.geronimo.specs:geronimo-interceptor_1.2_spec:1.1
+./tests/src/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/1.1/gradle.properties:6:metadata.dir = org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/1.1/
+./tests/src/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/1.0/src/test/java/org_apache_geronimo_specs/geronimo_annotation_1_1_spec/Geronimo_annotation_1_1_specTest.java:7:package org_apache_geronimo_specs.geronimo_annotation_1_1_spec;
+./tests/src/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/1.0/gradle.properties:4:library.coordinates = org.apache.geronimo.specs:geronimo-annotation_1.1_spec:1.0
+./tests/src/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/1.0/gradle.properties:6:metadata.dir = org.apache.geronimo.specs/geronimo-annotation_1.1_spec/1.0/
+./tests/src/org.apache.geronimo.specs/geronimo-osgi-registry/1.0/build.gradle:14:    testImplementation "org.apache.geronimo.specs:geronimo-osgi-registry:$libraryVersion"
+./tests/src/org.apache.geronimo.specs/geronimo-osgi-registry/1.0/settings.gradle:20:rootProject.name = 'org.apache.geronimo.specs.geronimo-osgi-registry_tests'
+./tests/src/org.apache.geronimo.specs/geronimo-osgi-registry/1.0/src/test/java/org_apache_geronimo_specs/geronimo_osgi_registry/ProviderRegistryImplInnerBundleProviderLoaderTest.java:7:package org_apache_geronimo_specs.geronimo_osgi_registry;
+./tests/src/org.apache.geronimo.specs/geronimo-osgi-registry/1.0/gradle.properties:4:library.coordinates = org.apache.geronimo.specs:geronimo-osgi-registry:1.0
+./tests/src/org.apache.geronimo.specs/geronimo-osgi-registry/1.0/gradle.properties:6:metadata.dir = org.apache.geronimo.specs/geronimo-osgi-registry/1.0/
+./tests/src/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0/build.gradle:14:    testImplementation "org.apache.geronimo.specs:geronimo-atinject_1.0_spec:$libraryVersion"
+./tests/src/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0/settings.gradle:20:rootProject.name = 'org.apache.geronimo.specs.geronimo-atinject_1.0_spec_tests'
+./tests/src/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0/src/test/java/org_apache_geronimo_specs/geronimo_atinject_1_0_spec/Geronimo_atinject_1_0_specTest.java:7:package org_apache_geronimo_specs.geronimo_atinject_1_0_spec;
+./tests/src/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0/gradle.properties:4:library.coordinates = org.apache.geronimo.specs:geronimo-atinject_1.0_spec:1.0
+./tests/src/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0/gradle.properties:6:metadata.dir = org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0/
+
+web search: 
+web search: org.apache.geronimo.specs geronimo-annotation_1.3_spec 1.1 maven sources javadoc pom scm
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/
+web search: 
+web search: 
+codex
+The local file only has coordinates. Maven Central exposes exact-version sources and javadoc, so I’m checking the POM and source release next to identify the upstream repository/tag and whether any test source artifact exists.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1.pom' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+
+<!-- $Rev: 1839465 $ $Date: 2018-08-28 12:57:49 -0400 (Tue, 28 Aug 2018) $ -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.apache.geronimo.genesis</groupId>
+        <artifactId>genesis-java6-flava</artifactId>
+        <version>2.2</version>
+    </parent>
+
+    <groupId>org.apache.geronimo.specs</groupId>
+    <artifactId>geronimo-annotation_1.3_spec</artifactId>
+    <packaging>bundle</packaging>
+    <name>Apache Geronimo Annotation Spec 1.3</name>
+    <version>1.1</version>
+    <description>Common Annotations spec 1.3 API</description>
+
+    <url>http://geronimo.apache.org/maven/${siteId}/${version}</url>
+    <distributionManagement>
+        <site>
+            <id>apache-website</id>
+            <url>${site.deploy.url}/maven/${siteId}/${version}</url>
+        </site>
+    </distributionManagement>
+
+    <properties>
+        <siteId>specs/${artifactId}</siteId>
+    </properties>
+
+    <scm>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1</developerConnection>
+        <url>http://svn.apache.org/viewcvs.cgi/geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1</url>
+    </scm>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>3.5.0</version>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${groupId}.${artifactId};singleton=true</Bundle-SymbolicName>
+                        <Specification-Title>JSR-250 Common Annotations 1.3</Specification-Title>
+                        <Specification-Vendor>Oracle, Inc.</Specification-Vendor>
+                        <Specification-Version>1.3</Specification-Version>
+                        <Export-Package>javax.annotation*;version=1.3</Export-Package>
+                        <Provide-Capability><![CDATA[
+                            osgi.contract;osgi.contract=JavaAnnotation;uses:="${packages;NAMED;javax.*}";version:List<Version>='1.3,1.2,1.1,1.0'
+                        ]]></Provide-Capability>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1-source-release.zip -o /tmp/geronimo-annotation_1.3_spec-1.1-source-release.zip && unzip -l /tmp/geronimo-annotation_1.3_spec-1.1-source-release.zip | sed -n '1,120p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+ succeeded in 160ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="geronimo-annotation_1.3_spec-1.1-javadoc.jar" title="geronimo-annotation_1.3_spec-1.1-javadoc.jar">geronimo-annotation_1.3_spec-1.1-javadoc.jar</a>      2018-08-28 16:58     95114      
+<a href="geronimo-annotation_1.3_spec-1.1-javadoc.jar.asc" title="geronimo-annotation_1.3_spec-1.1-javadoc.jar.asc">geronimo-annotation_1.3_spec-1.1-javadoc.jar....</a>  2018-08-28 16:58       801      
+<a href="geronimo-annotation_1.3_spec-1.1-javadoc.jar.md5" title="geronimo-annotation_1.3_spec-1.1-javadoc.jar.md5">geronimo-annotation_1.3_spec-1.1-javadoc.jar....</a>  2018-08-28 16:58        32      
+<a href="geronimo-annotation_1.3_spec-1.1-javadoc.jar.sha1" title="geronimo-annotation_1.3_spec-1.1-javadoc.jar.sha1">geronimo-annotation_1.3_spec-1.1-javadoc.jar....</a>  2018-08-28 16:58        40      
+<a href="geronimo-annotation_1.3_spec-1.1-source-release.zip" title="geronimo-annotation_1.3_spec-1.1-source-release.zip">geronimo-annotation_1.3_spec-1.1-source-relea...</a>  2018-08-28 16:58     22394      
+<a href="geronimo-annotation_1.3_spec-1.1-source-release.zip.asc" title="geronimo-annotation_1.3_spec-1.1-source-release.zip.asc">geronimo-annotation_1.3_spec-1.1-source-relea...</a>  2018-08-28 16:58       801      
+<a href="geronimo-annotation_1.3_spec-1.1-source-release.zip.md5" title="geronimo-annotation_1.3_spec-1.1-source-release.zip.md5">geronimo-annotation_1.3_spec-1.1-source-relea...</a>  2018-08-28 16:58        32      
+<a href="geronimo-annotation_1.3_spec-1.1-source-release.zip.sha1" title="geronimo-annotation_1.3_spec-1.1-source-release.zip.sha1">geronimo-annotation_1.3_spec-1.1-source-relea...</a>  2018-08-28 16:58        40      
+<a href="geronimo-annotation_1.3_spec-1.1-sources.jar" title="geronimo-annotation_1.3_spec-1.1-sources.jar">geronimo-annotation_1.3_spec-1.1-sources.jar</a>      2018-08-28 16:58     18452      
+<a href="geronimo-annotation_1.3_spec-1.1-sources.jar.asc" title="geronimo-annotation_1.3_spec-1.1-sources.jar.asc">geronimo-annotation_1.3_spec-1.1-sources.jar....</a>  2018-08-28 16:58       801      
+<a href="geronimo-annotation_1.3_spec-1.1-sources.jar.md5" title="geronimo-annotation_1.3_spec-1.1-sources.jar.md5">geronimo-annotation_1.3_spec-1.1-sources.jar....</a>  2018-08-28 16:58        32      
+<a href="geronimo-annotation_1.3_spec-1.1-sources.jar.sha1" title="geronimo-annotation_1.3_spec-1.1-sources.jar.sha1">geronimo-annotation_1.3_spec-1.1-sources.jar....</a>  2018-08-28 16:58        40      
+<a href="geronimo-annotation_1.3_spec-1.1.jar" title="geronimo-annotation_1.3_spec-1.1.jar">geronimo-annotation_1.3_spec-1.1.jar</a>              2018-08-28 16:58     15896      
+<a href="geronimo-annotation_1.3_spec-1.1.jar.asc" title="geronimo-annotation_1.3_spec-1.1.jar.asc">geronimo-annotation_1.3_spec-1.1.jar.asc</a>          2018-08-28 16:58       801      
+<a href="geronimo-annotation_1.3_spec-1.1.jar.md5" title="geronimo-annotation_1.3_spec-1.1.jar.md5">geronimo-annotation_1.3_spec-1.1.jar.md5</a>          2018-08-28 16:58        32      
+<a href="geronimo-annotation_1.3_spec-1.1.jar.sha1" title="geronimo-annotation_1.3_spec-1.1.jar.sha1">geronimo-annotation_1.3_spec-1.1.jar.sha1</a>         2018-08-28 16:58        40      
+<a href="geronimo-annotation_1.3_spec-1.1.pom" title="geronimo-annotation_1.3_spec-1.1.pom">geronimo-annotation_1.3_spec-1.1.pom</a>              2018-08-28 16:58      3483      
+<a href="geronimo-annotation_1.3_spec-1.1.pom.asc" title="geronimo-annotation_1.3_spec-1.1.pom.asc">geronimo-annotation_1.3_spec-1.1.pom.asc</a>          2018-08-28 16:58       801      
+<a href="geronimo-annotation_1.3_spec-1.1.pom.md5" title="geronimo-annotation_1.3_spec-1.1.pom.md5">geronimo-annotation_1.3_spec-1.1.pom.md5</a>          2018-08-28 16:58        32      
+<a href="geronimo-annotation_1.3_spec-1.1.pom.sha1" title="geronimo-annotation_1.3_spec-1.1.pom.sha1">geronimo-annotation_1.3_spec-1.1.pom.sha1</a>         2018-08-28 16:58        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 202ms:
+Archive:  /tmp/geronimo-annotation_1.3_spec-1.1-source-release.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/
+        0  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/
+        0  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/
+        0  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/java/
+        0  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/java/javax/
+        0  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/java/javax/annotation/
+        0  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/java/javax/annotation/sql/
+        0  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/java/javax/annotation/security/
+    11360  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/LICENSE
+     3483  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/pom.xml
+     1761  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/java/javax/annotation/Generated.java
+     1383  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/java/javax/annotation/sql/DataSourceDefinitions.java
+     1980  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/java/javax/annotation/sql/DataSourceDefinition.java
+     1456  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/java/javax/annotation/Resources.java
+     1292  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/java/javax/annotation/ManagedBean.java
+     1437  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/java/javax/annotation/PreDestroy.java
+     1440  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/java/javax/annotation/PostConstruct.java
+     1812  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/java/javax/annotation/Resource.java
+     1690  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/java/javax/annotation/Priority.java
+     1458  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/java/javax/annotation/security/RunAs.java
+     1464  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/java/javax/annotation/security/PermitAll.java
+     1462  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/java/javax/annotation/security/DenyAll.java
+     1489  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/java/javax/annotation/security/RolesAllowed.java
+     1469  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/src/main/java/javax/annotation/security/DeclareRoles.java
+      169  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/NOTICE
+      285  2018-08-28 12:58   geronimo-annotation_1.3_spec-1.1/DEPENDENCIES
+---------                     -------
+    36890                     26 files
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/
+web search: 
+web search: 
+web search: 
+web search: "geronimo-annotation_1.3_spec-1.1" "scm:svn"
+web search: 
+web search: site:apache.googlesource.com/geronimo-specs "geronimo-annotation_1.3_spec-1.1"
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/index.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-interceptor_1.2_spec/1.1/geronimo-interceptor_1.2_spec-1.1-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-interceptor_1.2_spec/1.1/geronimo-interceptor_1.2_spec-1.1-javadoc.jar",
+    "description" : "Apache Geronimo Interceptor Spec provides the Java javax.interceptor API classes and annotations for defining interceptor bindings and lifecycle or method-invocation interception. It supplies standard types such as InvocationContext, AroundInvoke, AroundTimeout, Interceptor, and Interceptors for Java EE containers and frameworks that implement interceptor behavior.",
+    "tested-versions" : [
+      "1.1"
+    ],
+    "allowed-packages" : [
+      "javax.interceptor"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/index.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.1_spec/1.0/geronimo-annotation_1.1_spec-1.0-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.1_spec/1.0/geronimo-annotation_1.1_spec-1.0-javadoc.jar",
+    "description" : "This artifact provides Apache Geronimo's implementation of the JSR-250 Common Annotations 1.1 API in the javax.annotation packages. It supplies annotation types and annotation processing contracts used by Java EE components, dependency injection, security roles, lifecycle callbacks, generated code markers, and data source declarations.",
+    "tested-versions" : [
+      "1.0",
+      "1.0.1"
+    ],
+    "allowed-packages" : [
+      "javax.annotation"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/index.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-atinject_1.0_spec/1.0/geronimo-atinject_1.0_spec-1.0-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-atinject_1.0_spec/1.0/geronimo-atinject_1.0_spec-1.0-javadoc.jar",
+    "description" : "This artifact provides Apache Geronimo's implementation of the JSR-330 Dependency Injection for Java API in the javax.inject package. It contains standard annotations and contracts such as @Inject, @Named, @Qualifier, @Scope, @Singleton, and Provider that frameworks use to describe and supply injectable dependencies.",
+    "tested-versions" : [
+      "1.0",
+      "1.1",
+      "1.2"
+    ],
+    "allowed-packages" : [
+      "javax.inject"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f | head -5 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.geronimo.specs:geronimo-annotation_1.3_spec:1.1"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"|\"repository-url\"|\"source-code-url\"' build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -type f | wc -l' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+ succeeded in 0ms:
+1
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\" : \".*/tags/|\"repository-url\" : \"https://svn.apache.org/repos/asf/geronimo/specs' metadata | head -40" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+ succeeded in 0ms:
+metadata/org.apache.directory.server/apacheds-i18n/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/apacheds/tags/2.0.0-M15",
+metadata/xml-apis/xml-apis/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/",
+metadata/org.apache.maven/maven-monitor/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6",
+metadata/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/org.apache.geronimo.specs/geronimo-jta_1.1_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/org.apache.geronimo.specs/geronimo-osgi-registry/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-osgi-support-1.0",
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1 | sed -n '1,12p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1-test-sources.jar | sed -n '1,12p'; true" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1-tests.jar | sed -n '1,12p'; true" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+ succeeded in 112ms:
+HTTP/1.1 301 Moved Permanently
+Date: Fri, 01 May 2026 04:59:20 GMT
+Server: Apache
+Location: https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1/
+Content-Type: text/html; charset=iso-8859-1
+
+
+ succeeded in 209ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Fri, 01 May 2026 04:59:20 GMT
+content-type: text/html
+cf-ray: 9f4c375b6ce170cb-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 254ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Fri, 01 May 2026 04:59:20 GMT
+content-type: text/html
+cf-ray: 9f4c375bebafbac5-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933630: /geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1</title></head>
+<body>
+ <h2>asf - Revision 1933630: /geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="LICENSE">LICENSE</a></li>
+  <li><a href="NOTICE">NOTICE</a></li>
+  <li><a href="pom.xml">pom.xml</a></li>
+  <li><a href="src/">src/</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1/src/test/ | sed -n '1,120p'; true" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1/src/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933630: /geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1/src</title></head>
+<body>
+ <h2>asf - Revision 1933630: /geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1/src</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="main/">main/</a></li>
+ </ul>
+</body></html>
+codex
+The exact Maven directory has `sources.jar`, `javadoc.jar`, and a source-release ZIP, but no `tests.jar` or `test-sources.jar`. The tagged SVN source tree also has only `src/main`, so I’m going to record the test suite as `N/A` and use the exact Maven artifacts for source and docs.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json
+diff --git a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json
+index ce985dcfd39834293b73076d3493fb55881d269f..b92b1852d7b6fd602a0ac64e5a016f25f499a517
+--- a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json
++++ b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.geronimo.specs:geronimo-annotation_1.3_spec:1.1"
++  "coordinates" : "org.apache.geronimo.specs:geronimo-annotation_1.3_spec:1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1-javadoc.jar",
++  "description" : "Apache Geronimo Annotation Spec 1.3 provides the Java Common Annotations 1.3 API in the javax.annotation packages. It supplies standard annotations for lifecycle callbacks, security roles, resource declarations, generated-code markers, priority ordering, managed beans, and SQL data source definitions."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json
+index ce985dcfd39834293b73076d3493fb55881d269f..b92b1852d7b6fd602a0ac64e5a016f25f499a517
+--- a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json
++++ b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.geronimo.specs:geronimo-annotation_1.3_spec:1.1"
++  "coordinates" : "org.apache.geronimo.specs:geronimo-annotation_1.3_spec:1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1-javadoc.jar",
++  "description" : "Apache Geronimo Annotation Spec 1.3 provides the Java Common Annotations 1.3 API in the javax.annotation packages. It supplies standard annotations for lifecycle callbacks, security roles, resource declarations, generated-code markers, priority ordering, managed beans, and SQL data source definitions."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.geronimo.specs:geronimo-annotation_1.3_spec:1.1",
+  "source-code-url": "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1-sources.jar",
+  "repository-url": "https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1/",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1-javadoc.jar",
+  "description": "Apache Geronimo Annotation Spec 1.3 provides the Java Common Annotations 1.3 API in the javax.annotation packages. It supplies standard annotations for lifecycle callbacks, security roles, resource declarations, generated-code markers, priority ordering, managed beans, and SQL data source definitions."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json
+index ce985dcfd39834293b73076d3493fb55881d269f..b92b1852d7b6fd602a0ac64e5a016f25f499a517
+--- a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json
++++ b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.geronimo.specs:geronimo-annotation_1.3_spec:1.1"
++  "coordinates" : "org.apache.geronimo.specs:geronimo-annotation_1.3_spec:1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1-javadoc.jar",
++  "description" : "Apache Geronimo Annotation Spec 1.3 provides the Java Common Annotations 1.3 API in the javax.annotation packages. It supplies standard annotations for lifecycle callbacks, security roles, resource declarations, generated-code markers, priority ordering, managed beans, and SQL data source definitions."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json && sed -n '1,120p' build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.geronimo.specs:geronimo-annotation_1.3_spec:1.1",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1-sources.jar",
+  "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1/",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1-javadoc.jar",
+  "description" : "Apache Geronimo Annotation Spec 1.3 provides the Java Common Annotations 1.3 API in the javax.annotation packages. It supplies standard annotations for lifecycle callbacks, security roles, resource declarations, generated-code markers, priority ordering, managed beans, and SQL data source definitions."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json
+index ce985dcfd39834293b73076d3493fb55881d269f..b92b1852d7b6fd602a0ac64e5a016f25f499a517
+--- a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json
++++ b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.geronimo.specs:geronimo-annotation_1.3_spec:1.1"
++  "coordinates" : "org.apache.geronimo.specs:geronimo-annotation_1.3_spec:1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1-javadoc.jar",
++  "description" : "Apache Geronimo Annotation Spec 1.3 provides the Java Common Annotations 1.3 API in the javax.annotation packages. It supplies standard annotations for lifecycle callbacks, security roles, resource declarations, generated-code markers, priority ordering, managed beans, and SQL data source definitions."
+ }
+
+web search: 
+web search: Maven Central geronimo-annotation_1.3_spec 1.1
+web search: 
+web search: "geronimo-annotation_1.3_spec-1.1" "svn.apache.org/repos/asf/geronimo/specs/tags"
+web search: 
+web search: https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1/
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/
+web search: 
+web search: 
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.geronimo.specs/geronimo-annotation_1.3_spec/1.1
+codex
+Updated [org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json).
+
+I used Maven Central for the exact `1.1` sources and javadoc artifacts, and the POM SCM tag for the repository URL. Maven Central did not list a test artifact, and the tagged SVN tree only contains `src/main`, so `test-code-url` is `N/A`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/))
+
+I left `language` absent because this is a Java API/spec artifact, not a Kotlin, Groovy, or Scala-specific library.
+diff --git a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json
+index ce985dcfd39834293b73076d3493fb55881d269f..b92b1852d7b6fd602a0ac64e5a016f25f499a517
+--- a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json
++++ b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.geronimo.specs:geronimo-annotation_1.3_spec:1.1"
++  "coordinates" : "org.apache.geronimo.specs:geronimo-annotation_1.3_spec:1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-annotation_1.3_spec-1.1/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/geronimo-annotation_1.3_spec-1.1-javadoc.jar",
++  "description" : "Apache Geronimo Annotation Spec 1.3 provides the Java Common Annotations 1.3 API in the javax.annotation packages. It supplies standard annotations for lifecycle callbacks, security roles, resource declarations, generated-code markers, priority ordering, managed beans, and SQL data source definitions."
+ }
+
+2026-05-01T04:59:55.549137Z ERROR codex_core::session: failed to record rollout items: thread 019de1e6-f0e3-71f2-8227-3a8eca0ffc03 not found
+tokens used
+59,026
+Updated [org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.json).
+
+I used Maven Central for the exact `1.1` sources and javadoc artifacts, and the POM SCM tag for the repository URL. Maven Central did not list a test artifact, and the tagged SVN tree only contains `src/main`, so `test-code-url` is `N/A`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/1.1/))
+
+I left `language` absent because this is a Java API/spec artifact, not a Kotlin, Groovy, or Scala-specific library.
+Ran agent for org.apache.geronimo.specs:geronimo-annotation_1.3_spec:1.1 (exit 0). Log: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd/build/agent-artifact-discovery-logs/org.apache.geronimo.specs-geronimo-annotation_1.3_spec-1.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3746-cf35cffd/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 36s
+9 actionable tasks: 4 executed, 5 from cache
