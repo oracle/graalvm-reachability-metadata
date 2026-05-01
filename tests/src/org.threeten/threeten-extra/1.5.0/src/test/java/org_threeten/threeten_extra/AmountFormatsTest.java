@@ -57,6 +57,6 @@ public class AmountFormatsTest {
 
         String formatted = AmountFormats.wordBased(period, polish);
 
-        assertThat(formatted).isEqualTo("1 rok, 2 miesiące i 3 tygodnie");
+        assertThat(formatted).isEqualTo("1 rok, 2 miesi\u0105ce i 3 tygodnie");
     }
 }
