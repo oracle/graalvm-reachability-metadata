@@ -38,6 +38,7 @@ import org.apache.xalan.processor.TransformerFactoryImpl;
 import org.apache.xpath.CachedXPathAPI;
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.XPathAPI;
+import org.apache.xpath.domapi.XPathEvaluatorImpl;
 import org.apache.xpath.jaxp.XPathFactoryImpl;
 import org.apache.xpath.objects.XObject;
 import org.junit.jupiter.api.Test;
@@ -45,6 +46,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.xpath.XPathExpression;
+import org.w3c.dom.xpath.XPathNSResolver;
+import org.w3c.dom.xpath.XPathResult;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
@@ -73,6 +77,21 @@ public class XalanTest {
                 <author name="Octavia Butler" country="US"/>
                 <author name="Ursula Le Guin" country="US"/>
             </authors>
+            """;
+
+    private static final String NAMESPACED_CATALOG_XML = """
+            <?xml version="1.0"?>
+            <lib:catalog xmlns:lib="urn:library" xmlns:meta="urn:metadata">
+                <lib:book meta:id="b1" meta:category="fiction">
+                    <lib:title>Kindred</lib:title>
+                </lib:book>
+                <lib:book meta:id="b2" meta:category="fantasy">
+                    <lib:title>Earthsea</lib:title>
+                </lib:book>
+                <lib:book meta:id="b3" meta:category="fiction">
+                    <lib:title>Parable</lib:title>
+                </lib:book>
+            </lib:catalog>
             """;
 
     private static final String SUMMARY_STYLESHEET = """
@@ -228,6 +247,30 @@ public class XalanTest {
 
         XObject hasTwoCostlyBooks = cachedXPath.eval(document, "count(/catalog/book[number(price) >= 10]) = 2");
         assertThat(hasTwoCostlyBooks.bool()).isTrue();
+    }
+
+    @Test
+    public void domLevelXPathEvaluatorUsesNamespaceResolversAndSnapshotResults() throws Exception {
+        Document document = parseXml(NAMESPACED_CATALOG_XML);
+        XPathEvaluatorImpl evaluator = new XPathEvaluatorImpl(document);
+        XPathNSResolver resolver = evaluator.createNSResolver(document.getDocumentElement());
+
+        XPathExpression fictionTitlesExpression = evaluator.createExpression(
+                "/lib:catalog/lib:book[@meta:category = 'fiction']/lib:title", resolver);
+        XPathResult fictionTitles = (XPathResult) fictionTitlesExpression.evaluate(
+                document, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+
+        assertThat(fictionTitles.getSnapshotLength()).isEqualTo(2);
+        assertThat(fictionTitles.snapshotItem(0).getTextContent()).isEqualTo("Kindred");
+        assertThat(fictionTitles.snapshotItem(1).getTextContent()).isEqualTo("Parable");
+
+        XPathResult fantasyTitle = (XPathResult) evaluator.evaluate(
+                "string(/lib:catalog/lib:book[@meta:id = 'b2']/lib:title)",
+                document,
+                resolver,
+                XPathResult.STRING_TYPE,
+                null);
+        assertThat(fantasyTitle.getStringValue()).isEqualTo("Earthsea");
     }
 
     @Test
