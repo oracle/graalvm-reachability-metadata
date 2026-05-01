@@ -46,6 +46,7 @@ import java.nio.ReadOnlyBufferException
 import java.nio.charset.StandardCharsets
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
+import kotlin.text.HexFormat
 
 @OptIn(
     ExperimentalEncodingApi::class,
@@ -254,6 +255,22 @@ public class Kotlinx_io_bytestring_jvmTest {
         assertEquals("0f10", binary.toHexString(startIndex = 1, endIndex = 3))
         assertEquals(binary, "000F10ff".hexToByteString())
         assertThrows(IllegalArgumentException::class.java) { "not-hex".hexToByteString() }
+    }
+
+    @Test
+    fun customHexFormatControlsByteStringEncodingAndDecoding() {
+        val bytes: ByteString = ByteString(0x0a.toByte(), 0x1b.toByte(), 0xff.toByte())
+        val format: HexFormat = HexFormat {
+            upperCase = true
+            bytes {
+                bytePrefix = "0x"
+                byteSeparator = ", "
+            }
+        }
+
+        assertEquals("0x0A, 0x1B, 0xFF", bytes.toHexString(format))
+        assertEquals("0x1B, 0xFF", bytes.toHexString(startIndex = 1, endIndex = 3, format = format))
+        assertEquals(bytes, "0x0A, 0x1B, 0xFF".hexToByteString(format))
     }
 
     @Test
