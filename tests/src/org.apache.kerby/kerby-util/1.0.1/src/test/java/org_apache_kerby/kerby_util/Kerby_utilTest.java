@@ -119,6 +119,36 @@ public class Kerby_utilTest {
     }
 
     @Test
+    void base64StreamsCanReverseDefaultDirectionWithCustomLineSeparators() throws IOException {
+        byte[] payload = "stream filters can encode on read and decode on write".getBytes(StandardCharsets.UTF_8);
+        byte[] lineSeparator = new byte[] {'~'};
+
+        ByteArrayOutputStream encodedBytes = new ByteArrayOutputStream();
+        try (Base64InputStream input = new Base64InputStream(new ByteArrayInputStream(payload), true, 8,
+                lineSeparator)) {
+            byte[] buffer = new byte[5];
+            int read = input.read(buffer, 0, buffer.length);
+            while (read != -1) {
+                encodedBytes.write(buffer, 0, read);
+                read = input.read(buffer, 0, buffer.length);
+            }
+        }
+
+        String encodedText = encodedBytes.toString(StandardCharsets.US_ASCII.name());
+        assertThat(encodedText).contains("~");
+        assertThat(encodedText.replace("~", ""))
+                .isEqualTo(java.util.Base64.getEncoder().encodeToString(payload));
+
+        ByteArrayOutputStream decodedBytes = new ByteArrayOutputStream();
+        byte[] encoded = encodedText.getBytes(StandardCharsets.US_ASCII);
+        try (Base64OutputStream output = new Base64OutputStream(decodedBytes, false)) {
+            output.write(encoded, 0, 7);
+            output.write(encoded, 7, encoded.length - 7);
+        }
+        assertThat(decodedBytes.toByteArray()).isEqualTo(payload);
+    }
+
+    @Test
     void hexUtilitiesRoundTripPlainFriendlyAndPartialEncodings() {
         byte[] bytes = new byte[] {0, 1, 15, 16, 31, 127, (byte) 0x80, (byte) 0xff};
 
