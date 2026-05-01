@@ -173,6 +173,33 @@ public class Opentelemetry_sdk_extension_autoconfigure_spiTest {
     }
 
     @Test
+    void autoConfigurationCustomizerProviderRegistersAndAppliesSignalExporterCustomizers() {
+        ExtendedRecordingAutoConfigurationCustomizer customizer = new ExtendedRecordingAutoConfigurationCustomizer();
+        RecordingMetricExporter replacementMetricExporter = new RecordingMetricExporter();
+        RecordingLogRecordExporter replacementLogRecordExporter = new RecordingLogRecordExporter();
+        AutoConfigurationCustomizerProvider provider = target -> target
+                .addMetricExporterCustomizer((exporter, config) -> replacementMetricExporter)
+                .addLogRecordExporterCustomizer((exporter, config) -> replacementLogRecordExporter);
+        ConfigProperties emptyConfig = new MapBackedConfigProperties(Collections.emptyMap());
+
+        provider.customize(customizer);
+
+        MetricExporter customizedMetricExporter = customizer.metricExporterCustomizers.get(0)
+                .apply(new RecordingMetricExporter(), emptyConfig);
+        LogRecordExporter customizedLogRecordExporter = customizer.logRecordExporterCustomizers.get(0)
+                .apply(new RecordingLogRecordExporter(), emptyConfig);
+
+        assertThat(customizer.metricExporterCustomizers).hasSize(1);
+        assertThat(customizer.logRecordExporterCustomizers).hasSize(1);
+        assertThat(customizedMetricExporter).isSameAs(replacementMetricExporter);
+        assertThat(customizedMetricExporter.export(Collections.<MetricData>emptyList()).isSuccess()).isTrue();
+        assertThat(replacementMetricExporter.exportedBatchSizes).containsExactly(0);
+        assertThat(customizedLogRecordExporter).isSameAs(replacementLogRecordExporter);
+        assertThat(customizedLogRecordExporter.export(Collections.<LogRecordData>emptyList()).isSuccess()).isTrue();
+        assertThat(replacementLogRecordExporter.exportedBatchSizes).containsExactly(0);
+    }
+
+    @Test
     void metricAndLogExporterProvidersCreateUsableComponents() {
         RecordingMetricExporter metricExporter = new RecordingMetricExporter();
         ConfigurableMetricExporterProvider metricProvider = new ConfigurableMetricExporterProvider() {
@@ -369,7 +396,7 @@ public class Opentelemetry_sdk_extension_autoconfigure_spiTest {
         }
     }
 
-    private static final class RecordingAutoConfigurationCustomizer implements AutoConfigurationCustomizer {
+    private static class RecordingAutoConfigurationCustomizer implements AutoConfigurationCustomizer {
         private final List<BiFunction<? super TextMapPropagator, ConfigProperties, ? extends TextMapPropagator>>
                 propagatorCustomizers = new ArrayList<>();
         private final List<BiFunction<? super Resource, ConfigProperties, ? extends Resource>> resourceCustomizers =
@@ -412,6 +439,30 @@ public class Opentelemetry_sdk_extension_autoconfigure_spiTest {
         @Override
         public AutoConfigurationCustomizer addPropertiesSupplier(Supplier<Map<String, String>> propertiesSupplier) {
             propertiesSuppliers.add(propertiesSupplier);
+            return this;
+        }
+    }
+
+    private static final class ExtendedRecordingAutoConfigurationCustomizer
+            extends RecordingAutoConfigurationCustomizer {
+        private final List<BiFunction<? super MetricExporter, ConfigProperties, ? extends MetricExporter>>
+                metricExporterCustomizers = new ArrayList<>();
+        private final List<BiFunction<? super LogRecordExporter, ConfigProperties, ? extends LogRecordExporter>>
+                logRecordExporterCustomizers = new ArrayList<>();
+
+        @Override
+        public AutoConfigurationCustomizer addMetricExporterCustomizer(
+                BiFunction<? super MetricExporter, ConfigProperties, ? extends MetricExporter>
+                        metricExporterCustomizer) {
+            metricExporterCustomizers.add(metricExporterCustomizer);
+            return this;
+        }
+
+        @Override
+        public AutoConfigurationCustomizer addLogRecordExporterCustomizer(
+                BiFunction<? super LogRecordExporter, ConfigProperties, ? extends LogRecordExporter>
+                        logRecordExporterCustomizer) {
+            logRecordExporterCustomizers.add(logRecordExporterCustomizer);
             return this;
         }
     }
