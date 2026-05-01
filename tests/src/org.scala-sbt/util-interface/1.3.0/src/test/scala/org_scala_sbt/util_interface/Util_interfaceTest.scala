@@ -187,6 +187,36 @@ final class Util_interfaceTest {
   }
 
   @Test
+  def loggerImplementationsCanFilterDisabledLevelsWithoutEvaluatingMessages(): Unit = {
+    val logger = new FilteringLogger(enabledMessageLevels = Set("warn", "error"), tracesEnabled = false)
+    var debugEvaluated = 0
+    var infoEvaluated = 0
+    var warnEvaluated = 0
+    var errorEvaluated = 0
+    var traceEvaluated = 0
+    val suppressedTrace = new IllegalArgumentException("suppressed trace")
+
+    logger.debug(countingMessageSupplier("debug details", () => debugEvaluated += 1))
+    logger.info(countingMessageSupplier("compile started", () => infoEvaluated += 1))
+    logger.warn(countingMessageSupplier("cache is stale", () => warnEvaluated += 1))
+    logger.error(countingMessageSupplier("compile failed", () => errorEvaluated += 1))
+    logger.trace(new Supplier[Throwable] {
+      override def get(): Throwable = {
+        traceEvaluated += 1
+        suppressedTrace
+      }
+    })
+
+    assertThat(debugEvaluated).isZero()
+    assertThat(infoEvaluated).isZero()
+    assertThat(traceEvaluated).isZero()
+    assertThat(warnEvaluated).isEqualTo(1)
+    assertThat(errorEvaluated).isEqualTo(1)
+    assertThat(logger.messages).containsExactly("warn:cache is stale", "error:compile failed")
+    assertThat(logger.traces).isEmpty()
+  }
+
+  @Test
   def tupleInterfacePreservesBothGenericValues(): Unit = {
     val severityAndCategory: T2[Severity, String] = Pair(Severity.Info, "lint")
     val nested: T2[String, T2[Severity, String]] = Pair("diagnostic", severityAndCategory)
@@ -317,6 +347,31 @@ final class Util_interfaceTest {
       while (traceIndex < pendingTraces.size()) {
         traces.add(pendingTraces.get(traceIndex).get())
         traceIndex += 1
+      }
+    }
+  }
+
+  private final class FilteringLogger(enabledMessageLevels: Set[String], tracesEnabled: Boolean) extends Logger {
+    val messages: ArrayList[String] = new ArrayList[String]()
+    val traces: ArrayList[Throwable] = new ArrayList[Throwable]()
+
+    override def error(message: Supplier[String]): Unit = accept("error", message)
+
+    override def warn(message: Supplier[String]): Unit = accept("warn", message)
+
+    override def info(message: Supplier[String]): Unit = accept("info", message)
+
+    override def debug(message: Supplier[String]): Unit = accept("debug", message)
+
+    override def trace(exception: Supplier[Throwable]): Unit = {
+      if (tracesEnabled) {
+        traces.add(exception.get())
+      }
+    }
+
+    private def accept(level: String, message: Supplier[String]): Unit = {
+      if (enabledMessageLevels.contains(level)) {
+        messages.add(s"$level:${message.get()}")
       }
     }
   }
