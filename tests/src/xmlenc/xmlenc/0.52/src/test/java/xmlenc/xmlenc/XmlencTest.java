@@ -52,12 +52,12 @@ public class XmlencTest {
         StringWriter writer = new StringWriter();
 
         encoder.declaration(writer);
-        encoder.text(writer, "<tag attr=\"value\">Tom & Jerry's café</tag>", true);
+        encoder.text(writer, "<tag attr=\"value\">Tom & Jerry's caf\u00E9</tag>", true);
 
         assertThat(encoder.getEncoding()).isEqualTo("UTF-8");
         assertThat(writer.toString())
                 .isEqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                        + "&lt;tag attr=\"value\"&gt;Tom &amp; Jerry's café&lt;/tag&gt;");
+                        + "&lt;tag attr=\"value\"&gt;Tom &amp; Jerry's caf\u00E9&lt;/tag&gt;");
     }
 
     @Test
@@ -65,9 +65,9 @@ public class XmlencTest {
         XMLEncoder encoder = new XMLEncoder("US-ASCII");
         StringWriter writer = new StringWriter();
 
-        encoder.text(writer, "already &amp; escaped café", false);
+        encoder.text(writer, "already &amp; escaped caf\u00E9", false);
         encoder.text(writer, '<', true);
-        encoder.text(writer, 'é', true);
+        encoder.text(writer, '\u00E9', true);
 
         assertThat(writer.toString()).isEqualTo("already &amp; escaped caf&#233;&lt;&#233;");
     }
@@ -211,7 +211,7 @@ public class XmlencTest {
         assertThat(outputter.getElementStackCapacity()).isGreaterThanOrEqualTo(32);
         assertThat(writer.toString()).isEqualTo("<root kind='nested'>\n  <child/>\n</root>");
 
-        outputter.setState(XMLEventListenerStates.START_TAG_OPEN, new String[] { "root", "leaf" });
+        outputter.setState(XMLEventListenerStates.START_TAG_OPEN, new String[] {"root", "leaf" });
         assertThat(outputter.getElementStackSize()).isEqualTo(2);
         assertThat(outputter.getElementStack()).containsExactly("root", "leaf");
         outputter.setState(XMLEventListenerStates.UNINITIALIZED, null);
