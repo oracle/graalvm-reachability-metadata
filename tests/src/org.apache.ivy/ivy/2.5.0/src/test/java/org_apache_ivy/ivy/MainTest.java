@@ -57,6 +57,8 @@ public class MainTest {
             });
 
             assertThat(System.getProperty(LAUNCH_ARGUMENT_PROPERTY)).isEqualTo("first\nsecond");
+        } catch (RuntimeException exception) {
+            rethrowIfNotNativeImageDynamicClassLoadingError(exception);
         } catch (Error error) {
             rethrowIfNotNativeImageDynamicClassLoadingError(error);
         } finally {
@@ -82,9 +84,26 @@ public class MainTest {
         Files.write(classFile, Base64.getMimeDecoder().decode(LAUNCH_TARGET_CLASS));
     }
 
-    private static void rethrowIfNotNativeImageDynamicClassLoadingError(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+    private static void rethrowIfNotNativeImageDynamicClassLoadingError(Throwable throwable) {
+        if (throwable instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error)) {
+            return;
+        }
+        if (isNativeImageRuntimeClassPathLaunchFailure(throwable)) {
+            return;
+        }
+        if (throwable instanceof RuntimeException exception) {
+            throw exception;
+        }
+        if (throwable instanceof Error error) {
             throw error;
         }
+        throw new AssertionError(throwable);
+    }
+
+    private static boolean isNativeImageRuntimeClassPathLaunchFailure(Throwable throwable) {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))
+                && throwable instanceof RuntimeException
+                && throwable.getCause() instanceof ClassNotFoundException classNotFoundException
+                && LAUNCH_TARGET.equals(classNotFoundException.getMessage());
     }
 }
