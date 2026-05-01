@@ -27,6 +27,8 @@ public class JavaAdapterTest {
         String describe(int index);
 
         boolean active();
+
+        String inheritedGreeting(String subject);
     }
 
     public abstract static class AdapterBase {
@@ -37,6 +39,10 @@ public class JavaAdapterTest {
 
         public String greet(String subject) {
             return "hello " + subject;
+        }
+
+        public String inheritedGreeting(String subject) {
+            return "base " + subject;
         }
     }
 
@@ -74,6 +80,7 @@ public class JavaAdapterTest {
                 assertThat(base.greet("duke")).isEqualTo("hello duke from adapter");
                 assertThat(behavior.describe(7)).isEqualTo("item-7");
                 assertThat(behavior.active()).isTrue();
+                assertThat(behavior.inheritedGreeting("duke")).isEqualTo("base duke");
             } finally {
                 Context.exit();
             }
