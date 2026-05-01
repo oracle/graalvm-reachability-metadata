@@ -34,7 +34,7 @@ public class Spi_annotationsTest {
         assertThat(endpoint.extendsScheme()).isEqualTo("base");
         assertThat(endpoint.syntax()).isEqualTo("rich:account:operation");
         assertThat(endpoint.alternativeSyntax()).isEqualTo("rich:account/operation");
-        assertThat(endpoint.consumerClass()).isEqualTo(EndpointConsumer.class);
+        assertThat(endpoint.firstVersion()).isEqualTo("3.0.0");
         assertThat(endpoint.consumerPrefix()).isEqualTo("consumer.");
         assertThat(endpoint.title()).isEqualTo("Rich endpoint");
         assertThat(endpoint.label()).isEqualTo("testing,core");
@@ -42,6 +42,7 @@ public class Spi_annotationsTest {
         assertThat(endpoint.consumerOnly()).isFalse();
         assertThat(endpoint.lenientProperties()).isTrue();
         assertThat(endpoint.excludeProperties()).isEqualTo("secretToken,legacyOption");
+        assertThat(endpoint.generateConfigurer()).isFalse();
     }
 
     @Test
@@ -53,13 +54,14 @@ public class Spi_annotationsTest {
         assertThat(endpoint.syntax()).isEqualTo("minimal:path");
         assertThat(endpoint.extendsScheme()).isEmpty();
         assertThat(endpoint.alternativeSyntax()).isEmpty();
-        assertThat(endpoint.consumerClass()).isEqualTo(Object.class);
+        assertThat(endpoint.firstVersion()).isEmpty();
         assertThat(endpoint.consumerPrefix()).isEmpty();
         assertThat(endpoint.label()).isEmpty();
         assertThat(endpoint.producerOnly()).isFalse();
         assertThat(endpoint.consumerOnly()).isFalse();
         assertThat(endpoint.lenientProperties()).isFalse();
         assertThat(endpoint.excludeProperties()).isEmpty();
+        assertThat(endpoint.generateConfigurer()).isTrue();
     }
 
     @Test
@@ -70,7 +72,7 @@ public class Spi_annotationsTest {
         assertThat(params.prefix()).isEqualTo("advanced.");
         assertThat(metadata.label()).isEqualTo("component");
         assertThat(metadata.defaultValue()).isEqualTo("enabled");
-        assertThat(metadata.required()).isEqualTo("true");
+        assertThat(metadata.required()).isTrue();
         assertThat(metadata.title()).isEqualTo("Component metadata");
         assertThat(metadata.description()).isEqualTo("Metadata attached to the endpoint type");
     }
@@ -126,13 +128,13 @@ public class Spi_annotationsTest {
 
         assertThat(fieldMetadata.label()).isEqualTo("field");
         assertThat(fieldMetadata.defaultValue()).isEqualTo("n/a");
-        assertThat(fieldMetadata.required()).isEqualTo("false");
+        assertThat(fieldMetadata.required()).isFalse();
         assertThat(fieldMetadata.title()).isEqualTo("Description");
         assertThat(fieldMetadata.description()).isEqualTo("Optional endpoint description");
 
         assertThat(methodMetadata.label()).isEqualTo("operation");
         assertThat(methodMetadata.defaultValue()).isEqualTo("rich:primary:status");
-        assertThat(methodMetadata.required()).isEqualTo("true");
+        assertThat(methodMetadata.required()).isTrue();
         assertThat(methodMetadata.title()).isEqualTo("URI builder");
         assertThat(methodMetadata.description()).isEqualTo("Builds the endpoint URI");
     }
@@ -173,7 +175,7 @@ public class Spi_annotationsTest {
         assertThat(params.prefix()).isEmpty();
         assertThat(metadata.label()).isEmpty();
         assertThat(metadata.defaultValue()).isEmpty();
-        assertThat(metadata.required()).isEmpty();
+        assertThat(metadata.required()).isFalse();
         assertThat(metadata.title()).isEmpty();
         assertThat(metadata.description()).isEmpty();
 
@@ -240,22 +242,23 @@ public class Spi_annotationsTest {
     }
 
     @UriEndpoint(
+            firstVersion = "3.0.0",
             scheme = "rich",
             extendsScheme = "base",
             syntax = "rich:account:operation",
             alternativeSyntax = "rich:account/operation",
-            consumerClass = EndpointConsumer.class,
             consumerPrefix = "consumer.",
             title = "Rich endpoint",
             label = "testing,core",
             producerOnly = true,
             lenientProperties = true,
-            excludeProperties = "secretToken,legacyOption")
+            excludeProperties = "secretToken,legacyOption",
+            generateConfigurer = false)
     @UriParams(prefix = "advanced.")
     @Metadata(
             label = "component",
             defaultValue = "enabled",
-            required = "true",
+            required = true,
             title = "Component metadata",
             description = "Metadata attached to the endpoint type")
     private static final class RichEndpoint {
@@ -285,7 +288,7 @@ public class Spi_annotationsTest {
         @Metadata(
                 label = "field",
                 defaultValue = "n/a",
-                required = "false",
+                required = false,
                 title = "Description",
                 description = "Optional endpoint description")
         private String description;
@@ -293,7 +296,7 @@ public class Spi_annotationsTest {
         @Metadata(
                 label = "operation",
                 defaultValue = "rich:primary:status",
-                required = "true",
+                required = true,
                 title = "URI builder",
                 description = "Builds the endpoint URI")
         private String buildUri() {
@@ -334,6 +337,4 @@ public class Spi_annotationsTest {
         private int retries;
     }
 
-    private static final class EndpointConsumer {
-    }
 }
