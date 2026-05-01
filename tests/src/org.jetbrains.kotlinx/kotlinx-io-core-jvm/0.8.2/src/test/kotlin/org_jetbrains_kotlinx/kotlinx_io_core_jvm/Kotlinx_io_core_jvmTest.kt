@@ -60,6 +60,8 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.EOFException
 import java.nio.ByteBuffer
+import java.nio.channels.ReadableByteChannel
+import java.nio.channels.WritableByteChannel
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
@@ -248,6 +250,38 @@ public class Kotlinx_io_core_jvmTest {
         assertEquals(3.toByte(), channelDestination.get())
         byteChannel.close()
         assertTrue(byteChannel.isOpen, "Buffer-backed channels are lightweight adapters and remain open")
+    }
+
+    @Test
+    fun sourceAndSinkByteChannelAdaptersHonorByteBufferPositions() {
+        val inputPayload: ByteArray = "nio source".toByteArray(StandardCharsets.UTF_8)
+        val readableChannel: ReadableByteChannel = ByteArrayInputStream(inputPayload).asSource().buffered().asByteChannel()
+        val destination: ByteBuffer = ByteBuffer.allocate(inputPayload.size + 4)
+        destination.position(2)
+
+        assertEquals(inputPayload.size, readableChannel.read(destination))
+        assertEquals(inputPayload.size + 2, destination.position())
+        destination.flip()
+        destination.position(2)
+        val decodedInput: ByteArray = ByteArray(inputPayload.size)
+        destination.get(decodedInput)
+        assertArrayEquals(inputPayload, decodedInput)
+        readableChannel.close()
+        assertFalse(readableChannel.isOpen)
+
+        val outputBytes: ByteArrayOutputStream = ByteArrayOutputStream()
+        val writableChannel: WritableByteChannel = outputBytes.asSink().buffered().asByteChannel()
+        val expectedOutput: ByteArray = "nio sink".toByteArray(StandardCharsets.UTF_8)
+        val outputPayload: ByteArray = byteArrayOf(0) + expectedOutput + byteArrayOf(0)
+        val source: ByteBuffer = ByteBuffer.wrap(outputPayload)
+        source.position(1)
+        source.limit(outputPayload.size - 1)
+
+        assertEquals(expectedOutput.size, writableChannel.write(source))
+        assertEquals(outputPayload.size - 1, source.position())
+        writableChannel.close()
+        assertFalse(writableChannel.isOpen)
+        assertArrayEquals(expectedOutput, outputBytes.toByteArray())
     }
 
     @Test
