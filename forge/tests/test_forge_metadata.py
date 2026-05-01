@@ -926,7 +926,7 @@ class IssueClaimCacheTests(unittest.TestCase):
         self.assertEqual(processed, 0)
         claim_issue_for_processing.assert_not_called()
 
-    def test_process_loop_only_preflights_one_chunk_from_scan_window(self) -> None:
+    def test_process_loop_preflights_uncached_candidates_in_chunks_before_claiming(self) -> None:
         issues = [
             {
                 "number": issue_number,
@@ -948,13 +948,28 @@ class IssueClaimCacheTests(unittest.TestCase):
                     patch.object(
                         forge_metadata,
                         "get_issue_claim_preflights_or_empty",
-                        return_value={1: _preflight(issue_number=1)},
+                        side_effect=[
+                            {
+                                issue["number"]: _preflight(
+                                    issue_number=issue["number"],
+                                    open_blockers=(99,),
+                                )
+                                for issue in issues[:forge_metadata.ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE]
+                            },
+                            {
+                                issues[-2]["number"]: _preflight(
+                                    issue_number=issues[-2]["number"],
+                                    open_blockers=(99,),
+                                ),
+                                issues[-1]["number"]: _preflight(issue_number=issues[-1]["number"]),
+                            },
+                        ],
                     ) as get_issue_claim_preflights_or_empty, \
                     patch.object(
                         forge_metadata,
                         "claim_issue_for_processing",
                         return_value=_claimed_issue(),
-                    ), \
+                    ) as claim_issue_for_processing, \
                     patch.object(
                         forge_metadata,
                         "process_claimed_issue_lifecycle",
@@ -975,8 +990,20 @@ class IssueClaimCacheTests(unittest.TestCase):
                     1,
                 )
 
-        get_issue_claim_preflights_or_empty.assert_called_once_with(
-            issues[:forge_metadata.ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE]
+        self.assertEqual(
+            get_issue_claim_preflights_or_empty.call_args_list,
+            [
+                call(issues[:forge_metadata.ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE]),
+                call(issues[forge_metadata.ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE:]),
+            ],
+        )
+        claim_issue_for_processing.assert_called_once_with(
+            issues[-1],
+            forge_metadata.LABEL_LIBRARY_NEW,
+            "/tmp/reachability",
+            "/tmp/metrics",
+            "automation-user",
+            in_metadata_repo=True,
         )
 
 

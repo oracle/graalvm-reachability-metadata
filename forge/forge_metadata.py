@@ -3893,6 +3893,41 @@ def should_skip_issue_from_preflight(
     return False
 
 
+def resolve_next_issue_claim_candidate_batch(
+        unresolved_candidates: list[tuple[dict, CachedIssueClaimSkip | None]],
+) -> list[tuple[dict, IssueClaimPreflight | None, CachedIssueClaimSkip | None]]:
+    """Resolve the next candidate batch through cache/local state or batched preflight."""
+    batch_entries: list[tuple[dict, CachedIssueClaimSkip | None, bool]] = []
+    preflight_candidates: list[dict] = []
+
+    while unresolved_candidates and len(preflight_candidates) < ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE:
+        issue, cached_skip = unresolved_candidates.pop(0)
+        needs_preflight = cached_skip is None and issue_needs_claim_preflight(issue)
+        batch_entries.append((issue, cached_skip, needs_preflight))
+        if needs_preflight:
+            preflight_candidates.append(issue)
+
+    issue_preflights = get_issue_claim_preflights_or_empty(preflight_candidates)
+    preflight_cache_observations = [
+        observation
+        for observation in (
+            get_issue_claim_cache_observation_from_preflight(preflight)
+            for preflight in issue_preflights.values()
+        )
+        if observation is not None
+    ]
+    record_issue_claim_cache_observations(preflight_cache_observations)
+
+    return [
+        (
+            issue,
+            issue_preflights.get(issue["number"]) if needs_preflight else None,
+            cached_skip,
+        )
+        for issue, cached_skip, needs_preflight in batch_entries
+    ]
+
+
 def get_active_sibling_blocker_numbers(issue_number: int) -> list[int]:
     """
     Return active open issues that block the same downstream issues as issue_number.
@@ -4177,11 +4212,6 @@ def get_issue_scan_batch_size(_remaining_limit: int, _available_slots: int) -> i
     return DEFAULT_ISSUE_SCAN_BATCH_SIZE
 
 
-def get_issue_preflight_batch_size() -> int:
-    """Return how many candidates to preflight from one sorted issue scan."""
-    return ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE
-
-
 def resolve_random_issue_scan_offset(label: str) -> int:
     """Choose a random searchable offset for an issue label."""
     issue_count = count_issues_with_label(label)
@@ -4222,76 +4252,66 @@ def process_issues_with_label(
     regular_offset = 0
     exhausted = False
     priority_exhausted = False
+    unresolved_candidates: list[tuple[dict, CachedIssueClaimSkip | None]] = []
     pending_issues: list[tuple[dict, IssueClaimPreflight | None, CachedIssueClaimSkip | None]] = []
     active_futures: dict[concurrent.futures.Future[bool], ClaimedIssue] = {}
 
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=parallelism)
     try:
         while processed_count < limit or active_futures:
-            while not exhausted and processed_count < limit and len(active_futures) < parallelism:
+            while processed_count < limit and len(active_futures) < parallelism:
                 remaining_limit = limit - processed_count
                 available_slots = min(remaining_limit, parallelism - len(active_futures))
                 if not pending_issues:
-                    fetch_limit = get_issue_scan_batch_size(remaining_limit, available_slots)
-                    if offset == 0:
-                        issues, priority_offset, regular_offset, priority_exhausted, exhausted = (
-                            get_prioritized_issues_with_label(
-                                label,
-                                fetch_limit,
-                                priority_offset,
-                                regular_offset,
-                                priority_exhausted,
+                    if unresolved_candidates:
+                        pending_issues.extend(resolve_next_issue_claim_candidate_batch(unresolved_candidates))
+                    elif not exhausted:
+                        fetch_limit = get_issue_scan_batch_size(remaining_limit, available_slots)
+                        if offset == 0:
+                            issues, priority_offset, regular_offset, priority_exhausted, exhausted = (
+                                get_prioritized_issues_with_label(
+                                    label,
+                                    fetch_limit,
+                                    priority_offset,
+                                    regular_offset,
+                                    priority_exhausted,
+                                )
                             )
-                        )
-                        if not issues:
-                            if priority_offset == 0 and regular_offset == 0:
-                                print()
-                                log_stage("issue-scan", f"No open issues found with label '{label}'")
-                            break
-                    else:
-                        issues = get_issues_with_label(label, fetch_limit, current_offset)
-                        current_offset += len(issues)
-                        if not issues:
-                            if current_offset == offset:
-                                print()
-                                log_stage("issue-scan", f"No open issues found with label '{label}'")
-                            exhausted = True
-                            break
+                            if not issues:
+                                if priority_offset == 0 and regular_offset == 0:
+                                    print()
+                                    log_stage("issue-scan", f"No open issues found with label '{label}'")
+                                break
+                        else:
+                            issues = get_issues_with_label(label, fetch_limit, current_offset)
+                            current_offset += len(issues)
+                            if not issues:
+                                if current_offset == offset:
+                                    print()
+                                    log_stage("issue-scan", f"No open issues found with label '{label}'")
+                                exhausted = True
+                                break
 
-                    payload_cache_observations = [
-                        observation
-                        for observation in (
-                            get_issue_claim_cache_observation_from_payload(issue)
+                        payload_cache_observations = [
+                            observation
+                            for observation in (
+                                get_issue_claim_cache_observation_from_payload(issue)
+                                for issue in issues
+                            )
+                            if observation is not None
+                        ]
+                        record_issue_claim_cache_observations(payload_cache_observations)
+
+                        cached_skips = get_cached_issue_claim_skips(issues)
+                        unresolved_candidates.extend(
+                            (issue, cached_skips.get(issue["number"]))
                             for issue in issues
                         )
-                        if observation is not None
-                    ]
-                    record_issue_claim_cache_observations(payload_cache_observations)
-
-                    cached_skips = get_cached_issue_claim_skips(issues)
-                    preflight_candidates = [
-                        issue
-                        for issue in issues
-                        if issue["number"] not in cached_skips
-                        and issue_needs_claim_preflight(issue)
-                    ]
-                    issues_needing_preflight = preflight_candidates[:get_issue_preflight_batch_size()]
-                    issue_preflights = get_issue_claim_preflights_or_empty(issues_needing_preflight)
-                    preflight_cache_observations = [
-                        observation
-                        for observation in (
-                            get_issue_claim_cache_observation_from_preflight(preflight)
-                            for preflight in issue_preflights.values()
-                        )
-                        if observation is not None
-                    ]
-                    record_issue_claim_cache_observations(preflight_cache_observations)
-                    pending_issues.extend(
-                        (issue, issue_preflights.get(issue["number"]), cached_skips.get(issue["number"]))
-                        for issue in issues
-                    )
-                    print()
-                    log_stage("issue-scan", f"Found {len(issues)} issue(s) to consider")
+                        print()
+                        log_stage("issue-scan", f"Found {len(issues)} issue(s) to consider")
+                        continue
+                    else:
+                        break
 
                 while pending_issues and processed_count < limit and len(active_futures) < parallelism:
                     issue, preflight, cached_skip = pending_issues.pop(0)
