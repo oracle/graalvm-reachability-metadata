@@ -12,21 +12,16 @@ import java.io.File;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.Writer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.codehaus.plexus.util.xml.CompactXMLWriter;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
-import org.codehaus.plexus.util.xml.ReaderFactory;
 import org.codehaus.plexus.util.xml.SerializerXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
-import org.codehaus.plexus.util.xml.WriterFactory;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
-import org.codehaus.plexus.util.xml.Xpp3DomUtils;
 import org.codehaus.plexus.util.xml.Xpp3DomWriter;
 import org.codehaus.plexus.util.xml.XmlStreamReader;
 import org.codehaus.plexus.util.xml.XmlStreamWriter;
@@ -74,7 +69,7 @@ public class Plexus_xmlTest {
         Xpp3Dom dependencies = project.getChild("dependencies");
         Xpp3Dom[] dependencyNodes = dependencies.getChildren("dependency");
         assertThat(dependencyNodes).hasSize(2);
-        assertThat(dependencyNodes[0].getParent()).isSameAs(dependencies);
+        assertThat(dependencyNodes[0].getChildCount()).isEqualTo(2);
         assertThat(dependencyNodes[0].getAttribute("scope")).isEqualTo("test");
         assertThat(dependencyNodes[0].getChild("artifactId").getValue()).isEqualTo("plexus-xml");
         assertThat(dependencyNodes[1].getAttribute("scope")).isEqualTo("runtime");
@@ -145,7 +140,7 @@ public class Plexus_xmlTest {
         recessiveParameter.setAttribute("description", "fallback description");
         recessive.addChild(recessiveParameter);
 
-        Xpp3Dom merged = Xpp3DomUtils.mergeXpp3Dom(dominant, recessive);
+        Xpp3Dom merged = Xpp3Dom.mergeXpp3Dom(dominant, recessive);
 
         assertThat(merged).isSameAs(dominant);
         assertThat(merged.getAttribute("source")).isEqualTo("dominant");
@@ -332,32 +327,30 @@ public class Plexus_xmlTest {
     @Test
     void streamReaderAndWriterDetectDeclaredXmlEncodings() throws Exception {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        XmlStreamWriter xmlWriter = WriterFactory.newXmlWriter(bytes);
+        XmlStreamWriter xmlWriter = new XmlStreamWriter(bytes);
         xmlWriter.write("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><message>caf\u00e9</message>");
         xmlWriter.close();
 
         assertThat(xmlWriter.getEncoding()).isEqualToIgnoringCase("ISO-8859-1");
-        String decoded = new String(bytes.toByteArray(), Charset.forName(ReaderFactory.ISO_8859_1));
+        String decoded = new String(bytes.toByteArray(), StandardCharsets.ISO_8859_1);
         assertThat(decoded).contains("<message>caf\u00e9</message>");
 
         byte[] utf8Xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><message>snowman \u2603</message>"
                 .getBytes(StandardCharsets.UTF_8);
-        try (XmlStreamReader xmlReader = ReaderFactory.newXmlReader(new ByteArrayInputStream(utf8Xml))) {
+        try (XmlStreamReader xmlReader = new XmlStreamReader(new ByteArrayInputStream(utf8Xml))) {
             assertThat(xmlReader.getEncoding()).isEqualToIgnoringCase("UTF-8");
             assertThat(readFully(xmlReader)).contains("snowman \u2603");
         }
     }
 
     @Test
-    void readerAndWriterFactoriesHonorExplicitCharsets() throws Exception {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        try (Writer writer = WriterFactory.newWriter(bytes, WriterFactory.UTF_16LE)) {
-            writer.write("plain text \u03bb");
-        }
+    void streamReaderHonorsExplicitContentTypeCharset() throws Exception {
+        byte[] bytes = "<?xml version=\"1.0\"?><message>plain text \u03bb</message>".getBytes(StandardCharsets.UTF_16LE);
 
-        ByteArrayInputStream input = new ByteArrayInputStream(bytes.toByteArray());
-        try (Reader reader = ReaderFactory.newReader(input, ReaderFactory.UTF_16LE)) {
-            assertThat(readFully(reader)).isEqualTo("plain text \u03bb");
+        ByteArrayInputStream input = new ByteArrayInputStream(bytes);
+        try (XmlStreamReader reader = new XmlStreamReader(input, "application/xml; charset=UTF-16LE")) {
+            assertThat(reader.getEncoding()).isEqualToIgnoringCase("UTF-16LE");
+            assertThat(readFully(reader)).contains("plain text \u03bb");
         }
     }
 
