@@ -27,7 +27,7 @@ public class ArrayELResolverTest {
     void reportsIntegerCommonPropertyTypeForArrays() {
         ArrayELResolver resolver = new ArrayELResolver();
 
-        Class<?> propertyType = resolver.getCommonPropertyType(null, new String[] { "first", "second" });
+        Class<?> propertyType = resolver.getCommonPropertyType(null, new String[] {"first", "second"});
 
         assertThat(propertyType).isSameAs(Integer.class);
         assertThat(resolver.getCommonPropertyType(null, "not an array")).isNull();
@@ -37,7 +37,7 @@ public class ArrayELResolverTest {
     void readsAndWritesArrayElementsUsingCoercedIndexes() {
         ArrayELResolver resolver = new ArrayELResolver();
         TestELContext context = new TestELContext(resolver);
-        String[] values = new String[] { "zero", "one", "two" };
+        String[] values = new String[] {"zero", "one", "two"};
 
         Object value = resolver.getValue(context, values, "1");
 
@@ -55,7 +55,7 @@ public class ArrayELResolverTest {
     void reportsComponentTypeAndReadOnlyStateForArrayElements() {
         ArrayELResolver resolver = new ArrayELResolver();
         TestELContext context = new TestELContext(resolver);
-        String[] values = new String[] { "zero" };
+        String[] values = new String[] {"zero"};
 
         Class<?> componentType = resolver.getType(context, values, Boolean.FALSE);
 
@@ -75,7 +75,7 @@ public class ArrayELResolverTest {
     void rejectsInvalidArrayAccesses() {
         ArrayELResolver resolver = new ArrayELResolver();
         TestELContext context = new TestELContext(resolver);
-        Number[] values = new Number[] { Integer.valueOf(1) };
+        Number[] values = new Number[] {Integer.valueOf(1)};
 
         assertThatThrownBy(() -> resolver.getType(context, values, Integer.valueOf(3)))
                 .isInstanceOf(PropertyNotFoundException.class);
@@ -96,7 +96,7 @@ public class ArrayELResolverTest {
         assertThat(resolver.getValue(context, null, Integer.valueOf(0))).isNull();
         assertThat(context.isPropertyResolved()).isFalse();
 
-        Iterator<FeatureDescriptor> descriptors = resolver.getFeatureDescriptors(context, new String[] { "value" });
+        Iterator<FeatureDescriptor> descriptors = resolver.getFeatureDescriptors(context, new String[] {"value"});
         assertThat(descriptors).isNull();
     }
 
