@@ -174,6 +174,14 @@ public class Netty_transport_native_unix_commonTest {
     }
 
     @Test
+    void nativeInetAddressRejectsUnsupportedSocketAddressPayloadLength() {
+        byte[] encoded = new byte[16];
+
+        assertThatThrownBy(() -> NativeInetAddress.address(encoded, 0, 12))
+                .isInstanceOf(Error.class);
+    }
+
+    @Test
     void unixChannelUtilKeepsRequestedHostNameWhenOsAddressIsAvailable() throws Exception {
         InetSocketAddress requested = InetSocketAddress.createUnresolved("requested.example", 1111);
         InetSocketAddress operatingSystemAddress = new InetSocketAddress(
