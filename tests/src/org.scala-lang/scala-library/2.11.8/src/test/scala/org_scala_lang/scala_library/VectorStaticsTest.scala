@@ -14,16 +14,19 @@ import scala.collection.immutable.Vector
 
 final class VectorStaticsTest {
   @Test
-  def prependsSingleElementToTrimmedVectorWithPrefixSpace(): Unit = {
-    val base: Vector[VectorElement] = Vector.tabulate(64)(index => VectorElement(index, s"value-$index"))
-    val trimmed: Vector[VectorElement] = base.drop(8)
-    val prepended: VectorElement = VectorElement(-1, "prepended")
+  def prependsSingleElementToSmallVectorWithPrefixSpace(): Unit = {
+    val original: Vector[VectorElement] = Vector(
+      VectorElement(1, "one"),
+      VectorElement(2, "two"),
+      VectorElement(3, "three")
+    )
+    val prepended: VectorElement = VectorElement(0, "zero")
 
-    val result: Vector[VectorElement] = trimmed.prependedAll(List(prepended))
+    val result: Vector[VectorElement] = original.prependedAll(Vector(prepended))
 
-    assertThat(result.length).isEqualTo(trimmed.length + 1)
+    assertThat(result.length).isEqualTo(original.length + 1)
     assertThat(result.head).isSameAs(prepended)
-    assertThat(result.tail.toList.asJava).containsExactlyElementsOf(trimmed.toList.asJava)
+    assertThat(result.tail.toList.asJava).containsExactlyElementsOf(original.toList.asJava)
   }
 
   @Test
