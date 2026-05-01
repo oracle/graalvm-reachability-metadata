@@ -23,7 +23,9 @@ public class MimeTypesTest {
         assertThat(MimeTypes.getKnownMimeTypes())
                 .contains("application/json", "text/css");
 
-        assertThat(MimeTypes.inferCharsetFromContentType("text/html"))
+        assertThat(MimeTypes.getCharsetInferredFromContentType("text/html"))
+                .isEqualTo("utf-8");
+        assertThat(MimeTypes.getCharsetAssumedFromContentType("application/vnd.api+json"))
                 .isEqualTo("utf-8");
         assertThat(MimeTypes.Type.TEXT_JSON.getCharsetString())
                 .isEqualTo("utf-8");
