@@ -11,7 +11,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,17 +19,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import javax.ejb.AccessLocalException;
 import javax.ejb.ApplicationException;
-import javax.ejb.AsyncResult;
-import javax.ejb.Asynchronous;
-import javax.ejb.ConcurrencyManagement;
-import javax.ejb.ConcurrencyManagementType;
+import javax.ejb.BeanManagedConcurrency;
 import javax.ejb.ConcurrentAccessException;
-import javax.ejb.ConcurrentAccessTimeoutException;
 import javax.ejb.CreateException;
 import javax.ejb.DependsOn;
 import javax.ejb.DuplicateKeyException;
@@ -40,12 +34,7 @@ import javax.ejb.EJBException;
 import javax.ejb.EJBTransactionRequiredException;
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.FinderException;
-import javax.ejb.IllegalLoopbackException;
-import javax.ejb.LocalBean;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
 import javax.ejb.MessageDriven;
-import javax.ejb.NoMoreTimeoutsException;
 import javax.ejb.NoSuchEJBException;
 import javax.ejb.NoSuchEntityException;
 import javax.ejb.NoSuchObjectLocalException;
@@ -53,18 +42,13 @@ import javax.ejb.ObjectNotFoundException;
 import javax.ejb.Remote;
 import javax.ejb.Remove;
 import javax.ejb.RemoveException;
-import javax.ejb.Schedule;
-import javax.ejb.ScheduleExpression;
-import javax.ejb.Schedules;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.Stateful;
-import javax.ejb.StatefulTimeout;
 import javax.ejb.Stateless;
 import javax.ejb.Timeout;
 import javax.ejb.TimedObject;
 import javax.ejb.Timer;
-import javax.ejb.TimerConfig;
 import javax.ejb.TimerHandle;
 import javax.ejb.TimerService;
 import javax.ejb.TransactionAttribute;
@@ -73,13 +57,9 @@ import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 import javax.ejb.TransactionRequiredLocalException;
 import javax.ejb.TransactionRolledbackLocalException;
-import javax.ejb.embeddable.EJBContainer;
 import javax.interceptor.AroundInvoke;
-import javax.interceptor.AroundTimeout;
 import javax.interceptor.ExcludeClassInterceptors;
 import javax.interceptor.ExcludeDefaultInterceptors;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InterceptorBinding;
 import javax.interceptor.Interceptors;
 import javax.interceptor.InvocationContext;
 import javax.xml.namespace.QName;
@@ -90,100 +70,6 @@ import javax.xml.rpc.handler.MessageContext;
 import org.junit.jupiter.api.Test;
 
 public class Javax_ejbTest {
-    @Test
-    void asyncResultReturnsSuppliedValueAndRejectsFutureControlMethods() throws Exception {
-        AsyncResult<String> result = new AsyncResult<>("inventory-updated");
-
-        assertThat(result.get()).isEqualTo("inventory-updated");
-        assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(result::isDone)
-                .withMessage("Object does not represent an acutal Future");
-        assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(result::isCancelled)
-                .withMessage("Object does not represent an acutal Future");
-        assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> result.cancel(true))
-                .withMessage("Object does not represent an acutal Future");
-        assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> result.get(1, TimeUnit.MILLISECONDS))
-                .withMessage("Object does not represent an acutal Future");
-    }
-
-    @Test
-    void scheduleExpressionDefaultsAndFluentSettersExposeCalendarFields() {
-        ScheduleExpression defaults = new ScheduleExpression();
-
-        assertThat(defaults.getSecond()).isEqualTo("0");
-        assertThat(defaults.getMinute()).isEqualTo("0");
-        assertThat(defaults.getHour()).isEqualTo("0");
-        assertThat(defaults.getDayOfMonth()).isEqualTo("*");
-        assertThat(defaults.getMonth()).isEqualTo("*");
-        assertThat(defaults.getDayOfWeek()).isEqualTo("*");
-        assertThat(defaults.getYear()).isEqualTo("*");
-        assertThat(defaults.getTimezone()).isNull();
-        assertThat(defaults.getStart()).isNull();
-        assertThat(defaults.getEnd()).isNull();
-
-        Date start = new Date(1_700_000_000_000L);
-        Date end = new Date(1_700_086_400_000L);
-        ScheduleExpression expression = new ScheduleExpression()
-                .second("*/15")
-                .minute(30)
-                .hour("9-17")
-                .dayOfMonth("Mon")
-                .month(12)
-                .dayOfWeek(5)
-                .year("2026")
-                .timezone("UTC")
-                .start(start)
-                .end(end);
-
-        start.setTime(0L);
-        Date returnedStart = expression.getStart();
-        returnedStart.setTime(1L);
-
-        assertThat(expression.getSecond()).isEqualTo("*/15");
-        assertThat(expression.getMinute()).isEqualTo("30");
-        assertThat(expression.getHour()).isEqualTo("9-17");
-        assertThat(expression.getDayOfMonth()).isEqualTo("Mon");
-        assertThat(expression.getMonth()).isEqualTo("12");
-        assertThat(expression.getDayOfWeek()).isEqualTo("5");
-        assertThat(expression.getYear()).isEqualTo("2026");
-        assertThat(expression.getTimezone()).isEqualTo("UTC");
-        assertThat(expression.getStart()).isEqualTo(new Date(1_700_000_000_000L));
-        assertThat(expression.getStart()).isNotSameAs(returnedStart);
-        assertThat(expression.getEnd()).isEqualTo(end);
-        assertThat(expression.toString()).contains(
-                "second=*/15",
-                "minute=30",
-                "hour=9-17",
-                "dayOfMonth=Mon",
-                "month=12",
-                "dayOfWeek=5",
-                "year=2026",
-                "timezoneID=UTC");
-    }
-
-    @Test
-    void timerConfigStoresInfoAndPersistenceFlag() {
-        TimerConfig defaults = new TimerConfig();
-
-        assertThat(defaults.getInfo()).isNull();
-        assertThat(defaults.isPersistent()).isTrue();
-        assertThat(defaults.toString()).contains("persistent=true", "info=null");
-
-        TimerConfig config = new TimerConfig("nightly-billing", false);
-        assertThat(config.getInfo()).isEqualTo("nightly-billing");
-        assertThat(config.isPersistent()).isFalse();
-
-        config.setInfo(new TimerPayload("renewal", 7));
-        config.setPersistent(true);
-
-        assertThat(config.getInfo()).isEqualTo(new TimerPayload("renewal", 7));
-        assertThat(config.isPersistent()).isTrue();
-        assertThat(config.toString()).contains("persistent=true", "TimerPayload[name=renewal, attempts=7]");
-    }
-
     @Test
     void xmlRpcHandlerInfoCopiesHeadersAndGenericHandlerDefaultsAllowProcessing() {
         QName firstHeader = new QName("urn:test", "first");
@@ -242,12 +128,15 @@ public class Javax_ejbTest {
 
     @Test
     void invocationContextCoordinatesInterceptorProceedAndMutableState() throws Exception {
-        SimpleInvocationContext context = new SimpleInvocationContext(new CheckoutService(), new Object[] {"A-100", 3});
+        Method checkoutMethod = CheckoutService.class.getDeclaredMethod("checkout", String.class, int.class);
+        SimpleInvocationContext context = new SimpleInvocationContext(
+                new CheckoutService(),
+                checkoutMethod,
+                new Object[] {"A-100", 3});
         AuditInterceptor interceptor = new AuditInterceptor();
 
         assertThat(context.getTarget()).isInstanceOf(CheckoutService.class);
-        assertThat(context.getTimer()).isNull();
-        assertThat(context.getMethod()).isNull();
+        assertThat(context.getMethod()).isEqualTo(checkoutMethod);
         assertThat(context.getParameters()).containsExactly("A-100", 3);
         assertThat(context.getContextData()).isEmpty();
 
@@ -259,14 +148,10 @@ public class Javax_ejbTest {
     }
 
     @Test
-    void enumConstantsExposeExpectedTransactionConcurrencyAndLockValues() {
-        assertThat(ConcurrencyManagementType.values()).containsExactly(
-                ConcurrencyManagementType.CONTAINER,
-                ConcurrencyManagementType.BEAN);
+    void enumConstantsExposeExpectedTransactionValues() {
         assertThat(TransactionManagementType.values()).containsExactly(
                 TransactionManagementType.CONTAINER,
                 TransactionManagementType.BEAN);
-        assertThat(LockType.values()).containsExactly(LockType.READ, LockType.WRITE);
         assertThat(TransactionAttributeType.values()).containsExactly(
                 TransactionAttributeType.MANDATORY,
                 TransactionAttributeType.REQUIRED,
@@ -275,9 +160,7 @@ public class Javax_ejbTest {
                 TransactionAttributeType.NOT_SUPPORTED,
                 TransactionAttributeType.NEVER);
 
-        assertThat(ConcurrencyManagementType.valueOf("BEAN")).isEqualTo(ConcurrencyManagementType.BEAN);
         assertThat(TransactionManagementType.valueOf("CONTAINER")).isEqualTo(TransactionManagementType.CONTAINER);
-        assertThat(LockType.valueOf("WRITE")).isEqualTo(LockType.WRITE);
         assertThat(TransactionAttributeType.valueOf("REQUIRES_NEW"))
                 .isEqualTo(TransactionAttributeType.REQUIRES_NEW);
     }
@@ -287,9 +170,10 @@ public class Javax_ejbTest {
         Exception cause = new Exception("database unavailable");
         EJBException ejbException = new EJBException("business method failed", cause);
 
-        assertThat(ejbException).hasMessage("business method failed");
+        assertThat(ejbException).hasMessageContaining("business method failed");
+        assertThat(ejbException).hasMessageContaining("database unavailable");
         assertThat(ejbException.getCausedByException()).isSameAs(cause);
-        assertThat(ejbException.getCause()).isSameAs(cause);
+        assertThat(ejbException.getCause()).isNull();
         assertThat(new EJBException(cause).getCausedByException()).isSameAs(cause);
 
         assertThat(new AccessLocalException("access denied", cause)).isInstanceOf(EJBException.class);
@@ -305,9 +189,7 @@ public class Javax_ejbTest {
         assertThat(new TransactionRequiredLocalException("local transaction required"))
                 .hasMessage("local transaction required");
         assertThat(new TransactionRolledbackLocalException("local rollback")).hasMessage("local rollback");
-        assertThat(new ConcurrentAccessTimeoutException("timeout")).isInstanceOf(ConcurrentAccessException.class);
-        assertThat(new IllegalLoopbackException("loopback")).isInstanceOf(ConcurrentAccessException.class);
-        assertThat(new NoMoreTimeoutsException("finished")).hasMessage("finished");
+        assertThat(new ConcurrentAccessException("timeout")).hasMessage("timeout");
         assertThat(new NoSuchEJBException("bean missing")).hasMessage("bean missing");
         assertThat(new NoSuchEntityException("entity missing")).hasMessage("entity missing");
         assertThat(new NoSuchObjectLocalException("object missing")).hasMessage("object missing");
@@ -318,26 +200,6 @@ public class Javax_ejbTest {
     }
 
     @Test
-    void publicContainerConstantsUseSpecifiedPropertyNames() {
-        assertThat(EJBContainer.PROVIDER).isEqualTo("javax.ejb.embeddable.provider");
-        assertThat(EJBContainer.MODULES).isEqualTo("javax.ejb.embeddable.modules");
-        assertThat(EJBContainer.APP_NAME).isEqualTo("javax.ejb.embeddable.appName");
-    }
-
-    @Test
-    void embeddableContainerReportsMissingRequestedProvider() {
-        String requestedProvider = "example.embeddable.Provider";
-        Map<String, Object> properties = new HashMap<>();
-        properties.put(EJBContainer.PROVIDER, requestedProvider);
-        properties.put(EJBContainer.APP_NAME, "inventory-test");
-
-        assertThatExceptionOfType(EJBException.class)
-                .isThrownBy(() -> EJBContainer.createEJBContainer(properties))
-                .withMessageContaining("No EJBContainer provider available")
-                .withMessageContaining(requestedProvider);
-    }
-
-    @Test
     void annotatedBeansCanBeInstantiatedAndInvokedWithoutContainer() throws Exception {
         InventoryBean inventory = new InventoryBean();
         BillingBean billing = new BillingBean();
@@ -345,44 +207,37 @@ public class Javax_ejbTest {
         QueueListener listener = new QueueListener();
         ScheduledTasks scheduledTasks = new ScheduledTasks();
 
-        assertThat(inventory.reserve("SKU-1", 2).get()).isEqualTo("SKU-1:2");
+        assertThat(inventory.reserve("SKU-1", 2)).isEqualTo("SKU-1:2");
         assertThat(inventory.cancel("SKU-1")).isEqualTo("cancelled:SKU-1");
         assertThat(billing.invoice("order-10")).isEqualTo("invoice:order-10");
         assertThat(cache.refresh()).isEqualTo("cache-refreshed");
         assertThat(listener.onMessage("reconcile")).isEqualTo("received:reconcile");
         assertThat(scheduledTasks.hourly()).isEqualTo("hourly");
-        assertThat(scheduledTasks.nightly()).isEqualTo("nightly");
     }
 
     @Test
-    void timerServiceCreatesCalendarTimerAndTimedObjectReceivesTimerCallback() {
+    void timerServiceCreatesTimersAndTimedObjectReceivesTimerCallback() {
         SimpleTimerService timerService = new SimpleTimerService();
-        ScheduleExpression schedule = new ScheduleExpression().second(0).minute(15).hour(8);
-        TimerConfig config = new TimerConfig("daily-reconciliation", false);
+        Date firstExpiration = new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(1));
         RecordingTimedObject timedObject = new RecordingTimedObject();
 
-        Timer timer = timerService.createCalendarTimer(schedule, config);
-        timedObject.ejbTimeout(timer);
+        Timer singleActionTimer = timerService.createTimer(firstExpiration, new TimerPayload("reconcile", 1));
+        Timer intervalTimer = timerService.createTimer(500L, 1_000L, "interval");
+        timedObject.ejbTimeout(singleActionTimer);
 
-        assertThat(timer.isCalendarTimer()).isTrue();
-        assertThat(timer.isPersistent()).isFalse();
-        assertThat(timer.getSchedule()).isSameAs(schedule);
-        assertThat(timer.getInfo()).isEqualTo("daily-reconciliation");
-        assertThat(timer.getHandle().getTimer()).isSameAs(timer);
-        assertThat(timerService.getTimers()).containsExactly(timer);
-        assertThat(timedObject.lastTimeoutInfo()).isEqualTo("daily-reconciliation");
+        assertThat(singleActionTimer.getNextTimeout()).isEqualTo(firstExpiration);
+        assertThat(singleActionTimer.getNextTimeout()).isNotSameAs(firstExpiration);
+        assertThat(singleActionTimer.getInfo()).isEqualTo(new TimerPayload("reconcile", 1));
+        assertThat(singleActionTimer.getHandle().getTimer()).isSameAs(singleActionTimer);
+        assertThat(singleActionTimer.getTimeRemaining()).isGreaterThanOrEqualTo(0L);
+        assertThat(intervalTimer.getInfo()).isEqualTo("interval");
+        assertThat(timerService.getTimers()).containsExactly(singleActionTimer, intervalTimer);
+        assertThat(timedObject.lastTimeoutInfo()).isEqualTo(new TimerPayload("reconcile", 1));
 
-        timer.cancel();
+        singleActionTimer.cancel();
 
-        assertThat(timerService.getTimers()).isEmpty();
-        assertThatExceptionOfType(NoSuchObjectLocalException.class).isThrownBy(timer::getInfo);
-    }
-
-    @Test
-    void asyncResultPropagatesNullValues() throws InterruptedException, ExecutionException {
-        AsyncResult<Object> result = new AsyncResult<>(null);
-
-        assertThat(result.get()).isNull();
+        assertThat(timerService.getTimers()).containsExactly(intervalTimer);
+        assertThatExceptionOfType(NoSuchObjectLocalException.class).isThrownBy(singleActionTimer::getInfo);
     }
 
     @Test
@@ -396,60 +251,30 @@ public class Javax_ejbTest {
     }
 
     private static final class SimpleTimerService implements TimerService {
-        private final Collection<Timer> timers = new ArrayList<>();
+        private final Collection<Timer> timers = new java.util.ArrayList<>();
 
         @Override
         public Timer createTimer(long duration, Serializable info) {
-            return createSingleActionTimer(duration, new TimerConfig(info, true));
-        }
-
-        @Override
-        public Timer createSingleActionTimer(long duration, TimerConfig config) {
-            return register(new SimpleTimer(this, timeoutAfter(duration), null, config, false));
+            return register(new SimpleTimer(this, timeoutAfter(duration), info));
         }
 
         @Override
         public Timer createTimer(long initialDuration, long intervalDuration, Serializable info) {
-            return createIntervalTimer(initialDuration, intervalDuration, new TimerConfig(info, true));
-        }
-
-        @Override
-        public Timer createIntervalTimer(long initialDuration, long intervalDuration, TimerConfig config) {
-            return register(new SimpleTimer(this, timeoutAfter(initialDuration), null, config, false));
+            return register(new SimpleTimer(this, timeoutAfter(initialDuration), info));
         }
 
         @Override
         public Timer createTimer(Date expiration, Serializable info) {
-            return createSingleActionTimer(expiration, new TimerConfig(info, true));
-        }
-
-        @Override
-        public Timer createSingleActionTimer(Date expiration, TimerConfig config) {
-            return register(new SimpleTimer(this, expiration, null, config, false));
+            return register(new SimpleTimer(this, expiration, info));
         }
 
         @Override
         public Timer createTimer(Date initialExpiration, long intervalDuration, Serializable info) {
-            return createIntervalTimer(initialExpiration, intervalDuration, new TimerConfig(info, true));
+            return register(new SimpleTimer(this, initialExpiration, info));
         }
 
         @Override
-        public Timer createIntervalTimer(Date initialExpiration, long intervalDuration, TimerConfig config) {
-            return register(new SimpleTimer(this, initialExpiration, null, config, false));
-        }
-
-        @Override
-        public Timer createCalendarTimer(ScheduleExpression schedule) {
-            return createCalendarTimer(schedule, new TimerConfig(null, true));
-        }
-
-        @Override
-        public Timer createCalendarTimer(ScheduleExpression schedule, TimerConfig config) {
-            return register(new SimpleTimer(this, null, schedule, config, true));
-        }
-
-        @Override
-        public Collection<Timer> getTimers() {
+        public Collection getTimers() {
             return Collections.unmodifiableCollection(timers);
         }
 
@@ -470,24 +295,13 @@ public class Javax_ejbTest {
     private static final class SimpleTimer implements Timer {
         private final SimpleTimerService timerService;
         private final Date nextTimeout;
-        private final ScheduleExpression schedule;
         private final Serializable info;
-        private final boolean persistent;
-        private final boolean calendarTimer;
         private boolean cancelled;
 
-        private SimpleTimer(
-                SimpleTimerService timerService,
-                Date nextTimeout,
-                ScheduleExpression schedule,
-                TimerConfig config,
-                boolean calendarTimer) {
+        private SimpleTimer(SimpleTimerService timerService, Date nextTimeout, Serializable info) {
             this.timerService = timerService;
             this.nextTimeout = copyDate(nextTimeout);
-            this.schedule = schedule;
-            this.info = config.getInfo();
-            this.persistent = config.isPersistent();
-            this.calendarTimer = calendarTimer;
+            this.info = info;
         }
 
         @Override
@@ -500,37 +314,13 @@ public class Javax_ejbTest {
         @Override
         public long getTimeRemaining() {
             ensureActive();
-            if (nextTimeout == null) {
-                throw new NoMoreTimeoutsException("Calendar timer does not expose a fixed next timeout");
-            }
             return Math.max(0L, nextTimeout.getTime() - System.currentTimeMillis());
         }
 
         @Override
         public Date getNextTimeout() {
             ensureActive();
-            if (nextTimeout == null) {
-                throw new NoMoreTimeoutsException("Calendar timer does not expose a fixed next timeout");
-            }
             return copyDate(nextTimeout);
-        }
-
-        @Override
-        public ScheduleExpression getSchedule() {
-            ensureActive();
-            return schedule;
-        }
-
-        @Override
-        public boolean isPersistent() {
-            ensureActive();
-            return persistent;
-        }
-
-        @Override
-        public boolean isCalendarTimer() {
-            ensureActive();
-            return calendarTimer;
         }
 
         @Override
@@ -552,7 +342,7 @@ public class Javax_ejbTest {
         }
 
         private Date copyDate(Date date) {
-            return date == null ? null : new Date(date.getTime());
+            return new Date(date.getTime());
         }
     }
 
@@ -676,11 +466,13 @@ public class Javax_ejbTest {
 
     private static final class SimpleInvocationContext implements InvocationContext {
         private final Object target;
+        private final Method method;
         private final Map<String, Object> contextData = new LinkedHashMap<>();
         private Object[] parameters;
 
-        private SimpleInvocationContext(Object target, Object[] parameters) {
+        private SimpleInvocationContext(Object target, Method method, Object[] parameters) {
             this.target = target;
+            this.method = method;
             this.parameters = Arrays.copyOf(parameters, parameters.length);
         }
 
@@ -690,13 +482,8 @@ public class Javax_ejbTest {
         }
 
         @Override
-        public Object getTimer() {
-            return null;
-        }
-
-        @Override
         public Method getMethod() {
-            return null;
+            return method;
         }
 
         @Override
@@ -727,7 +514,6 @@ public class Javax_ejbTest {
         }
     }
 
-    @Interceptor
     private static final class AuditInterceptor {
         @AroundInvoke
         Object recordAndProceed(InvocationContext context) throws Exception {
@@ -736,30 +522,22 @@ public class Javax_ejbTest {
         }
     }
 
-    @InterceptorBinding
-    private @interface Audited {
-    }
-
     private interface InventoryOperations {
-        AsyncResult<String> reserve(String sku, int quantity);
+        String reserve(String sku, int quantity);
     }
 
-    @Audited
     @Stateless(name = "InventoryBean", mappedName = "ejb/inventory", description = "Inventory facade")
-    @LocalBean
     @Remote({InventoryOperations.class})
     @TransactionManagement(TransactionManagementType.CONTAINER)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Interceptors(AuditInterceptor.class)
     private static final class InventoryBean implements InventoryOperations {
-        @EJB(beanName = "BillingBean", lookup = "java:global/test/BillingBean")
+        @EJB(beanName = "BillingBean", mappedName = "ejb/billing")
         private BillingBean billingBean;
 
         @Override
-        @Asynchronous
-        @Lock(LockType.READ)
-        public AsyncResult<String> reserve(String sku, int quantity) {
-            return new AsyncResult<>(sku + ":" + quantity);
+        public String reserve(String sku, int quantity) {
+            return sku + ":" + quantity;
         }
 
         @Remove(retainIfException = true)
@@ -770,7 +548,6 @@ public class Javax_ejbTest {
     }
 
     @Stateful(name = "BillingBean", mappedName = "ejb/billing", description = "Billing facade")
-    @StatefulTimeout(value = 10, unit = TimeUnit.MINUTES)
     @TransactionManagement(TransactionManagementType.BEAN)
     private static final class BillingBean {
         @ExcludeClassInterceptors
@@ -782,9 +559,8 @@ public class Javax_ejbTest {
     @Singleton(name = "StartupCache", mappedName = "ejb/cache", description = "Preloaded cache")
     @Startup
     @DependsOn({"InventoryBean", "BillingBean"})
-    @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
+    @BeanManagedConcurrency
     private static final class StartupCache {
-        @Lock(LockType.WRITE)
         String refresh() {
             return "cache-refreshed";
         }
@@ -797,24 +573,14 @@ public class Javax_ejbTest {
         }
     }
 
-    @ApplicationException(rollback = true, inherited = false)
+    @ApplicationException(rollback = true)
     private static final class BusinessRuleException extends Exception {
     }
 
     private static final class ScheduledTasks {
-        @Schedule(second = "0", minute = "0", hour = "*", persistent = false, info = "hourly")
         @Timeout
         String hourly() {
             return "hourly";
-        }
-
-        @Schedules({
-                @Schedule(second = "0", minute = "30", hour = "1", dayOfWeek = "Mon", info = "weekly"),
-                @Schedule(second = "0", minute = "0", hour = "2", dayOfMonth = "Last", info = "monthly")
-        })
-        @AroundTimeout
-        String nightly() {
-            return "nightly";
         }
     }
 }
