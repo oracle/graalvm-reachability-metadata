@@ -1,0 +1,432 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-55e4bde9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de475-8c29-79c3-904f-0b422cffabf6
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: dnsjava:dnsjava:2.1.7
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.1.7".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-55e4bde9/metadata/dnsjava/dnsjava/index.json
+- Entry selector: "metadata-version" = "2.1.7"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "2.1.7".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/dnsjava-2.1.7-sources.jar
+- repository-url: https://github.com/dnsjava/dnsjava
+- test-code-url: https://github.com/dnsjava/dnsjava/tree/v2.1.7/tests
+- documentation-url: https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/dnsjava-2.1.7-javadoc.jar
+- description: dnsjava is a Java implementation of DNS that supports defined and unknown record types, DNSSEC-related records, TSIG authentication, EDNS0, queries, zone transfers, and dynamic updates. It also provides client-side caching and a minimal DNS server implementation for applications that need DNS protocol handling.
+- language: <missing>
+
+Context:
+- Coordinate version: 2.1.7
+- Entry test-version: 2.1.7
+codex
+I’ll verify the existing metadata entry first, then check the versioned artifact/repository URLs before deciding whether any field is actually missing under your rules.
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"2\\.1\\.7\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/dnsjava/dnsjava/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-55e4bde9
+ succeeded in 0ms:
+4:    "metadata-version" : "2.1.7",
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/dnsjava-2.1.7-sources.jar",
+6:    "repository-url" : "https://github.com/dnsjava/dnsjava",
+7:    "test-code-url" : "https://github.com/dnsjava/dnsjava/tree/v2.1.7/tests",
+8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/dnsjava-2.1.7-javadoc.jar",
+9:    "description" : "dnsjava is a Java implementation of DNS that supports defined and unknown record types, DNSSEC-related records, TSIG authentication, EDNS0, queries, zone transfers, and dynamic updates. It also provides client-side caching and a minimal DNS server implementation for applications that need DNS protocol handling.",
+
+web search: 
+web search: Maven Central dnsjava dnsjava 2.1.7 sources javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/dnsjava/dnsjava/
+web search: 
+web search: https://repo1.maven.org/maven2/dnsjava/dnsjava/2.1.7/
+web search: 
+web search: 
+web search: 
+web search: 
+codex
+The target entry already has non-blank values for the URL and description fields. I’m checking whether Maven Central has a test artifact for this exact version; if it does not, the existing version-tagged GitHub test path remains the right candidate.
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/dnsjava/dnsjava/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-55e4bde9
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.1.7",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/dnsjava-2.1.7-sources.jar",
+    "repository-url" : "https://github.com/dnsjava/dnsjava",
+    "test-code-url" : "https://github.com/dnsjava/dnsjava/tree/v2.1.7/tests",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/dnsjava-2.1.7-javadoc.jar",
+    "description" : "dnsjava is a Java implementation of DNS that supports defined and unknown record types, DNSSEC-related records, TSIG authentication, EDNS0, queries, zone transfers, and dynamic updates. It also provides client-side caching and a minimal DNS server implementation for applications that need DNS protocol handling.",
+    "tested-versions" : [
+      "2.1.7"
+    ],
+    "allowed-packages" : [
+      "org.xbill.DNS"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/dnsjava-2.1.7.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-55e4bde9
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>dnsjava</groupId>
+    <artifactId>dnsjava</artifactId>
+    <version>2.1.7</version>
+    <name>dnsjava</name>
+    <description>dnsjava is an implementation of DNS in Java. It supports all defined record types (including the DNSSEC types), and unknown types. It can be used for queries, zone transfers, and dynamic updates. It includes a cache which can be used by clients, and a minimal implementation of a server. It supports TSIG authenticated messages, partial DNSSEC verification, and EDNS0. </description>
+    <url>http://www.dnsjava.org</url>
+    <licenses>
+        <license>
+            <name>BSD 2-Clause license</name>
+            <url>http://opensource.org/licenses/BSD-2-Clause</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:https://github.com/dnsjava/dnsjava</connection>
+        <developerConnection>scm:git:git@github.com:dnsjava/dnsjava</developerConnection>
+        <url>https://github.com/dnsjava/dnsjava</url>
+        <tag>v2.1.6</tag>
+    </scm>
+    <developers>
+        <developer>
+            <id>bwelling</id>
+            <name>Brian Wellington</name>
+        </developer>
+    </developers>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <target.jdk>1.4</target.jdk>
+    </properties>
+
+    <build>
+        <sourceDirectory>./</sourceDirectory>
+        <testSourceDirectory>./tests</testSourceDirectory>
+        <resources>
+            <resource>
+                <directory>org/xbill/DNS/spi/</directory>
+                <targetPath>META-INF</targetPath>
+                <includes>
+                    <include>services/</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <plugins>
+        
+        <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <source>${target.jdk}</source>
+                    <target>${target.jdk}</target>
+                    <encoding>iso8859-1</encoding>
+                    <testExcludes>
+                        <!-- Exclude unit tests with external dependencies -->
+                        <exclude>**/DNSSECWithLunaProviderTest.java</exclude>
+                    </testExcludes>
+                    <includes>
+                        <include>*.java</include>
+                        <include>org/**/*.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>org/xbill/DNS/tests/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <configuration>
+                    <includes>
+                        <include>*.java</include>
+                        <include>org/**/*.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>org/xbill/DNS/tests/</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                        <manifestEntries>
+                            <Bundle-RequiredExecutionEnvironment>J2SE-1.4</Bundle-RequiredExecutionEnvironment>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.4.0</version>
+                <configuration>
+                    <instructions>
+                        <Export-Package>org.xbill.DNS;uses:="org.xbill.DNS.util",org.xbill.DNS.spi;uses:="org.xbill.DNS,sun.net.spi.nameservice",org.xbill.DNS.utils,org.xbill.DNS.windows</Export-Package>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <excludePackageNames>*.tests.*</excludePackageNames>
+                    <sourcepath>./org</sourcepath>
+                    <debug>true</debug>
+                    <windowtitle>dnsjava documentation</windowtitle>
+                    <footer></footer>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-55e4bde9
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: dnsjava/dnsjava/2.1.7</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>dnsjava/dnsjava/2.1.7</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="dnsjava-2.1.7-javadoc.jar" title="dnsjava-2.1.7-javadoc.jar">dnsjava-2.1.7-javadoc.jar</a>                         2015-02-17 15:38    776875      
+<a href="dnsjava-2.1.7-javadoc.jar.asc" title="dnsjava-2.1.7-javadoc.jar.asc">dnsjava-2.1.7-javadoc.jar.asc</a>                     2015-02-17 15:38       859      
+<a href="dnsjava-2.1.7-javadoc.jar.asc.md5" title="dnsjava-2.1.7-javadoc.jar.asc.md5">dnsjava-2.1.7-javadoc.jar.asc.md5</a>                 2015-02-17 15:38        32      
+<a href="dnsjava-2.1.7-javadoc.jar.asc.sha1" title="dnsjava-2.1.7-javadoc.jar.asc.sha1">dnsjava-2.1.7-javadoc.jar.asc.sha1</a>                2015-02-17 15:38        40      
+<a href="dnsjava-2.1.7-javadoc.jar.md5" title="dnsjava-2.1.7-javadoc.jar.md5">dnsjava-2.1.7-javadoc.jar.md5</a>                     2015-02-17 15:38        32      
+<a href="dnsjava-2.1.7-javadoc.jar.sha1" title="dnsjava-2.1.7-javadoc.jar.sha1">dnsjava-2.1.7-javadoc.jar.sha1</a>                    2015-02-17 15:38        40      
+<a href="dnsjava-2.1.7-sources.jar" title="dnsjava-2.1.7-sources.jar">dnsjava-2.1.7-sources.jar</a>                         2015-02-17 15:38    202139      
+<a href="dnsjava-2.1.7-sources.jar.asc" title="dnsjava-2.1.7-sources.jar.asc">dnsjava-2.1.7-sources.jar.asc</a>                     2015-02-17 15:38       859      
+<a href="dnsjava-2.1.7-sources.jar.asc.md5" title="dnsjava-2.1.7-sources.jar.asc.md5">dnsjava-2.1.7-sources.jar.asc.md5</a>                 2015-02-17 15:38        32      
+<a href="dnsjava-2.1.7-sources.jar.asc.sha1" title="dnsjava-2.1.7-sources.jar.asc.sha1">dnsjava-2.1.7-sources.jar.asc.sha1</a>                2015-02-17 15:38        40      
+<a href="dnsjava-2.1.7-sources.jar.md5" title="dnsjava-2.1.7-sources.jar.md5">dnsjava-2.1.7-sources.jar.md5</a>                     2015-02-17 15:38        32      
+<a href="dnsjava-2.1.7-sources.jar.sha1" title="dnsjava-2.1.7-sources.jar.sha1">dnsjava-2.1.7-sources.jar.sha1</a>                    2015-02-17 15:38        40      
+<a href="dnsjava-2.1.7.jar" title="dnsjava-2.1.7.jar">dnsjava-2.1.7.jar</a>                                 2015-02-17 15:38    307637      
+<a href="dnsjava-2.1.7.jar.asc" title="dnsjava-2.1.7.jar.asc">dnsjava-2.1.7.jar.asc</a>                             2015-02-17 15:38       859      
+<a href="dnsjava-2.1.7.jar.asc.md5" title="dnsjava-2.1.7.jar.asc.md5">dnsjava-2.1.7.jar.asc.md5</a>                         2015-02-17 15:38        32      
+<a href="dnsjava-2.1.7.jar.asc.sha1" title="dnsjava-2.1.7.jar.asc.sha1">dnsjava-2.1.7.jar.asc.sha1</a>                        2015-02-17 15:38        40      
+<a href="dnsjava-2.1.7.jar.md5" title="dnsjava-2.1.7.jar.md5">dnsjava-2.1.7.jar.md5</a>                             2015-02-17 15:38        32      
+<a href="dnsjava-2.1.7.jar.sha1" title="dnsjava-2.1.7.jar.sha1">dnsjava-2.1.7.jar.sha1</a>                            2015-02-17 15:38        40      
+<a href="dnsjava-2.1.7.pom" title="dnsjava-2.1.7.pom">dnsjava-2.1.7.pom</a>                                 2015-02-17 15:38      7172      
+<a href="dnsjava-2.1.7.pom.asc" title="dnsjava-2.1.7.pom.asc">dnsjava-2.1.7.pom.asc</a>                             2015-02-17 15:38       859      
+<a href="dnsjava-2.1.7.pom.asc.md5" title="dnsjava-2.1.7.pom.asc.md5">dnsjava-2.1.7.pom.asc.md5</a>                         2015-02-17 15:38        32      
+<a href="dnsjava-2.1.7.pom.asc.sha1" title="dnsjava-2.1.7.pom.asc.sha1">dnsjava-2.1.7.pom.asc.sha1</a>                        2015-02-17 15:38        40      
+<a href="dnsjava-2.1.7.pom.md5" title="dnsjava-2.1.7.pom.md5">dnsjava-2.1.7.pom.md5</a>                             2015-02-17 15:38        32      
+<a href="dnsjava-2.1.7.pom.sha1" title="dnsjava-2.1.7.pom.sha1">dnsjava-2.1.7.pom.sha1</a>                            2015-02-17 15:38        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: dnsjava dnsjava 2.1.7 Maven Central
+web search: 
+web search: https://github.com/dnsjava/dnsjava/tree/v2.1.7/tests
+web search: 
+web search: https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/
+codex
+Maven Central has the exact `sources` and `javadoc` jars for 2.1.7, but no test jar/classifier in that artifact directory. The GitHub `v2.1.7/tests` path exists, and the library is ordinary Java rather than Kotlin/Groovy/Scala-specific, so the absent `language` field should remain absent.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"2.1.7\")' metadata/dnsjava/dnsjava/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-55e4bde9
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "2.1.7",
+  "source-code-url": "https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/dnsjava-2.1.7-sources.jar",
+  "repository-url": "https://github.com/dnsjava/dnsjava",
+  "test-code-url": "https://github.com/dnsjava/dnsjava/tree/v2.1.7/tests",
+  "documentation-url": "https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/dnsjava-2.1.7-javadoc.jar",
+  "description": "dnsjava is a Java implementation of DNS that supports defined and unknown record types, DNSSEC-related records, TSIG authentication, EDNS0, queries, zone transfers, and dynamic updates. It also provides client-side caching and a minimal DNS server implementation for applications that need DNS protocol handling.",
+  "tested-versions": [
+    "2.1.7"
+  ],
+  "allowed-packages": [
+    "org.xbill.DNS"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/dnsjava/dnsjava/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-55e4bde9
+ succeeded in 218ms:
+?? metadata/dnsjava/dnsjava/index.json
+
+web search: 
+web search: site:repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7 dnsjava-2.1.7-sources.jar javadoc.jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/
+web search: 
+web search: https://github.com/dnsjava/dnsjava/tree/v2.1.7/tests
+web search: 
+web search: 
+codex
+No file edits were necessary in [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-55e4bde9/metadata/dnsjava/dnsjava/index.json:4): every requested URL and `description` field was already non-blank, and `language` should remain absent because `dnsjava` is a Java library, not Kotlin/Groovy/Scala-specific.
+
+Verified selected values:
+- `source-code-url`: exact Maven Central `dnsjava-2.1.7-sources.jar`.
+- `documentation-url`: exact Maven Central `dnsjava-2.1.7-javadoc.jar`.
+- `test-code-url`: GitHub `v2.1.7/tests`; Maven Central has no test jar/classifier listed for 2.1.7. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/))
+- `repository-url`: canonical root `https://github.com/dnsjava/dnsjava`. ([github.com](https://github.com/dnsjava/dnsjava))
+
+I only ran metadata inspection/verification commands; no tests were needed because the file content did not change.
+tokens used
+43,846
+No file edits were necessary in [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-55e4bde9/metadata/dnsjava/dnsjava/index.json:4): every requested URL and `description` field was already non-blank, and `language` should remain absent because `dnsjava` is a Java library, not Kotlin/Groovy/Scala-specific.
+
+Verified selected values:
+- `source-code-url`: exact Maven Central `dnsjava-2.1.7-sources.jar`.
+- `documentation-url`: exact Maven Central `dnsjava-2.1.7-javadoc.jar`.
+- `test-code-url`: GitHub `v2.1.7/tests`; Maven Central has no test jar/classifier listed for 2.1.7. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/))
+- `repository-url`: canonical root `https://github.com/dnsjava/dnsjava`. ([github.com](https://github.com/dnsjava/dnsjava))
+
+I only ran metadata inspection/verification commands; no tests were needed because the file content did not change.
+Ran agent for dnsjava:dnsjava:2.1.7 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-55e4bde9/build/agent-url-discovery-logs/dnsjava-dnsjava-2.1.7.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-55e4bde9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 1s
+9 actionable tasks: 1 executed, 8 up-to-date
