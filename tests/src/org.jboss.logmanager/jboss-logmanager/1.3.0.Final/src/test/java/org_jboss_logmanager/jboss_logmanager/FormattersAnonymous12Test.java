@@ -88,7 +88,7 @@ public class FormattersAnonymous12Test {
     }
 
     private static URL[] libraryUrls() {
-        return new URL[] { PatternFormatter.class.getProtectionDomain().getCodeSource().getLocation() };
+        return new URL[] {PatternFormatter.class.getProtectionDomain().getCodeSource().getLocation() };
     }
 
     private static IllegalStateException newFailure(final String className) {
