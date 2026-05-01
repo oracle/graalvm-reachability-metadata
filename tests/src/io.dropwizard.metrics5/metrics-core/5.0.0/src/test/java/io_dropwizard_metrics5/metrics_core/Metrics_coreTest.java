@@ -55,10 +55,12 @@ import io.dropwizard.metrics5.SlidingWindowReservoir;
 import io.dropwizard.metrics5.Snapshot;
 import io.dropwizard.metrics5.Timer;
 import io.dropwizard.metrics5.UniformSnapshot;
+import io.dropwizard.metrics5.WeightedSnapshot;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.offset;
 
 public class Metrics_coreTest {
     @Test
@@ -266,6 +268,23 @@ public class Metrics_coreTest {
         assertThat(uniformSnapshot.getMedian()).isEqualTo(2.5d);
         assertThat(uniformSnapshot.get75thPercentile()).isEqualTo(3.75d);
         assertThat(output.toString(StandardCharsets.UTF_8)).isEqualTo("1\n2\n3\n4\n");
+    }
+
+    @Test
+    void weightedSnapshotsUseSampleWeightsForQuantilesAndStatistics() {
+        WeightedSnapshot snapshot = new WeightedSnapshot(List.of(new WeightedSnapshot.WeightedSample(30, 6.0d),
+                new WeightedSnapshot.WeightedSample(10, 1.0d), new WeightedSnapshot.WeightedSample(20, 3.0d)));
+
+        assertThat(snapshot.size()).isEqualTo(3);
+        assertThat(snapshot.getValues()).containsExactly(10L, 20L, 30L);
+        assertThat(snapshot.getMin()).isEqualTo(10L);
+        assertThat(snapshot.getMax()).isEqualTo(30L);
+        assertThat(snapshot.getMean()).isEqualTo(25.0d);
+        assertThat(snapshot.getStdDev()).isCloseTo(Math.sqrt(45.0d), offset(0.000001d));
+        assertThat(snapshot.getValue(0.05d)).isEqualTo(10.0d);
+        assertThat(snapshot.getValue(0.39d)).isEqualTo(20.0d);
+        assertThat(snapshot.getValue(0.40d)).isEqualTo(30.0d);
+        assertThatThrownBy(() -> snapshot.getValue(1.01d)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
