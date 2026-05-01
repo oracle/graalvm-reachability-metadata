@@ -8,9 +8,11 @@ package org_jboss_logmanager.jboss_logmanager;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.util.Objects;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.jboss.logmanager.ExtLogRecord;
@@ -46,7 +48,7 @@ public class FormattersAnonymous12Test {
 
     @Test
     void extendedExceptionFormattingFallsBackToBootstrapClassLoaderWhenOwningLoaderCannotLoadFrameClass()
-            throws Exception {
+            throws Throwable {
         try {
             String className = "java.util.HexFormat";
             BootstrapFallbackClassLoader classLoader = new BootstrapFallbackClassLoader(className);
@@ -55,7 +57,7 @@ public class FormattersAnonymous12Test {
             String formatted = formattingAction.format(newFailure(className));
 
             assertThat(formatted).contains("\tat " + className + ".invoke");
-            assertThat(classLoader.wasRejected()).isTrue();
+            assertThat(classLoader.getRejectedCount()).isGreaterThanOrEqualTo(2);
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
@@ -93,7 +95,9 @@ public class FormattersAnonymous12Test {
     }
 
     public static final class BootstrapFormattingInvoker implements BootstrapFormattingAction {
-        public BootstrapFormattingInvoker() {
+        public static final BootstrapFormattingAction INSTANCE = new BootstrapFormattingInvoker();
+
+        private BootstrapFormattingInvoker() {
         }
 
         @Override
@@ -102,11 +106,7 @@ public class FormattersAnonymous12Test {
             try {
                 Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
                 PatternFormatter formatter = new PatternFormatter("%E");
-                ExtLogRecord record = new ExtLogRecord(
-                        Level.SEVERE,
-                        "coverage",
-                        BootstrapFormattingInvoker.class.getName()
-                );
+                LogRecord record = new LogRecord(Level.SEVERE, "coverage");
                 record.setThrown(thrown);
                 return formatter.format(record);
             } finally {
@@ -140,21 +140,25 @@ public class FormattersAnonymous12Test {
 
     private static final class BootstrapFallbackClassLoader extends ClassLoader {
         private final String rejectedClassName;
-        private boolean rejected;
+        private int rejectedCount;
 
         private BootstrapFallbackClassLoader(final String rejectedClassName) {
             super(FormattersAnonymous12Test.class.getClassLoader());
             this.rejectedClassName = rejectedClassName;
         }
 
-        BootstrapFormattingAction loadFormattingAction() throws Exception {
-            Class<?> actionClass = loadClass(BootstrapFormattingInvoker.class.getName());
-            Constructor<?> constructor = actionClass.getConstructor();
-            return BootstrapFormattingAction.class.cast(constructor.newInstance());
+        BootstrapFormattingAction loadFormattingAction() throws Throwable {
+            Class<?> actionClass = Class.forName(BootstrapFormattingInvoker.class.getName(), true, this);
+            VarHandle instanceHandle = MethodHandles.publicLookup().findStaticVarHandle(
+                    actionClass,
+                    "INSTANCE",
+                    BootstrapFormattingAction.class
+            );
+            return BootstrapFormattingAction.class.cast(instanceHandle.get());
         }
 
-        boolean wasRejected() {
-            return rejected;
+        int getRejectedCount() {
+            return rejectedCount;
         }
 
         @Override
@@ -165,7 +169,7 @@ public class FormattersAnonymous12Test {
                     return alreadyLoaded;
                 }
                 if (rejectedClassName.equals(name)) {
-                    rejected = true;
+                    rejectedCount++;
                     throw new ClassNotFoundException(name);
                 }
                 if (shouldDefineLocally(name)) {
