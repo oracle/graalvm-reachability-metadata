@@ -17,6 +17,17 @@ configurations {
     }
 }
 
+Closure<List<File>> resolveRuntimeClassLoadingEntries = {
+    Set<File> entries = new LinkedHashSet<File>()
+    entries.addAll(sourceSets.test.output.files.findAll { it.exists() })
+    entries.addAll(configurations.testRuntimeClasspath.resolvedConfiguration.resolvedArtifacts.findAll { artifact ->
+        artifact.moduleVersion.id.group == "com.h2database" && artifact.moduleVersion.id.name == "h2"
+    }.collect { artifact ->
+        artifact.file
+    })
+    return entries.toList().sort { File file -> file.absolutePath }
+}
+
 dependencies {
     testImplementation("com.h2database:h2:$libraryVersion")
     testImplementation("com.ibm.icu:icu4j:71.1")
@@ -42,6 +53,30 @@ tasks.withType(Test).configureEach {
 }
 
 graalvmNative {
+    binaries {
+        all {
+            buildArgs.add('-H:+RuntimeClassLoading')
+            buildArgs.add('-H:Preserve=package=java.lang')
+            buildArgs.add('-H:Preserve=package=java.lang.invoke')
+            buildArgs.add('-H:Preserve=module=java.sql')
+            buildArgs.add('-H:Preserve=package=jdk.internal.access')
+            buildArgs.add('-H:Preserve=package=jdk.internal.misc')
+            buildArgs.add('--initialize-at-run-time=org.h2.engine.SysProperties')
+            buildArgs.add('--initialize-at-run-time=org.h2.util.MemoryUnmapper')
+            buildArgs.addAll(providers.provider {
+                org.graalvm.internal.tck.utils.DynamicAccessUtils
+                        .buildArgsForClasspathEntries(resolveRuntimeClassLoadingEntries())
+            })
+        }
+        test {
+            buildArgs("-H:+AllowJRTFileSystem")
+            runtimeArgs("-Dh2.javaObjectSerializer=h2.JdbcUtilsTest")
+            runtimeArgs("-Dh2.nioCleanerHack=true")
+            runtimeArgs("-Dh2.useThreadContextClassLoader=true")
+            runtimeArgs("-Djava.home=${System.getenv('JAVA_HOME')}")
+            runtimeArgs("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {

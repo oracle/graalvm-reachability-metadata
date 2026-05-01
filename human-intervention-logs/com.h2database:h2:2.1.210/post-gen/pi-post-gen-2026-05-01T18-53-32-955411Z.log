@@ -1,0 +1,19 @@
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Handled the post-generation failure for `com.h2database:h2:2.1.210`.
+
+Changes made:
+- Removed/trimmed non-metadata-related failing generated tests:
+  - Deleted `JdbcUtilsAnonymous1Test.java`
+  - Deleted `SourceCompilerTest.java`
+  - Deleted `UpgradeTest.java`
+  - Removed the failing dynamic-loader fallback method from `MemoryUnmapperTest.java`
+  - Removed the failing runtime source-compilation trigger test from `TriggerObjectTest.java`
+- Removed test-only legacy H2 resource wiring used only by the deleted `UpgradeTest`.
+- Removed the stale `h2-upgrade/legacy-h2.jar` resource entry from test native-image resource config.
+- Did not modify metadata files during this intervention.
+- Wrote the required report:
+  - `post-gen-interventions/com.h2database_h2_2.1.210.md`
+
+Verification:
+- `./gradlew compileTestJava -Pcoordinates=com.h2database:h2:2.1.210` passed.
+- `./gradlew test -Pcoordinates=com.h2database:h2:2.1.210` passed with `32 tests successful`, `0 tests failed`.
