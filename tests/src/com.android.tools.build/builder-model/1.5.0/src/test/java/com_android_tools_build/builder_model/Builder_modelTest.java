@@ -8,6 +8,7 @@ package com_android_tools_build.builder_model;
 
 import com.android.build.FilterData;
 import com.android.build.OutputFile;
+import com.android.build.VariantOutput;
 import com.android.builder.model.AaptOptions;
 import com.android.builder.model.AdbOptions;
 import com.android.builder.model.AndroidArtifact;
@@ -45,6 +46,7 @@ import com.android.builder.model.SyncIssue;
 import com.android.builder.model.Variant;
 import com.android.builder.model.Version;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -139,6 +141,42 @@ public class Builder_modelTest {
         assertThat(x86Split.getOutputFile()).isEqualTo(file("outputs/apk/demo-x86-en-debug.apk"));
         assertThat(x86Split.getFilterTypes()).containsExactly(OutputFile.ABI, OutputFile.LANGUAGE);
         assertThat(x86Split.getFilters()).containsExactly(x86Filter, englishFilter);
+    }
+
+    @Test
+    public void groupsGeneratedApksThroughVariantOutputContract() {
+        SimpleOutputFile demoMainOutput = new SimpleOutputFile(
+                OutputFile.MAIN, file("outputs/apk/demo-debug.apk"), Collections.<FilterData>emptyList());
+        SimpleOutputFile demoDensitySplit = new SimpleOutputFile(
+                OutputFile.SPLIT, file("outputs/apk/demo-xxhdpi-debug.apk"), Collections.<FilterData>singletonList(
+                        new SimpleFilterData(OutputFile.DENSITY, "xxhdpi")));
+        SimpleOutputFile demoLanguageSplit = new SimpleOutputFile(
+                OutputFile.SPLIT, file("outputs/apk/demo-en-debug.apk"), Collections.<FilterData>singletonList(
+                        new SimpleFilterData(OutputFile.LANGUAGE, "en")));
+        SimpleVariantOutput demoOutput = new SimpleVariantOutput(
+                demoMainOutput, Arrays.<OutputFile>asList(demoDensitySplit, demoLanguageSplit),
+                file("outputs/splits/demo"), 10);
+        SimpleOutputFile paidMainOutput = new SimpleOutputFile(
+                OutputFile.MAIN, file("outputs/apk/paid-debug.apk"), Collections.<FilterData>emptyList());
+        SimpleVariantOutput paidOutput = new SimpleVariantOutput(
+                paidMainOutput, Collections.<OutputFile>emptyList(), file("outputs/splits/paid"), 20);
+        Collection<VariantOutput> variantOutputs = Arrays.<VariantOutput>asList(demoOutput, paidOutput);
+
+        Map<Integer, File> mainOutputFilesByVersionCode = new LinkedHashMap<Integer, File>();
+        Map<File, Collection<OutputFile>> splitOutputsByFolder = new LinkedHashMap<File, Collection<OutputFile>>();
+        for (VariantOutput variantOutput : variantOutputs) {
+            mainOutputFilesByVersionCode.put(variantOutput.getVersionCode(), variantOutput.getMainOutputFile()
+                    .getOutputFile());
+            splitOutputsByFolder.put(variantOutput.getSplitFolder(), new ArrayList<OutputFile>(
+                    variantOutput.getOutputs()));
+        }
+
+        assertThat(mainOutputFilesByVersionCode)
+                .containsEntry(10, file("outputs/apk/demo-debug.apk"))
+                .containsEntry(20, file("outputs/apk/paid-debug.apk"));
+        assertThat(splitOutputsByFolder.get(file("outputs/splits/demo")))
+                .containsExactly(demoDensitySplit, demoLanguageSplit);
+        assertThat(splitOutputsByFolder.get(file("outputs/splits/paid"))).isEmpty();
     }
 
     @Test
@@ -1489,6 +1527,41 @@ public class Builder_modelTest {
         @Override
         public File getOutputFile() {
             return outputFile;
+        }
+    }
+
+    private static final class SimpleVariantOutput implements VariantOutput {
+        private final OutputFile mainOutputFile;
+        private final Collection<? extends OutputFile> outputs;
+        private final File splitFolder;
+        private final int versionCode;
+
+        private SimpleVariantOutput(OutputFile mainOutputFile, Collection<? extends OutputFile> outputs,
+                File splitFolder, int versionCode) {
+            this.mainOutputFile = mainOutputFile;
+            this.outputs = outputs;
+            this.splitFolder = splitFolder;
+            this.versionCode = versionCode;
+        }
+
+        @Override
+        public OutputFile getMainOutputFile() {
+            return mainOutputFile;
+        }
+
+        @Override
+        public Collection<? extends OutputFile> getOutputs() {
+            return outputs;
+        }
+
+        @Override
+        public File getSplitFolder() {
+            return splitFolder;
+        }
+
+        @Override
+        public int getVersionCode() {
+            return versionCode;
         }
     }
 
