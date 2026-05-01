@@ -13,6 +13,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FastListTest {
     @Test
+    public void defaultConstructorCreatesListWithDefaultCapacity() {
+        FastList<String> values = new FastList<>(String.class);
+
+        values.add("first");
+
+        assertThat(values.size()).isEqualTo(1);
+        assertThat(values.get(0)).isEqualTo("first");
+    }
+
+    @Test
     public void sizedConstructorCreatesListWithRequestedCapacity() {
         FastList<String> values = new FastList<>(String.class, 2);
 
