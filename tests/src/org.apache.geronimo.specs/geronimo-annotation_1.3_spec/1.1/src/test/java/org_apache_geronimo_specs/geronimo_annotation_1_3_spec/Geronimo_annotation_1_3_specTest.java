@@ -315,6 +315,27 @@ public class Geronimo_annotation_1_3_specTest {
         assertThat(resources.value()[1].name()).isEqualTo("cache/backup");
     }
 
+    @Test
+    void runtimeAnnotationInstancesFollowTheStandardAnnotationContract() {
+        Resource firstResource = annotation(EquivalentResourceOne.class, Resource.class);
+        Resource secondResource = annotation(EquivalentResourceTwo.class, Resource.class);
+        Resource differentResource = annotation(DifferentResource.class, Resource.class);
+        DeclareRoles firstRoles = annotation(EquivalentRolesOne.class, DeclareRoles.class);
+        DeclareRoles secondRoles = annotation(EquivalentRolesTwo.class, DeclareRoles.class);
+        DeclareRoles reorderedRoles = annotation(ReorderedRoles.class, DeclareRoles.class);
+
+        assertThat(firstResource.annotationType()).isEqualTo(Resource.class);
+        assertThat(firstResource).isEqualTo(secondResource);
+        assertThat(firstResource.hashCode()).isEqualTo(secondResource.hashCode());
+        assertThat(firstResource).isNotEqualTo(differentResource);
+        assertThat(firstResource.toString()).contains("@javax.annotation.Resource", "name=\"jms/orders\"");
+
+        assertThat(firstRoles.annotationType()).isEqualTo(DeclareRoles.class);
+        assertThat(firstRoles).isEqualTo(secondRoles);
+        assertThat(firstRoles.hashCode()).isEqualTo(secondRoles.hashCode());
+        assertThat(firstRoles).isNotEqualTo(reorderedRoles);
+    }
+
     // Checkstyle: allow direct annotation access
     private static <A extends Annotation> A annotation(AnnotatedElement element, Class<A> annotationType) {
         A[] annotations = element.getAnnotationsByType(annotationType);
@@ -512,5 +533,29 @@ public class Geronimo_annotation_1_3_specTest {
             @Resource(name = "cache/backup", type = String.class, lookup = "java:comp/env/cache/backup")
     })
     private static final class DefensiveCopyResources {
+    }
+
+    @Resource(name = "jms/orders", type = String.class, lookup = "java:comp/env/jms/orders")
+    private static final class EquivalentResourceOne {
+    }
+
+    @Resource(name = "jms/orders", type = String.class, lookup = "java:comp/env/jms/orders")
+    private static final class EquivalentResourceTwo {
+    }
+
+    @Resource(name = "jms/audit", type = String.class, lookup = "java:comp/env/jms/audit")
+    private static final class DifferentResource {
+    }
+
+    @DeclareRoles({"auditor", "operator"})
+    private static final class EquivalentRolesOne {
+    }
+
+    @DeclareRoles({"auditor", "operator"})
+    private static final class EquivalentRolesTwo {
+    }
+
+    @DeclareRoles({"operator", "auditor"})
+    private static final class ReorderedRoles {
     }
 }
