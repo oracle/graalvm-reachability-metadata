@@ -144,6 +144,21 @@ public class Play_build_linkTest {
     }
 
     @Test
+    void buildDocHandlerSupportsTypedDocumentationRequests() {
+        BuildDocHandler docHandler = request -> {
+            if (request instanceof DocumentationRequest documentationRequest
+                    && "java-api".equals(documentationRequest.section())) {
+                return documentationRequest.documentationPath();
+            }
+            return null;
+        };
+
+        assertThat(docHandler.maybeHandleDocRequest(new DocumentationRequest("java-api", "routing")))
+                .isEqualTo("/docs/java-api/routing");
+        assertThat(docHandler.maybeHandleDocRequest(new DocumentationRequest("scala-api", "routing"))).isNull();
+    }
+
+    @Test
     void reloadableServerInterfaceExposesLifecycleCallbacks() {
         RecordingReloadableServer server = new RecordingReloadableServer();
 
@@ -154,6 +169,24 @@ public class Play_build_linkTest {
         assertThat(server.reloadCount()).isEqualTo(2);
         assertThat(server.stopCount()).isEqualTo(1);
         assertThat(server.isStopped()).isTrue();
+    }
+
+    private static final class DocumentationRequest {
+        private final String section;
+        private final String page;
+
+        private DocumentationRequest(String section, String page) {
+            this.section = section;
+            this.page = page;
+        }
+
+        private String section() {
+            return section;
+        }
+
+        private String documentationPath() {
+            return "/docs/" + section + "/" + page;
+        }
     }
 
     private static final class RecordingBuildLink implements BuildLink {
