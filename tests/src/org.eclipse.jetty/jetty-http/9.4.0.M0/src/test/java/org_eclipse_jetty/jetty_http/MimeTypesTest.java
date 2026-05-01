@@ -14,17 +14,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MimeTypesTest {
     @Test
     void loadsDefaultMimeAndEncodingResources() {
-        assertThat(MimeTypes.getDefaultMimeByExtension("index.html"))
+        MimeTypes mimeTypes = new MimeTypes();
+
+        assertThat(mimeTypes.getMimeByExtension("index.html"))
                 .isEqualTo(MimeTypes.Type.TEXT_HTML.asString());
-        assertThat(MimeTypes.getDefaultMimeByExtension("IMAGE.PNG"))
+        assertThat(mimeTypes.getMimeByExtension("IMAGE.PNG"))
                 .isEqualTo("image/png");
         assertThat(MimeTypes.getKnownMimeTypes())
                 .contains("application/json", "text/css");
 
-        assertThat(MimeTypes.getCharsetInferredFromContentType("text/html"))
+        assertThat(MimeTypes.inferCharsetFromContentType("text/html"))
                 .isEqualTo("utf-8");
-        assertThat(MimeTypes.getCharsetAssumedFromContentType("text/json"))
+        assertThat(MimeTypes.Type.TEXT_JSON.getCharsetString())
                 .isEqualTo("utf-8");
+        assertThat(MimeTypes.Type.TEXT_JSON.isCharsetAssumed())
+                .isTrue();
     }
 
     @Test
