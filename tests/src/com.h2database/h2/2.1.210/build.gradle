@@ -34,6 +34,7 @@ tasks.named("processTestResources") {
 tasks.withType(Test).configureEach {
     systemProperty("h2.javaObjectSerializer", "h2.JdbcUtilsTest")
     systemProperty("h2.nioCleanerHack", "true")
+    systemProperty("h2.useThreadContextClassLoader", "true")
     jvmArgs(
             "--add-opens", "java.base/java.nio=ALL-UNNAMED",
             "--add-opens", "java.base/jdk.internal.ref=ALL-UNNAMED")
