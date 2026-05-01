@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class VersionInfoTest {
 
-    private static final String EXPECTED_RELEASE = "4.4.14";
+    private static final String EXPECTED_RELEASE = "4.4.15";
 
     @Test
     void loadVersionInfoReadsPackagedVersionProperties() {
