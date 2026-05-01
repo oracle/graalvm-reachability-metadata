@@ -92,7 +92,6 @@ def _preflight(
 
 def _claimed_issue(
         label: str = forge_metadata.LABEL_LIBRARY_NEW,
-        authenticated_user: str | None = None,
 ) -> forge_metadata.ClaimedIssue:
     return forge_metadata.ClaimedIssue(
         issue={
@@ -106,7 +105,6 @@ def _claimed_issue(
         scratch_metrics_repo_path="/tmp/metrics-worktree",
         in_metadata_repo=False,
         issue_coordinates="org.example:lib:1.0.0",
-        authenticated_user=authenticated_user,
     )
 
 
@@ -1243,6 +1241,7 @@ class IssueClaimLockTests(unittest.TestCase):
 
         set_item_status.assert_called_once_with("item-1", forge_metadata.STATUS_TODO)
         clear_issue_assignees.assert_called_once_with(1412)
+
 
 class InterruptHandlingTests(unittest.TestCase):
     def setUp(self) -> None:

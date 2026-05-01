@@ -186,7 +186,6 @@ class ClaimedIssue:
     issue_coordinates: str
     current_coordinates: str | None = None
     new_version: str | None = None
-    authenticated_user: str | None = None
 
 
 @dataclass(frozen=True)
@@ -3188,7 +3187,6 @@ def claim_issue_for_processing(
         issue_coordinates=issue_coordinates,
         current_coordinates=current_coordinates,
         new_version=new_version,
-        authenticated_user=authenticated_user,
     )
 
 
