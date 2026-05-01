@@ -1,0 +1,461 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de575-176f-76c3-a7d3-d310181b5b62
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.mozilla:rhino:1.7R5
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.7R5".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d/metadata/org.mozilla/rhino/index.json
+- Entry selector: "metadata-version" = "1.7R5"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.7R5".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar
+- repository-url: https://github.com/mozilla/rhino
+- test-code-url: https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar
+- documentation-url: https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar
+- description: Rhino is an open-source implementation of JavaScript written entirely in Java. It is typically embedded into Java applications to provide scripting to end users.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.7R5
+- Entry test-version: 1.7R5
+codex
+I’ll verify the existing entry first, then confirm the versioned artifacts/URLs before editing only fields that are actually missing.
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"1\\.7R5\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.mozilla/rhino/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ succeeded in 0ms:
+4:    "metadata-version" : "1.7R5",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
+6:    "repository-url" : "https://github.com/mozilla/rhino",
+7:    "test-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
+8:    "documentation-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar",
+9:    "description" : "Rhino is an open-source implementation of JavaScript written entirely in Java. It is typically embedded into Java applications to provide scripting to end users.",
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ succeeded in 177ms:
+?? metadata/org.mozilla/
+?? tests/src/org.mozilla/
+
+web search: 
+web search: Maven Central org.mozilla rhino 1.7R5 sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/
+codex
+The target entry already has non-blank URLs and description. The only absent candidate is `language`, and Rhino is a JavaScript engine implemented for Java, not a Kotlin/Groovy/Scala language-specific library under this schema, so I’m going to leave that field absent.
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/org.mozilla/rhino/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.7R5",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
+    "repository-url" : "https://github.com/mozilla/rhino",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar",
+    "description" : "Rhino is an open-source implementation of JavaScript written entirely in Java. It is typically embedded into Java applications to provide scripting to end users.",
+    "tested-versions" : [
+      "1.7R5"
+    ],
+    "allowed-packages" : [
+      "org.mozilla"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"1.7R5\")' metadata/org.mozilla/rhino/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "1.7R5",
+  "source-code-url": "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
+  "repository-url": "https://github.com/mozilla/rhino",
+  "test-code-url": "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar",
+  "description": "Rhino is an open-source implementation of JavaScript written entirely in Java. It is typically embedded into Java applications to provide scripting to end users.",
+  "tested-versions": [
+    "1.7R5"
+  ],
+  "allowed-packages": [
+    "org.mozilla"
+  ]
+}
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/
+web search: 
+web search: 
+web search: 
+web search: site:github.com/mozilla/rhino/releases/tag 1.7R5 Rhino
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.mozilla/rhino/index.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/ | sed -n '1,40p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/mozilla/rhino/1.7R5</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/mozilla/rhino/1.7R5</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="rhino-1.7R5-javadoc.jar" title="rhino-1.7R5-javadoc.jar">rhino-1.7R5-javadoc.jar</a>                           2015-01-30 00:14   1162852      
+<a href="rhino-1.7R5-javadoc.jar.asc" title="rhino-1.7R5-javadoc.jar.asc">rhino-1.7R5-javadoc.jar.asc</a>                       2015-01-30 00:14       487      
+<a href="rhino-1.7R5-javadoc.jar.asc.md5" title="rhino-1.7R5-javadoc.jar.asc.md5">rhino-1.7R5-javadoc.jar.asc.md5</a>                   2015-01-30 00:14        32      
+<a href="rhino-1.7R5-javadoc.jar.asc.sha1" title="rhino-1.7R5-javadoc.jar.asc.sha1">rhino-1.7R5-javadoc.jar.asc.sha1</a>                  2015-01-30 00:14        40      
+<a href="rhino-1.7R5-javadoc.jar.md5" title="rhino-1.7R5-javadoc.jar.md5">rhino-1.7R5-javadoc.jar.md5</a>                       2015-01-30 00:14        32      
+<a href="rhino-1.7R5-javadoc.jar.sha1" title="rhino-1.7R5-javadoc.jar.sha1">rhino-1.7R5-javadoc.jar.sha1</a>                      2015-01-30 00:14        40      
+<a href="rhino-1.7R5-sources.jar" title="rhino-1.7R5-sources.jar">rhino-1.7R5-sources.jar</a>                           2015-01-30 00:14   5464423      
+<a href="rhino-1.7R5-sources.jar.asc" title="rhino-1.7R5-sources.jar.asc">rhino-1.7R5-sources.jar.asc</a>                       2015-01-30 00:14       487      
+<a href="rhino-1.7R5-sources.jar.asc.md5" title="rhino-1.7R5-sources.jar.asc.md5">rhino-1.7R5-sources.jar.asc.md5</a>                   2015-01-30 00:14        32      
+<a href="rhino-1.7R5-sources.jar.asc.sha1" title="rhino-1.7R5-sources.jar.asc.sha1">rhino-1.7R5-sources.jar.asc.sha1</a>                  2015-01-30 00:14        40      
+<a href="rhino-1.7R5-sources.jar.md5" title="rhino-1.7R5-sources.jar.md5">rhino-1.7R5-sources.jar.md5</a>                       2015-01-30 00:14        32      
+<a href="rhino-1.7R5-sources.jar.sha1" title="rhino-1.7R5-sources.jar.sha1">rhino-1.7R5-sources.jar.sha1</a>                      2015-01-30 00:14        40      
+<a href="rhino-1.7R5.jar" title="rhino-1.7R5.jar">rhino-1.7R5.jar</a>                                   2015-01-30 00:14   1142627      
+<a href="rhino-1.7R5.jar.asc" title="rhino-1.7R5.jar.asc">rhino-1.7R5.jar.asc</a>                               2015-01-30 00:14       487      
+<a href="rhino-1.7R5.jar.asc.md5" title="rhino-1.7R5.jar.asc.md5">rhino-1.7R5.jar.asc.md5</a>                           2015-01-30 00:14        32      
+<a href="rhino-1.7R5.jar.asc.sha1" title="rhino-1.7R5.jar.asc.sha1">rhino-1.7R5.jar.asc.sha1</a>                          2015-01-30 00:14        40      
+<a href="rhino-1.7R5.jar.md5" title="rhino-1.7R5.jar.md5">rhino-1.7R5.jar.md5</a>                               2015-01-30 00:14        32      
+<a href="rhino-1.7R5.jar.sha1" title="rhino-1.7R5.jar.sha1">rhino-1.7R5.jar.sha1</a>                              2015-01-30 00:14        40      
+<a href="rhino-1.7R5.pom" title="rhino-1.7R5.pom">rhino-1.7R5.pom</a>                                   2015-01-30 00:14      1320      
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5.pom | sed -n '1,120p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ succeeded in 0ms:
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
+  <groupId>org.mozilla</groupId>
+  <artifactId>rhino</artifactId>
+  <name>Mozilla Rhino</name>
+  <version>1.7R5</version>
+
+  <packaging>jar</packaging>
+  <description>
+      Rhino is an open-source implementation of JavaScript written entirely in Java. It is typically
+      embedded into Java applications to provide scripting to end users.
+  </description>
+  <url>https://developer.mozilla.org/en/Rhino</url>
+
+  <licenses>
+    <license>
+      <name>Mozilla Public License, Version 2.0</name>
+      <url>http://www.mozilla.org/MPL/2.0/index.txt</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git@github.com:mozilla/rhino.git</connection>
+    <developerConnection>scm:git:git@github.com:mozilla/rhino.git</developerConnection>
+    <url>git@github.com:mozilla/rhino.git</url>
+  </scm>
+
+  <organization>
+    <name>The Mozilla Foundation</name>
+    <url>http://www.mozilla.org</url>
+  </organization>
+</project>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/mozilla/rhino.git '*1.7R5*' '*1_7R5*' '*1_7_R5*'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ succeeded in 325ms:
+584e7ec09c84de6b5e556a450a6b581f087a4aea	refs/tags/Rhino1_7R5_RELEASE
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/ | rg 'test|source|javadoc|pom'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ succeeded in 0ms:
+<a href="rhino-1.7R5-javadoc.jar" title="rhino-1.7R5-javadoc.jar">rhino-1.7R5-javadoc.jar</a>                           2015-01-30 00:14   1162852      
+<a href="rhino-1.7R5-javadoc.jar.asc" title="rhino-1.7R5-javadoc.jar.asc">rhino-1.7R5-javadoc.jar.asc</a>                       2015-01-30 00:14       487      
+<a href="rhino-1.7R5-javadoc.jar.asc.md5" title="rhino-1.7R5-javadoc.jar.asc.md5">rhino-1.7R5-javadoc.jar.asc.md5</a>                   2015-01-30 00:14        32      
+<a href="rhino-1.7R5-javadoc.jar.asc.sha1" title="rhino-1.7R5-javadoc.jar.asc.sha1">rhino-1.7R5-javadoc.jar.asc.sha1</a>                  2015-01-30 00:14        40      
+<a href="rhino-1.7R5-javadoc.jar.md5" title="rhino-1.7R5-javadoc.jar.md5">rhino-1.7R5-javadoc.jar.md5</a>                       2015-01-30 00:14        32      
+<a href="rhino-1.7R5-javadoc.jar.sha1" title="rhino-1.7R5-javadoc.jar.sha1">rhino-1.7R5-javadoc.jar.sha1</a>                      2015-01-30 00:14        40      
+<a href="rhino-1.7R5-sources.jar" title="rhino-1.7R5-sources.jar">rhino-1.7R5-sources.jar</a>                           2015-01-30 00:14   5464423      
+<a href="rhino-1.7R5-sources.jar.asc" title="rhino-1.7R5-sources.jar.asc">rhino-1.7R5-sources.jar.asc</a>                       2015-01-30 00:14       487      
+<a href="rhino-1.7R5-sources.jar.asc.md5" title="rhino-1.7R5-sources.jar.asc.md5">rhino-1.7R5-sources.jar.asc.md5</a>                   2015-01-30 00:14        32      
+<a href="rhino-1.7R5-sources.jar.asc.sha1" title="rhino-1.7R5-sources.jar.asc.sha1">rhino-1.7R5-sources.jar.asc.sha1</a>                  2015-01-30 00:14        40      
+<a href="rhino-1.7R5-sources.jar.md5" title="rhino-1.7R5-sources.jar.md5">rhino-1.7R5-sources.jar.md5</a>                       2015-01-30 00:14        32      
+<a href="rhino-1.7R5-sources.jar.sha1" title="rhino-1.7R5-sources.jar.sha1">rhino-1.7R5-sources.jar.sha1</a>                      2015-01-30 00:14        40      
+<a href="rhino-1.7R5.pom" title="rhino-1.7R5.pom">rhino-1.7R5.pom</a>                                   2015-01-30 00:14      1320      
+<a href="rhino-1.7R5.pom.asc" title="rhino-1.7R5.pom.asc">rhino-1.7R5.pom.asc</a>                               2015-01-30 00:14       487      
+<a href="rhino-1.7R5.pom.asc.md5" title="rhino-1.7R5.pom.asc.md5">rhino-1.7R5.pom.asc.md5</a>                           2015-01-30 00:14        32      
+<a href="rhino-1.7R5.pom.asc.sha1" title="rhino-1.7R5.pom.asc.sha1">rhino-1.7R5.pom.asc.sha1</a>                          2015-01-30 00:14        40      
+<a href="rhino-1.7R5.pom.md5" title="rhino-1.7R5.pom.md5">rhino-1.7R5.pom.md5</a>                               2015-01-30 00:14        32      
+<a href="rhino-1.7R5.pom.sha1" title="rhino-1.7R5.pom.sha1">rhino-1.7R5.pom.sha1</a>                              2015-01-30 00:14        40      
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar -o /tmp/rhino-1.7R5-sources.jar && jar tf /tmp/rhino-1.7R5-sources.jar | rg '"'^(testsrc|tests|src/test|toolsrc|examples)'"' | sed -n '1,40p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ succeeded in 478ms:
+exec
+/usr/bin/bash -lc "jar tf /tmp/rhino-1.7R5-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ succeeded in 0ms:
+rhino1_7R5/
+rhino1_7R5/deprecatedsrc/
+rhino1_7R5/deprecatedsrc/org/
+rhino1_7R5/deprecatedsrc/org/mozilla/
+rhino1_7R5/deprecatedsrc/org/mozilla/javascript/
+rhino1_7R5/deprecatedsrc/org/mozilla/javascript/xml/
+rhino1_7R5/deprecatedsrc/org/mozilla/javascript/xml/impl/
+rhino1_7R5/deprecatedsrc/org/mozilla/javascript/xml/impl/xmlbeans/
+rhino1_7R5/examples/
+rhino1_7R5/examples/E4X/
+rhino1_7R5/src/
+rhino1_7R5/src/org/
+rhino1_7R5/src/org/mozilla/
+rhino1_7R5/src/org/mozilla/classfile/
+rhino1_7R5/src/org/mozilla/javascript/
+rhino1_7R5/src/org/mozilla/javascript/annotations/
+rhino1_7R5/src/org/mozilla/javascript/ast/
+rhino1_7R5/src/org/mozilla/javascript/commonjs/
+rhino1_7R5/src/org/mozilla/javascript/commonjs/module/
+rhino1_7R5/src/org/mozilla/javascript/commonjs/module/provider/
+rhino1_7R5/src/org/mozilla/javascript/debug/
+rhino1_7R5/src/org/mozilla/javascript/jdk13/
+rhino1_7R5/src/org/mozilla/javascript/jdk15/
+rhino1_7R5/src/org/mozilla/javascript/json/
+rhino1_7R5/src/org/mozilla/javascript/optimizer/
+rhino1_7R5/src/org/mozilla/javascript/regexp/
+rhino1_7R5/src/org/mozilla/javascript/resources/
+rhino1_7R5/src/org/mozilla/javascript/serialize/
+rhino1_7R5/src/org/mozilla/javascript/v8dtoa/
+rhino1_7R5/src/org/mozilla/javascript/xml/
+rhino1_7R5/testsrc/
+rhino1_7R5/testsrc/benchmarks/
+rhino1_7R5/testsrc/benchmarks/sunspider-0.9.1/
+rhino1_7R5/testsrc/benchmarks/v8-benchmarks-v5/
+rhino1_7R5/testsrc/benchmarks/v8-benchmarks-v6/
+rhino1_7R5/testsrc/doctests/
+rhino1_7R5/testsrc/jstests/
+rhino1_7R5/testsrc/org/
+rhino1_7R5/testsrc/org/mozilla/
+rhino1_7R5/testsrc/org/mozilla/javascript/
+rhino1_7R5/testsrc/org/mozilla/javascript/benchmarks/
+rhino1_7R5/testsrc/org/mozilla/javascript/drivers/
+rhino1_7R5/testsrc/org/mozilla/javascript/testing/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/absolute/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/absolute/submodule/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/cyclic/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/determinism/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/determinism/submodule/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/exactExports/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/hasOwnProperty/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/method/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/missing/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/monkeys/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/nested/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/nested/a/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/nested/a/b/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/nested/a/b/c/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/relative/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/relative/submodule/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/transitive/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/x/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/x/y/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/es5/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/json/
+rhino1_7R5/testsrc/tests/
+rhino1_7R5/testsrc/tests/e4x/
+rhino1_7R5/testsrc/tests/e4x/Expressions/
+rhino1_7R5/testsrc/tests/e4x/GC/
+rhino1_7R5/testsrc/tests/e4x/Global/
+rhino1_7R5/testsrc/tests/e4x/Namespace/
+rhino1_7R5/testsrc/tests/e4x/QName/
+rhino1_7R5/testsrc/tests/e4x/Regress/
+rhino1_7R5/testsrc/tests/e4x/Statements/
+rhino1_7R5/testsrc/tests/e4x/TypeConversion/
+rhino1_7R5/testsrc/tests/e4x/Types/
+rhino1_7R5/testsrc/tests/e4x/XML/
+
+exec
+/usr/bin/bash -lc "jar tf /tmp/rhino-1.7R5-sources.jar | rg -i 'test|suite|junit' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ succeeded in 0ms:
+rhino1_7R5/testsrc/
+rhino1_7R5/testsrc/benchmarks/
+rhino1_7R5/testsrc/benchmarks/sunspider-0.9.1/
+rhino1_7R5/testsrc/benchmarks/v8-benchmarks-v5/
+rhino1_7R5/testsrc/benchmarks/v8-benchmarks-v6/
+rhino1_7R5/testsrc/doctests/
+rhino1_7R5/testsrc/jstests/
+rhino1_7R5/testsrc/org/
+rhino1_7R5/testsrc/org/mozilla/
+rhino1_7R5/testsrc/org/mozilla/javascript/
+rhino1_7R5/testsrc/org/mozilla/javascript/benchmarks/
+rhino1_7R5/testsrc/org/mozilla/javascript/drivers/
+rhino1_7R5/testsrc/org/mozilla/javascript/testing/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/absolute/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/absolute/submodule/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/cyclic/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/determinism/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/determinism/submodule/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/exactExports/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/hasOwnProperty/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/method/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/missing/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/monkeys/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/nested/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/nested/a/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/nested/a/b/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/nested/a/b/c/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/relative/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/relative/submodule/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/transitive/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/x/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/x/y/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/es5/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/json/
+rhino1_7R5/testsrc/tests/
+rhino1_7R5/testsrc/tests/e4x/
+rhino1_7R5/testsrc/tests/e4x/Expressions/
+rhino1_7R5/testsrc/tests/e4x/GC/
+rhino1_7R5/testsrc/tests/e4x/Global/
+rhino1_7R5/testsrc/tests/e4x/Namespace/
+rhino1_7R5/testsrc/tests/e4x/QName/
+rhino1_7R5/testsrc/tests/e4x/Regress/
+rhino1_7R5/testsrc/tests/e4x/Statements/
+rhino1_7R5/testsrc/tests/e4x/TypeConversion/
+rhino1_7R5/testsrc/tests/e4x/Types/
+rhino1_7R5/testsrc/tests/e4x/XML/
+rhino1_7R5/testsrc/tests/e4x/XMLList/
+rhino1_7R5/testsrc/tests/e4x/decompilation/
+rhino1_7R5/testsrc/tests/e4x/extensions/
+rhino1_7R5/testsrc/tests/ecma/
+rhino1_7R5/testsrc/tests/ecma/Array/
+rhino1_7R5/testsrc/tests/ecma/Boolean/
+rhino1_7R5/testsrc/tests/ecma/Date/
+rhino1_7R5/testsrc/tests/ecma/ExecutionContexts/
+rhino1_7R5/testsrc/tests/ecma/Expressions/
+rhino1_7R5/testsrc/tests/ecma/FunctionObjects/
+rhino1_7R5/testsrc/tests/ecma/GlobalObject/
+rhino1_7R5/testsrc/tests/ecma/LexicalConventions/
+rhino1_7R5/testsrc/tests/ecma/Math/
+rhino1_7R5/testsrc/tests/ecma/NativeObjects/
+rhino1_7R5/testsrc/tests/ecma/Number/
+rhino1_7R5/testsrc/tests/ecma/ObjectObjects/
+rhino1_7R5/testsrc/tests/ecma/SourceText/
+rhino1_7R5/testsrc/tests/ecma/Statements/
+rhino1_7R5/testsrc/tests/ecma/String/
+rhino1_7R5/testsrc/tests/ecma/TypeConversion/
+rhino1_7R5/testsrc/tests/ecma/Types/
+rhino1_7R5/testsrc/tests/ecma/extensions/
+rhino1_7R5/testsrc/tests/ecma_2/
+rhino1_7R5/testsrc/tests/ecma_2/Exceptions/
+rhino1_7R5/testsrc/tests/ecma_2/Expressions/
+rhino1_7R5/testsrc/tests/ecma_2/FunctionObjects/
+rhino1_7R5/testsrc/tests/ecma_2/LexicalConventions/
+rhino1_7R5/testsrc/tests/ecma_2/RegExp/
+rhino1_7R5/testsrc/tests/ecma_2/Statements/
+rhino1_7R5/testsrc/tests/ecma_2/String/
+
+web search: 
+web search: Maven Central org.mozilla rhino 1.7R5 rhino-1.7R5-sources.jar javadoc.jar
+codex
+No file changes were needed in [index.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d/metadata/org.mozilla/rhino/index.json:4). The `1.7R5` entry already has non-blank `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and exactly two-sentence `description`; Maven Central confirms the `1.7R5` sources and javadoc artifacts exist, and the POM description matches the current description. ([repo1.maven.org](https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/?utm_source=openai))
+
+I left `language` absent because Rhino is a JavaScript engine implemented in Java, not a Kotlin, Groovy, Scala 2, or Scala 3 language-specific library under the requested schema. The canonical repository root remains `https://github.com/mozilla/rhino`. ([github.com](https://github.com/mozilla/rhino?utm_source=openai))
+
+Validation: `jq` successfully parsed the target entry.
+tokens used
+40,773
+No file changes were needed in [index.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d/metadata/org.mozilla/rhino/index.json:4). The `1.7R5` entry already has non-blank `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and exactly two-sentence `description`; Maven Central confirms the `1.7R5` sources and javadoc artifacts exist, and the POM description matches the current description. ([repo1.maven.org](https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/?utm_source=openai))
+
+I left `language` absent because Rhino is a JavaScript engine implemented in Java, not a Kotlin, Groovy, Scala 2, or Scala 3 language-specific library under the requested schema. The canonical repository root remains `https://github.com/mozilla/rhino`. ([github.com](https://github.com/mozilla/rhino?utm_source=openai))
+
+Validation: `jq` successfully parsed the target entry.
+Ran agent for org.mozilla:rhino:1.7R5 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d/build/agent-url-discovery-logs/org.mozilla-rhino-1.7R5.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 59s
+9 actionable tasks: 1 executed, 8 up-to-date

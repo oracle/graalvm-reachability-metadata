@@ -1,0 +1,451 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de573-eef6-77f3-999c-7c363c970eac
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.mozilla:rhino:1.7R5
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.7R5".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+- Set "coordinates" to "org.mozilla:rhino:1.7R5".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven Central and upstream tags, then update the JSON directly with the exact-version URLs.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json && sed -n '1,200p' build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+-rw-rw-r-- 1 vjovanov vjovanov 48 May  1 23:31 build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+{
+  "coordinates" : "org.mozilla:rhino:1.7R5"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'org\\.mozilla.*rhino|rhino.*1\\.7R5|1\\.7R5' ." in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ exited 1 in 0ms:
+web search: 
+web search: Maven Central org.mozilla rhino 1.7R5 pom scm url
+web search: 
+web search: https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/
+web search: 
+web search: https://rhino.github.io/releases/new_in_rhino_1.7r5.html
+web search: 
+web search: https://github.com/mozilla/rhino/releases/tag/Rhino1_7R5_RELEASE
+codex
+Maven Central has the 1.7R5 binary, sources, and javadoc artifacts, but no separate test artifact in the directory listing. I’m checking the source archive contents and the upstream release tag to choose the most precise test URL.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ succeeded in 0ms:
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
+  <groupId>org.mozilla</groupId>
+  <artifactId>rhino</artifactId>
+  <name>Mozilla Rhino</name>
+  <version>1.7R5</version>
+
+  <packaging>jar</packaging>
+  <description>
+      Rhino is an open-source implementation of JavaScript written entirely in Java. It is typically
+      embedded into Java applications to provide scripting to end users.
+  </description>
+  <url>https://developer.mozilla.org/en/Rhino</url>
+
+  <licenses>
+    <license>
+      <name>Mozilla Public License, Version 2.0</name>
+      <url>http://www.mozilla.org/MPL/2.0/index.txt</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git@github.com:mozilla/rhino.git</connection>
+    <developerConnection>scm:git:git@github.com:mozilla/rhino.git</developerConnection>
+    <url>git@github.com:mozilla/rhino.git</url>
+  </scm>
+
+  <organization>
+    <name>The Mozilla Foundation</name>
+    <url>http://www.mozilla.org</url>
+  </organization>
+</project>
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/rhino-1.7R5-sources.jar" https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar && jar tf "$tmp/rhino-1.7R5-sources.jar" | sed -n '"'1,120p' && rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-tests.jar || true; curl -fsSI https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-test-sources.jar || true' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+exec
+/usr/bin/bash -lc 'curl -fsSI https://javadoc.io/doc/org.mozilla/rhino/1.7R5/index.html; curl -fsSI https://github.com/mozilla/rhino/tree/Rhino1_7R5_RELEASE/testsrc' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ succeeded in 327ms:
+rhino1_7R5/
+rhino1_7R5/deprecatedsrc/
+rhino1_7R5/deprecatedsrc/org/
+rhino1_7R5/deprecatedsrc/org/mozilla/
+rhino1_7R5/deprecatedsrc/org/mozilla/javascript/
+rhino1_7R5/deprecatedsrc/org/mozilla/javascript/xml/
+rhino1_7R5/deprecatedsrc/org/mozilla/javascript/xml/impl/
+rhino1_7R5/deprecatedsrc/org/mozilla/javascript/xml/impl/xmlbeans/
+rhino1_7R5/examples/
+rhino1_7R5/examples/E4X/
+rhino1_7R5/src/
+rhino1_7R5/src/org/
+rhino1_7R5/src/org/mozilla/
+rhino1_7R5/src/org/mozilla/classfile/
+rhino1_7R5/src/org/mozilla/javascript/
+rhino1_7R5/src/org/mozilla/javascript/annotations/
+rhino1_7R5/src/org/mozilla/javascript/ast/
+rhino1_7R5/src/org/mozilla/javascript/commonjs/
+rhino1_7R5/src/org/mozilla/javascript/commonjs/module/
+rhino1_7R5/src/org/mozilla/javascript/commonjs/module/provider/
+rhino1_7R5/src/org/mozilla/javascript/debug/
+rhino1_7R5/src/org/mozilla/javascript/jdk13/
+rhino1_7R5/src/org/mozilla/javascript/jdk15/
+rhino1_7R5/src/org/mozilla/javascript/json/
+rhino1_7R5/src/org/mozilla/javascript/optimizer/
+rhino1_7R5/src/org/mozilla/javascript/regexp/
+rhino1_7R5/src/org/mozilla/javascript/resources/
+rhino1_7R5/src/org/mozilla/javascript/serialize/
+rhino1_7R5/src/org/mozilla/javascript/v8dtoa/
+rhino1_7R5/src/org/mozilla/javascript/xml/
+rhino1_7R5/testsrc/
+rhino1_7R5/testsrc/benchmarks/
+rhino1_7R5/testsrc/benchmarks/sunspider-0.9.1/
+rhino1_7R5/testsrc/benchmarks/v8-benchmarks-v5/
+rhino1_7R5/testsrc/benchmarks/v8-benchmarks-v6/
+rhino1_7R5/testsrc/doctests/
+rhino1_7R5/testsrc/jstests/
+rhino1_7R5/testsrc/org/
+rhino1_7R5/testsrc/org/mozilla/
+rhino1_7R5/testsrc/org/mozilla/javascript/
+rhino1_7R5/testsrc/org/mozilla/javascript/benchmarks/
+rhino1_7R5/testsrc/org/mozilla/javascript/drivers/
+rhino1_7R5/testsrc/org/mozilla/javascript/testing/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/absolute/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/absolute/submodule/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/cyclic/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/determinism/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/determinism/submodule/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/exactExports/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/hasOwnProperty/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/method/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/missing/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/monkeys/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/nested/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/nested/a/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/nested/a/b/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/nested/a/b/c/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/relative/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/relative/submodule/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/transitive/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/x/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/x/y/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/es5/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/json/
+rhino1_7R5/testsrc/tests/
+rhino1_7R5/testsrc/tests/e4x/
+rhino1_7R5/testsrc/tests/e4x/Expressions/
+rhino1_7R5/testsrc/tests/e4x/GC/
+rhino1_7R5/testsrc/tests/e4x/Global/
+rhino1_7R5/testsrc/tests/e4x/Namespace/
+rhino1_7R5/testsrc/tests/e4x/QName/
+rhino1_7R5/testsrc/tests/e4x/Regress/
+rhino1_7R5/testsrc/tests/e4x/Statements/
+rhino1_7R5/testsrc/tests/e4x/TypeConversion/
+rhino1_7R5/testsrc/tests/e4x/Types/
+rhino1_7R5/testsrc/tests/e4x/XML/
+rhino1_7R5/testsrc/tests/e4x/XMLList/
+rhino1_7R5/testsrc/tests/e4x/decompilation/
+rhino1_7R5/testsrc/tests/e4x/extensions/
+rhino1_7R5/testsrc/tests/ecma/
+rhino1_7R5/testsrc/tests/ecma/Array/
+rhino1_7R5/testsrc/tests/ecma/Boolean/
+rhino1_7R5/testsrc/tests/ecma/Date/
+rhino1_7R5/testsrc/tests/ecma/ExecutionContexts/
+rhino1_7R5/testsrc/tests/ecma/Expressions/
+rhino1_7R5/testsrc/tests/ecma/FunctionObjects/
+rhino1_7R5/testsrc/tests/ecma/GlobalObject/
+rhino1_7R5/testsrc/tests/ecma/LexicalConventions/
+rhino1_7R5/testsrc/tests/ecma/Math/
+rhino1_7R5/testsrc/tests/ecma/NativeObjects/
+rhino1_7R5/testsrc/tests/ecma/Number/
+rhino1_7R5/testsrc/tests/ecma/ObjectObjects/
+rhino1_7R5/testsrc/tests/ecma/SourceText/
+rhino1_7R5/testsrc/tests/ecma/Statements/
+rhino1_7R5/testsrc/tests/ecma/String/
+rhino1_7R5/testsrc/tests/ecma/TypeConversion/
+rhino1_7R5/testsrc/tests/ecma/Types/
+rhino1_7R5/testsrc/tests/ecma/extensions/
+rhino1_7R5/testsrc/tests/ecma_2/
+rhino1_7R5/testsrc/tests/ecma_2/Exceptions/
+rhino1_7R5/testsrc/tests/ecma_2/Expressions/
+rhino1_7R5/testsrc/tests/ecma_2/FunctionObjects/
+rhino1_7R5/testsrc/tests/ecma_2/LexicalConventions/
+rhino1_7R5/testsrc/tests/ecma_2/RegExp/
+rhino1_7R5/testsrc/tests/ecma_2/Statements/
+rhino1_7R5/testsrc/tests/ecma_2/String/
+rhino1_7R5/testsrc/tests/ecma_2/extensions/
+rhino1_7R5/testsrc/tests/ecma_2/instanceof/
+rhino1_7R5/testsrc/tests/ecma_3/
+rhino1_7R5/testsrc/tests/ecma_3/Array/
+rhino1_7R5/testsrc/tests/ecma_3/Date/
+rhino1_7R5/testsrc/tests/ecma_3/Exceptions/
+rhino1_7R5/testsrc/tests/ecma_3/ExecutionContexts/
+rhino1_7R5/testsrc/tests/ecma_3/Expressions/
+rhino1_7R5/testsrc/tests/ecma_3/FunExpr/
+rhino1_7R5/testsrc/tests/ecma_3/Function/
+
+ succeeded in 564ms:
+curl: (22) The requestHTTP/2 404 
+date: Fri, 01 May 2026 21:31:39 GMT
+content-type: text/html
+cf-ray: 9f51e4f16c792680-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+ed URL returned error: 404
+HTTP/2 404 
+date: Fri, 01 May 2026 21:31:39 GMT
+content-type: text/html
+cf-ray: 9f51e4f3482f862a-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 718ms:
+HTTP/2 200 
+date: Fri, 01 May 2026 21:31:39 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/org.mozilla/rhino/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=oxOWnh6GeIzse%2B2nkIItueZjFCwDqGI0wni4v9XH2HU%2FYwYeGQCcm1odXqnqfG%2F0WRPbSRP2Y0SDhNDovSVScJB%2BVb610bZJALSz3Zy3R2F32MrC3PZIsFELqa8s3R8bs8fXCHhjuAS%2B"}]}
+server: cloudflare
+cf-ray: 9f51e4f17bd29cec-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Fri, 01 May 2026 21:31:39 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"349c03b68a7ddea91c30196cfe373981"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=Sos4GmTmR7cqC7qWqHlVwP13d7g6RytxDegxZSUDzlEk9ncFuC0f9kVdx5ZfuyAD3CxIx8SBzkMvOmj2BpFr9Ffy07sMYdKtfyqHCZfy25vWQ2K9n3QNooV4oXk%2FmE9WlL4zljZhTVpn3qGYiEtcV7IvJfWBXJrCy%2FijTg8DLNP%2BtApcJRCnm%2FEERdBbfI%2B4oPt2Zhn0YTQm38piKSBAotKCm8L6wtFGsTPAb%2FkPXtLduePS2VhlqXvxLIg5x%2F8YD22qnx%2BV6KMNeaLv3bsMZg%3D%3D--3lMPzLddeFpPUPGj--kGxJ5RFHhOX8hzRhSUB1HA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1173630130.1777671099; expires=Sat, 01 May 2027 21:31:39 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 01 May 2027 21:31:39 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5126:194EF3:31157E6:237DBB5:69F51BBB
+
+
+codex
+The source archive for 1.7R5 includes both `src/` and `testsrc/`, so I’ll use the Maven sources artifact for both source and test suite URLs. The library is not Kotlin, Groovy, or Scala-specific, so I’ll leave `language` out.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+diff --git a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+index 4ef3063821c5c1b7fd0778ca5115acce27dd7429..d67550c20e8322956f75756d7f3a34a36c6ae817
+--- a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
++++ b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mozilla:rhino:1.7R5"
++  "coordinates" : "org.mozilla:rhino:1.7R5",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "repository-url" : "https://github.com/mozilla/rhino",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar",
++  "description" : "Rhino is an open-source implementation of JavaScript written entirely in Java. It is typically embedded into Java applications to provide scripting to end users."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+index 4ef3063821c5c1b7fd0778ca5115acce27dd7429..d67550c20e8322956f75756d7f3a34a36c6ae817
+--- a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
++++ b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mozilla:rhino:1.7R5"
++  "coordinates" : "org.mozilla:rhino:1.7R5",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "repository-url" : "https://github.com/mozilla/rhino",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar",
++  "description" : "Rhino is an open-source implementation of JavaScript written entirely in Java. It is typically embedded into Java applications to provide scripting to end users."
+ }
+
+codex
+The JSON has been updated. I’m doing a quick parse check and confirming the resulting file contents before wrapping up.
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'python -m json.tool build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ succeeded in 0ms:
+{
+    "coordinates": "org.mozilla:rhino:1.7R5",
+    "source-code-url": "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
+    "repository-url": "https://github.com/mozilla/rhino",
+    "test-code-url": "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
+    "documentation-url": "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar",
+    "description": "Rhino is an open-source implementation of JavaScript written entirely in Java. It is typically embedded into Java applications to provide scripting to end users."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+index 4ef3063821c5c1b7fd0778ca5115acce27dd7429..d67550c20e8322956f75756d7f3a34a36c6ae817
+--- a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
++++ b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mozilla:rhino:1.7R5"
++  "coordinates" : "org.mozilla:rhino:1.7R5",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "repository-url" : "https://github.com/mozilla/rhino",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar",
++  "description" : "Rhino is an open-source implementation of JavaScript written entirely in Java. It is typically embedded into Java applications to provide scripting to end users."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ succeeded in 0ms:
+{
+  "coordinates" : "org.mozilla:rhino:1.7R5",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
+  "repository-url" : "https://github.com/mozilla/rhino",
+  "test-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar",
+  "description" : "Rhino is an open-source implementation of JavaScript written entirely in Java. It is typically embedded into Java applications to provide scripting to end users."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d
+ succeeded in 0ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+index 4ef3063821c5c1b7fd0778ca5115acce27dd7429..d67550c20e8322956f75756d7f3a34a36c6ae817
+--- a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
++++ b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mozilla:rhino:1.7R5"
++  "coordinates" : "org.mozilla:rhino:1.7R5",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "repository-url" : "https://github.com/mozilla/rhino",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar",
++  "description" : "Rhino is an open-source implementation of JavaScript written entirely in Java. It is typically embedded into Java applications to provide scripting to end users."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/
+codex
+Updated [org.mozilla-rhino-1.7R5.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json).
+
+I used Maven Central’s exact `1.7R5` sources and javadoc artifacts, and the selected description matches the Maven Central artifact metadata. Rhino is a JavaScript implementation written in Java, not a Kotlin/Groovy/Scala-specific library, so I left `language` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/))
+
+Validation: `python -m json.tool` passes.
+diff --git a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+index 4ef3063821c5c1b7fd0778ca5115acce27dd7429..d67550c20e8322956f75756d7f3a34a36c6ae817
+--- a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
++++ b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mozilla:rhino:1.7R5"
++  "coordinates" : "org.mozilla:rhino:1.7R5",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "repository-url" : "https://github.com/mozilla/rhino",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar",
++  "description" : "Rhino is an open-source implementation of JavaScript written entirely in Java. It is typically embedded into Java applications to provide scripting to end users."
+ }
+
+tokens used
+43,334
+Updated [org.mozilla-rhino-1.7R5.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json).
+
+I used Maven Central’s exact `1.7R5` sources and javadoc artifacts, and the selected description matches the Maven Central artifact metadata. Rhino is a JavaScript implementation written in Java, not a Kotlin/Groovy/Scala-specific library, so I left `language` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/))
+
+Validation: `python -m json.tool` passes.
+Ran agent for org.mozilla:rhino:1.7R5 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d/build/agent-artifact-discovery-logs/org.mozilla-rhino-1.7R5.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-1c8e0d8d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 59s
+9 actionable tasks: 4 executed, 5 from cache
