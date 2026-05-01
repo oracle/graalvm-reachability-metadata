@@ -15,6 +15,7 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.RecordComponentVisitor;
 import org.objectweb.asm.TypePath;
 import org.objectweb.asm.TypeReference;
 import org.objectweb.asm.signature.SignatureReader;
@@ -25,6 +26,7 @@ import org.objectweb.asm.util.CheckAnnotationAdapter;
 import org.objectweb.asm.util.CheckClassAdapter;
 import org.objectweb.asm.util.CheckFieldAdapter;
 import org.objectweb.asm.util.CheckMethodAdapter;
+import org.objectweb.asm.util.CheckRecordComponentAdapter;
 import org.objectweb.asm.util.CheckSignatureAdapter;
 import org.objectweb.asm.util.Printer;
 import org.objectweb.asm.util.Textifier;
@@ -32,6 +34,7 @@ import org.objectweb.asm.util.TraceAnnotationVisitor;
 import org.objectweb.asm.util.TraceClassVisitor;
 import org.objectweb.asm.util.TraceFieldVisitor;
 import org.objectweb.asm.util.TraceMethodVisitor;
+import org.objectweb.asm.util.TraceRecordComponentVisitor;
 import org.objectweb.asm.util.TraceSignatureVisitor;
 
 import java.io.PrintWriter;
@@ -186,6 +189,42 @@ public class Asm_utilTest {
     }
 
     @Test
+    void recordComponentVisitorsTraceAndValidateComponentMetadata() {
+        Textifier textifier = new Textifier();
+        TraceRecordComponentVisitor tracedRecordComponent = new TraceRecordComponentVisitor(textifier);
+        CheckRecordComponentAdapter checkedRecordComponent = new CheckRecordComponentAdapter(tracedRecordComponent);
+
+        AnnotationVisitor annotation = checkedRecordComponent.visitAnnotation("Lgenerated/asmutil/ComponentMarker;", true);
+        annotation.visit("name", "x");
+        annotation.visitEnd();
+        checkedRecordComponent.visitTypeAnnotation(
+                TypeReference.newTypeReference(TypeReference.FIELD).getValue(),
+                TypePath.fromString("0;"),
+                "Lgenerated/asmutil/ComponentTypeMarker;",
+                true).visitEnd();
+        checkedRecordComponent.visitEnd();
+
+        String recordComponentTrace = print(textifier);
+
+        assertThat(recordComponentTrace)
+                .contains("Lgenerated/asmutil/ComponentMarker;")
+                .contains("name=\"x\"")
+                .contains("Lgenerated/asmutil/ComponentTypeMarker;")
+                .contains("FIELD")
+                .contains("0;");
+        assertThatThrownBy(() -> checkedRecordComponent.visitAnnotation("Lgenerated/asmutil/Late;", true))
+                .isInstanceOf(IllegalStateException.class);
+
+        String recordClassTrace = traceClass(new Textifier(), buildRecordComponentClass());
+
+        assertThat(recordClassTrace)
+                .contains("RECORD")
+                .contains("RECORDCOMPONENT")
+                .contains("I x")
+                .contains("Lgenerated/asmutil/Coordinate;");
+    }
+
+    @Test
     void signatureVisitorsTraceValidateAndWriteGenericSignatures() {
         String methodSignature = "<T:Ljava/lang/Number;>(Ljava/util/List<+TT;>;[Ljava/lang/String;)"
                 + "Ljava/util/Map<TT;Ljava/lang/Integer;>;^Ljava/io/IOException;";
@@ -217,6 +256,24 @@ public class Asm_utilTest {
         assertThat(writer.toString()).isEqualTo("<E:Ljava/lang/Exception;>(Ljava/util/List<+TE;>;)V");
         assertThatThrownBy(() -> CheckClassAdapter.checkFieldSignature("Ljava/util/List<;"))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private static byte[] buildRecordComponentClass() {
+        ClassWriter classWriter = new ClassWriter(0);
+        classWriter.visit(
+                Opcodes.V17,
+                Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL | Opcodes.ACC_SUPER | Opcodes.ACC_RECORD,
+                "generated/asmutil/Point",
+                null,
+                "java/lang/Record",
+                null);
+
+        RecordComponentVisitor recordComponent = classWriter.visitRecordComponent("x", "I", null);
+        recordComponent.visitAnnotation("Lgenerated/asmutil/Coordinate;", true).visitEnd();
+        recordComponent.visitEnd();
+
+        classWriter.visitEnd();
+        return classWriter.toByteArray();
     }
 
     private static byte[] buildExampleClass() {
