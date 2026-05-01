@@ -294,6 +294,27 @@ public class Geronimo_annotation_1_3_specTest {
         assertThat(annotation(loadConfig, Resource.class)).isNull();
     }
 
+    @Test
+    void arrayValuedAnnotationMembersReturnIndependentCopies() {
+        DataSourceDefinition dataSourceDefinition = annotation(DefensiveCopyDataSource.class,
+                DataSourceDefinition.class);
+        String[] properties = dataSourceDefinition.properties();
+        properties[0] = "mutated=true";
+
+        DeclareRoles declareRoles = annotation(DefensiveCopySecurity.class, DeclareRoles.class);
+        String[] roles = declareRoles.value();
+        roles[1] = "guest";
+
+        Resources resources = annotation(DefensiveCopyResources.class, Resources.class);
+        Resource[] resourceEntries = resources.value();
+        resourceEntries[0] = resourceEntries[1];
+
+        assertThat(dataSourceDefinition.properties()).containsExactly("schema=inventory", "readOnly=false");
+        assertThat(declareRoles.value()).containsExactly("operator", "reviewer");
+        assertThat(resources.value()[0].name()).isEqualTo("cache/primary");
+        assertThat(resources.value()[1].name()).isEqualTo("cache/backup");
+    }
+
     // Checkstyle: allow direct annotation access
     private static <A extends Annotation> A annotation(AnnotatedElement element, Class<A> annotationType) {
         A[] annotations = element.getAnnotationsByType(annotationType);
@@ -475,5 +496,21 @@ public class Geronimo_annotation_1_3_specTest {
         Integer loadConfig() {
             return 2;
         }
+    }
+
+    @DataSourceDefinition(name = "jdbc/copy-safe", className = "org.example.CopySafeDataSource",
+            properties = {"schema=inventory", "readOnly=false"})
+    private static final class DefensiveCopyDataSource {
+    }
+
+    @DeclareRoles({"operator", "reviewer"})
+    private static final class DefensiveCopySecurity {
+    }
+
+    @Resources({
+            @Resource(name = "cache/primary", type = String.class, lookup = "java:comp/env/cache/primary"),
+            @Resource(name = "cache/backup", type = String.class, lookup = "java:comp/env/cache/backup")
+    })
+    private static final class DefensiveCopyResources {
     }
 }
