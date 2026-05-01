@@ -188,6 +188,31 @@ public class Org_abego_treelayout_coreTest {
     }
 
     @Test
+    void compactLayoutSeparatesCousinSubtreesWhileKeepingParentsCentered() {
+        DefaultTreeForTreeLayout<String> tree = new DefaultTreeForTreeLayout<>("root");
+        tree.addChildren("root", "left", "right");
+        tree.addChildren("left", "left.left", "left.right");
+        tree.addChildren("right", "right.left", "right.right");
+        tree.addChildren("left.right", "left.right.leaf1", "left.right.leaf2");
+        tree.addChildren("right.left", "right.left.leaf1", "right.left.leaf2");
+        TreeLayout<String> layout = new TreeLayout<>(tree, new FixedNodeExtentProvider<>(10.0, 6.0),
+                new DefaultConfiguration<>(8.0, 4.0));
+        Map<String, Rectangle2D.Double> bounds = layout.getNodeBounds();
+
+        assertThat(bounds.get("root").getCenterX()).isCloseTo(
+                midpoint(bounds.get("left").getCenterX(), bounds.get("right").getCenterX()), within(EPSILON));
+        assertThat(bounds.get("left").getCenterX()).isCloseTo(
+                midpoint(bounds.get("left.left").getCenterX(), bounds.get("left.right").getCenterX()),
+                within(EPSILON));
+        assertThat(bounds.get("right").getCenterX()).isCloseTo(
+                midpoint(bounds.get("right.left").getCenterX(), bounds.get("right.right").getCenterX()),
+                within(EPSILON));
+        assertThat(bounds.get("right.left.leaf1").getMinX() - bounds.get("left.right.leaf2").getMaxX())
+                .isCloseTo(4.0, within(EPSILON));
+        assertRectangle(layout.getBounds(), 0.0, 0.0, 66.0, 48.0);
+    }
+
+    @Test
     void customConfigurationCanVaryLevelAndSiblingGaps() {
         DefaultTreeForTreeLayout<String> tree = new DefaultTreeForTreeLayout<>("root");
         tree.addChildren("root", "left", "middle", "right");
@@ -272,6 +297,10 @@ public class Org_abego_treelayout_coreTest {
 
     private static List<String> iterableToList(Iterable<String> values) {
         return StreamSupport.stream(values.spliterator(), false).collect(Collectors.toList());
+    }
+
+    private static double midpoint(double first, double second) {
+        return (first + second) / 2.0;
     }
 
     private static void assertRectangle(Rectangle2D rectangle, double x, double y, double width, double height) {
