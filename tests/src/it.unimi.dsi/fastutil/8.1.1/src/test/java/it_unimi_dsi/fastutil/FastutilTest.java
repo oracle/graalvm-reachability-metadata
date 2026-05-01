@@ -13,6 +13,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntAVLTreeSet;
+import it.unimi.dsi.fastutil.ints.IntArrayFIFOQueue;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntBidirectionalIterator;
@@ -241,6 +242,39 @@ public class FastutilTest {
         assertThat(map.removeFirstDouble()).isEqualTo(2.5D);
         assertThat(map.removeLastDouble()).isEqualTo(5.0D);
         assertThat(map.keySet().toLongArray()).containsExactly(10L, 5L, 30L);
+    }
+
+    @Test
+    void intArrayFifoQueueSupportsPrimitiveDequeOperationsAndWrapAround() {
+        IntArrayFIFOQueue queue = new IntArrayFIFOQueue(3);
+
+        queue.enqueue(10);
+        queue.enqueue(20);
+        queue.enqueue(30);
+
+        assertThat(queue.firstInt()).isEqualTo(10);
+        assertThat(queue.lastInt()).isEqualTo(30);
+        assertThat(queue.dequeueInt()).isEqualTo(10);
+        assertThat(queue.dequeueInt()).isEqualTo(20);
+
+        queue.enqueue(40);
+        queue.enqueue(50);
+        queue.enqueueFirst(5);
+
+        assertThat(queue.size()).isEqualTo(4);
+        assertThat(queue.firstInt()).isEqualTo(5);
+        assertThat(queue.lastInt()).isEqualTo(50);
+        assertThat(queue.dequeueLastInt()).isEqualTo(50);
+        assertThat(queue.dequeueInt()).isEqualTo(5);
+        assertThat(queue.dequeueInt()).isEqualTo(30);
+        assertThat(queue.dequeueInt()).isEqualTo(40);
+
+        queue.enqueue(60);
+        queue.enqueueFirst(55);
+        queue.trim();
+        assertThat(queue.dequeueInt()).isEqualTo(55);
+        assertThat(queue.dequeueInt()).isEqualTo(60);
+        assertThat(queue.size()).isZero();
     }
 
     @Test
