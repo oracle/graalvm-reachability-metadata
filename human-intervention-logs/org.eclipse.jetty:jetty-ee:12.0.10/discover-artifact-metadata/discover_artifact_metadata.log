@@ -1,0 +1,2090 @@
+Starting a Gradle Daemon, 4 busy and 2 incompatible and 43 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de249-802b-7612-be3c-6012ad462abf
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.eclipse.jetty:jetty-ee:12.0.10
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "12.0.10".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json
+- Set "coordinates" to "org.eclipse.jetty:jetty-ee:12.0.10".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the tagged upstream source, then update the JSON in place. I’m checking the existing file shape first so the edit matches the repository’s formatting.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+{
+  "coordinates" : "org.eclipse.jetty:jetty-ee:12.0.10"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'org\\.eclipse\\.jetty:jetty-ee|jetty-ee' build/discovered-artifact-metadata metadata tests -S" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json:2:  "coordinates" : "org.eclipse.jetty:jetty-ee:12.0.10"
+tests/src/org.eclipse.jetty/jetty-server/12.1.3/build.gradle:15:    testImplementation "org.eclipse.jetty.ee10:jetty-ee10-servlets:$libraryVersion"
+tests/src/org.eclipse.jetty/jetty-server/12.1.3/build.gradle:16:    testImplementation "org.eclipse.jetty.ee10:jetty-ee10-webapp:$libraryVersion"
+tests/src/org.eclipse.jetty/jetty-server/12.1.3/build.gradle:17:	testImplementation "org.eclipse.jetty.ee11:jetty-ee11-servlets:$libraryVersion"
+tests/src/org.eclipse.jetty/jetty-server/12.1.3/build.gradle:18:	testImplementation "org.eclipse.jetty.ee11:jetty-ee11-webapp:$libraryVersion"
+tests/src/org.eclipse.jetty/jetty-server/12.1.3/gradle.properties:2:metadata.dir=org.eclipse.jetty.ee1/jetty-ee11-servlet/12.1.3/
+tests/src/org.eclipse.jetty/jetty-server/12.0.1/build.gradle:15:    testImplementation "org.eclipse.jetty.ee10:jetty-ee10-servlets:$libraryVersion"
+tests/src/org.eclipse.jetty/jetty-server/12.0.1/build.gradle:16:    testImplementation "org.eclipse.jetty.ee10:jetty-ee10-webapp:$libraryVersion"
+
+web search: 
+web search: Maven org.eclipse.jetty jetty-ee 12.0.10 sources jar tests jar javadoc
+web search: 
+web search: https://github.com/jetty/jetty.project/tree/jetty-12.0.10
+web search: 
+web search: repo.maven.apache.org maven2 org eclipse jetty jetty-ee 12.0.10 jetty-ee-12.0.10.pom
+codex
+The artifact exists as a Maven Central entry, but the direct Maven directory is easier to inspect from the shell than search snippets. I’m checking whether Central publishes sources, tests, or documentation classifiers for this exact coordinate before falling back to the `jetty-12.0.10` tag.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/jetty-ee-12.0.10.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.eclipse.jetty</groupId>
+    <artifactId>jetty-core</artifactId>
+    <version>12.0.10</version>
+  </parent>
+  <artifactId>jetty-ee</artifactId>
+  <name>Core :: EE Common</name>
+
+  <properties>
+    <bundle-symbolic-name>${project.groupId}.ee</bundle-symbolic-name>
+    <spotbugs.onlyAnalyze>org.eclipse.jetty.ee.*</spotbugs.onlyAnalyze>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-slf4j-impl</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.tests</groupId>
+      <artifactId>jetty-test-multipart</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.toolchain</groupId>
+      <artifactId>jetty-test-helper</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>@{argLine} ${jetty.surefire.argLine} --add-reads org.eclipse.jetty.ee=org.eclipse.jetty.logging</argLine>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/jetty-ee-12.0.10-sources.jar -o /tmp/jetty-ee-12.0.10-sources.jar && file /tmp/jetty-ee-12.0.10-sources.jar && jar tf /tmp/jetty-ee-12.0.10-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 0ms:
+/tmp/jetty-ee-12.0.10-sources.jar: Zip archive data, at least v1.0 to extract, compression method=store
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/eclipse/
+org/eclipse/jetty/
+org/eclipse/jetty/ee/
+META-INF/maven/
+META-INF/maven/org.eclipse.jetty/
+META-INF/maven/org.eclipse.jetty/jetty-ee/
+module-info.java
+org/eclipse/jetty/ee/WebAppClassLoading.java
+META-INF/maven/org.eclipse.jetty/jetty-ee/pom.xml
+META-INF/maven/org.eclipse.jetty/jetty-ee/pom.properties
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/jetty-ee-12.0.10-tests.jar -o /tmp/jetty-ee-12.0.10-tests.jar && file /tmp/jetty-ee-12.0.10-tests.jar && jar tf /tmp/jetty-ee-12.0.10-tests.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 179ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/eclipse/jetty/jetty-ee/12.0.10</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/eclipse/jetty/jetty-ee/12.0.10</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jetty-ee-12.0.10-config.jar" title="jetty-ee-12.0.10-config.jar">jetty-ee-12.0.10-config.jar</a>                       2024-05-30 04:45      1533      
+<a href="jetty-ee-12.0.10-config.jar.asc" title="jetty-ee-12.0.10-config.jar.asc">jetty-ee-12.0.10-config.jar.asc</a>                   2024-05-30 04:45       195      
+<a href="jetty-ee-12.0.10-config.jar.md5" title="jetty-ee-12.0.10-config.jar.md5">jetty-ee-12.0.10-config.jar.md5</a>                   2024-05-30 04:45        32      
+<a href="jetty-ee-12.0.10-config.jar.sha1" title="jetty-ee-12.0.10-config.jar.sha1">jetty-ee-12.0.10-config.jar.sha1</a>                  2024-05-30 04:45        40      
+<a href="jetty-ee-12.0.10-javadoc.jar" title="jetty-ee-12.0.10-javadoc.jar">jetty-ee-12.0.10-javadoc.jar</a>                      2024-05-30 04:45    106666      
+<a href="jetty-ee-12.0.10-javadoc.jar.asc" title="jetty-ee-12.0.10-javadoc.jar.asc">jetty-ee-12.0.10-javadoc.jar.asc</a>                  2024-05-30 04:45       195      
+<a href="jetty-ee-12.0.10-javadoc.jar.md5" title="jetty-ee-12.0.10-javadoc.jar.md5">jetty-ee-12.0.10-javadoc.jar.md5</a>                  2024-05-30 04:45        32      
+<a href="jetty-ee-12.0.10-javadoc.jar.sha1" title="jetty-ee-12.0.10-javadoc.jar.sha1">jetty-ee-12.0.10-javadoc.jar.sha1</a>                 2024-05-30 04:45        40      
+<a href="jetty-ee-12.0.10-sources.jar" title="jetty-ee-12.0.10-sources.jar">jetty-ee-12.0.10-sources.jar</a>                      2024-05-30 04:45      4790      
+<a href="jetty-ee-12.0.10-sources.jar.asc" title="jetty-ee-12.0.10-sources.jar.asc">jetty-ee-12.0.10-sources.jar.asc</a>                  2024-05-30 04:45       195      
+<a href="jetty-ee-12.0.10-sources.jar.md5" title="jetty-ee-12.0.10-sources.jar.md5">jetty-ee-12.0.10-sources.jar.md5</a>                  2024-05-30 04:45        32      
+<a href="jetty-ee-12.0.10-sources.jar.sha1" title="jetty-ee-12.0.10-sources.jar.sha1">jetty-ee-12.0.10-sources.jar.sha1</a>                 2024-05-30 04:45        40      
+<a href="jetty-ee-12.0.10.jar" title="jetty-ee-12.0.10.jar">jetty-ee-12.0.10.jar</a>                              2024-05-30 04:45      4632      
+<a href="jetty-ee-12.0.10.jar.asc" title="jetty-ee-12.0.10.jar.asc">jetty-ee-12.0.10.jar.asc</a>                          2024-05-30 04:45       195      
+<a href="jetty-ee-12.0.10.jar.md5" title="jetty-ee-12.0.10.jar.md5">jetty-ee-12.0.10.jar.md5</a>                          2024-05-30 04:45        32      
+<a href="jetty-ee-12.0.10.jar.sha1" title="jetty-ee-12.0.10.jar.sha1">jetty-ee-12.0.10.jar.sha1</a>                         2024-05-30 04:45        40      
+<a href="jetty-ee-12.0.10.pom" title="jetty-ee-12.0.10.pom">jetty-ee-12.0.10.pom</a>                              2024-05-30 04:45      1988      
+<a href="jetty-ee-12.0.10.pom.asc" title="jetty-ee-12.0.10.pom.asc">jetty-ee-12.0.10.pom.asc</a>                          2024-05-30 04:45       195      
+<a href="jetty-ee-12.0.10.pom.md5" title="jetty-ee-12.0.10.pom.md5">jetty-ee-12.0.10.pom.md5</a>                          2024-05-30 04:45        32      
+<a href="jetty-ee-12.0.10.pom.sha1" title="jetty-ee-12.0.10.pom.sha1">jetty-ee-12.0.10.pom.sha1</a>                         2024-05-30 04:45        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ exited 22 in 235ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-core/12.0.10/jetty-core-12.0.10.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.eclipse.jetty</groupId>
+    <artifactId>jetty-project</artifactId>
+    <version>12.0.10</version>
+  </parent>
+  <artifactId>jetty-core</artifactId>
+  <packaging>pom</packaging>
+  <name>Core</name>
+
+  <modules>
+    <module>jetty-alpn</module>
+    <module>jetty-bom</module>
+    <module>jetty-client</module>
+    <module>jetty-demos</module>
+    <module>jetty-deploy</module>
+    <module>jetty-ee</module>
+    <module>jetty-fcgi</module>
+    <module>jetty-http</module>
+    <module>jetty-http-spi</module>
+    <module>jetty-http-tools</module>
+    <module>jetty-http2</module>
+    <module>jetty-http3</module>
+    <module>jetty-io</module>
+    <module>jetty-jmx</module>
+    <module>jetty-jndi</module>
+    <module>jetty-keystore</module>
+    <module>jetty-maven</module>
+    <module>jetty-openid</module>
+    <module>jetty-osgi</module>
+    <module>jetty-plus</module>
+    <module>jetty-proxy</module>
+    <module>jetty-quic</module>
+    <module>jetty-rewrite</module>
+    <module>jetty-security</module>
+    <module>jetty-server</module>
+    <module>jetty-session</module>
+    <module>jetty-slf4j-impl</module>
+    <module>jetty-start</module>
+    <module>jetty-tests</module>
+    <module>jetty-unixdomain-server</module>
+    <module>jetty-util</module>
+    <module>jetty-util-ajax</module>
+    <module>jetty-websocket</module>
+    <module>jetty-xml</module>
+  </modules>
+
+  <!-- FIXME: Remove once Servlet API usage is totally removed from jetty-core -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.eclipse.jetty.toolchain</groupId>
+        <artifactId>jetty-jakarta-servlet-api</artifactId>
+        <version>5.0.2</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <profiles>
+    <profile>
+      <!--
+        $ mvn -Pdependency-updates-reports validate
+        # once done, check the jetty-core/target/site/dependency-updates-aggregate-report.html
+        -->
+      <id>dependency-updates-reports</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>versions-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>core-report</id>
+                <goals>
+                  <goal>dependency-updates-aggregate-report</goal>
+                </goals>
+                <phase>validate</phase>
+                <configuration>
+                  <formats>
+                    <format>html</format>
+                  </formats>
+                  <onlyProjectDependencies>true</onlyProjectDependencies>
+                  <onlyUpgradable>true</onlyUpgradable>
+                  <ruleSet>
+                    <rules>
+                      <rule>
+                        <!-- ignore maven alpha/beta releases -->
+                        <groupId>org.apache.maven</groupId>
+                        <ignoreVersions>
+                          <ignoreVersion>
+                            <type>regex</type>
+                            <version>.+-(alpha|beta).?[0-9]+</version>
+                          </ignoreVersion>
+                        </ignoreVersions>
+                      </rule>
+                      <rule>
+                        <!-- ignore jetty core level version changes -->
+                        <groupId>org.eclipse.jetty</groupId>
+                        <ignoreVersions>
+                          <ignoreVersion>
+                            <type>regex</type>
+                            <version>.+</version>
+                          </ignoreVersion>
+                        </ignoreVersions>
+                      </rule>
+                      <rule>
+                        <!-- ignore jetty nested level version changes -->
+                        <groupId>org.eclipse.jetty.*</groupId>
+                        <ignoreVersions>
+                          <ignoreVersion>
+                            <type>regex</type>
+                            <version>.+</version>
+                          </ignoreVersion>
+                        </ignoreVersions>
+                      </rule>
+                    </rules>
+                  </ruleSet>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <!--
+        $ mvn -Pupdate-dependencies-core validate
+        -->
+      <id>update-dependencies-core</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>versions-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>core-update</id>
+                <goals>
+                  <goal>update-properties</goal>
+                </goals>
+                <phase>validate</phase>
+                <configuration>
+                  <onlyProjectDependencies>true</onlyProjectDependencies>
+                  <onlyUpgradable>true</onlyUpgradable>
+                  <ruleSet>
+                    <rules>
+                      <rule>
+                        <!-- ignore maven alpha/beta releases -->
+                        <groupId>org.apache.maven</groupId>
+                        <ignoreVersions>
+                          <ignoreVersion>
+                            <type>regex</type>
+                            <version>.+-(alpha|beta).?[0-9]+</version>
+                          </ignoreVersion>
+                        </ignoreVersions>
+                      </rule>
+                      <rule>
+                        <!-- ignore jetty core level version changes -->
+                        <groupId>org.eclipse.jetty</groupId>
+                        <ignoreVersions>
+                          <ignoreVersion>
+                            <type>regex</type>
+                            <version>.+</version>
+                          </ignoreVersion>
+                        </ignoreVersions>
+                      </rule>
+                      <rule>
+                        <!-- ignore jetty nested level version changes -->
+                        <groupId>org.eclipse.jetty.*</groupId>
+                        <ignoreVersions>
+                          <ignoreVersion>
+                            <type>regex</type>
+                            <version>.+</version>
+                          </ignoreVersion>
+                        </ignoreVersions>
+                      </rule>
+                    </rules>
+                  </ruleSet>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/jetty/jetty.project/tree/jetty-12.0.10/jetty-core/jetty-ee/src/test/java' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/jetty/jetty.project/contents/jetty-core/jetty-ee?ref=jetty-12.0.10' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/jetty-ee-12.0.10-javadoc.jar -o /tmp/jetty-ee-12.0.10-javadoc.jar && file /tmp/jetty-ee-12.0.10-javadoc.jar && jar tf /tmp/jetty-ee-12.0.10-javadoc.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 172ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "jetty-core/jetty-ee/pom.xml",
+    "sha": "8966f590ec33e2d9281cdf73a8af4156f958003a",
+    "size": 1988,
+    "url": "https://api.github.com/repos/jetty/jetty.project/contents/jetty-core/jetty-ee/pom.xml?ref=jetty-12.0.10",
+    "html_url": "https://github.com/jetty/jetty.project/blob/jetty-12.0.10/jetty-core/jetty-ee/pom.xml",
+    "git_url": "https://api.github.com/repos/jetty/jetty.project/git/blobs/8966f590ec33e2d9281cdf73a8af4156f958003a",
+    "download_url": "https://raw.githubusercontent.com/jetty/jetty.project/jetty-12.0.10/jetty-core/jetty-ee/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jetty/jetty.project/contents/jetty-core/jetty-ee/pom.xml?ref=jetty-12.0.10",
+      "git": "https://api.github.com/repos/jetty/jetty.project/git/blobs/8966f590ec33e2d9281cdf73a8af4156f958003a",
+      "html": "https://github.com/jetty/jetty.project/blob/jetty-12.0.10/jetty-core/jetty-ee/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "jetty-core/jetty-ee/src",
+    "sha": "b81d2f15787aadb1489635f69aa5f8b0846e1db1",
+    "size": 0,
+    "url": "https://api.github.com/repos/jetty/jetty.project/contents/jetty-core/jetty-ee/src?ref=jetty-12.0.10",
+    "html_url": "https://github.com/jetty/jetty.project/tree/jetty-12.0.10/jetty-core/jetty-ee/src",
+    "git_url": "https://api.github.com/repos/jetty/jetty.project/git/trees/b81d2f15787aadb1489635f69aa5f8b0846e1db1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jetty/jetty.project/contents/jetty-core/jetty-ee/src?ref=jetty-12.0.10",
+      "git": "https://api.github.com/repos/jetty/jetty.project/git/trees/b81d2f15787aadb1489635f69aa5f8b0846e1db1",
+      "html": "https://github.com/jetty/jetty.project/tree/jetty-12.0.10/jetty-core/jetty-ee/src"
+    }
+  }
+]
+
+ succeeded in 438ms:
+/tmp/jetty-ee-12.0.10-javadoc.jar: Zip archive data, at least v1.0 to extract, compression method=store
+META-INF/
+META-INF/MANIFEST.MF
+legal/
+org.eclipse.jetty.ee/
+org.eclipse.jetty.ee/org/
+org.eclipse.jetty.ee/org/eclipse/
+org.eclipse.jetty.ee/org/eclipse/jetty/
+org.eclipse.jetty.ee/org/eclipse/jetty/ee/
+org.eclipse.jetty.ee/org/eclipse/jetty/ee/class-use/
+resource-files/
+script-files/
+src/
+src/org.eclipse.jetty.ee/
+allclasses-index.html
+allpackages-index.html
+constant-values.html
+deprecated-list.html
+element-list
+help-doc.html
+index-all.html
+index.html
+legal/ADDITIONAL_LICENSE_INFO
+legal/ASSEMBLY_EXCEPTION
+legal/LICENSE
+legal/jquery.md
+legal/jqueryUI.md
+member-search-index.js
+module-search-index.js
+org.eclipse.jetty.ee/module-summary.html
+org.eclipse.jetty.ee/org/eclipse/jetty/ee/WebAppClassLoading.html
+org.eclipse.jetty.ee/org/eclipse/jetty/ee/class-use/WebAppClassLoading.html
+org.eclipse.jetty.ee/org/eclipse/jetty/ee/package-summary.html
+org.eclipse.jetty.ee/org/eclipse/jetty/ee/package-tree.html
+org.eclipse.jetty.ee/org/eclipse/jetty/ee/package-use.html
+overview-tree.html
+package-search-index.js
+resource-files/copy.svg
+resource-files/glass.png
+resource-files/jquery-ui.min.css
+resource-files/link.svg
+resource-files/stylesheet.css
+resource-files/x.png
+script-files/jquery-3.6.1.min.js
+script-files/jquery-ui.min.js
+script-files/script.js
+script-files/search-page.js
+script-files/search.js
+search.html
+tag-search-index.js
+type-search-index.js
+
+ succeeded in 536ms:
+HTTP/2 200 
+date: Fri, 01 May 2026 06:46:28 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"848b06826c642e39a62eca8358325f20"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=mJVq5kX%2Fbl3lNvysV%2FfXmBX%2FUoijtoc1%2FCvTGmx0KkPhWnRuVO7ybrYeQX8kcQmZL%2BKNzUB3NTkYjKmFog3W4RLzJ79FWPXu%2Bgn8gRJEf6oSmPb0TZGrNDm1xusPqc0G%2BlONo8tsXNRtIHnXBGMBzelDjpbu9HpU%2FdPEHEl0icB0flrshqgLpgpbj0HBa%2FdvdyWdbOv6TKtS3mahLOYxdnCBrpYLADWXcC%2FnZ%2B124dszbrw0hqcTNnW3uN%2BvL%2FWcecsp1BtJUE9J4p43gjLESg%3D%3D--83Udw393Rk8bw4We--5uidYfclBYE5ieF2EHeEgw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1331632373.1777617987; expires=Sat, 01 May 2027 06:46:27 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 01 May 2027 06:46:27 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510C:49FA9:3B391BA:2DDFC21:69F44C43
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-project/12.0.10/jetty-project-12.0.10.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.eclipse.jetty</groupId>
+  <artifactId>jetty-project</artifactId>
+  <version>12.0.10</version>
+  <packaging>pom</packaging>
+  <name>Jetty :: Project</name>
+  <description>The Eclipse Jetty Project</description>
+  <url>https://eclipse.dev/jetty</url>
+  <inceptionYear>1995</inceptionYear>
+
+  <organization>
+    <name>Webtide</name>
+    <url>https://webtide.com</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>Eclipse Public License - Version 2.0</name>
+      <url>https://www.eclipse.org/legal/epl-2.0/</url>
+    </license>
+    <license>
+      <name>Apache Software License - Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>gregw</id>
+      <name>Greg Wilkins</name>
+      <email>gregw@webtide.com</email>
+      <organization>Webtide, LLC</organization>
+      <organizationUrl>https://webtide.com</organizationUrl>
+      <timezone>10</timezone>
+    </developer>
+    <developer>
+      <id>janb</id>
+      <name>Jan Bartel</name>
+      <email>janb@webtide.com</email>
+      <organization>Webtide, LLC</organization>
+      <organizationUrl>https://webtide.com</organizationUrl>
+      <timezone>10</timezone>
+    </developer>
+    <developer>
+      <id>jesse</id>
+      <name>Jesse McConnell</name>
+      <email>jesse.mcconnell@gmail.com</email>
+      <organization>Webtide, LLC</organization>
+      <organizationUrl>https://webtide.com</organizationUrl>
+      <timezone>-6</timezone>
+    </developer>
+    <developer>
+      <id>joakime</id>
+      <name>Joakim Erdfelt</name>
+      <email>joakim.erdfelt@gmail.com</email>
+      <organization>Webtide, LLC</organization>
+      <organizationUrl>https://webtide.com</organizationUrl>
+      <timezone>-6</timezone>
+    </developer>
+    <developer>
+      <id>sbordet</id>
+      <name>Simone Bordet</name>
+      <email>simone.bordet@gmail.com</email>
+      <organization>Webtide, LLC</organization>
+      <organizationUrl>https://webtide.com</organizationUrl>
+      <timezone>1</timezone>
+    </developer>
+    <developer>
+      <id>djencks</id>
+      <name>David Jencks</name>
+      <email>david.a.jencks@gmail.com</email>
+      <organization>IBM</organization>
+      <timezone>-8</timezone>
+    </developer>
+    <developer>
+      <id>olamy</id>
+      <name>Olivier Lamy</name>
+      <email>oliver.lamy@gmail.com</email>
+      <organization>Webtide, LLC</organization>
+      <organizationUrl>https://webtide.com</organizationUrl>
+      <timezone>Australia/Brisbane</timezone>
+    </developer>
+    <developer>
+      <id>lorban</id>
+      <name>Ludovic Orban</name>
+      <email>lorban@bitronix.be</email>
+      <organization>Webtide, LLC</organization>
+      <organizationUrl>https://webtide.com</organizationUrl>
+      <timezone>1</timezone>
+    </developer>
+  </developers>
+
+  <mailingLists>
+    <mailingList>
+      <name>Jetty Developer Mailing List</name>
+      <subscribe>https://accounts.eclipse.org/mailing-list/jetty-dev</subscribe>
+      <archive>https://www.eclipse.org/lists/jetty-dev/</archive>
+    </mailingList>
+    <mailingList>
+      <name>Jetty Users Mailing List</name>
+      <subscribe>https://accounts.eclipse.org/mailing-list/jetty-users</subscribe>
+      <archive>https://www.eclipse.org/lists/jetty-users/</archive>
+    </mailingList>
+    <mailingList>
+      <name>Jetty Announce Mailing List</name>
+      <subscribe>https://accounts.eclipse.org/mailing-list/jetty-announce</subscribe>
+      <archive>https://www.eclipse.org/lists/jetty-announce/</archive>
+    </mailingList>
+  </mailingLists>
+
+  <modules>
+    <module>build</module>
+    <!-- <module>jetty-p2</module> -->
+    <module>jetty-core</module>
+    <module>jetty-ee10</module>
+    <module>jetty-ee9</module>
+    <module>jetty-ee8</module>
+    <module>jetty-home</module>
+    <module>jetty-integrations</module>
+    <module>tests</module>
+    <module>javadoc</module>
+    <module>documentation</module>
+  </modules>
+
+  <scm>
+    <connection>scm:git:https://github.com/jetty/jetty.project.git</connection>
+    <developerConnection>scm:git:git@github.com:jetty/jetty.project.git</developerConnection>
+    <url>https://github.com/jetty/jetty.project</url>
+  </scm>
+
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/jetty/jetty.project/issues</url>
+  </issueManagement>
+
+  <distributionManagement>
+    <repository>
+      <id>oss.sonatype.org</id>
+      <name>Jetty Staging Repository</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+    <snapshotRepository>
+      <id>oss.sonatype.org</id>
+      <name>Jetty Snapshot Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/jetty-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <properties>
+    <alpn.agent.version>2.0.10</alpn.agent.version>
+    <ant.version>1.10.14</ant.version>
+    <apache.avro.version>1.11.3</apache.avro.version>
+    <apache.httpclient.version>4.5.14</apache.httpclient.version>
+    <apache.httpcore.version>4.4.16</apache.httpcore.version>
+    <asciidoctor.maven.plugin.version>3.0.0</asciidoctor.maven.plugin.version>
+    <asciidoctor.skip>false</asciidoctor.skip>
+    <asciidoctorj-diagram.version>2.3.0</asciidoctorj-diagram.version>
+    <asciidoctorj.version>3.0.0-alpha.2</asciidoctorj.version>
+    <asm.version>9.7</asm.version>
+    <awaitility.version>4.2.1</awaitility.version>
+    <bndlib.version>7.0.0</bndlib.version>
+    <build-helper.maven.plugin.version>3.5.0</build-helper.maven.plugin.version>
+    <build-support.version>1.5</build-support.version>
+    <buildnumber.maven.plugin.version>3.2.0</buildnumber.maven.plugin.version>
+    <checkstyle.version>10.16.0</checkstyle.version>
+    <commons-codec.version>1.17.0</commons-codec.version>
+    <commons-lang3.version>3.14.0</commons-lang3.version>
+    <commons.compress.version>1.26.1</commons.compress.version>
+    <commons.io.version>2.16.1</commons.io.version>
+    <compiler.release>17</compiler.release>
+    <compiler.source>17</compiler.source>
+    <compiler.target>17</compiler.target>
+    <conscrypt.version>2.5.2</conscrypt.version>
+    <cyclonedx.maven.plugin.version>2.8.0</cyclonedx.maven.plugin.version>
+    <depends.maven.plugin.version>1.5.0</depends.maven.plugin.version>
+    <eclipse.jdt.ecj.version>3.37.0</eclipse.jdt.ecj.version>
+    <felix.version>7.0.5</felix.version>
+    <findbugs.jsr305.version>3.0.2</findbugs.jsr305.version>
+    <flatten.maven.plugin.version>1.6.0</flatten.maven.plugin.version>
+    <google.errorprone.version>2.27.1</google.errorprone.version>
+    <groovy.version>4.0.6</groovy.version>
+    <grpc.version>1.63.0</grpc.version>
+    <gson.version>2.10.1</gson.version>
+    <guava.version>33.1.0-jre</guava.version>
+    <guice.version>7.0.0</guice.version>
+    <h2spec.maven.plugin.version>1.0.11</h2spec.maven.plugin.version>
+    <hamcrest.version>2.2</hamcrest.version>
+    <hazelcast.version>5.4.0</hazelcast.version>
+    <hibernate.search.version>7.1.1.Final</hibernate.search.version>
+    <infinispan.docker.image.name>infinispan/server</infinispan.docker.image.name>
+    <infinispan.docker.image.version>15.0.1.Final-1</infinispan.docker.image.version>
+    <infinispan.protostream.version>5.0.2.Final</infinispan.protostream.version>
+    <infinispan.version>15.0.1.Final</infinispan.version>
+    <injection.bundle.version>1.2</injection.bundle.version>
+    <invoker.mergeUserSettings>false</invoker.mergeUserSettings>
+    <it.debug>false</it.debug>
+    <jackson.version>2.17.0</jackson.version>
+    <jacoco.maven.plugin.version>0.8.12</jacoco.maven.plugin.version>
+    <javadoc.verbose>false</javadoc.verbose>
+    <jboss-logmanager.version>3.0.6.Final</jboss-logmanager.version>
+    <jboss-threads.version>3.6.1.Final</jboss-threads.version>
+    <jboss.logging.annotations.version>2.2.1.Final</jboss.logging.annotations.version>
+    <jboss.logging.processor.version>2.2.1.Final</jboss.logging.processor.version>
+    <jboss.logging.version>3.5.3.Final</jboss.logging.version>
+    <jetty-assembly-descriptors.version>1.1</jetty-assembly-descriptors.version>
+    <jetty-quiche-native.version>0.21.0</jetty-quiche-native.version>
+    <jetty-test-policy.version>1.2</jetty-test-policy.version>
+    <jetty-version.maven.plugin.version>2.7</jetty-version.maven.plugin.version>
+    <jetty.perf-helper.version>1.0.7</jetty.perf-helper.version>
+    <jetty.surefire.argLine>-Dfile.encoding=UTF-8 -Duser.language=en -Duser.region=US -Djava.io.tmpdir=${project.build.directory} -showversion -Xmx6g -Xms4g -Xlog:gc:stderr:time,level,tags</jetty.surefire.argLine>
+    <jetty.test.version>6.2</jetty.test.version>
+    <jetty.testtracker.log>true</jetty.testtracker.log>
+    <jetty.unixdomain.dir>/tmp</jetty.unixdomain.dir>
+    <jetty.url>https://eclipse.dev/jetty/</jetty.url>
+    <jetty.xhtml.schemas-version>1.4</jetty.xhtml.schemas-version>
+    <jettyHomeZip>${project.build.directory}/${jettyHomeZipFileName}</jettyHomeZip>
+    <jettyHomeZipFileName>jetty-home.zip</jettyHomeZipFileName>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/jetty/jetty.project/contents/jetty-core/jetty-ee/src/test?ref=jetty-12.0.10' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/jetty/jetty.project/contents/jetty-core/jetty-ee/src/main?ref=jetty-12.0.10' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 156ms:
+[
+  {
+    "name": "java",
+    "path": "jetty-core/jetty-ee/src/test/java",
+    "sha": "29fba1e9d524e14fb49845dfce514bcc56180659",
+    "size": 0,
+    "url": "https://api.github.com/repos/jetty/jetty.project/contents/jetty-core/jetty-ee/src/test/java?ref=jetty-12.0.10",
+    "html_url": "https://github.com/jetty/jetty.project/tree/jetty-12.0.10/jetty-core/jetty-ee/src/test/java",
+    "git_url": "https://api.github.com/repos/jetty/jetty.project/git/trees/29fba1e9d524e14fb49845dfce514bcc56180659",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jetty/jetty.project/contents/jetty-core/jetty-ee/src/test/java?ref=jetty-12.0.10",
+      "git": "https://api.github.com/repos/jetty/jetty.project/git/trees/29fba1e9d524e14fb49845dfce514bcc56180659",
+      "html": "https://github.com/jetty/jetty.project/tree/jetty-12.0.10/jetty-core/jetty-ee/src/test/java"
+    }
+  }
+]
+
+ succeeded in 161ms:
+[
+  {
+    "name": "config",
+    "path": "jetty-core/jetty-ee/src/main/config",
+    "sha": "9bdbf7f3662f8780a26782ec2ad80648e5bfd51b",
+    "size": 0,
+    "url": "https://api.github.com/repos/jetty/jetty.project/contents/jetty-core/jetty-ee/src/main/config?ref=jetty-12.0.10",
+    "html_url": "https://github.com/jetty/jetty.project/tree/jetty-12.0.10/jetty-core/jetty-ee/src/main/config",
+    "git_url": "https://api.github.com/repos/jetty/jetty.project/git/trees/9bdbf7f3662f8780a26782ec2ad80648e5bfd51b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jetty/jetty.project/contents/jetty-core/jetty-ee/src/main/config?ref=jetty-12.0.10",
+      "git": "https://api.github.com/repos/jetty/jetty.project/git/trees/9bdbf7f3662f8780a26782ec2ad80648e5bfd51b",
+      "html": "https://github.com/jetty/jetty.project/tree/jetty-12.0.10/jetty-core/jetty-ee/src/main/config"
+    }
+  },
+  {
+    "name": "java",
+    "path": "jetty-core/jetty-ee/src/main/java",
+    "sha": "897bf8ff20ced38c5fb08f9a46154e2a13a08fe5",
+    "size": 0,
+    "url": "https://api.github.com/repos/jetty/jetty.project/contents/jetty-core/jetty-ee/src/main/java?ref=jetty-12.0.10",
+    "html_url": "https://github.com/jetty/jetty.project/tree/jetty-12.0.10/jetty-core/jetty-ee/src/main/java",
+    "git_url": "https://api.github.com/repos/jetty/jetty.project/git/trees/897bf8ff20ced38c5fb08f9a46154e2a13a08fe5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jetty/jetty.project/contents/jetty-core/jetty-ee/src/main/java?ref=jetty-12.0.10",
+      "git": "https://api.github.com/repos/jetty/jetty.project/git/trees/897bf8ff20ced38c5fb08f9a46154e2a13a08fe5",
+      "html": "https://github.com/jetty/jetty.project/tree/jetty-12.0.10/jetty-core/jetty-ee/src/main/java"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/jetty/jetty.project/jetty-12.0.10/jetty-core/jetty-ee/src/main/java/org/eclipse/jetty/ee/WebAppClassLoading.java | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/jetty/jetty.project/jetty-12.0.10/jetty-core/jetty-ee/src/main/config/modules/ee.mod | sed -n '1,160p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/jetty/jetty.project/contents/jetty-core/jetty-ee/src/test/java/org/eclipse/jetty/ee?ref=jetty-12.0.10' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 154ms:
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 158ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 189ms:
+//
+// ========================================================================
+// Copyright (c) 1995 Mort Bay Consulting Pty Ltd and others.
+//
+// This program and the accompanying materials are made available under the
+// terms of the Eclipse Public License v. 2.0 which is available at
+// https://www.eclipse.org/legal/epl-2.0, or the Apache License, Version 2.0
+// which is available at https://www.apache.org/licenses/LICENSE-2.0.
+//
+// SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+// ========================================================================
+//
+
+package org.eclipse.jetty.ee;
+
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.util.Attributes;
+import org.eclipse.jetty.util.ClassMatcher;
+import org.eclipse.jetty.util.component.Environment;
+
+/**
+ * Common attributes and methods for configuring the {@link ClassLoader Class loading} of web application:
+ * <ul>
+ *     <li>Protected (a.k.a. System) classes are classes typically provided by the JVM, that cannot be replaced by the
+ *         web application, and they are always loaded via the environment or system classloader.  They are visible but
+ *         protected.</li>
+ *     <li>Hidden (a.k.a. Server) classes are those used to implement the Server and are not made available to the
+ *         web application. They are hidden from the web application {@link ClassLoader}.</li>
+ * </ul>
+ * <p>These protections are set to reasonable defaults {@link #DEFAULT_PROTECTED_CLASSES} and {@link #DEFAULT_HIDDEN_CLASSES},
+ * which may be programmatically configured and will affect the defaults applied to all web applications in the same JVM.
+ *
+ * <p>
+ * The defaults applied by a specific {@link Server} can be configured using {@link #addProtectedClasses(Server, String...)} and
+ * {@link #addHiddenClasses(Server, String...)}. Alternately the {@link Server} attributes {@link #PROTECTED_CLASSES_ATTRIBUTE}
+ * and {@link #HIDDEN_CLASSES_ATTRIBUTE} may be used to direct set a {@link ClassMatcher} to use for all web applications
+ * within the server instance.
+ * </p>
+ * <p>
+ * The defaults applied by a specific {@link Environment} can be configured using {@link #addProtectedClasses(Environment, String...)} and
+ * {@link #addHiddenClasses(Environment, String...)}. Alternately the {@link Environment} attributes {@link #PROTECTED_CLASSES_ATTRIBUTE}
+ * and {@link #HIDDEN_CLASSES_ATTRIBUTE} may be used to direct set a {@link ClassMatcher} to use for all web applications
+ * within the server instance.
+ * </p>
+ * <p>
+ * Ultimately, the configurations set by this class only affects the defaults applied to each web application 
+ * {@link org.eclipse.jetty.server.handler.ContextHandler Context} and the {@link ClassMatcher} fields of the web applications
+ * can be directly access to configure a specific context.
+ * </p>
+ */
+public class WebAppClassLoading
+{
+    public static final String PROTECTED_CLASSES_ATTRIBUTE = "org.eclipse.jetty.webapp.systemClasses";
+    public static final String HIDDEN_CLASSES_ATTRIBUTE = "org.eclipse.jetty.webapp.serverClasses";
+
+    /**
+     * The default protected (system) classes used by a web application, which will be applied to the {@link ClassMatcher}s created
+     * by {@link #getProtectedClasses(Environment)}.
+     */
+    public static final ClassMatcher DEFAULT_PROTECTED_CLASSES = new ClassMatcher(
+        "java.",                            // Java SE classes (per servlet spec v2.5 / SRV.9.7.2)
+        "javax.",                           // Java SE classes (per servlet spec v2.5 / SRV.9.7.2)
+        "jakarta.",                         // Jakarta classes (per servlet spec v5.0 / Section 15.2.1)
+        "org.xml.",                         // javax.xml
+        "org.w3c."                          // javax.xml
+    );
+
+    /**
+     * The default hidden (server) classes used by a web application, which can be applied to the {@link ClassMatcher}s created
+     * by {@link #getHiddenClasses(Environment)}.
+     */
+    public static final ClassMatcher DEFAULT_HIDDEN_CLASSES = new ClassMatcher(
+        "org.eclipse.jetty."                // hide jetty classes
+    );
+
+    /**
+     * Get the default protected (system) classes for a {@link Server}
+     * @param server The {@link Server} for the defaults
+     * @return The default protected (system) classes for the {@link Server}, which will be empty if not previously configured.
+     */
+    public static ClassMatcher getProtectedClasses(Server server)
+    {
+        return getClassMatcher(server, PROTECTED_CLASSES_ATTRIBUTE, null);
+    }
+
+    /**
+     * Get the default protected (system) classes for an {@link Environment}
+     * @param environment The {@link Server} for the defaults
+     * @return The default protected (system) classes for the {@link Environment}, which will be the {@link #DEFAULT_PROTECTED_CLASSES} if not previously configured.
+     */
+    public static ClassMatcher getProtectedClasses(Environment environment)
+    {
+        return getClassMatcher(environment, PROTECTED_CLASSES_ATTRIBUTE, DEFAULT_PROTECTED_CLASSES);
+    }
+
+    /**
+     * Add a protected (system) Class pattern to use for all WebAppContexts.
+     * @param patterns the patterns to use
+     */
+    public static void addProtectedClasses(String... patterns)
+    {
+        DEFAULT_PROTECTED_CLASSES.add(patterns);
+    }
+
+    /**
+     * Add a protected (system) Class pattern to use for all WebAppContexts of a given {@link Server}.
+     * @param attributes The {@link Attributes} instance to add classes to
+     * @param patterns the patterns to use
+     */
+    public static void addProtectedClasses(Attributes attributes, String... patterns)
+    {
+        if (patterns != null && patterns.length > 0)
+            getClassMatcher(attributes, PROTECTED_CLASSES_ATTRIBUTE, null).add(patterns);
+    }
+
+    /**
+     * Add a protected (system) Class pattern to use for all WebAppContexts of a given {@link Server}.
+     * @param server The {@link Server} instance to add classes to
+     * @param patterns the patterns to use
+     */
+    public static void addProtectedClasses(Server server, String... patterns)
+    {
+        if (patterns != null && patterns.length > 0)
+            getClassMatcher(server, PROTECTED_CLASSES_ATTRIBUTE, null).add(patterns);
+    }
+
+    /**
+     * Add a protected (system) Class pattern to use for WebAppContexts of a given environment.
+     * @param environment The {@link Environment} instance to add classes to
+     * @param patterns the patterns to use
+     */
+    public static void addProtectedClasses(Environment environment, String... patterns)
+    {
+        if (patterns != null && patterns.length > 0)
+            getClassMatcher(environment, PROTECTED_CLASSES_ATTRIBUTE, DEFAULT_PROTECTED_CLASSES).add(patterns);
+    }
+    
+    /**
+     * Get the default hidden (server) classes for a {@link Server}
+     * @param server The {@link Server} for the defaults
+     * @return The default hidden (server) classes for the {@link Server}, which will be empty if not previously configured.
+     *
+     */
+    public static ClassMatcher getHiddenClasses(Server server)
+    {
+        return getClassMatcher(server, HIDDEN_CLASSES_ATTRIBUTE, null);
+    }
+
+    /**
+     * Get the default hidden (server) classes for an {@link Environment}
+     * @param environment The {@link Server} for the defaults
+     * @return The default hidden (server) classes for the {@link Environment}, which will be {@link #DEFAULT_PROTECTED_CLASSES} if not previously configured.
+     */
+    public static ClassMatcher getHiddenClasses(Environment environment)
+    {
+        return getClassMatcher(environment, HIDDEN_CLASSES_ATTRIBUTE, DEFAULT_HIDDEN_CLASSES);
+    }
+
+    /**
+     * Add a hidden (server) Class pattern to use for all WebAppContexts of a given {@link Server}.
+     * @param patterns the patterns to use
+     */
+    public static void addHiddenClasses(String... patterns)
+    {
+        DEFAULT_HIDDEN_CLASSES.add(patterns);
+    }
+
+    /**
+     * Add a hidden (server) Class pattern to use for all WebAppContexts of a given {@link Server}.
+     * @param attributes The {@link Attributes} instance to add classes to
+     * @param patterns the patterns to use
+     * @deprecated use {@link #addHiddenClasses(Server, String...)} instead
+     */
+    @Deprecated (since = "12.0.9", forRemoval = true)
+    public static void addHiddenClasses(Attributes attributes, String... patterns)
+    {
+        if (patterns != null && patterns.length > 0)
+            getClassMatcher(attributes, HIDDEN_CLASSES_ATTRIBUTE, null).add(patterns);
+    }
+
+    /**
+     * Add a hidden (server) Class pattern to use for all WebAppContexts of a given {@link Server}.
+     * @param server The {@link Server} instance to add classes to
+     * @param patterns the patterns to use
+     */
+    public static void addHiddenClasses(Server server, String... patterns)
+    {
+        if (patterns != null && patterns.length > 0)
+            getClassMatcher(server, HIDDEN_CLASSES_ATTRIBUTE, null).add(patterns);
+    }
+
+    /**
+     * Add a hidden (server) Class pattern to use for all ee9 WebAppContexts.
+     * @param environment The {@link Environment} instance to add classes to
+     * @param patterns the patterns to use
+     */
+    public static void addHiddenClasses(Environment environment, String... patterns)
+    {
+        if (patterns != null && patterns.length > 0)
+            getClassMatcher(environment, HIDDEN_CLASSES_ATTRIBUTE, DEFAULT_HIDDEN_CLASSES).add(patterns);
+    }
+
+    private static ClassMatcher getClassMatcher(Attributes attributes, String attribute, ClassMatcher defaultPatterns)
+    {
+        Object existing = attributes.getAttribute(attribute);
+        if (existing instanceof ClassMatcher cm)
+            return cm;
+
+        ClassMatcher classMatcher = (existing instanceof String[] stringArray)
+            ? new ClassMatcher(stringArray) : new ClassMatcher(defaultPatterns);
+        attributes.setAttribute(attribute, classMatcher);
+        return classMatcher;
+    }
+
+}
+
+codex
+Central has sources and Javadocs for `12.0.10`, while a `tests` classifier is not published for this artifact. The tagged repository does contain the module’s test tree, so I’ll use that tagged GitHub test URL for `test-code-url`.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://search.maven.org/solrsearch/select?q=g:%22org.eclipse.jetty%22+AND+a:%22jetty-ee%22+AND+v:%2212.0.10%22&rows=20&wt=json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 50ms:
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/jetty/jetty.project/git/trees/jetty-12.0.10?recursive=1' | rg 'jetty-core/jetty-ee/src/test|jetty-core/jetty-ee/src/main|documentation|javadoc'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/jetty-ee-12.0.10-sources.jar.sha1 && printf '\\n' && curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/jetty-ee-12.0.10-javadoc.jar.sha1" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 385ms:
+b46e54a0b4ffdd110671f58ec3bef619268c96c4
+ succeeded in 876ms:
+      "path": "build/build-resources/intellij-javadoc-inspection.xml",
+      "path": "documentation",
+      "path": "documentation/jetty-asciidoctor-extensions",
+      "path": "documentation/jetty-asciidoctor-extensions/pom.xml",
+      "path": "documentation/jetty-asciidoctor-extensions/src",
+      "path": "documentation/jetty-asciidoctor-extensions/src/main",
+      "path": "documentation/jetty-asciidoctor-extensions/src/main/java",
+      "path": "documentation/jetty-asciidoctor-extensions/src/main/java/org",
+      "path": "documentation/jetty-asciidoctor-extensions/src/main/java/org/eclipse",
+      "path": "documentation/jetty-asciidoctor-extensions/src/main/java/org/eclipse/jetty",
+      "path": "documentation/jetty-asciidoctor-extensions/src/main/java/org/eclipse/jetty/docs",
+      "path": "documentation/jetty-asciidoctor-extensions/src/main/java/org/eclipse/jetty/docs/JavadocIncludeExtension.java",
+      "path": "documentation/jetty-asciidoctor-extensions/src/main/java/org/eclipse/jetty/docs/JettyIncludeExtension.java",
+      "path": "documentation/jetty-asciidoctor-extensions/src/main/resources",
+      "path": "documentation/jetty-asciidoctor-extensions/src/main/resources/META-INF",
+      "path": "documentation/jetty-asciidoctor-extensions/src/main/resources/META-INF/services",
+      "path": "documentation/jetty-asciidoctor-extensions/src/main/resources/META-INF/services/org.asciidoctor.jruby.extension.spi.ExtensionRegistry",
+      "path": "documentation/jetty-documentation",
+      "path": "documentation/jetty-documentation/pom.xml",
+      "path": "documentation/jetty-documentation/src",
+      "path": "documentation/jetty-documentation/src/main",
+      "path": "documentation/jetty-documentation/src/main/asciidoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/config.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/contribution-guide",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/contribution-guide/.asciidoctorconfig",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/contribution-guide/1-introduction.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/contribution-guide/2-eca.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/contribution-guide/3-source.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/contribution-guide/4-build.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/contribution-guide/5-code-standards.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/contribution-guide/6-documentation.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/contribution-guide/7-submitting-patches.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/contribution-guide/8-security.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/contribution-guide/images",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/contribution-guide/images/small_powered_by.gif",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/contribution-guide/index.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/index.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/alpn",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/alpn/alpn.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/alpn/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/annotations",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/annotations/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/annotations/quick-annotations-setup.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/annotations/using-annotations-embedded.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/architecture",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/architecture/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/architecture/jetty-classloading.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/connectors",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/connectors/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/connectors/configuring-connectors.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/contexts",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/contexts/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/contexts/custom-error-pages.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/contexts/setting-context-path.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/contexts/setting-form-size.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/contexts/temporary-directories.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/contributing",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/contributing/bugs.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/contributing/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/contributing/coding-standards.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/contributing/community.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/contributing/documentation.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/contributing/patches.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/contributing/release-testing.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/contributing/releasing-jetty.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/contributing/source-build.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/deploying",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/deploying/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/deploying/configuring-specific-webapp-deployment.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/deploying/deployment-architecture.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/deploying/deployment-processing-webapps.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/deploying/quickstart-webapp.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/deploying/static-content-deployment.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/embedding",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/embedding/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/embedding/embedded-examples.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/embedding/embedding-jetty.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/embedding/examples",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/embedding/examples/embedded-file-server.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/embedding/examples/embedded-many-connectors.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/embedding/examples/embedded-minimal-servlet.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/embedding/examples/embedded-one-webapp.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/embedding/examples/embedded-secured-hello-handler.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/embedding/examples/embedded-split-file-server.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/embedding/jetty-helloworld.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/extras",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/extras/balancer-servlet.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/extras/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/extras/cross-origin-filter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/extras/debug-handler.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/extras/default-handler.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/extras/default-servlet.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/extras/dos-filter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/extras/error-handler.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/extras/gzip-filter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/extras/header-filter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/extras/inetaccess-handler.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/extras/ipaccess-handler.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/extras/moved-context-handler.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/extras/proxy-servlet.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/extras/resource-handler.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/extras/rewrite-handler.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/extras/shutdown-handler.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/extras/statistics-handler.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/frameworks",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/frameworks/cdi.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/frameworks/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/frameworks/metro.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/frameworks/osgi.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted/configuring",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted/configuring/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted/configuring/what-to-configure.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted/getting-started",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted/getting-started/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted/getting-started/jetty-common-configuration.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted/getting-started/jetty-installing.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted/getting-started/jetty-running.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted/introduction",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted/introduction/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted/introduction/jetty-coordinates.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted/introduction/jetty-javaee.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted/introduction/what-is-jetty.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted/introduction/what-version.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted/upgrading",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted/upgrading/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted/upgrading/sample.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted/upgrading/upgrading-9.3-to-9.4.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/gettingstarted/upgrading/upgrading-9.4-to.10.0.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/Jetty_DeployManager_AppLifeCycle-1.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/Jetty_DeployManager_DefaultAppLifeCycleBindings.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/Jetty_DeployManager_DeploymentManager_Roles.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/SessionsHierarchy.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/basic-architecture-handlers.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/basic-architecture-nested-handlers.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/basic-architecture-patterns.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/basic-architecture-servlet-handler.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/basic-architecture-web-application.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/certificate-chain.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/debug-eclipse-1.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/debug-eclipse-2.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/debug-eclipse-3.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/intellij_debug_view.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/intellij_new_remote_config.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/intellij_select_debug.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/intellij_set_breakpoint.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/jetty-high-level-architecture.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/modules-9.3-simplified.dot",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/modules-9.3-simplified.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/images/windows-service-jetty.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/index.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/jetty-xml",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/jetty-xml/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/jetty-xml/jetty-env-xml.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/jetty-xml/jetty-web-xml-config.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/jetty-xml/jetty-xml-config.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/jetty-xml/jetty-xml-usage.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/jetty-xml/override-web-xml.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/jetty-xml/webdefault-xml.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/jndi",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/jndi/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/jndi/jndi-configuration.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/jndi/jndi-datasources.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/jndi/jndi-embedded.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/jndi/using-jndi.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/jsp",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/jsp/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/jsp/configuring-jsp.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/platforms",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/platforms/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/platforms/cloudfoundry.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/platforms/elastic-beanstalk.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/platforms/fedora.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/platforms/jelastic.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/platforms/ubuntu.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/runner",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/runner/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/runner/jetty-runner.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/security",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/security/authentication.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/security/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/security/configuring-form-size.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/security/jaas-support.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/security/jetty-home-and-jetty-base.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/security/openid-support.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/security/serving-aliased-files.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/security/setting-port80-access-for-non-root-user.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/security/spnego-support.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/startup",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/startup/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/startup/startup-unix-service.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/startup/startup-windows-service.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/troubleshooting",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/troubleshooting/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/troubleshooting/preventing-memory-leaks.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/troubleshooting/security-reports.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/troubleshooting/slow-deployment.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/troubleshooting/troubleshooting-locked-files.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/troubleshooting/troubleshooting-zip-exceptions.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/troubleshooting/watchservice.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/tuning",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/tuning/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/tuning/garbage-collection.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/tuning/high-load.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/tuning/limit-load.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/websockets",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/websockets/java",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/websockets/java/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/websockets/java/java-websocket-client-api.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/websockets/java/java-websocket-server-api.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/websockets/jetty",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/websockets/jetty/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/old_docs/websockets/jetty/jetty-websocket-server-api.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/.asciidoctorconfig",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/annotations",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/annotations/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/architecture",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/architecture/architecture.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/architecture/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/begin",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/begin/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/begin/deploy.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/begin/download.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/begin/install.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/begin/start.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/contexts",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/contexts/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/deploy",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/deploy/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/deploy/deploy-extract-war.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/deploy/deploy-hot-static.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/deploy/deploy-jetty.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/deploy/deploy-jndi.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/deploy/deploy-override-webxml.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/deploy/deploy-rules.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/deploy/deploy-virtual-hosts.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/features.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/howtos.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/images",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/images/jmc-server-dump.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/index-docinfo.html",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/index.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/introduction.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/jaas",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/jaas/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/jaspi",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/jaspi/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/jmx",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/jmx/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/jmx/jmx-local.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/jmx/jmx-remote.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/jndi",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/jndi/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/jsp",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/jsp/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/keystore",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/keystore/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/keystore/keystore-client-authn.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/keystore/keystore-create.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/keystore/keystore-csr.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-alpn.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-bytebufferpool.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-console-capture.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-core-deploy.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-cross-origin.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-eeN-deploy.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-eeN-webapp.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-http-forwarded.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-http.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-http2.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-http2c.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-http3.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-https.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-jmx-remote.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-jmx.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-requestlog.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-requestlog.xsl",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-resources.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-rewrite.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-server.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-ssl-reload.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-ssl.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-state-tracking.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-test-keystore.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-threadpool-virtual-preview.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-threadpool-virtual.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-threadpool.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/module-well-known.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/modules-custom.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/modules-standard.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/modules/modules.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/protocols",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/protocols/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/protocols/protocols-fcgi.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/protocols/protocols-http.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/protocols/protocols-http2.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/protocols/protocols-http2c.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/protocols/protocols-http2s.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/protocols/protocols-http3.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/protocols/protocols-https.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/protocols/protocols-proxy.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/protocols/protocols-ssl.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/protocols/protocols-websocket.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/quickstart",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/quickstart/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/server",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/server/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/server/server-logging-request.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/server/server-logging-server.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/server/server-logging.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/server/server-threadpool.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/sessions",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/sessions/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/sessions/session-base.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/sessions/session-cache.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/sessions/session-filesystem.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/sessions/session-gcloud.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/sessions/session-hazelcast.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/sessions/session-infinispan.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/sessions/session-jdbc.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/sessions/session-memcached.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/sessions/session-mongodb.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/sessions/session-overview.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/sessions/session-usecases.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/sessions/session-xml.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/start",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/start/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/start/jpms.mod",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/start/jvm.mod",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/start/postgresql.mod",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/start/start-configure.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/start/start-jpms.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/start/start-start.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/start/start-stop.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/tools",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/tools/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/troubleshooting",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/troubleshooting/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/troubleshooting/remote-debug.mod",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/troubleshooting/troubleshooting-debugging.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/troubleshooting/troubleshooting-dump.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/troubleshooting/troubleshooting-handlers.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/troubleshooting/troubleshooting-logging.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/xml",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/xml/chapter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/operations-guide/xml/xml-syntax.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/.asciidoctorconfig",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/arch-bean.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/arch-io.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/arch-jmx.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/arch-listener.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/arch-threads.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/arch.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/client",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/client/client-io-arch.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/client/client.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/client/http",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/client/http/client-http-api.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/client/http/client-http-authentication.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/client/http/client-http-configuration.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/client/http/client-http-cookie.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/client/http/client-http-intro.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/client/http/client-http-proxy.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/client/http/client-http-transport.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/client/http/client-http.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/client/http2",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/client/http2/client-http2.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/client/http3",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/client/http3/client-http3.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/client/websocket",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/client/websocket/client-websocket.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/http2.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/http3.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/images",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/images/jmc-server-dump.png",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/index-docinfo.html",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/index.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/introduction.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/maven",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/maven/jetty-jspc-maven-plugin.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/maven/jetty-maven-helloworld.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/maven/jetty-maven-plugin.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/maven/maven.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/migration",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/migration/migration-11-to-12.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/migration/migration-9.4-to-10.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/migration/migration.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/compliance",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/compliance/server-compliance-cookie.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/compliance/server-compliance-http.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/compliance/server-compliance-uri.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/compliance/server-compliance.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/fastcgi",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/fastcgi/server-fastcgi.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/http",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/http/server-http-application.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/http/server-http-connector.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/http/server-http-handler-implement.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/http/server-http-handler-use.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/http/server-http-handler.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/http/server-http-request-customizers.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/http/server-http-request-logging.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/http/server-http-security.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/http/server-http-session.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/http/server-http.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/http2",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/http2/server-http2.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/http3",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/http3/server-http3.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/server-io-arch.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/server.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/sessions",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/sessions/session-architecture.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/sessions/session-cachingsessiondatastore.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/sessions/session-sessioncache.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/sessions/session-sessiondatastore-file.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/sessions/session-sessiondatastore-gcloud.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/sessions/session-sessiondatastore-infinispan.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/sessions/session-sessiondatastore-jdbc.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/sessions/session-sessiondatastore-mongo.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/sessions/session-sessiondatastore-null.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/sessions/session-sessiondatastore.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/sessions/session-sessionhandler.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/sessions/session-sessionidmgr.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/sessions/sessions.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/websocket",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/websocket/server-websocket-filter.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/websocket/server-websocket-jetty.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/websocket/server-websocket-standard.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/server/websocket/server-websocket.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/troubleshooting.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/programming-guide/websocket.adoc",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/styles.css",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/toc.css",
+      "path": "documentation/jetty-documentation/src/main/asciidoc/toc.js",
+      "path": "documentation/jetty-documentation/src/main/assembly",
+      "path": "documentation/jetty-documentation/src/main/assembly/html.xml",
+      "path": "documentation/jetty-documentation/src/main/java",
+      "path": "documentation/jetty-documentation/src/main/java/org",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/ArchitectureDocs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/ComponentDocs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/ContentDocs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/HTTP2Docs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/JMXDocs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/SelectorManagerDocs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/WebSocketDocs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/client",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/client/ClientConnectorDocs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/client/http",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/client/http/HTTPClientDocs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/client/http2",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/client/http2/HTTP2ClientDocs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/client/http3",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/client/http3/HTTP3ClientDocs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/client/websocket",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/client/websocket/WebSocketClientDocs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/migration",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/migration/ServletToHandlerDocs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/server",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/server/HandlerDocs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/server/ServerDocs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/server/http",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/server/http/HTTPServerDocs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/server/http/SessionHandlerDocs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/server/http2",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/server/http2/HTTP2ServerDocs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/server/http3",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/server/http3/HTTP3ServerDocs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/server/session",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/server/session/SessionDocs.java",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/server/websocket",
+      "path": "documentation/jetty-documentation/src/main/java/org/eclipse/jetty/docs/programming/server/websocket/WebSocketServerDocs.java",
+      "path": "documentation/jetty",
+      "path": "documentation/jetty/.gitignore",
+      "path": "documentation/jetty/README.adoc",
+      "path": "documentation/jetty/antora.yml",
+      "path": "documentation/jetty/modules",
+      "path": "documentation/jetty/modules/ROOT",
+      "path": "documentation/jetty/modules/ROOT/pages",
+      "path": "documentation/jetty/modules/ROOT/pages/index.adoc",
+      "path": "documentation/jetty/modules/code",
+      "path": "documentation/jetty/modules/code/examples",
+      "path": "documentation/jetty/modules/code/examples/jetty-modules",
+      "path": "documentation/jetty/modules/code/examples/jetty-modules/jpms.mod",
+      "path": "documentation/jetty/modules/code/examples/jetty-modules/jvm.mod",
+      "path": "documentation/jetty/modules/code/examples/jetty-modules/postgresql.mod",
+      "path": "documentation/jetty/modules/code/examples/jetty-modules/remote-debug.mod",
+      "path": "documentation/jetty/modules/code/examples/pom.xml",
+      "path": "documentation/jetty/modules/code/examples/src",
+      "path": "documentation/jetty/modules/code/examples/src/main",
+      "path": "documentation/jetty/modules/code/examples/src/main/java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/ArchitectureDocs.java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/ComponentDocs.java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/ContentDocs.java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/HTTP2Docs.java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/JMXDocs.java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/SelectorManagerDocs.java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/WebSocketDocs.java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/client",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/client/ClientConnectorDocs.java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/client/http",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/client/http/HTTPClientDocs.java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/client/http2",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/client/http2/HTTP2ClientDocs.java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/client/http3",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/client/http3/HTTP3ClientDocs.java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/client/websocket",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/client/websocket/WebSocketClientDocs.java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/migration",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/migration/ServletToHandlerDocs.java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/server",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/server/ServerDocs.java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/server/http",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/server/http/HTTPServerDocs.java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/server/http/SessionHandlerDocs.java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/server/http2",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/server/http2/HTTP2ServerDocs.java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/server/http3",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/server/http3/HTTP3ServerDocs.java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/server/session",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/server/session/SessionDocs.java",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/server/websocket",
+      "path": "documentation/jetty/modules/code/examples/src/main/java/org/eclipse/jetty/docs/programming/server/websocket/WebSocketServerDocs.java",
+      "path": "documentation/jetty/modules/operations-guide",
+      "path": "documentation/jetty/modules/operations-guide/images",
+      "path": "documentation/jetty/modules/operations-guide/images/jmc-server-dump.png",
+      "path": "documentation/jetty/modules/operations-guide/nav.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages",
+      "path": "documentation/jetty/modules/operations-guide/pages/annotations",
+      "path": "documentation/jetty/modules/operations-guide/pages/annotations/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/arch",
+      "path": "documentation/jetty/modules/operations-guide/pages/arch/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/begin",
+      "path": "documentation/jetty/modules/operations-guide/pages/begin/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/deploy",
+      "path": "documentation/jetty/modules/operations-guide/pages/deploy/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/features",
+      "path": "documentation/jetty/modules/operations-guide/pages/features/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/howtos",
+      "path": "documentation/jetty/modules/operations-guide/pages/howtos/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/jaas",
+      "path": "documentation/jetty/modules/operations-guide/pages/jaas/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/jaspi",
+      "path": "documentation/jetty/modules/operations-guide/pages/jaspi/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/jmx",
+      "path": "documentation/jetty/modules/operations-guide/pages/jmx/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/jndi",
+      "path": "documentation/jetty/modules/operations-guide/pages/jndi/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/jsf-taglibs",
+      "path": "documentation/jetty/modules/operations-guide/pages/jsf-taglibs/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/jsp",
+      "path": "documentation/jetty/modules/operations-guide/pages/jsp/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/jstl",
+      "path": "documentation/jetty/modules/operations-guide/pages/jstl/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/keystore",
+      "path": "documentation/jetty/modules/operations-guide/pages/keystore/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/modules",
+      "path": "documentation/jetty/modules/operations-guide/pages/modules/custom.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/modules/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/modules/standard.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/protocols",
+      "path": "documentation/jetty/modules/operations-guide/pages/protocols/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/quickstart",
+      "path": "documentation/jetty/modules/operations-guide/pages/quickstart/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/server",
+      "path": "documentation/jetty/modules/operations-guide/pages/server/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/session",
+      "path": "documentation/jetty/modules/operations-guide/pages/session/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/start",
+      "path": "documentation/jetty/modules/operations-guide/pages/start/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/start/start-jpms.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/tools",
+      "path": "documentation/jetty/modules/operations-guide/pages/tools/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/troubleshooting",
+      "path": "documentation/jetty/modules/operations-guide/pages/troubleshooting/index.adoc",
+      "path": "documentation/jetty/modules/operations-guide/pages/xml",
+      "path": "documentation/jetty/modules/operations-guide/pages/xml/index.adoc",
+      "path": "documentation/jetty/modules/programming-guide",
+      "path": "documentation/jetty/modules/programming-guide/images",
+      "path": "documentation/jetty/modules/programming-guide/images/jmc-server-dump.png",
+      "path": "documentation/jetty/modules/programming-guide/nav.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages",
+      "path": "documentation/jetty/modules/programming-guide/pages/arch",
+      "path": "documentation/jetty/modules/programming-guide/pages/arch/bean.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/arch/io.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/arch/jmx.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/arch/listener.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/arch/threads.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/client",
+      "path": "documentation/jetty/modules/programming-guide/pages/client/http.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/client/http2.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/client/http3.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/client/index.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/client/io-arch.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/client/websocket.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/index.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/maven-jetty",
+      "path": "documentation/jetty/modules/programming-guide/pages/maven-jetty/jetty-jspc-maven-plugin.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/maven-jetty/jetty-maven-helloworld.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/maven-jetty/jetty-maven-plugin.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/migration",
+      "path": "documentation/jetty/modules/programming-guide/pages/migration/11-to-12.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/migration/94-to-10.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/server",
+      "path": "documentation/jetty/modules/programming-guide/pages/server/compliance.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/server/fastcgi.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/server/http.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/server/http2.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/server/http3.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/server/index.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/server/io-arch.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/server/session.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/server/websocket.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/troubleshooting",
+      "path": "documentation/jetty/modules/programming-guide/pages/troubleshooting/component-dump.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/troubleshooting/debugging.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/troubleshooting/index.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/troubleshooting/logging.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/troubleshooting/state-tracking.adoc",
+      "path": "documentation/jetty/modules/programming-guide/pages/troubleshooting/thread-dump.adoc",
+      "path": "documentation/jetty/pom.xml",
+      "path": "documentation/pom.xml",
+      "path": "javadoc",
+      "path": "javadoc/pom.xml",
+      "path": "jetty-core/jetty-deploy/src/main/javadoc",
+      "path": "jetty-core/jetty-deploy/src/main/javadoc/org",
+      "path": "jetty-core/jetty-deploy/src/main/javadoc/org/eclipse",
+      "path": "jetty-core/jetty-deploy/src/main/javadoc/org/eclipse/jetty",
+      "path": "jetty-core/jetty-deploy/src/main/javadoc/org/eclipse/jetty/deploy",
+      "path": "jetty-core/jetty-deploy/src/main/javadoc/org/eclipse/jetty/deploy/doc-files",
+      "path": "jetty-core/jetty-deploy/src/main/javadoc/org/eclipse/jetty/deploy/doc-files/AppLifeCycle.png",
+      "path": "jetty-core/jetty-deploy/src/main/javadoc/org/eclipse/jetty/deploy/doc-files/AppLifeCycle.svg",
+      "path": "jetty-core/jetty-deploy/src/main/javadoc/org/eclipse/jetty/deploy/doc-files/DefaultAppLifeCycleBindings.png",
+      "path": "jetty-core/jetty-deploy/src/main/javadoc/org/eclipse/jetty/deploy/doc-files/DefaultAppLifeCycleBindings.svg",
+      "path": "jetty-core/jetty-deploy/src/main/javadoc/org/eclipse/jetty/deploy/doc-files/DeploymentManager.png",
+      "path": "jetty-core/jetty-deploy/src/main/javadoc/org/eclipse/jetty/deploy/doc-files/DeploymentManager.svg",
+      "path": "jetty-core/jetty-deploy/src/main/javadoc/org/eclipse/jetty/deploy/doc-files/DeploymentManager_Roles.png",
+      "path": "jetty-core/jetty-deploy/src/main/javadoc/org/eclipse/jetty/deploy/doc-files/DeploymentManager_Roles.svg",
+      "path": "jetty-core/jetty-deploy/src/main/javadoc/overview.html",
+      "path": "jetty-core/jetty-ee/src/main",
+      "path": "jetty-core/jetty-ee/src/main/config",
+      "path": "jetty-core/jetty-ee/src/main/config/etc",
+      "path": "jetty-core/jetty-ee/src/main/config/etc/jetty-ee-webapp.xml",
+      "path": "jetty-core/jetty-ee/src/main/config/modules",
+      "path": "jetty-core/jetty-ee/src/main/config/modules/ee-webapp.mod",
+      "path": "jetty-core/jetty-ee/src/main/java",
+      "path": "jetty-core/jetty-ee/src/main/java/module-info.java",
+      "path": "jetty-core/jetty-ee/src/main/java/org",
+      "path": "jetty-core/jetty-ee/src/main/java/org/eclipse",
+      "path": "jetty-core/jetty-ee/src/main/java/org/eclipse/jetty",
+      "path": "jetty-core/jetty-ee/src/main/java/org/eclipse/jetty/ee",
+      "path": "jetty-core/jetty-ee/src/main/java/org/eclipse/jetty/ee/WebAppClassLoading.java",
+      "path": "jetty-core/jetty-ee/src/test",
+      "path": "jetty-core/jetty-ee/src/test/java",
+      "path": "jetty-core/jetty-ee/src/test/java/orge",
+      "path": "jetty-core/jetty-ee/src/test/java/orge/eclipse",
+      "path": "jetty-core/jetty-ee/src/test/java/orge/eclipse/jetty",
+      "path": "jetty-core/jetty-ee/src/test/java/orge/eclipse/jetty/ee",
+      "path": "jetty-core/jetty-ee/src/test/java/orge/eclipse/jetty/ee/WebAppClassLoadingTest.java",
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -name '*jetty*12.0.10*.json' -o -name '*jetty*.json' | sed -n '1,40p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"' build/discovered-artifact-metadata metadata -S | sed -n '1,60p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:56:      "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:186:        "language": {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "rg -n 'repo.maven.apache.org/.+-javadoc.jar|documentation-url.*javadoc|source-code-url.*sources.jar|test-code-url.*src/test/java' build/discovered-artifact-metadata metadata -S | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 0ms:
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/12.0.0/jetty-alpn-java-server-12.0.0-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/12.0.0/jetty-alpn-java-server-12.0.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/11.0.24/jetty-alpn-java-server-11.0.24-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/11.0.24/jetty-alpn-java-server-11.0.24-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/10.0.0/jetty-util-ajax-10.0.0-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/10.0.0/jetty-util-ajax-10.0.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/9.4.38.v20210224/jetty-util-ajax-9.4.38.v20210224-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/9.4.38.v20210224/jetty-util-ajax-9.4.38.v20210224-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-sources.jar",
+metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-sources.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-sources.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/9.4.0.M0/jetty-io-9.4.0.M0-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/9.4.0.M0/jetty-io-9.4.0.M0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/9.3.19.v20170502/jetty-io-9.3.19.v20170502-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/9.3.19.v20170502/jetty-io-9.3.19.v20170502-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.4.0.M0/jetty-http-9.4.0.M0-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.4.0.M0/jetty-http-9.4.0.M0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.3.19.v20170502/jetty-http-9.3.19.v20170502-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.3.19.v20170502/jetty-http-9.3.19.v20170502-javadoc.jar",
+metadata/org.jline/jline-terminal-jna/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.20.0/jline-terminal-jna-3.20.0-sources.jar",
+metadata/org.jline/jline-terminal-jna/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.20.0/jline-terminal-jna-3.20.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-javadoc.jar",
+metadata/org.immutables/value/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.9-ea-0/value-2.8.9-ea-0-sources.jar",
+metadata/org.immutables/value/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.9-ea-0/value-2.8.9-ea-0-javadoc.jar",
+metadata/org.immutables/value/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.6/value-2.8.6-sources.jar",
+metadata/org.immutables/value/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.6/value-2.8.6-javadoc.jar",
+metadata/org.immutables/value/index.json:38:    "source-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.2/value-2.8.2-sources.jar",
+metadata/org.immutables/value/index.json:41:    "documentation-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.2/value-2.8.2-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:62:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:65:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-javadoc.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/2.0.0-M3/commons-fileupload2-core-2.0.0-M3-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/2.0.0-M2/commons-fileupload2-core-2.0.0-M2-sources.jar",
+metadata/org.jline/jline-console/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/3.28.0/jline-console-3.28.0-sources.jar",
+metadata/org.jline/jline-console/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/3.28.0/jline-console-3.28.0-javadoc.jar",
+metadata/org.jline/jline-console/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/3.22.0/jline-console-3.22.0-sources.jar",
+metadata/org.jline/jline-console/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/3.22.0/jline-console-3.22.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/11.0.24/jetty-alpn-server-11.0.24-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/11.0.24/jetty-alpn-server-11.0.24-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-javadoc.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-sources.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:28:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:55:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:58:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-javadoc.jar",
+metadata/org.jline/jline/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0-sources.jar",
+metadata/org.jline/jline/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-sources.jar",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-javadoc.jar",
+metadata/org.apache.commons/commons-text/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-sources.jar",
+metadata/org.apache.commons/commons-text/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-javadoc.jar",
+metadata/org.apache.commons/commons-pool2/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-sources.jar",
+metadata/org.apache.commons/commons-pool2/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '1,45p' metadata/org.eclipse.jetty/jetty-server/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "12.1.3",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-sources.jar",
+    "repository-url" : "https://github.com/jetty/jetty.project",
+    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.1.3/jetty-core/jetty-server/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-javadoc.jar",
+    "description" : "Jetty Server provides the core Eclipse Jetty server components for accepting connections, handling requests, and serving HTTP-based applications. It can be embedded in Java applications as the foundation for Jetty-based HTTP servers, handlers, and higher-level web modules.",
+    "tested-versions" : [
+      "12.1.3",
+      "12.1.4",
+      "12.1.5",
+      "12.1.6",
+      "12.1.7",
+      "12.1.8"
+    ],
+    "allowed-packages" : [
+      "org.eclipse"
+    ]
+  },
+  {
+    "default-for" : "12\\.0\\..*",
+    "metadata-version" : "12.0.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-sources.jar",
+    "repository-url" : "https://github.com/jetty/jetty.project",
+    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.1/jetty-core/jetty-server/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-javadoc.jar",
+    "description" : "Jetty Server provides the core server components of Eclipse Jetty for handling HTTP requests in Java applications. It can be embedded as the foundation for Jetty-based HTTP servers and higher-level web application modules.",
+    "tested-versions" : [
+      "12.0.1",
+      "12.0.2",
+      "12.0.3",
+      "12.0.4",
+      "12.0.5",
+      "12.0.6",
+      "12.0.7",
+      "12.0.8",
+      "12.0.9",
+      "12.0.10",
+      "12.0.11",
+      "12.0.12",
+      "12.0.13",
+      "12.0.14",
+      "12.0.15",
+
+exec
+/usr/bin/bash -lc "sed -n '1,25p' metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "12.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/12.0.0/jetty-alpn-java-server-12.0.0-sources.jar",
+    "repository-url" : "https://github.com/jetty/jetty.project",
+    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.0/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/12.0.0/jetty-alpn-java-server-12.0.0-javadoc.jar",
+    "description" : "Jetty ALPN Java Server provides the JDK 9+ server-side ALPN processor used by Eclipse Jetty to negotiate application protocols during TLS handshakes. It integrates Jetty's Java ALPN implementation with server connections so secure sessions can select HTTP/1.1, HTTP/2, or other supported protocols.",
+    "tested-versions" : [
+      "12.0.0"
+    ],
+    "allowed-packages" : [
+      "org.eclipse.jetty.alpn.java.server"
+    ]
+  },
+  {
+    "metadata-version" : "11.0.24",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/11.0.24/jetty-alpn-java-server-11.0.24-sources.jar",
+    "repository-url" : "https://github.com/jetty/jetty.project",
+    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-11.0.24/jetty-alpn/jetty-alpn-java-server/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/11.0.24/jetty-alpn-java-server-11.0.24-javadoc.jar",
+    "description" : "Jetty ALPN Java Server provides the JDK 9+ server-side ALPN processor used by Eclipse Jetty to negotiate application protocols during TLS handshakes. It registers Jetty's Java ALPN implementation with the server connector layer so secure connections can select HTTP/1.1, HTTP/2, or other supported protocols.",
+    "tested-versions" : [
+      "11.0.24",
+
+exec
+/usr/bin/bash -lc "sed -n '1,25p' metadata/io.github.oshai/kotlin-logging-jvm/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.0.01",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-sources.jar",
+    "repository-url" : "https://github.com/oshai/kotlin-logging",
+    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/8.0.01/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-javadoc.jar",
+    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.1"
+    },
+    "tested-versions" : [
+      "8.0.01"
+    ],
+    "allowed-packages" : [
+      "io.github.oshai.kotlinlogging"
+    ]
+  }
+]
+
+codex
+I’m going to write the discovered values now. This artifact is plain Java/Jetty infrastructure rather than a Kotlin, Groovy, or Scala-specific library, so the JSON will not include a `language` field.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json
+diff --git a/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json b/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json
+index 17c2571d01aa916c0f228d21954ce6f8e3039001..48e812b3c08920fe66522b1fc2ec374f415e5b92
+--- a/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json
++++ b/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.jetty:jetty-ee:12.0.10"
++  "coordinates" : "org.eclipse.jetty:jetty-ee:12.0.10",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/jetty-ee-12.0.10-sources.jar",
++  "repository-url" : "https://github.com/jetty/jetty.project",
++  "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.10/jetty-core/jetty-ee/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/jetty-ee-12.0.10-javadoc.jar",
++  "description" : "Jetty EE provides the common Eclipse Jetty classes and configuration used by web application modules across supported Enterprise Edition levels. It manages default protected and hidden class-loading rules for web applications so Jetty can isolate server implementation classes from application code."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json b/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json
+index 17c2571d01aa916c0f228d21954ce6f8e3039001..48e812b3c08920fe66522b1fc2ec374f415e5b92
+--- a/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json
++++ b/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.jetty:jetty-ee:12.0.10"
++  "coordinates" : "org.eclipse.jetty:jetty-ee:12.0.10",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/jetty-ee-12.0.10-sources.jar",
++  "repository-url" : "https://github.com/jetty/jetty.project",
++  "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.10/jetty-core/jetty-ee/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/jetty-ee-12.0.10-javadoc.jar",
++  "description" : "Jetty EE provides the common Eclipse Jetty classes and configuration used by web application modules across supported Enterprise Edition levels. It manages default protected and hidden class-loading rules for web applications so Jetty can isolate server implementation classes from application code."
+ }
+
+web search: 
+web search: https://github.com/jetty/jetty.project/tree/jetty-12.0.10/jetty-core/jetty-ee/src/test
+web search: 
+web search: repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/jetty-ee-12.0.10-sources.jar jetty-ee-12.0.10-javadoc.jar
+web search: 
+web search: central sonatype org.eclipse.jetty jetty-ee 12.0.10
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 0ms:
+{
+  "coordinates": "org.eclipse.jetty:jetty-ee:12.0.10",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/jetty-ee-12.0.10-sources.jar",
+  "repository-url": "https://github.com/jetty/jetty.project",
+  "test-code-url": "https://github.com/jetty/jetty.project/tree/jetty-12.0.10/jetty-core/jetty-ee/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/jetty-ee-12.0.10-javadoc.jar",
+  "description": "Jetty EE provides the common Eclipse Jetty classes and configuration used by web application modules across supported Enterprise Edition levels. It manages default protected and hidden class-loading rules for web applications so Jetty can isolate server implementation classes from application code."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json b/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json
+index 17c2571d01aa916c0f228d21954ce6f8e3039001..48e812b3c08920fe66522b1fc2ec374f415e5b92
+--- a/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json
++++ b/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.jetty:jetty-ee:12.0.10"
++  "coordinates" : "org.eclipse.jetty:jetty-ee:12.0.10",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/jetty-ee-12.0.10-sources.jar",
++  "repository-url" : "https://github.com/jetty/jetty.project",
++  "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.10/jetty-core/jetty-ee/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/jetty-ee-12.0.10-javadoc.jar",
++  "description" : "Jetty EE provides the common Eclipse Jetty classes and configuration used by web application modules across supported Enterprise Edition levels. It manages default protected and hidden class-loading rules for web applications so Jetty can isolate server implementation classes from application code."
+ }
+
+exec
+/usr/bin/bash -lc 'git ls-files build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json b/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json
+index 17c2571d01aa916c0f228d21954ce6f8e3039001..48e812b3c08920fe66522b1fc2ec374f415e5b92
+--- a/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json
++++ b/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.jetty:jetty-ee:12.0.10"
++  "coordinates" : "org.eclipse.jetty:jetty-ee:12.0.10",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/jetty-ee-12.0.10-sources.jar",
++  "repository-url" : "https://github.com/jetty/jetty.project",
++  "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.10/jetty-core/jetty-ee/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/jetty-ee-12.0.10-javadoc.jar",
++  "description" : "Jetty EE provides the common Eclipse Jetty classes and configuration used by web application modules across supported Enterprise Edition levels. It manages default protected and hidden class-loading rules for web applications so Jetty can isolate server implementation classes from application code."
+ }
+
+web search: 
+web search: https://github.com/jetty/jetty.project/tree/jetty-12.0.10/jetty-core/jetty-ee/src/test
+web search: 
+web search: "jetty-ee-12.0.10-sources.jar"
+web search: 
+web search: 
+web search: 
+web search: javadoc.io doc org.eclipse.jetty jetty-ee 12.0.10
+web search: 
+web search: central.sonatype.com artifact org.eclipse.jetty jetty-ee 12.0.10 sources
+web search: 
+web search: https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-ee/12.0.10/usages
+web search: 
+web search: https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-ee
+web search: 
+web search: https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-ee/versions
+web search: 
+web search: https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-ee/12.0.10
+web search: 
+web search: https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/
+web search: 
+web search: 
+codex
+Updated [org.eclipse.jetty-jetty-ee-12.0.10.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json) with the exact coordinate, Maven Central sources/Javadocs, GitHub repository and tagged test URL, and a two-sentence description. Maven Central lists the `12.0.10` sources and Javadocs, and the `jetty-12.0.10` tag contains the module test tree. ([repo1.maven.org](https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/))
+
+I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library. I also validated the JSON with `jq`.
+diff --git a/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json b/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json
+index 17c2571d01aa916c0f228d21954ce6f8e3039001..48e812b3c08920fe66522b1fc2ec374f415e5b92
+--- a/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json
++++ b/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.jetty:jetty-ee:12.0.10"
++  "coordinates" : "org.eclipse.jetty:jetty-ee:12.0.10",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/jetty-ee-12.0.10-sources.jar",
++  "repository-url" : "https://github.com/jetty/jetty.project",
++  "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.10/jetty-core/jetty-ee/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/jetty-ee-12.0.10-javadoc.jar",
++  "description" : "Jetty EE provides the common Eclipse Jetty classes and configuration used by web application modules across supported Enterprise Edition levels. It manages default protected and hidden class-loading rules for web applications so Jetty can isolate server implementation classes from application code."
+ }
+
+tokens used
+115,802
+Updated [org.eclipse.jetty-jetty-ee-12.0.10.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52/build/discovered-artifact-metadata/org.eclipse.jetty-jetty-ee-12.0.10.json) with the exact coordinate, Maven Central sources/Javadocs, GitHub repository and tagged test URL, and a two-sentence description. Maven Central lists the `12.0.10` sources and Javadocs, and the `jetty-12.0.10` tag contains the module test tree. ([repo1.maven.org](https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-ee/12.0.10/))
+
+I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library. I also validated the JSON with `jq`.
+Ran agent for org.eclipse.jetty:jetty-ee:12.0.10 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52/build/agent-artifact-discovery-logs/org.eclipse.jetty-jetty-ee-12.0.10.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3737-835f6a52/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 6s
+9 actionable tasks: 4 executed, 5 from cache
