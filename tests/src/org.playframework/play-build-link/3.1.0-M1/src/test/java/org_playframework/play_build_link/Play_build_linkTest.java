@@ -36,7 +36,8 @@ public class Play_build_linkTest {
                         "java.util._",
                         "play.core.j.PlayMagicForJava._",
                         "play.mvc._",
-                        "play.api.data.Field");
+                        "play.api.data.Field",
+                        "scala.jdk.CollectionConverters._");
 
         assertThat(TemplateImports.defaultJavaTemplateImports)
                 .containsExactly(
@@ -50,6 +51,7 @@ public class Play_build_linkTest {
                         "play.core.j.PlayMagicForJava._",
                         "play.mvc._",
                         "play.api.data.Field",
+                        "scala.jdk.CollectionConverters._",
                         "play.data._",
                         "play.core.j.PlayFormsMagicForJava._");
 
