@@ -25,7 +25,7 @@ public class DecTest {
     private static final byte GUARD_BYTE = (byte) 0x5A;
 
     private static final String TEXT = (
-            "Brotli streams can be decoded a few bytes at a time. Привет, 世界!\n").repeat(4);
+            "Brotli streams can be decoded a few bytes at a time. \u041f\u0440\u0438\u0432\u0435\u0442, \u4e16\u754c!\n").repeat(4);
 
     private static final String CUSTOM_DICTIONARY_TEXT =
             "common-prefix-https://www.example.com/assets/ shared dictionary seed";
