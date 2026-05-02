@@ -8,7 +8,7 @@ package com_google_collections.google_collections;
 
 import org.junit.jupiter.api.Test;
 
-class Google_collectionsTest {
+public class Google_collectionsTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
