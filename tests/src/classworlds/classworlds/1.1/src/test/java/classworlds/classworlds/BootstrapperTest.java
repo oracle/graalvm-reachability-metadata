@@ -7,6 +7,7 @@
 package classworlds.classworlds;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import org.codehaus.classworlds.uberjar.boot.Bootstrapper;
 import org.graalvm.internal.tck.NativeImageSupport;
@@ -21,11 +22,15 @@ public class BootstrapperTest {
 
     @Test
     void bootstrapLoadsLauncherClassAndInvokesPublicStaticMainMethod() throws Exception {
+        assumeFalse(
+                isNativeImageRuntime(),
+                "Bootstrapper requires a jar-style URL for InitialClassLoader.class, which native-image does not provide");
+
         String previousBootstrapped = System.getProperty("classworlds.bootstrapped");
         String previousLibraryDirectory = System.getProperty("classworlds.lib");
 
         try {
-            Bootstrapper bootstrapper = new BootstrapperProbe(new String[] { "alpha", "beta" });
+            Bootstrapper bootstrapper = new BootstrapperProbe(new String[] {"alpha", "beta" });
 
             bootstrapper.bootstrap();
 
@@ -47,6 +52,10 @@ public class BootstrapperTest {
         } else {
             System.setProperty(name, value);
         }
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     public static class BootstrapEntryPoint {

@@ -32,7 +32,7 @@ public class LauncherTest {
     void launchInvokesEnhancedMainMethod() throws Exception {
         Launcher launcher = newConfiguredLauncher(EnhancedEntryPoint.class.getName());
 
-        launcher.launch(new String[] { "alpha", "beta" });
+        launcher.launch(new String[] {"alpha", "beta" });
 
         assertThat(EnhancedEntryPoint.arguments).containsExactly("alpha", "beta");
         assertThat(EnhancedEntryPoint.world).isSameAs(launcher.getWorld());
@@ -44,7 +44,7 @@ public class LauncherTest {
     void launchFallsBackToStandardMainMethod() throws Exception {
         Launcher launcher = newConfiguredLauncher(StandardEntryPoint.class.getName());
 
-        launcher.launch(new String[] { "gamma" });
+        launcher.launch(new String[] {"gamma" });
 
         assertThat(StandardEntryPoint.arguments).containsExactly("gamma");
         assertThat(launcher.getExitCode()).isEqualTo(7);
@@ -95,7 +95,7 @@ public class LauncherTest {
             }
             Thread.currentThread().setContextClassLoader(resourceClassLoader);
 
-            return Launcher.mainWithExitCode(new String[] { "from-resource" });
+            return Launcher.mainWithExitCode(new String[] {"from-resource" });
         } finally {
             restoreProperty(CLASSWORLDS_CONF, previousConfig);
             restoreProperty("classworlds.bootstrapped", previousBootstrapped);
