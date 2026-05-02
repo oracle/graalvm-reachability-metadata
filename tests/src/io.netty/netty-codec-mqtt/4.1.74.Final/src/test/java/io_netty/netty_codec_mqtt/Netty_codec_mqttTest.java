@@ -115,7 +115,7 @@ public class Netty_codec_mqttTest {
         MqttProperties properties = new MqttProperties();
         properties.add(new IntegerProperty(MqttPropertyType.PAYLOAD_FORMAT_INDICATOR.value(), 1));
         properties.add(new StringProperty(MqttPropertyType.CONTENT_TYPE.value(), "application/json"));
-        properties.add(new BinaryProperty(MqttPropertyType.CORRELATION_DATA.value(), new byte[] { 1, 2, 3, 5, 8 }));
+        properties.add(new BinaryProperty(MqttPropertyType.CORRELATION_DATA.value(), new byte[] {1, 2, 3, 5, 8 }));
 
         ByteBuf payload = Unpooled.copiedBuffer("{\"temperature\":21.5}", StandardCharsets.UTF_8);
         MqttPublishMessage message = MqttMessageBuilders.publish()
