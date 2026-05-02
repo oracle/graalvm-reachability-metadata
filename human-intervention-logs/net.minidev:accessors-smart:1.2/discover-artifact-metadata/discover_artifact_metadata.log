@@ -1,0 +1,1204 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de6df-9b58-7953-b622-65bbce51b265
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.minidev:accessors-smart:1.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json
+- Set "coordinates" to "net.minidev:accessors-smart:1.2".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll look up the published Maven artifacts first, since the request prefers Maven-hosted sources and tests when available, then I’ll update the JSON in place.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 0ms:
+{
+  "coordinates" : "net.minidev:accessors-smart:1.2"
+}
+
+exec
+/usr/bin/bash -lc 'find . -name AGENTS.md -print' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 0ms:
+./AGENTS.md
+./forge/AGENTS.md
+./tests/src/AGENTS.md
+
+web search: 
+web search: Maven net.minidev accessors-smart 1.2 sources jar test jar
+web search: 
+web search: https://repo1.maven.org/maven2/net/minidev/accessors-smart/1.2/
+codex
+Maven Central has the 1.2 POM plus source and Javadoc jars, but no obvious test jar in the artifact listing. I’m checking the SCM tags next so the test-suite URL can still target the exact released version.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/minidev/accessors-smart/1.2/accessors-smart-1.2.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- this POM is released under an Apache 2.0 license -->
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.minidev</groupId>
+    <artifactId>accessors-smart</artifactId>
+    <version>1.2</version>
+    <name>ASM based accessors helper used by json-smart</name>
+    <description>Java reflect give poor performance on getter setter an constructor calls, accessors-smart use ASM to speed up those calls.
+    </description>
+    <packaging>bundle</packaging>
+    <url>http://www.minidev.net/</url>
+    <organization>
+        <name>Chemouni Uriel</name>
+        <url>http://www.minidev.net/</url>
+    </organization>
+    <developers>
+        <developer>
+            <id>uriel</id>
+            <name>Uriel Chemouni</name>
+            <email>uchemouni@gmail.com</email>
+            <timezone>GMT-7</timezone>
+            <roles>
+            </roles>
+        </developer>
+    </developers>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>All files under Apache 2</comments>
+        </license>
+    </licenses>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.5</maven.compiler.source>
+        <maven.compiler.target>1.5</maven.compiler.target>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>5.0.4</version>
+        </dependency>
+    </dependencies>
+
+    <!-- updated on 29/10/2015 -->
+                <!--
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.17</version>
+                <configuration>
+                    <configLocation>google_checks.xml</configLocation>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+     -->
+    <scm>
+        <!-- ON GIT HUB -->
+        <connection>scm:git:https://github.com/netplex/json-smart-v2.git</connection>
+        <developerConnection>scm:git:https://github.com/netplex/json-smart-v2.git</developerConnection>
+        <url>https://github.com/netplex/json-smart-v2</url>
+    </scm>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+    <profiles>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <!-- will be set by the release plugin upon performing mvn release:perform -->
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+				<!-- My old Is back -->
+				<gpg.keyname>2C8DF6EC</gpg.keyname>
+                <!-- <gpg.keyname>8E322ED0</gpg.keyname> -->
+                <!-- <gpg.keyname>Uriel Chemouni (dev) <uchemouni@gmail.com></gpg.keyname> -->
+                <!-- GPG Key ID to use for signing -->
+            </properties>
+            <build>
+                <plugins>
+                    <!-- Enable signing of the artifacts For gpg:sign-and-deploy-file it's 
+						necessary to have a <server> with the repositoryId provided or id="remote-repository" 
+						defined in settings.xml (it contains the repository's login, psw) Signing: 
+						mvn gpg:sign-and-deploy-file -DpomFile=target/myapp-1.0.pom -Dfile=target/myapp-1.0.jar 
+						-Durl=http://oss.sonatype.org/content/repositories/malyvelky/ -DrepositoryId=sonatype_oss 
+						Note normally it uses the defaul key but we can ovveride it by either setting 
+						the property gpg.keyname (done in this POM) or by providing -Dkeyname=66AE163A 
+						on the command line. OR directly w/ gpg (remove space in - -): gpg -u 66AE163A 
+						- -sign - -detach-sign -a target/dbunit-embeddedderby-parenttest.jar Note: 
+						"mvn gpg:sign" results in NPE with v 1.o-a.-4, use "mvn package gpg:sign" 
+						instead; see the issue MGPG-18 -->
+                    <plugin>
+                        <!-- updated on 29/07/2015 -->
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Publish also javadocs when releasing - required by Sonatype -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Release Plugin (Update version in POM before/after release, create 
+						tag, deploy) to try: mvn release:prepare -DdryRun=true && mvn release:clean 
+						to perform: mvn release:prepare release:perform Read http://nexus.sonatype.org/oss-repository-hosting.html#3 
+						for instructions on releasing to this project's Sonatype repository -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>2.5.2</version>
+                        <configuration>
+                            <mavenExecutorId>forked-path</mavenExecutorId>
+                            <arguments>-Psonatype-oss-release</arguments>
+                            <autoVersionSubmodules>false</autoVersionSubmodules>
+                            <useReleaseProfile>false</useReleaseProfile>
+                            <releaseProfiles>release</releaseProfiles>
+                            <goals>deploy</goals>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>include-sources</id>
+            <build>
+                <resources>
+                    <resource>
+                        <targetPath>/</targetPath>
+                        <filtering>true</filtering>
+                        <directory>src/main/java</directory>
+                        <includes>
+                            <include>**/*.java</include>
+                        </includes>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+    </profiles>
+    <build>
+        <plugins>
+            <plugin>
+                <!-- updated on 29/07/2015 -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>bind-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <!-- updated on 29/10/2015 -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <excludes>
+                        <exclude>**/.svn/*</exclude>
+                        <exclude>**/.svn</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!-- updated on 29/10/2015 -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!-- updated on 29/10/2015 -->
+                <groupId>org.apache.maven.plugins</groupId>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/netplex/json-smart-v2.git | rg '("'^|/)v?1'"\\.2|accessors|json-smart'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/minidev/accessors-smart/1.2/ | rg 'test|sources|javadoc|pom'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 180ms:
+<a href="accessors-smart-1.2-javadoc.jar" title="accessors-smart-1.2-javadoc.jar">accessors-smart-1.2-javadoc.jar</a>                   2017-03-26 07:56     89371      
+<a href="accessors-smart-1.2-javadoc.jar.asc" title="accessors-smart-1.2-javadoc.jar.asc">accessors-smart-1.2-javadoc.jar.asc</a>               2017-03-26 07:56       473      
+<a href="accessors-smart-1.2-javadoc.jar.asc.md5" title="accessors-smart-1.2-javadoc.jar.asc.md5">accessors-smart-1.2-javadoc.jar.asc.md5</a>           2017-03-26 07:56        32      
+<a href="accessors-smart-1.2-javadoc.jar.asc.sha1" title="accessors-smart-1.2-javadoc.jar.asc.sha1">accessors-smart-1.2-javadoc.jar.asc.sha1</a>          2017-03-26 07:56        40      
+<a href="accessors-smart-1.2-javadoc.jar.asc.sha256" title="accessors-smart-1.2-javadoc.jar.asc.sha256">accessors-smart-1.2-javadoc.jar.asc.sha256</a>        2017-03-26 07:56        64      
+<a href="accessors-smart-1.2-javadoc.jar.asc.sha512" title="accessors-smart-1.2-javadoc.jar.asc.sha512">accessors-smart-1.2-javadoc.jar.asc.sha512</a>        2017-03-26 07:56       128      
+<a href="accessors-smart-1.2-javadoc.jar.md5" title="accessors-smart-1.2-javadoc.jar.md5">accessors-smart-1.2-javadoc.jar.md5</a>               2017-03-26 07:56        32      
+<a href="accessors-smart-1.2-javadoc.jar.sha1" title="accessors-smart-1.2-javadoc.jar.sha1">accessors-smart-1.2-javadoc.jar.sha1</a>              2017-03-26 07:56        40      
+<a href="accessors-smart-1.2-sources.jar" title="accessors-smart-1.2-sources.jar">accessors-smart-1.2-sources.jar</a>                   2017-03-26 07:56     16277      
+<a href="accessors-smart-1.2-sources.jar.asc" title="accessors-smart-1.2-sources.jar.asc">accessors-smart-1.2-sources.jar.asc</a>               2017-03-26 07:56       473      
+<a href="accessors-smart-1.2-sources.jar.asc.md5" title="accessors-smart-1.2-sources.jar.asc.md5">accessors-smart-1.2-sources.jar.asc.md5</a>           2017-03-26 07:56        32      
+<a href="accessors-smart-1.2-sources.jar.asc.sha1" title="accessors-smart-1.2-sources.jar.asc.sha1">accessors-smart-1.2-sources.jar.asc.sha1</a>          2017-03-26 07:56        40      
+<a href="accessors-smart-1.2-sources.jar.asc.sha256" title="accessors-smart-1.2-sources.jar.asc.sha256">accessors-smart-1.2-sources.jar.asc.sha256</a>        2017-03-26 07:56        64      
+<a href="accessors-smart-1.2-sources.jar.asc.sha512" title="accessors-smart-1.2-sources.jar.asc.sha512">accessors-smart-1.2-sources.jar.asc.sha512</a>        2017-03-26 07:56       128      
+<a href="accessors-smart-1.2-sources.jar.md5" title="accessors-smart-1.2-sources.jar.md5">accessors-smart-1.2-sources.jar.md5</a>               2017-03-26 07:56        32      
+<a href="accessors-smart-1.2-sources.jar.sha1" title="accessors-smart-1.2-sources.jar.sha1">accessors-smart-1.2-sources.jar.sha1</a>              2017-03-26 07:56        40      
+<a href="accessors-smart-1.2.pom" title="accessors-smart-1.2.pom">accessors-smart-1.2.pom</a>                           2017-03-26 07:56     11574      
+<a href="accessors-smart-1.2.pom.asc" title="accessors-smart-1.2.pom.asc">accessors-smart-1.2.pom.asc</a>                       2017-03-26 07:56       473      
+<a href="accessors-smart-1.2.pom.asc.md5" title="accessors-smart-1.2.pom.asc.md5">accessors-smart-1.2.pom.asc.md5</a>                   2017-03-26 07:56        32      
+<a href="accessors-smart-1.2.pom.asc.sha1" title="accessors-smart-1.2.pom.asc.sha1">accessors-smart-1.2.pom.asc.sha1</a>                  2017-03-26 07:56        40      
+<a href="accessors-smart-1.2.pom.asc.sha256" title="accessors-smart-1.2.pom.asc.sha256">accessors-smart-1.2.pom.asc.sha256</a>                2017-03-26 07:56        64      
+<a href="accessors-smart-1.2.pom.asc.sha512" title="accessors-smart-1.2.pom.asc.sha512">accessors-smart-1.2.pom.asc.sha512</a>                2017-03-26 07:56       128      
+<a href="accessors-smart-1.2.pom.md5" title="accessors-smart-1.2.pom.md5">accessors-smart-1.2.pom.md5</a>                       2017-03-26 07:56        32      
+<a href="accessors-smart-1.2.pom.sha1" title="accessors-smart-1.2.pom.sha1">accessors-smart-1.2.pom.sha1</a>                      2017-03-26 07:56        40      
+
+ exited 1 in 315ms:
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://github.com/netplex/json-smart-v2.git | tail -80' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/minidev/accessors-smart/1.2/accessors-smart-1.2-javadoc.jar -o /tmp/accessors-smart-1.2-javadoc.jar && jar tf /tmp/accessors-smart-1.2-javadoc.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+net/
+net/minidev/
+net/minidev/asm/
+net/minidev/asm/class-use/
+net/minidev/asm/ex/
+net/minidev/asm/ex/class-use/
+allclasses-frame.html
+allclasses-noframe.html
+constant-values.html
+deprecated-list.html
+help-doc.html
+index-all.html
+index.html
+net/minidev/asm/Accessor.html
+net/minidev/asm/ASMUtil.html
+net/minidev/asm/BasicFiledFilter.html
+net/minidev/asm/BeansAccess.html
+net/minidev/asm/BeansAccessBuilder.html
+net/minidev/asm/BeansAccessConfig.html
+net/minidev/asm/class-use/Accessor.html
+net/minidev/asm/class-use/ASMUtil.html
+net/minidev/asm/class-use/BasicFiledFilter.html
+net/minidev/asm/class-use/BeansAccess.html
+net/minidev/asm/class-use/BeansAccessBuilder.html
+net/minidev/asm/class-use/BeansAccessConfig.html
+net/minidev/asm/class-use/ConvertDate.html
+net/minidev/asm/class-use/ConvertDate.StringCmpNS.html
+net/minidev/asm/class-use/DefaultConverter.html
+net/minidev/asm/class-use/FieldFilter.html
+net/minidev/asm/ConvertDate.html
+net/minidev/asm/ConvertDate.StringCmpNS.html
+net/minidev/asm/DefaultConverter.html
+net/minidev/asm/ex/class-use/ConvertException.html
+net/minidev/asm/ex/class-use/NoSuchFieldException.html
+net/minidev/asm/ex/ConvertException.html
+net/minidev/asm/ex/NoSuchFieldException.html
+net/minidev/asm/ex/package-frame.html
+net/minidev/asm/ex/package-summary.html
+net/minidev/asm/ex/package-tree.html
+net/minidev/asm/ex/package-use.html
+net/minidev/asm/FieldFilter.html
+net/minidev/asm/package-frame.html
+net/minidev/asm/package-summary.html
+net/minidev/asm/package-tree.html
+net/minidev/asm/package-use.html
+overview-frame.html
+overview-summary.html
+overview-tree.html
+package-list
+script.js
+serialized-form.html
+stylesheet.css
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/minidev/accessors-smart/1.2/accessors-smart-1.2-sources.jar -o /tmp/accessors-smart-1.2-sources.jar && jar tf /tmp/accessors-smart-1.2-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+net/
+net/minidev/
+net/minidev/asm/
+net/minidev/asm/ex/
+net/minidev/asm/Accessor.java
+net/minidev/asm/ASMUtil.java
+net/minidev/asm/BasicFiledFilter.java
+net/minidev/asm/BeansAccess.java
+net/minidev/asm/BeansAccessBuilder.java
+net/minidev/asm/BeansAccessConfig.java
+net/minidev/asm/ConvertDate.java
+net/minidev/asm/DefaultConverter.java
+net/minidev/asm/DynamicClassLoader.java
+net/minidev/asm/ex/ConvertException.java
+net/minidev/asm/ex/NoSuchFieldException.java
+net/minidev/asm/FieldFilter.java
+
+ succeeded in 328ms:
+9bcdf62f6a801bad18afd621cb580076e141d987	refs/tags/2.2
+309223e3a7ee27ba5c0fe5e102967f2961547c62	refs/tags/2.4.1
+d6a8c5e0facd25bc3aa6bdc712e7451767c1e804	refs/tags/2.4.10
+1deae1e79a706c6480e2bc8a8f7a861803411442	refs/tags/2.4.11
+23628ba5d7fe11a5146dfe6f1894471f71ab47a9	refs/tags/2.4.5
+509dfaa045a564e38f2aa007a98c539a57e5b2ae	refs/tags/2.4.8
+08517d2033289386aa97462ce43b986eee928b9f	refs/tags/2.4.9
+54eb6f06cf4f63687d1147a9a3beaba8750e7be0	refs/tags/2.5.0
+8346cf476ae583ab13d9e69360c3f095c2cdfed0	refs/tags/2.5.1
+20dff245b23686a08a0e0df21fe734a2dfc2ad37	refs/tags/2.5.2
+d4f7fa4f31e20145d20393c5e79c6255954cb81e	refs/tags/2.5.2^{}
+8e48bd53c658ac8dc21a5586c3c1c5413c6a0d4d	refs/tags/v2.6.0
+ebf7cf8cf0dccef246cd1ed0d052074d787a2de4	refs/tags/v2.6.0^{}
+
+web search: 
+web search: "accessors-smart" "1.2" "src/test"
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\" : \"https://repo1.maven.org/maven2/.+-sources.jar\"' build/discovered-artifact-metadata | head -20" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg '\"test-code-url\" : \"N/A\"' build/discovered-artifact-metadata | head -20" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'javadoc\\.io|javadoc.jar|apidocs' build/discovered-artifact-metadata | head -30" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -type f | head -20' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 0ms:
+build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"' -g '*.json' . | head -30" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 0ms:
+./metadata/log4j/log4j/index.json:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-sources.jar",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.3/paranamer-2.3-sources.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/2.0.0/api-i18n-2.0.0-sources.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/1.0.0-M20/api-i18n-1.0.0-M20-sources.jar",
+./metadata/com.rabbitmq/amqp-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/5.12.0/amqp-client-5.12.0-sources.jar",
+./metadata/org.openjfx/javafx-base/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.springframework/spring-instrument/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/5.3.31/spring-instrument-5.3.31-sources.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/1.5.0/jackrabbit-jcr-commons-1.5.0-sources.jar",
+./metadata/org.awaitility/awaitility/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-sources.jar",
+./metadata/org.awaitility/awaitility/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.18.1/jackson-dataformat-yaml-2.18.1-sources.jar",
+./metadata/com.squareup.okio/okio/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-sources.jar",
+./metadata/org.apache.zookeeper/zookeeper/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+./metadata/org.apache.zookeeper/zookeeper-jute/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/3.8.1/zookeeper-jute-3.8.1-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-sources.jar",
+./metadata/com.sun.istack/istack-commons-runtime/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/3.0.7/istack-commons-runtime-3.0.7-sources.jar",
+./metadata/com.sun.istack/istack-commons-runtime/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/4.0.0/istack-commons-runtime-4.0.0-sources.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar",
+./metadata/org.scalatest/scalatest-compatible/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-sources.jar",
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/4.20/xbean-asm9-shaded-4.20-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/org.apache.xbean/xbean-asm7-shaded/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm7-shaded/4.15/xbean-asm7-shaded-4.15-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/12.0.0/jetty-alpn-java-server-12.0.0-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg '\"test-code-url\"' -g '*.json' metadata | head -40" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/8.0.01/src/jvmTest",
+metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "N/A",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.15.2/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-tests.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "test-code-url" : "N/A",
+metadata/org.opengauss/opengauss-jdbc/index.json:    "test-code-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/pgjdbc/src/test",
+metadata/org.apiguardian/apiguardian-api/index.json:    "test-code-url" : "N/A",
+metadata/commons-logging/commons-logging-api/index.json:    "test-code-url" : "https://github.com/apache/commons-logging/tree/LOGGING_1_1_0/src/test",
+metadata/org.json/json/index.json:    "test-code-url" : "https://github.com/stleary/JSON-java/tree/20220320/src/test/java",
+metadata/javax.activation/javax.activation-api/index.json:    "test-code-url": "N/A",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-2.6.0/src/test",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-2.1.3/src/test",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.2.0/expression/src/test/java",
+metadata/commons-logging/commons-logging/index.json:    "test-code-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-test-sources.jar",
+metadata/javax.activation/activation/index.json:    "test-code-url" : "N/A",
+metadata/net.jcip/jcip-annotations/index.json:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.10.0/cpu/src/test/java/io/smallrye/common/cpu",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:    "test-code-url" : "N/A",
+metadata/org.hibernate.validator/hibernate-validator/index.json:    "test-code-url": "https://github.com/hibernate/hibernate-validator/tree/7.0.4.Final/engine/src/test",
+metadata/io.nats/jnats/index.json:    "test-code-url": "https://github.com/nats-io/nats.java/tree/2.16.11/src/test",
+metadata/com.ecwid.consul/consul-api/index.json:    "test-code-url": "https://github.com/Ecwid/consul-api/tree/v1.4.5/src/test",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.0.21/libraries/kotlin.test",
+metadata/org.apache.arrow/arrow-format/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.arrow/arrow-format/index.json:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-os/index.json:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.2.0/os/src/test/java",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.2_spec/index.json:    "test-code-url" : "N/A",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.20/compiler/daemon/daemon-tests/test",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:    "test-code-url": "N/A",
+metadata/commons-codec/commons-codec/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10-test-sources.jar",
+metadata/io.smallrye.common/smallrye-common-constraint/index.json:    "test-code-url" : "N/A",
+metadata/werken-xpath/werken-xpath/index.json:    "test-code-url" : "https://sources.debian.org/src/werken.xpath/0.9.4-16/test/",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.20/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/index.json:    "test-code-url" : "N/A",
+metadata/io.netty/netty-tcnative-classes/index.json:    "test-code-url" : "https://github.com/netty/netty-tcnative/tree/netty-tcnative-parent-2.0.48.Final/openssl-dynamic/src/test",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:    "test-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-tests.jar",
+metadata/com.google.code.findbugs/annotations/index.json:    "test-code-url" : "N/A",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:    "test-code-url": "N/A",
+
+exec
+/usr/bin/bash -lc "rg '\"documentation-url\"' -g '*.json' metadata | head -40" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-javadoc.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-javadoc.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:    "documentation-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/docs",
+metadata/javax.activation/activation/index.json:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/2.27.7/jsch-2.27.7-javadoc.jar",
+metadata/org.apache.arrow/arrow-format/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/15.0.0/arrow-format-15.0.0-javadoc.jar",
+metadata/org.apache.arrow/arrow-format/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-javadoc.jar",
+metadata/org.json/json/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/json/json/20220320/json-20220320-javadoc.jar",
+metadata/commons-logging/commons-logging-api/index.json:    "documentation-url" : "https://github.com/apache/commons-logging/blob/LOGGING_1_1_0/xdocs/guide.xml",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/2.2.0/smallrye-common-expression-2.2.0-javadoc.jar",
+metadata/commons-logging/commons-logging/index.json:    "documentation-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/2.0.21/kotlin-test-2.0.21-javadoc.jar",
+metadata/net.jcip/jcip-annotations/index.json:    "documentation-url" : "https://javadoc.io/doc/net.jcip/jcip-annotations/1.0/index.html",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/2.10.0/smallrye-common-cpu-2.10.0-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/2.2.0/smallrye-common-cpu-2.2.0-javadoc.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-javadoc.jar",
+metadata/com.ecwid.consul/consul-api/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/ecwid/consul/consul-api/1.4.5/consul-api-1.4.5-javadoc.jar",
+metadata/io.nats/jnats/index.json:    "documentation-url": "https://repo1.maven.org/maven2/io/nats/jnats/2.16.11/jnats-2.16.11-javadoc.jar",
+metadata/org.hibernate.validator/hibernate-validator/index.json:    "documentation-url": "https://github.com/hibernate/hibernate-validator/tree/7.0.4.Final/documentation",
+metadata/io.smallrye.common/smallrye-common-os/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-os/2.2.0/smallrye-common-os-2.2.0-javadoc.jar",
+metadata/jakarta.validation/jakarta.validation-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:    "documentation-url" : "https://github.com/JetBrains/kotlin/releases/tag/v2.3.20",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.2_spec/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/spec/javax/interceptor/jboss-interceptors-api_1.2_spec/1.0.1.Final/jboss-interceptors-api_1.2_spec-1.0.1.Final-javadoc.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:    "documentation-url" : "N/A",
+metadata/commons-codec/commons-codec/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10-javadoc.jar",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/google/code/findbugs/findbugs-annotations/3.0.1/findbugs-annotations-3.0.1-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-javadoc.jar",
+metadata/io.netty/netty-tcnative-classes/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-tcnative-classes/2.0.48.Final/netty-tcnative-classes-2.0.48.Final-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/log4j/log4j/index.json && sed -n '1,120p' metadata/com.thoughtworks.paranamer/paranamer/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages": [
+      "org.apache.log4j"
+    ],
+    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-sources.jar",
+    "repository-url": "https://github.com/apache/logging-log4j1",
+    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-1.2.17/tests",
+    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-javadoc.jar",
+    "description": "Apache Log4j 1.2 is a Java logging framework that lets applications route log events to appenders such as the console, files, sockets, JDBC, and JMS. It provides hierarchical loggers plus configurable layouts, filters, and XML or properties-based configuration.",
+    "metadata-version": "1.2.17",
+    "tested-versions": [
+      "1.2.17"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.8.1",
+    "tested-versions" : [
+      "2.8.1",
+      "2.8.2",
+      "2.8.3"
+    ],
+    "allowed-packages" : [
+      "com.thoughtworks.paranamer"
+    ]
+  },
+  {
+    "metadata-version" : "2.3",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.3/paranamer-2.3-sources.jar",
+    "repository-url" : "https://github.com/paul-hammant/paranamer",
+    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-2.3/paranamer/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.3/paranamer-2.3-javadoc.jar",
+    "description" : "ParaNamer is a Java library that exposes constructor and method parameter names at runtime. It can read parameter names from generated metadata, annotations, debug symbols, or bytecode so frameworks can bind arguments without manual name declarations.",
+    "tested-versions" : [
+      "2.3-debug",
+      "2.3",
+      "2.4-debug",
+      "2.4",
+      "2.4.1",
+      "2.5",
+      "2.5.1",
+      "2.5.2",
+      "2.5.3",
+      "2.5.4",
+      "2.5.5",
+      "2.5.6",
+      "2.5.7",
+      "2.5.8",
+      "2.6",
+      "2.6.1",
+      "2.7",
+      "2.8"
+    ],
+    "allowed-packages" : [
+      "com.thoughtworks.paranamer"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git ls-remote --heads https://github.com/netplex/json-smart-v2.git' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/netplex/json-smart-v2/master/accessors-smart/pom.xml | rg '<version>|<artifactId>|<groupId>' -n -C 1" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/netplex/json-smart-v2/2.2/accessors-smart/pom.xml | rg '<version>|<artifactId>|<groupId>' -n -C 1" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 175ms:
+5-
+6:	<artifactId>accessors-smart</artifactId>
+7-	<packaging>bundle</packaging>
+8:	<version>1.1</version>
+9-
+10-	<parent>
+11:		<groupId>net.minidev</groupId>
+12:		<artifactId>minidev-parent</artifactId>
+13:		<version>2.2</version>
+14-		<relativePath>../parent/pom.xml</relativePath>
+--
+23-		<dependency>
+24:			<groupId>junit</groupId>
+25:			<artifactId>junit</artifactId>
+26-			<scope>test</scope>
+--
+28-		<dependency>
+29:			<groupId>org.ow2.asm</groupId>
+30:			<artifactId>asm</artifactId>
+31:			<version>5.0.3</version>
+32-		</dependency>
+--
+34-		<dependency>
+35:			<groupId>asm</groupId>
+36:			<artifactId>asm</artifactId>
+37:			<version>3.3.1</version>
+38-		</dependency>
+--
+40-		<!-- <dependency> -->
+41:		<!-- <groupId>asm</groupId> -->
+42:		<!-- <artifactId>asm-util</artifactId> -->
+43:		<!-- <version>3.3.1</version> -->
+44-		<!-- </dependency> -->
+--
+48-			<plugin>
+49:				<groupId>org.apache.felix</groupId>
+50:				<artifactId>maven-bundle-plugin</artifactId>
+51:				<version>2.3.7</version>
+52-				<extensions>true</extensions>
+
+ succeeded in 177ms:
+17-    <modelVersion>4.0.0</modelVersion>
+18:    <groupId>net.minidev</groupId>
+19:    <artifactId>accessors-smart</artifactId>
+20:    <version>2.6.0-SNAPSHOT</version>
+21-    <name>ASM based accessors helper used by json-smart</name>
+--
+82-                        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-gpg-plugin -->
+83:                        <groupId>org.apache.maven.plugins</groupId>
+84:                        <artifactId>maven-gpg-plugin</artifactId>
+85:                        <version>3.2.8</version>
+86-                        <executions>
+--
+98-                        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-javadoc-plugin -->
+99:                        <groupId>org.apache.maven.plugins</groupId>
+100:                        <artifactId>maven-javadoc-plugin</artifactId>
+101:						<version>3.10.1</version>
+102-						<configuration>
+--
+119-						<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-release-plugin -->
+120:                        <groupId>org.apache.maven.plugins</groupId>
+121:                        <artifactId>maven-release-plugin</artifactId>
+122:                        <version>3.1.1</version>
+123-                        <configuration>
+--
+154-                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-source-plugin -->
+155:                <groupId>org.apache.maven.plugins</groupId>
+156:                <artifactId>maven-source-plugin</artifactId>
+157:                <version>3.3.1</version>
+158-                <executions>
+--
+168-                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
+169:                <groupId>org.apache.maven.plugins</groupId>
+170:                <artifactId>maven-compiler-plugin</artifactId>
+171:                <version>3.14.0</version>
+172-                <configuration>
+--
+179-                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-resources-plugin -->
+180:                <groupId>org.apache.maven.plugins</groupId>
+181:                <artifactId>maven-resources-plugin</artifactId>
+182:                <version>3.3.1</version>
+183-                <configuration>
+--
+188-                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jar-plugin -->
+189:                <groupId>org.apache.maven.plugins</groupId>
+190:                <artifactId>maven-jar-plugin</artifactId>
+191:                <version>3.4.2</version>
+192-            </plugin>
+--
+194-                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-javadoc-plugin -->
+195:                <groupId>org.apache.maven.plugins</groupId>
+196:                <artifactId>maven-javadoc-plugin</artifactId>
+197:                <version>3.11.2</version>
+198-                <!-- ONLY NEEDED With jdk 1.7+ -->
+--
+214-                <!-- https://mvnrepository.com/artifact/org.apache.felix/maven-bundle-plugin -->
+215:                <groupId>org.apache.felix</groupId>
+216:                <artifactId>maven-bundle-plugin</artifactId>
+217:                <version>5.1.9</version> <!-- 3.0.0 need java 7+ -->
+218-                <extensions>true</extensions>
+--
+233-            <plugin>
+234:                <groupId>com.diffplug.spotless</groupId>
+235:                <artifactId>spotless-maven-plugin</artifactId>
+236:                <version>2.46.1</version>
+237-                <configuration>
+--
+243-                        <googleJavaFormat>
+244:                            <version>1.25.2</version>
+245-                            <style>GOOGLE</style>
+--
+252-            <plugin>
+253:                <groupId>org.jacoco</groupId>
+254:                <artifactId>jacoco-maven-plugin</artifactId>
+255:                <version>0.8.13</version>
+256-                <executions>
+--
+271-            <plugin>
+272:                <groupId>org.apache.maven.plugins</groupId>
+273:                <artifactId>maven-install-plugin</artifactId>
+274:                <version>3.1.4</version>
+275-            </plugin>
+276-            <plugin>
+277:                <groupId>org.apache.maven.plugins</groupId>
+278:                <artifactId>maven-deploy-plugin</artifactId>
+279:                <version>3.1.4</version>
+280-            </plugin>
+281-            <plugin>
+282:                <groupId>org.sonatype.central</groupId>
+283:                <artifactId>central-publishing-maven-plugin</artifactId>
+284:                <version>0.8.0</version>
+285-                <extensions>true</extensions>
+--
+296-            <dependency>
+297:                <groupId>org.junit.jupiter</groupId>
+298:                <artifactId>junit-jupiter-api</artifactId>
+299:                <version>5.13.4</version>
+300-                <scope>test</scope>
+--
+303-            <dependency>
+304:                <groupId>org.ow2.asm</groupId>
+305:                <artifactId>asm</artifactId>
+306:                <version>9.7.1</version>
+307-            </dependency>
+
+ succeeded in 343ms:
+c9e38dced8fde39fc0757045696cd35538071abd	refs/heads/ISSUE_177
+f88f719e7745ae6515ce7f3e3909f255dbb5841d	refs/heads/dependabot/maven/json-smart-action/com.diffplug.spotless-spotless-maven-plugin-3.0.0
+3c650562c8a99f5df9fc623995dce52c5a79376f	refs/heads/dependabot/maven/json-smart-action/junit.version-6.0.1
+0ae6c926034b5e3892eb5c439e0d47159240bb9c	refs/heads/dependabot/maven/json-smart-action/net.minidev-json-smart-2.6.0
+18393e2bab1500daf8d50ce5dc719d1f32d681a8	refs/heads/dependabot/maven/json-smart-action/org.apache.felix-maven-bundle-plugin-6.0.0
+5e194e07bbadd7a6c6d23118dc890eae643bf1fb	refs/heads/dependabot/maven/json-smart-action/org.sonatype.central-central-publishing-maven-plugin-0.9.0
+d0a0fc45df47783cad0319e499e0df69343e1f51	refs/heads/dependabot/maven/json-smart/com.diffplug.spotless-spotless-maven-plugin-3.0.0
+304889659a4060322b20923e0650c11139492665	refs/heads/dependabot/maven/json-smart/junit.version-6.0.0
+806cc4295a26b1a6e559b090da9fe2236f99f0dc	refs/heads/dependabot/maven/json-smart/net.minidev-accessors-smart-2.6.0
+8c4f66e91def37161212a9b42e1b595c901bc0f9	refs/heads/dependabot/maven/json-smart/org.apache.felix-maven-bundle-plugin-6.0.0
+fa060021fd6081becd8e04dfbc19de519007a641	refs/heads/dependabot/maven/json-smart/org.apache.maven.plugins-maven-javadoc-plugin-3.12.0
+5d8f14e6afcc2eede4df804674beb42d57a63c4f	refs/heads/master
+a7547259e6445b370b59533e7948fd65365e69af	refs/heads/update2024
+c0b37c1038dfa0af70cdf4fef078db51419edf85	refs/heads/v2.2.1
+29dd02d6509ff442b33ceecedafd81dbca364672	refs/heads/v2.2.2
+454a20467485e70a09b1d167b0321032f70fd9db	refs/heads/v2.3
+
+exec
+/usr/bin/bash -lc "for ref in v2.2.1 v2.2.2 v2.3 2.4.1; do printf '%s ' \""'$ref"; curl -fsSL "https://raw.githubusercontent.com/netplex/json-smart-v2/$ref/accessors-smart/pom.xml" | rg '"'<version>1\\.|<version>2\\.' | head -5; done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/netplex/json-smart-v2/commits?path=accessors-smart/pom.xml\\&since=2016-01-01T00:00:00Z\\&until=2018-12-31T23:59:59Z\\&per_page=100 | rg '\"sha\"|\"date\"|\"message\"' | head -120" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 275ms:
+    "sha": "1510dcf253a8b27ed169a1dbbb9a9df656d677b8",
+        "date": "2017-03-26T08:06:11Z"
+        "date": "2017-03-26T08:06:11Z"
+      "message": "fix key",
+        "sha": "0303b0d029966eb9bd91b03519aa4058347d3224",
+        "sha": "64d8a2f4efa338749203f085961bc5ee3b63a02f",
+    "sha": "64d8a2f4efa338749203f085961bc5ee3b63a02f",
+        "date": "2017-03-26T07:51:48Z"
+        "date": "2017-03-26T07:51:48Z"
+      "message": "set version",
+        "sha": "92c94b4740d5b31a663711c8949821b02536744e",
+        "sha": "5757539258c40d8fd44993ccc6024483ba1626a3",
+    "sha": "33c332249dd6347bec72cc82ebae60fd6125d858",
+        "date": "2017-03-26T02:50:16Z"
+        "date": "2017-03-26T02:50:28Z"
+      "message": "Fix TYpo in snapshot",
+        "sha": "6fc897e775abcf6c6345aac3b809e5341ced3f04",
+        "sha": "c0cfaa9487f0bd029400a16b1c823584ee5ff329",
+    "sha": "172c2b260d14288fe4543be2696fa1505080a2aa",
+        "date": "2017-03-26T01:04:14Z"
+        "date": "2017-03-26T01:04:14Z"
+      "message": "change org.apache.felix version",
+        "sha": "1fde4cce5d35327e4daff729bd61e861eeda1e85",
+        "sha": "01536bc2c0fa7bc0c406904820275d668e7ef0e5",
+    "sha": "01536bc2c0fa7bc0c406904820275d668e7ef0e5",
+        "date": "2017-03-26T01:01:07Z"
+        "date": "2017-03-26T01:01:07Z"
+      "message": "change \t2.4.0 version",
+        "sha": "d34400c9d468605cc098d63d36b21adb08137bf6",
+        "sha": "8bcbdaeb0e694ef6b9cd4c9d515117df7953f0c4",
+    "sha": "8bcbdaeb0e694ef6b9cd4c9d515117df7953f0c4",
+        "date": "2017-03-26T00:58:17Z"
+        "date": "2017-03-26T00:58:17Z"
+      "message": "fix travis",
+        "sha": "4f91e01194b946e6e468dd5fbfb419ee0e4eb2b2",
+        "sha": "b12d123a36a559c1a9162602198afb8cee4b9e49",
+    "sha": "288c9827d9f541b02e37d6f50834a2114e65ee9d",
+        "date": "2017-03-25T23:26:15Z"
+        "date": "2017-03-25T23:26:15Z"
+      "message": "back to snapshoot",
+        "sha": "b7aad262810604e4d4c9392e8de403d35af976d3",
+        "sha": "fd8524c832181d52418ff940a071b8487e20e34e",
+    "sha": "13346c9303adfb5491ac24be377080dee0d4c46d",
+        "date": "2017-03-25T22:56:26Z"
+        "date": "2017-03-25T22:56:26Z"
+      "message": ",",
+        "sha": "0b53d639c867271d6e8d7cdd849d35990c207d7f",
+        "sha": "4574bc1c166619919741d5123b00f3b9e6c4bbf9",
+    "sha": "d4844f22ca6b56cc94414a438b030163e3b05379",
+        "date": "2016-11-03T15:46:33Z"
+        "date": "2016-11-03T15:46:33Z"
+      "message": "Merge pull request #35 from mattnelson/master\n\nRemove the inlined ASM dependency in smart-accessors",
+        "sha": "e15da52cd2b34fc420a6142831bbb567d3e8ca19",
+        "sha": "dc4fbfb99e7f8c93d0a6d156bce5636640589045",
+        "sha": "6ba8c86009551129eddf8f6c02bfd10b98938067",
+    "sha": "6ba8c86009551129eddf8f6c02bfd10b98938067",
+        "date": "2016-10-21T22:21:36Z"
+        "date": "2016-10-21T22:21:36Z"
+      "message": "Remove the inlined ASM dependency in smart-accessors",
+        "sha": "2e39b9155ff34f3e4d10fd285dc6f5e7a52e3053",
+        "sha": "cb03bcb2a2cff79f1736c7b2787e372b1ac2a630",
+    "sha": "1a11a47eb29c91b067225a1e6e9bb2f8b321a792",
+        "date": "2016-09-24T15:20:49Z"
+        "date": "2016-09-24T15:20:49Z"
+      "message": "change version and timeZone in pom",
+        "sha": "b754500b9825ccc14abf08256c933d220f1a9717",
+        "sha": "9bd4b2869aefabf5c0000cb4ccca88d467d5b5b4",
+
+ succeeded in 792ms:
+    <version>1.1</version>
+                <version>2.17</version>
+                        <version>1.6</version>
+                        <version>2.5.2</version>
+                <version>2.4</version>
+v2.2.2     <version>1.2</version>
+                <version>2.17</version>
+                        <version>1.6</version>
+                        <version>2.5.2</version>
+                <version>2.4</version>
+v2.3     <version>2.3.1</version>
+                <version>2.17</version>
+                        <version>1.6</version>
+                        <version>2.5.2</version>
+                <version>2.4</version>
+2.4.1     <version>1.3</version>
+                <version>2.17</version>
+                        <version>1.6</version>
+                        <version>2.5.3</version>
+                <version>2.4</version>
+
+codex
+The project does not have a Git tag for `accessors-smart` 1.2, but its `v2.2.2` branch sets this module to version 1.2. I’m checking the test path there before deciding whether it is confident enough to use rather than `N/A`.
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/netplex/json-smart-v2/v2.2.2/accessors-smart/pom.xml | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- this POM is released under an Apache 2.0 license -->
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.minidev</groupId>
+    <artifactId>accessors-smart</artifactId>
+    <version>1.2</version>
+    <name>ASM based accessors helper used by json-smart</name>
+    <description>Java reflect give poor performance on getter setter an constructor calls, accessors-smart use ASM to speed up those calls.
+    </description>
+    <packaging>bundle</packaging>
+    <url>http://www.minidev.net/</url>
+    <organization>
+        <name>Chemouni Uriel</name>
+        <url>http://www.minidev.net/</url>
+    </organization>
+    <developers>
+        <developer>
+            <id>uriel</id>
+            <name>Uriel Chemouni</name>
+            <email>uchemouni@gmail.com</email>
+            <timezone>GMT+1</timezone>
+            <roles>
+            </roles>
+        </developer>
+    </developers>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>All files under Apache 2</comments>
+        </license>
+    </licenses>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.5</maven.compiler.source>
+        <maven.compiler.target>1.5</maven.compiler.target>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>5.0.4</version>
+        </dependency>
+    </dependencies>
+
+    <!-- updated on 29/10/2015 -->
+                <!--
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.17</version>
+                <configuration>
+                    <configLocation>google_checks.xml</configLocation>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+     -->
+    <scm>
+        <!-- ON GIT HUB -->
+        <connection>scm:git:https://github.com/netplex/json-smart-v2.git</connection>
+        <developerConnection>scm:git:https://github.com/netplex/json-smart-v2.git</developerConnection>
+        <url>https://github.com/netplex/json-smart-v2</url>
+    </scm>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+    <profiles>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <!-- will be set by the release plugin upon performing mvn release:perform -->
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+                <gpg.keyname>8E322ED0</gpg.keyname>
+                <!-- <gpg.keyname>Uriel Chemouni (dev) <uchemouni@gmail.com></gpg.keyname> -->
+                <!-- GPG Key ID to use for signing -->
+            </properties>
+            <build>
+                <plugins>
+                    <!-- Enable signing of the artifacts For gpg:sign-and-deploy-file it's 
+						necessary to have a <server> with the repositoryId provided or id="remote-repository" 
+						defined in settings.xml (it contains the repository's login, psw) Signing: 
+						mvn gpg:sign-and-deploy-file -DpomFile=target/myapp-1.0.pom -Dfile=target/myapp-1.0.jar 
+						-Durl=http://oss.sonatype.org/content/repositories/malyvelky/ -DrepositoryId=sonatype_oss 
+						Note normally it uses the defaul key but we can ovveride it by either setting 
+						the property gpg.keyname (done in this POM) or by providing -Dkeyname=66AE163A 
+						on the command line. OR directly w/ gpg (remove space in - -): gpg -u 66AE163A 
+						- -sign - -detach-sign -a target/dbunit-embeddedderby-parenttest.jar Note: 
+						"mvn gpg:sign" results in NPE with v 1.o-a.-4, use "mvn package gpg:sign" 
+						instead; see the issue MGPG-18 -->
+                    <plugin>
+                        <!-- updated on 29/07/2015 -->
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/netplex/json-smart-v2/contents/accessors-smart/src/test?ref=v2.2.2 | rg '\"name\"|\"path\"|\"html_url\"' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/netplex/json-smart-v2/v2.2.2/accessors-smart/src/test/java/net/minidev/asm/BeansAccessTest.java | sed -n '1,40p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 134ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 152ms:
+    "name": "java",
+    "path": "accessors-smart/src/test/java",
+    "html_url": "https://github.com/netplex/json-smart-v2/tree/v2.2.2/accessors-smart/src/test/java",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://search.maven.org/solrsearch/select?q=g:%22net.minidev%22+AND+a:%22accessors-smart%22+AND+v:%221.2%22\\&rows=20\\&wt=json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/netplex/json-smart-v2/git/trees/v2.2.2?recursive=1 | rg 'accessors-smart/src/test' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/net/minidev/accessors-smart/1.2/accessors-smart-1.2-test-sources.jar | sed -n '1,20p'; curl -fsSI https://repo.maven.apache.org/maven2/net/minidev/accessors-smart/1.2/accessors-smart-1.2-tests.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 146ms:
+{"responseHeader":{"status":0,"QTime":2,"params":{"q":"g:\"net.minidev\" AND a:\"accessors-smart\" AND v:\"1.2\"","core":"","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"net.minidev:accessors-smart:1.2","g":"net.minidev","a":"accessors-smart","v":"1.2","p":"bundle","timestamp":1490515003000,"ec":["-sources.jar",".pom","-javadoc.jar",".jar"],"tags":["give","getter","accessors","constructor","smart","speed","reflect","java","performance","calls","poor","setter","those"]}]}}
+ succeeded in 226ms:
+      "path": "accessors-smart/src/test",
+      "path": "accessors-smart/src/test/java",
+      "path": "accessors-smart/src/test/java/net",
+      "path": "accessors-smart/src/test/java/net/minidev",
+      "path": "accessors-smart/src/test/java/net/minidev/asm",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/ASMTest.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/BTestBeansAccessB.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/TestDateConvert.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/TestNewInstance.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/BBoolPriv.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/BBoolPub.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/BBooleanPriv.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/BBooleanPub.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/BEnumPriv.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/BEnumPrivAc.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/BEnumPub.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/BLongPriv.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/BLongPrivAc.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/BLongPub.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/BLongPubAc.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/BObjectPriv.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/BObjectPub.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/BStrPriv.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/BStrPrivAc.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/BStrPub.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/BStrPubAc.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/BTest.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/TEnum.java",
+      "path": "accessors-smart/src/test/java/net/minidev/asm/bean/TestAsmAtom.java",
+
+ succeeded in 474ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 02 May 2026 04:09:29 GMT
+content-type: text/html
+cf-ray: 9f542bb76f761e6d-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/net/minidev/accessors-smart/1.2/accessors-smart-1.2-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 02 May 2026 04:09:29 GMT
+content-type: text/html
+cf-ray: 9f542bb92d4dbc68-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/net/minidev/accessors-smart/1.2/accessors-smart-1.2-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+I found a Maven source jar and Javadoc jar for the exact `1.2` artifact, and confirmed Maven Central does not publish test-sources or tests jars for it. I’m going to use the Maven jars for source/docs and the project’s `v2.2.2` branch test directory because that branch’s module POM is exactly `accessors-smart` 1.2.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json
+diff --git a/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json b/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json
+index 34c541d51c399970657cab4bb301c580d667770f..c8e1e828df70bc0888c2a0ff8ad6d37dfa798654
+--- a/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json
++++ b/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.minidev:accessors-smart:1.2"
++  "coordinates" : "net.minidev:accessors-smart:1.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/1.2/accessors-smart-1.2-sources.jar",
++  "repository-url" : "https://github.com/netplex/json-smart-v2",
++  "test-code-url" : "https://github.com/netplex/json-smart-v2/tree/v2.2.2/accessors-smart/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/1.2/accessors-smart-1.2-javadoc.jar",
++  "description" : "accessors-smart is a Java helper library that uses ASM bytecode generation to create fast accessors for bean properties, constructors, getters, and setters. It is used by json-smart and related code to avoid the overhead of standard Java reflection when reading, writing, and instantiating objects."
+ }
+
+diff --git a/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json b/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json
+index 34c541d51c399970657cab4bb301c580d667770f..c8e1e828df70bc0888c2a0ff8ad6d37dfa798654
+--- a/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json
++++ b/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.minidev:accessors-smart:1.2"
++  "coordinates" : "net.minidev:accessors-smart:1.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/1.2/accessors-smart-1.2-sources.jar",
++  "repository-url" : "https://github.com/netplex/json-smart-v2",
++  "test-code-url" : "https://github.com/netplex/json-smart-v2/tree/v2.2.2/accessors-smart/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/1.2/accessors-smart-1.2-javadoc.jar",
++  "description" : "accessors-smart is a Java helper library that uses ASM bytecode generation to create fast accessors for bean properties, constructors, getters, and setters. It is used by json-smart and related code to avoid the overhead of standard Java reflection when reading, writing, and instantiating objects."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 0ms:
+{
+  "coordinates": "net.minidev:accessors-smart:1.2",
+  "source-code-url": "https://repo1.maven.org/maven2/net/minidev/accessors-smart/1.2/accessors-smart-1.2-sources.jar",
+  "repository-url": "https://github.com/netplex/json-smart-v2",
+  "test-code-url": "https://github.com/netplex/json-smart-v2/tree/v2.2.2/accessors-smart/src/test/java",
+  "documentation-url": "https://repo1.maven.org/maven2/net/minidev/accessors-smart/1.2/accessors-smart-1.2-javadoc.jar",
+  "description": "accessors-smart is a Java helper library that uses ASM bytecode generation to create fast accessors for bean properties, constructors, getters, and setters. It is used by json-smart and related code to avoid the overhead of standard Java reflection when reading, writing, and instantiating objects."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json b/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json
+index 34c541d51c399970657cab4bb301c580d667770f..c8e1e828df70bc0888c2a0ff8ad6d37dfa798654
+--- a/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json
++++ b/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.minidev:accessors-smart:1.2"
++  "coordinates" : "net.minidev:accessors-smart:1.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/1.2/accessors-smart-1.2-sources.jar",
++  "repository-url" : "https://github.com/netplex/json-smart-v2",
++  "test-code-url" : "https://github.com/netplex/json-smart-v2/tree/v2.2.2/accessors-smart/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/1.2/accessors-smart-1.2-javadoc.jar",
++  "description" : "accessors-smart is a Java helper library that uses ASM bytecode generation to create fast accessors for bean properties, constructors, getters, and setters. It is used by json-smart and related code to avoid the overhead of standard Java reflection when reading, writing, and instantiating objects."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/net/minidev/accessors-smart/1.2/
+codex
+Updated [net.minidev-accessors-smart-1.2.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json).
+
+Used Maven Central’s exact `1.2` source and Javadoc jars, and the upstream `v2.2.2` test directory because that tree contains the `accessors-smart` test path for the 1.2-era branch. ([repo1.maven.org](https://repo1.maven.org/maven2/net/minidev/accessors-smart/1.2/)) No `language` field was added because this is not a Kotlin, Groovy, or Scala-specific artifact.
+
+Verified the JSON parses with `jq`.
+diff --git a/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json b/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json
+index 34c541d51c399970657cab4bb301c580d667770f..c8e1e828df70bc0888c2a0ff8ad6d37dfa798654
+--- a/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json
++++ b/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.minidev:accessors-smart:1.2"
++  "coordinates" : "net.minidev:accessors-smart:1.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/1.2/accessors-smart-1.2-sources.jar",
++  "repository-url" : "https://github.com/netplex/json-smart-v2",
++  "test-code-url" : "https://github.com/netplex/json-smart-v2/tree/v2.2.2/accessors-smart/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/1.2/accessors-smart-1.2-javadoc.jar",
++  "description" : "accessors-smart is a Java helper library that uses ASM bytecode generation to create fast accessors for bean properties, constructors, getters, and setters. It is used by json-smart and related code to avoid the overhead of standard Java reflection when reading, writing, and instantiating objects."
+ }
+
+tokens used
+57,041
+Updated [net.minidev-accessors-smart-1.2.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe/build/discovered-artifact-metadata/net.minidev-accessors-smart-1.2.json).
+
+Used Maven Central’s exact `1.2` source and Javadoc jars, and the upstream `v2.2.2` test directory because that tree contains the `accessors-smart` test path for the 1.2-era branch. ([repo1.maven.org](https://repo1.maven.org/maven2/net/minidev/accessors-smart/1.2/)) No `language` field was added because this is not a Kotlin, Groovy, or Scala-specific artifact.
+
+Verified the JSON parses with `jq`.
+Ran agent for net.minidev:accessors-smart:1.2 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe/build/agent-artifact-discovery-logs/net.minidev-accessors-smart-1.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2363-0acdfbfe/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 32s
+9 actionable tasks: 4 executed, 5 from cache
