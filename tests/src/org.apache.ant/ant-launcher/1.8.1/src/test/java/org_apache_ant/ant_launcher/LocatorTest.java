@@ -9,6 +9,8 @@ package org_apache_ant.ant_launcher;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -19,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 public class LocatorTest {
+    private static final String LOCATOR_CLASS_CACHE_FIELD = "class$org$apache$tools$ant$launch$Locator";
 
     @TempDir
     Path temporaryDirectory;
@@ -44,6 +47,28 @@ public class LocatorTest {
             value -> assertThat(value).isNull(),
             value -> assertThat(value).exists()
         );
+    }
+
+    @Test
+    void locatesBootstrapResourceThroughSystemResourceFallback() throws Exception {
+        VarHandle locatorClassCache = locatorClassCache();
+        Class<?> previousLocatorClass = (Class<?>) locatorClassCache.get();
+        locatorClassCache.set(String.class);
+        try {
+            File source = Locator.getResourceSource(null, "java/lang/String.class");
+
+            assertThat(source).satisfiesAnyOf(
+                value -> assertThat(value).isNull(),
+                value -> assertThat(value).exists()
+            );
+        } finally {
+            locatorClassCache.set(previousLocatorClass);
+        }
+    }
+
+    private static VarHandle locatorClassCache() throws NoSuchFieldException, IllegalAccessException {
+        return MethodHandles.privateLookupIn(Locator.class, MethodHandles.lookup())
+            .findStaticVarHandle(Locator.class, LOCATOR_CLASS_CACHE_FIELD, Class.class);
     }
 
     private static final class SingleResourceClassLoader extends ClassLoader {
