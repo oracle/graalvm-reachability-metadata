@@ -10,6 +10,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.DatagramPacket;
+import io.netty.incubator.codec.quic.BoringSSLAsyncPrivateKeyMethod;
 import io.netty.incubator.codec.quic.DefaultQuicStreamFrame;
 import io.netty.incubator.codec.quic.FlushStrategy;
 import io.netty.incubator.codec.quic.QLogConfiguration;
@@ -23,9 +24,13 @@ import io.netty.incubator.codec.quic.QuicStreamFrame;
 import io.netty.incubator.codec.quic.QuicStreamPriority;
 import io.netty.incubator.codec.quic.QuicStreamType;
 import io.netty.incubator.codec.quic.SegmentedDatagramPacketAllocator;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.ImmediateEventExecutor;
 import org.junit.jupiter.api.Test;
 
+import javax.net.ssl.SSLEngine;
 import java.net.InetSocketAddress;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -53,7 +58,7 @@ public class Netty_incubator_codec_classes_quicTest {
 
     @Test
     void streamFramePreservesFinFlagAndByteBufHolderSemantics() {
-        ByteBuf data = Unpooled.buffer(3).writeBytes(new byte[] { 1, 2, 3 });
+        ByteBuf data = Unpooled.buffer(3).writeBytes(new byte[] {1, 2, 3});
         DefaultQuicStreamFrame frame = new DefaultQuicStreamFrame(data, true);
         QuicStreamFrame copy = null;
         QuicStreamFrame retainedDuplicate = null;
@@ -67,7 +72,7 @@ public class Netty_incubator_codec_classes_quicTest {
             copy = frame.copy();
             QuicStreamFrame duplicate = frame.duplicate();
             retainedDuplicate = frame.retainedDuplicate();
-            replacement = frame.replace(Unpooled.wrappedBuffer(new byte[] { 8, 9 }));
+            replacement = frame.replace(Unpooled.wrappedBuffer(new byte[] {8, 9}));
 
             frame.content().setByte(0, 7);
             assertThat(copy.hasFin()).isTrue();
@@ -87,7 +92,7 @@ public class Netty_incubator_codec_classes_quicTest {
             assertThat(QuicStreamFrame.EMPTY_FIN.content().readableBytes()).isZero();
             assertThat(QuicStreamFrame.EMPTY_FIN.copy()).isSameAs(QuicStreamFrame.EMPTY_FIN);
             assertThat(QuicStreamFrame.EMPTY_FIN.release()).isFalse();
-            emptyReplacement = QuicStreamFrame.EMPTY_FIN.replace(Unpooled.wrappedBuffer(new byte[] { 42 }));
+            emptyReplacement = QuicStreamFrame.EMPTY_FIN.replace(Unpooled.wrappedBuffer(new byte[] {42}));
             assertThat(emptyReplacement.hasFin()).isTrue();
             assertThat(emptyReplacement.content().getUnsignedByte(0)).isEqualTo((short) 42);
         } finally {
@@ -185,6 +190,38 @@ public class Netty_incubator_codec_classes_quicTest {
         assertThatThrownBy(() -> signed.newId(8))
                 .isInstanceOf(UnsupportedOperationException.class)
                 .hasMessageContaining("input to sign with");
+    }
+
+    @Test
+    void asyncPrivateKeyMethodSupportsSigningAndDecryptingWithNettyFutures() throws Exception {
+        BoringSSLAsyncPrivateKeyMethod privateKeyMethod = new BoringSSLAsyncPrivateKeyMethod() {
+            @Override
+            public Future<byte[]> sign(SSLEngine engine, int signatureAlgorithm, byte[] input) {
+                byte[] signature = Arrays.copyOf(input, input.length + 1);
+                signature[input.length] = (byte) signatureAlgorithm;
+                return ImmediateEventExecutor.INSTANCE.newSucceededFuture(signature);
+            }
+
+            @Override
+            public Future<byte[]> decrypt(SSLEngine engine, byte[] input) {
+                byte[] decrypted = input.clone();
+                for (int i = 0; i < decrypted.length / 2; i++) {
+                    byte tmp = decrypted[i];
+                    decrypted[i] = decrypted[decrypted.length - 1 - i];
+                    decrypted[decrypted.length - 1 - i] = tmp;
+                }
+                return ImmediateEventExecutor.INSTANCE.newSucceededFuture(decrypted);
+            }
+        };
+
+        int signatureAlgorithm = 1234;
+        Future<byte[]> signatureFuture = privateKeyMethod.sign(null, signatureAlgorithm, new byte[] {1, 2, 3});
+        Future<byte[]> decryptedFuture = privateKeyMethod.decrypt(null, new byte[] {4, 5, 6});
+
+        assertThat(signatureFuture.isSuccess()).isTrue();
+        assertThat(signatureFuture.get()).containsExactly(1, 2, 3, (byte) signatureAlgorithm);
+        assertThat(decryptedFuture.isSuccess()).isTrue();
+        assertThat(decryptedFuture.get()).containsExactly(6, 5, 4);
     }
 
     @Test
