@@ -1,0 +1,1370 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de93a-6ce5-7493-a417-1c309c13c4d5
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: plexus:plexus-utils:1.0.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0.2" when "$version$" is replaced with "1.0.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
+- Set "coordinates" to "plexus:plexus-utils:1.0.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream sources, then update the JSON directly with version-tokenized URLs.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 0ms:
+{
+  "coordinates" : "plexus:plexus-utils:1.0.2"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'plexus-plexus-utils-1\\.0\\.2\\.json"'$|plexus-utils'"'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
+
+web search: 
+web search: plexus plexus-utils 1.0.2 Maven source jar repository scm tag
+web search: 
+web search: https://repo.maven.apache.org/maven2/plexus/plexus-utils/
+web search: 
+web search: https://repo.maven.apache.org/maven2/plexus/plexus-utils/1.0.2/
+web search: 
+web search: 
+codex
+Maven Central has the 1.0.2 POM and JAR for the legacy `plexus` group, but no published sources or test artifacts in that directory, so I’m checking the POM and upstream tags for the best stable links.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/plexus/plexus-utils/1.0.2/plexus-utils-1.0.2.pom' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 0ms:
+<project>
+  <parent>
+    <artifactId>plexus-root</artifactId>
+    <groupId>plexus</groupId>
+    <version>1.0.3</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>plexus</groupId>
+  <artifactId>plexus-utils</artifactId>
+  <name>Plexus Common Utilities</name>
+  <version>1.0.2</version>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude implementation="java.lang.String">org/codehaus/plexus/util/FileBasedTestCase.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <distributionManagement>
+    <status>deployed</status>
+  </distributionManagement>
+</project>
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/plexus/plexus-utils/1.0.2/plexus-utils-1.0.2-sources.jar || true
+curl -I -fsSL https://repo.maven.apache.org/maven2/plexus/plexus-utils/1.0.2/plexus-utils-1.0.2-test-sources.jar || true
+curl -I -fsSL https://repo.maven.apache.org/maven2/plexus/plexus-utils/1.0.2/plexus-utils-1.0.2-javadoc.jar || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 817ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 02 May 2026 15:07:07 GMT
+content-type: text/html
+cf-ray: 9f57ef08c8e823af-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/plexus/plexus-utils/1.0.2/plexus-utils-1.0.2-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 02 May 2026 15:07:07 GMT
+content-type: text/html
+cf-ray: 9f57ef0a8fd7021d-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/plexus/plexus-utils/1.0.2/plexus-utils-1.0.2-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 02 May 2026 15:07:07 GMT
+content-type: text/html
+cf-ray: 9f57ef0c4debbb10-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/plexus/plexus-utils/1.0.2/plexus-utils-1.0.2-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: site:github.com/codehaus-plexus/plexus-utils 1.0.2 plexus-utils
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/codehaus-plexus/plexus-utils.git 'refs/tags/*1.0*'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/plexus/plexus-utils/1.0.2/plexus-utils-1.0.2.jar -o /tmp/plexus-utils-1.0.2.jar && jar tf /tmp/plexus-utils-1.0.2.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 167ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/codehaus/
+org/codehaus/plexus/
+org/codehaus/plexus/util/
+org/codehaus/plexus/util/xml/
+org/codehaus/plexus/util/xml/PrettyPrintXMLWriter.class
+org/codehaus/plexus/util/Expand.class
+org/codehaus/plexus/util/SelectorUtils.class
+org/codehaus/plexus/util/FastMap$Values.class
+org/codehaus/plexus/util/FastMap$EntrySet$1.class
+org/codehaus/plexus/util/cli/
+org/codehaus/plexus/util/cli/Commandline.class
+org/codehaus/plexus/util/CachedMap.class
+org/codehaus/plexus/util/PathTool.class
+org/codehaus/plexus/util/CollectionUtils.class
+org/codehaus/plexus/util/FastMap$KeySet$1.class
+org/codehaus/plexus/util/FastMap$EntryImpl.class
+org/codehaus/plexus/util/FastMap$1.class
+org/codehaus/plexus/util/cli/Commandline$Argument.class
+org/codehaus/plexus/util/xml/pull/
+org/codehaus/plexus/util/xml/pull/XmlSerializer.class
+org/codehaus/plexus/util/SweeperPool$Sweeper.class
+org/codehaus/plexus/util/dag/
+org/codehaus/plexus/util/dag/CycleDetector.class
+org/codehaus/plexus/util/FastMap$Values$1.class
+META-INF/maven/
+META-INF/maven/plexus/
+META-INF/maven/plexus/plexus-utils/
+META-INF/maven/plexus/plexus-utils/pom.properties
+org/codehaus/plexus/util/cli/EnhancedStringTokenizer.class
+org/codehaus/plexus/util/xml/pull/MXParser.class
+org/codehaus/plexus/util/dag/DAG.class
+org/codehaus/plexus/util/introspection/
+org/codehaus/plexus/util/introspection/ClassMap$1.class
+org/codehaus/plexus/util/xml/pull/MXSerializer.class
+org/codehaus/plexus/util/xml/Xpp3DomWriter.class
+org/codehaus/plexus/util/xml/pull/XmlPullParser.class
+org/codehaus/plexus/util/cli/CommandLineUtils.class
+org/codehaus/plexus/util/LineOrientedInterpolatingReader.class
+org/codehaus/plexus/util/SweeperPool.class
+org/codehaus/plexus/util/dag/CycleDetectedException.class
+org/codehaus/plexus/util/dag/Vertex.class
+org/codehaus/plexus/util/FastMap.class
+org/codehaus/plexus/util/introspection/MethodMap.class
+org/codehaus/plexus/util/cli/DefaultConsumer.class
+org/codehaus/plexus/util/cli/Commandline$Marker.class
+org/codehaus/plexus/util/cli/StreamFeeder.class
+org/codehaus/plexus/util/introspection/ReflectionValueExtractor.class
+org/codehaus/plexus/util/cli/WriterStreamConsumer.class
+org/codehaus/plexus/util/StringInputStream.class
+org/codehaus/plexus/util/StringOutputStream.class
+org/codehaus/plexus/util/ReflectionUtils.class
+org/codehaus/plexus/util/IOUtil.class
+org/codehaus/plexus/util/Os.class
+org/codehaus/plexus/util/xml/Xpp3Dom.class
+org/codehaus/plexus/util/reflection/
+org/codehaus/plexus/util/reflection/Reflector.class
+org/codehaus/plexus/util/FileUtils.class
+org/codehaus/plexus/util/cli/CommandLineUtils$StringStreamConsumer.class
+org/codehaus/plexus/util/cli/StreamPumper.class
+org/codehaus/plexus/util/xml/XMLWriter.class
+org/codehaus/plexus/util/introspection/ClassMap.class
+org/codehaus/plexus/util/xml/CompactXMLWriter.class
+org/codehaus/plexus/util/xml/pull/XmlPullParserException.class
+org/codehaus/plexus/util/ExceptionUtils.class
+org/codehaus/plexus/util/StringUtils.class
+org/codehaus/plexus/util/FastMap$KeySet.class
+org/codehaus/plexus/util/xml/SerializerXMLWriter.class
+org/codehaus/plexus/util/introspection/ClassMap$CacheMiss.class
+org/codehaus/plexus/util/TypeFormat.class
+org/codehaus/plexus/util/dag/TopologicalSorter.class
+org/codehaus/plexus/util/PropertyUtils.class
+org/codehaus/plexus/util/introspection/ClassMap$MethodInfo.class
+org/codehaus/plexus/util/InterpolationFilterReader.class
+org/codehaus/plexus/util/DirectoryScanner.class
+org/codehaus/plexus/util/xml/Xpp3DomBuilder.class
+org/codehaus/plexus/util/cli/CommandLineException.class
+org/codehaus/plexus/util/introspection/MethodMap$AmbiguousException.class
+
+ succeeded in 335ms:
+746e7eb06cfdc6bce4e904c022cd5dd240a40213	refs/tags/plexus-utils-3.1.0
+9063d79ca6732c4b45566a7784a1888c4ef78fb0	refs/tags/plexus-utils-3.1.0^{}
+
+web search: 
+web search: "plexus-utils-1.0.2"
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://github.com/codehaus-plexus/plexus-utils.git' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+exec
+/usr/bin/bash -lc 'git ls-remote --heads https://github.com/codehaus-plexus/plexus-utils.git' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 314ms:
+758087ab51a0dd93459dba7eb555541dbd9eadd4	refs/tags/plexus-utils-1.4
+6c3df81771272bf372e9e5064bd45e6fcbfe8c07	refs/tags/plexus-utils-1.4^{}
+efb6ed4a823b4f6509c8ca122a3203e140a259f1	refs/tags/plexus-utils-1.4-alpha-1
+a74651c6edfbfc1fbe4b8d16b9c207da34408ac1	refs/tags/plexus-utils-1.4-alpha-1^{}
+31c6ac0366f09ac5195c9309cf51b7de9f4757c2	refs/tags/plexus-utils-1.4.1
+ef5904a13e88a5c3a5b05c2d8aeb8a807acaba4d	refs/tags/plexus-utils-1.4.1^{}
+d86f8516993d06a7224e2cc701187d59710df21e	refs/tags/plexus-utils-1.4.2
+dcf16401132a88255bfdf988a0f7fad3e4948542	refs/tags/plexus-utils-1.4.2^{}
+f3eb7b5695327d646ebb47f4dbd50ce631ee2391	refs/tags/plexus-utils-1.4.3
+1cb61deb0b2c4f47f69043f1d16f8a76b8537225	refs/tags/plexus-utils-1.4.3^{}
+1ba81f80be3dd5397de8f940be3b84e6c88fc8d3	refs/tags/plexus-utils-1.4.4
+9e2a5448ee289411f5e697f9918e6c6945737882	refs/tags/plexus-utils-1.4.4^{}
+4aaeb35b6e428f095da3188ad35e019eca255cf4	refs/tags/plexus-utils-1.4.5
+57c0bcc2ea35e58ec7dc0476504180c5ad0a4593	refs/tags/plexus-utils-1.4.5^{}
+e5253b4433be1c55bcdddc152eaeac381a720a4d	refs/tags/plexus-utils-1.4.6
+3061b3f8ee53c50d8f52fba75209c303772489af	refs/tags/plexus-utils-1.4.6^{}
+ce42464013d712cd5de8873132d4807ca63c53b7	refs/tags/plexus-utils-1.4.7
+769ffcb6382b23c1d74b8858ce98d5132863542d	refs/tags/plexus-utils-1.4.7^{}
+95cb7e8deaaeb4b8ed1186f18e268839e32d7668	refs/tags/plexus-utils-1.4.8
+b8b142269cf1927b25d24cdb26864b4ba4975245	refs/tags/plexus-utils-1.4.8^{}
+dcf3d435e2860918c81a0fe1a989cf5ea1299bcc	refs/tags/plexus-utils-1.4.9
+ee91731bb9698aa1afc379ce7cc1003e96ca9e85	refs/tags/plexus-utils-1.4.9^{}
+9c2a86c430c565b8f97d5a123a67a2b362ef6a60	refs/tags/plexus-utils-1.5
+c665a89e86b234c0b389b70d65096b2f9a4f5d4b	refs/tags/plexus-utils-1.5^{}
+bab478d09020684694b01bef13ed6c632a4d24e9	refs/tags/plexus-utils-1.5.1
+d52414c27c4b879b861d94a1793c1c5a67d22a96	refs/tags/plexus-utils-1.5.1^{}
+bcbd452f1fd584873efd75483243578588465e3b	refs/tags/plexus-utils-1.5.10
+5b7ea37dc840c1fd387cc77e0192057a6b942434	refs/tags/plexus-utils-1.5.10^{}
+b89af74c48e93a560cbce0e94984bbceb89acdae	refs/tags/plexus-utils-1.5.11
+107dfeb4e7e27b2eaf4d835c075c02be97fe0369	refs/tags/plexus-utils-1.5.11^{}
+3f59e5cc37381f12c286beeab9027d4358751663	refs/tags/plexus-utils-1.5.12
+9f6196f04cccd2ec5d4273a2a82b4c575456f9df	refs/tags/plexus-utils-1.5.12^{}
+a601cbf214d9a1d8cbf7766790b17445d7e4a1bd	refs/tags/plexus-utils-1.5.13
+237368aa8e0bca8e9588803adfa97c28c57fcad1	refs/tags/plexus-utils-1.5.13^{}
+78731b44609e0650fd6f3e1373bb7c7074a21987	refs/tags/plexus-utils-1.5.14
+2eb098d65abcbf5ad918798d539f0e180975b156	refs/tags/plexus-utils-1.5.14^{}
+560e84e9cf80145af70958f2e7c9dcb669cb3e88	refs/tags/plexus-utils-1.5.15
+584924be719d7fe209ed37c841c11423fd912289	refs/tags/plexus-utils-1.5.15^{}
+f318e216439acfc996abc3f9716221db14148331	refs/tags/plexus-utils-1.5.2
+1e2810901aec856fce9be2a7fd01d5281dc31bf6	refs/tags/plexus-utils-1.5.2^{}
+34d3ea1b54840bdf563029b1b3674d9ffa424616	refs/tags/plexus-utils-1.5.3
+72262c7eb85f1c65cc6fb15902c248c2dca8f072	refs/tags/plexus-utils-1.5.3^{}
+c00a6efb3cba5cd5a092e15d5a6025369c7ce1df	refs/tags/plexus-utils-1.5.4
+f3f3eddea217f4a00731b68a1e409c702a00bc69	refs/tags/plexus-utils-1.5.4^{}
+3fc743a8d3afe5e7b72785f2cf6833bca35fe61e	refs/tags/plexus-utils-1.5.5
+d631aa1ef1f0091942971796b51f1c2c3887f95f	refs/tags/plexus-utils-1.5.5^{}
+1eef30272695ac6771283ca5c7119a00191d0ae9	refs/tags/plexus-utils-1.5.6
+30109440b75f7c3b6521749d210ac14b67bce1f7	refs/tags/plexus-utils-1.5.6^{}
+92823b8c9dd2bc066febec27955ce10d72188367	refs/tags/plexus-utils-1.5.7
+f7ced1f86a35125e2f168f7ed3ffe64405d9fcad	refs/tags/plexus-utils-1.5.7^{}
+a40605360bb2b7c3ec88705155ba357161e112e8	refs/tags/plexus-utils-1.5.8
+38ecf41fe352679ded6ab65e413574a4b19c2966	refs/tags/plexus-utils-1.5.8^{}
+80727cd1792c5559f20ff7224bb0f6d6cd40cd03	refs/tags/plexus-utils-1.5.9
+9e32214e844daa22fe2fc131eb8f707c6b03a228	refs/tags/plexus-utils-1.5.9^{}
+24c0c93596d2260350c3f2b106f5db9b9429b785	refs/tags/plexus-utils-2.0.0
+136533605ceee46df68e08c61e3804b789f19ee1	refs/tags/plexus-utils-2.0.0^{}
+d02201337c0b93bcc0c77e1c6120766b631b31cb	refs/tags/plexus-utils-2.0.1
+8f3b800fafbd787f55b0d3974ed7c0449b778902	refs/tags/plexus-utils-2.0.1^{}
+05e581a993a89ecb425e8f305699f60a31e8cc34	refs/tags/plexus-utils-2.0.2
+4e1275464c93d3e284f373dd30f06015ebe24711	refs/tags/plexus-utils-2.0.2^{}
+09291061e59ba6e730e736da2fe9b4baa0150c42	refs/tags/plexus-utils-2.0.3
+b3ad4147d9e65fcd2c18d5a8630ac9f844570748	refs/tags/plexus-utils-2.0.3^{}
+f21b34c749c61030b5e63b3b090f49ae466d25a7	refs/tags/plexus-utils-2.0.4
+523d7c07b5d9e5cd89e231055e97dcb814af1b76	refs/tags/plexus-utils-2.0.4^{}
+1bc644f74de92e52c415b8a232cff9690b9daaa6	refs/tags/plexus-utils-2.0.5
+8d9191e13217edd1c73dfc53efb6f4cab407485a	refs/tags/plexus-utils-2.0.5^{}
+c2ef0611f8709e9a3fba2af57835a60264b1081c	refs/tags/plexus-utils-2.0.7
+e282b22a3ddbb2ea4ae4d4b429b3b93b89409584	refs/tags/plexus-utils-2.0.7^{}
+01d252ac6be7f132d37a632b9ddbdd345b037181	refs/tags/plexus-utils-2.1
+b0e8713ff665f7fb5c8fcf6ae40d1ee03147db97	refs/tags/plexus-utils-3.0
+f1ee873df4113eae791face1984e14e2b37440ad	refs/tags/plexus-utils-3.0.1
+a09697db5ee87f97180b1c84b5bbdef47ba28658	refs/tags/plexus-utils-3.0.10
+9f1b1dffcfe474c574b2b3041201f5c6692d8b7f	refs/tags/plexus-utils-3.0.11
+b60b2d5f5dc534ec7f9ef23ea31cef42d0dda2ea	refs/tags/plexus-utils-3.0.12
+5d446205de12702bf1734e2893a919bf599c3c12	refs/tags/plexus-utils-3.0.13
+e434f28f0a2f9175a493be39c47176aeb3d00469	refs/tags/plexus-utils-3.0.14
+3b271b43f9e5021b4232fc2ffdfb4e469c7f8685	refs/tags/plexus-utils-3.0.15
+cf317f9b4070c3c619e9ee75a3e38bea3ff621c1	refs/tags/plexus-utils-3.0.16
+3dd5750645d806aeeae174e5268609d927660e0b	refs/tags/plexus-utils-3.0.17
+a4ef5af0a58e4b0f1d08db4fc25a793139a1ad21	refs/tags/plexus-utils-3.0.18
+08e46b90d2b8ebd7adfcdb5cc9cfb3df37c43cd0	refs/tags/plexus-utils-3.0.19
+2b5a6c3645602fd19932d6a6bce07e9c9bf9b29f	refs/tags/plexus-utils-3.0.2
+dc6ed699c644d649622f85bdf85d0684e54c11f6	refs/tags/plexus-utils-3.0.20
+859590100d6177108424ed120e1bb8ca86ff0b54	refs/tags/plexus-utils-3.0.21
+573ef640816840e5f528dbeb70d7fbec684f216e	refs/tags/plexus-utils-3.0.22
+b4217444289ade35c1972af9fc3bfa42f972e1c8	refs/tags/plexus-utils-3.0.22^{}
+7c1bd1718b246fa2ce4d3f4d0bd3cb7facbb15c3	refs/tags/plexus-utils-3.0.23
+6176f91bb843eecddac857591ed20bda38e01470	refs/tags/plexus-utils-3.0.23^{}
+f87cb2cb2ef730896badb476254245f03175d613	refs/tags/plexus-utils-3.0.24
+fd36d8b80ba10955ef065230571ce2be2d4c1bbb	refs/tags/plexus-utils-3.0.24^{}
+c07eb85ab8a59dd73d00449f33e3bc57924123e2	refs/tags/plexus-utils-3.0.3
+76880d4187130c8142b887c55d05c1cb349e2dc2	refs/tags/plexus-utils-3.0.4
+b50fe89cfb368e06dabc340b851504a2a2f25c47	refs/tags/plexus-utils-3.0.5
+4332f7bd3c51ff3496998fdcb2d00a38e067630d	refs/tags/plexus-utils-3.0.6
+23cb9cba9d7ba020547802a45b2991dee99dbcb1	refs/tags/plexus-utils-3.0.7
+b0c708017f813ec9b7799fe82b4bc4bfd1631c53	refs/tags/plexus-utils-3.0.8
+244226d693f6a816fdba0f33f269e9e71f3e8984	refs/tags/plexus-utils-3.0.9
+746e7eb06cfdc6bce4e904c022cd5dd240a40213	refs/tags/plexus-utils-3.1.0
+9063d79ca6732c4b45566a7784a1888c4ef78fb0	refs/tags/plexus-utils-3.1.0^{}
+1b21b604496a6d02fa4960c8409b2f7e59dabccb	refs/tags/plexus-utils-3.1.1
+8cbc868ba4647e5c3838a3a9fc391323b158c012	refs/tags/plexus-utils-3.1.1^{}
+a27db0f550949b7adf37c0020a71c4cfcc8ed75c	refs/tags/plexus-utils-3.2.0
+42455f74a94ca96cc87b36a88131650301c95aaa	refs/tags/plexus-utils-3.2.0^{}
+c12afaf2401b872977e4068e393ef396a61adc0c	refs/tags/plexus-utils-3.2.1
+0a3cd62dece044be0950a8453467a9a6cb29d696	refs/tags/plexus-utils-3.2.1^{}
+98d4beba4f9d4e41ed89f689765713fbf13abc42	refs/tags/plexus-utils-3.3.0
+0e25d74d16b8ce748038f572806052bb37ccbb38	refs/tags/plexus-utils-3.3.0^{}
+1eee991323715bb292b07e3a061a78ab1248ab68	refs/tags/plexus-utils-3.3.1
+2229b3556a5f0467ef7b936cc1b031468b9e08b3	refs/tags/plexus-utils-3.3.1^{}
+a0d031928892b58684f664ed75b14aa7cc7511d3	refs/tags/plexus-utils-3.4.0
+6f2b70a826dc4885b2a3206ec374cba75a4f09bc	refs/tags/plexus-utils-3.4.0^{}
+5b69ff4814231d8fcd3d532dd78331d0bdf0904d	refs/tags/plexus-utils-3.4.1
+abc5db68410568c4c95c72f948353cbe8cd44d01	refs/tags/plexus-utils-3.4.1^{}
+ab37527fbc0da28a3ec557abfc53cd388b112076	refs/tags/plexus-utils-3.4.2
+01908b2979d4104a1e87f7e1eb0e157c9e1a3f8c	refs/tags/plexus-utils-3.4.2^{}
+2939dc790e814961e5e04d50059914d0f13f6da5	refs/tags/plexus-utils-3.5.0
+2b784ba7f518257c2215a34103c38bbda2a45056	refs/tags/plexus-utils-3.5.0^{}
+c5c7244cafae3a92ea7aa5a7d695bae5dc1be461	refs/tags/plexus-utils-3.5.1
+8488ff2200964f47114b9dee5604dc3314a2fe8a	refs/tags/plexus-utils-3.5.1^{}
+42ee98f7b4435dc4a9bb79b007de6d20dd4af4a0	refs/tags/plexus-utils-3.6.0
+b7230bd6243248c3866ae9c9380408e8d7568545	refs/tags/plexus-utils-3.6.0^{}
+55ac7778eddbafaad0b5711048c5129b63a5d499	refs/tags/plexus-utils-3.6.1
+c61982e755b021faca509637f1ea6ae04ee241c3	refs/tags/plexus-utils-3.6.1^{}
+1fd13601b3db86c12c91780cca8c1b80995c25e6	refs/tags/plexus-utils-4.0.0
+0803079106d268c234271ef6ddfce7e35f6def5a	refs/tags/plexus-utils-4.0.0^{}
+4da838486b6ecc1411326b4ea0c64b5b03210d4a	refs/tags/plexus-utils-4.0.1
+31ef81812095709ebbfa0e4b707e1c3ad00a51e5	refs/tags/plexus-utils-4.0.1^{}
+6374bd3e69bbf07064fb1eceb80a2a878157c9c0	refs/tags/plexus-utils-4.0.2
+4789f7a122d2bb096b67630d62faa27560b035ef	refs/tags/plexus-utils-4.0.2^{}
+5c773067887f0efc51bc9683847d60a5ca9653fb	refs/tags/plexus-utils-4.0.3
+c86a34f37425fc5fd698c76241623c8d02dab7c6	refs/tags/plexus-utils-4.0.3^{}
+
+ succeeded in 323ms:
+ff26c7572277d27c1f0538582388c97af24cc4c9	refs/heads/ISSUE-242
+222e8e4bd55bc15cca72fa2cf80e076c2f14fb81	refs/heads/cleanup1
+268f05c7713e550aab377b258b91c361b602080d	refs/heads/copilot/poll-data-from-input-stream
+eb926f45a9a8334aee77b4af353aa4c99e819a6d	refs/heads/gh-pages
+fc4c0ad2c36080618fa5014d56b738926881005d	refs/heads/jep-238
+e9f14bef66ff818e9d48788f29266b7db9fe5830	refs/heads/master
+ab39f2927bf7ff8d80e8c171becfd6e5e7c72932	refs/heads/maven-xml-api
+41d55d4ff5eacff955c86e1081481a4a8063b634	refs/heads/plexus-utils-3.3.x
+298a978d8a984dfd342a3b708bab1e8173b1fe80	refs/heads/plexus-utils-3.x
+ab39f2927bf7ff8d80e8c171becfd6e5e7c72932	refs/heads/plexus-utils-4
+1332277827f6c6edaca9a6a92c476e44389cd42e	refs/heads/plexus-xml-4
+04afde829bad3cb2fbecc14bcb54f29dd0763faa	refs/heads/trunk@4567
+327dbb930c09e1000b178fb2c23aadc6ab7205f1	refs/heads/update-41-Revert_usage_of_cmd_on_Windows
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/maven-metadata.xml | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.codehaus.plexus</groupId>
+  <artifactId>plexus-utils</artifactId>
+  <versioning>
+    <latest>4.0.3</latest>
+    <release>4.0.3</release>
+    <versions>
+      <version>1.0.4</version>
+      <version>1.0.5</version>
+      <version>1.1</version>
+      <version>1.2</version>
+      <version>1.3</version>
+      <version>1.4-alpha-1</version>
+      <version>1.4</version>
+      <version>1.4.1</version>
+      <version>1.4.2</version>
+      <version>1.4.3</version>
+      <version>1.4.4</version>
+      <version>1.4.5</version>
+      <version>1.4.6</version>
+      <version>1.4.7</version>
+      <version>1.4.8</version>
+      <version>1.4.9</version>
+      <version>1.5</version>
+      <version>1.5.1</version>
+      <version>1.5.2</version>
+      <version>1.5.3</version>
+      <version>1.5.4</version>
+      <version>1.5.5</version>
+      <version>1.5.6</version>
+      <version>1.5.7</version>
+      <version>1.5.8</version>
+      <version>1.5.9</version>
+      <version>1.5.10</version>
+      <version>1.5.11</version>
+      <version>1.5.12</version>
+      <version>1.5.13</version>
+      <version>1.5.14</version>
+      <version>1.5.15</version>
+      <version>2.0.0</version>
+      <version>2.0.1</version>
+      <version>2.0.2</version>
+      <version>2.0.3</version>
+      <version>2.0.4</version>
+      <version>2.0.5</version>
+      <version>2.0.6</version>
+      <version>2.0.7</version>
+      <version>2.1</version>
+      <version>3.0</version>
+      <version>3.0.1</version>
+      <version>3.0.2</version>
+      <version>3.0.3</version>
+      <version>3.0.4</version>
+      <version>3.0.5</version>
+      <version>3.0.6</version>
+      <version>3.0.7</version>
+      <version>3.0.8</version>
+      <version>3.0.9</version>
+      <version>3.0.10</version>
+      <version>3.0.11</version>
+      <version>3.0.12</version>
+      <version>3.0.13</version>
+      <version>3.0.14</version>
+      <version>3.0.15</version>
+      <version>3.0.16</version>
+      <version>3.0.17</version>
+      <version>3.0.18</version>
+      <version>3.0.19</version>
+      <version>3.0.20</version>
+      <version>3.0.21</version>
+      <version>3.0.22</version>
+      <version>3.0.23</version>
+      <version>3.0.24</version>
+      <version>3.1.0</version>
+      <version>3.1.1</version>
+      <version>3.2.0</version>
+      <version>3.2.1</version>
+      <version>3.3.0</version>
+      <version>3.3.1</version>
+      <version>3.4.0</version>
+      <version>3.4.1</version>
+      <version>3.4.2</version>
+      <version>3.5.0</version>
+      <version>3.5.1</version>
+      <version>3.6.0</version>
+      <version>3.6.1</version>
+      <version>4.0.0</version>
+      <version>4.0.1</version>
+      <version>4.0.2</version>
+      <version>4.0.3</version>
+    </versions>
+    <lastUpdated>20260401164518</lastUpdated>
+  </versioning>
+</metadata>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/plexus/plexus-utils/maven-metadata.xml' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/codehaus-plexus/plexus-utils/master/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 191ms:
+<metadata>
+  <groupId>plexus</groupId>
+  <artifactId>plexus-utils</artifactId>
+  <versioning>
+    <release>1.0.3</release>
+    <versions>
+      <version>1.0.2</version>
+      <version>1.0.3</version>
+      <version>1.0-alpha-1</version>
+      <version>1.0-alpha-2</version>
+      <version>1.0-alpha-3</version>
+      <version>1.0-beta-1</version>
+      <version>1.0.0</version>
+      <version>1.0.1</version>
+    </versions>
+  </versioning>
+</metadata>
+ succeeded in 164ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright The Codehaus Foundation.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.codehaus.plexus</groupId>
+    <artifactId>plexus</artifactId>
+    <version>25</version>
+  </parent>
+
+  <artifactId>plexus-utils</artifactId>
+  <version>4.0.4-SNAPSHOT</version>
+
+  <name>Plexus Common Utilities</name>
+  <description>A collection of various utility classes to ease working with strings, files, command lines and
+    more.</description>
+  <url>https://codehaus-plexus.github.io/plexus-utils/</url>
+
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:https://github.com/codehaus-plexus/plexus-utils.git</connection>
+    <developerConnection>${project.scm.connection}</developerConnection>
+    <tag>plexus-utils-4.0.3</tag>
+    <url>https://github.com/codehaus-plexus/plexus-utils/tree/${project.scm.tag}/</url>
+  </scm>
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/codehaus-plexus/plexus-utils/issues</url>
+  </issueManagement>
+  <distributionManagement>
+    <site>
+      <id>github:gh-pages</id>
+      <url>${project.scm.developerConnection}</url>
+    </site>
+  </distributionManagement>
+
+  <properties>
+    <project.build.outputTimestamp>2026-03-27T12:37:35Z</project.build.outputTimestamp>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-xml</artifactId>
+      <version>3.0.1</version>
+      <!-- this dependency is optional, only necessary for deprecated Reader/WriterFactory.newXmlReader/Writer(...) -->
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-scm-publish-plugin</artifactId>
+        <configuration>
+          <content>${project.reporting.outputDirectory}</content>
+          <!-- mono-module doesn't require site:stage -->
+        </configuration>
+        <executions>
+          <execution>
+            <id>scm-publish</id>
+            <!-- deploy site with maven-scm-publish-plugin -->
+            <goals>
+              <goal>publish-scm</goal>
+            </goals>
+            <phase>site-deploy</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!-- required to ensure the test classes are used, not surefire's plexus-utils -->
+          <childDelegation>true</childDelegation>
+          <excludes>
+            <exclude>org/codehaus/plexus/util/FileBasedTestCase.java</exclude>
+            <exclude>**/Test*.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Multi-Release>true</Multi-Release>
+              <Automatic-Module-Name>org.codehaus.plexus.util</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>jdk9+</id>
+      <activation>
+        <jdk>[9,)</jdk>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>compile-java-9</id>
+                  <goals>
+                    <goal>compile</goal>
+                  </goals>
+                  <configuration>
+                    <release>9</release>
+                    <compileSourceRoots>
+                      <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+                    </compileSourceRoots>
+                    <multiReleaseOutput>true</multiReleaseOutput>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+    <profile>
+      <id>jdk10+</id>
+      <activation>
+        <jdk>[10,)</jdk>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>compile-java-10</id>
+                  <goals>
+                    <goal>compile</goal>
+                  </goals>
+                  <configuration>
+                    <release>10</release>
+                    <compileSourceRoots>
+                      <compileSourceRoot>${project.basedir}/src/main/java10</compileSourceRoot>
+                    </compileSourceRoots>
+                    <multiReleaseOutput>true</multiReleaseOutput>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+    <profile>
+      <id>jdk11+</id>
+      <activation>
+        <jdk>[11,)</jdk>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>compile-java-11</id>
+                  <goals>
+                    <goal>compile</goal>
+                  </goals>
+                  <configuration>
+                    <release>11</release>
+                    <compileSourceRoots>
+                      <compileSourceRoot>${project.basedir}/src/main/java11</compileSourceRoot>
+                    </compileSourceRoots>
+                    <multiReleaseOutput>true</multiReleaseOutput>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+    <profile>
+      <id>plexus-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-enforcer-plugin</artifactId>
+
+web search: 
+web search: "plexus:plexus-utils:1.0.2"
+web search: 
+web search: https://github.com/codehaus-plexus/plexus-utils
+web search: 
+web search: https://repo.maven.apache.org/maven2/plexus/plexus-utils/1.0.2/plexus-utils-1.0.2.pom
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22plexus%22%20AND%20a:%22plexus-utils%22%20AND%20v:%221.0.2%22&rows=20&wt=json'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://central.sonatype.com/api/internal/browse/component/versions?namespace=plexus&name=plexus-utils' || true" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 168ms:
+{"responseHeader":{"status":0,"QTime":1,"params":{"q":"g:\"plexus\" AND a:\"plexus-utils\" AND v:\"1.0.2\"","core":"","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"plexus:plexus-utils:1.0.2","g":"plexus","a":"plexus-utils","v":"1.0.2","p":"jar","timestamp":1131487245000,"ec":[".jar",".pom"]}]}}
+ succeeded in 1723ms:
+{"components":[{"id":"pkg:maven/com.bloxbean.cardano/yaci-store-remote@0.0.10","type":"COMPONENT_VERSION","namespace":"com.bloxbean.cardano","name":"yaci-store-remote","projectName":null,"version":"0.0.10","publishedEpochMillis":1687697175000,"licenses":["The MIT License"],"description":"Yaci Store Remote Publisher Module","categories":null,"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":null,"nsPopularityOrgCount":null,"dependentOnCount":93,"dependencyOfCount":1,"childCount":0,"classifiers":["javadoc","sources"],"packaging":"jar","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/com.bloxbean.cardano:yaci-store-remote/0.0.10","vulnerabilityCount":null},"qualityScore":null,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/com.bloxbean.cardano/yaci-store-remote@0.0.10"},"cherryBomUrl":null},{"id":"pkg:maven/com.faasadmin/install-business@1.0.4","type":"COMPONENT_VERSION","namespace":"com.faasadmin","name":"install-business","projectName":null,"version":"1.0.4","publishedEpochMillis":1647270210000,"licenses":["faaa-admin"],"description":"install-business","categories":null,"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":null,"nsPopularityOrgCount":null,"dependentOnCount":7,"dependencyOfCount":0,"childCount":0,"classifiers":["javadoc","sources"],"packaging":"jar","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/com.faasadmin:install-business/1.0.4","vulnerabilityCount":null},"qualityScore":null,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/com.faasadmin/install-business@1.0.4"},"cherryBomUrl":null},{"id":"pkg:maven/io.velocitycareerlabs/vcl@1.1.11","type":"COMPONENT_VERSION","namespace":"io.velocitycareerlabs","name":"vcl","projectName":null,"version":"1.1.11","publishedEpochMillis":1670152772000,"licenses":["Apache License 2.0"],"description":"Velocity Career Labs Android library","categories":["Uncategorized"],"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":1,"nsPopularityOrgCount":1,"dependentOnCount":3,"dependencyOfCount":0,"childCount":0,"classifiers":["sources"],"packaging":"aar","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/io.velocitycareerlabs:vcl/1.1.11","vulnerabilityCount":null},"qualityScore":null,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/io.velocitycareerlabs/vcl@1.1.11"},"cherryBomUrl":null},{"id":"pkg:maven/io.unsecurity/unsecurity-auth0_2.13@2.0-M14","type":"COMPONENT_VERSION","namespace":"io.unsecurity","name":"unsecurity-auth0_2.13","projectName":null,"version":"2.0-M14","publishedEpochMillis":1580393922000,"licenses":["MIT"],"description":"unsecurity-auth0","categories":["Uncategorized"],"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":1,"nsPopularityOrgCount":1,"dependentOnCount":39,"dependencyOfCount":0,"childCount":0,"classifiers":["javadoc","sources"],"packaging":"jar","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/io.unsecurity:unsecurity-auth0_2.13/2.0-M14","vulnerabilityCount":null},"qualityScore":null,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/io.unsecurity/unsecurity-auth0_2.13@2.0-M14"},"cherryBomUrl":null},{"id":"pkg:maven/io.github.spring-cyber/cyber-web@0.0.9","type":"COMPONENT_VERSION","namespace":"io.github.spring-cyber","name":"cyber-web","projectName":null,"version":"0.0.9","publishedEpochMillis":1689327162000,"licenses":["The Apache License, Version 2.0"],"description":"Cyber Boot Project","categories":null,"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":null,"nsPopularityOrgCount":null,"dependentOnCount":82,"dependencyOfCount":0,"childCount":0,"classifiers":["javadoc","sources"],"packaging":"jar","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/io.github.spring-cyber:cyber-web/0.0.9","vulnerabilityCount":null},"qualityScore":null,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/io.github.spring-cyber/cyber-web@0.0.9"},"cherryBomUrl":null},{"id":"pkg:maven/io.github.sweehaw/web-supports@0.0.9","type":"COMPONENT_VERSION","namespace":"io.github.sweehaw","name":"web-supports","projectName":null,"version":"0.0.9","publishedEpochMillis":1528249280000,"licenses":[],"description":"Sonatype helps open source projects to set up Maven repositories on https://oss.sonatype.org/","categories":["Uncategorized"],"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":1,"nsPopularityOrgCount":1,"dependentOnCount":177,"dependencyOfCount":0,"childCount":0,"classifiers":["javadoc","sources"],"packaging":"jar","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/io.github.sweehaw:web-supports/0.0.9","vulnerabilityCount":null},"qualityScore":null,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/io.github.sweehaw/web-supports@0.0.9"},"cherryBomUrl":null},{"id":"pkg:maven/io.github.sweetd3v/MySDK@1.0.1","type":"COMPONENT_VERSION","namespace":"io.github.sweetd3v","name":"MySDK","projectName":null,"version":"1.0.1","publishedEpochMillis":1669874384000,"licenses":["MIT License"],"description":"Test Library. Nothing Else. Just Chill.","categories":null,"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":null,"nsPopularityOrgCount":null,"dependentOnCount":8,"dependencyOfCount":0,"childCount":0,"classifiers":[],"packaging":"aar","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/io.github.sweetd3v:MySDK/1.0.1","vulnerabilityCount":null},"qualityScore":null,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/io.github.sweetd3v/MySDK@1.0.1"},"cherryBomUrl":null},{"id":"pkg:maven/com.codingame.gameengine/runner@1.0","type":"COMPONENT_VERSION","namespace":"com.codingame.gameengine","name":"runner","projectName":null,"version":"1.0","publishedEpochMillis":1512953751000,"licenses":["MIT License"],"description":"Runner / Testbed to locally run Games created using the CodinGame engine toolkit.","categories":["Uncategorized"],"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":3,"nsPopularityOrgCount":1,"dependentOnCount":0,"dependencyOfCount":0,"childCount":0,"classifiers":["javadoc","sources"],"packaging":"jar","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/com.codingame.gameengine:runner/1.0","vulnerabilityCount":null},"qualityScore":7.0,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/com.codingame.gameengine/runner@1.0"},"cherryBomUrl":null},{"id":"pkg:maven/com.codingame.gameengine/module-entities@1.0","type":"COMPONENT_VERSION","namespace":"com.codingame.gameengine","name":"module-entities","projectName":null,"version":"1.0","publishedEpochMillis":1512955175000,"licenses":["MIT License"],"description":"Entity Manager module for the CodinGame engine toolkit. Simplify the management of shapes and drawings.","categories":["Uncategorized"],"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":3,"nsPopularityOrgCount":1,"dependentOnCount":8,"dependencyOfCount":0,"childCount":0,"classifiers":["javadoc","sources"],"packaging":"jar","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/com.codingame.gameengine:module-entities/1.0","vulnerabilityCount":null},"qualityScore":null,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/com.codingame.gameengine/module-entities@1.0"},"cherryBomUrl":null},{"id":"pkg:maven/io.github.soupedog/hygge-commons-spring-boot@0.0.9","type":"COMPONENT_VERSION","namespace":"io.github.soupedog","name":"hygge-commons-spring-boot","projectName":null,"version":"0.0.9","publishedEpochMillis":1685640431000,"licenses":["The Apache License, Version 2.0"],"description":"A toolkit designed to simplify the Java Web development process, providing some common parameter handling tools,\n        automatic logging tools, network request tools ...","categories":null,"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":null,"nsPopularityOrgCount":null,"dependentOnCount":11,"dependencyOfCount":4,"childCount":0,"classifiers":["javadoc","sources"],"packaging":"jar","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/io.github.soupedog:hygge-commons-spring-boot/0.0.9","vulnerabilityCount":null},"qualityScore":null,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/io.github.soupedog/hygge-commons-spring-boot@0.0.9"},"cherryBomUrl":null},{"id":"pkg:maven/com.blitzllama/Blitzllama@1.7.8","type":"COMPONENT_VERSION","namespace":"com.blitzllama","name":"Blitzllama","projectName":null,"version":"1.7.8","publishedEpochMillis":1693433122000,"licenses":["The Apache Software License, Version 2.0"],"description":"Blitzllama Android SDK","categories":null,"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":null,"nsPopularityOrgCount":null,"dependentOnCount":8,"dependencyOfCount":0,"childCount":0,"classifiers":["javadoc","sources"],"packaging":"aar","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/com.blitzllama:Blitzllama/1.7.8","vulnerabilityCount":null},"qualityScore":null,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/com.blitzllama/Blitzllama@1.7.8"},"cherryBomUrl":null},{"id":"pkg:maven/io.github.srgaabriel.deck/deck-gateway@0.9","type":"COMPONENT_VERSION","namespace":"io.github.srgaabriel.deck","name":"deck-gateway","projectName":null,"version":"0.9","publishedEpochMillis":1678032204000,"licenses":["MIT"],"description":"A powerful and simple-to-use guilded wrapper made in Kotlin.","categories":null,"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":null,"nsPopularityOrgCount":null,"dependentOnCount":15,"dependencyOfCount":1,"childCount":0,"classifiers":["sources"],"packaging":"pom","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/io.github.srgaabriel.deck:deck-gateway/0.9","vulnerabilityCount":null},"qualityScore":null,"bomDrInfo":{"url":null},"cherryBomUrl":null},{"id":"pkg:maven/io.vena/bosk-gson@0.0.58","type":"COMPONENT_VERSION","namespace":"io.vena","name":"bosk-gson","projectName":null,"version":"0.0.58","publishedEpochMillis":1670809158000,"licenses":["The Apache License, Version 2.0"],"description":"Control plane state management library","categories":null,"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":null,"nsPopularityOrgCount":null,"dependentOnCount":3,"dependencyOfCount":0,"childCount":0,"classifiers":["javadoc","sources"],"packaging":"jar","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/io.vena:bosk-gson/0.0.58","vulnerabilityCount":null},"qualityScore":null,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/io.vena/bosk-gson@0.0.58"},"cherryBomUrl":null},{"id":"pkg:maven/com.bluebillywig.bbnativeplayersdk/bbnativeshared-android-debug@7.98.0","type":"COMPONENT_VERSION","namespace":"com.bluebillywig.bbnativeplayersdk","name":"bbnativeshared-android-debug","projectName":null,"version":"7.98.0","publishedEpochMillis":1673255950000,"licenses":["The Apache Software License, Version 2.0"],"description":"Blue Billywig Native Player SDK for Android","categories":["Uncategorized"],"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":1,"nsPopularityOrgCount":1,"dependentOnCount":15,"dependencyOfCount":0,"childCount":0,"classifiers":["javadoc","sources"],"packaging":"aar","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/com.bluebillywig.bbnativeplayersdk:bbnativeshared-android-debug/7.98.0","vulnerabilityCount":null},"qualityScore":null,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/com.bluebillywig.bbnativeplayersdk/bbnativeshared-android-debug@7.98.0"},"cherryBomUrl":null},{"id":"pkg:maven/com.rapid7.presto/presto-armor-connector@0.0.4","type":"COMPONENT_VERSION","namespace":"com.rapid7.presto","name":"presto-armor-connector","projectName":null,"version":"0.0.4","publishedEpochMillis":1614707528000,"licenses":["Apache 2.0"],"description":"Presto","categories":null,"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":null,"nsPopularityOrgCount":null,"dependentOnCount":93,"dependencyOfCount":0,"childCount":0,"classifiers":["javadoc","sources"],"packaging":"presto-plugin","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/com.rapid7.presto:presto-armor-connector/0.0.4","vulnerabilityCount":null},"qualityScore":null,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/com.rapid7.presto/presto-armor-connector@0.0.4"},"cherryBomUrl":null},{"id":"pkg:maven/com.blockchyp/blockchyp-java@2.14.1","type":"COMPONENT_VERSION","namespace":"com.blockchyp","name":"blockchyp-java","projectName":null,"version":"2.14.1","publishedEpochMillis":1665008135000,"licenses":["MIT License"],"description":"This is the recommended means for Java developers to access the BlockChyp gateway and BlockChyp terminals.","categories":null,"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":null,"nsPopularityOrgCount":null,"dependentOnCount":15,"dependencyOfCount":0,"childCount":0,"classifiers":["javadoc","sources"],"packaging":"jar","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/com.blockchyp:blockchyp-java/2.14.1","vulnerabilityCount":null},"qualityScore":null,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/com.blockchyp/blockchyp-java@2.14.1"},"cherryBomUrl":null},{"id":"pkg:maven/io.github.soupedog/hygge-utils-core@0.0.2","type":"COMPONENT_VERSION","namespace":"io.github.soupedog","name":"hygge-utils-core","projectName":null,"version":"0.0.2","publishedEpochMillis":1666270412000,"licenses":["The Apache License, Version 2.0"],"description":"A toolkit designed to simplify the Java Web development process, providing some common parameter handling tools,\n        automatic logging tools, network request tools ...","categories":null,"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":null,"nsPopularityOrgCount":null,"dependentOnCount":4,"dependencyOfCount":2,"childCount":0,"classifiers":["javadoc","sources"],"packaging":"jar","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/io.github.soupedog:hygge-utils-core/0.0.2","vulnerabilityCount":null},"qualityScore":null,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/io.github.soupedog/hygge-utils-core@0.0.2"},"cherryBomUrl":null},{"id":"pkg:maven/com.bluebillywig.bbnativeplayersdk/bbnativeshared-android@0.0.7","type":"COMPONENT_VERSION","namespace":"com.bluebillywig.bbnativeplayersdk","name":"bbnativeshared-android","projectName":null,"version":"0.0.7","publishedEpochMillis":1621246272000,"licenses":["The Apache Software License, Version 2.0"],"description":"Blue Billywig Native Player SDK for Android","categories":["Uncategorized"],"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":1,"nsPopularityOrgCount":1,"dependentOnCount":18,"dependencyOfCount":0,"childCount":0,"classifiers":["javadoc","sources"],"packaging":"aar","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/com.bluebillywig.bbnativeplayersdk:bbnativeshared-android/0.0.7","vulnerabilityCount":null},"qualityScore":null,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/com.bluebillywig.bbnativeplayersdk/bbnativeshared-android@0.0.7"},"cherryBomUrl":null},{"id":"pkg:maven/io.github.sskorol/test-data-supplier@1.9.1","type":"COMPONENT_VERSION","namespace":"io.github.sskorol","name":"test-data-supplier","projectName":null,"version":"1.9.1","publishedEpochMillis":1595102375000,"licenses":["The Apache Software License, Version 2.0"],"description":"Test Data Supplier is an extended version of common TestNG DataProvider.","categories":["Other"],"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":2,"nsPopularityOrgCount":1,"dependentOnCount":14,"dependencyOfCount":0,"childCount":0,"classifiers":["javadoc","sources","spi-off"],"packaging":"jar","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/io.github.sskorol:test-data-supplier/1.9.1","vulnerabilityCount":null},"qualityScore":7.0,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/io.github.sskorol/test-data-supplier@1.9.1"},"cherryBomUrl":null},{"id":"pkg:maven/io.vacco.metolithe/mt-annotations@2.8.0","type":"COMPONENT_VERSION","namespace":"io.vacco.metolithe","name":"mt-annotations","projectName":null,"version":"2.8.0","publishedEpochMillis":1673826907000,"licenses":["Apache License, Version 2.0"],"description":"A minimal, opinionated, flat key/value JDBC object storage framework","categories":null,"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":null,"nsPopularityOrgCount":null,"dependentOnCount":0,"dependencyOfCount":2,"childCount":0,"classifiers":["javadoc","sources"],"packaging":"jar","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/io.vacco.metolithe:mt-annotations/2.8.0","vulnerabilityCount":null},"qualityScore":null,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/io.vacco.metolithe/mt-annotations@2.8.0"},"cherryBomUrl":null}],"page":0,"pageSize":20,"pageCount":500,"totalResultCount":10000,"totalCount":19927880}
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://javadoc.io/doc/plexus/plexus-utils/1.0.2/index.html || true
+curl -I -fsSL https://www.javadoc.io/doc/plexus/plexus-utils/1.0.2/index.html || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://codehaus-plexus.github.io/plexus-utils/1.0.2/ || true
+curl -I -fsSL https://codehaus-plexus.github.io/plexus-utils/ || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 319ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:07:53 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/plexus/plexus-utils/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=pnDFqh4mt8LoA54HqWMD8sID8sRJScJTr1UZpdlFmHPurA4WOpw13LeVbDjlgdQx8Nx6AXm82%2BOifh5RWuji5u74W%2B3GX6WcT11FfZfYehdKo5b6vZDLgFbs3F7eSAoDr8XRFIQbgLNu"}]}
+server: cloudflare
+cf-ray: 9f57f02ccaebb571-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 02 May 2026 15:07:54 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/plexus/plexus-utils/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=qzYhziza96SY%2Bf9nuPEzpiBrgStnrF05PBYFf5t1o7GTJ92bdd0uV2eZ8OsE0XBaW87MvA6xMHiY9GgHp32lBN7yGwg9K313W9xNyG3zKInSATsQr8vjwdNg1h8dK0MJY%2Fe9TVSk4ZVm6LdC6A%3D%3D"}]}
+server: cloudflare
+cf-ray: 9f57f02df840ff00-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 319ms:
+HTTP/2 404 
+server: GitHub.com
+content-type: text/html; charset=utf-8
+access-control-allow-origin: *
+etag: "69a01f78-24a3"
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'
+x-proxy-cache: MISS
+x-github-request-id: E39E:3DAB7D:17C8476:1811373:69F61349
+accept-ranges: bytes
+age: 0
+date: Sat, 02 May 2026 15:07:53 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230033-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1777734474.778571,VS0,VE107
+vary: Accept-Encoding
+x-fastly-request-id: af9ecf3723a1fc42a216060272b38606c60648c1
+content-length: 9379
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 200 
+server: GitHub.com
+content-type: text/html; charset=utf-8
+last-modified: Wed, 01 Apr 2026 16:38:57 GMT
+access-control-allow-origin: *
+etag: "69cd4a21-17c0"
+expires: Sat, 02 May 2026 15:17:54 GMT
+cache-control: max-age=600
+x-proxy-cache: MISS
+x-github-request-id: AA74:153C:17AB021:17F3DFB:69F61349
+accept-ranges: bytes
+age: 0
+date: Sat, 02 May 2026 15:07:54 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230171-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1777734474.945469,VS0,VE119
+vary: Accept-Encoding
+x-fastly-request-id: 06e32c63c556848e38f8b214a223f99a692f24c1
+content-length: 6080
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/plexus/plexus-utils/1.0.2/index.html | sed -n '1,80p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/plexus/plexus-utils/1.0.2/org/codehaus/plexus/util/StringUtils.html | sed -n '1,40p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 107ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>plexus-utils 1.0.2 javadoc (plexus)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/plexus">plexus</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						plexus-utils
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/plexus/plexus-compiler-api" class="dropdown-item">
+							plexus-compiler-api
+						</a>
+						
+						<a href="/doc/plexus/plexus-compiler-javac" class="dropdown-item">
+							plexus-compiler-javac
+						</a>
+						
+						<a href="/doc/plexus/plexus-container-default" class="dropdown-item">
+							plexus-container-default
+						</a>
+						
+						<a href="/doc/plexus/plexus-i18n" class="dropdown-item">
+							plexus-i18n
+						</a>
+						
+						<a href="/doc/plexus/plexus-utils" class="dropdown-item">
+							plexus-utils
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						1.0.2
+					</a>
+
+ succeeded in 234ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>plexus-utils 1.0.2 javadoc (plexus)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+
+web search: 
+web search: "plexus-utils-1.0.2-sources.jar"
+web search: 
+web search: "refs/tags/plexus-utils-1.0.2"
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\" : \"N/A\"' build/discovered-artifact-metadata -n | head -20" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg '\"documentation-url\" : \"https://javadoc.io/doc' build/discovered-artifact-metadata -n | head -20" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'codehaus-plexus.*/plexus-utils' build/discovered-artifact-metadata -n | head -20" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f | wc -l && find build/discovered-artifact-metadata -maxdepth 1 -type f | head' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 0ms:
+1
+build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
+
+exec
+/usr/bin/bash -lc "rg '\"documentation-url\" : \"https://javadoc.io/doc|\"source-code-url\" : \"N/A\"|codehaus-plexus.*/plexus-utils' metadata -n | head -40" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 0ms:
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.apache.xbean/xbean-asm9-shaded/4.22",
+metadata/xmlpull/xmlpull/index.json:5:    "source-code-url" : "N/A",
+metadata/javax.servlet.jsp/jsp-api/index.json:8:    "documentation-url" : "https://javadoc.io/doc/javax.servlet.jsp/jsp-api/$version$",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.apache.activemq/activemq-openwire-legacy/$version$",
+metadata/net.jcip/jcip-annotations/index.json:8:    "documentation-url" : "https://javadoc.io/doc/net.jcip/jcip-annotations/$version$/index.html",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/$version$/index.html",
+metadata/com.google.auto.value/auto-value-annotations/index.json:28:    "documentation-url" : "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/$version$/index.html",
+metadata/org.codehaus.jackson/jackson-core-asl/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.jackson/jackson-core-asl/$version$",
+metadata/org.apache.james/apache-mime4j-dom/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.apache.james/apache-mime4j-dom/$version$/",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.opentelemetry/opentelemetry-sdk-metrics/$version$/index.html",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:25:    "documentation-url" : "https://javadoc.io/doc/io.opentelemetry/opentelemetry-sdk-metrics/$version$/index.html",
+metadata/org.glassfish/javax.servlet/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.glassfish/javax.servlet/$version$",
+metadata/org.glassfish/javax.annotation/index.json:22:    "documentation-url" : "https://javadoc.io/doc/org.glassfish/javax.annotation/$version$",
+metadata/io.opentelemetry/opentelemetry-context/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.opentelemetry/opentelemetry-context/$version$/index.html",
+metadata/io.smallrye.common/smallrye-common-function/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.smallrye.common/smallrye-common-function/$version$/",
+metadata/io.smallrye.common/smallrye-common-function/index.json:42:    "documentation-url" : "https://javadoc.io/doc/io.smallrye.common/smallrye-common-function/$version$/",
+metadata/org.antlr/antlr-runtime/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.antlr/antlr-runtime/$version$/",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+
+exec
+/usr/bin/bash -lc "rg '\"coordinates\" : \"(plexus|org.codehaus.plexus):plexus-utils' -n . | head -20" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/xmlpull/xmlpull/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1.3.1",
+    "source-code-url" : "N/A",
+    "repository-url" : "https://github.com/xmlpull-org/xmlpull-api-v1",
+    "test-code-url" : "N/A",
+    "documentation-url" : "N/A",
+    "description" : "XML Pull Parsing API defines a small Java API for streaming XML pull parsers and serializers. It supplies interfaces and factory classes that parser implementations use so applications can read and write XML through a common pull-based contract.",
+    "tested-versions" : [
+      "1.1.3.1"
+    ],
+    "allowed-packages" : [
+      "org.xmlpull.v1"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/net.jcip/jcip-annotations/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/net/jcip/jcip-annotations/$version$/jcip-annotations-$version$-sources.jar",
+    "repository-url" : "http://jcip.net/",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://javadoc.io/doc/net.jcip/jcip-annotations/$version$/index.html",
+    "description" : "JCIP Annotations provides marker annotations from Java Concurrency in Practice to document thread-safety contracts such as @ThreadSafe, @NotThreadSafe, @Immutable, and @GuardedBy. The library contains only annotation types and adds no runtime behavior, helping tools and developers reason about concurrent code.",
+    "tested-versions" : [
+      "1.0"
+    ],
+    "allowed-packages" : [
+      "net.jcip.annotations"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "find metadata -name index.json | head -5 | xargs -r -n1 sed -n '1,14p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "11.0.24",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/$version$/jetty-alpn-server-$version$-sources.jar",
+    "repository-url" : "https://github.com/jetty/jetty.project",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/$version$/jetty-alpn-server-$version$-javadoc.jar",
+    "description" : "Jetty ALPN Server provides the server-side connection factory used by Eclipse Jetty to negotiate application protocols such as HTTP/1.1 and HTTP/2 during TLS handshakes. It integrates Jetty's server connector layer with ALPN so the server can select the correct protocol implementation for each secure connection.",
+    "tested-versions" : [
+      "11.0.24",
+      "11.0.25",
+      "11.0.26",
+      "12.0.0",
+[
+  {
+    "latest" : true,
+    "metadata-version" : "12.1.3",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+    "repository-url" : "https://github.com/jetty/jetty.project",
+    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-server/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-javadoc.jar",
+    "description" : "Jetty Server provides the core Eclipse Jetty server components for accepting connections, handling requests, and serving HTTP-based applications. It can be embedded in Java applications as the foundation for Jetty-based HTTP servers, handlers, and higher-level web modules.",
+    "tested-versions" : [
+      "12.1.3",
+      "12.1.4",
+      "12.1.5",
+      "12.1.6",
+[
+  {
+    "latest" : true,
+    "metadata-version" : "12.1.5",
+    "test-version" : "12.0.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+    "repository-url" : "https://github.com/jetty/jetty.project",
+    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+    "description" : "Jetty Client is an efficient, asynchronous, non-blocking HTTP client library for Java that also supports blocking request workflows through a simple API. It provides the HttpClient implementation, request and response APIs, connection pooling, and central configuration for network parameters, redirects, and cookies.",
+    "tested-versions" : [
+      "12.1.5",
+      "12.1.6",
+      "12.1.7",
+[
+  {
+    "latest" : true,
+    "metadata-version" : "12.0.9",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar",
+    "repository-url" : "https://github.com/jetty/jetty.project",
+    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-util/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-javadoc.jar",
+    "description" : "Utility classes for Jetty. It provides foundational helpers for resources, security, SSL, threading, statistics, and other shared infrastructure used across Jetty components.",
+    "tested-versions" : [
+      "12.0.9",
+      "12.0.10",
+      "12.0.11",
+      "12.0.12",
+[
+  {
+    "latest" : true,
+    "metadata-version" : "9.4.1.v20170120",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+    "repository-url" : "https://github.com/eclipse/jetty.project",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+    "description" : "Jetty HTTP provides core HTTP utilities for Eclipse Jetty, including request and response metadata, headers, cookies, MIME types, and URI handling. It is used by Jetty server and client components to parse, represent, and generate HTTP protocol data.",
+    "tested-versions" : [
+      "9.4.1.v20170120",
+      "9.4.1.v20180619",
+      "9.4.2.v20170220",
+      "9.4.2.v20180619",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/plexus/plexus-utils/1.0.2/org/codehaus/plexus/util/StringUtils.html | rg -n 'StringUtils|404|not found|Class StringUtils' | head -20" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 268ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/plexus/plexus-utils/1.0.2/index.html | rg -n 'No JavaDoc|StringUtils|package-list|No packages|org.codehaus|href=.*/doc/plexus/plexus-utils/1.0.2' | head -60" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 111ms:
+111:						<a href="/doc/plexus/plexus-utils/1.0.2/index.html" class="dropdown-item">
+165:						<a href="/doc/plexus/plexus-utils/1.0.2" target="_blank" class="float-right">
+169:					<div><span class="text-monospace">package-list</span> path (used for javadoc generation <span class="text-monospace">-link</span> option)</div>
+171:						https://javadoc.io/doc/plexus/plexus-utils/1.0.2/package-list
+172:						<a href="/doc/plexus/plexus-utils/1.0.2/package-list" target="_blank" class="float-right">
+189:  No JavaDoc is released for artifact <span class="font-italic">plexus:plexus-utils:1.0.2</span>.
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/plexus/plexus-utils/1.0.2/plexus-utils-1.0.2-tests.jar || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/plexus/plexus-utils/1.0.2/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/plexus/plexus-utils/1.0.2/index.html | rg -n 'No JavaDoc|plexus:plexus-utils:1.0.2'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 153ms:
+189:  No JavaDoc is released for artifact <span class="font-italic">plexus:plexus-utils:1.0.2</span>.
+
+ succeeded in 279ms:
+HTTP/2 404 
+date: Sat, 02 May 2026 15:08:39 GMT
+content-type: text/html
+cf-ray: 9f57f148f86fc8a4-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/plexus/plexus-utils/1.0.2/plexus-utils-1.0.2-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 266ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: plexus/plexus-utils/1.0.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>plexus/plexus-utils/1.0.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:50       117      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:50        81      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:50       136      
+<a href="plexus-utils-1.0.2.jar" title="plexus-utils-1.0.2.jar">plexus-utils-1.0.2.jar</a>                            2005-09-20 05:50    160382      
+<a href="plexus-utils-1.0.2.jar.md5" title="plexus-utils-1.0.2.jar.md5">plexus-utils-1.0.2.jar.md5</a>                        2005-09-20 05:50        32      
+<a href="plexus-utils-1.0.2.jar.sha1" title="plexus-utils-1.0.2.jar.sha1">plexus-utils-1.0.2.jar.sha1</a>                       2005-09-20 05:50        40      
+<a href="plexus-utils-1.0.2.pom" title="plexus-utils-1.0.2.pom">plexus-utils-1.0.2.pom</a>                            2005-09-20 05:50       740      
+<a href="plexus-utils-1.0.2.pom.md5" title="plexus-utils-1.0.2.pom.md5">plexus-utils-1.0.2.pom.md5</a>                        2005-09-20 05:50       141      
+<a href="plexus-utils-1.0.2.pom.sha1" title="plexus-utils-1.0.2.pom.sha1">plexus-utils-1.0.2.pom.sha1</a>                       2005-09-20 05:50       149      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: "plexus-utils 1.0.2 javadoc"
+web search: 
+web search: https://github.com/codehaus-plexus/plexus-utils
+web search: 
+web search: repo.maven.apache.org/maven2/plexus/plexus-utils/1.0.2 plexus-utils-1.0.2.jar pom
+codex
+The old Maven coordinate only publishes `.jar` and `.pom`; there is no source, test, or javadoc classifier for 1.0.2. The current Plexus Utils repository is identifiable, but I don’t see a 1.0.2 source tag, so I’m going to mark source/test/documentation as `N/A` rather than point at a mismatched release.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
+diff --git a/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json b/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
+index 285cf3b95b27f6f95445020e9e73916dab33dc7e..4badc957b0a438cc13567524320b26cd73822d85
+--- a/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
++++ b/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "plexus:plexus-utils:1.0.2"
++  "coordinates" : "plexus:plexus-utils:1.0.2",
++  "source-code-url" : "N/A",
++  "repository-url" : "https://github.com/codehaus-plexus/plexus-utils",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "Plexus Utils provides shared Java utility classes used by Plexus and Maven-related projects for strings, files, streams, command-line execution, XML handling, and reflection helpers. It packages general-purpose support code for build tools and Java applications without being tied to Kotlin, Groovy, Scala, Android, or another non-JVM target."
+ }
+
+diff --git a/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json b/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
+index 285cf3b95b27f6f95445020e9e73916dab33dc7e..4badc957b0a438cc13567524320b26cd73822d85
+--- a/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
++++ b/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "plexus:plexus-utils:1.0.2"
++  "coordinates" : "plexus:plexus-utils:1.0.2",
++  "source-code-url" : "N/A",
++  "repository-url" : "https://github.com/codehaus-plexus/plexus-utils",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "Plexus Utils provides shared Java utility classes used by Plexus and Maven-related projects for strings, files, streams, command-line execution, XML handling, and reflection helpers. It packages general-purpose support code for build tools and Java applications without being tied to Kotlin, Groovy, Scala, Android, or another non-JVM target."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 0ms:
+{
+  "coordinates": "plexus:plexus-utils:1.0.2",
+  "source-code-url": "N/A",
+  "repository-url": "https://github.com/codehaus-plexus/plexus-utils",
+  "test-code-url": "N/A",
+  "documentation-url": "N/A",
+  "description": "Plexus Utils provides shared Java utility classes used by Plexus and Maven-related projects for strings, files, streams, command-line execution, XML handling, and reflection helpers. It packages general-purpose support code for build tools and Java applications without being tied to Kotlin, Groovy, Scala, Android, or another non-JVM target."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json b/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
+index 285cf3b95b27f6f95445020e9e73916dab33dc7e..4badc957b0a438cc13567524320b26cd73822d85
+--- a/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
++++ b/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "plexus:plexus-utils:1.0.2"
++  "coordinates" : "plexus:plexus-utils:1.0.2",
++  "source-code-url" : "N/A",
++  "repository-url" : "https://github.com/codehaus-plexus/plexus-utils",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "Plexus Utils provides shared Java utility classes used by Plexus and Maven-related projects for strings, files, streams, command-line execution, XML handling, and reflection helpers. It packages general-purpose support code for build tools and Java applications without being tied to Kotlin, Groovy, Scala, Android, or another non-JVM target."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+diff --git a/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json b/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
+index 285cf3b95b27f6f95445020e9e73916dab33dc7e..4badc957b0a438cc13567524320b26cd73822d85
+--- a/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
++++ b/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "plexus:plexus-utils:1.0.2"
++  "coordinates" : "plexus:plexus-utils:1.0.2",
++  "source-code-url" : "N/A",
++  "repository-url" : "https://github.com/codehaus-plexus/plexus-utils",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "Plexus Utils provides shared Java utility classes used by Plexus and Maven-related projects for strings, files, streams, command-line execution, XML handling, and reflection helpers. It packages general-purpose support code for build tools and Java applications without being tied to Kotlin, Groovy, Scala, Android, or another non-JVM target."
+ }
+
+ succeeded in 125ms:
+web search: 
+web search: Maven Central plexus plexus-utils 1.0.2 jar pom sources javadoc
+exec
+/usr/bin/bash -lc 'nl -ba build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "plexus:plexus-utils:1.0.2",
+     3	  "source-code-url" : "N/A",
+     4	  "repository-url" : "https://github.com/codehaus-plexus/plexus-utils",
+     5	  "test-code-url" : "N/A",
+     6	  "documentation-url" : "N/A",
+     7	  "description" : "Plexus Utils provides shared Java utility classes used by Plexus and Maven-related projects for strings, files, streams, command-line execution, XML handling, and reflection helpers. It packages general-purpose support code for build tools and Java applications without being tied to Kotlin, Groovy, Scala, Android, or another non-JVM target."
+     8	}
+
+diff --git a/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json b/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
+index 285cf3b95b27f6f95445020e9e73916dab33dc7e..4badc957b0a438cc13567524320b26cd73822d85
+--- a/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
++++ b/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "plexus:plexus-utils:1.0.2"
++  "coordinates" : "plexus:plexus-utils:1.0.2",
++  "source-code-url" : "N/A",
++  "repository-url" : "https://github.com/codehaus-plexus/plexus-utils",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "Plexus Utils provides shared Java utility classes used by Plexus and Maven-related projects for strings, files, streams, command-line execution, XML handling, and reflection helpers. It packages general-purpose support code for build tools and Java applications without being tied to Kotlin, Groovy, Scala, Android, or another non-JVM target."
+ }
+
+web search: 
+web search: "No JavaDoc is released" "plexus:plexus-utils:1.0.2"
+web search: 
+web search: https://github.com/codehaus-plexus/plexus-utils
+web search: 
+web search: "plexus-utils-1.0.2-sources.jar" "NoSuchKey"
+web search: 
+web search: 
+codex
+Updated [plexus-plexus-utils-1.0.2.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json:1).
+
+I set source, test, and documentation URLs to `N/A`: Maven evidence for `1.0.2` shows the artifact as a JVM JAR/POM, and I found no reliable 1.0.2 source/test/javadoc artifact or matching upstream tag. ([codewizards.co](https://www.codewizards.co/jenkins/view/All/job/org.subshare.www/269/consoleFull?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image` because this is a Java/JVM JAR with class files, not an Android-only, Scala.js, Kotlin Native/JS/Wasm, or non-JVM artifact. JSON validation with `jq` passed.
+diff --git a/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json b/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
+index 285cf3b95b27f6f95445020e9e73916dab33dc7e..4badc957b0a438cc13567524320b26cd73822d85
+--- a/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
++++ b/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "plexus:plexus-utils:1.0.2"
++  "coordinates" : "plexus:plexus-utils:1.0.2",
++  "source-code-url" : "N/A",
++  "repository-url" : "https://github.com/codehaus-plexus/plexus-utils",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "Plexus Utils provides shared Java utility classes used by Plexus and Maven-related projects for strings, files, streams, command-line execution, XML handling, and reflection helpers. It packages general-purpose support code for build tools and Java applications without being tied to Kotlin, Groovy, Scala, Android, or another non-JVM target."
+ }
+
+tokens used
+117,927
+Updated [plexus-plexus-utils-1.0.2.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0/build/discovered-artifact-metadata/plexus-plexus-utils-1.0.2.json:1).
+
+I set source, test, and documentation URLs to `N/A`: Maven evidence for `1.0.2` shows the artifact as a JVM JAR/POM, and I found no reliable 1.0.2 source/test/javadoc artifact or matching upstream tag. ([codewizards.co](https://www.codewizards.co/jenkins/view/All/job/org.subshare.www/269/consoleFull?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image` because this is a Java/JVM JAR with class files, not an Android-only, Scala.js, Kotlin Native/JS/Wasm, or non-JVM artifact. JSON validation with `jq` passed.
+Ran agent for plexus:plexus-utils:1.0.2 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0/build/agent-artifact-discovery-logs/plexus-plexus-utils-1.0.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2238-d4aac7a0/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 40s
+9 actionable tasks: 4 executed, 5 from cache
