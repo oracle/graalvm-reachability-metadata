@@ -7,6 +7,8 @@
 package ant.ant;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -50,6 +52,25 @@ public class Javac12Test {
         }
     }
 
+    @Test
+    void executeResolvesCompilerGeneratedClassLiteralsWhenCacheIsEmpty() throws Throwable {
+        Main.reset();
+        clearCompilerGeneratedClassCache();
+        Javac12 compiler = new Javac12();
+        compiler.setJavac(newJavacTask());
+
+        try {
+            boolean compilationSucceeded = compiler.execute();
+
+            assertThat(compilationSucceeded).isTrue();
+            assertThat(Main.invocationCount()).isEqualTo(1);
+        } catch (Error error) {
+            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+                throw error;
+            }
+        }
+    }
+
     private Javac newJavacTask() throws IOException {
         sourceDirectory = temporaryDirectory.resolve("sources");
         destinationDirectory = temporaryDirectory.resolve("classes");
@@ -69,5 +90,21 @@ public class Javac12Test {
         javac.setIncludeantruntime(false);
         javac.setIncludejavaruntime(false);
         return javac;
+    }
+
+    private static void clearCompilerGeneratedClassCache()
+            throws IllegalAccessException, NoSuchFieldException {
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
+                Javac12.class,
+                MethodHandles.lookup());
+        clearClassCache(lookup, "class$java$io$OutputStream");
+        clearClassCache(lookup, "class$java$lang$String");
+        clearClassCache(lookup, "array$Ljava$lang$String");
+    }
+
+    private static void clearClassCache(MethodHandles.Lookup lookup, String fieldName)
+            throws IllegalAccessException, NoSuchFieldException {
+        VarHandle handle = lookup.findStaticVarHandle(Javac12.class, fieldName, Class.class);
+        handle.set(null);
     }
 }
