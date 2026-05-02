@@ -10,10 +10,19 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+configurations {
+    hazelcastLegacy
+}
+
 dependencies {
     testImplementation "io.micrometer:micrometer-core:$libraryVersion"
-    testImplementation 'com.hazelcast:hazelcast:3.12.13'
+    testImplementation 'com.hazelcast:hazelcast:4.2.8'
+    hazelcastLegacy 'com.hazelcast:hazelcast:3.12.13'
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.withType(Test).configureEach {
+    systemProperty 'hazelcastLegacyClasspath', configurations.hazelcastLegacy.asPath
 }
 
 graalvmNative {
