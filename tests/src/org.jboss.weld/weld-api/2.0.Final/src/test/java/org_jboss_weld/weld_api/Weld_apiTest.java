@@ -242,6 +242,10 @@ public class Weld_apiTest {
         }
 
         @Override
+        public void destroy(Contextual<?> contextual) {
+        }
+
+        @Override
         public boolean isActive() {
             return active;
         }
