@@ -8,7 +8,7 @@ package org_antlr.ST4;
 
 import org.junit.jupiter.api.Test;
 
-class ST4Test {
+public class ST4Test {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
