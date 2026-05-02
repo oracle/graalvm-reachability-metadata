@@ -9,10 +9,34 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String nativeClassifier = nettyNativeClassifier()
 
 dependencies {
     testImplementation "io.netty:netty-transport-native-unix-common:$libraryVersion"
+    if (nativeClassifier != null) {
+        testRuntimeOnly "io.netty:netty-transport-native-unix-common:$libraryVersion:$nativeClassifier"
+    }
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+String nettyNativeClassifier() {
+    String osName = System.getProperty("os.name").toLowerCase(Locale.ROOT)
+    String osArch = System.getProperty("os.arch").toLowerCase(Locale.ROOT)
+
+    if (osName.startsWith("linux")) {
+        if (osArch == "amd64" || osArch == "x86_64") {
+            return "linux-x86_64"
+        }
+        if (osArch == "aarch64") {
+            return "linux-aarch_64"
+        }
+    }
+    if (osName.startsWith("mac") || osName.startsWith("osx")) {
+        if (osArch == "amd64" || osArch == "x86_64") {
+            return "osx-x86_64"
+        }
+    }
+    return null
 }
 
 graalvmNative {

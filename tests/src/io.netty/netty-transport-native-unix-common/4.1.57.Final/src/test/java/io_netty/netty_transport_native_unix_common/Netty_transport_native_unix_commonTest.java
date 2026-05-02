@@ -16,6 +16,7 @@ import io.netty.channel.unix.DomainSocketReadMode;
 import io.netty.channel.unix.FileDescriptor;
 import io.netty.channel.unix.NativeInetAddress;
 import io.netty.channel.unix.PreferredDirectByteBufAllocator;
+import io.netty.channel.unix.Unix;
 import io.netty.channel.unix.UnixChannelOption;
 import io.netty.channel.unix.UnixChannelUtil;
 import java.io.File;
@@ -235,6 +236,13 @@ public class Netty_transport_native_unix_commonTest {
 
     @Test
     void fileDescriptorWrapsIntegerDescriptorWithValueSemanticsWithoutClosingIt() {
+        if (!Unix.isAvailable()) {
+            assertThatThrownBy(() -> new FileDescriptor(7))
+                    .isInstanceOf(UnsatisfiedLinkError.class)
+                    .hasMessageContaining("failed to load the required native library");
+            return;
+        }
+
         FileDescriptor descriptor = new FileDescriptor(7);
         FileDescriptor equalDescriptor = new FileDescriptor(7);
         FileDescriptor otherDescriptor = new FileDescriptor(8);
