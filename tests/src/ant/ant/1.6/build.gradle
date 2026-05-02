@@ -22,7 +22,17 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    jvmArgs '-Dfile.encoding=ISO-8859-1'
+}
+
 graalvmNative {
+    binaries {
+        test {
+            buildArgs('-Dfile.encoding=ISO-8859-1')
+            runtimeArgs('-Dfile.encoding=ISO-8859-1')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
