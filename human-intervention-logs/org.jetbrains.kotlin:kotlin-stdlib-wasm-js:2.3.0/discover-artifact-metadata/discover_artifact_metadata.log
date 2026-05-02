@@ -1,0 +1,1682 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de668-6e65-78b0-95ac-52db062349a9
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.3.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+- Set "coordinates" to "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify this against Maven and the Kotlin repository/tag, then update the JSON in place. I’m checking the existing file first so the edit stays aligned with the repo’s metadata format.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+{
+  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "kotlin-stdlib-wasm-js|org.jetbrains.kotlin.*kotlin-stdlib" build/discovered-artifact-metadata metadata repository -S' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ exited 2 in 0ms:
+rg: repository: No such file or directory (os error 2)
+build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json:2:  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0"
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.3.72/kotlin-stdlib-1.3.72-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.3.72/kotlin-stdlib-1.3.72-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.5.31/kotlin-stdlib-jdk7-1.5.31-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.5.31/kotlin-stdlib-jdk7-1.5.31-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.5.31/kotlin-stdlib-common-1.5.31-sources.jar",
+
+web search: 
+web search: Maven Central org.jetbrains.kotlin kotlin-stdlib-wasm-js 2.3.0 sources jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/
+codex
+Maven Central has the exact `2.3.0` directory and a `sources.jar`, but it does not list a javadoc jar or test-sources artifact for this module. I’m checking the POM/module metadata and Kotlin’s tag layout now to choose the most exact fallback URLs.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0.module' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 0ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "url": "../../kotlin-stdlib/2.3.0/kotlin-stdlib-2.3.0.module",
+    "group": "org.jetbrains.kotlin",
+    "module": "kotlin-stdlib",
+    "version": "2.3.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.14"
+    }
+  },
+  "variants": [
+    {
+      "name": "wasmJsApiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.klib.packaging": "packed",
+        "org.jetbrains.kotlin.platform.type": "wasm",
+        "org.jetbrains.kotlin.wasm.target": "js"
+      },
+      "files": [
+        {
+          "name": "kotlin-stdlib-wasm-js-2.3.0.klib",
+          "url": "kotlin-stdlib-wasm-js-2.3.0.klib",
+          "size": 4725307,
+          "sha512": "ed23aee77f5ee086932fa9ae47cf7e1dd38157cd7341e1beb40d906d71ecf14ea933362ec1bed4db5b07384322f530c25a687c764bab1ef4d57f0332fefbdced",
+          "sha256": "e267fe680014437a169c00d12020859abd321207b58ff12e884515341eac9833",
+          "sha1": "cf45fb936f28b7de68dff1cdae1c75f0881e36f0",
+          "md5": "1144916414068f3380d28bb1e11e0c73"
+        }
+      ]
+    },
+    {
+      "name": "wasmJsRuntimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-runtime",
+        "org.jetbrains.kotlin.klib.packaging": "packed",
+        "org.jetbrains.kotlin.platform.type": "wasm",
+        "org.jetbrains.kotlin.wasm.target": "js"
+      },
+      "files": [
+        {
+          "name": "kotlin-stdlib-wasm-js-2.3.0.klib",
+          "url": "kotlin-stdlib-wasm-js-2.3.0.klib",
+          "size": 4725307,
+          "sha512": "ed23aee77f5ee086932fa9ae47cf7e1dd38157cd7341e1beb40d906d71ecf14ea933362ec1bed4db5b07384322f530c25a687c764bab1ef4d57f0332fefbdced",
+          "sha256": "e267fe680014437a169c00d12020859abd321207b58ff12e884515341eac9833",
+          "sha1": "cf45fb936f28b7de68dff1cdae1c75f0881e36f0",
+          "md5": "1144916414068f3380d28bb1e11e0c73"
+        }
+      ]
+    },
+    {
+      "name": "wasmJsSourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-runtime",
+        "org.jetbrains.kotlin.platform.type": "wasm",
+        "org.jetbrains.kotlin.wasm.target": "js"
+      },
+      "files": [
+        {
+          "name": "kotlin-stdlib-wasm-js-2.3.0-sources.jar",
+          "url": "kotlin-stdlib-wasm-js-2.3.0-sources.jar",
+          "size": 857897,
+          "sha512": "44d5a9e35d041538cea08226eed11e5202b5b4af248ba790520692ae0dd72cf3b0a3fbdc9793eee14c3d40b4244ed3a4361ba3bf3773ba30ddf73e8f8c43bd74",
+          "sha256": "2c950c1886874b8077e4f32d659a76e30d277760f5faac8621ddaed5e5d800f0",
+          "sha1": "074407b27c279f76155f03913e049717b5e1ab29",
+          "md5": "e92c5bf78039c23118ec393b425dcb63"
+        }
+      ]
+    }
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0.pom' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jetbrains.kotlin</groupId>
+  <artifactId>kotlin-stdlib-wasm-js</artifactId>
+  <version>2.3.0</version>
+  <packaging>klib</packaging>
+  <name>Kotlin Stdlib Wasm Js</name>
+  <description>Kotlin Standard Library for experimental WebAssembly JS platform</description>
+  <url>https://kotlinlang.org/</url>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Kotlin Team</name>
+      <organization>JetBrains</organization>
+      <organizationUrl>https://www.jetbrains.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/JetBrains/kotlin.git</connection>
+    <developerConnection>scm:git:https://github.com/JetBrains/kotlin.git</developerConnection>
+    <url>https://github.com/JetBrains/kotlin</url>
+  </scm>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-test-sources.jar || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-javadoc.jar || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 210ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 02 May 2026 01:58:37 GMT
+content-type: text/html
+cf-ray: 9f536c049e7cbc5a-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 244ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 02 May 2026 01:58:37 GMT
+content-type: text/html
+cf-ray: 9f536c0479c2bc4d-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: Kotlin 2.3.0 tag GitHub JetBrains kotlin 2.3.0
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0.module
+web search: 
+web search: https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib-wasm-js/2.3.0
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/JetBrains/kotlin.git 'refs/tags/v2.3.0' 'refs/tags/2.3.0'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-sources.jar -o /tmp/kotlin-stdlib-wasm-js-2.3.0-sources.jar && jar tf /tmp/kotlin-stdlib-wasm-js-2.3.0-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/kotlin/git/trees/v2.3.0?recursive=1 | rg 'stdlib.*test|libraries/stdlib|wasmJs'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 121ms:
+META-INF/
+META-INF/MANIFEST.MF
+wasmJsMain/
+wasmJsMain/kotlin/
+wasmJsMain/kotlin/Throwable.kt
+wasmJsMain/ExceptionHelpers.kt
+wasmJsMain/ExternalWrapper.kt
+wasmJsMain/JsObjectsCache.kt
+wasmJsMain/WasmInstructions.kt
+wasmJsMain/kotlin/Dynamic.kt
+wasmJsMain/kotlin/io.kt
+wasmJsMain/kotlin/js/
+wasmJsMain/kotlin/js/JsAny.kt
+wasmJsMain/kotlin/js/JsArray.kt
+wasmJsMain/kotlin/js/JsBigInt.kt
+wasmJsMain/kotlin/js/JsBoolean.kt
+wasmJsMain/kotlin/js/JsException.kt
+wasmJsMain/kotlin/js/JsNumber.kt
+wasmJsMain/kotlin/js/JsPromiseError.kt
+wasmJsMain/kotlin/js/JsReference.kt
+wasmJsMain/kotlin/js/JsString.kt
+wasmJsMain/kotlin/js/Promise.kt
+wasmJsMain/kotlin/js/annotations.kt
+wasmJsMain/kotlin/js/core.kt
+wasmJsMain/kotlin/random/
+wasmJsMain/kotlin/random/PlatformRandom.kt
+wasmJsMain/kotlin/reflect/
+wasmJsMain/kotlin/reflect/KExternalClassImpl.kt
+wasmJsMain/kotlin/reflect/reflection.kt
+wasmJsMain/kotlin/time/
+wasmJsMain/kotlin/time/Duration.kt
+wasmJsMain/kotlin/time/InstantWasmJs.kt
+wasmJsMain/kotlin/time/TimeSources.kt
+wasmJsMain/kotlin/uuid/
+wasmJsMain/kotlin/uuid/UuidWasmJs.kt
+wasmJsMain/kotlin/wasm/
+wasmJsMain/kotlin/wasm/js/
+wasmJsMain/kotlin/wasm/js/Js.kt
+webMain/
+webMain/kotlin/
+webMain/kotlin/JsInterop.kt
+webMain/kotlin/js/
+webMain/kotlin/js/ExperimentalWasmJsInterop.kt
+webMain/kotlin/js/JsAny.kt
+webMain/kotlin/js/JsArray.kt
+webMain/kotlin/js/JsBigInt.kt
+webMain/kotlin/js/JsBoolean.kt
+webMain/kotlin/js/JsException.kt
+webMain/kotlin/js/JsNumber.kt
+webMain/kotlin/js/JsPromiseError.kt
+webMain/kotlin/js/JsReference.kt
+webMain/kotlin/js/JsString.kt
+webMain/kotlin/js/Promise.kt
+webMain/kotlin/js/annotations.kt
+webMain/kotlin/js/core.kt
+commonMain/
+commonMain/generated/
+commonMain/generated/_Arrays.kt
+commonMain/generated/_Collections.kt
+commonMain/generated/_Comparisons.kt
+commonMain/generated/_Maps.kt
+commonMain/generated/_OneToManyTitlecaseMappings.kt
+commonMain/generated/_Ranges.kt
+commonMain/generated/_Sequences.kt
+commonMain/generated/_Sets.kt
+commonMain/generated/_Strings.kt
+commonMain/generated/_UArrays.kt
+commonMain/generated/_UCollections.kt
+commonMain/generated/_UComparisons.kt
+commonMain/generated/_URanges.kt
+commonMain/generated/_USequences.kt
+commonMain/kotlin/
+commonMain/kotlin/Comparator.kt
+commonMain/kotlin/ExceptionsH.kt
+commonMain/kotlin/JsAnnotationsH.kt
+commonMain/kotlin/JvmAnnotationsH.kt
+commonMain/kotlin/KotlinH.kt
+commonMain/kotlin/MathH.kt
+commonMain/kotlin/SequencesH.kt
+commonMain/kotlin/TextH.kt
+commonMain/kotlin/ioH.kt
+commonMain/kotlin/collections/
+commonMain/kotlin/collections/AbstractMutableCollection.kt
+commonMain/kotlin/collections/AbstractMutableList.kt
+commonMain/kotlin/collections/AbstractMutableMap.kt
+commonMain/kotlin/collections/AbstractMutableSet.kt
+commonMain/kotlin/collections/ArrayList.kt
+commonMain/kotlin/collections/CollectionsH.kt
+commonMain/kotlin/collections/HashMap.kt
+commonMain/kotlin/collections/HashSet.kt
+commonMain/kotlin/collections/LinkedHashMap.kt
+commonMain/kotlin/collections/LinkedHashSet.kt
+commonMain/Module.md
+commonMain/kotlin/Annotation.kt
+commonMain/kotlin/Annotations.kt
+commonMain/kotlin/Any.kt
+commonMain/kotlin/Array.kt
+commonMain/kotlin/ArrayIntrinsics.kt
+commonMain/kotlin/Arrays.kt
+commonMain/kotlin/AutoCloseable.kt
+commonMain/kotlin/Boolean.kt
+commonMain/kotlin/Char.kt
+commonMain/kotlin/CharCode.kt
+commonMain/kotlin/CharSequence.kt
+commonMain/kotlin/Collections.kt
+commonMain/kotlin/Comparable.kt
+commonMain/kotlin/Enum.kt
+commonMain/kotlin/Function.kt
+commonMain/kotlin/Iterator.kt
+commonMain/kotlin/Library.kt
+commonMain/kotlin/Nothing.kt
+commonMain/kotlin/Number.kt
+commonMain/kotlin/Primitives.kt
+commonMain/kotlin/String.kt
+commonMain/kotlin/Throwable.kt
+commonMain/kotlin/Unit.kt
+commonMain/kotlin/annotation/
+commonMain/kotlin/annotation/Annotations.kt
+commonMain/kotlin/annotations/
+commonMain/kotlin/annotations/ConsistentCopyVisibility.kt
+
+ succeeded in 716ms:
+f95cb2f7693a15966fd8fd9b1d78d440545e7b66	refs/tags/v2.3.0
+
+ succeeded in 1924ms:
+      "path": "analysis/analysis-api/testData/imports/defaultImportProvider/wasmJs.default.txt",
+      "path": "analysis/analysis-api/testData/imports/defaultImportProvider/wasmJs.excluded.txt",
+      "path": "analysis/analysis-api/testData/imports/defaultImportProvider/wasmJs.kt",
+
+codex
+The artifact is Kotlin-specific: it is the Kotlin standard library variant for the WebAssembly JS target, so the language field should be Kotlin `2.3`. I’m narrowing the test URL to a real tag path rather than a generic repo URL, since there is no Maven test artifact.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib?ref=v2.3.0 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test?ref=v2.3.0 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/src?ref=v2.3.0 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 168ms:
+[
+  {
+    "name": "ReadMe.md",
+    "path": "libraries/stdlib/ReadMe.md",
+    "sha": "f74aebe81b781647450ad925e9eeda8ceb30b62d",
+    "size": 832,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/ReadMe.md?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/ReadMe.md",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/f74aebe81b781647450ad925e9eeda8ceb30b62d",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/ReadMe.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/ReadMe.md?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/f74aebe81b781647450ad925e9eeda8ceb30b62d",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/ReadMe.md"
+    }
+  },
+  {
+    "name": "build.gradle.kts",
+    "path": "libraries/stdlib/build.gradle.kts",
+    "sha": "69e1148d3ec95653afe4c727fd221d3ce069a0eb",
+    "size": 37985,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/build.gradle.kts?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/build.gradle.kts",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/69e1148d3ec95653afe4c727fd221d3ce069a0eb",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/build.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/build.gradle.kts?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/69e1148d3ec95653afe4c727fd221d3ce069a0eb",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/build.gradle.kts"
+    }
+  },
+  {
+    "name": "common-js-wasmjs",
+    "path": "libraries/stdlib/common-js-wasmjs",
+    "sha": "b92e9b2026810849693a54730c623e8eee82aff9",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common-js-wasmjs?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/common-js-wasmjs",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/b92e9b2026810849693a54730c623e8eee82aff9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common-js-wasmjs?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/b92e9b2026810849693a54730c623e8eee82aff9",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/common-js-wasmjs"
+    }
+  },
+  {
+    "name": "common-non-jvm",
+    "path": "libraries/stdlib/common-non-jvm",
+    "sha": "d16edead67c191e2ada7521bb01845b0ae515078",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common-non-jvm?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/common-non-jvm",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/d16edead67c191e2ada7521bb01845b0ae515078",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common-non-jvm?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/d16edead67c191e2ada7521bb01845b0ae515078",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/common-non-jvm"
+    }
+  },
+  {
+    "name": "common",
+    "path": "libraries/stdlib/common",
+    "sha": "c586a511f2c5c985130b6c6954954704d5b62117",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/common",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/c586a511f2c5c985130b6c6954954704d5b62117",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/c586a511f2c5c985130b6c6954954704d5b62117",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/common"
+    }
+  },
+  {
+    "name": "gradle.properties",
+    "path": "libraries/stdlib/gradle.properties",
+    "sha": "5e68d59aec0979223cf6e1eddee0b062181a55c1",
+    "size": 163,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/gradle.properties?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/gradle.properties",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/5e68d59aec0979223cf6e1eddee0b062181a55c1",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/gradle.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/gradle.properties?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/5e68d59aec0979223cf6e1eddee0b062181a55c1",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/gradle.properties"
+    }
+  },
+  {
+    "name": "jdk7",
+    "path": "libraries/stdlib/jdk7",
+    "sha": "18b4a684166396d914607d7e84ccb3f14cc7affe",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/jdk7?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/jdk7",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/18b4a684166396d914607d7e84ccb3f14cc7affe",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/jdk7?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/18b4a684166396d914607d7e84ccb3f14cc7affe",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/jdk7"
+    }
+  },
+  {
+    "name": "jdk8",
+    "path": "libraries/stdlib/jdk8",
+    "sha": "5afd8fff5756637f9ab6ad7e670dae7dfa21c7a6",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/jdk8?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/jdk8",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/5afd8fff5756637f9ab6ad7e670dae7dfa21c7a6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/jdk8?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/5afd8fff5756637f9ab6ad7e670dae7dfa21c7a6",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/jdk8"
+    }
+  },
+  {
+    "name": "js-ir-minimal-for-test",
+    "path": "libraries/stdlib/js-ir-minimal-for-test",
+    "sha": "47ddec2b4db4a996edbe0aedb5c8b1ccf2eaaa19",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/js-ir-minimal-for-test?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/js-ir-minimal-for-test",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/47ddec2b4db4a996edbe0aedb5c8b1ccf2eaaa19",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/js-ir-minimal-for-test?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/47ddec2b4db4a996edbe0aedb5c8b1ccf2eaaa19",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/js-ir-minimal-for-test"
+    }
+  },
+  {
+    "name": "js",
+    "path": "libraries/stdlib/js",
+    "sha": "42c6b31e54844795ae51f39169160e7bde20fdd8",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/js?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/js",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/42c6b31e54844795ae51f39169160e7bde20fdd8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/js?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/42c6b31e54844795ae51f39169160e7bde20fdd8",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/js"
+    }
+  },
+  {
+    "name": "jvm-minimal-for-test",
+    "path": "libraries/stdlib/jvm-minimal-for-test",
+    "sha": "6512ab712873243674380a28a3ce0c6d66c0772b",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/jvm-minimal-for-test?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/jvm-minimal-for-test",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/6512ab712873243674380a28a3ce0c6d66c0772b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/jvm-minimal-for-test?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/6512ab712873243674380a28a3ce0c6d66c0772b",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/jvm-minimal-for-test"
+    }
+  },
+  {
+    "name": "jvm",
+    "path": "libraries/stdlib/jvm",
+    "sha": "dc4c4aff77b8488c88580a3e238e1d82b9b5388f",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/jvm?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/jvm",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/dc4c4aff77b8488c88580a3e238e1d82b9b5388f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/jvm?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/dc4c4aff77b8488c88580a3e238e1d82b9b5388f",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/jvm"
+    }
+  },
+  {
+    "name": "kotlin-project-structure-metadata.beforePatch.json",
+    "path": "libraries/stdlib/kotlin-project-structure-metadata.beforePatch.json",
+    "sha": "8ab7639871b249040c1c841d46f3e344b762aebf",
+    "size": 1766,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/kotlin-project-structure-metadata.beforePatch.json?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/kotlin-project-structure-metadata.beforePatch.json",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/8ab7639871b249040c1c841d46f3e344b762aebf",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/kotlin-project-structure-metadata.beforePatch.json",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/kotlin-project-structure-metadata.beforePatch.json?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/8ab7639871b249040c1c841d46f3e344b762aebf",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/kotlin-project-structure-metadata.beforePatch.json"
+    }
+  },
+  {
+    "name": "kotlin-project-structure-metadata.json",
+    "path": "libraries/stdlib/kotlin-project-structure-metadata.json",
+    "sha": "8ab7639871b249040c1c841d46f3e344b762aebf",
+    "size": 1766,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/kotlin-project-structure-metadata.json?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/kotlin-project-structure-metadata.json",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/8ab7639871b249040c1c841d46f3e344b762aebf",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/kotlin-project-structure-metadata.json",
+    "type": "file",
+    "_links": {
+
+ succeeded in 173ms:
+[
+  {
+    "name": "autoCloseable",
+    "path": "libraries/stdlib/test/autoCloseable",
+    "sha": "a1aa4f02d5a95ecfb7b63e98c354509095f0fccf",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/autoCloseable?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/autoCloseable",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/a1aa4f02d5a95ecfb7b63e98c354509095f0fccf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/autoCloseable?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/a1aa4f02d5a95ecfb7b63e98c354509095f0fccf",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/autoCloseable"
+    }
+  },
+  {
+    "name": "collections",
+    "path": "libraries/stdlib/test/collections",
+    "sha": "49cef2c324708d24cc4eb51675aa79ff4a66f716",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/collections?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/collections",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/49cef2c324708d24cc4eb51675aa79ff4a66f716",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/collections?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/49cef2c324708d24cc4eb51675aa79ff4a66f716",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/collections"
+    }
+  },
+  {
+    "name": "comparisons",
+    "path": "libraries/stdlib/test/comparisons",
+    "sha": "07a9fb74723d877446a7d27f87d40487bc62b0ea",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/comparisons?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/comparisons",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/07a9fb74723d877446a7d27f87d40487bc62b0ea",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/comparisons?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/07a9fb74723d877446a7d27f87d40487bc62b0ea",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/comparisons"
+    }
+  },
+  {
+    "name": "concurrent",
+    "path": "libraries/stdlib/test/concurrent",
+    "sha": "7d745927b02e2ba800fbf76eeadf4a435611d71a",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/concurrent?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/concurrent",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/7d745927b02e2ba800fbf76eeadf4a435611d71a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/concurrent?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/7d745927b02e2ba800fbf76eeadf4a435611d71a",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/concurrent"
+    }
+  },
+  {
+    "name": "coroutines",
+    "path": "libraries/stdlib/test/coroutines",
+    "sha": "c5a505cf3df6d42ff2c68bb146a9306857c767d3",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/coroutines?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/coroutines",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/c5a505cf3df6d42ff2c68bb146a9306857c767d3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/coroutines?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/c5a505cf3df6d42ff2c68bb146a9306857c767d3",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/coroutines"
+    }
+  },
+  {
+    "name": "enums",
+    "path": "libraries/stdlib/test/enums",
+    "sha": "6e4dc2759314d6d1f58472d73ca3a99de6cf089d",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/enums?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/enums",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/6e4dc2759314d6d1f58472d73ca3a99de6cf089d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/enums?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/6e4dc2759314d6d1f58472d73ca3a99de6cf089d",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/enums"
+    }
+  },
+  {
+    "name": "exceptions",
+    "path": "libraries/stdlib/test/exceptions",
+    "sha": "702902a01b963b73524534cbfe9c330c9a61d7ce",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/exceptions?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/exceptions",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/702902a01b963b73524534cbfe9c330c9a61d7ce",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/exceptions?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/702902a01b963b73524534cbfe9c330c9a61d7ce",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/exceptions"
+    }
+  },
+  {
+    "name": "generated",
+    "path": "libraries/stdlib/test/generated",
+    "sha": "c498b8d83c575e219b048aadc86b62a31f6286a2",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/generated?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/generated",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/c498b8d83c575e219b048aadc86b62a31f6286a2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/generated?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/c498b8d83c575e219b048aadc86b62a31f6286a2",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/generated"
+    }
+  },
+  {
+    "name": "io.encoding",
+    "path": "libraries/stdlib/test/io.encoding",
+    "sha": "125042d91c7a0986724415a9a6e18ffbcc2eafbb",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/io.encoding?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/io.encoding",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/125042d91c7a0986724415a9a6e18ffbcc2eafbb",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/io.encoding?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/125042d91c7a0986724415a9a6e18ffbcc2eafbb",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/io.encoding"
+    }
+  },
+  {
+    "name": "js",
+    "path": "libraries/stdlib/test/js",
+    "sha": "c5070d039aa419b92cd200395431c8e481106ed8",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/js?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/js",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/c5070d039aa419b92cd200395431c8e481106ed8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/js?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/c5070d039aa419b92cd200395431c8e481106ed8",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/js"
+    }
+  },
+  {
+    "name": "numbers",
+    "path": "libraries/stdlib/test/numbers",
+    "sha": "5ce4cc525ce9c0cce7984b44937df4b72a9b62b7",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/numbers?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/numbers",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/5ce4cc525ce9c0cce7984b44937df4b72a9b62b7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/numbers?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/5ce4cc525ce9c0cce7984b44937df4b72a9b62b7",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/numbers"
+    }
+  },
+  {
+    "name": "properties",
+    "path": "libraries/stdlib/test/properties",
+    "sha": "34155db1db7f244efd793c8f39afb0a49d7d63c9",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/properties?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/properties",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/34155db1db7f244efd793c8f39afb0a49d7d63c9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/properties?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/34155db1db7f244efd793c8f39afb0a49d7d63c9",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/properties"
+    }
+  },
+  {
+    "name": "random",
+    "path": "libraries/stdlib/test/random",
+    "sha": "ed6c49cccd7a75164f78d6cd2bcdaabee6addc4f",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/random?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/random",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/ed6c49cccd7a75164f78d6cd2bcdaabee6addc4f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/random?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/ed6c49cccd7a75164f78d6cd2bcdaabee6addc4f",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/random"
+    }
+  },
+  {
+    "name": "ranges",
+    "path": "libraries/stdlib/test/ranges",
+    "sha": "ca56df56fd44173e92104a6eef769b174f52057a",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test/ranges?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/test/ranges",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/ca56df56fd44173e92104a6eef769b174f52057a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+
+ succeeded in 161ms:
+[
+  {
+    "name": "Module.md",
+    "path": "libraries/stdlib/src/Module.md",
+    "sha": "acdd1385c24a24832da9c704db0c5c92334a4665",
+    "size": 6878,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/src/Module.md?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/src/Module.md",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/acdd1385c24a24832da9c704db0c5c92334a4665",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/src/Module.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/src/Module.md?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/acdd1385c24a24832da9c704db0c5c92334a4665",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/src/Module.md"
+    }
+  },
+  {
+    "name": "kotlin",
+    "path": "libraries/stdlib/src/kotlin",
+    "sha": "3fa8eb6d821f071c339ccc50e95fe83e6fb5e32f",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/src/kotlin?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/src/kotlin",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/3fa8eb6d821f071c339ccc50e95fe83e6fb5e32f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/src/kotlin?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/3fa8eb6d821f071c339ccc50e95fe83e6fb5e32f",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/src/kotlin"
+    }
+  }
+]
+
+ succeeded in 517ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 01:59:09 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"0e12383718a14a6cafc5a0f4c8579236"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=FZZtQVoWWzRsDDPSY0svrY57qKRXD9TMbHxfnyLXzQMGshcNDD34rQhpxrsTgvNawD7ouzxvB7xhbSl0I9JCqJSRQarkHhg9M1bWSCi99P0fABc24E4udWwWNKkP0kHHK1gy92BPbcBkppnbgU%2FD17rv9RMMO9saDvdiYgE%2BJGcvTWfF164mftsJkguUIKmoAlsDSewpGKJyQj1uvkz7vBzAgV%2Fgd5huIMrMDmIkMJHxCoT9KKltOzH72PYfsMrNtRB78B8X1diOWTY%2FUAK97Q%3D%3D--W%2BzAu0AUmre9NsbN--%2Bp48me0MEQeIWI3qZjUNMQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.781057188.1777687148; expires=Sun, 02 May 2027 01:59:08 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 02 May 2027 01:59:08 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5115:1702:243A9F2:1C75C03:69F55A6C
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib?ref=v2.3.0 | jq -r '.[].name'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 0ms:
+ReadMe.md
+build.gradle.kts
+common-js-wasmjs
+common-non-jvm
+common
+gradle.properties
+jdk7
+jdk8
+js-ir-minimal-for-test
+js
+jvm-minimal-for-test
+jvm
+kotlin-project-structure-metadata.beforePatch.json
+kotlin-project-structure-metadata.json
+native-wasm
+samples
+src
+test
+unsigned
+wasm
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/test?ref=v2.3.0 | jq -r '.[].name'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 0ms:
+autoCloseable
+collections
+comparisons
+concurrent
+coroutines
+enums
+exceptions
+generated
+io.encoding
+js
+numbers
+properties
+random
+ranges
+reflection
+testUtils.kt
+text
+time
+unsigned
+utils
+uuid
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/wasm?ref=v2.3.0 | jq -r '.[].html_url'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/wasmJs?ref=v2.3.0 | jq -r '.[].html_url'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 182ms:
+https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/builtins
+https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/internal
+https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/js
+https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/src
+https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/stubs
+https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/test
+https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/wasi
+
+ succeeded in 148ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/wasm/js?ref=v2.3.0 | jq -r '.[] | [.name,.html_url] | @tsv'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/wasm/test?ref=v2.3.0 | jq -r '.[] | [.name,.html_url] | @tsv'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/wasm/src?ref=v2.3.0 | jq -r '.[] | [.name,.html_url] | @tsv'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common-js-wasmjs?ref=v2.3.0 | jq -r '.[] | [.name,.html_url] | @tsv'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 147ms:
+builtins	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/js/builtins
+internal	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/js/internal
+src	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/js/src
+test	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/js/test
+
+ succeeded in 144ms:
+generated	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/src/generated
+kotlin	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/src/kotlin
+
+ succeeded in 189ms:
+DurationWasmTest.kt	https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/wasm/test/DurationWasmTest.kt
+collectionStubs.kt	https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/wasm/test/collectionStubs.kt
+generated	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/test/generated
+stringEncoding.kt	https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/wasm/test/stringEncoding.kt
+testUtils.kt	https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/wasm/test/testUtils.kt
+unsafe	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/test/unsafe
+
+ succeeded in 147ms:
+src	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/common-js-wasmjs/src
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/wasm/js/test?ref=v2.3.0 | jq -r '.[] | [.name,.html_url] | @tsv'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/wasm/js/src?ref=v2.3.0 | jq -r '.[] | [.name,.html_url] | @tsv'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://kotlinlang.org/api/core/kotlin-stdlib/ || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://api.kotlinlang.org/core/kotlin-stdlib/2.3/ || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 108ms:
+HTTP/2 404 
+date: Sat, 02 May 2026 01:59:24 GMT
+content-type: application/json
+content-length: 23
+apigw-requestid: ctsThiByjoEEJuA=
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 161ms:
+HTTP/2 200 
+content-type: text/html; charset=utf-8
+content-length: 119189
+date: Sat, 02 May 2026 01:59:25 GMT
+last-modified: Mon, 15 Dec 2025 15:18:23 GMT
+etag: "ec3181a8e0d7a01673d8e8433e848cca"
+x-amz-server-side-encryption: AES256
+x-amz-meta-mtime: 1765206868
+accept-ranges: bytes
+server: AmazonS3
+vary: Accept-Encoding
+x-cache: Miss from cloudfront
+via: 1.1 6f416aa4cef6162ee99c949a7aae323a.cloudfront.net (CloudFront)
+x-amz-cf-pop: ZRH55-P2
+x-amz-cf-id: vX4mHQIU5fJt2sMPn721ifoknrK9nrK7QZPh1A8gWZYxZ_FjxcNIiw==
+x-xss-protection: 1; mode=block
+x-frame-options: SAMEORIGIN
+referrer-policy: strict-origin-when-cross-origin
+
+
+ succeeded in 169ms:
+js	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/js/test/js
+testUtils.kt	https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/wasm/js/test/testUtils.kt
+unsafe	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/js/test/unsafe
+
+ succeeded in 173ms:
+kotlin	https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/js/src/kotlin
+
+web search: 
+web search: site:kotlinlang.org/api/core/kotlin-stdlib/2.3 kotlin-stdlib 2.3
+exec
+/usr/bin/bash -lc "curl -fsSL https://kotlinlang.org/api/core/ | rg -n \"2\\.3|kotlin-stdlib|version\" | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+exec
+/usr/bin/bash -lc "curl -fsSL https://kotlinlang.org/api/core/kotlin-stdlib/index.html | rg -n \"2\\.3|version|Wasm-JS|Kotlin Standard Library\" | sed -n '1,160p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+exec
+/usr/bin/bash -lc "curl -I -fsSL 'https://kotlinlang.org/api/core/kotlin-stdlib/index.html?version=2.3' || true" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+exec
+/usr/bin/bash -lc "curl -fsSL https://kotlinlang.org/api/core/-modules.json | sed -n '1,160p' || true" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 154ms:
+HTTP/2 301 
+content-length: 0
+server: CloudFront
+date: Sat, 02 May 2026 01:59:33 GMT
+location: /api/core/kotlin-stdlib/
+x-cache: Miss from cloudfront
+via: 1.1 4b04b092439272f69394f0b36f3b262a.cloudfront.net (CloudFront)
+x-amz-cf-pop: ZRH55-P2
+x-amz-cf-id: qF5kTLUAmQt7SimS0O4JIb5X1Yb0Q9UsWjgSavTxTCxYD8MqGSHWcw==
+x-xss-protection: 1; mode=block
+x-frame-options: SAMEORIGIN
+referrer-policy: strict-origin-when-cross-origin
+
+HTTP/2 200 
+content-type: text/html; charset=utf-8
+content-length: 119189
+date: Sat, 02 May 2026 01:59:34 GMT
+last-modified: Mon, 15 Dec 2025 15:18:23 GMT
+etag: "ec3181a8e0d7a01673d8e8433e848cca"
+x-amz-server-side-encryption: AES256
+x-amz-meta-mtime: 1765206868
+accept-ranges: bytes
+server: AmazonS3
+vary: Accept-Encoding
+x-cache: Miss from cloudfront
+via: 1.1 4b04b092439272f69394f0b36f3b262a.cloudfront.net (CloudFront)
+x-amz-cf-pop: ZRH55-P2
+x-amz-cf-id: 6fzTioiNWRdYRzA346vNgyAFe58V0BLYB1dbeypT-hBDoG18MNU6Qw==
+x-xss-protection: 1; mode=block
+x-frame-options: SAMEORIGIN
+referrer-policy: strict-origin-when-cross-origin
+
+
+ succeeded in 205ms:
+65:    <!-- ktl_component: {"name": "header", "props": {"searchAlgoliaIndexName":"prod_KOTLINLANG_WEBHELP"} } --> <header class="ktl-header-module_header-menu_wh71L ktl-dokka-header" data-test="header"><div class="ktl-logo-large-module_container_35w4p rs-text-3 rs-text-3_hardness_average rs-text-3_theme_dark"><a class="ktl-logo-large-module_link_AOGas" href="https://kotlinlang.org" aria-label="Kotlin Home Page"><svg width="98" height="22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M43.314 1.067h-4.031L30.5 10.422V1.098H27.27v20.273H30.5v-9.82l8.814 9.82h4.177l-9.397-10.484 9.22-9.82Z" fill="#fff"></path><path d="M54.303 7.186c-1.153-.66-2.45-.994-3.901-.994-1.478 0-2.803.33-3.973.994a7.042 7.042 0 0 0-2.735 2.758c-.65 1.179-.976 2.515-.976 4.01 0 1.494.325 2.835.972 4.01a6.967 6.967 0 0 0 2.716 2.758c1.166.659 2.486.993 3.964.993 1.46 0 2.766-.33 3.923-.993a6.941 6.941 0 0 0 2.694-2.759c.642-1.178.963-2.515.963-4.01 0-1.494-.32-2.83-.963-4.009a6.949 6.949 0 0 0-2.684-2.758Zm-.204 9.328c-.357.74-.859 1.314-1.505 1.73-.646.415-1.392.622-2.233.622-.85 0-1.604-.207-2.26-.623a4.184 4.184 0 0 1-1.528-1.73c-.361-.74-.542-1.589-.542-2.555 0-.966.185-1.815.551-2.555a4.177 4.177 0 0 1 1.537-1.73c.656-.415 1.415-.623 2.278-.623.832 0 1.573.208 2.22.623a4.125 4.125 0 0 1 1.5 1.73c.353.74.529 1.59.529 2.555-.009.962-.19 1.815-.547 2.556ZM64.555 2.836h-3.132v2.52c0 .397-.095.695-.29.889-.194.198-.492.298-.899.298h-1.537v2.664h2.667v7.978c0 .83.167 1.562.506 2.194a3.591 3.591 0 0 0 1.442 1.472c.624.348 1.36.52 2.21.52h2.391v-2.782h-1.798c-.466 0-.841-.163-1.13-.483-.29-.325-.434-.75-.434-1.282V9.207h3.448V6.543h-3.448V2.836h.004ZM73.68.286h-3.186V21.37h3.187V.286ZM80.498.312H77.28v3.273h3.218V.312ZM80.466 6.544H77.28V21.37h3.186V6.544ZM96.67 8.99a4.969 4.969 0 0 0-1.899-2.054c-.818-.492-1.772-.74-2.866-.74-1.161 0-2.178.284-3.05.848-.697.447-1.257 1.052-1.7 1.797l-.018-2.298H84.09V21.37h3.191v-8.298c0-.8.154-1.513.457-2.136a3.39 3.39 0 0 1 1.293-1.45c.556-.342 1.202-.514 1.948-.514.669 0 1.238.14 1.717.42.48.28.841.682 1.085 1.201.249.52.37 1.142.37 1.87v8.907h3.192v-9.355c0-1.138-.226-2.149-.674-3.025Z" fill="#fff"></path><path d="M20 21H0V1h20L9.793 10.855 20 21Z" fill="url(#kotlin-logo-large_svg__a)"></path><defs><radialGradient id="kotlin-logo-large_svg__a" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(19.335 1.822) scale(22.9097)"><stop offset="0.003" stop-color="#EF4857"></stop><stop offset="0.469" stop-color="#D211EC"></stop><stop offset="1" stop-color="#7F52FF"></stop></radialGradient></defs></svg></a></div><nav class="ktl-horizontal-menu-module_nav_gbA7M ktl-horizontal-menu-module_dark-theme_gfxx6"><ul class="ktl-horizontal-menu-module_menu-list_TJnOF"><li class="ktl-horizontal-menu-module_menu-item-wrap_j6zB-"><span class="ktl-horizontal-menu-module_menu-item_CXDEW rs-text-2 rs-text-2_theme_dark">Solutions</span><ul class="ktl-horizontal-menu-module_dropdown-menu_jwdWI rs-text-2 rs-text-2_theme_dark"><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/lp/mobile/">Multiplatform</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/server-side/">Server-side</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/docs/data-science-overview.html">Data science</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/docs/android-overview.html">Android</a></li></ul></li><li class="ktl-horizontal-menu-module_menu-item-wrap_j6zB-"><a href="/case-studies/" class="ktl-horizontal-menu-module_menu-item_CXDEW rs-text-2 rs-text-2_theme_dark">Case studies</a></li><li class="ktl-horizontal-menu-module_menu-item-wrap_j6zB-"><a href="/docs/home.html" class="ktl-horizontal-menu-module_menu-item_CXDEW rs-text-2 rs-text-2_theme_dark">Docs</a><ul class="ktl-horizontal-menu-module_dropdown-menu_jwdWI rs-text-2 rs-text-2_theme_dark"><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/docs/home.html">Language guide</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/docs/multiplatform/get-started.html">Multiplatform development</a></li></ul></li><li class="ktl-horizontal-menu-module_menu-item-wrap_j6zB-"><span class="ktl-horizontal-menu-module_menu-item_CXDEW rs-text-2 rs-text-2_theme_dark">API</span><ul class="ktl-horizontal-menu-module_dropdown-menu_jwdWI rs-text-2 rs-text-2_theme_dark"><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/docs/api-references.html">APIs overview</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/api/core/kotlin-stdlib/">Standard library (stdlib)</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/api/core/kotlin-test/">Test library (kotlin.test)</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/api/kotlinx.coroutines/kotlinx-coroutines-core/">Coroutines (kotlinx.coroutines)</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/api/kotlinx.serialization/kotlinx-serialization-core/">Serialization (kotlinx.serialization)</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/api/kotlinx-io/">Kotlin I/O library (kotlinx-io)</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/api/kotlinx-datetime/">Date and time (kotlinx-datetime)</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/api/kotlinx-metadata-jvm/">JVM Metadata (kotlin-metadata-jvm)</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/api/kotlin-gradle-plugin/">Kotlin Gradle plugins</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="https://api.ktor.io/">Ktor</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="https://kotlinlang.org/api/compose-multiplatform/material3/">Compose Multiplatform Material3</a></li></ul></li><li class="ktl-horizontal-menu-module_menu-item-wrap_j6zB-"><a href="/community/" class="ktl-horizontal-menu-module_menu-item_CXDEW rs-text-2 rs-text-2_theme_dark">Community</a></li><li class="ktl-horizontal-menu-module_menu-item-wrap_j6zB-"><a href="/education/" class="ktl-horizontal-menu-module_menu-item_CXDEW rs-text-2 rs-text-2_theme_dark">Teach</a></li><li class="ktl-horizontal-menu-module_menu-item-wrap_j6zB-"><span class="ktl-horizontal-menu-module_menu-item_CXDEW rs-text-2 rs-text-2_theme_dark">Play</span><ul class="ktl-horizontal-menu-module_dropdown-menu_jwdWI rs-text-2 rs-text-2_theme_dark ktl-horizontal-menu-module_dropdown-menu-align-right_YeB-9"><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="https://play.kotlinlang.org/">Playground</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="https://play.kotlinlang.org/koans">Koans</a></li></ul></li></ul></nav><button type="button" class="ktl-search-button-module_button_YHJPv ktl-search-button-module_active_lUmdh" data-test="header-search-button" aria-label="Search"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.847 6.861A6.99 6.99 0 0 0 9.587 3a6.997 6.997 0 1 0 4.186 12.601l6.106 6.106 1.414-1.414-6.107-6.106a6.99 6.99 0 0 0 .66-7.326ZM14.587 10a5 5 0 1 1-10.001 0 5 5 0 0 1 10 0Z" fill="currentColor"></path></svg></button></header>
+75:        <div class="library-version" id="library-version">
+76:<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;index.html&quot;}"><div class="dropdown versions-dropdown" data-role="dropdown">
+77:  <div class="button button_dropdown versions-dropdown-button" role="combobox" data-role="dropdown-toggle" aria-controls="versions-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Select version" tabindex="0" title="2.3"><span class="versions-dropdown-button-text">2.3</span></div>
+78:  <div class="dropdown--list dropdown--list_positioned_left versions-dropdown-data" role="listbox" data-role="dropdown-listbox" aria-label="Versions" id="versions-listbox">
+79:    <div class="dropdown--header" data-remove-style="true" style="display: none"><span>Select version</span><button class="button" data-role="dropdown-toggle" aria-label="Close versions selection"><i class="ui-kit-icon ui-kit-icon_cross"></i></button></div>
+80:<a href="index.html" class="dropdown--option dropdown--option_active dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="2.3"><span class="dropdown--option-icon dropdown--option-icon_selected"></span><span class="dropdown--option-text">2.3</span></a><a href="2.2/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="2.2"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">2.2</span></a><a href="2.1/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="2.1"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">2.1</span></a><a href="2.0/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="2.0"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">2.0</span></a><a href="1.9/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.9"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.9</span></a><a href="1.8/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.8"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.8</span></a><a href="1.7/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.7"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.7</span></a><a href="1.6/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.6"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.6</span></a><a href="1.5/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.5"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.5</span></a><a href="1.4/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.4"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.4</span></a><a href="1.3/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.3"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.3</span></a><a href="1.2/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.2"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.2</span></a><a href="1.1/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.1"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.1</span></a><a href="1.0/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.0"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.0</span></a></div>
+129:<a data-name="-1733641089%2FMain%2F0" anchor-label="kotlin-stdlib" id="-1733641089%2FMain%2F0" data-filterable-set=""></a>
+133:              <div><a href="kotlin-stdlib/index.html">kotlin-stdlib</a></div>
+173:        <!-- ktl_component: {"name": "footer", "props": {} } --> <footer class="ktl-footer-module_footer_GHyqk ktl-footer_light"><div class="ktl-footer-module_social-list-area_2f-iy"><div class="rs-h4 rs-h4_theme_light ktl-footer-module_social-list-title_X7tJv">Stay in touch:</div><div class="ktl-social-list-module_social-list_in8ys"><a target="_blank" class="ktl-social-item-module_social-item_uHRCi" href="https://github.com/JetBrains/kotlin" title="Kotlin on GitHub"><svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.9 9.2a8.94 8.94 0 0 1-6.4 8.6.392.392 0 0 1-.4-.4v-3a1.58 1.58 0 0 0-.5-1.2 3.734 3.734 0 0 0 3.9-3.4 4.244 4.244 0 0 0-.9-3.5c.29-.79.217-1.669-.2-2.4a7.24 7.24 0 0 0-2.4.9c-1.44-.4-2.96-.4-4.4 0a4.62 4.62 0 0 0-2.3-.9h-.1A2.75 2.75 0 0 0 4 6.3a4.075 4.075 0 0 0-.9 3.5A3.81 3.81 0 0 0 7 13.2c-.198.148-.34.36-.4.6a2.638 2.638 0 0 0-.1.7 1.943 1.943 0 0 1-2.2-.5c-.5-.8-.9-1.2-1.4-1.3-.5-.1-.6.2-.6.2.079.26.26.476.5.6.387.216.674.575.8 1a1.827 1.827 0 0 0 1.2 1.2 3.915 3.915 0 0 0 1.9 0v1.7a.297.297 0 0 1-.4.3A8.82 8.82 0 0 1 0 9.2a8.95 8.95 0 0 1 17.9 0Z" fill="currentColor"></path></svg></a><a target="_blank" class="ktl-social-item-module_social-item_uHRCi" href="https://twitter.com/kotlin" title="Kotlin on Twitter"><svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.317 10.775 19.146 4h-1.381l-5.061 5.883L8.662 4H4l6.112 8.896L4 20h1.381l5.344-6.212L14.994 20h4.662l-6.339-9.225zm-1.891 2.199-.62-.886L5.88 5.04H8l3.977 5.688.62.886 5.168 7.393h-2.121l-4.218-6.033z" fill="currentColor"></path></svg></a><a target="_blank" class="ktl-social-item-module_social-item_uHRCi" href="https://bsky.app/profile/kotlinlang.org" title="Kotlin on Bluesky"><svg viewBox="0 0 24 24" class="_icon_y6pspg_4 _sizeM_y6pspg_22"><path d="M6.902 5.07C8.965 6.625 11.185 9.776 12 11.467v4.467c0-.095-.037.012-.115.244-.426 1.253-2.087 6.144-5.885 2.234-2-2.059-1.074-4.117 2.566-4.739-2.082.356-4.424-.232-5.066-2.535-.185-.663-.5-4.745-.5-5.296C3 3.081 5.413 3.95 6.902 5.07m10.196 0C15.035 6.625 12.815 9.776 12 11.467v4.467c0-.095.037.012.115.244.426 1.253 2.087 6.144 5.885 2.234 2-2.059 1.074-4.117-2.566-4.739 2.082.356 4.424-.232 5.066-2.535.185-.663.5-4.745.5-5.296 0-2.761-2.413-1.893-3.902-.772"></path></svg></a><a target="_blank" class="ktl-social-item-module_social-item_uHRCi" href="https://surveys.jetbrains.com/s3/kotlin-slack-sign-up" title="Kotlin Slack"><svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.63 9.49a1.895 1.895 0 0 0-1.89 1.89v4.73a1.89 1.89 0 1 0 3.78 0v-4.73a1.895 1.895 0 0 0-1.89-1.89ZM.01 11.38a1.89 1.89 0 1 0 3.78 0V9.49H1.91a1.897 1.897 0 0 0-1.9 1.89ZM6.63 0a1.89 1.89 0 1 0 0 3.78h1.89v-1.9A1.886 1.886 0 0 0 6.63 0ZM1.89 8.53h4.74a1.89 1.89 0 1 0 0-3.78H1.89a1.89 1.89 0 0 0 0 3.78Zm14.2-3.79a1.895 1.895 0 0 0-1.89 1.89v1.89h1.89a1.89 1.89 0 1 0 0-3.78ZM9.48 1.89v4.74a1.89 1.89 0 1 0 3.78 0V1.89a1.89 1.89 0 1 0-3.78 0Zm3.78 14.22a1.895 1.895 0 0 0-1.89-1.89H9.48v1.89a1.89 1.89 0 1 0 3.78 0Zm2.85-6.62h-4.74a1.89 1.89 0 1 0 0 3.78h4.74a1.89 1.89 0 1 0 0-3.78Z" fill="currentColor"></path></svg></a><a target="_blank" class="ktl-social-item-module_social-item_uHRCi" href="https://www.reddit.com/r/Kotlin/" title="Kotlin on Reddit"><svg width="20" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 9.068a2.183 2.183 0 0 0-2.186-2.186 2.2 2.2 0 0 0-1.524.61c-1.505-1.076-3.566-1.775-5.86-1.865L11.434.932l3.261.699a1.559 1.559 0 0 0 3.119-.072A1.56 1.56 0 0 0 16.254 0c-.609 0-1.147.358-1.397.878l-3.638-.77a.381.381 0 0 0-.287.053.347.347 0 0 0-.161.251L9.659 5.645c-2.33.072-4.426.77-5.95 1.864a2.2 2.2 0 0 0-1.523-.61 2.183 2.183 0 0 0-.896 4.176c-.036.22-.054.441-.053.664 0 3.368 3.924 6.11 8.763 6.11s8.764-2.723 8.764-6.11c0-.223-.018-.444-.054-.664A2.208 2.208 0 0 0 20 9.069Zm-15.018 1.56a1.56 1.56 0 0 1 3.118 0c0 .86-.698 1.559-1.559 1.559-.86.017-1.559-.7-1.559-1.56Zm8.728 4.139c-1.076 1.075-3.119 1.147-3.71 1.147-.61 0-2.652-.09-3.71-1.147a.4.4 0 0 1 0-.573.4.4 0 0 1 .574 0c.68.68 2.115.913 3.136.913 1.022 0 2.473-.232 3.136-.913a.401.401 0 0 1 .574 0 .436.436 0 0 1 0 .573Zm-.287-2.563a1.56 1.56 0 0 1 0-3.118c.86 0 1.56.699 1.56 1.56 0 .841-.7 1.558-1.56 1.558Z" fill="currentColor"></path></svg></a><a target="_blank" class="ktl-social-item-module_social-item_uHRCi" href="https://stackoverflow.com/questions/tagged/kotlin" title="Kotlin on Stack Overflow"><svg width="16" height="19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.527 17.27V12.19h1.685v6.764H0v-6.763h1.685v5.078h11.842Z" fill="currentColor"></path><path d="m3.546 11.71 8.274 1.73.35-1.664-8.274-1.73-.35 1.664ZM4.64 7.77l7.661 3.568.7-1.532-7.66-3.59-.7 1.554Zm2.123-3.765 6.501 5.407 1.073-1.292-6.501-5.406-1.073 1.291ZM10.966 0 9.609 1.007l5.034 6.785L16 6.785 10.966 0ZM3.37 15.562h8.448v-1.685H3.371v1.685Z" fill="currentColor"></path></svg></a><a target="_blank" class="ktl-social-item-module_social-item_uHRCi" href="https://www.youtube.com/channel/UCP7uiEZIqci43m22KDl0sNw" title="Kotlin on YouTube"><svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M21.005 5.617c.43.633.702 1.36.795 2.119.124 1.146.191 2.299.2 3.452v1.618a34.375 34.375 0 0 1-.2 3.454 4.808 4.808 0 0 1-.795 2.116 2.772 2.772 0 0 1-2.003.904c-2.8.215-7.002.222-7.002.222s-5.2-.05-6.8-.214a3.27 3.27 0 0 1-2.205-.912 4.8 4.8 0 0 1-.795-2.117 34.354 34.354 0 0 1-.2-3.453v-1.618c.009-1.154.075-2.306.2-3.452.093-.76.365-1.486.795-2.12a2.76 2.76 0 0 1 2.003-.901c2.799-.217 6.997-.217 6.997-.217h.01s4.198 0 6.997.217a2.76 2.76 0 0 1 2.003.902ZM15.755 12 9.501 8.249v7.502L15.754 12Z" fill="currentColor"></path></svg></a></div></div><nav class="ktl-footer-module_nav-list-area_Oblb8"><ul class="ktl-nav-list-module_nav-list_6OvZp"><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a href="https://kotlinlang.org/docs/contribute.html" title="Contributing to Kotlin" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Contributing to Kotlin</a></li><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a href="https://kotlinlang.org/docs/releases.html" title="Releases" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Releases</a></li><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a href="https://kotlinlang.org/assets/kotlin-media-kit.pdf" title="Press Kit" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Press Kit</a></li><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a href="https://kotlinlang.org/docs/security.html" title="Security" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Security</a></li><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a target="_blank" href="https://blog.jetbrains.com/kotlin/" title="Blog" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Blog</a></li><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a target="_blank" href="https://youtrack.jetbrains.com/issues/KT" title="Issue Tracker" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Issue Tracker</a></li><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a target="_blank" href="https://resources.jetbrains.com/storage/products/kotlin/docs/kotlin_logos.zip" title="Brand assets" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Brand assets</a></li><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a target="_blank" href="https://www.jetbrains.com/careers/jobs/#team=Kotlin" title="Careers" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Careers</a></li><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a target="_blank" href="https://www.jetbrainsmerchandise.com/view-all.html?brand=32" title="Kotlin Merch" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Kotlin Merch</a></li><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a href="#opt-out" title="Opt-Out" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Opt-Out</a></li></ul></nav><div class="rs-text-3 rs-text-3_hardness_pale rs-text-3_theme_light ktl-footer-module_text-area_T8lpL"><div class="ktl-footer-module_copyright_tho-X">Kotlin™ is protected under the<!-- --> <a class="rs-link rs-link_hardness_pale rs-link_mode_clear rs-link_theme_light ktl-footer-module_underlined-link_qo8UM" href="https://kotlinlang.org/foundation/kotlin-foundation.html">Kotlin Foundation</a> <!-- -->and licensed under the<!-- --> <a class="rs-link rs-link_hardness_pale rs-link_mode_clear rs-link_theme_light ktl-footer-module_underlined-link_qo8UM" target="_blank" href="https://github.com/JetBrains/kotlin-web-site/blob/master/LICENSE">Apache 2 license</a>.</div> <div class="ktl-footer-module_motto_6KpB8">Supported and developed by <a class="rs-link rs-link_hardness_pale rs-link_mode_clear rs-link_theme_light ktl-footer-module_underlined-link_qo8UM" href="https://www.jetbrains.com/" target="_blank">JetBrains</a></div></div><a href="https://jetbrains.com" target="_blank" class="ktl-footer-module_logo-area_zYm8W ktl-logo-module_link_jGqR8"><svg width="149" height="32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M43.242 20.293c0 .423-.09.797-.269 1.125a1.86 1.86 0 0 1-.756.762c-.33.18-.698.269-1.12.269H39V25.5h2.54c.955 0 1.812-.214 2.574-.642a4.679 4.679 0 0 0 1.792-1.773c.433-.752.652-1.598.652-2.544V10.509h-3.316v9.784Zm8.928-.911h6.946v-2.804H52.17v-3.181h7.678v-2.888h-10.91v14.987h11.124v-2.888H52.17v-3.226Zm8.932-5.9h4.442v12.01h3.316v-12.01h4.421v-2.973H61.097v2.977l.005-.005Zm23.512 4.5a3.94 3.94 0 0 0-.837-.323c.224-.065.438-.144.638-.244a3.18 3.18 0 0 0 1.29-1.195c.308-.513.467-1.1.467-1.768 0-.761-.209-1.444-.622-2.046-.413-.598-.996-1.066-1.743-1.404-.747-.334-1.603-.503-2.56-.503h-6.656v14.987h6.786c1.006 0 1.902-.174 2.694-.528.787-.353 1.4-.841 1.837-1.473.433-.628.653-1.345.653-2.151 0-.742-.17-1.405-.513-1.992a3.525 3.525 0 0 0-1.43-1.364l-.004.005Zm-6.802-4.959h2.943c.408 0 .767.075 1.08.22.314.144.558.353.732.627.175.269.264.587.264.95 0 .364-.09.708-.264.992a1.726 1.726 0 0 1-.732.652 2.41 2.41 0 0 1-1.08.229h-2.943v-3.675.005Zm5.069 9.067c-.19.284-.458.503-.802.658a2.908 2.908 0 0 1-1.195.229h-3.072v-3.844h3.072c.444 0 .837.084 1.185.249.344.164.618.393.807.692.19.299.289.637.289 1.02 0 .384-.095.712-.284.996Zm14.798-2.654c.831-.398 1.474-.96 1.932-1.683.458-.721.687-1.558.687-2.514 0-.956-.224-1.763-.672-2.48-.448-.716-1.086-1.27-1.907-1.662-.822-.394-1.773-.588-2.858-.588h-6.563v14.987h3.321V20.04h2.161l3.043 5.457h3.789l-3.426-5.86c.17-.06.339-.125.498-.2h-.005Zm-1.076-3.062a1.798 1.798 0 0 1-.791.722c-.344.17-.747.254-1.21.254h-2.988v-4.147h2.988c.463 0 .866.084 1.21.249.343.164.607.408.791.717.185.308.28.677.28 1.095 0 .418-.095.787-.28 1.1v.01ZM106.9 10.51l-5.352 14.987h3.371l1.06-3.306h5.557l1.135 3.306h3.306l-5.482-14.987H106.9Zm-.169 9.171 1.723-5.287.204-.961.204.96 1.842 5.288h-3.973Zm10.347 5.816h3.425V10.51h-3.425v14.987Zm15.51-4.85L126.14 10.51h-3.232v14.987h3.027V15.36l6.414 10.137h3.266V10.51h-3.027v10.137Zm15.763-1.678a4.466 4.466 0 0 0-1.364-1.568 4.95 4.95 0 0 0-2.011-.846l-2.55-.523c-.398-.095-.717-.26-.951-.498a1.228 1.228 0 0 1-.353-.891c0-.324.084-.603.259-.842.169-.239.413-.423.722-.558.308-.134.667-.199 1.075-.199.408 0 .777.07 1.091.21.313.139.557.333.731.587.175.254.264.538.264.861h3.321c-.019-.871-.263-1.643-.722-2.31-.458-.672-1.1-1.195-1.916-1.573-.817-.379-1.753-.568-2.799-.568-1.045 0-1.971.194-2.783.588-.812.393-1.449.936-1.902 1.633-.453.697-.682 1.488-.682 2.38 0 .722.144 1.374.438 1.951a3.954 3.954 0 0 0 1.24 1.45 4.906 4.906 0 0 0 1.862.801l2.699.558c.443.104.791.299 1.05.577.259.28.384.623.384 1.041 0 .334-.095.637-.284.901a1.826 1.826 0 0 1-.792.613c-.338.144-.737.214-1.195.214-.458 0-.891-.08-1.265-.24a1.94 1.94 0 0 1-.866-.686 1.72 1.72 0 0 1-.309-1.021h-3.321c.015.936.264 1.757.757 2.474.488.712 1.16 1.27 2.017 1.668.856.399 1.837.598 2.942.598 1.106 0 2.101-.204 2.958-.612.861-.409 1.528-.971 2.011-1.688.483-.717.722-1.529.722-2.435a4.4 4.4 0 0 0-.488-2.052l.01.005Z" fill="#19191C" style="fill:var(--logo-text-color)"></path><path d="m10.17 1.83-8.34 8.34A6.252 6.252 0 0 0 0 14.59V29.5A2.5 2.5 0 0 0 2.5 32h14.91a6.26 6.26 0 0 0 4.42-1.83l8.34-8.34A6.252 6.252 0 0 0 32 17.41V2.5A2.5 2.5 0 0 0 29.5 0H14.59a6.26 6.26 0 0 0-4.42 1.83Z" fill="url(#jetbrains-logo_svg__a)"></path><path d="M24 8H4v20h20V8Z" fill="#000"></path><path d="M15 23.5H6.5v2H15v-2Z" fill="#fff"></path><defs><linearGradient id="jetbrains-logo_svg__a" x1="0.425" y1="31.36" x2="31.31" y2="0.905" gradientUnits="userSpaceOnUse"><stop stop-color="#FF9419"></stop><stop offset="0.43" stop-color="#FF021D"></stop><stop offset="0.99" stop-color="#E600FF"></stop></linearGradient></defs></svg></a></footer>
+
+ succeeded in 219ms:
+65:    <!-- ktl_component: {"name": "header", "props": {"searchAlgoliaIndexName":"prod_KOTLINLANG_WEBHELP"} } --> <header class="ktl-header-module_header-menu_wh71L ktl-dokka-header" data-test="header"><div class="ktl-logo-large-module_container_35w4p rs-text-3 rs-text-3_hardness_average rs-text-3_theme_dark"><a class="ktl-logo-large-module_link_AOGas" href="https://kotlinlang.org" aria-label="Kotlin Home Page"><svg width="98" height="22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M43.314 1.067h-4.031L30.5 10.422V1.098H27.27v20.273H30.5v-9.82l8.814 9.82h4.177l-9.397-10.484 9.22-9.82Z" fill="#fff"></path><path d="M54.303 7.186c-1.153-.66-2.45-.994-3.901-.994-1.478 0-2.803.33-3.973.994a7.042 7.042 0 0 0-2.735 2.758c-.65 1.179-.976 2.515-.976 4.01 0 1.494.325 2.835.972 4.01a6.967 6.967 0 0 0 2.716 2.758c1.166.659 2.486.993 3.964.993 1.46 0 2.766-.33 3.923-.993a6.941 6.941 0 0 0 2.694-2.759c.642-1.178.963-2.515.963-4.01 0-1.494-.32-2.83-.963-4.009a6.949 6.949 0 0 0-2.684-2.758Zm-.204 9.328c-.357.74-.859 1.314-1.505 1.73-.646.415-1.392.622-2.233.622-.85 0-1.604-.207-2.26-.623a4.184 4.184 0 0 1-1.528-1.73c-.361-.74-.542-1.589-.542-2.555 0-.966.185-1.815.551-2.555a4.177 4.177 0 0 1 1.537-1.73c.656-.415 1.415-.623 2.278-.623.832 0 1.573.208 2.22.623a4.125 4.125 0 0 1 1.5 1.73c.353.74.529 1.59.529 2.555-.009.962-.19 1.815-.547 2.556ZM64.555 2.836h-3.132v2.52c0 .397-.095.695-.29.889-.194.198-.492.298-.899.298h-1.537v2.664h2.667v7.978c0 .83.167 1.562.506 2.194a3.591 3.591 0 0 0 1.442 1.472c.624.348 1.36.52 2.21.52h2.391v-2.782h-1.798c-.466 0-.841-.163-1.13-.483-.29-.325-.434-.75-.434-1.282V9.207h3.448V6.543h-3.448V2.836h.004ZM73.68.286h-3.186V21.37h3.187V.286ZM80.498.312H77.28v3.273h3.218V.312ZM80.466 6.544H77.28V21.37h3.186V6.544ZM96.67 8.99a4.969 4.969 0 0 0-1.899-2.054c-.818-.492-1.772-.74-2.866-.74-1.161 0-2.178.284-3.05.848-.697.447-1.257 1.052-1.7 1.797l-.018-2.298H84.09V21.37h3.191v-8.298c0-.8.154-1.513.457-2.136a3.39 3.39 0 0 1 1.293-1.45c.556-.342 1.202-.514 1.948-.514.669 0 1.238.14 1.717.42.48.28.841.682 1.085 1.201.249.52.37 1.142.37 1.87v8.907h3.192v-9.355c0-1.138-.226-2.149-.674-3.025Z" fill="#fff"></path><path d="M20 21H0V1h20L9.793 10.855 20 21Z" fill="url(#kotlin-logo-large_svg__a)"></path><defs><radialgradient id="kotlin-logo-large_svg__a" cx="0" cy="0" r="1" gradientunits="userSpaceOnUse" gradienttransform="translate(19.335 1.822) scale(22.9097)"><stop offset="0.003" stop-color="#EF4857"></stop><stop offset="0.469" stop-color="#D211EC"></stop><stop offset="1" stop-color="#7F52FF"></stop></radialgradient></defs></svg></a></div><nav class="ktl-horizontal-menu-module_nav_gbA7M ktl-horizontal-menu-module_dark-theme_gfxx6"><ul class="ktl-horizontal-menu-module_menu-list_TJnOF"><li class="ktl-horizontal-menu-module_menu-item-wrap_j6zB-"><span class="ktl-horizontal-menu-module_menu-item_CXDEW rs-text-2 rs-text-2_theme_dark">Solutions</span><ul class="ktl-horizontal-menu-module_dropdown-menu_jwdWI rs-text-2 rs-text-2_theme_dark"><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/lp/mobile/">Multiplatform</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/server-side/">Server-side</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/docs/data-science-overview.html">Data science</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/docs/android-overview.html">Android</a></li></ul></li><li class="ktl-horizontal-menu-module_menu-item-wrap_j6zB-"><a href="/case-studies/" class="ktl-horizontal-menu-module_menu-item_CXDEW rs-text-2 rs-text-2_theme_dark">Case studies</a></li><li class="ktl-horizontal-menu-module_menu-item-wrap_j6zB-"><a href="/docs/home.html" class="ktl-horizontal-menu-module_menu-item_CXDEW rs-text-2 rs-text-2_theme_dark">Docs</a><ul class="ktl-horizontal-menu-module_dropdown-menu_jwdWI rs-text-2 rs-text-2_theme_dark"><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/docs/home.html">Language guide</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/docs/multiplatform/get-started.html">Multiplatform development</a></li></ul></li><li class="ktl-horizontal-menu-module_menu-item-wrap_j6zB-"><span class="ktl-horizontal-menu-module_menu-item_CXDEW rs-text-2 rs-text-2_theme_dark">API</span><ul class="ktl-horizontal-menu-module_dropdown-menu_jwdWI rs-text-2 rs-text-2_theme_dark"><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/docs/api-references.html">APIs overview</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/api/core/kotlin-stdlib/">Standard library (stdlib)</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/api/core/kotlin-test/">Test library (kotlin.test)</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/api/kotlinx.coroutines/kotlinx-coroutines-core/">Coroutines (kotlinx.coroutines)</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/api/kotlinx.serialization/kotlinx-serialization-core/">Serialization (kotlinx.serialization)</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/api/kotlinx-io/">Kotlin I/O library (kotlinx-io)</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/api/kotlinx-datetime/">Date and time (kotlinx-datetime)</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/api/kotlinx-metadata-jvm/">JVM Metadata (kotlin-metadata-jvm)</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="/api/kotlin-gradle-plugin/">Kotlin Gradle plugins</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="https://api.ktor.io/">Ktor</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="https://kotlinlang.org/api/compose-multiplatform/material3/">Compose Multiplatform Material3</a></li></ul></li><li class="ktl-horizontal-menu-module_menu-item-wrap_j6zB-"><a href="/community/" class="ktl-horizontal-menu-module_menu-item_CXDEW rs-text-2 rs-text-2_theme_dark">Community</a></li><li class="ktl-horizontal-menu-module_menu-item-wrap_j6zB-"><a href="/education/" class="ktl-horizontal-menu-module_menu-item_CXDEW rs-text-2 rs-text-2_theme_dark">Teach</a></li><li class="ktl-horizontal-menu-module_menu-item-wrap_j6zB-"><span class="ktl-horizontal-menu-module_menu-item_CXDEW rs-text-2 rs-text-2_theme_dark">Play</span><ul class="ktl-horizontal-menu-module_dropdown-menu_jwdWI rs-text-2 rs-text-2_theme_dark ktl-horizontal-menu-module_dropdown-menu-align-right_YeB-9"><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="https://play.kotlinlang.org/">Playground</a></li><li><a class="ktl-horizontal-menu-module_dropdown-menu-item_9gjwH" href="https://play.kotlinlang.org/koans">Koans</a></li></ul></li></ul></nav><button type="button" class="ktl-search-button-module_button_YHJPv ktl-search-button-module_active_lUmdh" data-test="header-search-button" aria-label="Search"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.847 6.861A6.99 6.99 0 0 0 9.587 3a6.997 6.997 0 1 0 4.186 12.601l6.106 6.106 1.414-1.414-6.107-6.106a6.99 6.99 0 0 0 .66-7.326ZM14.587 10a5 5 0 1 1-10.001 0 5 5 0 0 1 10 0Z" fill="currentColor"></path></svg></button></header>
+73:        <div class="library-version" id="library-version">
+74:<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;index.html&quot;}"><div class="dropdown versions-dropdown" data-role="dropdown">
+75:  <div class="button button_dropdown versions-dropdown-button" role="combobox" data-role="dropdown-toggle" aria-controls="versions-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Select version" tabindex="0" title="2.3"><span class="versions-dropdown-button-text">2.3</span></div>
+76:  <div class="dropdown--list dropdown--list_positioned_left versions-dropdown-data" role="listbox" data-role="dropdown-listbox" aria-label="Versions" id="versions-listbox">
+77:    <div class="dropdown--header" data-remove-style="true" style="display: none"><span>Select version</span><button class="button" data-role="dropdown-toggle" aria-label="Close versions selection"><i class="ui-kit-icon ui-kit-icon_cross"></i></button></div>
+78:<a href="index.html" class="dropdown--option dropdown--option_active dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="2.3"><span class="dropdown--option-icon dropdown--option-icon_selected"></span><span class="dropdown--option-text">2.3</span></a><a href="../2.2/kotlin-stdlib/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="2.2"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">2.2</span></a><a href="../2.1/kotlin-stdlib/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="2.1"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">2.1</span></a><a href="../2.0/kotlin-stdlib/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="2.0"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">2.0</span></a><a href="../1.9/kotlin-stdlib/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.9"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.9</span></a><a href="../1.8/kotlin-stdlib/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.8"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.8</span></a><a href="../1.7/kotlin-stdlib/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.7"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.7</span></a><a href="../1.6/kotlin-stdlib/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.6"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.6</span></a><a href="../1.5/kotlin-stdlib/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.5"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.5</span></a><a href="../1.4/kotlin-stdlib/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.4"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.4</span></a><a href="../1.3/kotlin-stdlib/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.3"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.3</span></a><a href="../1.2/kotlin-stdlib/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.2"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.2</span></a><a href="../1.1/kotlin-stdlib/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.1"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.1</span></a><a href="../1.0/kotlin-stdlib/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option" title="1.0"><span class="dropdown--option-icon"></span><span class="dropdown--option-text">1.0</span></a></div>
+84:                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":kotlin-stdlib_2.3_latest/common">Common</button>
+85:                <button class="platform-tag platform-selector js-like" data-active="" data-filter=":kotlin-stdlib_2.3_latest/js">JS</button>
+86:                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":kotlin-stdlib_2.3_latest/jvm">JVM</button>
+87:                <button class="platform-tag platform-selector native-like" data-active="" data-filter=":kotlin-stdlib_2.3_latest/native">Native</button>
+88:                <button class="platform-tag platform-selector wasm-like" data-active="" data-filter=":kotlin-stdlib_2.3_latest/wasm-js">Wasm-JS</button>
+89:                <button class="platform-tag platform-selector wasm-like" data-active="" data-filter=":kotlin-stdlib_2.3_latest/wasm-wasi">Wasm-WASI</button>
+100:                                <input type="checkbox" class="checkbox--input" id=":kotlin-stdlib_2.3_latest/common" data-filter=":kotlin-stdlib_2.3_latest/common">
+107:                                <input type="checkbox" class="checkbox--input" id=":kotlin-stdlib_2.3_latest/js" data-filter=":kotlin-stdlib_2.3_latest/js">
+114:                                <input type="checkbox" class="checkbox--input" id=":kotlin-stdlib_2.3_latest/jvm" data-filter=":kotlin-stdlib_2.3_latest/jvm">
+121:                                <input type="checkbox" class="checkbox--input" id=":kotlin-stdlib_2.3_latest/native" data-filter=":kotlin-stdlib_2.3_latest/native">
+128:                                <input type="checkbox" class="checkbox--input" id=":kotlin-stdlib_2.3_latest/wasm-js" data-filter=":kotlin-stdlib_2.3_latest/wasm-js">
+130:                                Wasm-JS
+135:                                <input type="checkbox" class="checkbox--input" id=":kotlin-stdlib_2.3_latest/wasm-wasi" data-filter=":kotlin-stdlib_2.3_latest/wasm-wasi">
+174:      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":kotlin-stdlib_2.3_latest/common" data-filterable-set=":kotlin-stdlib_2.3_latest/common" data-active="" data-toggle=":kotlin-stdlib_2.3_latest/common">Common</button><button class="platform-bookmark" data-filterable-current=":kotlin-stdlib_2.3_latest/js" data-filterable-set=":kotlin-stdlib_2.3_latest/js" data-toggle=":kotlin-stdlib_2.3_latest/js">JS</button><button class="platform-bookmark" data-filterable-current=":kotlin-stdlib_2.3_latest/jvm" data-filterable-set=":kotlin-stdlib_2.3_latest/jvm" data-toggle=":kotlin-stdlib_2.3_latest/jvm">JVM</button><button class="platform-bookmark" data-filterable-current=":kotlin-stdlib_2.3_latest/native" data-filterable-set=":kotlin-stdlib_2.3_latest/native" data-toggle=":kotlin-stdlib_2.3_latest/native">Native</button><button class="platform-bookmark" data-filterable-current=":kotlin-stdlib_2.3_latest/wasm-js" data-filterable-set=":kotlin-stdlib_2.3_latest/wasm-js" data-toggle=":kotlin-stdlib_2.3_latest/wasm-js">Wasm-JS</button><button class="platform-bookmark" data-filterable-current=":kotlin-stdlib_2.3_latest/wasm-wasi" data-filterable-set=":kotlin-stdlib_2.3_latest/wasm-wasi" data-toggle=":kotlin-stdlib_2.3_latest/wasm-wasi">Wasm-WASI</button></div>
+175:<div class="content sourceset-dependent-content" data-active="" data-togglable=":kotlin-stdlib_2.3_latest/common"><h2 class="">Kotlin Standard Library</h2><p class="paragraph">The Kotlin Standard Library provides living essentials for everyday work with Kotlin. These include:</p><ul><li><p class="paragraph">Higher-order functions implementing idiomatic patterns (<a href="kotlin/let.html">let</a>, <a href="kotlin/apply.html">apply</a>, kotlin.io.use, kotlin.synchronized, etc).</p></li><li><p class="paragraph">Extension functions providing querying operations for collections (eager) and sequences (lazy).</p></li><li><p class="paragraph">Various utilities for working with strings and char sequences.</p></li><li><p class="paragraph">Extensions for JDK classes making it convenient to work with files, IO, and threading.</p></li></ul></div><div class="content sourceset-dependent-content" data-togglable=":kotlin-stdlib_2.3_latest/js"><h2 class="">Kotlin Standard Library</h2><p class="paragraph">The Kotlin Standard Library provides living essentials for everyday work with Kotlin. These include:</p><ul><li><p class="paragraph">Higher-order functions implementing idiomatic patterns (<a href="kotlin/let.html">let</a>, <a href="kotlin/apply.html">apply</a>, kotlin.io.use, <a href="kotlin/synchronized.html">synchronized</a>, etc).</p></li><li><p class="paragraph">Extension functions providing querying operations for collections (eager) and sequences (lazy).</p></li><li><p class="paragraph">Various utilities for working with strings and char sequences.</p></li><li><p class="paragraph">Extensions for JDK classes making it convenient to work with files, IO, and threading.</p></li></ul></div><div class="content sourceset-dependent-content" data-togglable=":kotlin-stdlib_2.3_latest/jvm"><h2 class="">Kotlin Standard Library</h2><p class="paragraph">The Kotlin Standard Library provides living essentials for everyday work with Kotlin. These include:</p><ul><li><p class="paragraph">Higher-order functions implementing idiomatic patterns (<a href="kotlin/let.html">let</a>, <a href="kotlin/apply.html">apply</a>, <a href="kotlin.io/use.html">use</a>, <a href="kotlin/synchronized.html">synchronized</a>, etc).</p></li><li><p class="paragraph">Extension functions providing querying operations for collections (eager) and sequences (lazy).</p></li><li><p class="paragraph">Various utilities for working with strings and char sequences.</p></li><li><p class="paragraph">Extensions for JDK classes making it convenient to work with files, IO, and threading.</p></li></ul></div><div class="content sourceset-dependent-content" data-togglable=":kotlin-stdlib_2.3_latest/native"><h2 class="">Kotlin Standard Library</h2><p class="paragraph">The Kotlin Standard Library provides living essentials for everyday work with Kotlin. These include:</p><ul><li><p class="paragraph">Higher-order functions implementing idiomatic patterns (<a href="kotlin/let.html">let</a>, <a href="kotlin/apply.html">apply</a>, kotlin.io.use, kotlin.synchronized, etc).</p></li><li><p class="paragraph">Extension functions providing querying operations for collections (eager) and sequences (lazy).</p></li><li><p class="paragraph">Various utilities for working with strings and char sequences.</p></li><li><p class="paragraph">Extensions for JDK classes making it convenient to work with files, IO, and threading.</p></li></ul></div><div class="content sourceset-dependent-content" data-togglable=":kotlin-stdlib_2.3_latest/wasm-js"><h2 class="">Kotlin Standard Library</h2><p class="paragraph">The Kotlin Standard Library provides living essentials for everyday work with Kotlin. These include:</p><ul><li><p class="paragraph">Higher-order functions implementing idiomatic patterns (<a href="kotlin/let.html">let</a>, <a href="kotlin/apply.html">apply</a>, kotlin.io.use, kotlin.synchronized, etc).</p></li><li><p class="paragraph">Extension functions providing querying operations for collections (eager) and sequences (lazy).</p></li><li><p class="paragraph">Various utilities for working with strings and char sequences.</p></li><li><p class="paragraph">Extensions for JDK classes making it convenient to work with files, IO, and threading.</p></li></ul></div><div class="content sourceset-dependent-content" data-togglable=":kotlin-stdlib_2.3_latest/wasm-wasi"><h2 class="">Kotlin Standard Library</h2><p class="paragraph">The Kotlin Standard Library provides living essentials for everyday work with Kotlin. These include:</p><ul><li><p class="paragraph">Higher-order functions implementing idiomatic patterns (<a href="kotlin/let.html">let</a>, <a href="kotlin/apply.html">apply</a>, kotlin.io.use, kotlin.synchronized, etc).</p></li><li><p class="paragraph">Extension functions providing querying operations for collections (eager) and sequences (lazy).</p></li><li><p class="paragraph">Various utilities for working with strings and char sequences.</p></li><li><p class="paragraph">Extensions for JDK classes making it convenient to work with files, IO, and threading.</p></li></ul></div>    </div>
+178:  <div class="table"><a data-name="-1469218141%2FPackages%2F1935454986" anchor-label="kotlin" id="-1469218141%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+179:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi">
+193:              <div class="platform-tag wasm-like">Wasm-JS</div>
+198:        <div><span class="brief-comment"><a data-name="-1469218141%2FPackages%2F1935454986" anchor-label="kotlin" id="-1469218141%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+203:<a data-name="-752878562%2FPackages%2F-460717820" anchor-label="kotlin.annotation" id="-752878562%2FPackages%2F-460717820" data-filterable-set=":kotlin-stdlib_2.3_latest/common"></a>
+204:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common" data-filterable-set=":kotlin-stdlib_2.3_latest/common">
+218:        <div><span class="brief-comment"><a data-name="-752878562%2FPackages%2F-460717820" anchor-label="kotlin.annotation" id="-752878562%2FPackages%2F-460717820" data-filterable-set=":kotlin-stdlib_2.3_latest/common"></a>
+223:<a data-name="252883722%2FPackages%2F1935454986" anchor-label="kotlin.collections" id="252883722%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+224:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi">
+238:              <div class="platform-tag wasm-like">Wasm-JS</div>
+243:        <div><span class="brief-comment"><a data-name="252883722%2FPackages%2F1935454986" anchor-label="kotlin.collections" id="252883722%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+248:<a data-name="-1902286145%2FPackages%2F1935454986" anchor-label="kotlin.comparisons" id="-1902286145%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+249:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi">
+263:              <div class="platform-tag wasm-like">Wasm-JS</div>
+268:        <div><span class="brief-comment"><a data-name="-1902286145%2FPackages%2F1935454986" anchor-label="kotlin.comparisons" id="-1902286145%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+273:<a data-name="-394503002%2FPackages%2F253045464" anchor-label="kotlin.concurrent" id="-394503002%2FPackages%2F253045464" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/jvm"></a>
+274:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/jvm" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/jvm">
+290:        <div><span class="brief-comment"><a data-name="-394503002%2FPackages%2F253045464" anchor-label="kotlin.concurrent" id="-394503002%2FPackages%2F253045464" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/jvm"></a>
+295:<a data-name="1060619232%2FPackages%2F1935454986" anchor-label="kotlin.concurrent.atomics" id="1060619232%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+296:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi">
+310:              <div class="platform-tag wasm-like">Wasm-JS</div>
+315:        <div><span class="brief-comment"><a data-name="1060619232%2FPackages%2F1935454986" anchor-label="kotlin.concurrent.atomics" id="1060619232%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+320:<a data-name="-1742044970%2FPackages%2F-460717820" anchor-label="kotlin.contracts" id="-1742044970%2FPackages%2F-460717820" data-filterable-set=":kotlin-stdlib_2.3_latest/common"></a>
+321:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common" data-filterable-set=":kotlin-stdlib_2.3_latest/common">
+335:        <div><span class="brief-comment"><a data-name="-1742044970%2FPackages%2F-460717820" anchor-label="kotlin.contracts" id="-1742044970%2FPackages%2F-460717820" data-filterable-set=":kotlin-stdlib_2.3_latest/common"></a>
+340:<a data-name="-1443071350%2FPackages%2F372160080" anchor-label="kotlin.coroutines" id="-1443071350%2FPackages%2F372160080" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native"></a>
+341:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native">
+356:        <div><span class="brief-comment"><a data-name="-1443071350%2FPackages%2F372160080" anchor-label="kotlin.coroutines" id="-1443071350%2FPackages%2F372160080" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native"></a>
+361:<a data-name="-628256469%2FPackages%2F1935454986" anchor-label="kotlin.coroutines.cancellation" id="-628256469%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+362:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi">
+376:              <div class="platform-tag wasm-like">Wasm-JS</div>
+381:        <div><span class="brief-comment"><a data-name="-628256469%2FPackages%2F1935454986" anchor-label="kotlin.coroutines.cancellation" id="-628256469%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+386:<a data-name="-657970698%2FPackages%2F1935454986" anchor-label="kotlin.coroutines.intrinsics" id="-657970698%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+387:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi">
+401:              <div class="platform-tag wasm-like">Wasm-JS</div>
+406:        <div><span class="brief-comment"><a data-name="-657970698%2FPackages%2F1935454986" anchor-label="kotlin.coroutines.intrinsics" id="-657970698%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+411:<a data-name="495960327%2FPackages%2F-460717820" anchor-label="kotlin.enums" id="495960327%2FPackages%2F-460717820" data-filterable-set=":kotlin-stdlib_2.3_latest/common"></a>
+412:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common" data-filterable-set=":kotlin-stdlib_2.3_latest/common">
+426:        <div><span class="brief-comment"><a data-name="495960327%2FPackages%2F-460717820" anchor-label="kotlin.enums" id="495960327%2FPackages%2F-460717820" data-filterable-set=":kotlin-stdlib_2.3_latest/common"></a>
+431:<a data-name="1993787735%2FPackages%2F-460717820" anchor-label="kotlin.experimental" id="1993787735%2FPackages%2F-460717820" data-filterable-set=":kotlin-stdlib_2.3_latest/common"></a>
+432:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common" data-filterable-set=":kotlin-stdlib_2.3_latest/common">
+446:        <div><span class="brief-comment"><a data-name="1993787735%2FPackages%2F-460717820" anchor-label="kotlin.experimental" id="1993787735%2FPackages%2F-460717820" data-filterable-set=":kotlin-stdlib_2.3_latest/common"></a>
+447:            <p class="paragraph">Experimental APIs, subject to change in future versions of Kotlin.</p>
+451:<a data-name="1781802069%2FPackages%2F1935454986" anchor-label="kotlin.io" id="1781802069%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+452:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi">
+466:              <div class="platform-tag wasm-like">Wasm-JS</div>
+471:        <div><span class="brief-comment"><a data-name="1781802069%2FPackages%2F1935454986" anchor-label="kotlin.io" id="1781802069%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+476:<a data-name="1235422992%2FPackages%2F1128330636" anchor-label="kotlin.io.encoding" id="1235422992%2FPackages%2F1128330636" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/jvm"></a>
+477:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/jvm" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/jvm">
+492:        <div><span class="brief-comment"><a data-name="1235422992%2FPackages%2F1128330636" anchor-label="kotlin.io.encoding" id="1235422992%2FPackages%2F1128330636" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/jvm"></a>
+497:<a data-name="527698146%2FPackages%2F736137220" anchor-label="kotlin.io.path" id="527698146%2FPackages%2F736137220" data-filterable-set=":kotlin-stdlib_2.3_latest/jvm"></a>
+498:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/jvm" data-filterable-set=":kotlin-stdlib_2.3_latest/jvm">
+512:        <div><span class="brief-comment"><a data-name="527698146%2FPackages%2F736137220" anchor-label="kotlin.io.path" id="527698146%2FPackages%2F736137220" data-filterable-set=":kotlin-stdlib_2.3_latest/jvm"></a>
+517:<a data-name="1078554296%2FPackages%2F-736347267" anchor-label="kotlin.js" id="1078554296%2FPackages%2F-736347267" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/wasm-js"></a>
+518:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/wasm-js" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/wasm-js">
+530:              <div class="platform-tag wasm-like">Wasm-JS</div>
+534:        <div><span class="brief-comment"><a data-name="1078554296%2FPackages%2F-736347267" anchor-label="kotlin.js" id="1078554296%2FPackages%2F-736347267" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/wasm-js"></a>
+539:<a data-name="288106399%2FPackages%2F-2113744122" anchor-label="kotlin.js.collections" id="288106399%2FPackages%2F-2113744122" data-filterable-set=":kotlin-stdlib_2.3_latest/js"></a>
+540:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/js" data-filterable-set=":kotlin-stdlib_2.3_latest/js">
+554:        <div><span class="brief-comment"><a data-name="288106399%2FPackages%2F-2113744122" anchor-label="kotlin.js.collections" id="288106399%2FPackages%2F-2113744122" data-filterable-set=":kotlin-stdlib_2.3_latest/js"></a>
+559:<a data-name="-93735402%2FPackages%2F-1183216942" anchor-label="kotlin.jvm" id="-93735402%2FPackages%2F-1183216942" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm"></a>
+560:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm">
+576:        <div><span class="brief-comment"><a data-name="-93735402%2FPackages%2F-1183216942" anchor-label="kotlin.jvm" id="-93735402%2FPackages%2F-1183216942" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm"></a>
+581:<a data-name="715523451%2FPackages%2F736137220" anchor-label="kotlin.jvm.optionals" id="715523451%2FPackages%2F736137220" data-filterable-set=":kotlin-stdlib_2.3_latest/jvm"></a>
+582:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/jvm" data-filterable-set=":kotlin-stdlib_2.3_latest/jvm">
+596:        <div><span class="brief-comment"><a data-name="715523451%2FPackages%2F736137220" anchor-label="kotlin.jvm.optionals" id="715523451%2FPackages%2F736137220" data-filterable-set=":kotlin-stdlib_2.3_latest/jvm"></a>
+601:<a data-name="-948344713%2FPackages%2F1935454986" anchor-label="kotlin.math" id="-948344713%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+602:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi">
+616:              <div class="platform-tag wasm-like">Wasm-JS</div>
+621:        <div><span class="brief-comment"><a data-name="-948344713%2FPackages%2F1935454986" anchor-label="kotlin.math" id="-948344713%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+626:<a data-name="257490310%2FPackages%2F-697081796" anchor-label="kotlin.native" id="257490310%2FPackages%2F-697081796" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+627:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi">
+639:              <div class="platform-tag wasm-like">Wasm-JS</div>
+644:        <div><span class="brief-comment"><a data-name="257490310%2FPackages%2F-697081796" anchor-label="kotlin.native" id="257490310%2FPackages%2F-697081796" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+649:<a data-name="201737699%2FPackages%2F-697081796" anchor-label="kotlin.native.concurrent" id="201737699%2FPackages%2F-697081796" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+650:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi">
+662:              <div class="platform-tag wasm-like">Wasm-JS</div>
+667:        <div><span class="brief-comment"><a data-name="201737699%2FPackages%2F-697081796" anchor-label="kotlin.native.concurrent" id="201737699%2FPackages%2F-697081796" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+672:<a data-name="1928149227%2FPackages%2F552166104" anchor-label="kotlin.native.ref" id="1928149227%2FPackages%2F552166104" data-filterable-set=":kotlin-stdlib_2.3_latest/native"></a>
+673:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/native" data-filterable-set=":kotlin-stdlib_2.3_latest/native">
+687:        <div><span class="brief-comment"><a data-name="1928149227%2FPackages%2F552166104" anchor-label="kotlin.native.ref" id="1928149227%2FPackages%2F552166104" data-filterable-set=":kotlin-stdlib_2.3_latest/native"></a>
+692:<a data-name="1684310256%2FPackages%2F552166104" anchor-label="kotlin.native.runtime" id="1684310256%2FPackages%2F552166104" data-filterable-set=":kotlin-stdlib_2.3_latest/native"></a>
+693:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/native" data-filterable-set=":kotlin-stdlib_2.3_latest/native">
+707:        <div><span class="brief-comment"><a data-name="1684310256%2FPackages%2F552166104" anchor-label="kotlin.native.runtime" id="1684310256%2FPackages%2F552166104" data-filterable-set=":kotlin-stdlib_2.3_latest/native"></a>
+712:<a data-name="406544674%2FPackages%2F-460717820" anchor-label="kotlin.properties" id="406544674%2FPackages%2F-460717820" data-filterable-set=":kotlin-stdlib_2.3_latest/common"></a>
+713:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common" data-filterable-set=":kotlin-stdlib_2.3_latest/common">
+727:        <div><span class="brief-comment"><a data-name="406544674%2FPackages%2F-460717820" anchor-label="kotlin.properties" id="406544674%2FPackages%2F-460717820" data-filterable-set=":kotlin-stdlib_2.3_latest/common"></a>
+732:<a data-name="-1840262350%2FPackages%2F1128330636" anchor-label="kotlin.random" id="-1840262350%2FPackages%2F1128330636" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/jvm"></a>
+733:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/jvm" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/jvm">
+748:        <div><span class="brief-comment"><a data-name="-1840262350%2FPackages%2F1128330636" anchor-label="kotlin.random" id="-1840262350%2FPackages%2F1128330636" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/jvm"></a>
+753:<a data-name="-33842299%2FPackages%2F-460717820" anchor-label="kotlin.ranges" id="-33842299%2FPackages%2F-460717820" data-filterable-set=":kotlin-stdlib_2.3_latest/common"></a>
+754:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common" data-filterable-set=":kotlin-stdlib_2.3_latest/common">
+768:        <div><span class="brief-comment"><a data-name="-33842299%2FPackages%2F-460717820" anchor-label="kotlin.ranges" id="-33842299%2FPackages%2F-460717820" data-filterable-set=":kotlin-stdlib_2.3_latest/common"></a>
+773:<a data-name="562766770%2FPackages%2F1935454986" anchor-label="kotlin.reflect" id="562766770%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+774:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi">
+788:              <div class="platform-tag wasm-like">Wasm-JS</div>
+793:        <div><span class="brief-comment"><a data-name="562766770%2FPackages%2F1935454986" anchor-label="kotlin.reflect" id="562766770%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+798:<a data-name="-2132581177%2FPackages%2F1128330636" anchor-label="kotlin.sequences" id="-2132581177%2FPackages%2F1128330636" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/jvm"></a>
+799:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/jvm" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/jvm">
+814:        <div><span class="brief-comment"><a data-name="-2132581177%2FPackages%2F1128330636" anchor-label="kotlin.sequences" id="-2132581177%2FPackages%2F1128330636" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/jvm"></a>
+819:<a data-name="436270696%2FPackages%2F736137220" anchor-label="kotlin.streams" id="436270696%2FPackages%2F736137220" data-filterable-set=":kotlin-stdlib_2.3_latest/jvm"></a>
+820:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/jvm" data-filterable-set=":kotlin-stdlib_2.3_latest/jvm">
+834:        <div><span class="brief-comment"><a data-name="436270696%2FPackages%2F736137220" anchor-label="kotlin.streams" id="436270696%2FPackages%2F736137220" data-filterable-set=":kotlin-stdlib_2.3_latest/jvm"></a>
+839:<a data-name="1082536350%2FPackages%2F-1516944048" anchor-label="kotlin.system" id="1082536350%2FPackages%2F-1516944048" data-filterable-set=":kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/native"></a>
+840:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/native" data-filterable-set=":kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/native">
+855:        <div><span class="brief-comment"><a data-name="1082536350%2FPackages%2F-1516944048" anchor-label="kotlin.system" id="1082536350%2FPackages%2F-1516944048" data-filterable-set=":kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/native"></a>
+860:<a data-name="-461204900%2FPackages%2F1935454986" anchor-label="kotlin.text" id="-461204900%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+861:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi">
+875:              <div class="platform-tag wasm-like">Wasm-JS</div>
+880:        <div><span class="brief-comment"><a data-name="-461204900%2FPackages%2F1935454986" anchor-label="kotlin.text" id="-461204900%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+885:<a data-name="-720971780%2FPackages%2F1935454986" anchor-label="kotlin.time" id="-720971780%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+886:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi">
+900:              <div class="platform-tag wasm-like">Wasm-JS</div>
+905:        <div><span class="brief-comment"><a data-name="-720971780%2FPackages%2F1935454986" anchor-label="kotlin.time" id="-720971780%2FPackages%2F1935454986" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/native,:kotlin-stdlib_2.3_latest/js,:kotlin-stdlib_2.3_latest/jvm,:kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+910:<a data-name="-925037718%2FPackages%2F1128330636" anchor-label="kotlin.uuid" id="-925037718%2FPackages%2F1128330636" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/jvm"></a>
+911:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/jvm" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/jvm">
+926:        <div><span class="brief-comment"><a data-name="-925037718%2FPackages%2F1128330636" anchor-label="kotlin.uuid" id="-925037718%2FPackages%2F1128330636" data-filterable-set=":kotlin-stdlib_2.3_latest/common,:kotlin-stdlib_2.3_latest/jvm"></a>
+931:<a data-name="-67344109%2FPackages%2F2054445432" anchor-label="kotlin.wasm" id="-67344109%2FPackages%2F2054445432" data-filterable-set=":kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+932:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi" data-filterable-set=":kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi">
+942:              <div class="platform-tag wasm-like">Wasm-JS</div>
+947:        <div><span class="brief-comment"><a data-name="-67344109%2FPackages%2F2054445432" anchor-label="kotlin.wasm" id="-67344109%2FPackages%2F2054445432" data-filterable-set=":kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+952:<a data-name="1908841957%2FPackages%2F2054445432" anchor-label="kotlin.wasm.unsafe" id="1908841957%2FPackages%2F2054445432" data-filterable-set=":kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+953:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi" data-filterable-set=":kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi">
+963:              <div class="platform-tag wasm-like">Wasm-JS</div>
+968:        <div><span class="brief-comment"><a data-name="1908841957%2FPackages%2F2054445432" anchor-label="kotlin.wasm.unsafe" id="1908841957%2FPackages%2F2054445432" data-filterable-set=":kotlin-stdlib_2.3_latest/wasm-js,:kotlin-stdlib_2.3_latest/wasm-wasi"></a>
+973:<a data-name="-1679423469%2FPackages%2F552166104" anchor-label="kotlinx.cinterop" id="-1679423469%2FPackages%2F552166104" data-filterable-set=":kotlin-stdlib_2.3_latest/native"></a>
+974:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/native" data-filterable-set=":kotlin-stdlib_2.3_latest/native">
+988:        <div><span class="brief-comment"><a data-name="-1679423469%2FPackages%2F552166104" anchor-label="kotlinx.cinterop" id="-1679423469%2FPackages%2F552166104" data-filterable-set=":kotlin-stdlib_2.3_latest/native"></a>
+993:<a data-name="-948516356%2FPackages%2F552166104" anchor-label="kotlinx.cinterop.internal" id="-948516356%2FPackages%2F552166104" data-filterable-set=":kotlin-stdlib_2.3_latest/native"></a>
+994:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/native" data-filterable-set=":kotlin-stdlib_2.3_latest/native">
+1011:<a data-name="-84686669%2FPackages%2F-2113744122" anchor-label="org.w3c.dom" id="-84686669%2FPackages%2F-2113744122" data-filterable-set=":kotlin-stdlib_2.3_latest/js"></a>
+1012:    <div class="table-row table-row_platform-tagged" data-filterable-current=":kotlin-stdlib_2.3_latest/js" data-filterable-set=":kotlin-stdlib_2.3_latest/js">
+1047:        <!-- ktl_component: {"name": "footer", "props": {} } --> <footer class="ktl-footer-module_footer_GHyqk ktl-footer_light"><div class="ktl-footer-module_social-list-area_2f-iy"><div class="rs-h4 rs-h4_theme_light ktl-footer-module_social-list-title_X7tJv">Stay in touch:</div><div class="ktl-social-list-module_social-list_in8ys"><a target="_blank" class="ktl-social-item-module_social-item_uHRCi" href="https://github.com/JetBrains/kotlin" title="Kotlin on GitHub"><svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.9 9.2a8.94 8.94 0 0 1-6.4 8.6.392.392 0 0 1-.4-.4v-3a1.58 1.58 0 0 0-.5-1.2 3.734 3.734 0 0 0 3.9-3.4 4.244 4.244 0 0 0-.9-3.5c.29-.79.217-1.669-.2-2.4a7.24 7.24 0 0 0-2.4.9c-1.44-.4-2.96-.4-4.4 0a4.62 4.62 0 0 0-2.3-.9h-.1A2.75 2.75 0 0 0 4 6.3a4.075 4.075 0 0 0-.9 3.5A3.81 3.81 0 0 0 7 13.2c-.198.148-.34.36-.4.6a2.638 2.638 0 0 0-.1.7 1.943 1.943 0 0 1-2.2-.5c-.5-.8-.9-1.2-1.4-1.3-.5-.1-.6.2-.6.2.079.26.26.476.5.6.387.216.674.575.8 1a1.827 1.827 0 0 0 1.2 1.2 3.915 3.915 0 0 0 1.9 0v1.7a.297.297 0 0 1-.4.3A8.82 8.82 0 0 1 0 9.2a8.95 8.95 0 0 1 17.9 0Z" fill="currentColor"></path></svg></a><a target="_blank" class="ktl-social-item-module_social-item_uHRCi" href="https://twitter.com/kotlin" title="Kotlin on Twitter"><svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.317 10.775 19.146 4h-1.381l-5.061 5.883L8.662 4H4l6.112 8.896L4 20h1.381l5.344-6.212L14.994 20h4.662l-6.339-9.225zm-1.891 2.199-.62-.886L5.88 5.04H8l3.977 5.688.62.886 5.168 7.393h-2.121l-4.218-6.033z" fill="currentColor"></path></svg></a><a target="_blank" class="ktl-social-item-module_social-item_uHRCi" href="https://bsky.app/profile/kotlinlang.org" title="Kotlin on Bluesky"><svg viewbox="0 0 24 24" class="_icon_y6pspg_4 _sizeM_y6pspg_22"><path d="M6.902 5.07C8.965 6.625 11.185 9.776 12 11.467v4.467c0-.095-.037.012-.115.244-.426 1.253-2.087 6.144-5.885 2.234-2-2.059-1.074-4.117 2.566-4.739-2.082.356-4.424-.232-5.066-2.535-.185-.663-.5-4.745-.5-5.296C3 3.081 5.413 3.95 6.902 5.07m10.196 0C15.035 6.625 12.815 9.776 12 11.467v4.467c0-.095.037.012.115.244.426 1.253 2.087 6.144 5.885 2.234 2-2.059 1.074-4.117-2.566-4.739 2.082.356 4.424-.232 5.066-2.535.185-.663.5-4.745.5-5.296 0-2.761-2.413-1.893-3.902-.772"></path></svg></a><a target="_blank" class="ktl-social-item-module_social-item_uHRCi" href="https://surveys.jetbrains.com/s3/kotlin-slack-sign-up" title="Kotlin Slack"><svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.63 9.49a1.895 1.895 0 0 0-1.89 1.89v4.73a1.89 1.89 0 1 0 3.78 0v-4.73a1.895 1.895 0 0 0-1.89-1.89ZM.01 11.38a1.89 1.89 0 1 0 3.78 0V9.49H1.91a1.897 1.897 0 0 0-1.9 1.89ZM6.63 0a1.89 1.89 0 1 0 0 3.78h1.89v-1.9A1.886 1.886 0 0 0 6.63 0ZM1.89 8.53h4.74a1.89 1.89 0 1 0 0-3.78H1.89a1.89 1.89 0 0 0 0 3.78Zm14.2-3.79a1.895 1.895 0 0 0-1.89 1.89v1.89h1.89a1.89 1.89 0 1 0 0-3.78ZM9.48 1.89v4.74a1.89 1.89 0 1 0 3.78 0V1.89a1.89 1.89 0 1 0-3.78 0Zm3.78 14.22a1.895 1.895 0 0 0-1.89-1.89H9.48v1.89a1.89 1.89 0 1 0 3.78 0Zm2.85-6.62h-4.74a1.89 1.89 0 1 0 0 3.78h4.74a1.89 1.89 0 1 0 0-3.78Z" fill="currentColor"></path></svg></a><a target="_blank" class="ktl-social-item-module_social-item_uHRCi" href="https://www.reddit.com/r/Kotlin/" title="Kotlin on Reddit"><svg width="20" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 9.068a2.183 2.183 0 0 0-2.186-2.186 2.2 2.2 0 0 0-1.524.61c-1.505-1.076-3.566-1.775-5.86-1.865L11.434.932l3.261.699a1.559 1.559 0 0 0 3.119-.072A1.56 1.56 0 0 0 16.254 0c-.609 0-1.147.358-1.397.878l-3.638-.77a.381.381 0 0 0-.287.053.347.347 0 0 0-.161.251L9.659 5.645c-2.33.072-4.426.77-5.95 1.864a2.2 2.2 0 0 0-1.523-.61 2.183 2.183 0 0 0-.896 4.176c-.036.22-.054.441-.053.664 0 3.368 3.924 6.11 8.763 6.11s8.764-2.723 8.764-6.11c0-.223-.018-.444-.054-.664A2.208 2.208 0 0 0 20 9.069Zm-15.018 1.56a1.56 1.56 0 0 1 3.118 0c0 .86-.698 1.559-1.559 1.559-.86.017-1.559-.7-1.559-1.56Zm8.728 4.139c-1.076 1.075-3.119 1.147-3.71 1.147-.61 0-2.652-.09-3.71-1.147a.4.4 0 0 1 0-.573.4.4 0 0 1 .574 0c.68.68 2.115.913 3.136.913 1.022 0 2.473-.232 3.136-.913a.401.401 0 0 1 .574 0 .436.436 0 0 1 0 .573Zm-.287-2.563a1.56 1.56 0 0 1 0-3.118c.86 0 1.56.699 1.56 1.56 0 .841-.7 1.558-1.56 1.558Z" fill="currentColor"></path></svg></a><a target="_blank" class="ktl-social-item-module_social-item_uHRCi" href="https://stackoverflow.com/questions/tagged/kotlin" title="Kotlin on Stack Overflow"><svg width="16" height="19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.527 17.27V12.19h1.685v6.764H0v-6.763h1.685v5.078h11.842Z" fill="currentColor"></path><path d="m3.546 11.71 8.274 1.73.35-1.664-8.274-1.73-.35 1.664ZM4.64 7.77l7.661 3.568.7-1.532-7.66-3.59-.7 1.554Zm2.123-3.765 6.501 5.407 1.073-1.292-6.501-5.406-1.073 1.291ZM10.966 0 9.609 1.007l5.034 6.785L16 6.785 10.966 0ZM3.37 15.562h8.448v-1.685H3.371v1.685Z" fill="currentColor"></path></svg></a><a target="_blank" class="ktl-social-item-module_social-item_uHRCi" href="https://www.youtube.com/channel/UCP7uiEZIqci43m22KDl0sNw" title="Kotlin on YouTube"><svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M21.005 5.617c.43.633.702 1.36.795 2.119.124 1.146.191 2.299.2 3.452v1.618a34.375 34.375 0 0 1-.2 3.454 4.808 4.808 0 0 1-.795 2.116 2.772 2.772 0 0 1-2.003.904c-2.8.215-7.002.222-7.002.222s-5.2-.05-6.8-.214a3.27 3.27 0 0 1-2.205-.912 4.8 4.8 0 0 1-.795-2.117 34.354 34.354 0 0 1-.2-3.453v-1.618c.009-1.154.075-2.306.2-3.452.093-.76.365-1.486.795-2.12a2.76 2.76 0 0 1 2.003-.901c2.799-.217 6.997-.217 6.997-.217h.01s4.198 0 6.997.217a2.76 2.76 0 0 1 2.003.902ZM15.755 12 9.501 8.249v7.502L15.754 12Z" fill="currentColor"></path></svg></a></div></div><nav class="ktl-footer-module_nav-list-area_Oblb8"><ul class="ktl-nav-list-module_nav-list_6OvZp"><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a href="https://kotlinlang.org/docs/contribute.html" title="Contributing to Kotlin" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Contributing to Kotlin</a></li><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a href="https://kotlinlang.org/docs/releases.html" title="Releases" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Releases</a></li><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a href="https://kotlinlang.org/assets/kotlin-media-kit.pdf" title="Press Kit" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Press Kit</a></li><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a href="https://kotlinlang.org/docs/security.html" title="Security" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Security</a></li><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a target="_blank" href="https://blog.jetbrains.com/kotlin/" title="Blog" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Blog</a></li><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a target="_blank" href="https://youtrack.jetbrains.com/issues/KT" title="Issue Tracker" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Issue Tracker</a></li><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a target="_blank" href="https://resources.jetbrains.com/storage/products/kotlin/docs/kotlin_logos.zip" title="Brand assets" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Brand assets</a></li><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a target="_blank" href="https://www.jetbrains.com/careers/jobs/#team=Kotlin" title="Careers" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Careers</a></li><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a target="_blank" href="https://www.jetbrainsmerchandise.com/view-all.html?brand=32" title="Kotlin Merch" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Kotlin Merch</a></li><li class="ktl-nav-item-module_nav-item_VvPZQ rs-text-2 rs-text-2_theme_light"><a href="#opt-out" title="Opt-Out" class="rs-link rs-link_hardness_average rs-link_mode_clear rs-link_theme_light">Opt-Out</a></li></ul></nav><div class="rs-text-3 rs-text-3_hardness_pale rs-text-3_theme_light ktl-footer-module_text-area_T8lpL"><div class="ktl-footer-module_copyright_tho-X">Kotlin™ is&nbsp;protected under the<!-- --> <a class="rs-link rs-link_hardness_pale rs-link_mode_clear rs-link_theme_light ktl-footer-module_underlined-link_qo8UM" href="https://kotlinlang.org/foundation/kotlin-foundation.html">Kotlin&nbsp;Foundation</a> <!-- -->and licensed under the<!-- --> <a class="rs-link rs-link_hardness_pale rs-link_mode_clear rs-link_theme_light ktl-footer-module_underlined-link_qo8UM" target="_blank" href="https://github.com/JetBrains/kotlin-web-site/blob/master/LICENSE">Apache 2&nbsp;license</a>.</div> <div class="ktl-footer-module_motto_6KpB8">Supported and developed by&nbsp;<a class="rs-link rs-link_hardness_pale rs-link_mode_clear rs-link_theme_light ktl-footer-module_underlined-link_qo8UM" href="https://www.jetbrains.com/" target="_blank">JetBrains</a></div></div><a href="https://jetbrains.com" target="_blank" class="ktl-footer-module_logo-area_zYm8W ktl-logo-module_link_jGqR8"><svg width="149" height="32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M43.242 20.293c0 .423-.09.797-.269 1.125a1.86 1.86 0 0 1-.756.762c-.33.18-.698.269-1.12.269H39V25.5h2.54c.955 0 1.812-.214 2.574-.642a4.679 4.679 0 0 0 1.792-1.773c.433-.752.652-1.598.652-2.544V10.509h-3.316v9.784Zm8.928-.911h6.946v-2.804H52.17v-3.181h7.678v-2.888h-10.91v14.987h11.124v-2.888H52.17v-3.226Zm8.932-5.9h4.442v12.01h3.316v-12.01h4.421v-2.973H61.097v2.977l.005-.005Zm23.512 4.5a3.94 3.94 0 0 0-.837-.323c.224-.065.438-.144.638-.244a3.18 3.18 0 0 0 1.29-1.195c.308-.513.467-1.1.467-1.768 0-.761-.209-1.444-.622-2.046-.413-.598-.996-1.066-1.743-1.404-.747-.334-1.603-.503-2.56-.503h-6.656v14.987h6.786c1.006 0 1.902-.174 2.694-.528.787-.353 1.4-.841 1.837-1.473.433-.628.653-1.345.653-2.151 0-.742-.17-1.405-.513-1.992a3.525 3.525 0 0 0-1.43-1.364l-.004.005Zm-6.802-4.959h2.943c.408 0 .767.075 1.08.22.314.144.558.353.732.627.175.269.264.587.264.95 0 .364-.09.708-.264.992a1.726 1.726 0 0 1-.732.652 2.41 2.41 0 0 1-1.08.229h-2.943v-3.675.005Zm5.069 9.067c-.19.284-.458.503-.802.658a2.908 2.908 0 0 1-1.195.229h-3.072v-3.844h3.072c.444 0 .837.084 1.185.249.344.164.618.393.807.692.19.299.289.637.289 1.02 0 .384-.095.712-.284.996Zm14.798-2.654c.831-.398 1.474-.96 1.932-1.683.458-.721.687-1.558.687-2.514 0-.956-.224-1.763-.672-2.48-.448-.716-1.086-1.27-1.907-1.662-.822-.394-1.773-.588-2.858-.588h-6.563v14.987h3.321V20.04h2.161l3.043 5.457h3.789l-3.426-5.86c.17-.06.339-.125.498-.2h-.005Zm-1.076-3.062a1.798 1.798 0 0 1-.791.722c-.344.17-.747.254-1.21.254h-2.988v-4.147h2.988c.463 0 .866.084 1.21.249.343.164.607.408.791.717.185.308.28.677.28 1.095 0 .418-.095.787-.28 1.1v.01ZM106.9 10.51l-5.352 14.987h3.371l1.06-3.306h5.557l1.135 3.306h3.306l-5.482-14.987H106.9Zm-.169 9.171 1.723-5.287.204-.961.204.96 1.842 5.288h-3.973Zm10.347 5.816h3.425V10.51h-3.425v14.987Zm15.51-4.85L126.14 10.51h-3.232v14.987h3.027V15.36l6.414 10.137h3.266V10.51h-3.027v10.137Zm15.763-1.678a4.466 4.466 0 0 0-1.364-1.568 4.95 4.95 0 0 0-2.011-.846l-2.55-.523c-.398-.095-.717-.26-.951-.498a1.228 1.228 0 0 1-.353-.891c0-.324.084-.603.259-.842.169-.239.413-.423.722-.558.308-.134.667-.199 1.075-.199.408 0 .777.07 1.091.21.313.139.557.333.731.587.175.254.264.538.264.861h3.321c-.019-.871-.263-1.643-.722-2.31-.458-.672-1.1-1.195-1.916-1.573-.817-.379-1.753-.568-2.799-.568-1.045 0-1.971.194-2.783.588-.812.393-1.449.936-1.902 1.633-.453.697-.682 1.488-.682 2.38 0 .722.144 1.374.438 1.951a3.954 3.954 0 0 0 1.24 1.45 4.906 4.906 0 0 0 1.862.801l2.699.558c.443.104.791.299 1.05.577.259.28.384.623.384 1.041 0 .334-.095.637-.284.901a1.826 1.826 0 0 1-.792.613c-.338.144-.737.214-1.195.214-.458 0-.891-.08-1.265-.24a1.94 1.94 0 0 1-.866-.686 1.72 1.72 0 0 1-.309-1.021h-3.321c.015.936.264 1.757.757 2.474.488.712 1.16 1.27 2.017 1.668.856.399 1.837.598 2.942.598 1.106 0 2.101-.204 2.958-.612.861-.409 1.528-.971 2.011-1.688.483-.717.722-1.529.722-2.435a4.4 4.4 0 0 0-.488-2.052l.01.005Z" fill="#19191C" style="fill:var(--logo-text-color)"></path><path d="m10.17 1.83-8.34 8.34A6.252 6.252 0 0 0 0 14.59V29.5A2.5 2.5 0 0 0 2.5 32h14.91a6.26 6.26 0 0 0 4.42-1.83l8.34-8.34A6.252 6.252 0 0 0 32 17.41V2.5A2.5 2.5 0 0 0 29.5 0H14.59a6.26 6.26 0 0 0-4.42 1.83Z" fill="url(#jetbrains-logo_svg__a)"></path><path d="M24 8H4v20h20V8Z" fill="#000"></path><path d="M15 23.5H6.5v2H15v-2Z" fill="#fff"></path><defs><lineargradient id="jetbrains-logo_svg__a" x1="0.425" y1="31.36" x2="31.31" y2="0.905" gradientunits="userSpaceOnUse"><stop stop-color="#FF9419"></stop><stop offset="0.43" stop-color="#FF021D"></stop><stop offset="0.99" stop-color="#E600FF"></stop></lineargradient></defs></svg></a></footer>
+
+ succeeded in 236ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://kotlinlang.org/api/core/kotlin-stdlib|\"documentation-url\" : \"https://github.com/JetBrains/kotlin/blob|kotlin-stdlib-wasm' build/discovered-artifact-metadata metadata -S" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json:2:  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0"
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:8:    "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v1.5.31/libraries/stdlib/ReadMe.md",
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-sources.jar || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 01:59:46 GMT
+content-type: application/java-archive
+content-length: 857897
+cf-ray: 9f536db3eba33d61-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1559477
+etag: "e92c5bf78039c23118ec393b425dcb63"
+last-modified: Tue, 16 Dec 2025 08:13:38 GMT
+x-checksum-md5: e92c5bf78039c23118ec393b425dcb63
+x-checksum-sha1: 074407b27c279f76155f03913e049717b5e1ab29
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/ReadMe.md | sed -n '1,160p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/src/Module.md | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/src/Module.md || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 153ms:
+## The Kotlin Standard Library
+
+This module creates the [standard library for Kotlin](https://kotlinlang.org/api/latest/jvm/stdlib/index.html).
+
+### Code generation
+
+We use code generation to generate some repetitive utility extension functions, e.g. for collection-like types: arrays, strings, `Collection<T>`, `Sequence<T>`, `Map<K, V>` etc.
+Those are defined in [templates](../tools/kotlin-stdlib-gen/src/templates) written in a special Kotlin-based DSL.
+
+Generated sources are placed into the `generated` folder and their names are prefixed with an underscore, for example, `generated/_Collections.kt`
+
+To run the code generator, use the following task:
+
+`./gradlew :tools:kotlin-stdlib-gen:run`
+
+### Usage samples
+
+If you want to author samples for the standard library, please head to [the samples readme](samples/ReadMe.md).
+
+ succeeded in 161ms:
+# Module kotlin-stdlib
+
+## Kotlin Standard Library
+
+The Kotlin Standard Library provides living essentials for everyday work with Kotlin.
+These include:
+  - Higher-order functions implementing idiomatic patterns ([let][kotlin.let], [apply][kotlin.apply], [use][kotlin.io.use], [synchronized][kotlin.synchronized], etc).
+  - Extension functions providing querying operations for collections (eager) and sequences (lazy).
+  - Various utilities for working with strings and char sequences.
+  - Extensions for JDK classes making it convenient to work with files, IO, and threading.
+
+# Package kotlin
+
+Core functions and types, available on all supported platforms.
+
+# Package kotlin.annotation
+
+Library support for the Kotlin annotation facility.
+
+# Package kotlin.collections
+
+Collection types, such as [Iterable][kotlin.collections.Iterable], [Collection][kotlin.collections.Collection],
+[List][kotlin.collections.List], [Set][kotlin.collections.Set], [Map][kotlin.collections.Map] and related top-level and extension functions.
+
+# Package kotlin.comparisons
+
+Helper functions for creating [Comparator][kotlin.Comparator] instances.
+
+# Package kotlin.concurrent
+
+Low-level building blocks and utility functions for concurrent programming.
+
+# Package kotlin.concurrent.atomics
+
+Atomic scalar and array types and utilities for working with them.
+
+# Package kotlin.contracts
+
+Experimental DSL for declaring custom function contracts.
+
+# Package kotlin.coroutines
+
+Basic primitives for creating and suspending coroutines: [Continuation][kotlin.coroutines.Continuation], 
+[CoroutineContext][kotlin.coroutines.CoroutineContext] interfaces, coroutine creation and suspension top-level functions.
+
+# Package kotlin.coroutines.intrinsics
+
+Low-level building blocks for libraries that provide coroutine-based APIs.
+
+# Package kotlin.coroutines.cancellation
+
+Provides exceptions arising on suspended coroutine cancellation. 
+
+# Package kotlin.enums
+
+Utilities for working with Kotlin enum classes.
+
+# Package kotlin.experimental
+
+Experimental APIs, subject to change in future versions of Kotlin.
+
+# Package kotlin.io
+
+IO API for working with files and streams.
+
+# Package kotlin.io.path
+
+Convenient extensions for working with file system using [java.nio.file.Path][java.nio.file.Path].
+
+# Package kotlin.io.encoding
+
+API for encoding and decoding data using various encoding schemes, such as [Base64][kotlin.io.encoding.Base64].
+
+# Package kotlin.js
+
+Functions and other APIs specific to the JavaScript platform.
+
+# Package kotlin.js.collections
+
+JavaScript-specific collection types, such as [JsArray][kotlin.js.collections.JsArray] and [JsReadonlyMap][kotlin.js.collections.JsReadonlyMap].
+
+# Package kotlin.jvm
+
+Functions and annotations specific to the Java platform.
+
+# Package kotlin.jvm.optionals
+
+Convenience extension functions for `java.util.Optional` to simplify Kotlin-Java interop.
+
+# Package kotlin.math
+
+Mathematical functions and constants. 
+
+The functions include trigonometric, hyperbolic, exponentiation and power, logarithmic, rounding, sign and absolute value.
+
+# Package kotlin.native
+
+Provides functions and types specific to Kotlin/Native, as well as means for interoperability with an underlying platform
+and other languages.
+
+# Package kotlin.native.concurrent
+
+Kotlin/Native-specific concurrency primitives and utility functions for concurrent programming.
+
+# Package kotlin.native.ref
+
+API for object life-cycle and references management.
+
+# Package kotlin.native.runtime
+
+Allows to query information from and interact with the Kotlin/Native runtime. 
+
+# Package kotlin.properties
+
+Standard implementations of delegates for [delegated properties](https://kotlinlang.org/docs/delegated-properties.html)
+and helper functions for implementing custom delegates.
+
+# Package kotlin.random
+
+Provides the default generator of pseudo-random values, the repeatable generator, and a base class for other RNG implementations.
+
+ succeeded in 638ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 01:59:47 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+x-repository-download: git clone https://github.com/JetBrains/kotlin.git
+x-raw-download: https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/src/Module.md
+etag: W/"139072199a65ed71c234c9adb7a289de"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=gQ5ONq0H%2B5%2F1pRo%2BzCFgWn4WPgClSU%2BcFHYirnID5wDUrinu%2B9f5xtK0izGH3lpUzMKeCMnjCsd5vBWJlDsJOO9juuUb67CeoXp0IqJ9fT9D5knU5EGpftN3gbQ%2BN7Dqik4h8krOOlcv0thnT9n8%2Fp5MCXdKRuqbE4%2FJzG1DONvL3dwSXe%2BVDhx6Xb9VgCAb7Vkqnstw8Lh%2BlCnsN2X4OdIA7L0C0UyU6CLgiMiUgUO1Qrvn2yOaC4vFCSTEcxBqfILyKwrLjPEkHy8huf8mGQ%3D%3D--5Ils9Evnue6YjFfl--lMhKvGbUe%2FBAsQovfwR%2F6w%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1906568436.1777687186; expires=Sun, 02 May 2027 01:59:46 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 02 May 2027 01:59:46 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FF:194EF3:4C69561:395A6CB:69F55A92
+
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"' build/discovered-artifact-metadata metadata | sed -n '1,80p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:56:      "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:186:        "language": {
+metadata/org.scala-sbt/util-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json && sed -n '1,40p' metadata/io.github.oshai/kotlin-logging-jvm/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 0ms:
+[
+  {
+    "metadata-version" : "1.3.72",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.3.72/kotlin-stdlib-1.3.72-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.3.72/libraries/stdlib/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.3.72/kotlin-stdlib-1.3.72-javadoc.jar",
+    "description" : "Kotlin Standard Library for JVM provides the core runtime classes, collections, and extension APIs used by Kotlin applications on the JVM. It supports common programming tasks such as text handling, sequences, and Java interoperability required by compiled Kotlin code.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "1.3"
+    },
+    "tested-versions" : [
+      "1.3.72"
+    ],
+    "allowed-packages" : [
+      "kotlin"
+    ]
+  },
+  {
+    "latest" : true,
+    "metadata-version" : "1.7.10",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.7.10/libraries/stdlib/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-javadoc.jar",
+    "description" : "Kotlin Standard Library for JVM provides the core runtime classes, collections, and extension APIs used by Kotlin applications on the JVM. It supports common programming tasks such as text handling, sequences, and Java interoperability required by compiled Kotlin code.",
+    "tested-versions" : [
+      "1.7.10",
+      "1.7.20",
+      "1.7.21",
+      "1.7.22",
+      "1.8.0",
+      "1.8.10",
+      "1.8.20",
+      "1.8.21",
+      "1.8.22",
+      "1.9.0",
+      "1.9.10",
+      "1.9.20",
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.0.01",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-sources.jar",
+    "repository-url" : "https://github.com/oshai/kotlin-logging",
+    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/8.0.01/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-javadoc.jar",
+    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.1"
+    },
+    "tested-versions" : [
+      "8.0.01"
+    ],
+    "allowed-packages" : [
+      "io.github.oshai.kotlinlogging"
+    ]
+  }
+]
+
+codex
+I found the exact Maven sources jar and confirmed there is no Maven javadoc or test-sources artifact. I’m going to use the Kotlin `v2.3.0` tag for the repository-backed test suite and module documentation, with the Wasm-JS-specific test path.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+index c70a8ecacbe87517bb8be84fd90e914d810bbd12..4893ec9309b111a2ec5ce8fed297cf4c4af13778
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/js/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/src/Module.md",
++  "description" : "kotlin-stdlib-wasm-js provides the Kotlin standard library implementation for Kotlin/Wasm targeting JavaScript runtimes. It supplies core Kotlin runtime types, collection utilities, text/time APIs, and WebAssembly-JavaScript interoperability APIs needed by Kotlin code compiled for the Wasm-JS platform.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+index c70a8ecacbe87517bb8be84fd90e914d810bbd12..4893ec9309b111a2ec5ce8fed297cf4c4af13778
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/js/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/src/Module.md",
++  "description" : "kotlin-stdlib-wasm-js provides the Kotlin standard library implementation for Kotlin/Wasm targeting JavaScript runtimes. It supplies core Kotlin runtime types, collection utilities, text/time APIs, and WebAssembly-JavaScript interoperability APIs needed by Kotlin code compiled for the Wasm-JS platform.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 0ms:
+{
+  "coordinates": "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-sources.jar",
+  "repository-url": "https://github.com/JetBrains/kotlin",
+  "test-code-url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/js/test",
+  "documentation-url": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/src/Module.md",
+  "description": "kotlin-stdlib-wasm-js provides the Kotlin standard library implementation for Kotlin/Wasm targeting JavaScript runtimes. It supplies core Kotlin runtime types, collection utilities, text/time APIs, and WebAssembly-JavaScript interoperability APIs needed by Kotlin code compiled for the Wasm-JS platform.",
+  "language": {
+    "name": "kotlin",
+    "version": "2.3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/src/Module.md >/dev/null && echo documentation-url-ok' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+ succeeded in 0ms:
+documentation-url-ok
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/js/test >/dev/null && echo test-url-ok' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+index c70a8ecacbe87517bb8be84fd90e914d810bbd12..4893ec9309b111a2ec5ce8fed297cf4c4af13778
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/js/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/src/Module.md",
++  "description" : "kotlin-stdlib-wasm-js provides the Kotlin standard library implementation for Kotlin/Wasm targeting JavaScript runtimes. It supplies core Kotlin runtime types, collection utilities, text/time APIs, and WebAssembly-JavaScript interoperability APIs needed by Kotlin code compiled for the Wasm-JS platform.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+ succeeded in 567ms:
+test-url-ok
+
+web search: 
+web search: https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/js/test
+web search: 
+web search: repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-sources.jar
+codex
+Updated [org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json:1) with the discovered metadata, including Kotlin language metadata `{ name: "kotlin", version: "2.3" }`.
+
+I used the Maven Central artifact for the exact `2.3.0` source jar, the Kotlin `v2.3.0` tag’s Wasm-JS stdlib test directory, and the tagged stdlib module documentation file. ([mvnrepository.com](https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib-wasm-js/2.3.0?utm_source=openai))
+
+Verification: JSON parses with `jq`, and the selected GitHub test/documentation URLs return successfully.
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+index c70a8ecacbe87517bb8be84fd90e914d810bbd12..4893ec9309b111a2ec5ce8fed297cf4c4af13778
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-wasm-js/2.3.0/kotlin-stdlib-wasm-js-2.3.0-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/wasm/js/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/src/Module.md",
++  "description" : "kotlin-stdlib-wasm-js provides the Kotlin standard library implementation for Kotlin/Wasm targeting JavaScript runtimes. It supplies core Kotlin runtime types, collection utilities, text/time APIs, and WebAssembly-JavaScript interoperability APIs needed by Kotlin code compiled for the Wasm-JS platform.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+tokens used
+124,097
+Updated [org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.json:1) with the discovered metadata, including Kotlin language metadata `{ name: "kotlin", version: "2.3" }`.
+
+I used the Maven Central artifact for the exact `2.3.0` source jar, the Kotlin `v2.3.0` tag’s Wasm-JS stdlib test directory, and the tagged stdlib module documentation file. ([mvnrepository.com](https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib-wasm-js/2.3.0?utm_source=openai))
+
+Verification: JSON parses with `jq`, and the selected GitHub test/documentation URLs return successfully.
+Ran agent for org.jetbrains.kotlin:kotlin-stdlib-wasm-js:2.3.0 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c/build/agent-artifact-discovery-logs/org.jetbrains.kotlin-kotlin-stdlib-wasm-js-2.3.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2628-2fd0730c/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 18s
+9 actionable tasks: 4 executed, 5 from cache
