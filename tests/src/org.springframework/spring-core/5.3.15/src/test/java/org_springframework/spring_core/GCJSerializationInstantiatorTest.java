@@ -30,9 +30,9 @@ import org.springframework.asm.ClassWriter;
 import org.springframework.asm.MethodVisitor;
 import org.springframework.asm.Opcodes;
 import org.springframework.asm.Type;
-import org.springframework.objenesis.instantiator.gcj.GCJInstantiator;
+import org.springframework.objenesis.instantiator.gcj.GCJSerializationInstantiator;
 
-public class GCJInstantiatorTest {
+public class GCJSerializationInstantiatorTest {
 
     private static final String TARGET_BASE_CLASS_NAME =
             "org/springframework/objenesis/instantiator/gcj/GCJInstantiatorBase";
@@ -40,9 +40,9 @@ public class GCJInstantiatorTest {
             "org/springframework/objenesis/instantiator/gcj/GCJInstantiatorBase$DummyStream";
     private static final String OBJECT_INPUT_STREAM_INTERNAL_NAME = "java/io/ObjectInputStream";
     private static final String SUPPORT_INTERNAL_NAME =
-            GCJObjectInputStreamSupport.class.getName().replace('.', '/');
+            GCJSerializationObjectInputStreamSupport.class.getName().replace('.', '/');
     private static final String DYNAMIC_DEFINITION_PROBE_CLASS_NAME =
-            "org_springframework/spring_core/GCJInstantiatorDynamicDefinitionProbe";
+            "org_springframework/spring_core/GCJSerializationInstantiatorDynamicDefinitionProbe";
     private static final Set<String> TARGET_CLASS_NAMES = Set.of(
             TARGET_BASE_CLASS_NAME,
             TARGET_DUMMY_STREAM_CLASS_NAME
@@ -50,18 +50,21 @@ public class GCJInstantiatorTest {
     private static final AtomicBoolean transformerInstalled = new AtomicBoolean();
 
     @Test
-    void createsInstancesWithoutRunningConstructorsUsingGcjConstructionHook() {
+    void createsSerializableInstancesUsingGcjSerializationConstructionHook() {
         try {
             installObjectInputStreamRedirect();
-            ConstructorBypassedType.constructorCalls.set(0);
+            NonSerializableParent.constructorCalls.set(0);
+            SerializableChild.constructorCalls.set(0);
 
-            GCJInstantiator<ConstructorBypassedType> instantiator =
-                    new GCJInstantiator<>(ConstructorBypassedType.class);
-            ConstructorBypassedType instance = instantiator.newInstance();
+            GCJSerializationInstantiator<SerializableChild> instantiator =
+                    new GCJSerializationInstantiator<>(SerializableChild.class);
+            SerializableChild instance = instantiator.newInstance();
 
             assertThat(instance).isNotNull();
-            assertThat(instance.state).isNull();
-            assertThat(ConstructorBypassedType.constructorCalls).hasValue(0);
+            assertThat(NonSerializableParent.constructorCalls).hasValue(1);
+            assertThat(SerializableChild.constructorCalls).hasValue(0);
+            assertThat(instance.parentState).isEqualTo("initialized-by-parent");
+            assertThat(instance.childState).isNull();
         } catch (IllegalStateException exception) {
             ignoreUnsupportedDynamicClassLoading(exception);
         } catch (Error error) {
@@ -75,7 +78,7 @@ public class GCJInstantiatorTest {
         }
 
         Instrumentation instrumentation = ByteBuddyAgent.install();
-        ClassFileTransformer transformer = new GCJInstantiatorTransformer();
+        ClassFileTransformer transformer = new GCJSerializationInstantiatorTransformer();
         instrumentation.addTransformer(transformer, true);
     }
 
@@ -90,7 +93,7 @@ public class GCJInstantiatorTest {
     private static void verifyDynamicClassDefinitionIsUnsupported(IllegalStateException exception) {
         try {
             DynamicDefinitionProbeClassLoader classLoader = new DynamicDefinitionProbeClassLoader(
-                    GCJInstantiatorTest.class.getClassLoader()
+                    GCJSerializationInstantiatorTest.class.getClassLoader()
             );
             classLoader.defineProbeClass();
         } catch (Error error) {
@@ -106,39 +109,51 @@ public class GCJInstantiatorTest {
         }
     }
 
-    public static class ConstructorBypassedType implements Serializable {
+    public static class NonSerializableParent {
+
+        static final AtomicInteger constructorCalls = new AtomicInteger();
+
+        String parentState;
+
+        public NonSerializableParent() {
+            constructorCalls.incrementAndGet();
+            this.parentState = "initialized-by-parent";
+        }
+    }
+
+    public static class SerializableChild extends NonSerializableParent implements Serializable {
 
         private static final long serialVersionUID = 1L;
 
         static final AtomicInteger constructorCalls = new AtomicInteger();
 
-        transient String state;
+        transient String childState;
 
-        public ConstructorBypassedType() {
+        public SerializableChild() {
             constructorCalls.incrementAndGet();
-            this.state = "initialized-by-constructor";
+            this.childState = "initialized-by-child";
         }
     }
 
-    public static class GCJObjectInputStreamSupport extends ObjectInputStream {
+    public static class GCJSerializationObjectInputStreamSupport extends ObjectInputStream {
 
-        protected GCJObjectInputStreamSupport() throws IOException {
+        protected GCJSerializationObjectInputStreamSupport() throws IOException {
             super();
         }
 
         public Object newObject(Class<?> type, Class<?> parentType) {
-            if (ConstructorBypassedType.class.equals(type)) {
-                assertThat(parentType).isEqualTo(Object.class);
-                ConstructorBypassedType template = new ConstructorBypassedType();
-                ConstructorBypassedType.constructorCalls.set(0);
+            if (SerializableChild.class.equals(type)) {
+                assertThat(parentType).isEqualTo(NonSerializableParent.class);
+                SerializableChild template = new SerializableChild();
+                NonSerializableParent.constructorCalls.set(0);
+                SerializableChild.constructorCalls.set(0);
                 return deserialize(serialize(template));
             }
-            if (GCJSerializationInstantiatorTest.SerializableChild.class.equals(type)) {
-                assertThat(parentType).isEqualTo(GCJSerializationInstantiatorTest.NonSerializableParent.class);
-                GCJSerializationInstantiatorTest.SerializableChild template =
-                        new GCJSerializationInstantiatorTest.SerializableChild();
-                GCJSerializationInstantiatorTest.NonSerializableParent.constructorCalls.set(0);
-                GCJSerializationInstantiatorTest.SerializableChild.constructorCalls.set(0);
+            if (GCJInstantiatorTest.ConstructorBypassedType.class.equals(type)) {
+                assertThat(parentType).isEqualTo(Object.class);
+                GCJInstantiatorTest.ConstructorBypassedType template =
+                        new GCJInstantiatorTest.ConstructorBypassedType();
+                GCJInstantiatorTest.ConstructorBypassedType.constructorCalls.set(0);
                 return deserialize(serialize(template));
             }
             throw new AssertionError("Unexpected GCJ newObject type: " + type);
@@ -218,7 +233,7 @@ public class GCJInstantiatorTest {
         return classWriter.toByteArray();
     }
 
-    static final class GCJInstantiatorTransformer implements ClassFileTransformer {
+    static final class GCJSerializationInstantiatorTransformer implements ClassFileTransformer {
 
         @Override
         public byte[] transform(
