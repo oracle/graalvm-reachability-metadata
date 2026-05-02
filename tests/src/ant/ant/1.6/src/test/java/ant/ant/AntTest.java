@@ -7,6 +7,10 @@
 package ant.ant;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.invoke.VarHandle;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,6 +25,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AntTest {
     @TempDir
     Path temporaryDirectory;
+
+    @Test
+    void compilerGeneratedClassLookupResolvesProjectType() throws Throwable {
+        Class<?> resolvedClass = ExposedAnt.lookupCompilerGeneratedClass(Project.class.getName());
+
+        assertThat(resolvedClass).isSameAs(Project.class);
+    }
 
     @Test
     void copiesConfiguredReferenceByCloningAndAssigningChildProject() throws IOException {
@@ -46,6 +57,7 @@ public class AntTest {
         antTask.setTarget("noop");
         antTask.addReference(reference("original", "copied"));
 
+        ExposedAnt.clearCachedProjectClass();
         antTask.execute();
 
         assertThat(originalReference.cloneCount).isEqualTo(1);
@@ -60,6 +72,42 @@ public class AntTest {
         reference.setRefId(refid);
         reference.setToRefid(toRefid);
         return reference;
+    }
+
+    private static final class ExposedAnt {
+        private static final MethodHandle CLASS_LOOKUP = classLookupMethod();
+        private static final VarHandle PROJECT_CLASS = staticField(
+                "class$org$apache$tools$ant$Project",
+                Class.class);
+
+        static Class<?> lookupCompilerGeneratedClass(String className) throws Throwable {
+            return (Class<?>) CLASS_LOOKUP.invoke(className);
+        }
+
+        static void clearCachedProjectClass() {
+            PROJECT_CLASS.set(null);
+        }
+
+        private static MethodHandle classLookupMethod() {
+            try {
+                return MethodHandles.privateLookupIn(Ant.class, MethodHandles.lookup())
+                        .findStatic(
+                                Ant.class,
+                                "class$",
+                                MethodType.methodType(Class.class, String.class));
+            } catch (NoSuchMethodException | IllegalAccessException exception) {
+                throw new ExceptionInInitializerError(exception);
+            }
+        }
+
+        private static VarHandle staticField(String fieldName, Class<?> fieldType) {
+            try {
+                return MethodHandles.privateLookupIn(Ant.class, MethodHandles.lookup())
+                        .findStaticVarHandle(Ant.class, fieldName, fieldType);
+            } catch (NoSuchFieldException | IllegalAccessException exception) {
+                throw new ExceptionInInitializerError(exception);
+            }
+        }
     }
 
     public static class CloneableReference implements Cloneable {
