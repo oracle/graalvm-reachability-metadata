@@ -1,0 +1,1052 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dea19-56ca-70d3-aea7-293a3fd5f02f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.zaxxer:HikariCP:7.0.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "7.0.2" when "$version$" is replaced with "7.0.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
+- Set "coordinates" to "com.zaxxer:HikariCP:7.0.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "7.0.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven Central and the upstream project tag, then patch the discovered JSON directly. I’ll also check whether the jar is a normal JVM artifact before deciding on any Native Image exclusion fields.
+exec
+/usr/bin/zsh -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c
+ succeeded in 0ms:
+{
+  "coordinates" : "com.zaxxer:HikariCP:7.0.2"
+}
+
+exec
+/usr/bin/zsh -lc "rg -n 'source-code-url|test-code-url|documentation-url|repository-url|language|not-for-native-image' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c
+ succeeded in 0ms:
+metadata/com.mysema.commons/mysema-commons-lang/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/mysema/commons/mysema-commons-lang/$version$/mysema-commons-lang-$version$-sources.jar",
+metadata/com.mysema.commons/mysema-commons-lang/index.json:6:    "repository-url" : "https://source.mysema.com/svn/mysema/projects/commons/lang",
+metadata/com.mysema.commons/mysema-commons-lang/index.json:7:    "test-code-url" : "N/A",
+metadata/com.mysema.commons/mysema-commons-lang/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/mysema/commons/mysema-commons-lang/$version$/mysema-commons-lang-$version$-javadoc.jar",
+metadata/antlr/antlr/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/antlr/antlr/$version$/antlr-$version$-sources.jar",
+metadata/antlr/antlr/index.json:6:    "repository-url" : "https://www.antlr2.org",
+metadata/antlr/antlr/index.json:7:    "test-code-url" : "https://www.antlr2.org/download/antlr-$version$.tar.gz",
+metadata/antlr/antlr/index.json:8:    "documentation-url" : "https://www.antlr2.org/download/antlr-$version$.tar.gz",
+metadata/com.vaadin.external.google/android-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/$version$/android-json-$version$-sources.jar",
+metadata/com.vaadin.external.google/android-json/index.json:6:    "repository-url" : "http://developer.android.com/sdk/",
+metadata/com.vaadin.external.google/android-json/index.json:7:    "test-code-url" : "N/A",
+metadata/com.vaadin.external.google/android-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/$version$/android-json-$version$-javadoc.jar",
+metadata/javax.interceptor/javax.interceptor-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/$version$/javax.interceptor-api-$version$-sources.jar",
+metadata/javax.interceptor/javax.interceptor-api/index.json:6:    "repository-url" : "https://github.com/javaee/javax.interceptor",
+metadata/javax.interceptor/javax.interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.interceptor/javax.interceptor-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/$version$/javax.interceptor-api-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/$version$/selenium-api-$version$-sources.jar",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:6:    "repository-url" : "https://github.com/SeleniumHQ/selenium",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:7:    "test-code-url" : "https://github.com/SeleniumHQ/selenium/tree/selenium-$version$/java/test/org/openqa/selenium",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/$version$/selenium-api-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/$version$/selenium-api-$version$-sources.jar",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:20:    "repository-url" : "https://github.com/SeleniumHQ/selenium",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:21:    "test-code-url" : "https://github.com/SeleniumHQ/selenium/tree/selenium-$version$/java/client/test/org/openqa/selenium",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/$version$/selenium-api-$version$-javadoc.jar",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/thymeleaf/extras/thymeleaf-extras-springsecurity6/$version$/thymeleaf-extras-springsecurity6-$version$-sources.jar",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:6:    "repository-url" : "https://github.com/thymeleaf/thymeleaf",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:7:    "test-code-url" : "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-$version$/tests/thymeleaf-tests-springsecurity6",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:8:    "documentation-url" : "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-$version$/lib/thymeleaf-extras-springsecurity6/README.markdown",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/cloud/tools/jib-build-plan/$version$/jib-build-plan-$version$-sources.jar",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:7:    "repository-url": "https://github.com/GoogleContainerTools/jib",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:8:    "test-code-url": "https://github.com/GoogleContainerTools/jib/tree/v$version$-build-plan/jib-build-plan/src/test",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:9:    "documentation-url": "https://javadoc.io/doc/com.google.cloud.tools/jib-build-plan/$version$",
+metadata/org.seleniumhq.selenium/selenium-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-json/$version$/selenium-json-$version$-sources.jar",
+metadata/org.seleniumhq.selenium/selenium-json/index.json:6:    "repository-url" : "https://github.com/SeleniumHQ/selenium/",
+metadata/org.seleniumhq.selenium/selenium-json/index.json:7:    "test-code-url" : "https://github.com/SeleniumHQ/selenium/tree/selenium-$version$/java/test/org/openqa/selenium/json",
+metadata/org.seleniumhq.selenium/selenium-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-json/$version$/selenium-json-$version$-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:6:    "repository-url" : "https://github.com/google/j2objc",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-sources.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:6:    "repository-url" : "https://github.com/apache/parquet-java",
+metadata/org.apache.parquet/parquet-format-structures/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-tests.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-javadoc.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-sources.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:21:    "repository-url" : "https://github.com/apache/parquet-java",
+metadata/org.apache.parquet/parquet-format-structures/index.json:22:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-tests.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-javadoc.jar",
+metadata/com.mysql/mysql-connector-j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/$version$/mysql-connector-j-$version$-sources.jar",
+metadata/com.mysql/mysql-connector-j/index.json:6:    "repository-url" : "https://github.com/mysql/mysql-connector-j",
+metadata/com.mysql/mysql-connector-j/index.json:7:    "test-code-url" : "https://github.com/mysql/mysql-connector-j/tree/$version$/src/test",
+metadata/com.mysql/mysql-connector-j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/$version$/mysql-connector-j-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-resource/$version$/smallrye-common-resource-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common/",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/resource/src/test",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-resource/$version$/smallrye-common-resource-$version$-javadoc.jar",
+metadata/org.scala-sbt/test-interface/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scala-sbt/test-interface/$version$/test-interface-$version$-sources.jar",
+metadata/org.scala-sbt/test-interface/index.json:6:    "repository-url" : "https://github.com/sbt/test-interface",
+metadata/org.scala-sbt/test-interface/index.json:7:    "test-code-url" : "https://github.com/sbt/test-interface/tree/v$version$/src/test",
+metadata/org.scala-sbt/test-interface/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scala-sbt/test-interface/$version$/test-interface-$version$-javadoc.jar",
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/util-interface/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scala-sbt/util-interface/$version$/util-interface-$version$-sources.jar",
+metadata/org.scala-sbt/util-interface/index.json:6:    "repository-url" : "https://github.com/sbt/util",
+metadata/org.scala-sbt/util-interface/index.json:7:    "test-code-url" : "N/A",
+metadata/org.scala-sbt/util-interface/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scala-sbt/util-interface/$version$/util-interface-$version$-javadoc.jar",
+metadata/org.scala-sbt/util-interface/index.json:10:    "language" : {
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/$version$/jboss-interceptor-spi-$version$-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:6:    "repository-url" : "https://github.com/jbossinterceptors/jbossinterceptors",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:8:    "documentation-url" : "N/A",
+metadata/org.antlr/antlr4-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/$version$/antlr4-runtime-$version$-sources.jar",
+metadata/org.antlr/antlr4-runtime/index.json:6:    "repository-url" : "https://github.com/antlr/antlr4",
+metadata/org.antlr/antlr4-runtime/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr4/tree/$version$/runtime-testsuite/test/org/antlr/v4/test/runtime/java",
+metadata/org.antlr/antlr4-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/$version$/antlr4-runtime-$version$-javadoc.jar",
+metadata/org.antlr/antlr4-runtime/index.json:9:    "description" : "ANTLR 4 Runtime is the Java runtime library that supplies the core classes needed to execute parsers and lexers generated by ANTLR 4. It provides token streams, parse tree support, error handling, and other infrastructure used by generated language recognizers.",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/org.sonatype.aether/aether-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/$version$/aether-spi-$version$-sources.jar",
+
+exec
+/usr/bin/zsh -lc "find . -path '*com.zaxxer*' -o -path '*HikariCP*' | head -80" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c
+ succeeded in 164ms:
+./build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
+./build/agent-artifact-discovery-logs/com.zaxxer-HikariCP-7.0.2.log
+./metadata/com.zaxxer
+./metadata/com.zaxxer/HikariCP-java7
+./metadata/com.zaxxer/HikariCP-java7/index.json
+./metadata/com.zaxxer/HikariCP-java7/2.4.13
+./metadata/com.zaxxer/HikariCP-java7/2.4.13/reachability-metadata.json
+./metadata/com.zaxxer/SparseBitSet
+./metadata/com.zaxxer/SparseBitSet/1.2
+./metadata/com.zaxxer/SparseBitSet/1.2/reachability-metadata.json
+./metadata/com.zaxxer/SparseBitSet/index.json
+./metadata/com.zaxxer/HikariCP
+./metadata/com.zaxxer/HikariCP/4.0.3
+./metadata/com.zaxxer/HikariCP/4.0.3/reachability-metadata.json
+./metadata/com.zaxxer/HikariCP/index.json
+./metadata/com.zaxxer/HikariCP/5.0.1
+./metadata/com.zaxxer/HikariCP/5.0.1/reachability-metadata.json
+./metadata/com.zaxxer/HikariCP/6.0.0
+./metadata/com.zaxxer/HikariCP/6.0.0/reachability-metadata.json
+./stats/com.zaxxer
+./stats/com.zaxxer/HikariCP-java7
+./stats/com.zaxxer/HikariCP-java7/2.4.13
+./stats/com.zaxxer/HikariCP-java7/2.4.13/stats.json
+./stats/com.zaxxer/HikariCP-java7/2.4.13/execution-metrics.json
+./stats/com.zaxxer/SparseBitSet
+./stats/com.zaxxer/SparseBitSet/1.2
+./stats/com.zaxxer/SparseBitSet/1.2/stats.json
+./stats/com.zaxxer/SparseBitSet/1.2/execution-metrics.json
+./stats/com.zaxxer/HikariCP
+./stats/com.zaxxer/HikariCP/4.0.3
+./stats/com.zaxxer/HikariCP/4.0.3/stats.json
+./stats/com.zaxxer/HikariCP/4.0.3/execution-metrics.json
+./stats/com.zaxxer/HikariCP/5.0.1
+./stats/com.zaxxer/HikariCP/5.0.1/stats.json
+./stats/com.zaxxer/HikariCP/6.0.0
+./stats/com.zaxxer/HikariCP/6.0.0/stats.json
+./stats/com.zaxxer/HikariCP/6.0.0/execution-metrics.json
+./tests/src/com.zaxxer
+./tests/src/com.zaxxer/HikariCP-java7
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/src
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/src/test
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/src/test/resources
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/src/test/resources/META-INF
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/src/test/resources/META-INF/native-image
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/src/test/resources/META-INF/native-image/reachability-metadata.json
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/src/test/resources/META-INF/native-image/tests-only
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/src/test/resources/META-INF/native-image/tests-only/resource-config.json
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/src/test/resources/META-INF/native-image/tests-only/reflect-config.json
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/src/test/resources/hikari-config-test.properties
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/src/test/java
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/src/test/java/com_zaxxer
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/src/test/java/com_zaxxer/HikariCP_java7
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/src/test/java/com_zaxxer/HikariCP_java7/DriverDataSourceTest.java
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/src/test/java/com_zaxxer/HikariCP_java7/HikariConfigTest.java
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/src/test/java/com_zaxxer/HikariCP_java7/PropertyElfTest.java
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/src/test/java/com_zaxxer/HikariCP_java7/UtilityElfTest.java
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/src/test/java/com_zaxxer/HikariCP_java7/FastListTest.java
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/src/test/java/com_zaxxer/HikariCP_java7/ProxyConnection_ClosedConnectionTest.java
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/build.gradle
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/settings.gradle
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/.gitignore
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/gradle.properties
+./tests/src/com.zaxxer/HikariCP-java7/2.4.13/user-code-filter.json
+./tests/src/com.zaxxer/SparseBitSet
+./tests/src/com.zaxxer/SparseBitSet/1.2
+./tests/src/com.zaxxer/SparseBitSet/1.2/src
+./tests/src/com.zaxxer/SparseBitSet/1.2/src/test
+./tests/src/com.zaxxer/SparseBitSet/1.2/src/test/java
+./tests/src/com.zaxxer/SparseBitSet/1.2/src/test/java/com_zaxxer
+./tests/src/com.zaxxer/SparseBitSet/1.2/src/test/java/com_zaxxer/SparseBitSet
+./tests/src/com.zaxxer/SparseBitSet/1.2/src/test/java/com_zaxxer/SparseBitSet/SparseBitSetTest.java
+./tests/src/com.zaxxer/SparseBitSet/1.2/build.gradle
+./tests/src/com.zaxxer/SparseBitSet/1.2/settings.gradle
+./tests/src/com.zaxxer/SparseBitSet/1.2/.gitignore
+./tests/src/com.zaxxer/SparseBitSet/1.2/gradle.properties
+./tests/src/com.zaxxer/SparseBitSet/1.2/user-code-filter.json
+./tests/src/com.zaxxer/HikariCP
+./tests/src/com.zaxxer/HikariCP/4.0.3
+./tests/src/com.zaxxer/HikariCP/4.0.3/src
+
+codex
+There’s already repo metadata for earlier HikariCP versions, so I’m using that as the local format baseline and only refreshing the version-specific URLs where needed. Maven-hosted sources and javadocs are preferred here if the 7.0.2 artifacts exist.
+exec
+/usr/bin/zsh -lc "sed -n '1,120p' metadata/com.zaxxer/HikariCP/index.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c
+ succeeded in 0ms:
+[
+  {
+    "metadata-version" : "4.0.3",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-sources.jar",
+    "repository-url" : "https://github.com/brettwooldridge/HikariCP",
+    "test-code-url" : "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-$version$/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-javadoc.jar",
+    "description" : "HikariCP is a high-performance JDBC connection pool for Java applications. It manages and reuses database connections to reduce connection setup overhead and improve runtime efficiency.",
+    "tested-versions" : [
+      "4.0.3"
+    ],
+    "allowed-packages" : [
+      "com.zaxxer"
+    ]
+  },
+  {
+    "metadata-version" : "5.0.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-sources.jar",
+    "repository-url" : "https://github.com/brettwooldridge/HikariCP",
+    "test-code-url" : "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-$version$/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-javadoc.jar",
+    "tested-versions" : [
+      "5.0.1",
+      "5.1.0"
+    ],
+    "allowed-packages" : [
+      "com.zaxxer",
+      "jdk.internal"
+    ]
+  },
+  {
+    "latest" : true,
+    "metadata-version" : "6.0.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-sources.jar",
+    "repository-url" : "https://github.com/brettwooldridge/HikariCP",
+    "test-code-url" : "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-$version$/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-javadoc.jar",
+    "description" : "HikariCP is a high-performance JDBC connection pool for Java applications. It manages database connections efficiently to reduce latency and resource overhead.",
+    "tested-versions" : [
+      "6.0.0",
+      "6.1.0",
+      "6.2.0",
+      "6.2.1",
+      "6.3.0",
+      "6.3.1",
+      "6.3.2",
+      "7.0.0",
+      "7.0.1",
+      "7.0.2"
+    ],
+    "allowed-packages" : [
+      "com.zaxxer.hikari"
+    ]
+  }
+]
+
+exec
+/usr/bin/zsh -lc "sed -n '1,160p' build/agent-artifact-discovery-logs/com.zaxxer-HikariCP-7.0.2.log" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c
+ succeeded in 0ms:
+==== [2026-05-02 21:10:22] com.zaxxer:HikariCP:7.0.2
+COMMAND: codex -a never exec -s danger-full-access Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.zaxxer:HikariCP:7.0.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "7.0.2" when "$version$" is replaced with "7.0.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
+- Set "coordinates" to "com.zaxxer:HikariCP:7.0.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "7.0.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dea19-56ca-70d3-aea7-293a3fd5f02f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.zaxxer:HikariCP:7.0.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "7.0.2" when "$version$" is replaced with "7.0.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
+- Set "coordinates" to "com.zaxxer:HikariCP:7.0.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "7.0.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven Central and the upstream project tag, then patch the discovered JSON directly. I’ll also check whether the jar is a normal JVM artifact before deciding on any Native Image exclusion fields.
+exec
+/usr/bin/zsh -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c
+ succeeded in 0ms:
+{
+  "coordinates" : "com.zaxxer:HikariCP:7.0.2"
+}
+
+exec
+/usr/bin/zsh -lc "rg -n 'source-code-url|test-code-url|documentation-url|repository-url|language|not-for-native-image' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c
+ succeeded in 0ms:
+metadata/com.mysema.commons/mysema-commons-lang/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/mysema/commons/mysema-commons-lang/$version$/mysema-commons-lang-$version$-sources.jar",
+metadata/com.mysema.commons/mysema-commons-lang/index.json:6:    "repository-url" : "https://source.mysema.com/svn/mysema/projects/commons/lang",
+metadata/com.mysema.commons/mysema-commons-lang/index.json:7:    "test-code-url" : "N/A",
+metadata/com.mysema.commons/mysema-commons-lang/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/mysema/commons/mysema-commons-lang/$version$/mysema-commons-lang-$version$-javadoc.jar",
+metadata/antlr/antlr/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/antlr/antlr/$version$/antlr-$version$-sources.jar",
+metadata/antlr/antlr/index.json:6:    "repository-url" : "https://www.antlr2.org",
+metadata/antlr/antlr/index.json:7:    "test-code-url" : "https://www.antlr2.org/download/antlr-$version$.tar.gz",
+metadata/antlr/antlr/index.json:8:    "documentation-url" : "https://www.antlr2.org/download/antlr-$version$.tar.gz",
+metadata/com.vaadin.external.google/android-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/$version$/android-json-$version$-sources.jar",
+metadata/com.vaadin.external.google/android-json/index.json:6:    "repository-url" : "http://developer.android.com/sdk/",
+metadata/com.vaadin.external.google/android-json/index.json:7:    "test-code-url" : "N/A",
+metadata/com.vaadin.external.google/android-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/$version$/android-json-$version$-javadoc.jar",
+metadata/javax.interceptor/javax.interceptor-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/$version$/javax.interceptor-api-$version$-sources.jar",
+metadata/javax.interceptor/javax.interceptor-api/index.json:6:    "repository-url" : "https://github.com/javaee/javax.interceptor",
+metadata/javax.interceptor/javax.interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.interceptor/javax.interceptor-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/$version$/javax.interceptor-api-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/$version$/selenium-api-$version$-sources.jar",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:6:    "repository-url" : "https://github.com/SeleniumHQ/selenium",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:7:    "test-code-url" : "https://github.com/SeleniumHQ/selenium/tree/selenium-$version$/java/test/org/openqa/selenium",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/$version$/selenium-api-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/$version$/selenium-api-$version$-sources.jar",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:20:    "repository-url" : "https://github.com/SeleniumHQ/selenium",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:21:    "test-code-url" : "https://github.com/SeleniumHQ/selenium/tree/selenium-$version$/java/client/test/org/openqa/selenium",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/$version$/selenium-api-$version$-javadoc.jar",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/thymeleaf/extras/thymeleaf-extras-springsecurity6/$version$/thymeleaf-extras-springsecurity6-$version$-sources.jar",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:6:    "repository-url" : "https://github.com/thymeleaf/thymeleaf",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:7:    "test-code-url" : "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-$version$/tests/thymeleaf-tests-springsecurity6",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:8:    "documentation-url" : "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-$version$/lib/thymeleaf-extras-springsecurity6/README.markdown",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/cloud/tools/jib-build-plan/$version$/jib-build-plan-$version$-sources.jar",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:7:    "repository-url": "https://github.com/GoogleContainerTools/jib",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:8:    "test-code-url": "https://github.com/GoogleContainerTools/jib/tree/v$version$-build-plan/jib-build-plan/src/test",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:9:    "documentation-url": "https://javadoc.io/doc/com.google.cloud.tools/jib-build-plan/$version$",
+metadata/org.seleniumhq.selenium/selenium-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-json/$version$/selenium-json-$version$-sources.jar",
+metadata/org.seleniumhq.selenium/selenium-json/index.json:6:    "repository-url" : "https://github.com/SeleniumHQ/selenium/",
+metadata/org.seleniumhq.selenium/selenium-json/index.json:7:    "test-code-url" : "https://github.com/SeleniumHQ/selenium/tree/selenium-$version$/java/test/org/openqa/selenium/json",
+metadata/org.seleniumhq.selenium/selenium-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-json/$version$/selenium-json-$version$-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:6:    "repository-url" : "https://github.com/google/j2objc",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-sources.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:6:    "repository-url" : "https://github.com/apache/parquet-java",
+metadata/org.apache.parquet/parquet-format-structures/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-tests.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-javadoc.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-sources.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:21:    "repository-url" : "https://github.com/apache/parquet-java",
+metadata/org.apache.parquet/parquet-format-structures/index.json:22:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-tests.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-javadoc.jar",
+metadata/com.mysql/mysql-connector-j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/$version$/mysql-connector-j-$version$-sources.jar",
+metadata/com.mysql/mysql-connector-j/index.json:6:    "repository-url" : "https://github.com/mysql/mysql-connector-j",
+metadata/com.mysql/mysql-connector-j/index.json:7:    "test-code-url" : "https://github.com/mysql/mysql-connector-j/tree/$version$/src/test",
+metadata/com.mysql/mysql-connector-j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/$version$/mysql-connector-j-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-resource/$version$/smallrye-common-resource-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common/",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/resource/src/test",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-resource/$version$/smallrye-common-resource-$version$-javadoc.jar",
+metadata/org.scala-sbt/test-interface/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scala-sbt/test-interface/$version$/test-interface-$version$-sources.jar",
+metadata/org.scala-sbt/test-interface/index.json:6:    "repository-url" : "https://github.com/sbt/test-interface",
+metadata/org.scala-sbt/test-interface/index.json:7:    "test-code-url" : "https://github.com/sbt/test-interface/tree/v$version$/src/test",
+metadata/org.scala-sbt/test-interface/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scala-sbt/test-interface/$version$/test-interface-$version$-javadoc.jar",
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/util-interface/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scala-sbt/util-interface/$version$/util-interface-$version$-sources.jar",
+metadata/org.scala-sbt/util-interface/index.json:6:    "repository-url" : "https://github.com/sbt/util",
+metadata/org.scala-sbt/util-interface/index.json:7:    "test-code-url" : "N/A",
+metadata/org.scala-sbt/util-interface/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scala-sbt/util-interface/$version$/util-interface-$version$-javadoc.jar",
+metadata/org.scala-sbt/util-interface/index.json:10:    "language" : {
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/$version$/jboss-interceptor-spi-$version$-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:6:    "repository-url" : "https://github.com/jbossinterceptors/jbossinterceptors",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:8:    "documentation-url" : "N/A",
+metadata/org.antlr/antlr4-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/$version$/antlr4-runtime-$version$-sources.jar",
+metadata/org.antlr/antlr4-runtime/index.json:6:    "repository-url" : "https://github.com/antlr/antlr4",
+metadata/org.antlr/antlr4-runtime/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr4/tree/$version$/runtime-testsuite/test/org/antlr/v4/test/runtime/java",
+metadata/org.antlr/antlr4-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/$version$/antlr4-runtime-$version$-javadoc.jar",
+metadata/org.antlr/antlr4-runtime/index.json:9:    "description" : "ANTLR 4 Runtime is the Java runtime library that supplies the core classes needed to execute parsers and lexers generated by ANTLR 4. It provides token streams, parse tree support, error handling, and other infrastructure used by generated language recognizers.",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/org.sonatype.aether/aether-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/$version$/aether-spi-$version$-sources.jar",
+
+exec
+
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/zaxxer/HikariCP/7.0.2/HikariCP-7.0.2.pom | sed -n '1,220p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c
+exec
+/usr/bin/zsh -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/com/zaxxer/HikariCP/7.0.2/HikariCP-7.0.2-sources.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/com/zaxxer/HikariCP/7.0.2/HikariCP-7.0.2-javadoc.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/com/zaxxer/HikariCP/7.0.2/HikariCP-7.0.2-tests.jar' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c
+ succeeded in 173ms:
+<!--
+   Copyright (C) 2013, 2014 Brett Wooldridge
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <sureFireOptions11>--add-modules=ALL-MODULE-PATH</sureFireOptions11>
+      <sureFireForks11>false</sureFireForks11>
+      <!--java11.sourceDirectory>${project.basedir}/src/main/java11</java11.sourceDirectory -->
+      <!--java11.build.outputDirectory>${project.build.directory}/classes-java11</java11.build.outputDirectory -->
+      <artifact.classifier />
+
+      <!-- When releasing a new version, this property controls whether the staged artifacts will be automatically
+           released in Nexus. If this is set to false (-DautoReleaseStagedArtifacts=false), artifacts will need to
+           be manually released via the Nexus UI at https://oss.sonatype.org -->
+      <autoReleaseStagedArtifacts>true</autoReleaseStagedArtifacts>
+
+      <commons.csv.version>1.12.0</commons.csv.version>
+      <docker.maven.plugin.fabric8.version>0.45.0</docker.maven.plugin.fabric8.version>
+      <felix.bundle.plugin.version>5.1.9</felix.bundle.plugin.version>
+      <felix.version>7.0.5</felix.version>
+      <h2.version>2.3.232</h2.version>
+      <hibernate.version>5.4.24.Final</hibernate.version>
+      <javassist.version>3.29.2-GA</javassist.version>
+      <jndi.version>0.11.4.1</jndi.version>
+      <junit.version>4.13.2</junit.version>
+      <log4j.version>2.25.1</log4j.version>
+      <maven.release.version>3.0.1</maven.release.version>
+      <metrics.version>3.2.5</metrics.version>
+      <metrics5.version>5.0.0-rc17</metrics5.version>
+      <micrometer.version>1.5.10</micrometer.version>
+      <mockito.version>3.7.7</mockito.version>
+      <pax.exam.version>4.14.0</pax.exam.version>
+      <pax.url.version>2.5.4</pax.url.version>
+      <postgresql.version>42.7.7</postgresql.version>
+      <simpleclient.version>0.16.0</simpleclient.version>
+      <slf4j.version>2.0.17</slf4j.version>
+      <testcontainers.version>1.20.3</testcontainers.version>
+   </properties>
+
+   <groupId>com.zaxxer</groupId>
+   <artifactId>HikariCP</artifactId>
+   <version>7.0.2</version>
+   <packaging>bundle</packaging>
+
+   <name>HikariCP</name>
+   <description>Ultimate JDBC Connection Pool</description>
+   <url>https://github.com/brettwooldridge/HikariCP</url>
+   <inceptionYear>2013</inceptionYear>
+
+   <organization>
+      <name>Zaxxer.com</name>
+      <url>https://github.com/brettwooldridge</url>
+   </organization>
+
+   <scm>
+      <connection>scm:git:https://github.com/brettwooldridge/HikariCP.git</connection>
+      <developerConnection>scm:git:https://github.com/brettwooldridge/HikariCP.git</developerConnection>
+      <url>https://github.com/brettwooldridge/HikariCP</url>
+      <tag>HikariCP-7.0.2</tag>
+   </scm>
+
+   <distributionManagement>
+      <snapshotRepository>
+         <id>ossrh</id>
+         <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      </snapshotRepository>
+   </distributionManagement>
+
+   <issueManagement>
+      <url>https://github.com/brettwooldridge/HikariCP/issues</url>
+   </issueManagement>
+
+   <licenses>
+      <license>
+         <name>The Apache Software License, Version 2.0</name>
+         <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+         <distribution>repo</distribution>
+      </license>
+   </licenses>
+
+   <developers>
+      <developer>
+         <name>Brett Wooldridge</name>
+         <email>brett.wooldridge@gmail.com</email>
+      </developer>
+   </developers>
+
+   <dependencies>
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-api</artifactId>
+         <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.logging.log4j</groupId>
+         <artifactId>log4j-api</artifactId>
+         <version>${log4j.version}</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.logging.log4j</groupId>
+         <artifactId>log4j-core</artifactId>
+         <version>${log4j.version}</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.testcontainers</groupId>
+         <artifactId>postgresql</artifactId>
+         <version>${testcontainers.version}</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.commons</groupId>
+         <artifactId>commons-compress</artifactId>
+         <version>1.27.1</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.commons</groupId>
+         <artifactId>commons-lang3</artifactId>
+         <version>3.18.0</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.commons</groupId>
+         <artifactId>commons-csv</artifactId>
+         <version>${commons.csv.version}</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.mockito</groupId>
+         <artifactId>mockito-core</artifactId>
+         <version>${mockito.version}</version>
+         <scope>test</scope>
+         <exclusions>
+            <exclusion>
+               <groupId>org.hamcrest</groupId>
+               <artifactId>hamcrest-core</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>${junit.version}</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.javassist</groupId>
+         <artifactId>javassist</artifactId>
+         <version>${javassist.version}</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>io.micrometer</groupId>
+         <artifactId>micrometer-core</artifactId>
+         <version>${micrometer.version}</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>org.postgresql</groupId>
+         <artifactId>postgresql</artifactId>
+         <version>${postgresql.version}</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.hibernate</groupId>
+         <artifactId>hibernate-core</artifactId>
+         <version>${hibernate.version}</version>
+         <scope>provided</scope>
+         <optional>true</optional>
+         <exclusions>
+            <exclusion>
+               <artifactId>jboss-logging</artifactId>
+               <groupId>org.jboss.logging</groupId>
+            </exclusion>
+            <exclusion>
+               <artifactId>jboss-logging-annotations</artifactId>
+               <groupId>org.jboss.logging</groupId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+         <groupId>io.dropwizard.metrics</groupId>
+         <artifactId>metrics-core</artifactId>
+         <version>${metrics.version}</version>
+         <scope>provided</scope>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>io.dropwizard.metrics</groupId>
+         <artifactId>metrics-healthchecks</artifactId>
+         <version>${metrics.version}</version>
+         <scope>provided</scope>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>io.dropwizard.metrics5</groupId>
+         <artifactId>metrics-core</artifactId>
+         <version>${metrics5.version}</version>
+         <scope>provided</scope>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>io.prometheus</groupId>
+
+ exited 22 in 418ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 19:10:37 GMT
+content-type: application/java-archive
+content-length: 103180
+cf-ray: 9f5953badde8e297-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 58711
+etag: "1ded69710bad4ce841abeb0044502d7a"
+last-modified: Tue, 19 Aug 2025 11:52:22 GMT
+x-checksum-md5: 1ded69710bad4ce841abeb0044502d7a
+x-checksum-sha1: b7d35f0e85bbc811111077785e5fbcd148874d3f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 02 May 2026 19:10:37 GMT
+content-type: application/java-archive
+content-length: 556724
+cf-ray: 9f5953bb8e0396e0-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2320805
+etag: "69a1bdfc73e20bd10ccf090d14f8eeb2"
+last-modified: Tue, 19 Aug 2025 11:52:22 GMT
+x-checksum-md5: 69a1bdfc73e20bd10ccf090d14f8eeb2
+x-checksum-sha1: d6d8b21a887a8a70653cb9605eb7ed3b252d319a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 02 May 2026 19:10:37 GMT
+content-type: text/html
+cf-ray: 9f5953bc1db8870d-BEG
+cf-cache-status: HIT
+age: 3046
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/zaxxer/HikariCP/7.0.2/HikariCP-7.0.2-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: Maven Central com.zaxxer HikariCP 7.0.2 HikariCP-7.0.2 pom scm tag
+web search: 
+web search: https://repo1.maven.org/maven2/com/zaxxer/HikariCP/7.0.2/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: https://central.sonatype.com/artifact/com.zaxxer/HikariCP
+web search: 
+web search: site:github.com/brettwooldridge/HikariCP/tree/HikariCP-7.0.2/src/test HikariCP-7.0.2 src test
+exec
+/usr/bin/zsh -lc 'tmpdir=$(mktemp -d); curl -fsSL https://repo.maven.apache.org/maven2/com/zaxxer/HikariCP/7.0.2/HikariCP-7.0.2.jar -o "$tmpdir/HikariCP.jar"; jar tf "$tmpdir/HikariCP.jar" | sed -n '"'1,80p'; rm -rf \""'$tmpdir"' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c
+exec
+/usr/bin/zsh -lc 'curl -I -fsSL https://github.com/brettwooldridge/HikariCP/tree/HikariCP-7.0.2/src/test' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c
+exec
+/usr/bin/zsh -lc 'tmpdir=$(mktemp -d); curl -fsSL https://repo.maven.apache.org/maven2/com/zaxxer/HikariCP/7.0.2/HikariCP-7.0.2-sources.jar -o "$tmpdir/HikariCP-sources.jar"; jar tf "$tmpdir/HikariCP-sources.jar" | sed -n '"'1,80p'; rm -rf \""'$tmpdir"' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c
+ succeeded in 294ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/maven/
+META-INF/maven/com.zaxxer/
+META-INF/maven/com.zaxxer/HikariCP/
+META-INF/maven/com.zaxxer/HikariCP/pom.properties
+META-INF/maven/com.zaxxer/HikariCP/pom.xml
+com/
+com/zaxxer/
+com/zaxxer/hikari/
+com/zaxxer/hikari/HikariConfig.class
+com/zaxxer/hikari/HikariConfigMXBean.class
+com/zaxxer/hikari/HikariCredentialsProvider.class
+com/zaxxer/hikari/HikariDataSource.class
+com/zaxxer/hikari/HikariJNDIFactory.class
+com/zaxxer/hikari/HikariPoolMXBean.class
+com/zaxxer/hikari/SQLExceptionOverride$Override.class
+com/zaxxer/hikari/SQLExceptionOverride.class
+com/zaxxer/hikari/hibernate/
+com/zaxxer/hikari/hibernate/HikariConfigurationUtil.class
+com/zaxxer/hikari/hibernate/HikariConnectionProvider.class
+com/zaxxer/hikari/metrics/
+com/zaxxer/hikari/metrics/IMetricsTracker.class
+com/zaxxer/hikari/metrics/MetricsTracker.class
+com/zaxxer/hikari/metrics/MetricsTrackerFactory.class
+com/zaxxer/hikari/metrics/PoolStats.class
+com/zaxxer/hikari/metrics/dropwizard/
+com/zaxxer/hikari/metrics/dropwizard/CodaHaleMetricsTracker.class
+com/zaxxer/hikari/metrics/dropwizard/CodahaleHealthChecker$Connection99Percent.class
+com/zaxxer/hikari/metrics/dropwizard/CodahaleHealthChecker$ConnectivityHealthCheck.class
+com/zaxxer/hikari/metrics/dropwizard/CodahaleHealthChecker.class
+com/zaxxer/hikari/metrics/dropwizard/CodahaleMetricsTrackerFactory.class
+com/zaxxer/hikari/metrics/dropwizard/Dropwizard5MetricsTracker.class
+com/zaxxer/hikari/metrics/dropwizard/Dropwizard5MetricsTrackerFactory.class
+com/zaxxer/hikari/metrics/dropwizard/DropwizardCommon.class
+com/zaxxer/hikari/metrics/micrometer/
+com/zaxxer/hikari/metrics/micrometer/MicrometerMetricsTracker.class
+com/zaxxer/hikari/metrics/micrometer/MicrometerMetricsTrackerFactory.class
+com/zaxxer/hikari/metrics/prometheus/
+com/zaxxer/hikari/metrics/prometheus/HikariCPCollector.class
+com/zaxxer/hikari/metrics/prometheus/PrometheusHistogramMetricsTracker.class
+com/zaxxer/hikari/metrics/prometheus/PrometheusHistogramMetricsTrackerFactory.class
+com/zaxxer/hikari/metrics/prometheus/PrometheusMetricsTracker.class
+com/zaxxer/hikari/metrics/prometheus/PrometheusMetricsTrackerFactory$RegistrationStatus.class
+com/zaxxer/hikari/metrics/prometheus/PrometheusMetricsTrackerFactory.class
+com/zaxxer/hikari/pool/
+com/zaxxer/hikari/pool/HikariPool$1.class
+com/zaxxer/hikari/pool/HikariPool$HouseKeeper.class
+com/zaxxer/hikari/pool/HikariPool$KeepaliveTask.class
+com/zaxxer/hikari/pool/HikariPool$MaxLifetimeTask.class
+com/zaxxer/hikari/pool/HikariPool$PoolEntryCreator.class
+com/zaxxer/hikari/pool/HikariPool$PoolInitializationException.class
+com/zaxxer/hikari/pool/HikariPool.class
+com/zaxxer/hikari/pool/HikariProxyCallableStatement.class
+com/zaxxer/hikari/pool/HikariProxyConnection.class
+com/zaxxer/hikari/pool/HikariProxyDatabaseMetaData.class
+com/zaxxer/hikari/pool/HikariProxyPreparedStatement.class
+com/zaxxer/hikari/pool/HikariProxyResultSet.class
+com/zaxxer/hikari/pool/HikariProxyStatement.class
+com/zaxxer/hikari/pool/PoolBase$ConnectionSetupException.class
+com/zaxxer/hikari/pool/PoolBase$IMetricsTrackerDelegate.class
+com/zaxxer/hikari/pool/PoolBase$MetricsTrackerDelegate.class
+com/zaxxer/hikari/pool/PoolBase$NopMetricsTrackerDelegate.class
+com/zaxxer/hikari/pool/PoolBase$SynchronousExecutor.class
+com/zaxxer/hikari/pool/PoolBase.class
+com/zaxxer/hikari/pool/PoolEntry.class
+com/zaxxer/hikari/pool/ProxyCallableStatement.class
+com/zaxxer/hikari/pool/ProxyConnection$ClosedConnection.class
+com/zaxxer/hikari/pool/ProxyConnection.class
+com/zaxxer/hikari/pool/ProxyDatabaseMetaData.class
+com/zaxxer/hikari/pool/ProxyFactory.class
+com/zaxxer/hikari/pool/ProxyLeakTask$1.class
+com/zaxxer/hikari/pool/ProxyLeakTask.class
+com/zaxxer/hikari/pool/ProxyLeakTaskFactory.class
+com/zaxxer/hikari/pool/ProxyPreparedStatement.class
+com/zaxxer/hikari/pool/ProxyResultSet.class
+com/zaxxer/hikari/pool/ProxyStatement.class
+com/zaxxer/hikari/util/
+com/zaxxer/hikari/util/ClockSource$Factory.class
+com/zaxxer/hikari/util/ClockSource$MillisecondClockSource.class
+
+ succeeded in 319ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/zaxxer/
+com/zaxxer/hikari/
+com/zaxxer/hikari/metrics/
+com/zaxxer/hikari/metrics/micrometer/
+com/zaxxer/hikari/metrics/prometheus/
+com/zaxxer/hikari/metrics/dropwizard/
+com/zaxxer/hikari/util/
+com/zaxxer/hikari/hibernate/
+com/zaxxer/hikari/pool/
+META-INF/maven/
+META-INF/maven/com.zaxxer/
+META-INF/maven/com.zaxxer/HikariCP/
+module-info.java
+com/zaxxer/hikari/metrics/micrometer/MicrometerMetricsTracker.java
+com/zaxxer/hikari/metrics/micrometer/MicrometerMetricsTrackerFactory.java
+com/zaxxer/hikari/metrics/MetricsTrackerFactory.java
+com/zaxxer/hikari/metrics/PoolStats.java
+com/zaxxer/hikari/metrics/prometheus/PrometheusMetricsTracker.java
+com/zaxxer/hikari/metrics/prometheus/PrometheusHistogramMetricsTracker.java
+com/zaxxer/hikari/metrics/prometheus/HikariCPCollector.java
+com/zaxxer/hikari/metrics/prometheus/PrometheusHistogramMetricsTrackerFactory.java
+com/zaxxer/hikari/metrics/prometheus/PrometheusMetricsTrackerFactory.java
+com/zaxxer/hikari/metrics/dropwizard/DropwizardCommon.java
+com/zaxxer/hikari/metrics/dropwizard/CodahaleHealthChecker.java
+com/zaxxer/hikari/metrics/dropwizard/Dropwizard5MetricsTracker.java
+com/zaxxer/hikari/metrics/dropwizard/Dropwizard5MetricsTrackerFactory.java
+com/zaxxer/hikari/metrics/dropwizard/CodaHaleMetricsTracker.java
+com/zaxxer/hikari/metrics/dropwizard/CodahaleMetricsTrackerFactory.java
+com/zaxxer/hikari/metrics/MetricsTracker.java
+com/zaxxer/hikari/metrics/IMetricsTracker.java
+com/zaxxer/hikari/util/PropertyElf.java
+com/zaxxer/hikari/util/JavassistProxyFactory.java
+com/zaxxer/hikari/util/UtilityElf.java
+com/zaxxer/hikari/util/ClockSource.java
+com/zaxxer/hikari/util/IsolationLevel.java
+com/zaxxer/hikari/util/Credentials.java
+com/zaxxer/hikari/util/SuspendResumeLock.java
+com/zaxxer/hikari/util/ConcurrentBag.java
+com/zaxxer/hikari/util/FastList.java
+com/zaxxer/hikari/util/DriverDataSource.java
+com/zaxxer/hikari/HikariPoolMXBean.java
+com/zaxxer/hikari/HikariConfigMXBean.java
+com/zaxxer/hikari/HikariJNDIFactory.java
+com/zaxxer/hikari/HikariConfig.java
+com/zaxxer/hikari/hibernate/HikariConfigurationUtil.java
+com/zaxxer/hikari/hibernate/HikariConnectionProvider.java
+com/zaxxer/hikari/HikariCredentialsProvider.java
+com/zaxxer/hikari/SQLExceptionOverride.java
+com/zaxxer/hikari/HikariDataSource.java
+com/zaxxer/hikari/pool/ProxyLeakTask.java
+com/zaxxer/hikari/pool/ProxyFactory.java
+com/zaxxer/hikari/pool/ProxyConnection.java
+com/zaxxer/hikari/pool/PoolEntry.java
+com/zaxxer/hikari/pool/ProxyResultSet.java
+com/zaxxer/hikari/pool/ProxyLeakTaskFactory.java
+com/zaxxer/hikari/pool/ProxyPreparedStatement.java
+com/zaxxer/hikari/pool/HikariPool.java
+com/zaxxer/hikari/pool/ProxyStatement.java
+com/zaxxer/hikari/pool/ProxyCallableStatement.java
+com/zaxxer/hikari/pool/PoolBase.java
+com/zaxxer/hikari/pool/ProxyDatabaseMetaData.java
+META-INF/maven/com.zaxxer/HikariCP/pom.xml
+META-INF/maven/com.zaxxer/HikariCP/pom.properties
+
+ succeeded in 737ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 19:11:00 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"8359adbb987d9b5e68753a4072989afa"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=bxqibGXI9gAk5PKK%2FgwmT%2FyRVSgQhh7zAwQvUzo5w%2BPJTJk2mxJypcMW08jz3by89D9u52O4daJIyNC9CxE%2B9qFv2vox2z9Y7Zbs7QNGhvs2GuAAV3vp0nV5BMih7d9%2BCv8dVGLiFlCq3zKO%2B7vnnSaMPCbvLsqcNXQADOGMb7qYHPLGQ%2BW0vpvNjBgHwPx6lZxL4R3A9UyUfvS88KJqlSg8vSNhsj7GyXVq%2FDm0%2F%2B0GhnZ3YI0h%2BiYjg2cSblpLkz0PCrdPIUXefIZnyXswVA%3D%3D--%2B9ejfwBzbCEhiMHb--%2BSliR4zlt%2B%2FMC3sgJOT5ew%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2079017055.1777749059; expires=Sun, 02 May 2027 19:10:59 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 02 May 2027 19:10:59 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 19D6:167D:1B802E8:14197A8:69F64C43
+
+
+web search: 
+web search: Maven Central com.zaxxer HikariCP 7.0.2
+codex
+I’ve confirmed the 7.0.2 Maven directory contains the jar, sources jar, and javadoc jar, but no tests jar. The upstream POM identifies the GitHub repository and the `HikariCP-7.0.2` SCM tag, and the published jar contains JVM `.class` files, so I’ll leave the language and not-for-native-image fields absent.
+apply patch
+patch: completed
+/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
+diff --git a/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json b/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
+index fa09e1b591ad093ee64dbc57d1faaf28864f5a4b..870408491e7b137f42134d4f99532e8a5408d843
+--- a/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
++++ b/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.zaxxer:HikariCP:7.0.2"
++  "coordinates" : "com.zaxxer:HikariCP:7.0.2",
++  "repository-url" : "https://github.com/brettwooldridge/HikariCP",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-sources.jar",
++  "test-code-url" : "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-javadoc.jar",
++  "description" : "HikariCP is a high-performance JDBC connection pool for Java applications. It manages and reuses database connections to reduce connection setup overhead and improve runtime efficiency."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json b/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
+index fa09e1b591ad093ee64dbc57d1faaf28864f5a4b..870408491e7b137f42134d4f99532e8a5408d843
+--- a/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
++++ b/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.zaxxer:HikariCP:7.0.2"
++  "coordinates" : "com.zaxxer:HikariCP:7.0.2",
++  "repository-url" : "https://github.com/brettwooldridge/HikariCP",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-sources.jar",
++  "test-code-url" : "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-javadoc.jar",
++  "description" : "HikariCP is a high-performance JDBC connection pool for Java applications. It manages and reuses database connections to reduce connection setup overhead and improve runtime efficiency."
+ }
+
+exec
+/usr/bin/zsh -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c
+ succeeded in 0ms:
+{
+  "coordinates" : "com.zaxxer:HikariCP:7.0.2",
+  "repository-url" : "https://github.com/brettwooldridge/HikariCP",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-sources.jar",
+  "test-code-url" : "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-$version$/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-javadoc.jar",
+  "description" : "HikariCP is a high-performance JDBC connection pool for Java applications. It manages and reuses database connections to reduce connection setup overhead and improve runtime efficiency."
+}
+
+exec
+/usr/bin/zsh -lc 'git diff -- build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc 'python -m json.tool build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json >/dev/null' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json b/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
+index fa09e1b591ad093ee64dbc57d1faaf28864f5a4b..870408491e7b137f42134d4f99532e8a5408d843
+--- a/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
++++ b/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.zaxxer:HikariCP:7.0.2"
++  "coordinates" : "com.zaxxer:HikariCP:7.0.2",
++  "repository-url" : "https://github.com/brettwooldridge/HikariCP",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-sources.jar",
++  "test-code-url" : "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-javadoc.jar",
++  "description" : "HikariCP is a high-performance JDBC connection pool for Java applications. It manages and reuses database connections to reduce connection setup overhead and improve runtime efficiency."
+ }
+
+exec
+/usr/bin/zsh -lc 'git status --short -- build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json b/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
+index fa09e1b591ad093ee64dbc57d1faaf28864f5a4b..870408491e7b137f42134d4f99532e8a5408d843
+--- a/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
++++ b/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.zaxxer:HikariCP:7.0.2"
++  "coordinates" : "com.zaxxer:HikariCP:7.0.2",
++  "repository-url" : "https://github.com/brettwooldridge/HikariCP",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-sources.jar",
++  "test-code-url" : "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-javadoc.jar",
++  "description" : "HikariCP is a high-performance JDBC connection pool for Java applications. It manages and reuses database connections to reduce connection setup overhead and improve runtime efficiency."
+ }
+
+web search: 
+web search: Maven Central com.zaxxer HikariCP 7.0.2
+web search: 
+web search: https://central.sonatype.com/artifact/com.zaxxer/HikariCP/7.0.2
+web search: 
+web search: https://github.com/brettwooldridge/HikariCP/tree/HikariCP-7.0.2/src/test
+codex
+Updated [com.zaxxer-HikariCP-7.0.2.json](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json:1).
+
+Set Maven-hosted sources and javadocs, GitHub test suite at tag `HikariCP-7.0.2`, and the repository root from the POM SCM/project URL. The Maven listing has the 7.0.2 sources/javadoc jars, and the POM identifies the GitHub repo plus `HikariCP-7.0.2` SCM tag; GitHub also resolves `src/test` at that tag. ([repo1.maven.org](https://repo1.maven.org/maven2/com/zaxxer/HikariCP/7.0.2/))
+
+I left `language` absent because this is a Java/JVM artifact, and left `not-for-native-image` absent because the published jar contains JVM class files. Verified JSON syntax with `python -m json.tool`.
+diff --git a/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json b/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
+index fa09e1b591ad093ee64dbc57d1faaf28864f5a4b..870408491e7b137f42134d4f99532e8a5408d843
+--- a/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
++++ b/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.zaxxer:HikariCP:7.0.2"
++  "coordinates" : "com.zaxxer:HikariCP:7.0.2",
++  "repository-url" : "https://github.com/brettwooldridge/HikariCP",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-sources.jar",
++  "test-code-url" : "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-javadoc.jar",
++  "description" : "HikariCP is a high-performance JDBC connection pool for Java applications. It manages and reuses database connections to reduce connection setup overhead and improve runtime efficiency."
+ }
+
+2026-05-02T19:11:31.904701Z ERROR codex_core::session: failed to record rollout items: thread 019dea19-56ca-70d3-aea7-293a3fd5f02f not found
+tokens used
+99,850
+Updated [com.zaxxer-HikariCP-7.0.2.json](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c/build/discovered-artifact-metadata/com.zaxxer-HikariCP-7.0.2.json:1).
+
+Set Maven-hosted sources and javadocs, GitHub test suite at tag `HikariCP-7.0.2`, and the repository root from the POM SCM/project URL. The Maven listing has the 7.0.2 sources/javadoc jars, and the POM identifies the GitHub repo plus `HikariCP-7.0.2` SCM tag; GitHub also resolves `src/test` at that tag. ([repo1.maven.org](https://repo1.maven.org/maven2/com/zaxxer/HikariCP/7.0.2/))
+
+I left `language` absent because this is a Java/JVM artifact, and left `not-for-native-image` absent because the published jar contains JVM class files. Verified JSON syntax with `python -m json.tool`.
+Ran agent for com.zaxxer:HikariCP:7.0.2 (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c/build/agent-artifact-discovery-logs/com.zaxxer-HikariCP-7.0.2.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1065-26fc1d4c/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 16s
+9 actionable tasks: 4 executed, 5 from cache
