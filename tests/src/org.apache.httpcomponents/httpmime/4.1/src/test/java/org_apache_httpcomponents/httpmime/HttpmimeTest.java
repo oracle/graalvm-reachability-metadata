@@ -45,7 +45,7 @@ public class HttpmimeTest {
 
     @Test
     void stringBodyExposesTextContentAndDescriptors() throws Exception {
-        String text = "Plain body with accented text: café";
+        String text = "Plain body with accented text: caf\u00e9";
         StringBody body = new StringBody(text, "text/plain", UTF_8);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
@@ -65,7 +65,7 @@ public class HttpmimeTest {
     @Test
     void stringBodyFactoryMethodsApplyProvidedContentTypeAndDefaultCharset() throws Exception {
         String defaultText = "factory generated text";
-        String unicodeText = "factory generated snowman: ☃";
+        String unicodeText = "factory generated snowman: \u2603";
         StringBody defaultBody = StringBody.create(defaultText, "text/plain", null);
         StringBody utf8Body = StringBody.create(unicodeText, "text/plain", UTF_8);
         ByteArrayOutputStream defaultOutputStream = new ByteArrayOutputStream();
