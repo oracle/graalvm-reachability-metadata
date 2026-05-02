@@ -8,7 +8,7 @@ package net_minidev.accessors_smart;
 
 import org.junit.jupiter.api.Test;
 
-class Accessors_smartTest {
+public class Accessors_smartTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
