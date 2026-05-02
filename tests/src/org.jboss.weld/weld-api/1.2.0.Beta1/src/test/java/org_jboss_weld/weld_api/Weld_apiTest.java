@@ -9,110 +9,102 @@ package org_jboss_weld.weld_api;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import javax.enterprise.context.Conversation;
-import javax.inject.Qualifier;
-import org.jboss.weld.conversation.ConversationConcurrentAccessTimeout;
-import org.jboss.weld.conversation.ConversationIdGenerator;
-import org.jboss.weld.conversation.ConversationIdName;
-import org.jboss.weld.conversation.ConversationInactivityTimeout;
-import org.jboss.weld.conversation.ConversationManager;
+import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
+import org.jboss.weld.context.ConversationContext;
+import org.jboss.weld.context.ManagedContext;
+import org.jboss.weld.context.ManagedConversation;
 import org.junit.jupiter.api.Test;
 
 public class Weld_apiTest {
     @Test
-    void qualifierAnnotationsExposeRuntimeCdiMetadata() throws Exception {
-        assertQualifierMetadata(ConversationIdName.class);
-        assertQualifierMetadata(ConversationConcurrentAccessTimeout.class);
-        assertQualifierMetadata(ConversationInactivityTimeout.class);
-
-        Class<AnnotatedConversationConfiguration> configurationClass = AnnotatedConversationConfiguration.class;
-        Field conversationIdField = configurationClass.getDeclaredField("conversationIdParameterName");
-        Method timeoutMethod = configurationClass.getDeclaredMethod("configureTimeouts", long.class, long.class);
-        Parameter[] parameters = timeoutMethod.getParameters();
-
-        assertThat(annotation(configurationClass, ConversationIdName.class)).isNotNull();
-        assertThat(annotation(conversationIdField, ConversationIdName.class)).isNotNull();
-        assertThat(annotation(timeoutMethod, ConversationInactivityTimeout.class)).isNotNull();
-        assertThat(annotation(parameters[0], ConversationConcurrentAccessTimeout.class)).isNotNull();
-        assertThat(annotation(parameters[1], ConversationInactivityTimeout.class)).isNotNull();
+    void conversationContextApiExposesRuntimeMethodMetadata() throws Exception {
+        assertThat(ConversationContext.class.getInterfaces()).contains(ManagedContext.class);
+        assertMethod(ConversationContext.class, void.class, "activate", String.class);
+        assertMethod(ConversationContext.class, void.class, "activate");
+        assertMethod(ConversationContext.class, void.class, "invalidate");
+        assertMethod(ConversationContext.class, void.class, "setParameterName", String.class);
+        assertMethod(ConversationContext.class, String.class, "getParameterName");
+        assertMethod(ConversationContext.class, void.class, "setConcurrentAccessTimeout", long.class);
+        assertMethod(ConversationContext.class, long.class, "getConcurrentAccessTimeout");
+        assertMethod(ConversationContext.class, void.class, "setDefaultTimeout", long.class);
+        assertMethod(ConversationContext.class, long.class, "getDefaultTimeout");
+        assertMethod(ConversationContext.class, Collection.class, "getConversations");
+        assertMethod(ConversationContext.class, ManagedConversation.class, "getConversation", String.class);
+        assertMethod(ConversationContext.class, String.class, "generateConversationId");
+        assertMethod(ConversationContext.class, ManagedConversation.class, "getCurrentConversation");
     }
 
     @Test
-    void conversationIdGeneratorContractCanBeImplementedAndInvokedThroughApiType() {
-        ConversationIdGenerator generator = new PrefixingConversationIdGenerator("conversation");
+    void conversationContextActivatesRestoresConfiguresAndInvalidatesConversations() {
+        RecordingConversationContext context = new RecordingConversationContext();
 
-        assertThat(generator.nextId()).isEqualTo("conversation-1");
-        assertThat(generator.nextId()).isEqualTo("conversation-2");
-        assertThat(generator.nextId()).isEqualTo("conversation-3");
-    }
+        assertThat(context.isActive()).isFalse();
 
-    @Test
-    void conversationManagerBeginsRestoresCleansUpAndDestroysConversations() {
-        RecordingConversationManager manager = new RecordingConversationManager();
+        context.setParameterName("conversationId");
+        context.setConcurrentAccessTimeout(750L);
+        context.setDefaultTimeout(2_000L);
+        context.activate();
+        ManagedConversation transientConversation = context.getCurrentConversation();
 
-        manager.beginOrRestoreConversation(null);
-        Conversation transientConversation = manager.getCurrentConversation();
-
+        assertThat(context.isActive()).isTrue();
+        assertThat(context.getScope()).isEqualTo(ConversationScoped.class);
+        assertThat(context.getParameterName()).isEqualTo("conversationId");
+        assertThat(context.getConcurrentAccessTimeout()).isEqualTo(750L);
+        assertThat(context.getDefaultTimeout()).isEqualTo(2_000L);
         assertThat(transientConversation.isTransient()).isTrue();
         assertThat(transientConversation.getId()).isNull();
-        assertThat(manager.getLongRunningConversations()).isEmpty();
+        assertThat(context.getConversations()).isEmpty();
 
-        manager.cleanupConversation();
+        transientConversation.begin(context.generateConversationId());
+        transientConversation.setTimeout(4_000L);
+        transientConversation.touch();
+        context.storeCurrentConversation();
 
-        assertThat(manager.getCurrentConversation()).isNull();
+        assertThat(transientConversation.isTransient()).isFalse();
+        assertThat(transientConversation.getId()).isEqualTo("conversation-1");
+        assertThat(transientConversation.getTimeout()).isEqualTo(4_000L);
+        assertThat(transientConversation.getLastUsed()).isGreaterThan(0L);
+        assertThat(context.getConversation("conversation-1")).isSameAs(transientConversation);
+        assertThat(context.getConversations()).containsExactly(transientConversation);
 
-        manager.beginOrRestoreConversation("checkout");
-        Conversation checkoutConversation = manager.getCurrentConversation();
-        checkoutConversation.setTimeout(2_000L);
+        context.activate("conversation-1");
 
-        assertThat(checkoutConversation.isTransient()).isFalse();
-        assertThat(checkoutConversation.getId()).isEqualTo("checkout");
-        assertThat(checkoutConversation.getTimeout()).isEqualTo(2_000L);
-        assertThat(manager.getLongRunningConversations()).containsExactly(checkoutConversation);
+        assertThat(context.getCurrentConversation()).isSameAs(transientConversation);
 
-        manager.beginOrRestoreConversation("checkout");
+        context.invalidate();
+        context.deactivate();
 
-        assertThat(manager.getCurrentConversation()).isSameAs(checkoutConversation);
-
-        manager.beginOrRestoreConversation("support");
-
-        assertThat(manager.getLongRunningConversations())
-                .extracting(Conversation::getId)
-                .containsExactly("checkout", "support");
-
-        manager.destroyAllConversations();
-
-        assertThat(manager.getCurrentConversation()).isNull();
-        assertThat(manager.getLongRunningConversations()).isEmpty();
+        assertThat(context.isActive()).isFalse();
+        assertThat(context.getCurrentConversation()).isNull();
+        assertThat(context.getConversations()).isEmpty();
     }
 
     @Test
-    void conversationInterfaceSupportsExplicitAndGeneratedLongRunningIds() {
-        PrefixingConversationIdGenerator generator = new PrefixingConversationIdGenerator("generated");
-        RecordingConversation conversation = new RecordingConversation(generator);
+    void managedConversationSupportsLifecycleLockingAndTimestamps() {
+        RecordingManagedConversation conversation = new RecordingManagedConversation("generated-id");
 
         assertThat(conversation.isTransient()).isTrue();
-        assertThat(conversation.getId()).isNull();
+        assertThat(conversation.lock(100L)).isTrue();
+        assertThat(conversation.lock(100L)).isFalse();
+        assertThat(conversation.unlock()).isTrue();
+        assertThat(conversation.unlock()).isFalse();
 
         conversation.begin();
         conversation.setTimeout(500L);
+        conversation.touch();
 
         assertThat(conversation.isTransient()).isFalse();
-        assertThat(conversation.getId()).isEqualTo("generated-1");
+        assertThat(conversation.getId()).isEqualTo("generated-id");
         assertThat(conversation.getTimeout()).isEqualTo(500L);
+        assertThat(conversation.getLastUsed()).isGreaterThan(0L);
 
         conversation.end();
 
@@ -125,122 +117,168 @@ public class Weld_apiTest {
         assertThat(conversation.getId()).isEqualTo("manual-id");
     }
 
-    private static void assertQualifierMetadata(Class<? extends Annotation> annotationType) {
-        Target target = annotation(annotationType, Target.class);
-        Retention retention = annotation(annotationType, Retention.class);
+    private static void assertMethod(
+            Class<?> apiType, Class<?> returnType, String methodName, Class<?>... parameterTypes) throws Exception {
+        Method method = apiType.getMethod(methodName, parameterTypes);
 
-        assertThat(annotation(annotationType, Qualifier.class)).isNotNull();
-        assertThat(annotation(annotationType, Documented.class)).isNotNull();
-        assertThat(retention.value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(Arrays.asList(target.value()))
-                .containsExactlyInAnyOrder(
-                        java.lang.annotation.ElementType.TYPE,
-                        java.lang.annotation.ElementType.METHOD,
-                        java.lang.annotation.ElementType.PARAMETER,
-                        java.lang.annotation.ElementType.FIELD);
+        assertThat(method.getReturnType()).isEqualTo(returnType);
     }
 
-    // Checkstyle: allow direct annotation access
-    private static <A extends Annotation> A annotation(AnnotatedElement element, Class<A> annotationType) {
-        AnnotatedElement elementAnnotationAccess = element;
-        return elementAnnotationAccess.getAnnotation(annotationType);
-    }
-    // Checkstyle: disallow direct annotation access
-
-    @ConversationIdName
-    private static final class AnnotatedConversationConfiguration {
-        @ConversationIdName
-        private String conversationIdParameterName;
-
-        @ConversationInactivityTimeout
-        void configureTimeouts(
-                @ConversationConcurrentAccessTimeout long concurrentAccessTimeout,
-                @ConversationInactivityTimeout long inactivityTimeout) {
-            this.conversationIdParameterName = Long.toString(concurrentAccessTimeout + inactivityTimeout);
-        }
-    }
-
-    private static final class PrefixingConversationIdGenerator implements ConversationIdGenerator {
-        private final String prefix;
+    private static final class RecordingConversationContext implements ConversationContext {
+        private final Map<String, RecordingManagedConversation> conversations = new LinkedHashMap<>();
+        private String parameterName = "cid";
+        private long concurrentAccessTimeout;
+        private long defaultTimeout;
         private int sequence;
-
-        PrefixingConversationIdGenerator(String prefix) {
-            this.prefix = prefix;
-        }
-
-        @Override
-        public String nextId() {
-            sequence++;
-            return prefix + "-" + sequence;
-        }
-    }
-
-    private static final class RecordingConversationManager implements ConversationManager {
-        private final ConversationIdGenerator generator = new PrefixingConversationIdGenerator("managed");
-        private final Map<String, RecordingConversation> longRunningConversations = new LinkedHashMap<>();
-        private Conversation currentConversation;
+        private boolean active;
+        private boolean invalid;
+        private RecordingManagedConversation currentConversation;
 
         @Override
-        public void beginOrRestoreConversation(String cid) {
+        public void activate(String cid) {
+            active = true;
+            invalid = false;
             if (cid == null) {
-                currentConversation = new RecordingConversation(generator);
+                currentConversation = new RecordingManagedConversation(null);
+                currentConversation.setTimeout(defaultTimeout);
                 return;
             }
-            RecordingConversation conversation = longRunningConversations.computeIfAbsent(
+            currentConversation = conversations.computeIfAbsent(
                     cid,
                     id -> {
-                        RecordingConversation createdConversation = new RecordingConversation(generator);
-                        createdConversation.begin(id);
-                        return createdConversation;
+                        RecordingManagedConversation conversation = new RecordingManagedConversation(generateConversationId());
+                        conversation.begin(id);
+                        conversation.setTimeout(defaultTimeout);
+                        return conversation;
                     });
-            currentConversation = conversation;
+            currentConversation.touch();
         }
 
         @Override
-        public void cleanupConversation() {
-            if (currentConversation != null && currentConversation.isTransient()) {
-                currentConversation = null;
+        public void activate() {
+            activate(null);
+        }
+
+        @Override
+        public void invalidate() {
+            invalid = true;
+        }
+
+        @Override
+        public void deactivate() {
+            active = false;
+            currentConversation = null;
+            if (invalid) {
+                conversations.clear();
+                invalid = false;
             }
         }
 
         @Override
-        public void destroyAllConversations() {
-            longRunningConversations.clear();
-            currentConversation = null;
+        public void setParameterName(String cid) {
+            parameterName = cid;
         }
 
         @Override
-        public Set<Conversation> getLongRunningConversations() {
-            return new LinkedHashSet<>(longRunningConversations.values());
+        public String getParameterName() {
+            return parameterName;
         }
 
-        Conversation getCurrentConversation() {
+        @Override
+        public void setConcurrentAccessTimeout(long timeout) {
+            concurrentAccessTimeout = timeout;
+        }
+
+        @Override
+        public long getConcurrentAccessTimeout() {
+            return concurrentAccessTimeout;
+        }
+
+        @Override
+        public void setDefaultTimeout(long timeout) {
+            defaultTimeout = timeout;
+        }
+
+        @Override
+        public long getDefaultTimeout() {
+            return defaultTimeout;
+        }
+
+        @Override
+        public Collection<ManagedConversation> getConversations() {
+            List<ManagedConversation> managedConversations = new ArrayList<>(conversations.values());
+            return managedConversations;
+        }
+
+        @Override
+        public ManagedConversation getConversation(String id) {
+            return conversations.get(id);
+        }
+
+        @Override
+        public String generateConversationId() {
+            sequence++;
+            return "conversation-" + sequence;
+        }
+
+        @Override
+        public ManagedConversation getCurrentConversation() {
             return currentConversation;
+        }
+
+        @Override
+        public Class<? extends Annotation> getScope() {
+            return ConversationScoped.class;
+        }
+
+        @Override
+        public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
+            return null;
+        }
+
+        @Override
+        public <T> T get(Contextual<T> contextual) {
+            return null;
+        }
+
+        @Override
+        public boolean isActive() {
+            return active;
+        }
+
+        void storeCurrentConversation() {
+            if (currentConversation != null && !currentConversation.isTransient()) {
+                conversations.put(currentConversation.getId(), currentConversation);
+            }
         }
     }
 
-    private static final class RecordingConversation implements Conversation {
-        private final ConversationIdGenerator generator;
+    private static final class RecordingManagedConversation implements ManagedConversation {
+        private final String generatedId;
         private String id;
         private long timeout;
+        private long lastUsed;
+        private boolean locked;
 
-        RecordingConversation(ConversationIdGenerator generator) {
-            this.generator = generator;
+        RecordingManagedConversation(String generatedId) {
+            this.generatedId = generatedId;
         }
 
         @Override
         public void begin() {
-            begin(generator.nextId());
+            begin(generatedId);
         }
 
         @Override
         public void begin(String id) {
             this.id = id;
+            touch();
         }
 
         @Override
         public void end() {
             id = null;
+            touch();
         }
 
         @Override
@@ -261,6 +299,34 @@ public class Weld_apiTest {
         @Override
         public boolean isTransient() {
             return id == null;
+        }
+
+        @Override
+        public boolean unlock() {
+            if (!locked) {
+                return false;
+            }
+            locked = false;
+            return true;
+        }
+
+        @Override
+        public boolean lock(long timeout) {
+            if (locked) {
+                return false;
+            }
+            locked = true;
+            return true;
+        }
+
+        @Override
+        public long getLastUsed() {
+            return lastUsed;
+        }
+
+        @Override
+        public void touch() {
+            lastUsed = System.nanoTime();
         }
     }
 }
