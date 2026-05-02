@@ -7,6 +7,7 @@
 package io_netty.netty_resolver_dns_classes_macos;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.netty.resolver.dns.DnsServerAddressStream;
@@ -75,6 +76,35 @@ public class Netty_resolver_dns_classes_macosTest {
                     .isInstanceOf(UnsatisfiedLinkError.class)
                     .hasCause(MacOSDnsServerAddressStreamProvider.unavailabilityCause());
         }
+    }
+
+    @Test
+    void returnedNameServerStreamsCycleThroughAllConfiguredAddresses() {
+        if (MacOSDnsServerAddressStreamProvider.isAvailable()) {
+            MacOSDnsServerAddressStreamProvider provider = new MacOSDnsServerAddressStreamProvider();
+            DnsServerAddressStream stream = provider.nameServerAddressStream("example.com");
+            int size = stream.size();
+
+            List<InetSocketAddress> firstCycle = nextNameServers(stream, size);
+            List<InetSocketAddress> secondCycle = nextNameServers(stream, size);
+
+            assertThat(size).isGreaterThan(0);
+            assertThat(secondCycle).containsExactlyElementsOf(firstCycle);
+        } else {
+            assertThatThrownBy(MacOSDnsServerAddressStreamProvider::new)
+                    .isInstanceOf(UnsatisfiedLinkError.class)
+                    .hasCause(MacOSDnsServerAddressStreamProvider.unavailabilityCause());
+        }
+    }
+
+    private static List<InetSocketAddress> nextNameServers(DnsServerAddressStream stream, int count) {
+        List<InetSocketAddress> addresses = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            InetSocketAddress address = stream.next();
+            assertValidNameServer(address);
+            addresses.add(address);
+        }
+        return addresses;
     }
 
     private static void assertValidNameServer(InetSocketAddress address) {
