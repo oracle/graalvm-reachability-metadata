@@ -1,0 +1,54 @@
+{
+  "reflection" : [
+    {
+      "condition" : {
+        "typeReached" : "org.javamoney.moneta.spi.DefaultMonetaryAmountsSingletonSpi"
+      },
+      "type" : "org.javamoney.moneta.FastMoney"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.javamoney.moneta.spi.MonetaryConfig"
+      },
+      "type" : "org.javamoney.moneta.spi.PriorityAwareServiceProvider"
+    }
+  ],
+  "resources" : [
+    {
+      "condition" : {
+        "typeReached" : "org.javamoney.moneta.spi.loader.LoaderConfigurator"
+      },
+      "glob" : "META-INF/services/java.time.zone.ZoneRulesProvider"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.javamoney.moneta.spi.MonetaryConfig"
+      },
+      "glob" : "META-INF/services/javax.money.spi.ServiceProvider"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.javamoney.moneta.spi.JDKCurrencyProvider"
+      },
+      "module" : "java.base",
+      "glob" : "java/util/currency.data"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.javamoney.moneta.spi.loader.LoaderConfigurator"
+      },
+      "module" : "java.logging",
+      "glob" : "sun/util/logging/resources/logging_en.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.javamoney.moneta.spi.loader.LoaderConfigurator"
+      },
+      "module" : "java.logging",
+      "glob" : "sun/util/logging/resources/logging_en_US.properties"
+    },
+    {
+      "bundle" : "sun.util.logging.resources.logging"
+    }
+  ]
+}
