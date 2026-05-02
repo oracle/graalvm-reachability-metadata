@@ -44,6 +44,8 @@ public class ReflectTest {
                 .isEqualTo("visible");
 
         Capabilities.setAccessibility(true);
+        assertThat(interpreter.eval("target.publicLabel;"))
+                .isEqualTo("visible");
         assertThat(interpreter.eval("target.privateLabel;"))
                 .isEqualTo("hidden");
     }
