@@ -16,6 +16,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AccessorTest {
     @Test
+    void discoversSetterAndBooleanGetter() {
+        try {
+            BeansAccess<BooleanGetterBean> access = BeansAccess.get(BooleanGetterBean.class);
+            BooleanGetterBean bean = access.newInstance();
+
+            access.set(bean, "enabled", true);
+
+            assertThat(bean.isEnabled()).isTrue();
+            assertThat(access.get(bean, "enabled")).isEqualTo(Boolean.TRUE);
+            Accessor accessor = access.getMap().get("enabled");
+            assertThat(accessor).isNotNull();
+            assertThat(accessor.getName()).isEqualTo("enabled");
+            assertThat(accessor.getType()).isEqualTo(boolean.class);
+            assertThat(accessor.isReadable()).isTrue();
+            assertThat(accessor.isWritable()).isTrue();
+        } catch (Error error) {
+            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+                throw error;
+            }
+        }
+    }
+
+    @Test
     void discoversSetterAndBooleanGetterFallback() {
         try {
             BeansAccess<BooleanGetterFallbackBean> access = BeansAccess.get(BooleanGetterFallbackBean.class);
@@ -35,6 +58,21 @@ public class AccessorTest {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
             }
+        }
+    }
+
+    public static class BooleanGetterBean {
+        private boolean enabled;
+
+        public BooleanGetterBean() {
+        }
+
+        public boolean isEnabled() {
+            return this.enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
         }
     }
 
