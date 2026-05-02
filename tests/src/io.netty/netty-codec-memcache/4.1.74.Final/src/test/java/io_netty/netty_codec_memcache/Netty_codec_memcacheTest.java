@@ -7,10 +7,12 @@
 package io_netty.netty_codec_memcache;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
+import io.netty.handler.codec.PrematureChannelClosureException;
 import io.netty.handler.codec.memcache.DefaultLastMemcacheContent;
 import io.netty.handler.codec.memcache.DefaultMemcacheContent;
 import io.netty.handler.codec.memcache.LastMemcacheContent;
@@ -222,6 +224,25 @@ public class Netty_codec_memcacheTest {
             content.release();
             assertThat(channel.finishAndReleaseAll()).isFalse();
         }
+    }
+
+    @Test
+    void clientCodecReportsMissingFullResponseWhenChannelCloses() {
+        EmbeddedChannel channel = new EmbeddedChannel(new BinaryMemcacheClientCodec(128, true));
+        FullBinaryMemcacheRequest request = new DefaultFullBinaryMemcacheRequest(
+                ascii("tracked-key"), Unpooled.EMPTY_BUFFER, Unpooled.EMPTY_BUFFER);
+        request.setOpcode(BinaryMemcacheOpcodes.GET);
+        request.setTotalBodyLength(request.keyLength());
+
+        assertThat(channel.writeOutbound(request)).isTrue();
+        ByteBuf encodedRequest = collectOutboundBytes(channel);
+        encodedRequest.release();
+
+        channel.close();
+        assertThatExceptionOfType(PrematureChannelClosureException.class)
+                .isThrownBy(channel::checkException)
+                .withMessageContaining("1 missing response");
+        assertThat(channel.finishAndReleaseAll()).isFalse();
     }
 
     @Test
