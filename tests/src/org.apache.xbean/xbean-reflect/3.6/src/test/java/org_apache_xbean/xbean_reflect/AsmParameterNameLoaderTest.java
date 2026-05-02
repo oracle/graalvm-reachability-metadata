@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.xbean.recipe.AsmParameterNameLoader;
-import org.apache.xbean.recipe.CollectionRecipe;
 import org.apache.xbean.recipe.Option;
 import org.junit.jupiter.api.Test;
 
@@ -22,30 +21,44 @@ public class AsmParameterNameLoaderTest {
     @Test
     void loadsNamesForPublicAndDeclaredConstructors() throws Exception {
         AsmParameterNameLoader loader = new AsmParameterNameLoader();
-        Constructor<CollectionRecipe> typeNameConstructor = CollectionRecipe.class.getConstructor(String.class);
-        Constructor<CollectionRecipe> typeClassConstructor = CollectionRecipe.class.getConstructor(Class.class);
+        Constructor<ParameterNamedTarget> nameConstructor = ParameterNamedTarget.class.getConstructor(String.class);
+        Constructor<ParameterNamedTarget> countConstructor = ParameterNamedTarget.class.getDeclaredConstructor(Integer.class);
 
-        Map<Constructor, List<String>> parameterNames = loader.getAllConstructorParameters(CollectionRecipe.class);
+        Map<Constructor, List<String>> parameterNames = loader.getAllConstructorParameters(ParameterNamedTarget.class);
 
-        assertThat(parameterNames).containsKeys(typeNameConstructor, typeClassConstructor);
-        assertThat(parameterNames.get(typeNameConstructor)).containsExactly("type");
-        assertThat(parameterNames.get(typeClassConstructor)).containsExactly("type");
+        assertThat(parameterNames).containsKeys(nameConstructor, countConstructor);
+        assertThat(parameterNames.get(nameConstructor)).containsExactly("name");
+        assertThat(parameterNames.get(countConstructor)).containsExactly("count");
     }
 
     @Test
     void loadsNamesForPublicAndDeclaredMethods() throws Exception {
         AsmParameterNameLoader loader = new AsmParameterNameLoader();
-        Method allowMethod = CollectionRecipe.class.getMethod("allow", Option.class);
-        Method disallowMethod = CollectionRecipe.class.getMethod("disallow", Option.class);
+        Method allowMethod = ParameterNamedTarget.class.getMethod("allow", Option.class);
+        Method disallowMethod = ParameterNamedTarget.class.getDeclaredMethod("disallow", Option.class);
 
-        Map<Method, List<String>> allowParameterNames = loader.getAllMethodParameters(CollectionRecipe.class, "allow");
+        Map<Method, List<String>> allowParameterNames = loader.getAllMethodParameters(ParameterNamedTarget.class, "allow");
         Map<Method, List<String>> disallowParameterNames = loader.getAllMethodParameters(
-                CollectionRecipe.class,
+                ParameterNamedTarget.class,
                 "disallow");
 
         assertThat(allowParameterNames).containsKey(allowMethod);
         assertThat(disallowParameterNames).containsKey(disallowMethod);
         assertThat(allowParameterNames.get(allowMethod)).containsExactly("option");
         assertThat(disallowParameterNames.get(disallowMethod)).containsExactly("option");
+    }
+
+    public static final class ParameterNamedTarget {
+        public ParameterNamedTarget(String name) {
+        }
+
+        private ParameterNamedTarget(Integer count) {
+        }
+
+        public void allow(Option option) {
+        }
+
+        private void disallow(Option option) {
+        }
     }
 }

@@ -65,6 +65,21 @@ public class ReflectionUtilTest {
     }
 
     @Test
+    void findsPublicInheritedAndPrivateGettersByName() {
+        Method publicGetter = ReflectionUtil.findGetter(GetterTarget.class, "name", null);
+        Method inheritedGetter = ReflectionUtil.findGetter(GetterTarget.class, "inheritedName", null);
+        Method privateGetter = ReflectionUtil.findGetter(
+                GetterTarget.class,
+                "secret",
+                EnumSet.of(Option.PRIVATE_PROPERTIES));
+
+        assertThat(publicGetter.getName()).isEqualTo("getName");
+        assertThat(publicGetter.getReturnType()).isEqualTo(String.class);
+        assertThat(inheritedGetter.getName()).isEqualTo("getInheritedName");
+        assertThat(privateGetter.getName()).isEqualTo("getSecret");
+    }
+
+    @Test
     void findsPublicAndPrivateConstructors() {
         ConstructorFactory publicConstructor = ReflectionUtil.findConstructor(
                 ConstructedTarget.class,
@@ -159,6 +174,22 @@ public class ReflectionUtilTest {
 
         private void setHiddenText(String hiddenText) {
             this.hiddenText = hiddenText;
+        }
+    }
+
+    public static class GetterBase {
+        public String getInheritedName() {
+            return "inherited";
+        }
+    }
+
+    public static class GetterTarget extends GetterBase {
+        public String getName() {
+            return "name";
+        }
+
+        private String getSecret() {
+            return "secret";
         }
     }
 
