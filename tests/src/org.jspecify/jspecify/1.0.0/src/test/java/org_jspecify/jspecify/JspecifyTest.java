@@ -105,6 +105,21 @@ public class JspecifyTest {
         assertThat(journal.firstPresent(new @Nullable String @NonNull [] {null, null})).isNull();
     }
 
+    @Test
+    void nullnessAnnotationsCanBeUsedOnWildcardBounds() {
+        WildcardNullnessCatalog catalog = new WildcardNullnessCatalog();
+        List<@Nullable String> source = new ArrayList<>();
+        source.add(null);
+        source.add("chosen");
+        source.add("backup");
+        List<CharSequence> sink = new ArrayList<>();
+
+        catalog.copyPresentStrings(source, sink);
+
+        assertThat(catalog.firstPresent(source)).isEqualTo("chosen");
+        assertThat(sink).containsExactly("chosen", "backup");
+    }
+
     @NullMarked
     private static final class NullMarkedDirectory {
         private final Map<@NonNull String, List<@Nullable String>> labelsByKey = new LinkedHashMap<>();
@@ -146,6 +161,26 @@ public class JspecifyTest {
         @NullUnmarked
         private void setLegacyAlias(@Nullable String legacyAlias) {
             this.legacyAlias = legacyAlias;
+        }
+    }
+
+    private static final class WildcardNullnessCatalog {
+        private @Nullable CharSequence firstPresent(List<? extends @Nullable CharSequence> values) {
+            for (@Nullable CharSequence value : values) {
+                if (value != null) {
+                    return value;
+                }
+            }
+            return null;
+        }
+
+        private void copyPresentStrings(List<? extends @Nullable CharSequence> source,
+                List<? super @NonNull String> target) {
+            for (@Nullable CharSequence value : source) {
+                if (value != null) {
+                    target.add(value.toString());
+                }
+            }
         }
     }
 
