@@ -6,11 +6,21 @@
  */
 package com_github_jknack.handlebars;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.github.jknack.handlebars.Handlebars;
 import org.junit.jupiter.api.Test;
 
-class HandlebarsTest {
+public class HandlebarsTest {
+    private static final String CUSTOM_HANDLEBARS_JS = "/custom-handlebars.js";
+
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    public void configuresCustomHandlebarsJsResource() {
+        Handlebars handlebars = new Handlebars();
+
+        Handlebars configured = handlebars.handlebarsJsFile(CUSTOM_HANDLEBARS_JS);
+
+        assertThat(configured).isSameAs(handlebars);
+        assertThat(handlebars.handlebarsJsFile()).isEqualTo(CUSTOM_HANDLEBARS_JS);
     }
 }
