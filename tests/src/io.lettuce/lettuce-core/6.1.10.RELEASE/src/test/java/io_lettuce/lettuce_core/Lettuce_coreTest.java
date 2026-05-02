@@ -15,6 +15,7 @@ import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisFuture;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.ScoredValue;
+import io.lettuce.core.ScriptOutputType;
 import io.lettuce.core.SetArgs;
 import io.lettuce.core.SocketOptions;
 import io.lettuce.core.api.StatefulRedisConnection;
@@ -203,6 +204,38 @@ public class Lettuce_coreTest {
         }
     }
 
+    @Test
+    void scriptingCommandsDecodeRequestedOutputTypes() throws Exception {
+        try (FakeRedisServer server = new FakeRedisServer()) {
+            RedisClient client = RedisClient.create(server.redisUri());
+            StatefulRedisConnection<String, String> connection = null;
+            try {
+                connection = client.connect();
+                connection.setTimeout(COMMAND_TIMEOUT);
+                RedisCommands<String, String> commands = connection.sync();
+
+                String selectedKey = commands.eval("return KEYS[1]", ScriptOutputType.VALUE,
+                        new String[] {"script-key"});
+                Long totalInputs = commands.eval("return #KEYS + #ARGV", ScriptOutputType.INTEGER,
+                        new String[] {"first-key", "second-key"}, "argument");
+                List<String> echoedInputs = commands.eval("return {KEYS[1], ARGV[1]}", ScriptOutputType.MULTI,
+                        new String[] {"script-key"}, "script-value");
+
+                assertThat(selectedKey).isEqualTo("script-key");
+                assertThat(totalInputs).isEqualTo(3L);
+                assertThat(echoedInputs).containsExactly("script-key", "script-value");
+                assertThat(server.commands().stream()
+                                .filter(command -> command.get(0).equals("EVAL"))
+                                .toList())
+                        .extracting(command -> command.get(1))
+                        .containsExactly("return KEYS[1]", "return #KEYS + #ARGV", "return {KEYS[1], ARGV[1]}");
+            } finally {
+                closeConnection(connection);
+                shutdown(client);
+            }
+        }
+    }
+
     private static void shutdown(RedisClient client) {
         client.shutdown(Duration.ZERO, Duration.ofSeconds(2));
     }
@@ -379,6 +412,9 @@ public class Lettuce_coreTest {
                 case "ZRANGE":
                     writeArray(output, zrange(command));
                     break;
+                case "EVAL":
+                    writeEvalResponse(output, command);
+                    break;
                 default:
                     writeSimple(output, "OK");
                     break;
@@ -452,6 +488,20 @@ public class Lettuce_coreTest {
                 }
             }
             return response;
+        }
+
+        private void writeEvalResponse(OutputStream output, List<String> command) throws IOException {
+            String script = command.get(1);
+            int keyCount = Integer.parseInt(command.get(2));
+            List<String> keys = command.subList(3, 3 + keyCount);
+            List<String> arguments = command.subList(3 + keyCount, command.size());
+            if (script.contains("#KEYS")) {
+                writeInteger(output, keys.size() + arguments.size());
+            } else if (script.contains("{")) {
+                writeArray(output, List.of(keys.get(0), arguments.get(0)));
+            } else {
+                writeBulk(output, keys.get(0));
+            }
         }
 
         private void writeSimple(OutputStream output, String value) throws IOException {
