@@ -113,6 +113,17 @@ public class Arquillian_test_apiTest {
         assertThat(consumer.deploymentName()).isSameAs(deploymentName);
     }
 
+    @Test
+    public void lambdaParametersCanDeclareResourcesWhileKeepingCallbackBehavior() throws Exception {
+        ResourceCallback callback = (@ArquillianResource URL url, @ArquillianResource(URI.class) URI uri) ->
+                url.getHost() + "|" + uri.getSchemeSpecificPart();
+
+        URL url = URI.create("https://example.test/callback-resource").toURL();
+        URI uri = URI.create("urn:arquillian:lambda-resource");
+
+        assertThat(callback.describe(url, uri)).isEqualTo("example.test|arquillian:lambda-resource");
+    }
+
     private static Class<?> resolveFieldResourceType(Field field, ArquillianResource resource) {
         if (resource.value().equals(ArquillianResource.class)) {
             return field.getType();
@@ -145,6 +156,11 @@ public class Arquillian_test_apiTest {
             arguments[i] = resources.get(resolveParameterResourceType(parameters[i], resource));
         }
         return arguments;
+    }
+
+    @FunctionalInterface
+    private interface ResourceCallback {
+        String describe(@ArquillianResource URL url, @ArquillianResource(URI.class) URI uri);
     }
 
     public static final class ResourceConsumer {
