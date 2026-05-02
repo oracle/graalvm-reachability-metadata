@@ -8,12 +8,17 @@ package org_jboss_weld.weld_api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.ContextNotActiveException;
@@ -25,6 +30,13 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.inject.Singleton;
 import javax.interceptor.InvocationContext;
+import javax.servlet.AsyncContext;
+import javax.servlet.DispatcherType;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletInputStream;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import org.jboss.weld.context.ApplicationContext;
 import org.jboss.weld.context.BoundContext;
 import org.jboss.weld.context.DependentContext;
@@ -45,6 +57,7 @@ import org.jboss.weld.context.ejb.EjbLiteral;
 import org.jboss.weld.context.ejb.EjbRequestContext;
 import org.jboss.weld.context.http.Http;
 import org.jboss.weld.context.http.HttpLiteral;
+import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.context.unbound.Unbound;
 import org.jboss.weld.context.unbound.UnboundLiteral;
 import org.junit.jupiter.api.Test;
@@ -160,6 +173,28 @@ public class Weld_apiTest {
 
         assertThat(associate(sessionContext, storage)).isTrue();
         assertThat(sessionContext.getAssociatedStorage()).isSameAs(storage);
+    }
+
+    @Test
+    void httpRequestContextBindsServletRequestStorage() {
+        RecordingHttpRequestContext context = new RecordingHttpRequestContext();
+        SimpleServletRequest request = new SimpleServletRequest();
+        request.setParameter("name", "Ada", "Grace");
+        request.setAttribute("request-token", "token-1");
+
+        assertThat(context.associate(request)).isTrue();
+        context.activate();
+
+        assertThat(context.getScope()).isEqualTo(RequestScoped.class);
+        assertThat(context.isActive()).isTrue();
+        assertThat(context.getServletRequest()).isSameAs(request);
+        assertThat(context.getServletRequest().getAttribute("request-token")).isEqualTo("token-1");
+        assertThat(context.getServletRequest().getParameter("name")).isEqualTo("Ada");
+        assertThat(context.getServletRequest().getParameterValues("name")).containsExactly("Ada", "Grace");
+        assertThat(context.getServletRequest().getParameterMap()).containsKey("name");
+
+        assertThat(context.dissociate(request)).isTrue();
+        assertThat(context.getServletRequest()).isNull();
     }
 
     @Test
@@ -352,6 +387,232 @@ public class Weld_apiTest {
 
         Map<String, Object> getAssociatedStorage() {
             return associatedStorage;
+        }
+    }
+
+    private static final class RecordingHttpRequestContext extends RecordingManagedContext implements HttpRequestContext {
+        private ServletRequest servletRequest;
+
+        RecordingHttpRequestContext() {
+            super(RequestScoped.class);
+        }
+
+        @Override
+        public boolean associate(ServletRequest storage) {
+            servletRequest = storage;
+            return true;
+        }
+
+        @Override
+        public boolean dissociate(ServletRequest storage) {
+            if (servletRequest == storage) {
+                servletRequest = null;
+                return true;
+            }
+            return false;
+        }
+
+        ServletRequest getServletRequest() {
+            return servletRequest;
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private static final class SimpleServletRequest implements ServletRequest {
+        private final Map<String, Object> attributes = new LinkedHashMap<>();
+        private final Map<String, String[]> parameters = new LinkedHashMap<>();
+        private String characterEncoding = "UTF-8";
+
+        void setParameter(String name, String... values) {
+            parameters.put(name, values.clone());
+        }
+
+        @Override
+        public Object getAttribute(String name) {
+            return attributes.get(name);
+        }
+
+        @Override
+        public Enumeration<String> getAttributeNames() {
+            return Collections.enumeration(attributes.keySet());
+        }
+
+        @Override
+        public String getCharacterEncoding() {
+            return characterEncoding;
+        }
+
+        @Override
+        public void setCharacterEncoding(String encoding) throws UnsupportedEncodingException {
+            characterEncoding = encoding;
+        }
+
+        @Override
+        public int getContentLength() {
+            return 0;
+        }
+
+        @Override
+        public long getContentLengthLong() {
+            return 0L;
+        }
+
+        @Override
+        public String getContentType() {
+            return null;
+        }
+
+        @Override
+        public ServletInputStream getInputStream() throws IOException {
+            return null;
+        }
+
+        @Override
+        public String getParameter(String name) {
+            String[] values = parameters.get(name);
+            return values == null || values.length == 0 ? null : values[0];
+        }
+
+        @Override
+        public Enumeration<String> getParameterNames() {
+            return Collections.enumeration(parameters.keySet());
+        }
+
+        @Override
+        public String[] getParameterValues(String name) {
+            String[] values = parameters.get(name);
+            return values == null ? null : values.clone();
+        }
+
+        @Override
+        public Map<String, String[]> getParameterMap() {
+            return Collections.unmodifiableMap(parameters);
+        }
+
+        @Override
+        public String getProtocol() {
+            return "HTTP/1.1";
+        }
+
+        @Override
+        public String getScheme() {
+            return "http";
+        }
+
+        @Override
+        public String getServerName() {
+            return "localhost";
+        }
+
+        @Override
+        public int getServerPort() {
+            return 80;
+        }
+
+        @Override
+        public BufferedReader getReader() throws IOException {
+            return null;
+        }
+
+        @Override
+        public String getRemoteAddr() {
+            return "127.0.0.1";
+        }
+
+        @Override
+        public String getRemoteHost() {
+            return "localhost";
+        }
+
+        @Override
+        public void setAttribute(String name, Object value) {
+            attributes.put(name, value);
+        }
+
+        @Override
+        public void removeAttribute(String name) {
+            attributes.remove(name);
+        }
+
+        @Override
+        public Locale getLocale() {
+            return Locale.ROOT;
+        }
+
+        @Override
+        public Enumeration<Locale> getLocales() {
+            return Collections.enumeration(Collections.singletonList(Locale.ROOT));
+        }
+
+        @Override
+        public boolean isSecure() {
+            return false;
+        }
+
+        @Override
+        public RequestDispatcher getRequestDispatcher(String path) {
+            return null;
+        }
+
+        @Override
+        public String getRealPath(String path) {
+            return path;
+        }
+
+        @Override
+        public int getRemotePort() {
+            return 0;
+        }
+
+        @Override
+        public String getLocalName() {
+            return "localhost";
+        }
+
+        @Override
+        public String getLocalAddr() {
+            return "127.0.0.1";
+        }
+
+        @Override
+        public int getLocalPort() {
+            return 80;
+        }
+
+        @Override
+        public ServletContext getServletContext() {
+            return null;
+        }
+
+        @Override
+        public AsyncContext startAsync() throws IllegalStateException {
+            return null;
+        }
+
+        @Override
+        public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse)
+                throws IllegalStateException {
+            return null;
+        }
+
+        @Override
+        public boolean isAsyncStarted() {
+            return false;
+        }
+
+        @Override
+        public boolean isAsyncSupported() {
+            return false;
+        }
+
+        @Override
+        public AsyncContext getAsyncContext() {
+            return null;
+        }
+
+        @Override
+        public DispatcherType getDispatcherType() {
+            return DispatcherType.REQUEST;
         }
     }
 
