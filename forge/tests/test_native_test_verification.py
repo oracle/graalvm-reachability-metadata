@@ -94,6 +94,25 @@ class ReadExitFileTests(unittest.TestCase):
         self.assertIsNone(ntv._read_exit_file(path))
 
 
+class FailureLogTailTests(unittest.TestCase):
+    """Native failure diagnostics print the tail of the Gradle log."""
+
+    def test_extracts_last_300_lines(self) -> None:
+        fd, path = tempfile.mkstemp(suffix=".log")
+        os.close(fd)
+        self.addCleanup(os.unlink, path)
+        Path(path).write_text(
+            "\n".join(f"line-{index}" for index in range(350)),
+            encoding="utf-8",
+        )
+
+        excerpt = ntv._extract_failure_log_tail(path)
+
+        self.assertNotIn("line-49", excerpt)
+        self.assertIn("line-50", excerpt)
+        self.assertIn("line-349", excerpt)
+
+
 class ClassKeyTests(unittest.TestCase):
 
     def test_replaces_dollar_signs(self) -> None:
@@ -353,8 +372,8 @@ class GateRoutingTests(unittest.TestCase):
             stdout = kwargs.get("stdout")
             if hasattr(stdout, "write"):
                 stdout.write(
-                    "some native output\n"
-                    "com.oracle.svm.core.jdk.resources.MissingResourceRegistrationError: missing resource\n"
+                    "\n".join(f"native log line {index}" for index in range(305)) +
+                    "\ncom.oracle.svm.core.jdk.resources.MissingResourceRegistrationError: missing resource\n"
                 )
             if "runNativeTraceImage" in cmd:
                 exit_file = next(
@@ -391,6 +410,10 @@ class GateRoutingTests(unittest.TestCase):
         self.assertIn("reachability-metadata.json:", printed)
         self.assertIn("{}", printed)
         self.assertIn("produced no usable trace metadata; failing fast", printed)
+        self.assertIn("failure log tail (last 300 lines)", printed)
+        self.assertNotIn("native log line 5\n", printed)
+        self.assertIn("native log line 6\n", printed)
+        self.assertIn("MissingResourceRegistrationError: missing resource", printed)
 
     def test_failed_when_budget_exhausted_with_only_172(self) -> None:
         fake, _calls = self._fake_run_factory([172, 172])

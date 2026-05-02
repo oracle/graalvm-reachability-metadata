@@ -62,7 +62,7 @@ _LOG_TASK_TYPE = "native-test-verify"
 _EXIT_VALUE_PATTERN = re.compile(r"exit\s+value\s+(\d+)", re.IGNORECASE)
 _TRACE_SENTINEL_FILE_NAMES = frozenset({"binary-exit-code"})
 _AGGREGATED_METADATA_FILE_NAME = "reachability-metadata.json"
-_STACKTRACE_EXCERPT_LINE_LIMIT = 160
+_FAILURE_LOG_TAIL_LINE_LIMIT = 300
 
 
 @dataclass
@@ -181,7 +181,7 @@ def verify_native_test_passes(
                     _GATE_STAGE,
                     f"cycle {cycle + 1}: binary exited 172 but produced no usable trace metadata; failing fast",
                 )
-                _print_failure_stacktrace(log_path, cycle + 1)
+                _print_failure_log_tail(log_path, cycle + 1)
                 return _make_result(STATUS_FAILED, cycle + 1)
             log_stage(
                 _GATE_STAGE,
@@ -197,7 +197,7 @@ def verify_native_test_passes(
             "routing to codex (terminal)",
         )
         if not collected_metadata_files:
-            _print_failure_stacktrace(log_path, cycle + 1)
+            _print_failure_log_tail(log_path, cycle + 1)
         codex_rc, codex_log_path, codex_timed_out = run_codex_metadata_fix(
             reachability_repo_path,
             coordinate,
@@ -334,19 +334,19 @@ def _print_collected_metadata(run_dir: str, cycle_number: int) -> None:
             log_stage(_GATE_STAGE, line, indent_level=3)
 
 
-def _print_failure_stacktrace(log_path: str, cycle_number: int) -> None:
-    """Print the native trace failure stacktrace, or a bounded log tail."""
+def _print_failure_log_tail(log_path: str, cycle_number: int) -> None:
+    """Print the native trace failure log tail."""
     log_stage(
         _GATE_STAGE,
-        f"cycle {cycle_number}: failure stacktrace from {log_path}:",
+        f"cycle {cycle_number}: failure log tail (last {_FAILURE_LOG_TAIL_LINE_LIMIT} lines) from {log_path}:",
         indent_level=1,
     )
-    for line in _extract_failure_stacktrace(log_path).splitlines():
+    for line in _extract_failure_log_tail(log_path).splitlines():
         log_stage(_GATE_STAGE, line, indent_level=2)
 
 
-def _extract_failure_stacktrace(log_path: str) -> str:
-    """Extract a bounded stacktrace-like excerpt from a native trace run log."""
+def _extract_failure_log_tail(log_path: str) -> str:
+    """Extract a bounded tail from a native trace run log."""
     try:
         with open(log_path, "r", encoding="utf-8", errors="replace") as handle:
             lines = handle.read().splitlines()
@@ -356,28 +356,10 @@ def _extract_failure_stacktrace(log_path: str) -> str:
     if not lines:
         return "<empty log>"
 
-    start_index = _find_stacktrace_start(lines)
-    if start_index is None:
-        start_index = max(0, len(lines) - _STACKTRACE_EXCERPT_LINE_LIMIT)
-
-    excerpt = lines[start_index:start_index + _STACKTRACE_EXCERPT_LINE_LIMIT]
+    excerpt = lines[-_FAILURE_LOG_TAIL_LINE_LIMIT:]
     if not excerpt:
-        return "<no stacktrace excerpt available>"
+        return "<no log excerpt available>"
     return "\n".join(excerpt)
-
-
-def _find_stacktrace_start(lines: list[str]) -> int | None:
-    """Return the first likely stacktrace line index in ``lines``."""
-    exception_pattern = re.compile(
-        r"(^Exception in thread|^\S.*(?:Exception|Error)(?::|\s|$)|^Caused by:)"
-    )
-    for index, line in enumerate(lines):
-        stripped = line.strip()
-        if exception_pattern.search(stripped):
-            return max(0, index - 2)
-        if stripped.startswith("at ") and index > 0:
-            return max(0, index - 1)
-    return None
 
 
 def _metadata_files(run_dir: str) -> list[str]:
