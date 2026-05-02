@@ -37,10 +37,11 @@ public class Smallrye_common_osTest {
     @Test
     void osEnumExposesStablePublicConstants() {
         assertThat(OS.values())
-                .containsExactly(OS.AIX, OS.LINUX, OS.MAC, OS.SOLARIS, OS.WINDOWS, OS.OTHER);
+                .containsExactly(OS.AIX, OS.LINUX, OS.MAC, OS.SOLARIS, OS.WINDOWS, OS.Z, OS.OTHER);
         assertThat(OS.valueOf("LINUX")).isSameAs(OS.LINUX);
         assertThat(OS.valueOf("WINDOWS")).isSameAs(OS.WINDOWS);
         assertThat(OS.valueOf("MAC")).isSameAs(OS.MAC);
+        assertThat(OS.valueOf("Z")).isSameAs(OS.Z);
     }
 
     @Test
@@ -133,6 +134,9 @@ public class Smallrye_common_osTest {
         }
         if (osName.contains("aix")) {
             return OS.AIX;
+        }
+        if (osName.contains("z/os")) {
+            return OS.Z;
         }
         return OS.OTHER;
     }
