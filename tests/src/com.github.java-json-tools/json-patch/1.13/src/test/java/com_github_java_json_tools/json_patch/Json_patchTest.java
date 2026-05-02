@@ -136,6 +136,46 @@ public class Json_patchTest {
     }
 
     @Test
+    public void diffFactorizesReusableValuesAsMoveAndCopyOperations() throws Exception {
+        JsonNode source = json("""
+                {
+                  "template": {
+                    "category": "shared",
+                    "settings": ["fast", "safe"]
+                  },
+                  "relocatable": {
+                    "id": 7,
+                    "name": "portable"
+                  },
+                  "status": "stable"
+                }
+                """);
+        JsonNode target = json("""
+                {
+                  "template": {
+                    "category": "shared",
+                    "settings": ["fast", "safe"]
+                  },
+                  "copiedTemplate": {
+                    "category": "shared",
+                    "settings": ["fast", "safe"]
+                  },
+                  "movedRelocatable": {
+                    "id": 7,
+                    "name": "portable"
+                  },
+                  "status": "stable"
+                }
+                """);
+
+        JsonNode patchJson = JsonDiff.asJson(source, target);
+
+        assertThat(JsonPatch.fromJson(patchJson).apply(source)).isEqualTo(target);
+        assertThat(containsOperation(patchJson, "copy", "/template", "/copiedTemplate")).isTrue();
+        assertThat(containsOperation(patchJson, "move", "/relocatable", "/movedRelocatable")).isTrue();
+    }
+
+    @Test
     public void mergePatchUpdatesObjectsDeletesNullMembersAndReplacesArrays() throws Exception {
         JsonNode source = json("""
                 {
@@ -261,6 +301,18 @@ public class Json_patchTest {
         assertThatThrownBy(() -> patch.apply(json("{ \"present\": true }")))
                 .isInstanceOf(JsonPatchException.class)
                 .hasMessageContaining("no such path");
+    }
+
+    private static boolean containsOperation(JsonNode patchJson, String op, String from, String path) {
+        for (JsonNode operation : patchJson) {
+            boolean opMatches = operation.path("op").asText().equals(op);
+            boolean fromMatches = from == null || operation.path("from").asText().equals(from);
+            boolean pathMatches = operation.path("path").asText().equals(path);
+            if (opMatches && fromMatches && pathMatches) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static JsonNode json(String value) throws IOException {
