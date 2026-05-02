@@ -22,6 +22,7 @@ import io.netty.handler.codec.mqtt.MqttFixedHeader;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageBuilders;
 import io.netty.handler.codec.mqtt.MqttMessageFactory;
+import io.netty.handler.codec.mqtt.MqttMessageIdAndPropertiesVariableHeader;
 import io.netty.handler.codec.mqtt.MqttMessageIdVariableHeader;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import io.netty.handler.codec.mqtt.MqttProperties;
@@ -322,6 +323,43 @@ public class Netty_codec_mqttTest {
         assertThat(subscriptions.get(1).option().isRetainAsPublished()).isFalse();
         assertThat(subscriptions.get(1).option().retainHandling())
                 .isEqualTo(MqttSubscriptionOption.RetainedHandlingPolicy.SEND_AT_SUBSCRIBE);
+    }
+
+    @Test
+    void mqtt5SubscribePropertiesAndSubscriptionOptionsRoundTripAfterProtocolVersionNegotiation() {
+        MqttProperties properties = new MqttProperties();
+        properties.add(new MqttProperties.IntegerProperty(
+                MqttProperties.MqttPropertyType.SUBSCRIPTION_IDENTIFIER.value(), 42));
+        properties.add(new MqttProperties.UserProperty("subscription", "audit"));
+        MqttSubscriptionOption retainedOption = new MqttSubscriptionOption(
+                MqttQoS.EXACTLY_ONCE,
+                true,
+                true,
+                MqttSubscriptionOption.RetainedHandlingPolicy.DONT_SEND_AT_SUBSCRIBE);
+        MqttSubscribeMessage subscribe = MqttMessageBuilders.subscribe()
+                .messageId(77)
+                .properties(properties)
+                .addSubscription("devices/+/events", retainedOption)
+                .build();
+
+        MqttSubscribeMessage decoded = (MqttSubscribeMessage) encodeAndDecodeAfterMqtt5Connect(subscribe);
+        MqttMessageIdAndPropertiesVariableHeader decodedVariableHeader = decoded.idAndPropertiesVariableHeader();
+        MqttProperties decodedProperties = decodedVariableHeader.properties();
+        MqttTopicSubscription decodedSubscription = decoded.payload().topicSubscriptions().get(0);
+        MqttSubscriptionOption decodedOption = decodedSubscription.option();
+
+        assertThat(decodedVariableHeader.messageId()).isEqualTo(77);
+        assertThat(decodedProperties.getProperty(
+                MqttProperties.MqttPropertyType.SUBSCRIPTION_IDENTIFIER.value()).value()).isEqualTo(42);
+        assertThat(decodedProperties.getProperty(MqttProperties.MqttPropertyType.USER_PROPERTY.value()).value())
+                .isEqualTo(Arrays.asList(new MqttProperties.StringPair("subscription", "audit")));
+        assertThat(decoded.payload().topicSubscriptions()).hasSize(1);
+        assertThat(decodedSubscription.topicName()).isEqualTo("devices/+/events");
+        assertThat(decodedOption.qos()).isEqualTo(MqttQoS.EXACTLY_ONCE);
+        assertThat(decodedOption.isNoLocal()).isTrue();
+        assertThat(decodedOption.isRetainAsPublished()).isTrue();
+        assertThat(decodedOption.retainHandling())
+                .isEqualTo(MqttSubscriptionOption.RetainedHandlingPolicy.DONT_SEND_AT_SUBSCRIBE);
     }
 
     @Test
