@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="JUnit Jupiter" tests="10" skipped="0" failures="0" errors="0" time="26.009" hostname="kung-fu-workstation" timestamp="2026-05-02T23:01:16">
+<testsuite name="JUnit Jupiter" tests="11" skipped="0" failures="0" errors="1" time="25.282" hostname="kung-fu-workstation" timestamp="2026-05-02T23:12:01">
 <properties>
 <property name="file.encoding" value="UTF-8"/>
 <property name="file.separator" value="/"/>
@@ -53,19 +53,19 @@
 <property name="user.name" value="vjovanov"/>
 <property name="user.timezone" value="Europe/Zurich"/>
 </properties>
-<testcase name="commitAndRollback()" classname="org_opengauss.opengauss_jdbc.Opengauss_jdbcTest" time="0.144">
+<testcase name="commitAndRollback()" classname="org_opengauss.opengauss_jdbc.Opengauss_jdbcTest" time="0.14">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.Opengauss_jdbcTest]/[method:commitAndRollback()]
 display-name: commitAndRollback()
 ]]></system-out>
 </testcase>
-<testcase name="buildsTwoDimensionalObjectArraysFromTextValues()" classname="org_opengauss.opengauss_jdbc.PgArrayTest" time="0.034">
+<testcase name="buildsTwoDimensionalObjectArraysFromTextValues()" classname="org_opengauss.opengauss_jdbc.PgArrayTest" time="0.033">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.PgArrayTest]/[method:buildsTwoDimensionalObjectArraysFromTextValues()]
 display-name: buildsTwoDimensionalObjectArraysFromTextValues()
 ]]></system-out>
 </testcase>
-<testcase name="buildsTwoDimensionalPrimitiveWrapperArraysFromTextValues()" classname="org_opengauss.opengauss_jdbc.PgArrayTest" time="0.048">
+<testcase name="buildsTwoDimensionalPrimitiveWrapperArraysFromTextValues()" classname="org_opengauss.opengauss_jdbc.PgArrayTest" time="0.035">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.PgArrayTest]/[method:buildsTwoDimensionalPrimitiveWrapperArraysFromTextValues()]
 display-name: buildsTwoDimensionalPrimitiveWrapperArraysFromTextValues()
@@ -77,37 +77,105 @@ unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.BouncyCast
 display-name: initializesBouncyCastleProviderThroughFactory()
 ]]></system-out>
 </testcase>
-<testcase name="decryptsBouncyCastleEncryptedPkcs8PrivateKey()" classname="org_opengauss.opengauss_jdbc.BouncyCastlePrivateKeyFactoryTest" time="0.034">
+<testcase name="decryptsBouncyCastleEncryptedPkcs8PrivateKey()" classname="org_opengauss.opengauss_jdbc.BouncyCastlePrivateKeyFactoryTest" time="0.023">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.BouncyCastlePrivateKeyFactoryTest]/[method:decryptsBouncyCastleEncryptedPkcs8PrivateKey()]
 display-name: decryptsBouncyCastleEncryptedPkcs8PrivateKey()
 ]]></system-out>
 </testcase>
-<testcase name="otherDatatypes()" classname="org_opengauss.opengauss_jdbc.Opengauss_jdbcTest" time="0.042">
+<testcase name="otherDatatypes()" classname="org_opengauss.opengauss_jdbc.Opengauss_jdbcTest" time="0.048">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.Opengauss_jdbcTest]/[method:otherDatatypes()]
 display-name: otherDatatypes()
 ]]></system-out>
 </testcase>
-<testcase name="buildsBinaryArraysFromWireFormat()" classname="org_opengauss.opengauss_jdbc.PgArrayTest" time="0.035">
+<testcase name="initializeFromCopiesBaseDataSourceStateThroughObjectStreams()" classname="org_opengauss.opengauss_jdbc.BaseDataSourceTest" time="0">
+<error message="Cannot reflectively read or write field 'private static final long java.lang.String.serialVersionUID'. To allow this operation, add the following to the 'reflection' section of 'reachability-metadata.json' and rebuild the native image:
+
+    {
+      &quot;type&quot;: &quot;java.lang.String&quot;,
+      &quot;fields&quot;: [
+        {
+          &quot;name&quot;: &quot;serialVersionUID&quot;
+        }
+      ]
+    }
+
+The 'reachability-metadata.json' file should be located in 'META-INF/native-image/&lt;group-id&gt;/&lt;artifact-id&gt;/' of your project. For further help, see https://www.graalvm.org/latest/reference-manual/native-image/metadata/#reflection" type="org.graalvm.nativeimage.MissingReflectionRegistrationError"><![CDATA[org.graalvm.nativeimage.MissingReflectionRegistrationError: Cannot reflectively read or write field 'private static final long java.lang.String.serialVersionUID'. To allow this operation, add the following to the 'reflection' section of 'reachability-metadata.json' and rebuild the native image:
+
+    {
+      "type": "java.lang.String",
+      "fields": [
+        {
+          "name": "serialVersionUID"
+        }
+      ]
+    }
+
+The 'reachability-metadata.json' file should be located in 'META-INF/native-image/<group-id>/<artifact-id>/' of your project. For further help, see https://www.graalvm.org/latest/reference-manual/native-image/metadata/#reflection
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.MissingReflectionRegistrationUtils.reportAccessedField(MissingReflectionRegistrationUtils.java:79)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.UnsafeFieldUtil.getFieldOffset(UnsafeFieldUtil.java:48)
+	at java.base@25.0.2/jdk.internal.misc.Unsafe.staticFieldOffset(Unsafe.java:51)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.fieldaccessor.UnsafeFieldAccessorImpl.<init>(UnsafeFieldAccessorImpl.java:56)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.fieldaccessor.UnsafeStaticFieldAccessorImpl.<init>(UnsafeStaticFieldAccessorImpl.java:42)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.fieldaccessor.UnsafeQualifiedStaticFieldAccessorImpl.<init>(UnsafeQualifiedStaticFieldAccessorImpl.java:39)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.fieldaccessor.UnsafeQualifiedStaticLongFieldAccessorImpl.<init>(UnsafeQualifiedStaticLongFieldAccessorImpl.java:33)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.fieldaccessor.UnsafeFieldAccessorFactory.newFieldAccessor(UnsafeFieldAccessorFactory.java:78)
+	at java.base@25.0.2/jdk.internal.reflect.ReflectionFactory.newFieldAccessor(ReflectionFactory.java:2622)
+	at java.base@25.0.2/java.lang.reflect.Field.acquireOverrideFieldAccessor(Field.java:1195)
+	at java.base@25.0.2/java.lang.reflect.Field.getOverrideFieldAccessor(Field.java:134)
+	at java.base@25.0.2/java.lang.reflect.Field.getLong(Field.java:664)
+	at java.base@25.0.2/java.io.ObjectStreamClass.getDeclaredSUID(ObjectStreamClass.java:1583)
+	at java.base@25.0.2/java.io.ObjectStreamClass.<init>(ObjectStreamClass.java:355)
+	at java.base@25.0.2/java.io.ObjectStreamClass$Caches$1.computeValue(ObjectStreamClass.java:93)
+	at java.base@25.0.2/java.io.ObjectStreamClass$Caches$1.computeValue(ObjectStreamClass.java:90)
+	at java.base@25.0.2/java.io.ClassCache$1.computeValue(ClassCache.java:78)
+	at java.base@25.0.2/java.io.ClassCache$1.computeValue(ClassCache.java:75)
+	at java.base@25.0.2/java.lang.ClassValue.get(JavaLangSubstitutions.java:587)
+	at java.base@25.0.2/java.io.ClassCache.get(ClassCache.java:89)
+	at java.base@25.0.2/java.io.ObjectStreamClass.lookup(ObjectStreamClass.java:78)
+	at java.base@25.0.2/java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1035)
+	at java.base@25.0.2/java.io.ObjectOutputStream.writeObject(ObjectOutputStream.java:325)
+	at org.postgresql.ds.common.BaseDataSource.writeBaseObject(BaseDataSource.java:1300)
+	at org.postgresql.ds.common.BaseDataSource.initializeFrom(BaseDataSource.java:1327)
+	at org_opengauss.opengauss_jdbc.BaseDataSourceTest.initializeFromCopiesBaseDataSourceStateThroughObjectStreams(BaseDataSourceTest.java:32)
+	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+	at java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
+	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
+]]></error>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.BaseDataSourceTest]/[method:initializeFromCopiesBaseDataSourceStateThroughObjectStreams()]
+display-name: initializeFromCopiesBaseDataSourceStateThroughObjectStreams()
+]]></system-out>
+</testcase>
+<testcase name="buildsBinaryArraysFromWireFormat()" classname="org_opengauss.opengauss_jdbc.PgArrayTest" time="0.028">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.PgArrayTest]/[method:buildsBinaryArraysFromWireFormat()]
 display-name: buildsBinaryArraysFromWireFormat()
 ]]></system-out>
 </testcase>
-<testcase name="simpleDatatypes()" classname="org_opengauss.opengauss_jdbc.Opengauss_jdbcTest" time="0.049">
+<testcase name="simpleDatatypes()" classname="org_opengauss.opengauss_jdbc.Opengauss_jdbcTest" time="0.047">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.Opengauss_jdbcTest]/[method:simpleDatatypes()]
 display-name: simpleDatatypes()
 ]]></system-out>
 </testcase>
-<testcase name="geometricDatatypes()" classname="org_opengauss.opengauss_jdbc.Opengauss_jdbcTest" time="0.044">
+<testcase name="geometricDatatypes()" classname="org_opengauss.opengauss_jdbc.Opengauss_jdbcTest" time="0.038">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.Opengauss_jdbcTest]/[method:geometricDatatypes()]
 display-name: geometricDatatypes()
 ]]></system-out>
 </testcase>
-<testcase name="buildsUuidArraysThroughArrayAssistant()" classname="org_opengauss.opengauss_jdbc.PgArrayTest" time="0.034">
+<testcase name="buildsUuidArraysThroughArrayAssistant()" classname="org_opengauss.opengauss_jdbc.PgArrayTest" time="0.03">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.PgArrayTest]/[method:buildsUuidArraysThroughArrayAssistant()]
 display-name: buildsUuidArraysThroughArrayAssistant()
