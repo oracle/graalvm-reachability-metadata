@@ -1,0 +1,1906 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de84b-d695-7133-a3f5-ddd2e17dcc98
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.glassfish.jaxb:codemodel:4.0.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "4.0.6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json
+- Set "coordinates" to "org.glassfish.jaxb:codemodel:4.0.6".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact’s published metadata and exact 4.0.6 source/test/doc locations, then update the JSON in place. Since this depends on current Maven/repository data, I’m going to inspect authoritative sources rather than rely on memory.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ succeeded in 0ms:
+{
+  "coordinates" : "org.glassfish.jaxb:codemodel:4.0.6"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'org\\.glassfish\\.jaxb.*codemodel|codemodel' build/discovered-artifact-metadata metadata tests -g '*.json' -g '*.java' -g '*.properties'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json:2:  "coordinates" : "org.glassfish.jaxb:codemodel:4.0.6"
+
+web search: 
+web search: Maven Central org.glassfish.jaxb codemodel 4.0.6 pom repository source-code-url scm tag
+codex
+The local metadata file only has `coordinates` right now. I’m checking the released POM and Maven classifiers next, because those are the strongest evidence for exact-version source and documentation artifacts.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ succeeded in 0ms:
+<!--
+
+    Copyright (c) 2010, 2023 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.sun.xml.bind.mvn</groupId>
+        <artifactId>jaxb-codemodel-parent</artifactId>
+        <version>4.0.6</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <groupId>org.glassfish.jaxb</groupId>
+    <artifactId>codemodel</artifactId>
+    <name>Codemodel Core</name>
+    <description>The core functionality of the CodeModel java source code generation library</description>
+    <url>https://eclipse-ee4j.github.io/jaxb-ri/</url>
+
+    <properties>
+        <spotbugs.exclude>${project.basedir}/exclude-codemodel.xml</spotbugs.exclude>
+        <!-- too many to fix -->
+        <jdoc.doclint>-missing</jdoc.doclint>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.javaparser</groupId>
+            <artifactId>javaparser</artifactId>
+            <version>1.0.11</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/glassfish/jaxb/codemodel/4.0.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/glassfish/jaxb/codemodel/4.0.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="codemodel-4.0.6-cyclonedx.json" title="codemodel-4.0.6-cyclonedx.json">codemodel-4.0.6-cyclonedx.json</a>                    2025-09-22 16:41      3248      
+<a href="codemodel-4.0.6-cyclonedx.json.asc" title="codemodel-4.0.6-cyclonedx.json.asc">codemodel-4.0.6-cyclonedx.json.asc</a>                2025-09-22 16:41       833      
+<a href="codemodel-4.0.6-cyclonedx.json.md5" title="codemodel-4.0.6-cyclonedx.json.md5">codemodel-4.0.6-cyclonedx.json.md5</a>                2025-09-22 16:41        32      
+<a href="codemodel-4.0.6-cyclonedx.json.sha1" title="codemodel-4.0.6-cyclonedx.json.sha1">codemodel-4.0.6-cyclonedx.json.sha1</a>               2025-09-22 16:41        40      
+<a href="codemodel-4.0.6-cyclonedx.xml" title="codemodel-4.0.6-cyclonedx.xml">codemodel-4.0.6-cyclonedx.xml</a>                     2025-09-22 16:41      2759      
+<a href="codemodel-4.0.6-cyclonedx.xml.asc" title="codemodel-4.0.6-cyclonedx.xml.asc">codemodel-4.0.6-cyclonedx.xml.asc</a>                 2025-09-22 16:41       833      
+<a href="codemodel-4.0.6-cyclonedx.xml.md5" title="codemodel-4.0.6-cyclonedx.xml.md5">codemodel-4.0.6-cyclonedx.xml.md5</a>                 2025-09-22 16:41        32      
+<a href="codemodel-4.0.6-cyclonedx.xml.sha1" title="codemodel-4.0.6-cyclonedx.xml.sha1">codemodel-4.0.6-cyclonedx.xml.sha1</a>                2025-09-22 16:41        40      
+<a href="codemodel-4.0.6-javadoc.jar" title="codemodel-4.0.6-javadoc.jar">codemodel-4.0.6-javadoc.jar</a>                       2025-09-22 16:41    968610      
+<a href="codemodel-4.0.6-javadoc.jar.asc" title="codemodel-4.0.6-javadoc.jar.asc">codemodel-4.0.6-javadoc.jar.asc</a>                   2025-09-22 16:41       833      
+<a href="codemodel-4.0.6-javadoc.jar.md5" title="codemodel-4.0.6-javadoc.jar.md5">codemodel-4.0.6-javadoc.jar.md5</a>                   2025-09-22 16:41        32      
+<a href="codemodel-4.0.6-javadoc.jar.sha1" title="codemodel-4.0.6-javadoc.jar.sha1">codemodel-4.0.6-javadoc.jar.sha1</a>                  2025-09-22 16:41        40      
+<a href="codemodel-4.0.6-sources.jar" title="codemodel-4.0.6-sources.jar">codemodel-4.0.6-sources.jar</a>                       2025-09-22 16:41    125785      
+<a href="codemodel-4.0.6-sources.jar.asc" title="codemodel-4.0.6-sources.jar.asc">codemodel-4.0.6-sources.jar.asc</a>                   2025-09-22 16:41       833      
+<a href="codemodel-4.0.6-sources.jar.md5" title="codemodel-4.0.6-sources.jar.md5">codemodel-4.0.6-sources.jar.md5</a>                   2025-09-22 16:41        32      
+<a href="codemodel-4.0.6-sources.jar.sha1" title="codemodel-4.0.6-sources.jar.sha1">codemodel-4.0.6-sources.jar.sha1</a>                  2025-09-22 16:41        40      
+<a href="codemodel-4.0.6.jar" title="codemodel-4.0.6.jar">codemodel-4.0.6.jar</a>                               2025-09-22 16:41    169914      
+<a href="codemodel-4.0.6.jar.asc" title="codemodel-4.0.6.jar.asc">codemodel-4.0.6.jar.asc</a>                           2025-09-22 16:41       833      
+<a href="codemodel-4.0.6.jar.md5" title="codemodel-4.0.6.jar.md5">codemodel-4.0.6.jar.md5</a>                           2025-09-22 16:41        32      
+<a href="codemodel-4.0.6.jar.sha1" title="codemodel-4.0.6.jar.sha1">codemodel-4.0.6.jar.sha1</a>                          2025-09-22 16:41        40      
+<a href="codemodel-4.0.6.pom" title="codemodel-4.0.6.pom">codemodel-4.0.6.pom</a>                               2025-09-22 16:41      1736      
+<a href="codemodel-4.0.6.pom.asc" title="codemodel-4.0.6.pom.asc">codemodel-4.0.6.pom.asc</a>                           2025-09-22 16:41       833      
+<a href="codemodel-4.0.6.pom.md5" title="codemodel-4.0.6.pom.md5">codemodel-4.0.6.pom.md5</a>                           2025-09-22 16:41        32      
+<a href="codemodel-4.0.6.pom.sha1" title="codemodel-4.0.6.pom.sha1">codemodel-4.0.6.pom.sha1</a>                          2025-09-22 16:41        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-codemodel-parent/4.0.6/jaxb-codemodel-parent-4.0.6.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ exited 22 in 237ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/sun/xml/bind/mvn/jaxb-codemodel-parent/4.0.6/jaxb-codemodel-parent-4.0.6.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ succeeded in 0ms:
+<!--
+
+    Copyright (c) 2010, 2024 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.9</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.sun.xml.bind.mvn</groupId>
+    <artifactId>jaxb-codemodel-parent</artifactId>
+    <version>4.0.6</version>
+    <packaging>pom</packaging>
+    <name>Codemodel</name>
+    <description>Java source code generation library</description>
+    <url>https://eclipse-ee4j.github.io/jaxb-ri/</url>
+
+    <licenses>
+        <license>
+            <name>Eclipse Distribution License - v 1.0</name>
+            <url>http://www.eclipse.org/org/documents/edl-v10.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/eclipse-ee4j/jaxb-ri/issues</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>Jakarta XML Binding Implementation mailing list</name>
+            <post>jaxb-impl-dev@eclipse.org</post>
+            <subscribe>https://accounts.eclipse.org/mailing-list/jaxb-impl-dev</subscribe>
+            <unsubscribe>https://accounts.eclipse.org/mailing-list/jaxb-impl-dev</unsubscribe>
+            <archive>https://accounts.eclipse.org/mailing-list/jaxb-impl-dev</archive>
+        </mailingList>
+    </mailingLists>
+
+    <properties>
+        <project.build.commonResourcesDirectory>${project.build.directory}/common-resources</project.build.commonResourcesDirectory>
+        <legal.doc.source>${project.build.commonResourcesDirectory}/legal</legal.doc.source>
+        <copyright.exclude>${project.build.commonResourcesDirectory}/config/copyright-exclude</copyright.exclude>
+        <copyright.ignoreyear>false</copyright.ignoreyear>
+        <copyright.scmonly>true</copyright.scmonly>
+        <copyright.template>${project.build.commonResourcesDirectory}/config/copyright.txt</copyright.template>
+        <copyright.update>false</copyright.update>
+        <spotbugs.exclude/>
+        <spotbugs.skip>false</spotbugs.skip>
+        <spotbugs.threshold>High</spotbugs.threshold>
+        <spotbugs.version>4.8.3.1</spotbugs.version>
+        <findsecbugs.version>1.12.0</findsecbugs.version>
+
+        <maven.compiler.release>11</maven.compiler.release>
+        <maven.compiler.testRelease>${maven.compiler.release}</maven.compiler.testRelease>
+
+        <!-- exclude big groups from the Xlint -->
+        <comp.xlint>-Xlint:all,-rawtypes,-unchecked</comp.xlint>
+        <!-- -Xdoclint:-missing does not seem to work properly on the infra -->
+        <comp.xdoclint>-Xdoclint:all,-missing</comp.xdoclint>
+        <warn.limit>150</warn.limit>
+        <!-- too many to fix -->
+        <jdoc.doclint>all,-missing</jdoc.doclint>
+        <!-- not interested in warnings from tests (yet) -->
+        <comp.test.xlint>-Xlint:none</comp.test.xlint>
+        <comp.test.xdoclint>-Xdoclint:none</comp.test.xdoclint>
+        <warn.test.limit>10</warn.test.limit>
+    </properties>
+
+    <modules>
+        <module>codemodel</module>
+        <module>codemodel-annotation-compiler</module>
+    </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.4.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.5.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>5.1.9</version>
+                    <configuration>
+                        <instructions>
+                            <_noextraheaders>true</_noextraheaders>
+                        </instructions>
+                        <noWarningProjectTypes>
+                            <noWarningProjectType>pom</noWarningProjectType>
+                        </noWarningProjectTypes>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.2.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.6.3</version>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addDefaultEntries>false</addDefaultEntries>
+                            </manifest>
+                        </archive>
+                        <notimestamp>true</notimestamp>
+                        <doclint>${jdoc.doclint}</doclint>
+                        <quiet>true</quiet>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.12.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.2.5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>3.6.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.6.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>3.1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>3.1.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.copyright</groupId>
+                    <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                    <version>2.4</version>
+                    <configuration>
+                        <templateFile>${copyright.template}</templateFile>
+                        <excludeFile>${copyright.exclude}</excludeFile>
+                        <!-- skip files not under SCM-->
+                        <scmOnly>${copyright.scmonly}</scmOnly>
+                        <!-- for use with repair -->
+                        <update>${copyright.update}</update>
+                        <!-- check that year is correct -->
+                        <ignoreYear>${copyright.ignoreyear}</ignoreYear>
+                        <quiet>false</quiet>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs.version}</version>
+                    <configuration>
+                        <skip>${spotbugs.skip}</skip>
+                        <threshold>${spotbugs.threshold}</threshold>
+                        <excludeFilterFile>
+                            ${spotbugs.exclude}
+                        </excludeFilterFile>
+                        <plugins>
+                            <plugin>
+                                <groupId>com.h3xstream.findsecbugs</groupId>
+                                <artifactId>findsecbugs-plugin</artifactId>
+                                <version>${findsecbugs.version}</version>
+                            </plugin>
+                        </plugins>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.owasp</groupId>
+                    <artifactId>dependency-check-maven</artifactId>
+                    <version>9.0.9</version>
+                    <configuration>
+                        <failBuildOnCVSS>7</failBuildOnCVSS>
+                        <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
+                        <formats>
+                            <format>HTML</format>
+                            <format>CSV</format>
+                        </formats>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <rules>
+                        <requireJavaVersion>
+                            <version>[11,)</version>
+                        </requireJavaVersion>
+                        <requireMavenVersion>
+                            <version>[3.6.0,)</version>
+                        </requireMavenVersion>
+                        <DependencyConvergence/>
+                    </rules>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>common-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/resources.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-resource</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.sun.xml.bind.mvn</groupId>
+                                    <artifactId>jaxb-codemodel-parent</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>resources</classifier>
+                                    <type>zip</type>
+                                    <outputDirectory>${project.build.commonResourcesDirectory}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                        <configuration>
+                            <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+                            <shortRevisionLength>7</shortRevisionLength>
+                            <revisionOnScmFailure>false</revisionOnScmFailure>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-resource</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${legal.doc.source}</directory>
+                                    <targetPath>META-INF</targetPath>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <showDeprecation>true</showDeprecation>
+                    <showWarnings>true</showWarnings>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <configuration>
+                            <compilerArgs combine.children="append">
+                                <arg>${comp.xlint}</arg>
+                                <arg>${comp.xdoclint}</arg>
+                                <arg>-Xmaxwarns</arg>
+                                <arg>${warn.limit}</arg>
+                                <arg>-Xmaxerrs</arg>
+                                <arg>${warn.limit}</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <configuration>
+                            <compilerArgs combine.children="append">
+                                <arg>${comp.test.xlint}</arg>
+                                <arg>${comp.test.xdoclint}</arg>
+                                <arg>-Xmaxwarns</arg>
+                                <arg>${warn.test.limit}</arg>
+                                <arg>-Xmaxerrs</arg>
+                                <arg>${warn.test.limit}</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-jar</id>
+                        <configuration>
+                            <archive>
+                                <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                                <manifest>
+                                    <addDefaultEntries>false</addDefaultEntries>
+                                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                </manifest>
+                                <manifestEntries>
+                                    <Implementation-Build-Id>${project.version} - ${buildNumber}</Implementation-Build-Id>
+                                </manifestEntries>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Implementation-Build-Id>${project.version} - ${buildNumber}</Implementation-Build-Id>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>spotbugs</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>spotbugs</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>dependency-check</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.owasp</groupId>
+                        <artifactId>dependency-check-maven</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6-sources.jar -o /tmp/codemodel-4.0.6-sources.jar && jar tf /tmp/codemodel-4.0.6-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6.jar -o /tmp/codemodel-4.0.6.jar && jar tf /tmp/codemodel-4.0.6.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ succeeded in 240ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/sun/
+com/sun/codemodel/
+com/sun/codemodel/fmt/
+com/sun/codemodel/util/
+com/sun/codemodel/writer/
+META-INF/maven/
+META-INF/maven/org.glassfish.jaxb/
+META-INF/maven/org.glassfish.jaxb/codemodel/
+META-INF/LICENSE.md
+META-INF/NOTICE.md
+com/sun/codemodel/ClassType.class
+com/sun/codemodel/CodeWriter$1.class
+com/sun/codemodel/CodeWriter.class
+com/sun/codemodel/JAnnotatable.class
+com/sun/codemodel/JAnnotationArrayMember.class
+com/sun/codemodel/JAnnotationClassValue.class
+com/sun/codemodel/JAnnotationStringValue.class
+com/sun/codemodel/JAnnotationUse.class
+com/sun/codemodel/JAnnotationValue.class
+com/sun/codemodel/JAnnotationWriter.class
+com/sun/codemodel/JAnonymousClass.class
+com/sun/codemodel/JArray.class
+com/sun/codemodel/JArrayClass.class
+com/sun/codemodel/JArrayCompRef.class
+com/sun/codemodel/JAssignment.class
+com/sun/codemodel/JAssignmentTarget.class
+com/sun/codemodel/JAtom.class
+com/sun/codemodel/JBlock$1.class
+com/sun/codemodel/JBlock.class
+com/sun/codemodel/JBreak.class
+com/sun/codemodel/JCase.class
+com/sun/codemodel/JCast.class
+com/sun/codemodel/JCatchBlock.class
+com/sun/codemodel/JClass.class
+com/sun/codemodel/JClassAlreadyExistsException.class
+com/sun/codemodel/JClassContainer.class
+com/sun/codemodel/JCodeModel$JReferencedClass$1.class
+com/sun/codemodel/JCodeModel$JReferencedClass.class
+com/sun/codemodel/JCodeModel$Node.class
+com/sun/codemodel/JCodeModel$TreeParser.class
+com/sun/codemodel/JCodeModel$TypeNameParser.class
+com/sun/codemodel/JCodeModel.class
+com/sun/codemodel/JCommentPart.class
+com/sun/codemodel/JConditional.class
+com/sun/codemodel/JContinue.class
+com/sun/codemodel/JDeclaration.class
+com/sun/codemodel/JDefinedClass$1.class
+com/sun/codemodel/JDefinedClass.class
+com/sun/codemodel/JDirectClass.class
+com/sun/codemodel/JDoLoop.class
+com/sun/codemodel/JDocComment.class
+com/sun/codemodel/JDocCommentable.class
+com/sun/codemodel/JEnumConstant.class
+com/sun/codemodel/JExportsDirective.class
+com/sun/codemodel/JExpr$1.class
+com/sun/codemodel/JExpr$2.class
+com/sun/codemodel/JExpr.class
+com/sun/codemodel/JExpression.class
+com/sun/codemodel/JExpressionImpl.class
+com/sun/codemodel/JFieldRef.class
+com/sun/codemodel/JFieldVar.class
+com/sun/codemodel/JForEach.class
+com/sun/codemodel/JForLoop.class
+com/sun/codemodel/JFormatter$1.class
+com/sun/codemodel/JFormatter$Mode.class
+com/sun/codemodel/JFormatter$ReferenceList.class
+com/sun/codemodel/JFormatter.class
+com/sun/codemodel/JGenerable.class
+com/sun/codemodel/JGenerifiable.class
+com/sun/codemodel/JGenerifiableImpl.class
+com/sun/codemodel/JInvocation.class
+com/sun/codemodel/JJavaName$Entry.class
+com/sun/codemodel/JJavaName.class
+com/sun/codemodel/JLabel.class
+com/sun/codemodel/JMethod.class
+com/sun/codemodel/JMod.class
+com/sun/codemodel/JMods.class
+
+ succeeded in 288ms:
+META-INF/MANIFEST.MF
+META-INF/
+com/
+com/sun/
+com/sun/codemodel/
+com/sun/codemodel/fmt/
+com/sun/codemodel/util/
+com/sun/codemodel/writer/
+META-INF/maven/
+META-INF/maven/org.glassfish.jaxb/
+META-INF/maven/org.glassfish.jaxb/codemodel/
+com/sun/codemodel/ClassType.java
+com/sun/codemodel/CodeWriter.java
+com/sun/codemodel/JAnnotatable.java
+com/sun/codemodel/JAnnotationArrayMember.java
+com/sun/codemodel/JAnnotationClassValue.java
+com/sun/codemodel/JAnnotationStringValue.java
+com/sun/codemodel/JAnnotationUse.java
+com/sun/codemodel/JAnnotationValue.java
+com/sun/codemodel/JAnnotationWriter.java
+com/sun/codemodel/JAnonymousClass.java
+com/sun/codemodel/JArray.java
+com/sun/codemodel/JArrayClass.java
+com/sun/codemodel/JArrayCompRef.java
+com/sun/codemodel/JAssignment.java
+com/sun/codemodel/JAssignmentTarget.java
+com/sun/codemodel/JAtom.java
+com/sun/codemodel/JBlock.java
+com/sun/codemodel/JBreak.java
+com/sun/codemodel/JCase.java
+com/sun/codemodel/JCast.java
+com/sun/codemodel/JCatchBlock.java
+com/sun/codemodel/JClass.java
+com/sun/codemodel/JClassAlreadyExistsException.java
+com/sun/codemodel/JClassContainer.java
+com/sun/codemodel/JCodeModel.java
+com/sun/codemodel/JCommentPart.java
+com/sun/codemodel/JConditional.java
+com/sun/codemodel/JContinue.java
+com/sun/codemodel/JDeclaration.java
+com/sun/codemodel/JDefinedClass.java
+com/sun/codemodel/JDirectClass.java
+com/sun/codemodel/JDoLoop.java
+com/sun/codemodel/JDocComment.java
+com/sun/codemodel/JDocCommentable.java
+com/sun/codemodel/JEnumConstant.java
+com/sun/codemodel/JExportsDirective.java
+com/sun/codemodel/JExpr.java
+com/sun/codemodel/JExpression.java
+com/sun/codemodel/JExpressionImpl.java
+com/sun/codemodel/JFieldRef.java
+com/sun/codemodel/JFieldVar.java
+com/sun/codemodel/JForEach.java
+com/sun/codemodel/JForLoop.java
+com/sun/codemodel/JFormatter.java
+com/sun/codemodel/JGenerable.java
+com/sun/codemodel/JGenerifiable.java
+com/sun/codemodel/JGenerifiableImpl.java
+com/sun/codemodel/JInvocation.java
+com/sun/codemodel/JJavaName.java
+com/sun/codemodel/JLabel.java
+com/sun/codemodel/JMethod.java
+com/sun/codemodel/JMod.java
+com/sun/codemodel/JMods.java
+com/sun/codemodel/JModule.java
+com/sun/codemodel/JModuleDirective.java
+com/sun/codemodel/JNarrowedClass.java
+com/sun/codemodel/JNullType.java
+com/sun/codemodel/JOp.java
+com/sun/codemodel/JPackage.java
+com/sun/codemodel/JPrimitiveType.java
+com/sun/codemodel/JRequiresDirective.java
+com/sun/codemodel/JResourceFile.java
+com/sun/codemodel/JReturn.java
+com/sun/codemodel/JStatement.java
+com/sun/codemodel/JStringLiteral.java
+com/sun/codemodel/JSwitch.java
+com/sun/codemodel/JThrow.java
+com/sun/codemodel/JTryBlock.java
+com/sun/codemodel/JType.java
+
+web search: 
+web search: eclipse-ee4j jaxb-ri 4.0.6 codemodel tag GitHub
+codex
+The Maven directory confirms `sources.jar`, `javadoc.jar`, and a normal JVM `.jar` with `.class` files, so this is a Native Image metadata candidate and not a language-specific Kotlin/Groovy/Scala artifact. I’m now locating the matching GitHub tag and module paths for repository tests.
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/eclipse-ee4j/jaxb-ri.git '*4.0.6*'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/ | rg 'test|tests|test-sources'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ exited 1 in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/?ref=4.0.6-RI' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ succeeded in 192ms:
+[
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "b6fba568a8fef758fc06f171229d240bf3cf2a03",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/.github?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/.github",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/b6fba568a8fef758fc06f171229d240bf3cf2a03",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/.github?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/b6fba568a8fef758fc06f171229d240bf3cf2a03",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "c9779a27a376bc2e232247ba067dcb3d61cb66d1",
+    "size": 63,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/.gitignore?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/blob/4.0.6-RI/.gitignore",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/blobs/c9779a27a376bc2e232247ba067dcb3d61cb66d1",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/jaxb-ri/4.0.6-RI/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/.gitignore?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/blobs/c9779a27a376bc2e232247ba067dcb3d61cb66d1",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/blob/4.0.6-RI/.gitignore"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "sha": "1edfad3189f8cfa77372c1c699c45c22dd861e7e",
+    "size": 1642,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/CONTRIBUTING.md?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/blob/4.0.6-RI/CONTRIBUTING.md",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/blobs/1edfad3189f8cfa77372c1c699c45c22dd861e7e",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/jaxb-ri/4.0.6-RI/CONTRIBUTING.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/CONTRIBUTING.md?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/blobs/1edfad3189f8cfa77372c1c699c45c22dd861e7e",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/blob/4.0.6-RI/CONTRIBUTING.md"
+    }
+  },
+  {
+    "name": "LICENSE.md",
+    "path": "LICENSE.md",
+    "sha": "da1c1cea702150aee366cb43cdea59089ba7a045",
+    "size": 1529,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/LICENSE.md?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/blob/4.0.6-RI/LICENSE.md",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/blobs/da1c1cea702150aee366cb43cdea59089ba7a045",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/jaxb-ri/4.0.6-RI/LICENSE.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/LICENSE.md?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/blobs/da1c1cea702150aee366cb43cdea59089ba7a045",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/blob/4.0.6-RI/LICENSE.md"
+    }
+  },
+  {
+    "name": "NOTICE.md",
+    "path": "NOTICE.md",
+    "sha": "cd46a173aa18b5b71d80f7d36de52fe4f01e01ee",
+    "size": 4630,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/NOTICE.md?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/blob/4.0.6-RI/NOTICE.md",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/blobs/cd46a173aa18b5b71d80f7d36de52fe4f01e01ee",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/jaxb-ri/4.0.6-RI/NOTICE.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/NOTICE.md?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/blobs/cd46a173aa18b5b71d80f7d36de52fe4f01e01ee",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/blob/4.0.6-RI/NOTICE.md"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "1cd77139e8b48bb3e4744801a5f86f3fb8c3ff6a",
+    "size": 3128,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/README.md?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/blob/4.0.6-RI/README.md",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/blobs/1cd77139e8b48bb3e4744801a5f86f3fb8c3ff6a",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/jaxb-ri/4.0.6-RI/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/README.md?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/blobs/1cd77139e8b48bb3e4744801a5f86f3fb8c3ff6a",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/blob/4.0.6-RI/README.md"
+    }
+  },
+  {
+    "name": "jaxb-ri",
+    "path": "jaxb-ri",
+    "sha": "76728ba70a5d453a163c893ea9e31f9f41777884",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/76728ba70a5d453a163c893ea9e31f9f41777884",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/76728ba70a5d453a163c893ea9e31f9f41777884",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri"
+    }
+  }
+]
+
+ succeeded in 335ms:
+101e6627bb6c41736dd39f9dd66272bd401f37fb	refs/tags/4.0.6-RI
+0dcfdf5aed904623fb652dcf2d5ee06267e9a756	refs/tags/4.0.6-RI^{}
+
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri?ref=4.0.6-RI' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/org.glassfish.jaxb/codemodel/4.0.6/package-list | sed -n '1,40p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/4.0.6-RI?recursive=1 | jq -r '.tree[].path' | rg '("'^|/)codemodel(/|$)|CodeModel|codemodel'"' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ succeeded in 180ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 193ms:
+[
+  {
+    "name": "HOWTO-build.txt",
+    "path": "jaxb-ri/HOWTO-build.txt",
+    "sha": "081dad8ebbc9813c064905e4409352ba6b227f56",
+    "size": 598,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/HOWTO-build.txt?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/blob/4.0.6-RI/jaxb-ri/HOWTO-build.txt",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/blobs/081dad8ebbc9813c064905e4409352ba6b227f56",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/jaxb-ri/4.0.6-RI/jaxb-ri/HOWTO-build.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/HOWTO-build.txt?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/blobs/081dad8ebbc9813c064905e4409352ba6b227f56",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/blob/4.0.6-RI/jaxb-ri/HOWTO-build.txt"
+    }
+  },
+  {
+    "name": "boms",
+    "path": "jaxb-ri/boms",
+    "sha": "d81c8eebe266c527367c950cdf2f9d7e3cc26744",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/boms?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/boms",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/d81c8eebe266c527367c950cdf2f9d7e3cc26744",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/boms?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/d81c8eebe266c527367c950cdf2f9d7e3cc26744",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/boms"
+    }
+  },
+  {
+    "name": "bundles",
+    "path": "jaxb-ri/bundles",
+    "sha": "25f78c1f8c132d85b24548b0c2333f8726465b94",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/bundles?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/bundles",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/25f78c1f8c132d85b24548b0c2333f8726465b94",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/bundles?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/25f78c1f8c132d85b24548b0c2333f8726465b94",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/bundles"
+    }
+  },
+  {
+    "name": "codemodel",
+    "path": "jaxb-ri/codemodel",
+    "sha": "e6f40cc4053738d5d90e7e3f0c55b7556027e6f1",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/codemodel?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/codemodel",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/e6f40cc4053738d5d90e7e3f0c55b7556027e6f1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/codemodel?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/e6f40cc4053738d5d90e7e3f0c55b7556027e6f1",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/codemodel"
+    }
+  },
+  {
+    "name": "core",
+    "path": "jaxb-ri/core",
+    "sha": "41afefe7f26c44482263ec7b4b1d84048905d62a",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/core?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/core",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/41afefe7f26c44482263ec7b4b1d84048905d62a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/core?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/41afefe7f26c44482263ec7b4b1d84048905d62a",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/core"
+    }
+  },
+  {
+    "name": "docs",
+    "path": "jaxb-ri/docs",
+    "sha": "4fca2c04fa2026c2743192ef137c27361752b215",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/docs?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/docs",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/4fca2c04fa2026c2743192ef137c27361752b215",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/docs?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/4fca2c04fa2026c2743192ef137c27361752b215",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/docs"
+    }
+  },
+  {
+    "name": "external",
+    "path": "jaxb-ri/external",
+    "sha": "e75536c6d78174c79e8153ba70592a7fd1651cd7",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/external?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/external",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/e75536c6d78174c79e8153ba70592a7fd1651cd7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/external?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/e75536c6d78174c79e8153ba70592a7fd1651cd7",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/external"
+    }
+  },
+  {
+    "name": "jxc",
+    "path": "jaxb-ri/jxc",
+    "sha": "d9e4dab9ad66566c261bc47c9a5803768e56202d",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/jxc?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/jxc",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/d9e4dab9ad66566c261bc47c9a5803768e56202d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/jxc?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/d9e4dab9ad66566c261bc47c9a5803768e56202d",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/jxc"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "jaxb-ri/pom.xml",
+    "sha": "f97de97e32b10be9db8e38aa6cc27534d1c979ea",
+    "size": 35014,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/pom.xml?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/blob/4.0.6-RI/jaxb-ri/pom.xml",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/blobs/f97de97e32b10be9db8e38aa6cc27534d1c979ea",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/jaxb-ri/4.0.6-RI/jaxb-ri/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/pom.xml?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/blobs/f97de97e32b10be9db8e38aa6cc27534d1c979ea",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/blob/4.0.6-RI/jaxb-ri/pom.xml"
+    }
+  },
+  {
+    "name": "runtime",
+    "path": "jaxb-ri/runtime",
+    "sha": "99a5227c3480c2819619e2449f5290011a352906",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/runtime?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/runtime",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/99a5227c3480c2819619e2449f5290011a352906",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/runtime?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/99a5227c3480c2819619e2449f5290011a352906",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/runtime"
+    }
+  },
+  {
+    "name": "samples",
+    "path": "jaxb-ri/samples",
+    "sha": "1606866c257efb5151f5627e79ffdeb3e423f156",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/samples?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/samples",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/1606866c257efb5151f5627e79ffdeb3e423f156",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/samples?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/1606866c257efb5151f5627e79ffdeb3e423f156",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/samples"
+    }
+  },
+  {
+    "name": "sonar-project.properties",
+    "path": "jaxb-ri/sonar-project.properties",
+    "sha": "2b8e0be64a0f6c5fddef48b7c813c4f7859a5a00",
+    "size": 1361,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/sonar-project.properties?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/blob/4.0.6-RI/jaxb-ri/sonar-project.properties",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/blobs/2b8e0be64a0f6c5fddef48b7c813c4f7859a5a00",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/jaxb-ri/4.0.6-RI/jaxb-ri/sonar-project.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/sonar-project.properties?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/blobs/2b8e0be64a0f6c5fddef48b7c813c4f7859a5a00",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/blob/4.0.6-RI/jaxb-ri/sonar-project.properties"
+    }
+  },
+  {
+    "name": "src",
+    "path": "jaxb-ri/src",
+    "sha": "f4006b403b8710818ca90ad9fee28d1debbd22a0",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/src?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/src",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/f4006b403b8710818ca90ad9fee28d1debbd22a0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/src?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/f4006b403b8710818ca90ad9fee28d1debbd22a0",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/src"
+    }
+  },
+  {
+    "name": "tools",
+    "path": "jaxb-ri/tools",
+    "sha": "ac71d1c0ac68e37ca625ea76899ff462f9a438b2",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/tools?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/tools",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/ac71d1c0ac68e37ca625ea76899ff462f9a438b2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/tools?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/ac71d1c0ac68e37ca625ea76899ff462f9a438b2",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/tools"
+    }
+  },
+  {
+    "name": "txw",
+    "path": "jaxb-ri/txw",
+    "sha": "c010705103e63b9c5c6ccdc3ac5224e82d84039f",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/txw?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/txw",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/c010705103e63b9c5c6ccdc3ac5224e82d84039f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/txw?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/c010705103e63b9c5c6ccdc3ac5224e82d84039f",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/txw"
+    }
+  },
+  {
+    "name": "xjc",
+    "path": "jaxb-ri/xjc",
+    "sha": "c1a03f166118b188bdc8c040dd186211f986677e",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/xjc?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/xjc",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/c1a03f166118b188bdc8c040dd186211f986677e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/xjc?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/c1a03f166118b188bdc8c040dd186211f986677e",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/xjc"
+    }
+  },
+  {
+    "name": "xsom",
+    "path": "jaxb-ri/xsom",
+    "sha": "05a6e35398390cbfda5f31fadf1de143f4a6296d",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/xsom?ref=4.0.6-RI",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/xsom",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/05a6e35398390cbfda5f31fadf1de143f4a6296d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/xsom?ref=4.0.6-RI",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/git/trees/05a6e35398390cbfda5f31fadf1de143f4a6296d",
+      "html": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/xsom"
+    }
+  }
+]
+
+ succeeded in 509ms:
+jaxb-ri/codemodel
+jaxb-ri/codemodel/codemodel-annotation-compiler
+jaxb-ri/codemodel/codemodel-annotation-compiler/pom.xml
+jaxb-ri/codemodel/codemodel-annotation-compiler/src
+jaxb-ri/codemodel/codemodel-annotation-compiler/src/main
+jaxb-ri/codemodel/codemodel-annotation-compiler/src/main/java
+jaxb-ri/codemodel/codemodel-annotation-compiler/src/main/java/com
+jaxb-ri/codemodel/codemodel-annotation-compiler/src/main/java/com/sun
+jaxb-ri/codemodel/codemodel-annotation-compiler/src/main/java/com/sun/codemodel
+jaxb-ri/codemodel/codemodel-annotation-compiler/src/main/java/com/sun/codemodel/ac
+jaxb-ri/codemodel/codemodel-annotation-compiler/src/main/java/com/sun/codemodel/ac/ACTask.java
+jaxb-ri/codemodel/codemodel-annotation-compiler/src/main/java/module-info.java
+jaxb-ri/codemodel/codemodel
+jaxb-ri/codemodel/codemodel/exclude-codemodel.xml
+jaxb-ri/codemodel/codemodel/pom.xml
+jaxb-ri/codemodel/codemodel/src
+jaxb-ri/codemodel/codemodel/src/main
+jaxb-ri/codemodel/codemodel/src/main/java
+jaxb-ri/codemodel/codemodel/src/main/java/com
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/ClassType.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/CodeWriter.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JAnnotatable.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JAnnotationArrayMember.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JAnnotationClassValue.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JAnnotationStringValue.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JAnnotationUse.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JAnnotationValue.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JAnnotationWriter.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JAnonymousClass.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JArray.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JArrayClass.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JArrayCompRef.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JAssignment.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JAssignmentTarget.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JAtom.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JBlock.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JBreak.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JCase.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JCast.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JCatchBlock.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JClass.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JClassAlreadyExistsException.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JClassContainer.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JCodeModel.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JCommentPart.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JConditional.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JContinue.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JDeclaration.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JDefinedClass.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JDirectClass.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JDoLoop.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JDocComment.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JDocCommentable.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JEnumConstant.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JExportsDirective.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JExpr.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JExpression.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JExpressionImpl.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JFieldRef.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JFieldVar.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JForEach.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JForLoop.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JFormatter.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JGenerable.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JGenerifiable.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JGenerifiableImpl.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JInvocation.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JJavaName.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JLabel.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JMethod.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JMod.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JMods.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JModule.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JModuleDirective.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JNarrowedClass.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JNullType.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JOp.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JPackage.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JPrimitiveType.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JRequiresDirective.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JResourceFile.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JReturn.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JStatement.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JStringLiteral.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JSwitch.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JThrow.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JTryBlock.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JType.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JTypeVar.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JTypeWildcard.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JVar.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/JWhileLoop.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/SecureLoader.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/TypedAnnotationWriter.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/fmt
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/fmt/JBinaryFile.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/fmt/JPropertyFile.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/fmt/JSerializedObject.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/fmt/JStaticFile.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/fmt/JStaticJavaFile.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/fmt/JTextFile.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/fmt/SecureLoader.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/fmt/package-info.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/package-info.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/util
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/util/ClassNameComparator.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/util/EncoderFactory.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/util/JavadocEscapeWriter.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/util/UnicodeEscapeWriter.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/writer
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/writer/FileCodeWriter.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/writer/FilterCodeWriter.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/writer/LicenseCodeWriter.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/writer/OutputStreamCodeWriter.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/writer/ProgressCodeWriter.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/writer/PrologCodeWriter.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/writer/SingleStreamCodeWriter.java
+jaxb-ri/codemodel/codemodel/src/main/java/com/sun/codemodel/writer/ZipCodeWriter.java
+jaxb-ri/codemodel/codemodel/src/main/java/module-info.java
+jaxb-ri/codemodel/codemodel/src/test
+jaxb-ri/codemodel/codemodel/src/test/java
+jaxb-ri/codemodel/codemodel/src/test/java/com
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/Issue1505Test.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/JExportsTest.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/JModsTest.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/JModuleTest.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/JRequiresTest.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/JTestModuleDirective.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/tests
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/tests/AnnotationSample.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/tests/AnnotationUseTest.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/tests/AnonymousClassTest.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/tests/ForEachTest.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/tests/InnerClassTest.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/tests/JAnnotationUseTest.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/tests/JCodeModelTest.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/tests/JCommentTest.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/tests/JDefinedClassInstanceInitTest.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/tests/JExprTest.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/tests/JMethodTest.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/tests/NestedClassTest.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/tests/PackageAnnotationTest.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/tests/PackageJavadocTest.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/tests/VarArgsTest.java
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/tests/util
+jaxb-ri/codemodel/codemodel/src/test/java/com/sun/codemodel/tests/util/CodeModelTestsUtils.java
+jaxb-ri/codemodel/pom.xml
+jaxb-ri/codemodel/src
+jaxb-ri/codemodel/src/main
+jaxb-ri/codemodel/src/main/assembly
+jaxb-ri/codemodel/src/main/assembly/resources.xml
+jaxb-ri/xjc/src/main/java/com/sun/tools/xjc/util/CodeModelClassFactory.java
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\"' build/discovered-artifact-metadata | sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -l 'repo1.maven.org.*sources.jar|javadoc.io/doc|github.com/.*/tree/.*/src/test|documentation-url.*javadoc' build/discovered-artifact-metadata | sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo1.maven.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 10:46:58 GMT
+content-type: application/java-archive
+content-length: 968610
+cf-ray: 9f5671fa8babc126-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 449894
+etag: "cf5a89bdb4d830deba4fd28c9c4fa7a5"
+last-modified: Mon, 22 Sep 2025 16:42:15 GMT
+x-checksum-md5: cf5a89bdb4d830deba4fd28c9c4fa7a5
+x-checksum-sha1: 44a98fea6873fba3ce46f49580626e751c4283b7
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://javadoc.io/doc/org.glassfish.jaxb/codemodel/4.0.6/ | sed -n '1,20p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/org.glassfish.jaxb/codemodel/4.0.6/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6-javadoc.jar -o /tmp/codemodel-4.0.6-javadoc.jar && jar tf /tmp/codemodel-4.0.6-javadoc.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ succeeded in 262ms:
+META-INF/
+META-INF/MANIFEST.MF
+com.sun.codemodel/
+com.sun.codemodel/com/
+com.sun.codemodel/com/sun/
+com.sun.codemodel/com/sun/codemodel/
+com.sun.codemodel/com/sun/codemodel/class-use/
+com.sun.codemodel/com/sun/codemodel/fmt/
+com.sun.codemodel/com/sun/codemodel/fmt/class-use/
+com.sun.codemodel/com/sun/codemodel/util/
+com.sun.codemodel/com/sun/codemodel/util/class-use/
+com.sun.codemodel/com/sun/codemodel/writer/
+com.sun.codemodel/com/sun/codemodel/writer/class-use/
+jquery/
+jquery/external/
+jquery/external/jquery/
+jquery/images/
+jquery/jszip/
+jquery/jszip/dist/
+jquery/jszip-utils/
+jquery/jszip-utils/dist/
+resources/
+src/
+src/com.sun.codemodel/
+META-INF/maven/
+META-INF/maven/org.glassfish.jaxb/
+META-INF/maven/org.glassfish.jaxb/codemodel/
+allclasses-index.html
+allclasses.html
+allpackages-index.html
+com.sun.codemodel/com/sun/codemodel/ClassType.html
+com.sun.codemodel/com/sun/codemodel/CodeWriter.html
+com.sun.codemodel/com/sun/codemodel/JAnnotatable.html
+com.sun.codemodel/com/sun/codemodel/JAnnotationArrayMember.html
+com.sun.codemodel/com/sun/codemodel/JAnnotationClassValue.html
+com.sun.codemodel/com/sun/codemodel/JAnnotationStringValue.html
+com.sun.codemodel/com/sun/codemodel/JAnnotationUse.html
+com.sun.codemodel/com/sun/codemodel/JAnnotationValue.html
+com.sun.codemodel/com/sun/codemodel/JAnnotationWriter.html
+com.sun.codemodel/com/sun/codemodel/JArray.html
+com.sun.codemodel/com/sun/codemodel/JArrayCompRef.html
+com.sun.codemodel/com/sun/codemodel/JAssignment.html
+com.sun.codemodel/com/sun/codemodel/JAssignmentTarget.html
+com.sun.codemodel/com/sun/codemodel/JBlock.html
+com.sun.codemodel/com/sun/codemodel/JCase.html
+com.sun.codemodel/com/sun/codemodel/JCast.html
+com.sun.codemodel/com/sun/codemodel/JCatchBlock.html
+com.sun.codemodel/com/sun/codemodel/JClass.html
+com.sun.codemodel/com/sun/codemodel/JClassAlreadyExistsException.html
+com.sun.codemodel/com/sun/codemodel/JClassContainer.html
+com.sun.codemodel/com/sun/codemodel/JCodeModel.html
+com.sun.codemodel/com/sun/codemodel/JCommentPart.html
+com.sun.codemodel/com/sun/codemodel/JConditional.html
+com.sun.codemodel/com/sun/codemodel/JDeclaration.html
+com.sun.codemodel/com/sun/codemodel/JDefinedClass.html
+com.sun.codemodel/com/sun/codemodel/JDoLoop.html
+com.sun.codemodel/com/sun/codemodel/JDocComment.html
+com.sun.codemodel/com/sun/codemodel/JDocCommentable.html
+com.sun.codemodel/com/sun/codemodel/JEnumConstant.html
+com.sun.codemodel/com/sun/codemodel/JExportsDirective.html
+com.sun.codemodel/com/sun/codemodel/JExpr.html
+com.sun.codemodel/com/sun/codemodel/JExpression.html
+com.sun.codemodel/com/sun/codemodel/JExpressionImpl.html
+com.sun.codemodel/com/sun/codemodel/JFieldRef.html
+com.sun.codemodel/com/sun/codemodel/JFieldVar.html
+com.sun.codemodel/com/sun/codemodel/JForEach.html
+com.sun.codemodel/com/sun/codemodel/JForLoop.html
+com.sun.codemodel/com/sun/codemodel/JFormatter.html
+com.sun.codemodel/com/sun/codemodel/JGenerable.html
+com.sun.codemodel/com/sun/codemodel/JGenerifiable.html
+com.sun.codemodel/com/sun/codemodel/JInvocation.html
+com.sun.codemodel/com/sun/codemodel/JJavaName.html
+com.sun.codemodel/com/sun/codemodel/JLabel.html
+com.sun.codemodel/com/sun/codemodel/JMethod.html
+com.sun.codemodel/com/sun/codemodel/JMod.html
+com.sun.codemodel/com/sun/codemodel/JMods.html
+com.sun.codemodel/com/sun/codemodel/JModule.html
+com.sun.codemodel/com/sun/codemodel/JModuleDirective.Type.html
+com.sun.codemodel/com/sun/codemodel/JModuleDirective.html
+com.sun.codemodel/com/sun/codemodel/JNullType.html
+
+ succeeded in 423ms:
+HTTP/2 301 
+date: Sat, 02 May 2026 10:47:08 GMT
+content-length: 0
+location: /doc/org.glassfish.jaxb/codemodel/4.0.6
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=pFOHmSDhvbxMczkxskcvWv27KRQQFLYdn6Vu44MajFKPp393y0vDyzNYFryVzBsKlxK12phtHiy3l3NxC0MxbmxAIOW64ponQQjN%2BrUeGMvu8BQs6Pm1xKG9An%2BN5eaF%2BlpXEfjj%2BhwP"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f567234feeebe59-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 303 
+date: Sat, 02 May 2026 10:47:08 GMT
+content-length: 0
+location: /doc/org.glassfish.jaxb/codemodel/4.0.6/index.html
+
+ succeeded in 431ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>codemodel 4.0.6 javadoc (org.glassfish.jaxb)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/org.glassfish.jaxb">org.glassfish.jaxb</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						codemodel
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/org.glassfish.jaxb/codemodel" class="dropdown-item">
+							codemodel
+						</a>
+						
+						<a href="/doc/org.glassfish.jaxb/jaxb-bom" class="dropdown-item">
+							jaxb-bom
+						</a>
+						
+						<a href="/doc/org.glassfish.jaxb/jaxb-core" class="dropdown-item">
+							jaxb-core
+						</a>
+						
+						<a href="/doc/org.glassfish.jaxb/jaxb-jxc" class="dropdown-item">
+							jaxb-jxc
+						</a>
+						
+						<a href="/doc/org.glassfish.jaxb/jaxb-runtime" class="dropdown-item">
+							jaxb-runtime
+						</a>
+						
+						<a href="/doc/org.glassfish.jaxb/jaxb-xjc" class="dropdown-item">
+							jaxb-xjc
+						</a>
+						
+						<a href="/doc/org.glassfish.jaxb/txw2" class="dropdown-item">
+							txw2
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | wc -l && find build/discovered-artifact-metadata -maxdepth 1 -type f | sed -n '1,20p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ succeeded in 0ms:
+1
+build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json
+
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|test-code-url|documentation-url|repository-url' . -g '*.json' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ succeeded in 0ms:
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/8.0.01/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/1.14.0/htmlunit-cssparser-1.14.0-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/1.14.0/src/test",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/1.14.0/htmlunit-cssparser-1.14.0-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.70.0/neko-htmlunit-2.70.0-sources.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.70.0/neko-htmlunit-2.70.0-tests.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.70.0/neko-htmlunit-2.70.0-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/9.4.40.v20210413/websocket-client-9.4.40.v20210413-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/9.4.40.v20210413/websocket-client-9.4.40.v20210413-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/9.4.40.v20210413/websocket-client-9.4.40.v20210413-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-javadoc.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:6:    "repository-url" : "https://github.com/apiguardian-team/apiguardian",
+./metadata/org.apiguardian/apiguardian-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apiguardian/apiguardian-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+./metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+./metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/org.apache.arrow/arrow-format/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/15.0.0/arrow-format-15.0.0-sources.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:6:    "repository-url" : "https://github.com/apache/arrow",
+./metadata/org.apache.arrow/arrow-format/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.arrow/arrow-format/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/15.0.0/arrow-format-15.0.0-javadoc.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-sources.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:30:    "repository-url" : "https://github.com/apache/arrow",
+./metadata/org.apache.arrow/arrow-format/index.json:31:    "test-code-url" : "N/A",
+./metadata/org.apache.arrow/arrow-format/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-javadoc.jar",
+./metadata/org.javamoney.moneta/moneta-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.4/moneta-core-1.4-sources.jar",
+./metadata/org.javamoney.moneta/moneta-core/index.json:6:    "repository-url" : "https://github.com/JavaMoney/jsr354-ri",
+./metadata/org.javamoney.moneta/moneta-core/index.json:7:    "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/1.4/moneta-core/src/test",
+./metadata/org.javamoney.moneta/moneta-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.4/moneta-core-1.4-javadoc.jar",
+./metadata/org.javamoney.moneta/moneta-core/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-sources.jar",
+./metadata/org.javamoney.moneta/moneta-core/index.json:20:    "repository-url" : "https://github.com/JavaMoney/jsr354-ri",
+./metadata/org.javamoney.moneta/moneta-core/index.json:21:    "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/1.3/moneta-core/src/test",
+./metadata/org.javamoney.moneta/moneta-core/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-javadoc.jar",
+./metadata/nekohtml/xercesMinimal/index.json:5:    "source-code-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/branches/nekohtml-1.9.6.2/",
+./metadata/nekohtml/xercesMinimal/index.json:6:    "repository-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/",
+./metadata/nekohtml/xercesMinimal/index.json:7:    "test-code-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/branches/nekohtml-1.9.6.2/test/",
+./metadata/nekohtml/xercesMinimal/index.json:8:    "documentation-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/branches/nekohtml-1.9.6.2/doc/index.html",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/2.0.0.Final/jboss-interceptor-spi-2.0.0.Final-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:6:    "repository-url" : "https://github.com/jbossinterceptors/jbossinterceptors",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:8:    "documentation-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/jakarta.websocket-client-api-2.1.0-sources.jar",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/websocket",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/jakarta.websocket-client-api-2.1.0-javadoc.jar",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/2.1.0/jakarta.websocket-api-2.1.0-sources.jar",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/websocket",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/2.1.0/jakarta.websocket-api-2.1.0-javadoc.jar",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.13.5/jackson-datatype-jdk8-2.13.5-sources.jar",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-modules-java8",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-java8/tree/jackson-modules-java8-2.13.5/datatypes/src/test",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.13.5/jackson-datatype-jdk8-2.13.5-javadoc.jar",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.13.1/jackson-datatype-jsr310-2.13.1-sources.jar",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-modules-java8",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-java8/tree/jackson-modules-java8-2.13.1/datetime/src/test",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.13.1/jackson-datatype-jsr310-2.13.1-javadoc.jar",
+./metadata/org.junit.platform/junit-platform-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2-sources.jar",
+./metadata/org.junit.platform/junit-platform-commons/index.json:6:    "repository-url" : "https://github.com/junit-team/junit5",
+./metadata/org.junit.platform/junit-platform-commons/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.junit.platform/junit-platform-commons/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2-javadoc.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:10:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+./metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/2.0.1/mail/src/test",
+./metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:6:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine/src/snakeyaml-engine-3.0.1/src/test/java/",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:6:    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20250515-f04e4c0e/google-closure-library-third-party-0.0-20250515-f04e4c0e-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:6:    "repository-url" : "https://github.com/google/closure-library",
+./metadata/org.clojure/google-closure-library-third-party/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20250515-f04e4c0e/google-closure-library-third-party-0.0-20250515-f04e4c0e-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:8:    "documentation-url" : "https://github.com/google/closure-library/blob/f04e4c0e/README.md",
+./metadata/org.clojure/google-closure-library-third-party/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20150505-021ed5b3/google-closure-library-third-party-0.0-20150505-021ed5b3-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:20:    "repository-url" : "https://github.com/google/closure-library",
+./metadata/org.clojure/google-closure-library-third-party/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20150505-021ed5b3/google-closure-library-third-party-0.0-20150505-021ed5b3-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:22:    "documentation-url" : "https://github.com/google/closure-library/blob/021ed5b313da392a7139d0d3cf7011999ac8b672/README.md",
+./metadata/org.postgresql/postgresql/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:6:    "repository-url" : "https://github.com/pgjdbc/pgjdbc",
+./metadata/org.postgresql/postgresql/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-jdbc-src.tar.gz",
+./metadata/org.postgresql/postgresql/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6.pom | xmllint --xpath '/*[local-name()=\"project\"]/*[local-name()=\"description\"]/text()' -" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ succeeded in 103ms:
+The core functionality of the CodeModel java source code generation library
+
+codex
+I found the exact release tag, `4.0.6-RI`, and the module tests under `jaxb-ri/codemodel/codemodel/src/test`. I’m going to write Maven URLs for sources and javadocs, the GitHub repo URL, and the tagged GitHub test path.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json b/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json
+index 0b8919eaf11344ea426f6ba8bce6f7b337d77866..ece202f64fdca26624477d3a4ed061d6b9c93652
+--- a/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jaxb:codemodel:4.0.6"
++  "coordinates" : "org.glassfish.jaxb:codemodel:4.0.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-ri",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/codemodel/codemodel/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6-javadoc.jar",
++  "description" : "Codemodel is the core Java source code generation library from the Eclipse JAXB RI, providing APIs for constructing Java packages, classes, fields, methods, annotations, and modules programmatically. It renders the generated model to Java source and related resources, which makes it useful for tools and frameworks that need to emit Java code."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json b/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json
+index 0b8919eaf11344ea426f6ba8bce6f7b337d77866..ece202f64fdca26624477d3a4ed061d6b9c93652
+--- a/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jaxb:codemodel:4.0.6"
++  "coordinates" : "org.glassfish.jaxb:codemodel:4.0.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-ri",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/codemodel/codemodel/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6-javadoc.jar",
++  "description" : "Codemodel is the core Java source code generation library from the Eclipse JAXB RI, providing APIs for constructing Java packages, classes, fields, methods, annotations, and modules programmatically. It renders the generated model to Java source and related resources, which makes it useful for tools and frameworks that need to emit Java code."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ succeeded in 0ms:
+{
+  "coordinates": "org.glassfish.jaxb:codemodel:4.0.6",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6-sources.jar",
+  "repository-url": "https://github.com/eclipse-ee4j/jaxb-ri",
+  "test-code-url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/codemodel/codemodel/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6-javadoc.jar",
+  "description": "Codemodel is the core Java source code generation library from the Eclipse JAXB RI, providing APIs for constructing Java packages, classes, fields, methods, annotations, and modules programmatically. It renders the generated model to Java source and related resources, which makes it useful for tools and frameworks that need to emit Java code."
+}
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6-sources.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 10:47:30 GMT
+content-type: application/java-archive
+content-length: 125785
+cf-ray: 9f5672c01bc7bbfc-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2074836
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6-javadoc.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 10:47:30 GMT
+content-type: application/java-archive
+content-length: 968610
+cf-ray: 9f5672c079dfbc71-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1492161
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/codemodel/codemodel/src/test | sed -n '1,8p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json b/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json
+index 0b8919eaf11344ea426f6ba8bce6f7b337d77866..ece202f64fdca26624477d3a4ed061d6b9c93652
+--- a/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jaxb:codemodel:4.0.6"
++  "coordinates" : "org.glassfish.jaxb:codemodel:4.0.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-ri",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/codemodel/codemodel/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6-javadoc.jar",
++  "description" : "Codemodel is the core Java source code generation library from the Eclipse JAXB RI, providing APIs for constructing Java packages, classes, fields, methods, annotations, and modules programmatically. It renders the generated model to Java source and related resources, which makes it useful for tools and frameworks that need to emit Java code."
+ }
+
+ succeeded in 1806ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 10:47:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"c7152033ca9dc40d1feddf70f67405d2"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json b/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json
+index 0b8919eaf11344ea426f6ba8bce6f7b337d77866..ece202f64fdca26624477d3a4ed061d6b9c93652
+--- a/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jaxb:codemodel:4.0.6"
++  "coordinates" : "org.glassfish.jaxb:codemodel:4.0.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-ri",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/codemodel/codemodel/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6-javadoc.jar",
++  "description" : "Codemodel is the core Java source code generation library from the Eclipse JAXB RI, providing APIs for constructing Java packages, classes, fields, methods, annotations, and modules programmatically. It renders the generated model to Java source and related resources, which makes it useful for tools and frameworks that need to emit Java code."
+ }
+
+codex
+Updated [org.glassfish.jaxb-codemodel-4.0.6.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json) with the repository, Maven source/javadoc URLs, tagged test suite URL, and two-sentence description.
+
+I left `language` absent because it is not Kotlin/Groovy/Scala-specific. I also left `not-for-native-image` absent because the artifact is a normal JVM JAR with class files.
+
+Verified:
+`jq` parses the JSON, and the Maven source/javadoc URLs plus the GitHub test URL return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json b/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json
+index 0b8919eaf11344ea426f6ba8bce6f7b337d77866..ece202f64fdca26624477d3a4ed061d6b9c93652
+--- a/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jaxb:codemodel:4.0.6"
++  "coordinates" : "org.glassfish.jaxb:codemodel:4.0.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-ri",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/codemodel/codemodel/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/codemodel/4.0.6/codemodel-4.0.6-javadoc.jar",
++  "description" : "Codemodel is the core Java source code generation library from the Eclipse JAXB RI, providing APIs for constructing Java packages, classes, fields, methods, annotations, and modules programmatically. It renders the generated model to Java source and related resources, which makes it useful for tools and frameworks that need to emit Java code."
+ }
+
+tokens used
+56,553
+Updated [org.glassfish.jaxb-codemodel-4.0.6.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45/build/discovered-artifact-metadata/org.glassfish.jaxb-codemodel-4.0.6.json) with the repository, Maven source/javadoc URLs, tagged test suite URL, and two-sentence description.
+
+I left `language` absent because it is not Kotlin/Groovy/Scala-specific. I also left `not-for-native-image` absent because the artifact is a normal JVM JAR with class files.
+
+Verified:
+`jq` parses the JSON, and the Maven source/javadoc URLs plus the GitHub test URL return HTTP 200.
+Ran agent for org.glassfish.jaxb:codemodel:4.0.6 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45/build/agent-artifact-discovery-logs/org.glassfish.jaxb-codemodel-4.0.6.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3274-a3bbce45/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 29s
+9 actionable tasks: 4 executed, 5 from cache
