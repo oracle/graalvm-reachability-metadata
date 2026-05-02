@@ -134,6 +134,26 @@ public class ServerSerializationStreamReaderTest {
         assertThat(result.getMillis()).isEqualTo(7L);
     }
 
+    @Test
+    void invokesCheckedStaticCustomSerializerMethodsWhenExpectedTypeIsProvided() throws Exception {
+        TestSerializationPolicy policy = new TestSerializationPolicy();
+        List<String> stringTable = new ArrayList<>();
+        int typeIndex = addTypeSignature(stringTable, CheckedCustomValue.class, policy);
+        int constructorValueIndex = addString(stringTable, "created");
+        int deserializedValueIndex = addString(stringTable, "deserialized");
+
+        ServerSerializationStreamReader reader = newReader(policy,
+                rpcPayload(AbstractSerializationStream.DEFAULT_FLAGS, stringTable,
+                        String.valueOf(typeIndex), String.valueOf(constructorValueIndex),
+                        String.valueOf(deserializedValueIndex)));
+
+        CheckedCustomValue result = (CheckedCustomValue) reader.readObject(
+                CheckedCustomValue.class, new DequeMap<TypeVariable<?>, Type>());
+
+        assertThat(result.getConstructorValue()).isEqualTo("created");
+        assertThat(result.getDeserializedValue()).isEqualTo("deserialized");
+    }
+
     private static ServerSerializationStreamReader newReader(SerializationPolicy policy,
             String payload) throws SerializationException {
         ServerSerializationStreamReader reader = new ServerSerializationStreamReader(
@@ -192,6 +212,37 @@ public class ServerSerializationStreamReaderTest {
     @SuppressWarnings("unchecked")
     private static <T> T cast(Object value) {
         return (T) value;
+    }
+
+    public static final class CheckedCustomValue {
+        private final String constructorValue;
+        private String deserializedValue;
+
+        public CheckedCustomValue(String constructorValue) {
+            this.constructorValue = constructorValue;
+        }
+
+        public String getConstructorValue() {
+            return constructorValue;
+        }
+
+        public String getDeserializedValue() {
+            return deserializedValue;
+        }
+    }
+
+    public static final class CheckedCustomValue_CustomFieldSerializer {
+        public static CheckedCustomValue instantiateChecked(ServerSerializationStreamReader reader,
+                Type[] expectedParameterTypes, DequeMap<TypeVariable<?>, Type> resolvedTypes)
+                throws SerializationException {
+            return new CheckedCustomValue(reader.readString());
+        }
+
+        public static void deserializeChecked(ServerSerializationStreamReader reader,
+                CheckedCustomValue instance, Type[] expectedParameterTypes,
+                DequeMap<TypeVariable<?>, Type> resolvedTypes) throws SerializationException {
+            instance.deserializedValue = reader.readString();
+        }
     }
 
     private static final class TestSerializationPolicy extends SerializationPolicy
