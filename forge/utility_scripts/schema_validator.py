@@ -17,7 +17,7 @@ from typing import Any, Dict
 from jsonschema import Draft202012Validator, FormatChecker
 
 SCHEMA_NAME_MAP = {
-    "run_metrics_output": "run-metrics-output-schema-v1.0.2.json",
+    "run_metrics_output": "run-metrics-output-schema-v1.0.1.json",
     "benchmark_run_metrics": "benchmark_run_metrics_schema.json",
     "benchmark_suite": "benchmark_suite_schema.json",
     "strategy": "strategy_schema.json",
@@ -60,7 +60,7 @@ def validate_json_file(file_path: str, schema_name: str):
 
 
 def validate_run_metrics(file_path: str):
-    """Validate against `stats/schemas/run-metrics-output-schema-v1.0.2.json`."""
+    """Validate against `stats/schemas/run-metrics-output-schema-v1.0.1.json`."""
     validate_json_file(file_path, "run_metrics_output")
 
 
