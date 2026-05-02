@@ -272,7 +272,7 @@ class Java_dataloaderTest {
         assertThat(statistics.getCacheHitCount()).isZero();
     }
 
-    private static final class RecordingCacheMap<K, V> implements CacheMap<K, CompletableFuture<V>> {
+    private static final class RecordingCacheMap<K, V> implements CacheMap<K, V> {
 
         private final Map<K, CompletableFuture<V>> values = new ConcurrentHashMap<>();
         private final List<K> getRequests = new ArrayList<>();
@@ -290,20 +290,20 @@ class Java_dataloaderTest {
         }
 
         @Override
-        public CacheMap<K, CompletableFuture<V>> set(K key, CompletableFuture<V> value) {
+        public CacheMap<K, V> set(K key, CompletableFuture<V> value) {
             setRequests.add(key);
             values.put(key, value);
             return this;
         }
 
         @Override
-        public CacheMap<K, CompletableFuture<V>> delete(K key) {
+        public CacheMap<K, V> delete(K key) {
             values.remove(key);
             return this;
         }
 
         @Override
-        public CacheMap<K, CompletableFuture<V>> clear() {
+        public CacheMap<K, V> clear() {
             values.clear();
             return this;
         }
