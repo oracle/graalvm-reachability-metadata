@@ -184,6 +184,22 @@ public class Antlr4_annotationsTest {
     }
 
     @Test
+    void processorReportsNullablePrimitiveLocalVariablesAsErrors() {
+        TestElements elements = new TestElements();
+        CapturingMessager messager = new CapturingMessager();
+        NullUsageProcessor processor = new NullUsageProcessor();
+        processor.init(new TestProcessingEnvironment(elements, messager));
+
+        boolean processed = processor.process(Set.of(), new PrimitiveLocalVariableRoundEnvironment(elements));
+
+        assertThat(processed).isTrue();
+        assertThat(messager.messages()).extracting(ProcessorMessage::kind)
+                .containsExactly(Diagnostic.Kind.ERROR);
+        assertThat(messager.messages()).extracting(ProcessorMessage::message)
+                .containsExactly("local variable with a primitive type cannot be annotated with Nullable");
+    }
+
+    @Test
     void processorReportsInvalidNullabilityContracts() throws IOException {
         try {
             CompilationResult result = compileWithNullUsageProcessor("sample.InvalidSample", """
@@ -419,6 +435,49 @@ public class Antlr4_annotationsTest {
 
     }
 
+    private static final class PrimitiveLocalVariableRoundEnvironment implements RoundEnvironment {
+
+        private final TypeElement nullableType;
+
+        private final VariableElement nullablePrimitiveLocalVariable;
+
+        private PrimitiveLocalVariableRoundEnvironment(TestElements elements) {
+            this.nullableType = elements.nullableType();
+            this.nullablePrimitiveLocalVariable = new TestVariableElement(this.nullableType,
+                    ElementKind.LOCAL_VARIABLE, "primitiveLocal");
+        }
+
+        @Override
+        public boolean processingOver() {
+            return false;
+        }
+
+        @Override
+        public boolean errorRaised() {
+            return false;
+        }
+
+        @Override
+        public Set<? extends Element> getRootElements() {
+            return Set.of();
+        }
+
+        @Override
+        public Set<? extends Element> getElementsAnnotatedWith(TypeElement annotation) {
+            if (annotation == this.nullableType) {
+                return Set.of(this.nullablePrimitiveLocalVariable);
+            }
+
+            return Set.of();
+        }
+
+        @Override
+        public Set<? extends Element> getElementsAnnotatedWith(Class<? extends java.lang.annotation.Annotation> annotation) {
+            throw new UnsupportedOperationException();
+        }
+
+    }
+
     private static final class CapturingMessager implements Messager {
 
         private final List<ProcessorMessage> messages = new ArrayList<>();
@@ -462,6 +521,10 @@ public class Antlr4_annotationsTest {
 
         private TypeElement notNullType() {
             return this.notNullType;
+        }
+
+        private TypeElement nullableType() {
+            return this.nullableType;
         }
 
         @Override
@@ -553,8 +616,18 @@ public class Antlr4_annotationsTest {
 
         private final TypeElement annotationType;
 
+        private final ElementKind kind;
+
+        private final String name;
+
         private TestVariableElement(TypeElement annotationType) {
+            this(annotationType, ElementKind.FIELD, "primitiveField");
+        }
+
+        private TestVariableElement(TypeElement annotationType, ElementKind kind, String name) {
             this.annotationType = annotationType;
+            this.kind = kind;
+            this.name = name;
         }
 
         @Override
@@ -569,7 +642,7 @@ public class Antlr4_annotationsTest {
 
         @Override
         public ElementKind getKind() {
-            return ElementKind.FIELD;
+            return this.kind;
         }
 
         @Override
@@ -579,7 +652,7 @@ public class Antlr4_annotationsTest {
 
         @Override
         public Name getSimpleName() {
-            return new TestName("primitiveField");
+            return new TestName(this.name);
         }
 
         @Override
