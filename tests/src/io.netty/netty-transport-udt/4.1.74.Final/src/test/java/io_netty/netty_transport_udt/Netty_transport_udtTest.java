@@ -43,6 +43,7 @@ import java.nio.channels.Selector;
 import java.nio.charset.StandardCharsets;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
@@ -284,6 +285,62 @@ public class Netty_transport_udtTest {
             assertThat(receivedPayload.get().toString(StandardCharsets.UTF_8)).isEqualTo("udt-byte-transport");
         } finally {
             ReferenceCountUtil.release(receivedPayload.get());
+            closeRegistered(clientChannel);
+            closeRegistered(serverChannel);
+            serverGroup.shutdownGracefully().syncUninterruptibly();
+            clientGroup.shutdownGracefully().syncUninterruptibly();
+        }
+    }
+
+    @Test
+    void messageTransportBootstrapsClientServerAndPreservesMessageFrames() throws InterruptedException {
+        EventLoopGroup serverGroup = new NioEventLoopGroup(1, (ThreadFactory) null, NioUdtProvider.MESSAGE_PROVIDER);
+        EventLoopGroup clientGroup = new NioEventLoopGroup(1, (ThreadFactory) null, NioUdtProvider.MESSAGE_PROVIDER);
+        List<ByteBuf> receivedMessages = Collections.synchronizedList(new ArrayList<>());
+        CountDownLatch messagesReceived = new CountDownLatch(2);
+        Channel serverChannel = null;
+        Channel clientChannel = null;
+        try {
+            ServerBootstrap serverBootstrap = new ServerBootstrap()
+                    .group(serverGroup, serverGroup)
+                    .channelFactory(NioUdtProvider.MESSAGE_ACCEPTOR)
+                    .childHandler(new ChannelInitializer<Channel>() {
+                        @Override
+                        protected void initChannel(Channel channel) {
+                            channel.pipeline().addLast(new SimpleChannelInboundHandler<UdtMessage>() {
+                                @Override
+                                protected void channelRead0(ChannelHandlerContext context, UdtMessage message) {
+                                    receivedMessages.add(message.content().retainedDuplicate());
+                                    messagesReceived.countDown();
+                                }
+                            });
+                        }
+                    });
+            serverChannel = serverBootstrap.bind(new InetSocketAddress("127.0.0.1", 0))
+                    .syncUninterruptibly()
+                    .channel();
+
+            Bootstrap clientBootstrap = new Bootstrap()
+                    .group(clientGroup)
+                    .channelFactory(NioUdtProvider.MESSAGE_CONNECTOR)
+                    .handler(new ChannelInitializer<Channel>() {
+                        @Override
+                        protected void initChannel(Channel channel) {
+                        }
+                    });
+            InetSocketAddress serverAddress = (InetSocketAddress) serverChannel.localAddress();
+            clientChannel = clientBootstrap.connect(serverAddress).syncUninterruptibly().channel();
+            clientChannel.writeAndFlush(new UdtMessage(buffer("first-message-frame"))).syncUninterruptibly();
+            clientChannel.writeAndFlush(new UdtMessage(buffer("second-message-frame"))).syncUninterruptibly();
+
+            assertThat(messagesReceived.await(10, TimeUnit.SECONDS)).isTrue();
+            assertThat(receivedMessages)
+                    .extracting(message -> message.toString(StandardCharsets.UTF_8))
+                    .containsExactly("first-message-frame", "second-message-frame");
+        } finally {
+            for (ByteBuf message : receivedMessages) {
+                ReferenceCountUtil.release(message);
+            }
             closeRegistered(clientChannel);
             closeRegistered(serverChannel);
             serverGroup.shutdownGracefully().syncUninterruptibly();
