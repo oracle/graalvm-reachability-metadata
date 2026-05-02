@@ -148,6 +148,19 @@ public class Osgi_annotationTest {
         assertThat(providerService.provide()).isEqualTo("provided");
     }
 
+    @Test
+    void enumConstantsCanBeSelectedByPublicNamesForManifestConfiguration() {
+        Requirement.Cardinality cardinality = Requirement.Cardinality.valueOf("MULTIPLE");
+        Requirement.Resolution resolution = Requirement.Resolution.valueOf("OPTIONAL");
+        Export.Substitution substitution = Export.Substitution.valueOf("NOIMPORT");
+
+        assertThat(cardinality).isSameAs(Requirement.Cardinality.MULTIPLE);
+        assertThat(cardinality.toString()).isEqualTo("multiple");
+        assertThat(resolution).isSameAs(Requirement.Resolution.OPTIONAL);
+        assertThat(resolution.toString()).isEqualTo("optional");
+        assertThat(substitution).isSameAs(Export.Substitution.NOIMPORT);
+    }
+
     @Capability(namespace = "example.capability", name = "typed", version = "1.0.0")
     @Requirement(namespace = "example.requirement", name = "typed", resolution = Requirement.Resolution.OPTIONAL)
     private @interface BundleContract {
