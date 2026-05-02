@@ -1,0 +1,1162 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dea35-8ed8-7822-9f1c-ec4fae66cdd6
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.25.0-alpha
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.25.0-alpha" when "$version$" is replaced with "1.25.0-alpha".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
+- Set "coordinates" to "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.25.0-alpha".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.25.0-alpha".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata file and Maven coordinates first, then verify the artifact’s upstream repository/tag layout before editing the JSON.
+exec
+/usr/bin/zsh -lc "sed -n '1,200p' build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+ succeeded in 0ms:
+{
+  "coordinates" : "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.25.0-alpha"
+}
+
+exec
+/usr/bin/zsh -lc 'pwd && ls -l build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+ succeeded in 0ms:
+/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+-rw-rw-r-- 1 mihailo mihailo 96 May  2 21:41 build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
+
+exec
+/usr/bin/zsh -lc 'rg -n "opentelemetry-sdk-extension-autoconfigure" .' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+ succeeded in 0ms:
+./metadata/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/$version$/opentelemetry-sdk-extension-autoconfigure-spi-$version$-sources.jar",
+./metadata/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/$version$/opentelemetry-sdk-extension-autoconfigure-spi-$version$-javadoc.jar",
+./tests/src/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.25.0/build.gradle:14:    testImplementation "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:$libraryVersion"
+./tests/src/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.25.0/gradle.properties:4:library.coordinates = io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:1.25.0
+./tests/src/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.25.0/gradle.properties:6:metadata.dir = io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.25.0/
+./tests/src/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.25.0/settings.gradle:20:rootProject.name = 'io.opentelemetry.opentelemetry-sdk-extension-autoconfigure-spi_tests'
+./stats/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.25.0/execution-metrics.json:4:    "library": "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:1.25.0",
+./stats/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.25.0/execution-metrics.json:52:      "test_file": "tests/src/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.25.0/src/test/java/io_opentelemetry/opentelemetry_sdk_extension_autoconfigure_spi/Opentelemetry_sdk_extension_autoconfigure_spiTest.java",
+./stats/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.25.0/execution-metrics.json:53:      "metadata_file": "metadata/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.25.0/reachability-metadata.json"
+
+web search: 
+web search: Maven Central io.opentelemetry opentelemetry-sdk-extension-autoconfigure 1.25.0-alpha sources jar javadoc tests jar
+web search: 
+web search: https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.25.0-alpha/
+codex
+The artifact exists on Maven Central and its POM points at `open-telemetry/opentelemetry-java`. I’m checking the exact Maven classifiers now because this repo prefers Maven-hosted source and test artifacts when they exist.
+exec
+/usr/bin/zsh -lc "curl -s https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.25.0-alpha/ | sed -n '1,120p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+exec
+/usr/bin/zsh -lc "curl -s https://api.github.com/repos/open-telemetry/opentelemetry-java/git/ref/tags/v1.25.0 | sed -n '1,120p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+exec
+/usr/bin/zsh -lc "curl -s https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.25.0-alpha/opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom | sed -n '1,220p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+ succeeded in 161ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.opentelemetry</groupId>
+  <artifactId>opentelemetry-sdk-extension-autoconfigure</artifactId>
+  <version>1.25.0-alpha</version>
+  <name>OpenTelemetry Java</name>
+  <description>OpenTelemetry SDK Auto-configuration</description>
+  <url>https://github.com/open-telemetry/opentelemetry-java</url>
+  <licenses>
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>opentelemetry</id>
+      <name>OpenTelemetry</name>
+      <url>https://github.com/open-telemetry/community</url>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git@github.com:open-telemetry/opentelemetry-java.git</connection>
+    <developerConnection>scm:git:git@github.com:open-telemetry/opentelemetry-java.git</developerConnection>
+    <url>git@github.com:open-telemetry/opentelemetry-java.git</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk</artifactId>
+      <version>1.25.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-metrics</artifactId>
+      <version>1.25.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-logs</artifactId>
+      <version>1.25.0-alpha</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-extension-autoconfigure-spi</artifactId>
+      <version>1.25.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-semconv</artifactId>
+      <version>1.25.0-alpha</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+ succeeded in 355ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.25.0-alpha</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.25.0-alpha</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45     88492      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar.asc" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar.asc">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45       475      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar.asc.md5" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar.asc.md5">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        32      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar.asc.sha1" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar.asc.sha1">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        40      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar.asc.sha256" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar.asc.sha256">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        64      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar.asc.sha512" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar.asc.sha512">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45       128      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar.md5" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar.md5">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        32      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar.sha1" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar.sha1">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        40      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar.sha256" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar.sha256">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        64      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar.sha512" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar.sha512">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45       128      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45     18748      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar.asc" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar.asc">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45       475      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar.asc.md5" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar.asc.md5">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        32      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar.asc.sha1" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar.asc.sha1">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        40      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar.asc.sha256" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar.asc.sha256">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        64      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar.asc.sha512" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar.asc.sha512">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45       128      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar.md5" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar.md5">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        32      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar.sha1" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar.sha1">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        40      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar.sha256" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar.sha256">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        64      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar.sha512" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar.sha512">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45       128      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45     37659      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar.asc" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar.asc">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45       475      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar.asc.md5" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar.asc.md5">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        32      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar.asc.sha1" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar.asc.sha1">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        40      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar.asc.sha256" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar.asc.sha256">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        64      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar.asc.sha512" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar.asc.sha512">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45       128      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar.md5" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar.md5">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        32      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar.sha1" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar.sha1">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        40      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar.sha256" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar.sha256">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        64      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar.sha512" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar.sha512">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45       128      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45      5495      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module.asc" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module.asc">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45       475      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module.asc.md5" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module.asc.md5">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        32      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module.asc.sha1" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module.asc.sha1">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        40      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module.asc.sha256" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module.asc.sha256">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        64      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module.asc.sha512" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module.asc.sha512">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45       128      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module.md5" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module.md5">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        32      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module.sha1" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module.sha1">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        40      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module.sha256" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module.sha256">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        64      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module.sha512" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.module.sha512">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45       128      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45      2629      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom.asc" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom.asc">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45       475      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom.asc.md5" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom.asc.md5">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        32      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom.asc.sha1" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom.asc.sha1">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        40      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom.asc.sha256" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom.asc.sha256">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        64      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom.asc.sha512" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom.asc.sha512">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45       128      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom.md5" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom.md5">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        32      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom.sha1" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom.sha1">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        40      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom.sha256" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom.sha256">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45        64      
+<a href="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom.sha512" title="opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.pom.sha512">opentelemetry-sdk-extension-autoconfigure-1.2...</a>  2023-04-07 14:45       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 394ms:
+{
+  "ref": "refs/tags/v1.25.0",
+  "node_id": "MDM6UmVmMTcyNzUwNzIzOnJlZnMvdGFncy92MS4yNS4w",
+  "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/refs/tags/v1.25.0",
+  "object": {
+    "sha": "cea8cf11d6914a35cdd3eb9bd85ebd054439216f",
+    "type": "commit",
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/commits/cea8cf11d6914a35cdd3eb9bd85ebd054439216f"
+  }
+}
+
+exec
+/usr/bin/zsh -lc "rg -n \"1\\.25\\.0-alpha|opentelemetry.*alpha|opentelemetry-sdk-extension-autoconfigure\" metadata build/discovered-artifact-metadata | head -80" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+exec
+/usr/bin/zsh -lc "find metadata/io.opentelemetry -maxdepth 3 -name index.json -print | sort | xargs -r sed -n '1,80p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+exec
+/usr/bin/zsh -lc 'curl -fsI https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0/sdk-extensions/autoconfigure/src/test || true' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+exec
+/usr/bin/zsh -lc 'curl -fsI https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0-alpha/sdk-extensions/autoconfigure/src/test || true' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+ succeeded in 121ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.32.0-alpha",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api-events/$version$/opentelemetry-api-events-$version$-sources.jar",
+    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.32.0/api/events/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api-events/$version$/opentelemetry-api-events-$version$-javadoc.jar",
+    "description" : "OpenTelemetry API Events provides the experimental Java API surface for creating and recording OpenTelemetry event telemetry. It supplies event-related interfaces and builders that integrate with the broader OpenTelemetry Java API so applications and instrumentation can emit structured events consistently.",
+    "tested-versions" : [
+      "1.32.0-alpha",
+      "1.33.0-alpha"
+    ],
+    "allowed-packages" : [
+      "io.opentelemetry.api.events"
+    ]
+  },
+  {
+    "metadata-version" : "1.25.0-alpha",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api-events/$version$/opentelemetry-api-events-$version$-sources.jar",
+    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0/api/events/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api-events/$version$/opentelemetry-api-events-$version$-javadoc.jar",
+    "description" : "OpenTelemetry API Events provides the experimental Java API surface for creating and recording OpenTelemetry event telemetry. It supplies event-related interfaces and builders that integrate with the broader OpenTelemetry Java API so applications and instrumentation can emit structured events consistently.",
+    "tested-versions" : [
+      "1.25.0-alpha",
+      "1.26.0-alpha",
+      "1.27.0-alpha",
+      "1.28.0-alpha",
+      "1.29.0-alpha",
+      "1.30.0-alpha",
+      "1.30.1-alpha",
+      "1.31.0-alpha"
+    ],
+    "allowed-packages" : [
+      "io.opentelemetry.api.events"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.26.0-alpha",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api-logs/$version$/opentelemetry-api-logs-$version$-sources.jar",
+    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.26.0/api/logs/src/test/java/io/opentelemetry/api/logs",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api-logs/$version$/opentelemetry-api-logs-$version$-javadoc.jar",
+    "description" : "OpenTelemetry API Logs provides Java API types for creating loggers and log records within the OpenTelemetry telemetry model. It is intended for emitting events and for log appenders that bridge existing Java logging frameworks to OpenTelemetry log data.",
+    "tested-versions" : [
+      "1.26.0-alpha"
+    ],
+    "allowed-packages" : [
+      "io.opentelemetry.api.logs"
+    ]
+  },
+  {
+    "metadata-version" : "1.23.0-alpha",
+    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api-logs/$version$/opentelemetry-api-logs-$version$-sources.jar",
+    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.23.0/api/logs/src/test/java/io/opentelemetry/api/logs",
+    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api-logs/$version$/opentelemetry-api-logs-$version$-javadoc.jar",
+    "description" : "OpenTelemetry API Logs provides Java API types for creating loggers and log records within the OpenTelemetry telemetry model. It is intended for emitting events and for log appenders that bridge existing Java logging frameworks to OpenTelemetry log data.",
+    "tested-versions" : [
+      "1.23.0-alpha",
+      "1.23.1-alpha",
+      "1.24.0-alpha",
+      "1.25.0-alpha"
+    ],
+    "allowed-packages" : [
+      "io.opentelemetry.api.logs"
+    ]
+  },
+  {
+    "metadata-version" : "1.19.0-alpha",
+    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api-logs/$version$/opentelemetry-api-logs-$version$-sources.jar",
+    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.19.0/api/logs/src/test/java/io/opentelemetry/api/logs",
+    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api-logs/$version$/opentelemetry-api-logs-$version$-javadoc.jar",
+    "description" : "OpenTelemetry API Logs provides Java API types for creating loggers and log records within the OpenTelemetry telemetry model. It is intended for emitting events and for log appenders that bridge existing Java logging frameworks to OpenTelemetry log data.",
+    "tested-versions" : [
+
+ succeeded in 143ms:
+build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json:2:  "coordinates" : "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.25.0-alpha"
+metadata/io.opentelemetry/opentelemetry-api-logs/index.json:28:      "1.25.0-alpha"
+metadata/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/$version$/opentelemetry-sdk-extension-autoconfigure-spi-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/$version$/opentelemetry-sdk-extension-autoconfigure-spi-$version$-javadoc.jar",
+metadata/io.opentelemetry/opentelemetry-semconv/index.json:23:    "metadata-version" : "1.25.0-alpha",
+metadata/io.opentelemetry/opentelemetry-semconv/index.json:30:      "1.25.0-alpha",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:36:      "1.25.0-alpha"
+metadata/io.opentelemetry/opentelemetry-api-events/index.json:19:    "metadata-version" : "1.25.0-alpha",
+metadata/io.opentelemetry/opentelemetry-api-events/index.json:26:      "1.25.0-alpha",
+
+ succeeded in 665ms:
+HTTP/2 404 
+date: Sat, 02 May 2026 19:41:39 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=E5oTimzIM9tMntqibswQlrUp%2BASankzokRFCcAYQkTQNUcnQCf3fQkRQ71pFwEczH3twCsNVNm3%2FAYSlsRxqo66p7zaVBq0EecV5u0AsMnbTx7iaKkfyWZDV0NdFG2UjRS7bCxPll8N%2B%2FxU02o0QZOER2AHPNAS25jjLMtOeS2at9yWFSa7474YweJErgmjRh491qx4ECO7sbY%2FzXA7n5rP5T%2FtkSCHul%2BQXqccNxJ%2FTjLBUbFWlIFx9aB726AOgKJXJqWQjjReeZjMtE6sOpA%3D%3D--SoHxl1%2BapJ6HWvnn--HNcTDn8lThzdbnT2q6KTEQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1858392197.1777750898; expires=Sun, 02 May 2027 19:41:38 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 02 May 2027 19:41:38 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 19B4:3DAEA1:DBBBCBF:A3A4743:69F65372
+
+
+ succeeded in 695ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 19:41:39 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"20bfe4b19baad2d8328e7a7c254db872"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=JratkoIg4ljw5jGDFSwhz9280EawmjfIXgwC3CPjLenWbtMBD%2Bjguwce61CjyBDLN9xiEe7uL%2BrAFYzXFYsRtBlmEHmvdiVycSHpD3kJbYI2%2BkqaLliTpOgSDZWPShgLf1QX%2BSfmXi5oyraqIwtPw87xXz%2FYwQ0w5ackeG1PmTdxqbPORDnc5HzinGMaCIeFlvUYKpyHxPwku3Xrk9oTAr4vTwZensXQPx%2BtC2KQH%2B2ZUuxEgxMibBwbprFMK94sxf86LDtFL5b5H5icVAIF8w%3D%3D--0dyTx0GlzvuspyRg--MVrGspfPICGz%2FtEYSLtjhw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1660043683.1777750898; expires=Sun, 02 May 2027 19:41:38 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 02 May 2027 19:41:38 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 19EE:A6701:DEA8C95:A613386:69F65372
+
+
+exec
+/usr/bin/zsh -lc "curl -s https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure?ref=v1.25.0 | sed -n '1,220p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+exec
+/usr/bin/zsh -lc "curl -s https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test?ref=v1.25.0 | sed -n '1,200p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+exec
+/usr/bin/zsh -lc 'curl -fsI https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure || true' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+exec
+/usr/bin/zsh -lc 'curl -fsI https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure || true' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+ succeeded in 167ms:
+zsh:1: no matches found: https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure?ref=v1.25.0
+
+ succeeded in 237ms:
+zsh:1: no matches found: https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test?ref=v1.25.0
+
+ succeeded in 789ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 19:41:49 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"2554a69b2215c633d8cffa43c5948cce"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=m5y1EjroPNFjqhTsWCyz%2F%2BlRCWhnv3aXcBDgGUX8gK1%2BJPAXYirkTcE5ctUoFSIzMLbzr1ZRbbi5F%2Byy8CA89XyKs7tyUqgfE9DeSnlzgMEURE2uOjedc60pF3qINMjV%2BEkmA0VJWPehe4LrP1qJBRh0HqStGtBVltHc9YyVPMj2dUiRYl2Kp0VL5QML%2FOZ7D1VuTvYzhCxSAlD%2FsaD2cLlhLDmrJNYDv7iaEYFqMFiQAJFm58DYCfSV08A2xNLG3TsNNZODWwgdpy8rT6%2BVfA%3D%3D--zrMXrEXOzfM0gWJh--NeZpeT3Wck406kLCM2Zn2Q%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.742630757.1777750909; expires=Sun, 02 May 2027 19:41:49 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 02 May 2027 19:41:49 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 1972:167D:DD1FBF5:A4ACA7E:69F6537D
+
+
+ succeeded in 860ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 19:41:49 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"3a3764639ba9bb9a5f66bcaabd6242d8"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=4IyvCgZomheXfkqFUtHVYtoLdpxndLTNkfVJaTEAA8XS42cpG3fG9RD8X8fGTcb%2Fgfyvt3j55QWf3s7cdRdN%2FdnFNburfrTMOAshdTZIL9aguKtmsbtixXouopkDeWG7lormHYJJbsFfJXcUtbsTYmeiB4G0eA5n%2FJx5QInrhtdQ3nsdwCXHvqzLaIjGgsQIert9rbss82c3PDYAKXHGRCiqyIWd4CokSqqwKmO4I%2FwEqGZiDcpa3fw9LfcOUP5a0yjE2pxeJBtMCTo3nj02%2Bw%3D%3D--0iv5NdvziIkb5Q7s--d%2BVxJCLbUoNjbhdjL5qHjA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.402899167.1777750909; expires=Sun, 02 May 2027 19:41:49 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 02 May 2027 19:41:49 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 19C2:167D:DD1FCE5:A4ACB2B:69F6537D
+
+
+web search: 
+web search: https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure
+web search: 
+web search: io.opentelemetry opentelemetry-sdk-extension-autoconfigure 1.25.0-alpha repo.maven.apache.org maven2 opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.25.0-alpha/
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.25.0-alpha/
+codex
+There is no Maven test classifier in the Central listing, only the main jar, sources jar, javadoc jar, module, and POM. The upstream test suite is under the `v1.25.0` OpenTelemetry Java tag because the alpha artifact was released from that repository tag.
+exec
+/usr/bin/zsh -lc "curl -s 'https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure?ref=v1.25.0' | sed -n '1,220p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+exec
+/usr/bin/zsh -lc "curl -s 'https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure?ref=v1.25.0' | sed -n '1,220p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+exec
+/usr/bin/zsh -lc "curl -s 'https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure?ref=v1.25.0' | sed -n '1,220p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+exec
+/usr/bin/zsh -lc "curl -s 'https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.25.0-alpha/opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar' -o /tmp/opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar && jar tf /tmp/opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.jar | sed -n '1,80p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+ succeeded in 346ms:
+[
+  {
+    "name": "README.md",
+    "path": "sdk-extensions/autoconfigure/README.md",
+    "sha": "a39000c16b9ff6e3a84e3b0e763588f13126c486",
+    "size": 43520,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/README.md?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/README.md",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/a39000c16b9ff6e3a84e3b0e763588f13126c486",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/README.md?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/a39000c16b9ff6e3a84e3b0e763588f13126c486",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/README.md"
+    }
+  },
+  {
+    "name": "build.gradle.kts",
+    "path": "sdk-extensions/autoconfigure/build.gradle.kts",
+    "sha": "03ed193237736dd1d15c56a2467e05ead0be09d8",
+    "size": 3204,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/build.gradle.kts?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/build.gradle.kts",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/03ed193237736dd1d15c56a2467e05ead0be09d8",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/build.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/build.gradle.kts?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/03ed193237736dd1d15c56a2467e05ead0be09d8",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/build.gradle.kts"
+    }
+  },
+  {
+    "name": "gradle.properties",
+    "path": "sdk-extensions/autoconfigure/gradle.properties",
+    "sha": "4476ae57e31732bf2f4c7fefdabfc15133214040",
+    "size": 19,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/gradle.properties?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/gradle.properties",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/4476ae57e31732bf2f4c7fefdabfc15133214040",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/gradle.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/gradle.properties?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/4476ae57e31732bf2f4c7fefdabfc15133214040",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/gradle.properties"
+    }
+  },
+  {
+    "name": "src",
+    "path": "sdk-extensions/autoconfigure/src",
+    "sha": "239ccd76d08eb82b5d7cfc0c401cdf8daaa26c25",
+    "size": 0,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0/sdk-extensions/autoconfigure/src",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/trees/239ccd76d08eb82b5d7cfc0c401cdf8daaa26c25",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/trees/239ccd76d08eb82b5d7cfc0c401cdf8daaa26c25",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0/sdk-extensions/autoconfigure/src"
+    }
+  }
+]
+
+ succeeded in 359ms:
+[
+  {
+    "name": "AutoConfiguredOpenTelemetrySdkTest.java",
+    "path": "sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdkTest.java",
+    "sha": "513c1f25638bffed311488c5ecc2de4e1fba2428",
+    "size": 22070,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdkTest.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdkTest.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/513c1f25638bffed311488c5ecc2de4e1fba2428",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdkTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdkTest.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/513c1f25638bffed311488c5ecc2de4e1fba2428",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdkTest.java"
+    }
+  },
+  {
+    "name": "LogRecordExporterConfigurationTest.java",
+    "path": "sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/LogRecordExporterConfigurationTest.java",
+    "sha": "d1533f034c78524b5763ea2a2d5689cff2424a15",
+    "size": 4700,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/LogRecordExporterConfigurationTest.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/LogRecordExporterConfigurationTest.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/d1533f034c78524b5763ea2a2d5689cff2424a15",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/LogRecordExporterConfigurationTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/LogRecordExporterConfigurationTest.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/d1533f034c78524b5763ea2a2d5689cff2424a15",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/LogRecordExporterConfigurationTest.java"
+    }
+  },
+  {
+    "name": "LoggerProviderConfigurationTest.java",
+    "path": "sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/LoggerProviderConfigurationTest.java",
+    "sha": "5eda442a27d004e1a04e351bfcb1a762ea88a9b1",
+    "size": 3303,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/LoggerProviderConfigurationTest.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/LoggerProviderConfigurationTest.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/5eda442a27d004e1a04e351bfcb1a762ea88a9b1",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/LoggerProviderConfigurationTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/LoggerProviderConfigurationTest.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/5eda442a27d004e1a04e351bfcb1a762ea88a9b1",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/LoggerProviderConfigurationTest.java"
+    }
+  },
+  {
+    "name": "MeterProviderConfigurationTest.java",
+    "path": "sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/MeterProviderConfigurationTest.java",
+    "sha": "aebd2c85611acd01cf7c011d76efdc38ae476c46",
+    "size": 2868,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/MeterProviderConfigurationTest.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/MeterProviderConfigurationTest.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/aebd2c85611acd01cf7c011d76efdc38ae476c46",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/MeterProviderConfigurationTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/MeterProviderConfigurationTest.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/aebd2c85611acd01cf7c011d76efdc38ae476c46",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/MeterProviderConfigurationTest.java"
+    }
+  },
+  {
+    "name": "MetricExporterConfigurationTest.java",
+    "path": "sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/MetricExporterConfigurationTest.java",
+    "sha": "3b67873a224313c4b389c0084f6d2d9a67515ad6",
+    "size": 3379,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/MetricExporterConfigurationTest.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/MetricExporterConfigurationTest.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/3b67873a224313c4b389c0084f6d2d9a67515ad6",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/MetricExporterConfigurationTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/MetricExporterConfigurationTest.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/3b67873a224313c4b389c0084f6d2d9a67515ad6",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/MetricExporterConfigurationTest.java"
+    }
+  },
+  {
+    "name": "PropagatorConfigurationTest.java",
+    "path": "sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/PropagatorConfigurationTest.java",
+    "sha": "f8b66b75d49486fec7e11d196918e2ed292f3886",
+    "size": 2558,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/PropagatorConfigurationTest.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/PropagatorConfigurationTest.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/f8b66b75d49486fec7e11d196918e2ed292f3886",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/PropagatorConfigurationTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/PropagatorConfigurationTest.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/f8b66b75d49486fec7e11d196918e2ed292f3886",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/PropagatorConfigurationTest.java"
+    }
+  },
+  {
+    "name": "ResourceConfigurationFuzzTest.java",
+    "path": "sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/ResourceConfigurationFuzzTest.java",
+    "sha": "e0152ea9b110dbaf4f197c28e967cadb8b3875c2",
+    "size": 1872,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/ResourceConfigurationFuzzTest.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/ResourceConfigurationFuzzTest.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/e0152ea9b110dbaf4f197c28e967cadb8b3875c2",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/ResourceConfigurationFuzzTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/ResourceConfigurationFuzzTest.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/e0152ea9b110dbaf4f197c28e967cadb8b3875c2",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/ResourceConfigurationFuzzTest.java"
+    }
+  },
+  {
+    "name": "ResourceConfigurationTest.java",
+    "path": "sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/ResourceConfigurationTest.java",
+    "sha": "9c8e85ac43291fbc465ba56789de0b017916bcc2",
+    "size": 5225,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/ResourceConfigurationTest.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/ResourceConfigurationTest.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/9c8e85ac43291fbc465ba56789de0b017916bcc2",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/ResourceConfigurationTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/ResourceConfigurationTest.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/9c8e85ac43291fbc465ba56789de0b017916bcc2",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/ResourceConfigurationTest.java"
+    }
+  },
+  {
+    "name": "SpanExporterConfigurationTest.java",
+    "path": "sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/SpanExporterConfigurationTest.java",
+    "sha": "6ee7992464d25971afb58a12cba1e31ca5126ef0",
+    "size": 2795,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/SpanExporterConfigurationTest.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/SpanExporterConfigurationTest.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/6ee7992464d25971afb58a12cba1e31ca5126ef0",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/SpanExporterConfigurationTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/SpanExporterConfigurationTest.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/6ee7992464d25971afb58a12cba1e31ca5126ef0",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/SpanExporterConfigurationTest.java"
+    }
+  },
+  {
+    "name": "SpiUtilTest.java",
+    "path": "sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/SpiUtilTest.java",
+    "sha": "5733b41c6d0ead8f251339e49838772bc5a4624f",
+    "size": 5584,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/SpiUtilTest.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/SpiUtilTest.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/5733b41c6d0ead8f251339e49838772bc5a4624f",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/SpiUtilTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/SpiUtilTest.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/5733b41c6d0ead8f251339e49838772bc5a4624f",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/SpiUtilTest.java"
+    }
+  },
+  {
+    "name": "TracerProviderConfigurationTest.java",
+    "path": "sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/TracerProviderConfigurationTest.java",
+    "sha": "3c4f41f7323e6dfefbe77cbf8f705225298ec1ab",
+    "size": 10909,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/TracerProviderConfigurationTest.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/TracerProviderConfigurationTest.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/3c4f41f7323e6dfefbe77cbf8f705225298ec1ab",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/TracerProviderConfigurationTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/TracerProviderConfigurationTest.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/3c4f41f7323e6dfefbe77cbf8f705225298ec1ab",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure/TracerProviderConfigurationTest.java"
+    }
+  }
+]
+
+ succeeded in 404ms:
+[
+  {
+    "name": "AutoConfiguredOpenTelemetrySdk.java",
+    "path": "sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdk.java",
+    "sha": "a1a8c58fe9baeb50db0126fcd2ac54318caf42c4",
+    "size": 2075,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdk.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdk.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/a1a8c58fe9baeb50db0126fcd2ac54318caf42c4",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdk.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdk.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/a1a8c58fe9baeb50db0126fcd2ac54318caf42c4",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdk.java"
+    }
+  },
+  {
+    "name": "AutoConfiguredOpenTelemetrySdkBuilder.java",
+    "path": "sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdkBuilder.java",
+    "sha": "b983f431475031266546cb7b14bc60c4815a4953",
+    "size": 20435,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdkBuilder.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdkBuilder.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/b983f431475031266546cb7b14bc60c4815a4953",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdkBuilder.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdkBuilder.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/b983f431475031266546cb7b14bc60c4815a4953",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdkBuilder.java"
+    }
+  },
+  {
+    "name": "LogRecordExporterConfiguration.java",
+    "path": "sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/LogRecordExporterConfiguration.java",
+    "sha": "a712ee30397acc16f74f0a0b6f9f575fe88561d6",
+    "size": 3957,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/LogRecordExporterConfiguration.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/LogRecordExporterConfiguration.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/a712ee30397acc16f74f0a0b6f9f575fe88561d6",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/LogRecordExporterConfiguration.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/LogRecordExporterConfiguration.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/a712ee30397acc16f74f0a0b6f9f575fe88561d6",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/LogRecordExporterConfiguration.java"
+    }
+  },
+  {
+    "name": "LoggerProviderConfiguration.java",
+    "path": "sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/LoggerProviderConfiguration.java",
+    "sha": "c83bf34728d5b3657ef8727f477326632d9b5159",
+    "size": 4481,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/LoggerProviderConfiguration.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/LoggerProviderConfiguration.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/c83bf34728d5b3657ef8727f477326632d9b5159",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/LoggerProviderConfiguration.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/LoggerProviderConfiguration.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/c83bf34728d5b3657ef8727f477326632d9b5159",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/LoggerProviderConfiguration.java"
+    }
+  },
+  {
+    "name": "MeterProviderConfiguration.java",
+    "path": "sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/MeterProviderConfiguration.java",
+    "sha": "aaab88488f521bef08ce167c53eb13e4df162fbb",
+    "size": 3123,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/MeterProviderConfiguration.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/MeterProviderConfiguration.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/aaab88488f521bef08ce167c53eb13e4df162fbb",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/MeterProviderConfiguration.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/MeterProviderConfiguration.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/aaab88488f521bef08ce167c53eb13e4df162fbb",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/MeterProviderConfiguration.java"
+    }
+  },
+  {
+    "name": "MetricExporterConfiguration.java",
+    "path": "sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/MetricExporterConfiguration.java",
+    "sha": "b7eacfc06444f5fc0dfb3f3962434b4e56bdca39",
+    "size": 4281,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/MetricExporterConfiguration.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/MetricExporterConfiguration.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/b7eacfc06444f5fc0dfb3f3962434b4e56bdca39",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/MetricExporterConfiguration.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/MetricExporterConfiguration.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/b7eacfc06444f5fc0dfb3f3962434b4e56bdca39",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/MetricExporterConfiguration.java"
+    }
+  },
+  {
+    "name": "NamedSpiManager.java",
+    "path": "sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/NamedSpiManager.java",
+    "sha": "0c4e50b8830bf03e1d6976df0f8dc2ec65f31095",
+    "size": 1314,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/NamedSpiManager.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/NamedSpiManager.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/0c4e50b8830bf03e1d6976df0f8dc2ec65f31095",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/NamedSpiManager.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/NamedSpiManager.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/0c4e50b8830bf03e1d6976df0f8dc2ec65f31095",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/NamedSpiManager.java"
+    }
+  },
+  {
+    "name": "PropagatorConfiguration.java",
+    "path": "sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/PropagatorConfiguration.java",
+    "sha": "ad909019d068deaa206f0c1dd097ff5196d28b6f",
+    "size": 2860,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/PropagatorConfiguration.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/PropagatorConfiguration.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/ad909019d068deaa206f0c1dd097ff5196d28b6f",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/PropagatorConfiguration.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/PropagatorConfiguration.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/ad909019d068deaa206f0c1dd097ff5196d28b6f",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/PropagatorConfiguration.java"
+    }
+  },
+  {
+    "name": "ResourceConfiguration.java",
+    "path": "sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/ResourceConfiguration.java",
+    "sha": "3dca2c10fe1f7850cef15a5e1b56281e43f52b7b",
+    "size": 4464,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/ResourceConfiguration.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/ResourceConfiguration.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/3dca2c10fe1f7850cef15a5e1b56281e43f52b7b",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/ResourceConfiguration.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/ResourceConfiguration.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/3dca2c10fe1f7850cef15a5e1b56281e43f52b7b",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/ResourceConfiguration.java"
+    }
+  },
+  {
+    "name": "SpanExporterConfiguration.java",
+    "path": "sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/SpanExporterConfiguration.java",
+    "sha": "c1dd0824ad6486e82689cc9e271b1d2ba6edc0eb",
+    "size": 4188,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/SpanExporterConfiguration.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/SpanExporterConfiguration.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/c1dd0824ad6486e82689cc9e271b1d2ba6edc0eb",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/SpanExporterConfiguration.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/SpanExporterConfiguration.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/c1dd0824ad6486e82689cc9e271b1d2ba6edc0eb",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/SpanExporterConfiguration.java"
+    }
+  },
+  {
+    "name": "SpiUtil.java",
+    "path": "sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/SpiUtil.java",
+    "sha": "2d7c0fec8bac2b11324c3c4325e99493e6917f58",
+    "size": 2283,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/SpiUtil.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/SpiUtil.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/2d7c0fec8bac2b11324c3c4325e99493e6917f58",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/SpiUtil.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/SpiUtil.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/2d7c0fec8bac2b11324c3c4325e99493e6917f58",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/SpiUtil.java"
+    }
+  },
+  {
+    "name": "TracerProviderConfiguration.java",
+    "path": "sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/TracerProviderConfiguration.java",
+    "sha": "ec476feea4ac31c23161d727a8d4afcf40edf055",
+    "size": 7495,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/TracerProviderConfiguration.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/TracerProviderConfiguration.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/ec476feea4ac31c23161d727a8d4afcf40edf055",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/TracerProviderConfiguration.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/TracerProviderConfiguration.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/ec476feea4ac31c23161d727a8d4afcf40edf055",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/TracerProviderConfiguration.java"
+    }
+  },
+  {
+    "name": "package-info.java",
+    "path": "sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/package-info.java",
+    "sha": "c416b60ccf8f981205cfd7dc44bf6c5f1ac6c776",
+    "size": 217,
+    "url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/package-info.java?ref=v1.25.0",
+    "html_url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/package-info.java",
+    "git_url": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/c416b60ccf8f981205cfd7dc44bf6c5f1ac6c776",
+    "download_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/package-info.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/open-telemetry/opentelemetry-java/contents/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/package-info.java?ref=v1.25.0",
+      "git": "https://api.github.com/repos/open-telemetry/opentelemetry-java/git/blobs/c416b60ccf8f981205cfd7dc44bf6c5f1ac6c776",
+      "html": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.25.0/sdk-extensions/autoconfigure/src/main/java/io/opentelemetry/sdk/autoconfigure/package-info.java"
+    }
+  }
+]
+
+ succeeded in 490ms:
+META-INF/
+META-INF/MANIFEST.MF
+io/
+io/opentelemetry/
+io/opentelemetry/sdk/
+io/opentelemetry/sdk/autoconfigure/
+io/opentelemetry/sdk/autoconfigure/NamedSpiManager.class
+io/opentelemetry/sdk/autoconfigure/SpiUtil.class
+io/opentelemetry/sdk/autoconfigure/AutoValue_AutoConfiguredOpenTelemetrySdk.class
+io/opentelemetry/sdk/autoconfigure/package-info.class
+io/opentelemetry/sdk/autoconfigure/SpanExporterConfiguration.class
+io/opentelemetry/sdk/autoconfigure/PropagatorConfiguration.class
+io/opentelemetry/sdk/autoconfigure/MetricExporterConfiguration.class
+io/opentelemetry/sdk/autoconfigure/ResourceConfiguration.class
+io/opentelemetry/sdk/autoconfigure/SpiUtil$ServiceLoaderFinder.class
+io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdkBuilder.class
+io/opentelemetry/sdk/autoconfigure/AutoConfiguredOpenTelemetrySdk.class
+io/opentelemetry/sdk/autoconfigure/LoggerProviderConfiguration.class
+io/opentelemetry/sdk/autoconfigure/LogRecordExporterConfiguration.class
+io/opentelemetry/sdk/autoconfigure/MeterProviderConfiguration.class
+io/opentelemetry/sdk/autoconfigure/TracerProviderConfiguration.class
+io/opentelemetry/sdk/autoconfigure/version.properties
+
+codex
+I’ve got enough to write the metadata: Maven Central for sources and Javadoc, GitHub `v1.25.0` for the source-tree tests, no `language` block, and no `not-for-native-image` block because the jar contains JVM `.class` files.
+apply patch
+patch: completed
+/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
+diff --git a/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json b/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
+index de021714a68a296ebdf190d96e0b25d3ebb35203..ffd48976072c282db3dea21a40347ecaa0c47c57
+--- a/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
++++ b/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.25.0-alpha"
++  "coordinates" : "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.25.0-alpha",
++  "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-javadoc.jar",
++  "description" : "OpenTelemetry SDK Extension Autoconfigure builds and configures an OpenTelemetry SDK from system properties, environment variables, service-provider extensions, and supplied customizers. It provides Java runtime setup for tracers, meters, loggers, resources, propagators, and exporters so applications can initialize telemetry consistently without hand-wiring each SDK component."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json b/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
+index de021714a68a296ebdf190d96e0b25d3ebb35203..ffd48976072c282db3dea21a40347ecaa0c47c57
+--- a/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
++++ b/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.25.0-alpha"
++  "coordinates" : "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.25.0-alpha",
++  "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-javadoc.jar",
++  "description" : "OpenTelemetry SDK Extension Autoconfigure builds and configures an OpenTelemetry SDK from system properties, environment variables, service-provider extensions, and supplied customizers. It provides Java runtime setup for tracers, meters, loggers, resources, propagators, and exporters so applications can initialize telemetry consistently without hand-wiring each SDK component."
+ }
+
+codex
+The file is updated. I’m doing a quick JSON parse and URL check now, including substituting `$version$` with `1.25.0-alpha` for the Maven-backed fields.
+exec
+/usr/bin/zsh -lc 'jq . build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+ succeeded in 0ms:
+{
+  "coordinates": "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.25.0-alpha",
+  "repository-url": "https://github.com/open-telemetry/opentelemetry-java",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-sources.jar",
+  "test-code-url": "https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-javadoc.jar",
+  "description": "OpenTelemetry SDK Extension Autoconfigure builds and configures an OpenTelemetry SDK from system properties, environment variables, service-provider extensions, and supplied customizers. It provides Java runtime setup for tracers, meters, loggers, resources, propagators, and exporters so applications can initialize telemetry consistently without hand-wiring each SDK component."
+}
+
+exec
+/usr/bin/zsh -lc "curl -fsI https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.25.0-alpha/opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-sources.jar >/tmp/src_head.txt && sed -n '1,12p' /tmp/src_head.txt" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+exec
+/usr/bin/zsh -lc "curl -fsI https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.25.0-alpha/opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha-javadoc.jar >/tmp/javadoc_head.txt && sed -n '1,12p' /tmp/javadoc_head.txt" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+exec
+/usr/bin/zsh -lc "curl -fsI https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure >/tmp/test_head.txt && sed -n '1,12p' /tmp/test_head.txt" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+ succeeded in 132ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 19:42:28 GMT
+content-type: application/java-archive
+content-length: 88492
+cf-ray: 9f5982661a50c239-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 320694
+etag: "cc4a1f63e6050afb2fa1eaa0dbaf6c4e"
+last-modified: Fri, 07 Apr 2023 14:45:08 GMT
+x-checksum-md5: cc4a1f63e6050afb2fa1eaa0dbaf6c4e
+x-checksum-sha1: f64ec953137b161455c00e19b9f172d04d43fd7b
+
+ succeeded in 137ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 19:42:28 GMT
+content-type: application/java-archive
+content-length: 18748
+cf-ray: 9f5982663b65f339-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 554245
+etag: "c3cf89a9c282a4cbe64e1f14207ab499"
+last-modified: Fri, 07 Apr 2023 14:45:08 GMT
+x-checksum-md5: c3cf89a9c282a4cbe64e1f14207ab499
+x-checksum-sha1: cfe957998be49c9e44e17bfb28d9651271a3a1f0
+
+ succeeded in 180ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 19:41:49 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"2554a69b2215c633d8cffa43c5948cce"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+diff --git a/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json b/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
+index de021714a68a296ebdf190d96e0b25d3ebb35203..ffd48976072c282db3dea21a40347ecaa0c47c57
+--- a/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
++++ b/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.25.0-alpha"
++  "coordinates" : "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.25.0-alpha",
++  "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-javadoc.jar",
++  "description" : "OpenTelemetry SDK Extension Autoconfigure builds and configures an OpenTelemetry SDK from system properties, environment variables, service-provider extensions, and supplied customizers. It provides Java runtime setup for tracers, meters, loggers, resources, propagators, and exporters so applications can initialize telemetry consistently without hand-wiring each SDK component."
+ }
+
+exec
+/usr/bin/zsh -lc 'nl -ba build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.25.0-alpha",
+     3	  "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+     4	  "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-sources.jar",
+     5	  "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure",
+     6	  "documentation-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-javadoc.jar",
+     7	  "description" : "OpenTelemetry SDK Extension Autoconfigure builds and configures an OpenTelemetry SDK from system properties, environment variables, service-provider extensions, and supplied customizers. It provides Java runtime setup for tracers, meters, loggers, resources, propagators, and exporters so applications can initialize telemetry consistently without hand-wiring each SDK component."
+     8	}
+
+exec
+/usr/bin/zsh -lc 'git diff -- build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json b/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
+index de021714a68a296ebdf190d96e0b25d3ebb35203..ffd48976072c282db3dea21a40347ecaa0c47c57
+--- a/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
++++ b/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.25.0-alpha"
++  "coordinates" : "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.25.0-alpha",
++  "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-javadoc.jar",
++  "description" : "OpenTelemetry SDK Extension Autoconfigure builds and configures an OpenTelemetry SDK from system properties, environment variables, service-provider extensions, and supplied customizers. It provides Java runtime setup for tracers, meters, loggers, resources, propagators, and exporters so applications can initialize telemetry consistently without hand-wiring each SDK component."
+ }
+
+exec
+/usr/bin/zsh -lc 'git status --short -- build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104
+diff --git a/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json b/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
+index de021714a68a296ebdf190d96e0b25d3ebb35203..ffd48976072c282db3dea21a40347ecaa0c47c57
+--- a/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
++++ b/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.25.0-alpha"
++  "coordinates" : "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.25.0-alpha",
++  "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-javadoc.jar",
++  "description" : "OpenTelemetry SDK Extension Autoconfigure builds and configures an OpenTelemetry SDK from system properties, environment variables, service-provider extensions, and supplied customizers. It provides Java runtime setup for tracers, meters, loggers, resources, propagators, and exporters so applications can initialize telemetry consistently without hand-wiring each SDK component."
+ }
+
+ succeeded in 184ms:
+web search: 
+web search: https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure
+web search: 
+web search: repo.maven.apache.org maven2 io opentelemetry opentelemetry-sdk-extension-autoconfigure 1.25.0-alpha javadoc sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.25.0-alpha/
+web search: 
+web search: 
+codex
+Updated [the metadata JSON](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json:1).
+
+I used Maven Central for the source and Javadoc jar URLs, and the upstream `v1.25.0` GitHub test directory for the test URL because no Maven test artifact is listed. ([repo1.maven.org](https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.25.0-alpha/)) I left `language`, `not-for-native-image`, `reason`, and `replacement` absent; this is a JVM jar with class files.
+
+Validation done: `jq` parse passed, and the substituted source, Javadoc, and GitHub test URLs all returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json b/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
+index de021714a68a296ebdf190d96e0b25d3ebb35203..ffd48976072c282db3dea21a40347ecaa0c47c57
+--- a/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
++++ b/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.25.0-alpha"
++  "coordinates" : "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.25.0-alpha",
++  "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0/sdk-extensions/autoconfigure/src/test/java/io/opentelemetry/sdk/autoconfigure",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-javadoc.jar",
++  "description" : "OpenTelemetry SDK Extension Autoconfigure builds and configures an OpenTelemetry SDK from system properties, environment variables, service-provider extensions, and supplied customizers. It provides Java runtime setup for tracers, meters, loggers, resources, propagators, and exporters so applications can initialize telemetry consistently without hand-wiring each SDK component."
+ }
+
+2026-05-02T19:42:54.998881Z ERROR codex_core::session: failed to record rollout items: thread 019dea35-8ed8-7822-9f1c-ec4fae66cdd6 not found
+tokens used
+91,880
+Updated [the metadata JSON](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104/build/discovered-artifact-metadata/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.json:1).
+
+I used Maven Central for the source and Javadoc jar URLs, and the upstream `v1.25.0` GitHub test directory for the test URL because no Maven test artifact is listed. ([repo1.maven.org](https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.25.0-alpha/)) I left `language`, `not-for-native-image`, `reason`, and `replacement` absent; this is a JVM jar with class files.
+
+Validation done: `jq` parse passed, and the substituted source, Javadoc, and GitHub test URLs all returned HTTP 200.
+Ran agent for io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.25.0-alpha (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104/build/agent-artifact-discovery-logs/io.opentelemetry-opentelemetry-sdk-extension-autoconfigure-1.25.0-alpha.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3885-c2e79104/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 49s
+9 actionable tasks: 4 executed, 5 from cache
