@@ -24,4 +24,14 @@ graalvmNative {
             }
         }
     }
+    binaries {
+        all {
+            // sqlite-jdbc 3.40.x loads a JNI library that expects libm symbols at runtime.
+            buildArgs.addAll([
+                '-H:NativeLinkerOption=-Wl,--no-as-needed',
+                '-H:NativeLinkerOption=-lm',
+                '-H:NativeLinkerOption=-Wl,--as-needed'
+            ])
+        }
+    }
 }
