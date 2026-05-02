@@ -60,6 +60,15 @@ class Silencer_lib_2_13Test {
 
     assertEquals(List(3, 5, 7), transformed)
   }
+
+  @Test
+  def annotationCanBeUsedOnTypeAliasesWithoutChangingTypeSemantics(): Unit = {
+    val fixture: SilencerTypeAliasFixture = new SilencerTypeAliasFixture()
+    val label: fixture.Label = "metadata"
+    val values: fixture.Values[Int] = Vector(1, 2, 3)
+
+    assertEquals("metadata:6", fixture.describe(label, values))
+  }
 }
 
 @silent("class-level silencer annotation")
@@ -82,5 +91,17 @@ object SilencerAnnotatedFixture {
   @silent("companion method annotation")
   def normalize(value: String): String = {
     value.toUpperCase(java.util.Locale.ROOT)
+  }
+}
+
+final class SilencerTypeAliasFixture {
+  @silent("type alias annotation")
+  type Label = String
+
+  @silent("generic type alias annotation")
+  type Values[A] = Vector[A]
+
+  def describe(label: Label, values: Values[Int]): String = {
+    s"$label:${values.sum}"
   }
 }
