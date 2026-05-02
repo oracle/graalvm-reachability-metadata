@@ -1,4 +1,3 @@
-Starting a Gradle Daemon, 1 busy and 2 incompatible and 31 stopped Daemons could not be reused, use --status for details
 > Task :tck-build-logic:extractPluginRequests FROM-CACHE
 > Task :tck-build-logic:generatePluginAdapters FROM-CACHE
 > Task :tck-build-logic:compileJava FROM-CACHE
@@ -17,14 +16,14 @@ GraalVM Reachability Metadata TCK
 Reading additional input from stdin...
 OpenAI Codex v0.125.0 (research preview)
 --------
-workdir: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
+workdir: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
 model: gpt-5.5
 provider: oca-responses
 approval: never
 sandbox: danger-full-access
 reasoning effort: high
 reasoning summaries: none
-session id: 019dea39-f437-76a0-bdd9-623ab83aff1a
+session id: 019dea4c-a5be-7283-a55c-b644b4a19d3f
 --------
 user
 Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jboss.arquillian.core:arquillian-core-spi:1.1.10.Final
@@ -45,7 +44,7 @@ If there are tests on maven that should also be prefered.
 The "description" field must explain what the library does in exactly two sentences.
 
 Update this file directly:
-- File: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
+- File: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
 - Set "coordinates" to "org.jboss.arquillian.core:arquillian-core-spi:1.1.10.Final".
 - Set "repository-url" to the discovered repository root URL.
 - Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.1.10.Final".
@@ -54,53 +53,52 @@ Update this file directly:
 - Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
 - Keep the JSON valid and consistently formatted.
 codex
-I’ll verify the artifact against Maven metadata and the upstream Arquillian repository/tag, then update the JSON in place with the strongest URLs that resolve for `1.1.10.Final`.
+I’ll inspect the existing metadata format first, then verify the Arquillian artifact’s Maven/repository URLs before editing the JSON.
 exec
-/usr/bin/zsh -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
+/usr/bin/zsh -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.jboss\\.arquillian\\.core-arquillian-core-spi-1\\.1\\.10\\.Final\\.json|arquillian'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+ succeeded in 0ms:
+/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
+
+exec
+/usr/bin/zsh -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"not-for-native-image\"|\"language\"' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+ succeeded in 0ms:
+codex
+The target file exists under `build/discovered-artifact-metadata`. I’m checking its current shape and nearby conventions so the edit stays consistent with generated metadata files.
+exec
+/usr/bin/zsh -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
  succeeded in 0ms:
 {
   "coordinates" : "org.jboss.arquillian.core:arquillian-core-spi:1.1.10.Final"
 }
 
 exec
-/usr/bin/zsh -lc 'pwd && ls -l build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
+/usr/bin/zsh -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f | wc -l' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
  succeeded in 0ms:
-/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
--rw-rw-r-- 1 mihailo mihailo 83 May  2 21:45 build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
+1
 
 exec
-/usr/bin/zsh -lc 'rg -n "arquillian-core-spi|org.jboss.arquillian.core" build/discovered-artifact-metadata metadata tests -S' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
- succeeded in 120ms:
+/usr/bin/zsh -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
+
 web search: 
-web search: org.jboss.arquillian.core arquillian-core-spi 1.1.10.Final Maven sources tests javadoc
+web search: org.jboss.arquillian.core arquillian-core-spi 1.1.10.Final pom scm
+web search: 
+web search: https://central.sonatype.com/artifact/org.jboss.arquillian.core/arquillian-core-spi
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org/maven2 org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/arquillian-core-spi-1.1.10.Final.pom
 codex
-I found an existing sibling metadata entry for `arquillian-core-api` that already uses Maven Central source/test/javadoc artifacts, so I’m checking whether the SPI artifact publishes the same classifiers and what SCM URL its POM declares.
+Maven Central exposes this artifact as a normal Java Maven artifact with sources and Javadoc listed for adjacent versions; I’m querying the exact `1.1.10.Final` directory and POM now to confirm the available classifiers and SCM tag.
 exec
-/usr/bin/zsh -lc 'curl -I -L -s https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/arquillian-core-spi-1.1.10.Final-sources.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/arquillian-core-spi-1.1.10.Final.pom' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
 exec
-/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/arquillian-core-spi-1.1.10.Final.pom' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/ | sed -n '1,220p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
 exec
-/usr/bin/zsh -lc 'curl -I -L -s https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/arquillian-core-spi-1.1.10.Final-tests.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
-exec
-/usr/bin/zsh -lc 'curl -I -L -s https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/arquillian-core-spi-1.1.10.Final-javadoc.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
- succeeded in 116ms:
-HTTP/2 200 
-date: Sat, 02 May 2026 19:46:17 GMT
-content-type: application/java-archive
-content-length: 2408
-cf-ray: 9f5987f9ff80e296-BEG
-cf-cache-status: HIT
-accept-ranges: bytes
-age: 88398
-etag: "a164215b96838b400b40b04264b166c5"
-last-modified: Mon, 19 Oct 2015 12:54:07 GMT
-x-checksum-md5: a164215b96838b400b40b04264b166c5
-x-checksum-sha1: 51b99c89cf104adf80ad7f407cef4455ed4229c2
-server: cloudflare
-alt-svc: h3=":443"; ma=86400
-
-
- succeeded in 130ms:
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/arquillian-core-spi-1.1.10.Final.jar -o /tmp/arquillian-core-spi-1.1.10.Final.jar && jar tf /tmp/arquillian-core-spi-1.1.10.Final.jar | head -50' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+ succeeded in 161ms:
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -149,47 +147,107 @@ alt-svc: h3=":443"; ma=86400
 </project>
 
 
- succeeded in 142ms:
-HTTP/2 200 
-date: Sat, 02 May 2026 19:46:17 GMT
-content-type: application/java-archive
-content-length: 25923
-cf-ray: 9f5987fa1a591778-BEG
-cf-cache-status: HIT
-accept-ranges: bytes
-age: 88398
-etag: "56e2f68e18b32d6be63b2522218b009c"
-last-modified: Mon, 19 Oct 2015 12:54:08 GMT
-x-checksum-md5: 56e2f68e18b32d6be63b2522218b009c
-x-checksum-sha1: 643d52c2fc697ce280f40c8f0c5dca59ffca8e7c
-server: cloudflare
-alt-svc: h3=":443"; ma=86400
+ succeeded in 170ms:
+<!DOCTYPE html>
+<html>
 
+<head>
+	<title>Central Repository: org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
 
- succeeded in 136ms:
-HTTP/2 200 
-date: Sat, 02 May 2026 19:46:17 GMT
-content-type: application/java-archive
-content-length: 308722
-cf-ray: 9f5987fa2dc2fa43-BEG
-cf-cache-status: HIT
-accept-ranges: bytes
-age: 88415
-etag: "9e48ab712801912feb3c08e2989a5c72"
-last-modified: Mon, 19 Oct 2015 12:54:10 GMT
-x-checksum-md5: 9e48ab712801912feb3c08e2989a5c72
-x-checksum-sha1: 0f4e7aaaa9d2b7c70898fb136d1387399a1b6e54
-server: cloudflare
-alt-svc: h3=":443"; ma=86400
+<body>
+	<header>
+		<h1>org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="arquillian-core-spi-1.1.10.Final-javadoc.jar" title="arquillian-core-spi-1.1.10.Final-javadoc.jar">arquillian-core-spi-1.1.10.Final-javadoc.jar</a>      2015-10-19 12:54    308722      
+<a href="arquillian-core-spi-1.1.10.Final-javadoc.jar.md5" title="arquillian-core-spi-1.1.10.Final-javadoc.jar.md5">arquillian-core-spi-1.1.10.Final-javadoc.jar....</a>  2015-10-19 12:54        32      
+<a href="arquillian-core-spi-1.1.10.Final-javadoc.jar.sha1" title="arquillian-core-spi-1.1.10.Final-javadoc.jar.sha1">arquillian-core-spi-1.1.10.Final-javadoc.jar....</a>  2015-10-19 12:54        40      
+<a href="arquillian-core-spi-1.1.10.Final-sources.jar" title="arquillian-core-spi-1.1.10.Final-sources.jar">arquillian-core-spi-1.1.10.Final-sources.jar</a>      2015-10-19 12:54     25923      
+<a href="arquillian-core-spi-1.1.10.Final-sources.jar.md5" title="arquillian-core-spi-1.1.10.Final-sources.jar.md5">arquillian-core-spi-1.1.10.Final-sources.jar....</a>  2015-10-19 12:54        32      
+<a href="arquillian-core-spi-1.1.10.Final-sources.jar.sha1" title="arquillian-core-spi-1.1.10.Final-sources.jar.sha1">arquillian-core-spi-1.1.10.Final-sources.jar....</a>  2015-10-19 12:54        40      
+<a href="arquillian-core-spi-1.1.10.Final-tests.jar" title="arquillian-core-spi-1.1.10.Final-tests.jar">arquillian-core-spi-1.1.10.Final-tests.jar</a>        2015-10-19 12:54      2408      
+<a href="arquillian-core-spi-1.1.10.Final-tests.jar.md5" title="arquillian-core-spi-1.1.10.Final-tests.jar.md5">arquillian-core-spi-1.1.10.Final-tests.jar.md...</a>  2015-10-19 12:54        32      
+<a href="arquillian-core-spi-1.1.10.Final-tests.jar.sha1" title="arquillian-core-spi-1.1.10.Final-tests.jar.sha1">arquillian-core-spi-1.1.10.Final-tests.jar.sh...</a>  2015-10-19 12:54        40      
+<a href="arquillian-core-spi-1.1.10.Final.jar" title="arquillian-core-spi-1.1.10.Final.jar">arquillian-core-spi-1.1.10.Final.jar</a>              2015-10-19 12:54     27151      
+<a href="arquillian-core-spi-1.1.10.Final.jar.md5" title="arquillian-core-spi-1.1.10.Final.jar.md5">arquillian-core-spi-1.1.10.Final.jar.md5</a>          2015-10-19 12:54        32      
+<a href="arquillian-core-spi-1.1.10.Final.jar.sha1" title="arquillian-core-spi-1.1.10.Final.jar.sha1">arquillian-core-spi-1.1.10.Final.jar.sha1</a>         2015-10-19 12:54        40      
+<a href="arquillian-core-spi-1.1.10.Final.pom" title="arquillian-core-spi-1.1.10.Final.pom">arquillian-core-spi-1.1.10.Final.pom</a>              2015-10-19 12:54      1344      
+<a href="arquillian-core-spi-1.1.10.Final.pom.md5" title="arquillian-core-spi-1.1.10.Final.pom.md5">arquillian-core-spi-1.1.10.Final.pom.md5</a>          2015-10-19 12:54        32      
+<a href="arquillian-core-spi-1.1.10.Final.pom.sha1" title="arquillian-core-spi-1.1.10.Final.pom.sha1">arquillian-core-spi-1.1.10.Final.pom.sha1</a>         2015-10-19 12:54        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
 
+</html>
+ succeeded in 260ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/jboss/
+org/jboss/arquillian/
+org/jboss/arquillian/core/
+org/jboss/arquillian/core/spi/
+org/jboss/arquillian/core/spi/context/
+org/jboss/arquillian/core/spi/event/
+org/jboss/arquillian/core/spi/HashObjectStore.class
+org/jboss/arquillian/core/spi/SecurityActions.class
+org/jboss/arquillian/core/spi/SecurityActions$GetTcclAction.class
+org/jboss/arquillian/core/spi/SecurityActions$2.class
+org/jboss/arquillian/core/spi/ExtensionLoader.class
+org/jboss/arquillian/core/spi/Extension.class
+org/jboss/arquillian/core/spi/InjectionPoint.class
+org/jboss/arquillian/core/spi/SecurityActions$3.class
+org/jboss/arquillian/core/spi/ManagerBuilder.class
+org/jboss/arquillian/core/spi/Manager.class
+org/jboss/arquillian/core/spi/Typed.class
+org/jboss/arquillian/core/spi/LoadableExtension$Validate.class
+org/jboss/arquillian/core/spi/context/AbstractContext.class
+org/jboss/arquillian/core/spi/context/NonIdBoundContext.class
+org/jboss/arquillian/core/spi/context/AbstractContext$1.class
+org/jboss/arquillian/core/spi/context/ObjectStore.class
+org/jboss/arquillian/core/spi/context/IdBoundContext.class
+org/jboss/arquillian/core/spi/context/ApplicationContext.class
+org/jboss/arquillian/core/spi/context/AbstractContext$StoreHolder.class
+org/jboss/arquillian/core/spi/context/Context.class
+org/jboss/arquillian/core/spi/LoadableExtension.class
+org/jboss/arquillian/core/spi/ServiceLoader.class
+org/jboss/arquillian/core/spi/LoadableExtension$ExtensionBuilder.class
+org/jboss/arquillian/core/spi/EventPoint.class
+org/jboss/arquillian/core/spi/SecurityActions$4.class
+org/jboss/arquillian/core/spi/event/Event.class
+org/jboss/arquillian/core/spi/event/ManagerProcessing.class
+org/jboss/arquillian/core/spi/SecurityActions$1.class
+org/jboss/arquillian/core/spi/SecurityActions$5.class
+org/jboss/arquillian/core/spi/Validate.class
+org/jboss/arquillian/core/spi/EventContext.class
+org/jboss/arquillian/core/spi/ObserverMethod.class
+org/jboss/arquillian/core/spi/NonManagedObserver.class
+org/jboss/arquillian/core/spi/InvocationException.class
+META-INF/maven/
+META-INF/maven/org.jboss.arquillian.core/
+META-INF/maven/org.jboss.arquillian.core/arquillian-core-spi/
+META-INF/maven/org.jboss.arquillian.core/arquillian-core-spi/pom.xml
+META-INF/maven/org.jboss.arquillian.core/arquillian-core-spi/pom.properties
+META-INF/INDEX.LIST
 
 exec
-/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/arquillian-build/1.1.10.Final/arquillian-build-1.1.10.Final.pom' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/arquillian-build/1.1.10.Final/arquillian-build-1.1.10.Final.pom' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
 exec
-/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/ | sed -n '1,160p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/arquillian-core-spi-1.1.10.Final-sources.jar -o /tmp/arquillian-core-spi-1.1.10.Final-sources.jar && jar tf /tmp/arquillian-core-spi-1.1.10.Final-sources.jar | sed -n '1,120p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
 exec
-/usr/bin/zsh -lc 'jar tf ~/.m2/repository/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/arquillian-core-spi-1.1.10.Final.jar 2>/dev/null | head -80 || true' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
- succeeded in 130ms:
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/arquillian-core-spi-1.1.10.Final-tests.jar -o /tmp/arquillian-core-spi-1.1.10.Final-tests.jar && jar tf /tmp/arquillian-core-spi-1.1.10.Final-tests.jar | sed -n '1,120p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+ succeeded in 132ms:
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- vi:ts=2:sw=2:expandtab: -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -295,59 +353,59 @@ exec
     </build>
 </project>
 
- succeeded in 137ms:
- succeeded in 212ms:
-<!DOCTYPE html>
-<html>
+ succeeded in 319ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/jboss/
+org/jboss/arquillian/
+org/jboss/arquillian/core/
+org/jboss/arquillian/core/spi/
+org/jboss/arquillian/core/spi/context/
+org/jboss/arquillian/core/spi/event/
+org/jboss/arquillian/core/spi/Extension.java
+org/jboss/arquillian/core/spi/Typed.java
+org/jboss/arquillian/core/spi/EventContext.java
+org/jboss/arquillian/core/spi/EventPoint.java
+org/jboss/arquillian/core/spi/HashObjectStore.java
+org/jboss/arquillian/core/spi/context/NonIdBoundContext.java
+org/jboss/arquillian/core/spi/context/Context.java
+org/jboss/arquillian/core/spi/context/ApplicationContext.java
+org/jboss/arquillian/core/spi/context/IdBoundContext.java
+org/jboss/arquillian/core/spi/context/ObjectStore.java
+org/jboss/arquillian/core/spi/context/AbstractContext.java
+org/jboss/arquillian/core/spi/ServiceLoader.java
+org/jboss/arquillian/core/spi/ManagerBuilder.java
+org/jboss/arquillian/core/spi/SecurityActions.java
+org/jboss/arquillian/core/spi/ExtensionLoader.java
+org/jboss/arquillian/core/spi/Manager.java
+org/jboss/arquillian/core/spi/InjectionPoint.java
+org/jboss/arquillian/core/spi/event/Event.java
+org/jboss/arquillian/core/spi/event/ManagerProcessing.java
+org/jboss/arquillian/core/spi/NonManagedObserver.java
+org/jboss/arquillian/core/spi/InvocationException.java
+org/jboss/arquillian/core/spi/Validate.java
+org/jboss/arquillian/core/spi/ObserverMethod.java
+org/jboss/arquillian/core/spi/LoadableExtension.java
+META-INF/INDEX.LIST
 
-<head>
-	<title>Central Repository: org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<style>
-body {
-	background: #fff;
-}
-	</style>
-</head>
+ succeeded in 359ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/maven/
+META-INF/maven/org.jboss.arquillian.core/
+META-INF/maven/org.jboss.arquillian.core/arquillian-core-spi/
+META-INF/maven/org.jboss.arquillian.core/arquillian-core-spi/pom.xml
+META-INF/maven/org.jboss.arquillian.core/arquillian-core-spi/pom.properties
+META-INF/INDEX.LIST
 
-<body>
-	<header>
-		<h1>org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final</h1>
-	</header>
-	<hr/>
-	<main>
-		<pre id="contents">
-<a href="../">../</a>
-<a href="arquillian-core-spi-1.1.10.Final-javadoc.jar" title="arquillian-core-spi-1.1.10.Final-javadoc.jar">arquillian-core-spi-1.1.10.Final-javadoc.jar</a>      2015-10-19 12:54    308722      
-<a href="arquillian-core-spi-1.1.10.Final-javadoc.jar.md5" title="arquillian-core-spi-1.1.10.Final-javadoc.jar.md5">arquillian-core-spi-1.1.10.Final-javadoc.jar....</a>  2015-10-19 12:54        32      
-<a href="arquillian-core-spi-1.1.10.Final-javadoc.jar.sha1" title="arquillian-core-spi-1.1.10.Final-javadoc.jar.sha1">arquillian-core-spi-1.1.10.Final-javadoc.jar....</a>  2015-10-19 12:54        40      
-<a href="arquillian-core-spi-1.1.10.Final-sources.jar" title="arquillian-core-spi-1.1.10.Final-sources.jar">arquillian-core-spi-1.1.10.Final-sources.jar</a>      2015-10-19 12:54     25923      
-<a href="arquillian-core-spi-1.1.10.Final-sources.jar.md5" title="arquillian-core-spi-1.1.10.Final-sources.jar.md5">arquillian-core-spi-1.1.10.Final-sources.jar....</a>  2015-10-19 12:54        32      
-<a href="arquillian-core-spi-1.1.10.Final-sources.jar.sha1" title="arquillian-core-spi-1.1.10.Final-sources.jar.sha1">arquillian-core-spi-1.1.10.Final-sources.jar....</a>  2015-10-19 12:54        40      
-<a href="arquillian-core-spi-1.1.10.Final-tests.jar" title="arquillian-core-spi-1.1.10.Final-tests.jar">arquillian-core-spi-1.1.10.Final-tests.jar</a>        2015-10-19 12:54      2408      
-<a href="arquillian-core-spi-1.1.10.Final-tests.jar.md5" title="arquillian-core-spi-1.1.10.Final-tests.jar.md5">arquillian-core-spi-1.1.10.Final-tests.jar.md...</a>  2015-10-19 12:54        32      
-<a href="arquillian-core-spi-1.1.10.Final-tests.jar.sha1" title="arquillian-core-spi-1.1.10.Final-tests.jar.sha1">arquillian-core-spi-1.1.10.Final-tests.jar.sh...</a>  2015-10-19 12:54        40      
-<a href="arquillian-core-spi-1.1.10.Final.jar" title="arquillian-core-spi-1.1.10.Final.jar">arquillian-core-spi-1.1.10.Final.jar</a>              2015-10-19 12:54     27151      
-<a href="arquillian-core-spi-1.1.10.Final.jar.md5" title="arquillian-core-spi-1.1.10.Final.jar.md5">arquillian-core-spi-1.1.10.Final.jar.md5</a>          2015-10-19 12:54        32      
-<a href="arquillian-core-spi-1.1.10.Final.jar.sha1" title="arquillian-core-spi-1.1.10.Final.jar.sha1">arquillian-core-spi-1.1.10.Final.jar.sha1</a>         2015-10-19 12:54        40      
-<a href="arquillian-core-spi-1.1.10.Final.pom" title="arquillian-core-spi-1.1.10.Final.pom">arquillian-core-spi-1.1.10.Final.pom</a>              2015-10-19 12:54      1344      
-<a href="arquillian-core-spi-1.1.10.Final.pom.md5" title="arquillian-core-spi-1.1.10.Final.pom.md5">arquillian-core-spi-1.1.10.Final.pom.md5</a>          2015-10-19 12:54        32      
-<a href="arquillian-core-spi-1.1.10.Final.pom.sha1" title="arquillian-core-spi-1.1.10.Final.pom.sha1">arquillian-core-spi-1.1.10.Final.pom.sha1</a>         2015-10-19 12:54        40      
-		</pre>
-	</main>
-	<hr/>
-</body>
-
-</html>
 exec
-/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/arquillian-parent/1.1.10.Final/arquillian-parent-1.1.10.Final.pom' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/arquillian-parent/1.1.10.Final/arquillian-parent-1.1.10.Final.pom' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
 exec
-/usr/bin/zsh -lc "curl -fsSL -o /tmp/arquillian-core-spi-1.1.10.Final.jar https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/arquillian-core-spi-1.1.10.Final.jar && jar tf /tmp/arquillian-core-spi-1.1.10.Final.jar | sed -n '1,120p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
+/usr/bin/zsh -lc 'curl -I -fsSL https://github.com/arquillian/arquillian-core/tree/1.1.10.Final/core/spi/src/test/java' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
 exec
-/usr/bin/zsh -lc "curl -fsSL -o /tmp/arquillian-core-spi-1.1.10.Final-sources.jar https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/arquillian-core-spi-1.1.10.Final-sources.jar && jar tf /tmp/arquillian-core-spi-1.1.10.Final-sources.jar | sed -n '1,160p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
-exec
-/usr/bin/zsh -lc "curl -fsSL -o /tmp/arquillian-core-spi-1.1.10.Final-tests.jar https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/arquillian-core-spi-1.1.10.Final-tests.jar && jar tf /tmp/arquillian-core-spi-1.1.10.Final-tests.jar | sed -n '1,120p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
- succeeded in 114ms:
+/usr/bin/zsh -lc 'curl -I -fsSL https://github.com/arquillian/arquillian-core/tree/1.1.10.Final' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+ succeeded in 253ms:
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -507,164 +565,12 @@ exec
     </profiles>
 </project>
 
- succeeded in 223ms:
-META-INF/
-META-INF/MANIFEST.MF
-META-INF/maven/
-META-INF/maven/org.jboss.arquillian.core/
-META-INF/maven/org.jboss.arquillian.core/arquillian-core-spi/
-META-INF/maven/org.jboss.arquillian.core/arquillian-core-spi/pom.xml
-META-INF/maven/org.jboss.arquillian.core/arquillian-core-spi/pom.properties
-META-INF/INDEX.LIST
-
- succeeded in 277ms:
-META-INF/
-META-INF/MANIFEST.MF
-org/
-org/jboss/
-org/jboss/arquillian/
-org/jboss/arquillian/core/
-org/jboss/arquillian/core/spi/
-org/jboss/arquillian/core/spi/context/
-org/jboss/arquillian/core/spi/event/
-org/jboss/arquillian/core/spi/Extension.java
-org/jboss/arquillian/core/spi/Typed.java
-org/jboss/arquillian/core/spi/EventContext.java
-org/jboss/arquillian/core/spi/EventPoint.java
-org/jboss/arquillian/core/spi/HashObjectStore.java
-org/jboss/arquillian/core/spi/context/NonIdBoundContext.java
-org/jboss/arquillian/core/spi/context/Context.java
-org/jboss/arquillian/core/spi/context/ApplicationContext.java
-org/jboss/arquillian/core/spi/context/IdBoundContext.java
-org/jboss/arquillian/core/spi/context/ObjectStore.java
-org/jboss/arquillian/core/spi/context/AbstractContext.java
-org/jboss/arquillian/core/spi/ServiceLoader.java
-org/jboss/arquillian/core/spi/ManagerBuilder.java
-org/jboss/arquillian/core/spi/SecurityActions.java
-org/jboss/arquillian/core/spi/ExtensionLoader.java
-org/jboss/arquillian/core/spi/Manager.java
-org/jboss/arquillian/core/spi/InjectionPoint.java
-org/jboss/arquillian/core/spi/event/Event.java
-org/jboss/arquillian/core/spi/event/ManagerProcessing.java
-org/jboss/arquillian/core/spi/NonManagedObserver.java
-org/jboss/arquillian/core/spi/InvocationException.java
-org/jboss/arquillian/core/spi/Validate.java
-org/jboss/arquillian/core/spi/ObserverMethod.java
-org/jboss/arquillian/core/spi/LoadableExtension.java
-META-INF/INDEX.LIST
-
- succeeded in 298ms:
-META-INF/
-META-INF/MANIFEST.MF
-org/
-org/jboss/
-org/jboss/arquillian/
-org/jboss/arquillian/core/
-org/jboss/arquillian/core/spi/
-org/jboss/arquillian/core/spi/context/
-org/jboss/arquillian/core/spi/event/
-org/jboss/arquillian/core/spi/HashObjectStore.class
-org/jboss/arquillian/core/spi/SecurityActions.class
-org/jboss/arquillian/core/spi/SecurityActions$GetTcclAction.class
-org/jboss/arquillian/core/spi/SecurityActions$2.class
-org/jboss/arquillian/core/spi/ExtensionLoader.class
-org/jboss/arquillian/core/spi/Extension.class
-org/jboss/arquillian/core/spi/InjectionPoint.class
-org/jboss/arquillian/core/spi/SecurityActions$3.class
-org/jboss/arquillian/core/spi/ManagerBuilder.class
-org/jboss/arquillian/core/spi/Manager.class
-org/jboss/arquillian/core/spi/Typed.class
-org/jboss/arquillian/core/spi/LoadableExtension$Validate.class
-org/jboss/arquillian/core/spi/context/AbstractContext.class
-org/jboss/arquillian/core/spi/context/NonIdBoundContext.class
-org/jboss/arquillian/core/spi/context/AbstractContext$1.class
-org/jboss/arquillian/core/spi/context/ObjectStore.class
-org/jboss/arquillian/core/spi/context/IdBoundContext.class
-org/jboss/arquillian/core/spi/context/ApplicationContext.class
-org/jboss/arquillian/core/spi/context/AbstractContext$StoreHolder.class
-org/jboss/arquillian/core/spi/context/Context.class
-org/jboss/arquillian/core/spi/LoadableExtension.class
-org/jboss/arquillian/core/spi/ServiceLoader.class
-org/jboss/arquillian/core/spi/LoadableExtension$ExtensionBuilder.class
-org/jboss/arquillian/core/spi/EventPoint.class
-org/jboss/arquillian/core/spi/SecurityActions$4.class
-org/jboss/arquillian/core/spi/event/Event.class
-org/jboss/arquillian/core/spi/event/ManagerProcessing.class
-org/jboss/arquillian/core/spi/SecurityActions$1.class
-org/jboss/arquillian/core/spi/SecurityActions$5.class
-org/jboss/arquillian/core/spi/Validate.class
-org/jboss/arquillian/core/spi/EventContext.class
-org/jboss/arquillian/core/spi/ObserverMethod.class
-org/jboss/arquillian/core/spi/NonManagedObserver.class
-org/jboss/arquillian/core/spi/InvocationException.class
-META-INF/maven/
-META-INF/maven/org.jboss.arquillian.core/
-META-INF/maven/org.jboss.arquillian.core/arquillian-core-spi/
-META-INF/maven/org.jboss.arquillian.core/arquillian-core-spi/pom.xml
-META-INF/maven/org.jboss.arquillian.core/arquillian-core-spi/pom.properties
-META-INF/INDEX.LIST
-
-exec
-/usr/bin/zsh -lc "sed -n '1,80p' metadata/org.jboss.arquillian.core/arquillian-core-api/index.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
- succeeded in 0ms:
-[
-  {
-    "latest" : true,
-    "metadata-version" : "1.1.10.Final",
-    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-api/$version$/arquillian-core-api-$version$-sources.jar",
-    "repository-url" : "https://github.com/arquillian/arquillian-core",
-    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-api/$version$/arquillian-core-api-$version$-tests.jar",
-    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-api/$version$/arquillian-core-api-$version$-javadoc.jar",
-    "description" : "Arquillian Core API provides the core public contracts used by the Arquillian test platform. It defines APIs for injection, event observation, lifecycle events, and execution context management across Arquillian components.",
-    "tested-versions" : [
-      "1.1.10.Final",
-      "1.1.11.Final",
-      "1.1.12.Final",
-      "1.1.13.Final",
-      "1.1.14.Final",
-      "1.1.15.Final",
-      "1.2.0.Final",
-      "1.2.1.Final",
-      "1.3.0.Final",
-      "1.4.0.Final",
-      "1.4.1.Final",
-      "1.5.0.Final",
-      "1.6.0.Final",
-      "1.7.0.Final",
-      "1.7.1.Final",
-      "1.7.2.Final",
-      "1.8.0.Final",
-      "1.8.1.Final",
-      "1.9.0.Final",
-      "1.9.1.Final",
-      "1.9.2.Final",
-      "1.9.3.Final",
-      "1.9.4.Final",
-      "1.9.5.Final",
-      "1.10.0.Final",
-      "1.10.1.Final"
-    ],
-    "allowed-packages" : [
-      "org.jboss.arquillian.core.api"
-    ]
-  }
-]
-
-exec
-/usr/bin/zsh -lc "rg -n '\"repository-url\" : \"https://github.com/arquillian/arquillian-core|\"repository-url\" : \"git://github.com/arquillian/arquillian-core' metadata build/discovered-artifact-metadata -S" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
- succeeded in 0ms:
-metadata/org.jboss.arquillian.core/arquillian-core-api/index.json:6:    "repository-url" : "https://github.com/arquillian/arquillian-core",
-
-exec
-/usr/bin/zsh -lc "curl -I -L -s https://github.com/arquillian/arquillian-core/tree/1.1.10.Final | sed -n '1,40p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
-exec
-/usr/bin/zsh -lc "curl -I -L -s https://github.com/arquillian/arquillian-core | sed -n '1,40p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
- succeeded in 661ms:
+ succeeded in 839ms:
 HTTP/2 200 
-date: Sat, 02 May 2026 19:46:35 GMT
+date: Sat, 02 May 2026 20:07:07 GMT
 content-type: text/html; charset=utf-8
 vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
-etag: W/"472146d7668cecd6e15af0026b6814ed"
+etag: W/"28ee52fbe961fcb42c24dec1908b39c6"
 cache-control: max-age=0, private, must-revalidate
 strict-transport-security: max-age=31536000; includeSubdomains; preload
 x-frame-options: deny
@@ -674,19 +580,18 @@ referrer-policy: no-referrer-when-downgrade
 content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
 server: github.com
 accept-ranges: bytes
-set-cookie: _gh_sess=sf4hEVL9auRG0w4bOj4VX3mDrvCMm%2FQ8xAPBzOj%2BDvcrP6VvjgXrIRvRJtCdBoGDLWwbPmOAa0%2BuRM2OceUAf0WIP5ekmI9HDd3vgkJw4iSLnJ8Yk2IpWrBiGrZBWDUaVV16TIxciq0y4tJ9kmlwn9Zbv3CQP37dAwXlm2rrJZ4E9xeOOtZGuXkvcFq5chNCfdTTiYgMw3YbjfK8xd4vcM5l%2FjcyLWmtuDjvcRwTj4zWQSiI%2FPIL8UjmxOah7XnHQRpHssPPOXIwTacDRek9KQ%3D%3D--D%2F1TQl2J57mVdwhc--HCKzpe7evB6o1gebMCK07A%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
-set-cookie: _octo=GH1.1.1218867616.1777751195; expires=Sun, 02 May 2027 19:46:35 GMT; domain=.github.com; path=/; secure; SameSite=Lax
-set-cookie: logged_in=no; expires=Sun, 02 May 2027 19:46:35 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
-x-github-request-id: 1984:3A6621:E29D495:A8A4C30:69F6549A
+set-cookie: _gh_sess=%2BtIROGW7FkRk52yhCTP4RlboSH7njPluzWty5DzCFEQdZiaTBt%2Fe7WKrCtgZ8xV3sMjNMMRfD43uZ5ntXt117TtoihGZG74pxJHCkMWIaQR%2F1Sc4HQctcQBWwaAh5TIEz1M%2Fz%2BFtVrH4sVUzi3kzZp%2BI%2B1GB1%2BmIeCkaKKNkxK8ngbUL%2FFZo4kFyb6ksCouM3%2B5gIFobNlw2AV7GsUD2n3DSpWgRq%2BNoin5dVukOZqlt8VCz5aZq3LxR1kdChxeihOK8AptOI7jqCpWIby36zw%3D%3D--9odJDUgUzL328Fbw--7TUg1w5J4yKvArLP1aOJYw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.512830823.1777752426; expires=Sun, 02 May 2027 20:07:06 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 02 May 2027 20:07:06 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 1912:24F68:EAAEAEE:AF12EF7:69F6596A
 
 
- succeeded in 768ms:
-HTTP/2 200 
-date: Sat, 02 May 2026 19:46:35 GMT
+ exited 22 in 843ms:
+HTTP/2 404 
+date: Sat, 02 May 2026 20:07:07 GMT
 content-type: text/html; charset=utf-8
 vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
-etag: W/"02d344158d279ea87baabc61350a46af"
-cache-control: max-age=0, private, must-revalidate
+cache-control: no-cache
 strict-transport-security: max-age=31536000; includeSubdomains; preload
 x-frame-options: deny
 x-content-type-options: nosniff
@@ -694,391 +599,607 @@ x-xss-protection: 0
 referrer-policy: no-referrer-when-downgrade
 content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
 server: github.com
-accept-ranges: bytes
-set-cookie: _gh_sess=6crzwKhB4EGktJ934fGElFZavMa9p27eC5plIsrCk6NgnNCSBMi3hruzRQmBSqvfR2rgcU%2Fg5m3iVHdmIWpXEjPUYKayZq13POhm45lY31UikWhrREcrkouPShI7DwcPKozu4Usj2s40pcIEi63%2FoScL5N9VcBwvqpPWUXmXd2u2gt5CBtHgzjOkp3831BjWXIBxLvMJJMcm7FxsSlqhFBnB7EAV7jz9psyauEq7Vw7b9lJeuK2dMzfivfGPL7W4gS2iVRoF2ZGDTnXiI4h5YQ%3D%3D--GBHdV%2FewxnsPJrWc--aWv1kTfyp7a4Dehg%2F0DP%2Fg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
-set-cookie: _octo=GH1.1.394684860.1777751195; expires=Sun, 02 May 2027 19:46:35 GMT; domain=.github.com; path=/; secure; SameSite=Lax
-set-cookie: logged_in=no; expires=Sun, 02 May 2027 19:46:35 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
-x-github-request-id: 1976:1702:B962651:8AE4A8B:69F6549A
+set-cookie: _gh_sess=DK5jORpSYYpPKy2ZPhHU8Zs%2F8sE4HCdcZ85SGHjXUrh79g6KUsuf9p23DTfcIsYN5f679jv4D%2F%2F1NX4E1AUJ6aKXhXyMRhTin668utmCOSW3KqhCKwfQHPhfUTNx6nysuRFwiX5gBetlU0ZqJdF2lIHcI9pI%2FVGimymx4yE8r22J3vQFswL048a9pyFiKakoS3KnCXXxZ%2FZA4TnF6KaDZF%2BhXa9i8HGKy9QviS1bQtfI%2FyuAuMck6PD6uDOne4FoGGfkHnk2sdtYHnkkBUT1zQ%3D%3D--tdEmYLyy12pYc5Av--aCYfO8KT2WTNo2Td8Em6OQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.989167624.1777752426; expires=Sun, 02 May 2027 20:07:06 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 02 May 2027 20:07:06 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 1990:187C97:E2AFAF5:A8CA57C:69F6596A
 
-
-web search: 
-web search: 
-web search: 
-web search: Maven Central org.jboss.arquillian.core arquillian-core-spi 1.1.10.Final
-web search: 
-web search: 
-web search: 
-web search: repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/arquillian-core-spi-1.1.10.Final-sources.jar
-exec
-/usr/bin/zsh -lc 'curl -fsSL https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi?ref=1.1.10.Final' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
- exited 1 in 0ms:
-zsh:1: no matches found: https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi?ref=1.1.10.Final
-
-exec
-/usr/bin/zsh -lc 'curl -fsSL https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/test?ref=1.1.10.Final' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
- exited 1 in 0ms:
-zsh:1: no matches found: https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/test?ref=1.1.10.Final
-
-exec
-/usr/bin/zsh -lc 'curl -fsSL https://api.github.com/repos/arquillian/arquillian-core/git/ref/tags/1.1.10.Final' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
- succeeded in 388ms:
-{
-  "ref": "refs/tags/1.1.10.Final",
-  "node_id": "MDM6UmVmMTU4MTY1NjpyZWZzL3RhZ3MvMS4xLjEwLkZpbmFs",
-  "url": "https://api.github.com/repos/arquillian/arquillian-core/git/refs/tags/1.1.10.Final",
-  "object": {
-    "sha": "3b47dd16fb242eacbdec96c6d5450be9f8852fd5",
-    "type": "tag",
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/git/tags/3b47dd16fb242eacbdec96c6d5450be9f8852fd5"
-  }
-}
-
-codex
-The Maven POM resolves the project SCM to `arquillian/arquillian-core` at tag `1.1.10.Final`, and the artifact itself contains JVM `.class` files, so it remains a Native Image metadata candidate and does not need a language or not-for-native-image marker.
-exec
-/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/test?ref=1.1.10.Final'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
-exec
-/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi?ref=1.1.10.Final'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
-exec
-/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi?ref=1.1.10.Final'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
- succeeded in 430ms:
-[
-  {
-    "name": "pom.xml",
-    "path": "core/spi/pom.xml",
-    "sha": "ed11384d3a084abb20a7e1b0af9a77578204fbda",
-    "size": 1344,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/pom.xml?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/pom.xml",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/ed11384d3a084abb20a7e1b0af9a77578204fbda",
-    "download_url": "https://raw.githubusercontent.com/arquillian/arquillian-core/1.1.10.Final/core/spi/pom.xml",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/pom.xml?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/ed11384d3a084abb20a7e1b0af9a77578204fbda",
-      "html": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/pom.xml"
-    }
-  },
-  {
-    "name": "src",
-    "path": "core/spi/src",
-    "sha": "9f15726edab05e9023006008bb44c85d91c1ae5b",
-    "size": 0,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/tree/1.1.10.Final/core/spi/src",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/trees/9f15726edab05e9023006008bb44c85d91c1ae5b",
-    "download_url": null,
-    "type": "dir",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/trees/9f15726edab05e9023006008bb44c85d91c1ae5b",
-      "html": "https://github.com/arquillian/arquillian-core/tree/1.1.10.Final/core/spi/src"
-    }
-  }
-]
-
- succeeded in 461ms:
-[
-  {
-    "name": "EventContext.java",
-    "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/EventContext.java",
-    "sha": "747969ded32d1c86b2b1cc7526ff838fea17895d",
-    "size": 1061,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/EventContext.java?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/EventContext.java",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/747969ded32d1c86b2b1cc7526ff838fea17895d",
-    "download_url": "https://raw.githubusercontent.com/arquillian/arquillian-core/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/EventContext.java",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/EventContext.java?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/747969ded32d1c86b2b1cc7526ff838fea17895d",
-      "html": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/EventContext.java"
-    }
-  },
-  {
-    "name": "EventPoint.java",
-    "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/EventPoint.java",
-    "sha": "018d1cf4b6f78e906beb61c4057fed19f304966c",
-    "size": 1086,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/EventPoint.java?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/EventPoint.java",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/018d1cf4b6f78e906beb61c4057fed19f304966c",
-    "download_url": "https://raw.githubusercontent.com/arquillian/arquillian-core/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/EventPoint.java",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/EventPoint.java?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/018d1cf4b6f78e906beb61c4057fed19f304966c",
-      "html": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/EventPoint.java"
-    }
-  },
-  {
-    "name": "Extension.java",
-    "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/Extension.java",
-    "sha": "7b9612051c6400fcde760452ae33d29364599332",
-    "size": 1125,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/Extension.java?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/Extension.java",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/7b9612051c6400fcde760452ae33d29364599332",
-    "download_url": "https://raw.githubusercontent.com/arquillian/arquillian-core/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/Extension.java",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/Extension.java?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/7b9612051c6400fcde760452ae33d29364599332",
-      "html": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/Extension.java"
-    }
-  },
-  {
-    "name": "ExtensionLoader.java",
-    "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/ExtensionLoader.java",
-    "sha": "6cb4117a60c1d14d73a26a5f3244e640c322bfaf",
-    "size": 1135,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/ExtensionLoader.java?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/ExtensionLoader.java",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/6cb4117a60c1d14d73a26a5f3244e640c322bfaf",
-    "download_url": "https://raw.githubusercontent.com/arquillian/arquillian-core/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/ExtensionLoader.java",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/ExtensionLoader.java?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/6cb4117a60c1d14d73a26a5f3244e640c322bfaf",
-      "html": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/ExtensionLoader.java"
-    }
-  },
-  {
-    "name": "HashObjectStore.java",
-    "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/HashObjectStore.java",
-    "sha": "037c004824951522fe48af3bb73238c4755d6946",
-    "size": 2077,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/HashObjectStore.java?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/HashObjectStore.java",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/037c004824951522fe48af3bb73238c4755d6946",
-    "download_url": "https://raw.githubusercontent.com/arquillian/arquillian-core/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/HashObjectStore.java",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/HashObjectStore.java?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/037c004824951522fe48af3bb73238c4755d6946",
-      "html": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/HashObjectStore.java"
-    }
-  },
-  {
-    "name": "InjectionPoint.java",
-    "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/InjectionPoint.java",
-    "sha": "96f8992cb69348263eb59264675deb4e2100d3e2",
-    "size": 1193,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/InjectionPoint.java?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/InjectionPoint.java",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/96f8992cb69348263eb59264675deb4e2100d3e2",
-    "download_url": "https://raw.githubusercontent.com/arquillian/arquillian-core/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/InjectionPoint.java",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/InjectionPoint.java?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/96f8992cb69348263eb59264675deb4e2100d3e2",
-      "html": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/InjectionPoint.java"
-    }
-  },
-  {
-    "name": "InvocationException.java",
-    "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/InvocationException.java",
-    "sha": "a2ac7bc5e1ab9eb31536559180df5a629c3a52f8",
-    "size": 1278,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/InvocationException.java?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/InvocationException.java",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/a2ac7bc5e1ab9eb31536559180df5a629c3a52f8",
-    "download_url": "https://raw.githubusercontent.com/arquillian/arquillian-core/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/InvocationException.java",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/InvocationException.java?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/a2ac7bc5e1ab9eb31536559180df5a629c3a52f8",
-      "html": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/InvocationException.java"
-    }
-  },
-  {
-    "name": "LoadableExtension.java",
-    "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/LoadableExtension.java",
-    "sha": "448946685b492a8427339fe20c13953cd16b32f4",
-    "size": 1825,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/LoadableExtension.java?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/LoadableExtension.java",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/448946685b492a8427339fe20c13953cd16b32f4",
-    "download_url": "https://raw.githubusercontent.com/arquillian/arquillian-core/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/LoadableExtension.java",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/LoadableExtension.java?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/448946685b492a8427339fe20c13953cd16b32f4",
-      "html": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/LoadableExtension.java"
-    }
-  },
-  {
-    "name": "Manager.java",
-    "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/Manager.java",
-    "sha": "b3a2e12f2bebb8cab804cbb43956a8fc298ef224",
-    "size": 1406,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/Manager.java?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/Manager.java",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/b3a2e12f2bebb8cab804cbb43956a8fc298ef224",
-    "download_url": "https://raw.githubusercontent.com/arquillian/arquillian-core/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/Manager.java",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/Manager.java?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/b3a2e12f2bebb8cab804cbb43956a8fc298ef224",
-      "html": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/Manager.java"
-    }
-  },
-  {
-    "name": "ManagerBuilder.java",
-    "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/ManagerBuilder.java",
-    "sha": "8012fe59d722ec3f495792d7183edca70bf087a7",
-    "size": 2421,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/ManagerBuilder.java?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/ManagerBuilder.java",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/8012fe59d722ec3f495792d7183edca70bf087a7",
-    "download_url": "https://raw.githubusercontent.com/arquillian/arquillian-core/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/ManagerBuilder.java",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/ManagerBuilder.java?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/8012fe59d722ec3f495792d7183edca70bf087a7",
-      "html": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/ManagerBuilder.java"
-    }
-  },
-  {
-    "name": "NonManagedObserver.java",
-    "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/NonManagedObserver.java",
-    "sha": "8e19bd30fca8ab3caa2e0ca724b2f7b3b1d4dd28",
-    "size": 1368,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/NonManagedObserver.java?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/NonManagedObserver.java",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/8e19bd30fca8ab3caa2e0ca724b2f7b3b1d4dd28",
-    "download_url": "https://raw.githubusercontent.com/arquillian/arquillian-core/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/NonManagedObserver.java",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/NonManagedObserver.java?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/8e19bd30fca8ab3caa2e0ca724b2f7b3b1d4dd28",
-      "html": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/NonManagedObserver.java"
-    }
-  },
-  {
-    "name": "ObserverMethod.java",
-    "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/ObserverMethod.java",
-    "sha": "6d28fa91d8c87095492a4e0a9d62a22f657a90f6",
-    "size": 1154,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/ObserverMethod.java?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/ObserverMethod.java",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/6d28fa91d8c87095492a4e0a9d62a22f657a90f6",
-    "download_url": "https://raw.githubusercontent.com/arquillian/arquillian-core/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/ObserverMethod.java",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/ObserverMethod.java?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/6d28fa91d8c87095492a4e0a9d62a22f657a90f6",
-      "html": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/ObserverMethod.java"
-    }
-  },
-  {
-    "name": "SecurityActions.java",
-    "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/SecurityActions.java",
-    "sha": "816ae4c5fd1b5264bdd30a1c01aee95c7c73ec40",
-    "size": 12318,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/SecurityActions.java?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/SecurityActions.java",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/816ae4c5fd1b5264bdd30a1c01aee95c7c73ec40",
-    "download_url": "https://raw.githubusercontent.com/arquillian/arquillian-core/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/SecurityActions.java",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/SecurityActions.java?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/816ae4c5fd1b5264bdd30a1c01aee95c7c73ec40",
-      "html": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/SecurityActions.java"
-    }
-  },
-  {
-    "name": "ServiceLoader.java",
-    "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/ServiceLoader.java",
-    "sha": "a05275c4988bbeb956bcc60bd65ce8c20d5f706c",
-    "size": 2219,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/ServiceLoader.java?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/ServiceLoader.java",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/a05275c4988bbeb956bcc60bd65ce8c20d5f706c",
-    "download_url": "https://raw.githubusercontent.com/arquillian/arquillian-core/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/ServiceLoader.java",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/ServiceLoader.java?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/a05275c4988bbeb956bcc60bd65ce8c20d5f706c",
-      "html": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/ServiceLoader.java"
-    }
-  },
-  {
-    "name": "Typed.java",
-    "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/Typed.java",
-    "sha": "6f6d5a0eec14b26913b3f3f1c30c231bcf5255ee",
-    "size": 1011,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/Typed.java?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/Typed.java",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/6f6d5a0eec14b26913b3f3f1c30c231bcf5255ee",
-    "download_url": "https://raw.githubusercontent.com/arquillian/arquillian-core/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/Typed.java",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/Typed.java?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/6f6d5a0eec14b26913b3f3f1c30c231bcf5255ee",
-      "html": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/Typed.java"
-    }
-  },
-  {
-    "name": "Validate.java",
-    "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/Validate.java",
-    "sha": "7251a9b6bce7acd85dc94f631eb3d8658e531788",
-    "size": 2392,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/Validate.java?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/Validate.java",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/7251a9b6bce7acd85dc94f631eb3d8658e531788",
-    "download_url": "https://raw.githubusercontent.com/arquillian/arquillian-core/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/Validate.java",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/Validate.java?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/blobs/7251a9b6bce7acd85dc94f631eb3d8658e531788",
-      "html": "https://github.com/arquillian/arquillian-core/blob/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/Validate.java"
-    }
-  },
-  {
-    "name": "context",
-    "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/context",
-    "sha": "55eb3ad1c2f5da8243bf4d3fc8f045241c8750bd",
-    "size": 0,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/context?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/tree/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/context",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/trees/55eb3ad1c2f5da8243bf4d3fc8f045241c8750bd",
-    "download_url": null,
-    "type": "dir",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/context?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/trees/55eb3ad1c2f5da8243bf4d3fc8f045241c8750bd",
-      "html": "https://github.com/arquillian/arquillian-core/tree/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/context"
-    }
-  },
-  {
-    "name": "event",
-    "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/event",
-    "sha": "627cee941f2779a3fca7ff1ecc012b9720e66838",
-    "size": 0,
-    "url": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/event?ref=1.1.10.Final",
-    "html_url": "https://github.com/arquillian/arquillian-core/tree/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/event",
-    "git_url": "https://api.github.com/repos/arquillian/arquillian-core/git/trees/627cee941f2779a3fca7ff1ecc012b9720e66838",
-    "download_url": null,
-    "type": "dir",
-    "_links": {
-      "self": "https://api.github.com/repos/arquillian/arquillian-core/contents/core/spi/src/main/java/org/jboss/arquillian/core/spi/event?ref=1.1.10.Final",
-      "git": "https://api.github.com/repos/arquillian/arquillian-core/git/trees/627cee941f2779a3fca7ff1ecc012b9720e66838",
-      "html": "https://github.com/arquillian/arquillian-core/tree/1.1.10.Final/core/spi/src/main/java/org/jboss/arquillian/core/spi/event"
-    }
-  }
-]
-
- exited 22 in 504ms:
 curl: (22) The requested URL returned error: 404
 
 codex
-I’m going to write the discovered metadata now, using Maven Central classifier URLs for sources, tests, and javadocs because they are published for this exact version.
+The parent POM identifies the repository as `arquillian/arquillian-core` and the exact tag as `1.1.10.Final`. The Maven `tests.jar` exists but contains only Maven metadata, so I’m checking the tagged repository for actual SPI tests before deciding whether to point the test URL at Maven or GitHub.
+exec
+/usr/bin/zsh -lc "curl -fsSL https://api.github.com/repos/arquillian/arquillian-core/git/trees/1.1.10.Final?recursive=1 | rg 'core/spi/src/(test|main)|arquillian-core-spi' | head -200" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+ succeeded in 0ms:
+zsh:1: no matches found: https://api.github.com/repos/arquillian/arquillian-core/git/trees/1.1.10.Final?recursive=1
+
+exec
+/usr/bin/zsh -lc "git ls-remote --tags https://github.com/arquillian/arquillian-core.git 'refs/tags/1.1.10.Final*'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/arquillian-core-spi-1.1.10.Final-javadoc.jar -o /tmp/arquillian-core-spi-1.1.10.Final-javadoc.jar && jar tf /tmp/arquillian-core-spi-1.1.10.Final-javadoc.jar | sed -n '1,80p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+ succeeded in 355ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/jboss/
+org/jboss/arquillian/
+org/jboss/arquillian/core/
+org/jboss/arquillian/core/spi/
+org/jboss/arquillian/core/spi/context/
+org/jboss/arquillian/core/spi/context/class-use/
+org/jboss/arquillian/core/spi/class-use/
+org/jboss/arquillian/core/spi/event/
+org/jboss/arquillian/core/spi/event/class-use/
+allclasses-noframe.html
+deprecated-list.html
+help-doc.html
+overview-tree.html
+allclasses-frame.html
+package-list
+serialized-form.html
+stylesheet.css
+org/jboss/arquillian/core/spi/InjectionPoint.png
+org/jboss/arquillian/core/spi/LoadableExtension.Validate.html
+org/jboss/arquillian/core/spi/Typed.html
+org/jboss/arquillian/core/spi/package-summary.png
+org/jboss/arquillian/core/spi/LoadableExtension.ExtensionBuilder.html
+org/jboss/arquillian/core/spi/InvocationException.png
+org/jboss/arquillian/core/spi/EventContext.png
+org/jboss/arquillian/core/spi/ExtensionLoader.html
+org/jboss/arquillian/core/spi/Validate.html
+org/jboss/arquillian/core/spi/NonManagedObserver.png
+org/jboss/arquillian/core/spi/LoadableExtension.ExtensionBuilder.png
+org/jboss/arquillian/core/spi/Manager.png
+org/jboss/arquillian/core/spi/ObserverMethod.png
+org/jboss/arquillian/core/spi/ServiceLoader.png
+org/jboss/arquillian/core/spi/Extension.html
+org/jboss/arquillian/core/spi/LoadableExtension.png
+org/jboss/arquillian/core/spi/package-frame.html
+org/jboss/arquillian/core/spi/InvocationException.html
+org/jboss/arquillian/core/spi/NonManagedObserver.html
+org/jboss/arquillian/core/spi/package-summary.html
+org/jboss/arquillian/core/spi/HashObjectStore.png
+org/jboss/arquillian/core/spi/HashObjectStore.html
+org/jboss/arquillian/core/spi/context/ObjectStore.png
+org/jboss/arquillian/core/spi/context/ApplicationContext.png
+org/jboss/arquillian/core/spi/context/package-summary.png
+org/jboss/arquillian/core/spi/context/NonIdBoundContext.png
+org/jboss/arquillian/core/spi/context/IdBoundContext.html
+org/jboss/arquillian/core/spi/context/package-frame.html
+org/jboss/arquillian/core/spi/context/ApplicationContext.html
+org/jboss/arquillian/core/spi/context/Context.html
+org/jboss/arquillian/core/spi/context/package-summary.html
+org/jboss/arquillian/core/spi/context/AbstractContext.png
+org/jboss/arquillian/core/spi/context/package-use.html
+org/jboss/arquillian/core/spi/context/package-tree.html
+org/jboss/arquillian/core/spi/context/class-use/IdBoundContext.html
+org/jboss/arquillian/core/spi/context/class-use/ApplicationContext.html
+org/jboss/arquillian/core/spi/context/class-use/Context.html
+org/jboss/arquillian/core/spi/context/class-use/NonIdBoundContext.html
+org/jboss/arquillian/core/spi/context/class-use/AbstractContext.html
+org/jboss/arquillian/core/spi/context/class-use/ObjectStore.html
+org/jboss/arquillian/core/spi/context/IdBoundContext.png
+org/jboss/arquillian/core/spi/context/NonIdBoundContext.html
+org/jboss/arquillian/core/spi/context/AbstractContext.html
+org/jboss/arquillian/core/spi/context/Context.png
+org/jboss/arquillian/core/spi/context/ObjectStore.html
+org/jboss/arquillian/core/spi/ManagerBuilder.html
+org/jboss/arquillian/core/spi/package-use.html
+org/jboss/arquillian/core/spi/LoadableExtension.html
+org/jboss/arquillian/core/spi/Validate.png
+org/jboss/arquillian/core/spi/package-tree.html
+org/jboss/arquillian/core/spi/ExtensionLoader.png
+org/jboss/arquillian/core/spi/Typed.png
+org/jboss/arquillian/core/spi/class-use/LoadableExtension.Validate.html
+org/jboss/arquillian/core/spi/class-use/Typed.html
+org/jboss/arquillian/core/spi/class-use/LoadableExtension.ExtensionBuilder.html
+org/jboss/arquillian/core/spi/class-use/ExtensionLoader.html
+org/jboss/arquillian/core/spi/class-use/Validate.html
+org/jboss/arquillian/core/spi/class-use/Extension.html
+org/jboss/arquillian/core/spi/class-use/InvocationException.html
+org/jboss/arquillian/core/spi/class-use/NonManagedObserver.html
+
+ succeeded in 631ms:
+3b47dd16fb242eacbdec96c6d5450be9f8852fd5	refs/tags/1.1.10.Final
+8f01203f288c1cf5f3fbc9c24c78af890e879eff	refs/tags/1.1.10.Final^{}
+
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/arquillian/arquillian-core/git/trees/1.1.10.Final?recursive=1' | rg 'core/spi/src/(test|main)|arquillian-core-spi' | head -200" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/arquillian/arquillian-core/git/trees/1.1.10.Final?recursive=1' | rg 'src/test|TestCase|TestSuite' | head -200" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+exec
+/usr/bin/zsh -lc "curl -fsSL https://raw.githubusercontent.com/arquillian/arquillian-core/1.1.10.Final/core/spi/pom.xml | sed -n '1,160p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+ succeeded in 291ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-build</artifactId>
+        <version>1.1.10.Final</version>
+        <relativePath>../../build/pom.xml</relativePath>
+    </parent>
+
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Configuration -->
+    <groupId>org.jboss.arquillian.core</groupId>
+    <artifactId>arquillian-core-spi</artifactId>
+    <name>Arquillian Core SPI</name>
+    <description>SPI for the Core.</description>
+
+
+    <!-- Properties -->
+    <properties>
+
+        <!-- Versioning -->
+
+    </properties>
+
+    <!-- Dependencies -->
+    <dependencies>
+
+        <!-- org.jboss.arquillian -->
+        <dependency>
+            <groupId>org.jboss.arquillian.core</groupId>
+            <artifactId>arquillian-core-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+</project>
+
+
+ succeeded in 700ms:
+      "path": "core/spi/src/main",
+      "path": "core/spi/src/main/java",
+      "path": "core/spi/src/main/java/org",
+      "path": "core/spi/src/main/java/org/jboss",
+      "path": "core/spi/src/main/java/org/jboss/arquillian",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/EventContext.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/EventPoint.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/Extension.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/ExtensionLoader.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/HashObjectStore.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/InjectionPoint.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/InvocationException.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/LoadableExtension.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/Manager.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/ManagerBuilder.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/NonManagedObserver.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/ObserverMethod.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/SecurityActions.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/ServiceLoader.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/Typed.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/Validate.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/context",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/context/AbstractContext.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/context/ApplicationContext.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/context/Context.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/context/IdBoundContext.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/context/NonIdBoundContext.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/context/ObjectStore.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/event",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/event/Event.java",
+      "path": "core/spi/src/main/java/org/jboss/arquillian/core/spi/event/ManagerProcessing.java",
+
+ succeeded in 736ms:
+      "path": "config/impl-base/src/test",
+      "path": "config/impl-base/src/test/java",
+      "path": "config/impl-base/src/test/java/org",
+      "path": "config/impl-base/src/test/java/org/jboss",
+      "path": "config/impl-base/src/test/java/org/jboss/arquillian",
+      "path": "config/impl-base/src/test/java/org/jboss/arquillian/config",
+      "path": "config/impl-base/src/test/java/org/jboss/arquillian/config/descriptor",
+      "path": "config/impl-base/src/test/java/org/jboss/arquillian/config/descriptor/impl",
+      "path": "config/impl-base/src/test/java/org/jboss/arquillian/config/descriptor/impl/ArquillianDescriptorTestCase.java",
+      "path": "config/impl-base/src/test/java/org/jboss/arquillian/config/descriptor/impl/AssertXPath.java",
+      "path": "config/impl-base/src/test/java/org/jboss/arquillian/config/impl",
+      "path": "config/impl-base/src/test/java/org/jboss/arquillian/config/impl/extension",
+      "path": "config/impl-base/src/test/java/org/jboss/arquillian/config/impl/extension/ArquillianDescriptorPropertiesTestCase.java",
+      "path": "config/impl-base/src/test/java/org/jboss/arquillian/config/impl/extension/ConfigurationRegistrarTestCase.java",
+      "path": "config/impl-base/src/test/java/org/jboss/arquillian/config/impl/extension/PropertiesParserTestCase.java",
+      "path": "config/impl-base/src/test/java/org/jboss/arquillian/config/impl/extension/SyspropReplacementInArqXmlTestCase.java",
+      "path": "config/impl-base/src/test/resources",
+      "path": "config/impl-base/src/test/resources/arquillian_sysprop.xml",
+      "path": "config/impl-base/src/test/resources/registrar_tests",
+      "path": "config/impl-base/src/test/resources/registrar_tests/named_arquillian.properties",
+      "path": "config/impl-base/src/test/resources/registrar_tests/named_arquillian.xml",
+      "path": "config/impl-base/src/test/resources/registrar_tests/override_named_arquillian.properties",
+      "path": "container/impl-base/src/test",
+      "path": "container/impl-base/src/test/java",
+      "path": "container/impl-base/src/test/java/org",
+      "path": "container/impl-base/src/test/java/org/jboss",
+      "path": "container/impl-base/src/test/java/org/jboss/arquillian",
+      "path": "container/impl-base/src/test/java/org/jboss/arquillian/container",
+      "path": "container/impl-base/src/test/java/org/jboss/arquillian/container/impl",
+      "path": "container/impl-base/src/test/java/org/jboss/arquillian/container/impl/ContainerRegistryTestCase.java",
+      "path": "container/impl-base/src/test/java/org/jboss/arquillian/container/impl/MapObjectTestCase.java",
+      "path": "container/impl-base/src/test/java/org/jboss/arquillian/container/impl/client",
+      "path": "container/impl-base/src/test/java/org/jboss/arquillian/container/impl/client/container",
+      "path": "container/impl-base/src/test/java/org/jboss/arquillian/container/impl/client/container/ContainerDeployControllerTestCase.java",
+      "path": "container/impl-base/src/test/java/org/jboss/arquillian/container/impl/client/container/ContainerLifecycleControllerTestCase.java",
+      "path": "container/impl-base/src/test/java/org/jboss/arquillian/container/impl/client/container/ContainerRegistryCreatorTestCase.java",
+      "path": "container/impl-base/src/test/java/org/jboss/arquillian/container/impl/client/container/DeploymentExceptionHandlerTestCase.java",
+      "path": "container/impl-base/src/test/java/org/jboss/arquillian/container/impl/client/deployment",
+      "path": "container/impl-base/src/test/java/org/jboss/arquillian/container/impl/client/deployment/ArchiveDeploymentExporterTestCase.java",
+      "path": "container/impl-base/src/test/java/org/jboss/arquillian/container/test",
+      "path": "container/impl-base/src/test/java/org/jboss/arquillian/container/test/AbstractContainerTestBase.java",
+      "path": "container/spi/src/test",
+      "path": "container/spi/src/test/java",
+      "path": "container/spi/src/test/java/org",
+      "path": "container/spi/src/test/java/org/jboss",
+      "path": "container/spi/src/test/java/org/jboss/arquillian",
+      "path": "container/spi/src/test/java/org/jboss/arquillian/container",
+      "path": "container/spi/src/test/java/org/jboss/arquillian/container/spi",
+      "path": "container/spi/src/test/java/org/jboss/arquillian/container/spi/client",
+      "path": "container/spi/src/test/java/org/jboss/arquillian/container/spi/client/protocol",
+      "path": "container/spi/src/test/java/org/jboss/arquillian/container/spi/client/protocol/metadata",
+      "path": "container/spi/src/test/java/org/jboss/arquillian/container/spi/client/protocol/metadata/HTTPContextTest.java",
+      "path": "container/spi/src/test/java/org/jboss/arquillian/container/spi/client/protocol/metadata/ServletTest.java",
+      "path": "container/spi/src/test/java/org/jboss/arquillian/spi",
+      "path": "container/spi/src/test/java/org/jboss/arquillian/spi/client",
+      "path": "container/spi/src/test/java/org/jboss/arquillian/spi/client/deployment",
+      "path": "container/spi/src/test/java/org/jboss/arquillian/spi/client/deployment/DeploymentScenarioTestCase.java",
+      "path": "container/test-impl-base/src/test",
+      "path": "container/test-impl-base/src/test/java",
+      "path": "container/test-impl-base/src/test/java/org",
+      "path": "container/test-impl-base/src/test/java/org/jboss",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/ContainerEventControllerTestCase.java",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/client",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/client/container",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/client/container/ClientContainerControllerTestCase.java",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/client/container/ContainerRestarterTestCase.java",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/client/deployment",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/client/deployment/AnnotationDeploymentScenarioGeneratorTestCase.java",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/client/deployment/ClientDeployerTestCase.java",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/client/deployment/DeploymentGeneratorTestCase.java",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/client/deployment/tool",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/client/deployment/tool/ArchiveDeploymentToolingExporterTestCase.java",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/client/deployment/tool/ToolingDeploymentFormatterTestCase.java",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/client/protocol",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/client/protocol/ProtocolRegistryCreatorTestCase.java",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/domain",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/domain/ProtocolRegistryTestCase.java",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/enricher",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/enricher/resource",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/enricher/resource/InitialContextProviderTestCase.java",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/enricher/resource/OperatesOnDeploymentAwareProviderBase.java",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/enricher/resource/URLResourceProviderTestCase.java",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/execution",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/execution/ClientTestExecuterTestCase.java",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/execution/LocalTestExecuterTestCase.java",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/impl/execution/RemoteTestExecuterTestCase.java",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/test",
+      "path": "container/test-impl-base/src/test/java/org/jboss/arquillian/container/test/test/AbstractContainerTestTestBase.java",
+      "path": "container/test-impl-base/src/test/resources",
+      "path": "container/test-impl-base/src/test/resources/tooling",
+      "path": "container/test-impl-base/src/test/resources/tooling/arquillian.xml",
+      "path": "core/impl-base/src/test",
+      "path": "core/impl-base/src/test/java",
+      "path": "core/impl-base/src/test/java/org",
+      "path": "core/impl-base/src/test/java/org/jboss",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/ClassPermissionTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/EventFireTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/EventImplTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/ExceptionHandlingTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/ExtensionOrderTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/ExtensionParseTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/InjectionPointImplTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/InjectorTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/InstanceImplTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/IntegrationTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/ManagerImplTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/ManagerProcessingTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/ObserverInterceptorTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/ObserverMethodAvailabilityFilterTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/ThreadedExecutorServiceTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/context",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/context/ContextActivationTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/loadable",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/loadable/JavaSPIExtensionLoaderTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/loadable/LoadableExtensionLoaderTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/loadable/ServiceRegistryLoaderTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/loadable/ServiceRegistryTestCase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/loadable/util",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/loadable/util/FakeService.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/loadable/util/PackageProtectedService.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/loadable/util/ShouldBeExcluded.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/loadable/util/ShouldBeIncluded.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/test",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/impl/test/PrivateObserver.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/test",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/test/AbstractManagerTestBase.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/test/context",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/test/context/ManagerTest2Context.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/test/context/ManagerTest2ContextImpl.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/test/context/ManagerTest2Scoped.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/test/context/ManagerTestContext.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/test/context/ManagerTestContextImpl.java",
+      "path": "core/impl-base/src/test/java/org/jboss/arquillian/core/test/context/ManagerTestScoped.java",
+      "path": "core/impl-base/src/test/resources",
+      "path": "core/impl-base/src/test/resources/META-INF",
+      "path": "core/impl-base/src/test/resources/META-INF/services",
+      "path": "core/impl-base/src/test/resources/META-INF/services/org.jboss.arquillian.core.impl.loadable.util.FakeService",
+      "path": "junit/container/src/test",
+      "path": "junit/container/src/test/java",
+      "path": "junit/container/src/test/java/org",
+      "path": "junit/container/src/test/java/org/jboss",
+      "path": "junit/container/src/test/java/org/jboss/arquillian",
+      "path": "junit/container/src/test/java/org/jboss/arquillian/junit",
+      "path": "junit/container/src/test/java/org/jboss/arquillian/junit/container",
+      "path": "junit/container/src/test/java/org/jboss/arquillian/junit/container/JUnitDeploymentAppenderTestCase.java",
+      "path": "junit/container/src/test/java/org/jboss/arquillian/junit/container/JUnitTestRunnerTestCase.java",
+      "path": "junit/core/src/test",
+      "path": "junit/core/src/test/java",
+      "path": "junit/core/src/test/java/org",
+      "path": "junit/core/src/test/java/org/jboss",
+      "path": "junit/core/src/test/java/org/jboss/arquillian",
+      "path": "junit/core/src/test/java/org/jboss/arquillian/junit",
+      "path": "junit/core/src/test/java/org/jboss/arquillian/junit/ArquillianClass1.java",
+      "path": "junit/core/src/test/java/org/jboss/arquillian/junit/ArquillianClass1ExceptionInBeforeAndAfter.java",
+      "path": "junit/core/src/test/java/org/jboss/arquillian/junit/ArquillianClass1WithAssume.java",
+      "path": "junit/core/src/test/java/org/jboss/arquillian/junit/ArquillianClass1WithExceptionInAfterAndAfterRule.java",
+      "path": "junit/core/src/test/java/org/jboss/arquillian/junit/ArquillianClass1WithExceptionInAfterRule.java",
+      "path": "junit/core/src/test/java/org/jboss/arquillian/junit/ArquillianClass1WithExceptionInBeforeRule.java",
+      "path": "junit/core/src/test/java/org/jboss/arquillian/junit/ArquillianClass1WithExpectedException.java",
+      "path": "junit/core/src/test/java/org/jboss/arquillian/junit/ArquillianClass1WithExpectedExceptionRule.java",
+      "path": "junit/core/src/test/java/org/jboss/arquillian/junit/ArquillianClass1WithTimeout.java",
+      "path": "junit/core/src/test/java/org/jboss/arquillian/junit/InSequenceSorterTestCase.java",
+      "path": "junit/core/src/test/java/org/jboss/arquillian/junit/InitializationExceptionTestCase.java",
+      "path": "junit/core/src/test/java/org/jboss/arquillian/junit/JUnitIntegrationTestCase.java",
+      "path": "junit/core/src/test/java/org/jboss/arquillian/junit/JUnitTestBaseClass.java",
+      "path": "junit/core/src/test/java/org/jboss/arquillian/junit/extension",
+      "path": "junit/core/src/test/java/org/jboss/arquillian/junit/extension/UpdateTestResultBeforeAfterTestCase.java",
+      "path": "junit/core/src/test/resources",
+      "path": "junit/core/src/test/resources/META-INF",
+      "path": "junit/core/src/test/resources/META-INF/services",
+      "path": "junit/core/src/test/resources/META-INF/services/org.jboss.arquillian.spi.client.container.DeployableContainer",
+      "path": "junit/standalone/src/test",
+      "path": "junit/standalone/src/test/java",
+      "path": "junit/standalone/src/test/java/org",
+      "path": "junit/standalone/src/test/java/org/jboss",
+      "path": "junit/standalone/src/test/java/org/jboss/arquillian",
+      "path": "junit/standalone/src/test/java/org/jboss/arquillian/junit",
+      "path": "junit/standalone/src/test/java/org/jboss/arquillian/junit/ArquillianClass1.java",
+      "path": "junit/standalone/src/test/java/org/jboss/arquillian/junit/JUnitIntegrationTestCase.java",
+      "path": "junit/standalone/src/test/java/org/jboss/arquillian/junit/JUnitTestBaseClass.java",
+      "path": "protocols/jmx/src/test",
+      "path": "protocols/jmx/src/test/java",
+      "path": "protocols/jmx/src/test/java/org",
+      "path": "protocols/jmx/src/test/java/org/jboss",
+      "path": "protocols/jmx/src/test/java/org/jboss/arquillian",
+      "path": "protocols/jmx/src/test/java/org/jboss/arquillian/protocol",
+      "path": "protocols/jmx/src/test/java/org/jboss/arquillian/protocol/jmx",
+      "path": "protocols/jmx/src/test/java/org/jboss/arquillian/protocol/jmx/DummyTestCase.java",
+      "path": "protocols/jmx/src/test/java/org/jboss/arquillian/protocol/jmx/JMXTestRunnerTestCase.java",
+      "path": "protocols/jmx/src/test/java/org/jboss/arquillian/protocol/jmx/test",
+      "path": "protocols/jmx/src/test/java/org/jboss/arquillian/protocol/jmx/test/JMXTestTestRunner.java",
+      "path": "protocols/jmx/src/test/java/org/jboss/arquillian/protocol/jmx/test/MockTestRunner.java",
+      "path": "protocols/jmx/src/test/java/org/jboss/arquillian/protocol/jmx/test/TestCommandCallback.java",
+
+exec
+/usr/bin/zsh -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"|\"description\"' . -g '*.json' --glob '"'!build/discovered-artifact-metadata/*.json'"' | head -120" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+ succeeded in 0ms:
+./forge/schemas/benchmark_run_metrics_schema.json:4:  "description": "JSON Schema for benchmark-level metrics produced by Metadata Forge benchmarking.",
+./forge/schemas/benchmark_run_metrics_schema.json:127:      "description": "Collected run metrics.",
+./forge/schemas/benchmark_run_metrics_schema.json:381:        "description": "Name of the benchmark suite that was executed."
+./forge/schemas/benchmark_run_metrics_schema.json:386:        "description": "ISO-8601 timestamp marking when this benchmark record was created."
+./forge/schemas/benchmark_run_metrics_schema.json:390:        "description": "Per-library metrics collected during this benchmark run.",
+./forge/schemas/benchmark_suite_schema.json:4:  "description": "Strict JSON Schema (Draft 2020-12) for defining a Benchmark Suite in Metadata Forge.",
+./forge/schemas/benchmark_suite_schema.json:11:      "description",
+./forge/schemas/benchmark_suite_schema.json:19:        "description": "Human-readable benchmark suite name."
+./forge/schemas/benchmark_suite_schema.json:21:      "description": {
+./forge/schemas/benchmark_suite_schema.json:24:        "description": "Description of the benchmark suite."
+./forge/schemas/benchmark_suite_schema.json:29:        "description": "List of library coordinates included in this suite.",
+./forge/schemas/benchmark_suite_schema.json:33:          "description": "Dependency coordinate in the form group:artifact:version."
+./forge/schemas/benchmark_suite_schema.json:39:        "description": "Reference to a strategy name defined elsewhere."
+./forge/schemas/benchmark_suite_schema.json:47:        "description": "Benchmark suite for core libraries using baseline strategy.",
+./forge/schemas/strategy_schema.json:4:  "description": "Strict JSON Schema (Draft 2020-12) for strategy configurations used in Metadata Forge benchmarking and evaluation.",
+./forge/schemas/strategy_schema.json:11:      "description",
+./forge/schemas/strategy_schema.json:21:        "description": "Human-readable strategy name. May include a version suffix (e.g., 'Basic Iterative v1.0') to distinguish minor workflow updates or logic refinements while preserving the base strategy identity."
+./forge/schemas/strategy_schema.json:23:      "description": {
+./forge/schemas/strategy_schema.json:26:        "description": "Description of the strategy workflow and behavior."
+./forge/schemas/strategy_schema.json:31:        "description": "Name of the agent."
+./forge/schemas/strategy_schema.json:36:        "description": "Workflow strategy implementation name."
+./forge/schemas/strategy_schema.json:41:        "description": "Primary workflow to run first in composite strategies (e.g., increase_dynamic_access_coverage)."
+./forge/schemas/strategy_schema.json:46:        "description": "Model identifier to run for this strategy."
+./forge/schemas/strategy_schema.json:51:        "description": "Optional LLM provider identifier for agent backends that support provider selection."
+./forge/schemas/strategy_schema.json:55:        "description": "Prompt templates used by the workflow.",
+./forge/schemas/strategy_schema.json:66:        "description": "Optional tunable parameters for the strategy.",
+./forge/schemas/strategy_schema.json:91:        "description": "List of MCP configuration identifiers to enable for this strategy.",
+./forge/schemas/strategy_schema.json:103:        "description": "Baseline Codex-driven iterative workflow.",
+./forge/strategies/predefined_strategies.json:4:    "description": "Same configuration as basic_iterative, but uses gpt-5.4 instead.",
+./forge/strategies/predefined_strategies.json:22:    "description": "Iterative add-new-library workflow for the Codex agent.",
+./forge/strategies/predefined_strategies.json:40:    "description": "Strategy for fix_javac_fail.py with downloaded main library sources as read-only context. Runs gradle test first, feeds the error into the initial prompt, then iteratively repairs.",
+./forge/strategies/predefined_strategies.json:57:    "description": "Dynamic-access-guided Codex workflow using downloaded main library sources as read-only context.",
+./forge/strategies/predefined_strategies.json:75:    "description": "Same configuration as dynamic_access_main_sources_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:93:    "description": "Dynamic-access-guided Pi workflow using downloaded main library sources as read-only context.",
+./forge/strategies/predefined_strategies.json:111:    "description": "Same configuration as dynamic_access_main_sources_pi_gpt-5.4, but uses gpt-5.5 instead.",
+./forge/strategies/predefined_strategies.json:129:    "description": "Dynamic-access-guided Pi workflow using downloaded main library sources as read-only context.",
+./forge/strategies/predefined_strategies.json:148:    "description": "Dynamic-access-guided Codex workflow using downloaded upstream test sources as read-only context.",
+./forge/strategies/predefined_strategies.json:166:    "description": "Same configuration as dynamic_access_test_sources_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:184:    "description": "Dynamic-access-guided Codex workflow using downloaded documentation artifacts as read-only context.",
+./forge/strategies/predefined_strategies.json:202:    "description": "Same configuration as dynamic_access_documentation_sources_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:220:    "description": "Dynamic-access-guided Codex workflow using main sources plus upstream test sources.",
+./forge/strategies/predefined_strategies.json:239:    "description": "Same configuration as dynamic_access_main_sources_with_tests_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:258:    "description": "Dynamic-access-guided Codex workflow using main sources plus documentation artifacts.",
+./forge/strategies/predefined_strategies.json:277:    "description": "Same configuration as dynamic_access_main_sources_with_documentation_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:296:    "description": "Dynamic-access-guided Codex workflow using main sources, upstream test sources, and documentation artifacts.",
+./forge/strategies/predefined_strategies.json:316:    "description": "Same configuration as dynamic_access_main_sources_with_tests_and_documentation_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:336:    "description": "Dynamic-access-guided Codex workflow using upstream test sources plus documentation artifacts.",
+./forge/strategies/predefined_strategies.json:355:    "description": "Same configuration as dynamic_access_test_sources_with_documentation_codex_gpt-5.4, but uses codex-5.3 instead.",
+./forge/strategies/predefined_strategies.json:374:    "description": "Composite strategy: runs javac_iterative to fix compilation, then improves dynamic-access coverage.",
+./forge/strategies/predefined_strategies.json:395:    "description": "Same configuration as javac_iterative_with_coverage_sources_pi_gpt-5.4, but uses gpt-5.5 instead.",
+./forge/strategies/predefined_strategies.json:416:    "description": "Composite strategy: optimistic bulk DA coverage, then per-class DA refinement.",
+./forge/strategies/predefined_strategies.json:438:    "description": "Strategy for fix_java_run_fail.py with downloaded main library sources as read-only context. Runs gradle test first, feeds the runtime error into the initial prompt, then iteratively repairs.",
+./forge/strategies/predefined_strategies.json:455:    "description": "Composite strategy: runs java_run_iterative to fix runtime failures, then improves dynamic-access coverage.",
+./forge/strategies/predefined_strategies.json:476:    "description": "Basic iterative add-new-library workflow for the Codex agent.",
+./forge/strategies/predefined_strategies.json:494:    "description": "Basic iterative add-new-library workflow for the Codex agent using gpt-5.5.",
+./forge/strategies/predefined_strategies.json:512:    "description": "Pi bulk dynamic-access strategy. Unlike the regular dynamic-access strategy, which iterates through uncovered classes and refines coverage class by class, this strategy gives the agent the full dynamic-access report in one prompt and asks it to cover the missing accesses in a single broad pass.",
+./forge/strategies/predefined_strategies.json:530:    "description": "Codex bulk dynamic-access strategy. Unlike the regular dynamic-access strategy, which iterates through uncovered classes and refines coverage class by class, this strategy gives the agent the full dynamic-access report in one prompt and asks it to cover the missing accesses in a single broad pass.",
+./forge/strategies/predefined_strategies.json:548:    "description": "Pi graphify-assisted bulk dynamic-access strategy. It first builds graphify context from downloaded source artifacts, then gives the agent the full dynamic-access report in one broad pass. Unlike the regular dynamic-access strategy, it does not run the class-by-class refinement loop.",
+./forge/strategies/predefined_strategies.json:567:    "description": "Codex graphify-assisted bulk dynamic-access strategy. It first builds graphify context from downloaded source artifacts, then gives the agent the full dynamic-access report in one broad pass. Unlike the regular dynamic-access strategy, it does not run the class-by-class refinement loop.",
+./forge/strategies/predefined_strategies.json:586:    "description": "Composite strategy: optimistic bulk DA coverage, then per-class DA refinement.",
+./forge/strategies/predefined_strategies.json:608:    "description": "Composite strategy: optimistic bulk DA coverage, then per-class DA refinement using gpt-5.5.",
+./forge/strategies/predefined_strategies.json:630:    "description": "Composite Codex strategy: optimistic bulk DA coverage, then per-class DA refinement.",
+./forge/strategies/predefined_strategies.json:652:    "description": "Composite Codex strategy: optimistic bulk DA coverage, then per-class DA refinement using gpt-5.5.",
+./forge/strategies/predefined_strategies.json:674:    "description": "Same configuration as basic_iterative, but uses gpt-5.5 instead.",
+./forge/strategies/predefined_strategies.json:692:    "description": "Dynamic-access-guided Codex workflow using downloaded main library sources as read-only context. Uses gpt-5.5.",
+./forge/strategies/predefined_strategies.json:710:    "description": "Dynamic-access-guided Codex workflow using downloaded documentation artifacts as read-only context. Uses gpt-5.5.",
+./forge/strategies/predefined_strategies.json:728:    "description": "Library-update strategy: skips primary workflow, directly runs dynamic-access coverage improvement on existing tests.",
+./forge/benchmarks/benchmark_suite.json:4:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `basic_iterative_pi_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:12:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `basic_iterative_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:20:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `basic_iterative_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:28:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `basic_iterative_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:36:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_main_sources_pi_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:44:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_main_sources_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:52:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_main_sources_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:60:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_documentation_sources_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:68:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_main_sources_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:76:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_documentation_sources_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:84:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `optimistic_dynamic_access_iterative_pi_gpt-5.3` strategy.",
+./forge/benchmarks/benchmark_suite.json:92:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `optimistic_dynamic_access_iterative_pi_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:100:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `optimistic_dynamic_access_iterative_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:108:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `optimistic_dynamic_access_iterative_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:116:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `optimistic_dynamic_access_iterative_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:124:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_bulk_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:132:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_graphify_bulk_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:140:    "description": "Benchmark for `ch.qos.logback:logback-core:1.1.3` using the `dynamic_access_graphify_bulk_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:148:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `basic_iterative_pi_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:156:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `basic_iterative_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:164:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_main_sources_pi_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:172:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_main_sources_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:180:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_main_sources_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:188:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_documentation_sources_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:196:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_main_sources_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:204:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_documentation_sources_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:212:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `optimistic_dynamic_access_iterative_pi_gpt-5.3` strategy.",
+./forge/benchmarks/benchmark_suite.json:220:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `optimistic_dynamic_access_iterative_pi_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:228:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `optimistic_dynamic_access_iterative_codex_gpt-5.4` strategy.",
+./forge/benchmarks/benchmark_suite.json:236:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_bulk_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:244:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_bulk_codex_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:252:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_graphify_bulk_pi_gpt-5.5` strategy.",
+./forge/benchmarks/benchmark_suite.json:260:    "description": "Benchmark for `com.h2database:h2:2.1.210` using the `dynamic_access_graphify_bulk_codex_gpt-5.5` strategy.",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:13:    "repository-url": "https://github.com/jboss/jboss-jakarta-servlet-api_spec",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:16:    "description": "Provides the Jakarta Servlet 4.0 specification API as a JBoss-packaged artifact for Java web applications. It defines the standard server-side interfaces for handling HTTP requests, responses, and related web container interactions."
+./metadata/javax.enterprise/cdi-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/$version$/cdi-api-$version$-sources.jar",
+./metadata/javax.enterprise/cdi-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/weld/api",
+./metadata/javax.enterprise/cdi-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.enterprise/cdi-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/$version$/cdi-api-$version$-javadoc.jar",
+./metadata/javax.enterprise/cdi-api/index.json:9:    "description" : "CDI API provides the Java EE Contexts and Dependency Injection annotations and service provider interfaces defined by JSR-299. It lets applications and containers describe injectable beans, scopes, qualifiers, events, interceptors, decorators, and extension points without depending on a particular CDI implementation.",
+./metadata/mysql/mysql-connector-java/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/mysql/mysql-connector-java/$version$/mysql-connector-java-$version$-sources.jar",
+./metadata/mysql/mysql-connector-java/index.json:9:    "repository-url": "https://github.com/mysql/mysql-connector-j",
+./metadata/mysql/mysql-connector-java/index.json:10:    "test-code-url": "https://github.com/mysql/mysql-connector-j/tree/$version$/src/test",
+./metadata/mysql/mysql-connector-java/index.json:11:    "documentation-url": "https://github.com/mysql/mysql-connector-j/blob/$version$/README.md",
+./metadata/mysql/mysql-connector-java/index.json:12:    "description": "MySQL Connector/J is a JDBC Type 4 driver that lets Java applications connect to MySQL databases. It also includes support for MySQL X DevAPI for working with MySQL as a document store.",
+./metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/paho/org.eclipse.paho.mqttv5.client/$version$/org.eclipse.paho.mqttv5.client-$version$-sources.jar",
+./metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:9:    "repository-url": "https://github.com/eclipse-paho/paho.mqtt.java",
+./metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:10:    "test-code-url": "https://github.com/eclipse-paho/paho.mqtt.java/tree/v$version$/org.eclipse.paho.mqttv5.client.test/src/test",
+./metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:11:    "documentation-url": "https://github.com/eclipse-paho/paho.mqtt.java/blob/v$version$/MQTTv5.md",
+./metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:12:    "description": "Eclipse Paho MQTT v5 Client is a Java library for connecting JVM and Android applications to MQTT brokers using the MQTT 5 protocol. It provides asynchronous and synchronous client APIs for publishing, subscribing, and managing MQTT messaging workflows.",
+
+exec
+/usr/bin/zsh -lc "find metadata -name '*.json' | head -30" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+ succeeded in 0ms:
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json
+metadata/org.mariadb.jdbc/mariadb-java-client/3.5.2/reachability-metadata.json
+metadata/org.mariadb.jdbc/mariadb-java-client/3.0.6/reachability-metadata.json
+metadata/javax.transaction/jta/index.json
+metadata/javax.transaction/jta/1.1/reachability-metadata.json
+metadata/javax.transaction/transaction-api/index.json
+metadata/javax.transaction/transaction-api/1.1/reachability-metadata.json
+metadata/org.mockito/mockito-core/index.json
+metadata/org.mockito/mockito-core/4.8.1/reachability-metadata.json
+metadata/org.mockito/mockito-core/5.0.0/reachability-metadata.json
+metadata/org.antlr/antlr-runtime/index.json
+metadata/org.antlr/antlr-runtime/3.5.2/reachability-metadata.json
+metadata/org.antlr/antlr4-runtime/index.json
+metadata/org.antlr/antlr4-runtime/4.10/reachability-metadata.json
+metadata/org.seleniumhq.selenium/selenium-json/index.json
+metadata/org.seleniumhq.selenium/selenium-json/4.9.0/reachability-metadata.json
+metadata/org.seleniumhq.selenium/selenium-api/index.json
+metadata/org.seleniumhq.selenium/selenium-api/3.141.59/reachability-metadata.json
+metadata/org.seleniumhq.selenium/selenium-api/4.0.0/reachability-metadata.json
+metadata/com.mysema.commons/mysema-commons-lang/index.json
+metadata/com.mysema.commons/mysema-commons-lang/0.2.4/reachability-metadata.json
+metadata/org.iq80.leveldb/leveldb-api/0.6/reachability-metadata.json
+metadata/org.iq80.leveldb/leveldb-api/index.json
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/1.5.0/reachability-metadata.json
+metadata/com.thoughtworks.paranamer/paranamer/index.json
+metadata/com.thoughtworks.paranamer/paranamer/2.8.1/reachability-metadata.json
+metadata/com.thoughtworks.paranamer/paranamer/2.3/reachability-metadata.json
+metadata/com.google.cloud.tools/jib-build-plan/index.json
+metadata/com.google.cloud.tools/jib-build-plan/0.4.0/reachability-metadata.json
+
+exec
+/usr/bin/zsh -lc "find tests -name '*.json' | head -30" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+ succeeded in 0ms:
+tests/src/org.mariadb.jdbc/mariadb-java-client/3.5.2/user-code-filter.json
+tests/src/org.mariadb.jdbc/mariadb-java-client/3.0.6/user-code-filter.json
+tests/src/javax.transaction/jta/1.1/user-code-filter.json
+tests/src/javax.transaction/transaction-api/1.1/user-code-filter.json
+tests/src/org.mockito/mockito-core/4.8.1/src/test/resources/META-INF/native-image/test/proxy-config.json
+tests/src/org.mockito/mockito-core/4.8.1/user-code-filter.json
+tests/src/org.mockito/mockito-core/5.0.0/src/test/resources/META-INF/native-image/test/proxy-config.json
+tests/src/org.mockito/mockito-core/5.0.0/user-code-filter.json
+tests/src/org.antlr/antlr-runtime/3.5.2/user-code-filter.json
+tests/src/org.antlr/antlr4-runtime/4.10/user-code-filter.json
+tests/src/org.seleniumhq.selenium/selenium-json/4.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json
+tests/src/org.seleniumhq.selenium/selenium-json/4.9.0/user-code-filter.json
+tests/src/org.seleniumhq.selenium/selenium-api/3.141.59/user-code-filter.json
+tests/src/org.seleniumhq.selenium/selenium-api/4.0.0/user-code-filter.json
+tests/src/com.mysema.commons/mysema-commons-lang/0.2.4/user-code-filter.json
+tests/src/org.iq80.leveldb/leveldb-api/0.6/user-code-filter.json
+tests/src/org.apache.jackrabbit/jackrabbit-jcr-commons/1.5.0/user-code-filter.json
+tests/src/com.thoughtworks.paranamer/paranamer/2.8.1/src/test/resources/META-INF/native-image/reachability-metadata.json
+tests/src/com.thoughtworks.paranamer/paranamer/2.8.1/user-code-filter.json
+tests/src/com.thoughtworks.paranamer/paranamer/2.3/src/test/resources/META-INF/native-image/reachability-metadata.json
+tests/src/com.thoughtworks.paranamer/paranamer/2.3/user-code-filter.json
+tests/src/com.google.cloud.tools/jib-build-plan/0.4.0/user-code-filter.json
+tests/src/com.vaadin.external.google/android-json/0.0.20131108.vaadin1/user-code-filter.json
+tests/src/org.sonatype.aether/aether-api/1.8/user-code-filter.json
+tests/src/org.sonatype.aether/aether-api/1.13.1/user-code-filter.json
+tests/src/org.sonatype.aether/aether-api/1.7/user-code-filter.json
+tests/src/org.sonatype.aether/aether-api/1.9/user-code-filter.json
+tests/src/org.sonatype.aether/aether-util/1.8/user-code-filter.json
+tests/src/org.sonatype.aether/aether-util/1.7/user-code-filter.json
+tests/src/org.sonatype.aether/aether-spi/1.8/user-code-filter.json
+
+web search: 
+web search: https://github.com/arquillian/arquillian-core/tree/1.1.10.Final
+web search: 
+web search: repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/
+web search: 
+web search: "arquillian-core-spi-1.1.10.Final-sources.jar"
+codex
+For this artifact I’m going to use Maven Central for sources and Javadoc, the GitHub repository root from the release POM SCM, and `N/A` for the test suite because the artifact module has no tagged `src/test` tree and its Maven `tests.jar` contains no tests. It is a JVM `.jar` with `.class` files, so I won’t mark it as `not-for-native-image`.
 apply patch
 patch: completed
-/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
+/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
 diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
-index 0f9af1ec700da22b1487a59483f469ea4ee96bba..4083b71b79c88a694b4c55060378b26ab5881854
+index 0f9af1ec700da22b1487a59483f469ea4ee96bba..07aa6a434f15eb5f1584eff59f6fa7a701c7ce7e
 --- a/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
 +++ b/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
 @@ -1,3 +1,8 @@
@@ -1087,13 +1208,13 @@ index 0f9af1ec700da22b1487a59483f469ea4ee96bba..4083b71b79c88a694b4c55060378b26a
 +  "coordinates" : "org.jboss.arquillian.core:arquillian-core-spi:1.1.10.Final",
 +  "repository-url" : "https://github.com/arquillian/arquillian-core",
 +  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-sources.jar",
-+  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-tests.jar",
++  "test-code-url" : "N/A",
 +  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-javadoc.jar",
-+  "description" : "Arquillian Core SPI provides service provider interfaces for extending the Arquillian core runtime. It defines extension loading, manager construction, context storage, event dispatch, observer, and injection-point contracts used by Arquillian components."
++  "description" : "Arquillian Core SPI provides the service provider interfaces, event abstractions, context APIs, and manager extension hooks used by Arquillian's core runtime. It lets extensions integrate with Arquillian's lifecycle, object stores, service loading, and observer/event processing without depending on a concrete implementation."
  }
 
 diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
-index 0f9af1ec700da22b1487a59483f469ea4ee96bba..4083b71b79c88a694b4c55060378b26ab5881854
+index 0f9af1ec700da22b1487a59483f469ea4ee96bba..07aa6a434f15eb5f1584eff59f6fa7a701c7ce7e
 --- a/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
 +++ b/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
 @@ -1,3 +1,8 @@
@@ -1102,28 +1223,67 @@ index 0f9af1ec700da22b1487a59483f469ea4ee96bba..4083b71b79c88a694b4c55060378b26a
 +  "coordinates" : "org.jboss.arquillian.core:arquillian-core-spi:1.1.10.Final",
 +  "repository-url" : "https://github.com/arquillian/arquillian-core",
 +  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-sources.jar",
-+  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-tests.jar",
++  "test-code-url" : "N/A",
 +  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-javadoc.jar",
-+  "description" : "Arquillian Core SPI provides service provider interfaces for extending the Arquillian core runtime. It defines extension loading, manager construction, context storage, event dispatch, observer, and injection-point contracts used by Arquillian components."
++  "description" : "Arquillian Core SPI provides the service provider interfaces, event abstractions, context APIs, and manager extension hooks used by Arquillian's core runtime. It lets extensions integrate with Arquillian's lifecycle, object stores, service loading, and observer/event processing without depending on a concrete implementation."
  }
 
+codex
+The JSON has been updated. I’m doing a quick validation pass now: parse the file and hit the selected versioned URLs after substituting `1.1.10.Final`.
 exec
-/usr/bin/zsh -lc 'git diff -- build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
-exec
-/usr/bin/zsh -lc 'jq . build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
- succeeded in 106ms:
- succeeded in 108ms:
+/usr/bin/zsh -lc 'jq . build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+ succeeded in 0ms:
 {
   "coordinates": "org.jboss.arquillian.core:arquillian-core-spi:1.1.10.Final",
   "repository-url": "https://github.com/arquillian/arquillian-core",
   "source-code-url": "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-sources.jar",
-  "test-code-url": "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-tests.jar",
+  "test-code-url": "N/A",
   "documentation-url": "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-javadoc.jar",
-  "description": "Arquillian Core SPI provides service provider interfaces for extending the Arquillian core runtime. It defines extension loading, manager construction, context storage, event dispatch, observer, and injection-point contracts used by Arquillian components."
+  "description": "Arquillian Core SPI provides the service provider interfaces, event abstractions, context APIs, and manager extension hooks used by Arquillian's core runtime. It lets extensions integrate with Arquillian's lifecycle, object stores, service loading, and observer/event processing without depending on a concrete implementation."
 }
 
+exec
+/usr/bin/zsh -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/arquillian-core-spi-1.1.10.Final-sources.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+exec
+/usr/bin/zsh -lc 'curl -I -fsSL https://github.com/arquillian/arquillian-core' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+exec
+/usr/bin/zsh -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final/arquillian-core-spi-1.1.10.Final-javadoc.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+ succeeded in 111ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 20:07:59 GMT
+content-type: application/java-archive
+content-length: 25923
+cf-ray: 9f59a7c39d56e296-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 89700
+etag: "56e2f68e18b32d6be63b2522218b009c"
+last-modified: Mon, 19 Oct 2015 12:54:08 GMT
+x-checksum-md5: 56e2f68e18b32d6be63b2522218b009c
+x-checksum-sha1: 643d52c2fc697ce280f40c8f0c5dca59ffca8e7c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 113ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 20:07:59 GMT
+content-type: application/java-archive
+content-length: 308722
+cf-ray: 9f59a7c44d611778-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 89717
+etag: "9e48ab712801912feb3c08e2989a5c72"
+last-modified: Mon, 19 Oct 2015 12:54:10 GMT
+x-checksum-md5: 9e48ab712801912feb3c08e2989a5c72
+x-checksum-sha1: 0f4e7aaaa9d2b7c70898fb136d1387399a1b6e54
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
 diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
-index 0f9af1ec700da22b1487a59483f469ea4ee96bba..4083b71b79c88a694b4c55060378b26ab5881854
+index 0f9af1ec700da22b1487a59483f469ea4ee96bba..07aa6a434f15eb5f1584eff59f6fa7a701c7ce7e
 --- a/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
 +++ b/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
 @@ -1,3 +1,8 @@
@@ -1132,55 +1292,40 @@ index 0f9af1ec700da22b1487a59483f469ea4ee96bba..4083b71b79c88a694b4c55060378b26a
 +  "coordinates" : "org.jboss.arquillian.core:arquillian-core-spi:1.1.10.Final",
 +  "repository-url" : "https://github.com/arquillian/arquillian-core",
 +  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-sources.jar",
-+  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-tests.jar",
++  "test-code-url" : "N/A",
 +  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-javadoc.jar",
-+  "description" : "Arquillian Core SPI provides service provider interfaces for extending the Arquillian core runtime. It defines extension loading, manager construction, context storage, event dispatch, observer, and injection-point contracts used by Arquillian components."
++  "description" : "Arquillian Core SPI provides the service provider interfaces, event abstractions, context APIs, and manager extension hooks used by Arquillian's core runtime. It lets extensions integrate with Arquillian's lifecycle, object stores, service loading, and observer/event processing without depending on a concrete implementation."
  }
 
-codex
-The JSON parses cleanly. I’m checking the worktree status because `git diff` didn’t show the file, which usually means this generated metadata file is untracked or ignored.
-exec
-/usr/bin/zsh -lc 'git ls-files --error-unmatch build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
- exited 1 in 0ms:
-error: pathspec 'build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json' did not match any file(s) known to git
-Did you forget to 'git add'?
+ succeeded in 838ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 20:07:59 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"1b7a5587138e115af46457c8d4461dd6"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=uBHWy6YWCyDGB9IyBy2mGsOvRKqLmlQW20FmkIyIT385fE%2B6kHkVCKb4rU%2FQu6vWkLf6MnlmCrOWUld4y2pS4YKFIb4mQZMLaPEfZF%2FDu9tpAQx9%2FMIe5AP1c0%2FKvUN6DwQtov9YvYgoOsDJHTwti6wKT7n%2BLKldQvACdsPd9oh5%2Fw9c5%2BwRvXUHO58fCN9OlOiPA5Vk60cZEkXYCHifeEOO3wFXezlsD9jA4BCyoPedCVnrtZ8MxhTMGQCnM3NcOh07NueepNb3gTOeXRNf5g%3D%3D--%2BHtnj7mLmiH09mMy--ZPSjSMYFPgkTrWaGqO%2B8FQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1519619061.1777752479; expires=Sun, 02 May 2027 20:07:59 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 02 May 2027 20:07:59 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 19D8:3A6621:E60B35E:AB3135B:69F6599F
+
 
 exec
-/usr/bin/zsh -lc 'git status --short -- build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
-diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
-index 0f9af1ec700da22b1487a59483f469ea4ee96bba..4083b71b79c88a694b4c55060378b26ab5881854
---- a/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
-+++ b/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
-@@ -1,3 +1,8 @@
- {
--  "coordinates" : "org.jboss.arquillian.core:arquillian-core-spi:1.1.10.Final"
-+  "coordinates" : "org.jboss.arquillian.core:arquillian-core-spi:1.1.10.Final",
-+  "repository-url" : "https://github.com/arquillian/arquillian-core",
-+  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-sources.jar",
-+  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-tests.jar",
-+  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-javadoc.jar",
-+  "description" : "Arquillian Core SPI provides service provider interfaces for extending the Arquillian core runtime. It defines extension loading, manager construction, context storage, event dispatch, observer, and injection-point contracts used by Arquillian components."
- }
-
- succeeded in 173ms:
-web search: 
-web search: https://github.com/arquillian/arquillian-core/tree/1.1.10.Final
-web search: 
-web search: Maven Central arquillian-core-spi 1.1.10.Final sources tests javadoc
-exec
-/usr/bin/zsh -lc 'nl -ba build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be
+/usr/bin/zsh -lc 'git diff -- build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
  succeeded in 0ms:
-     1	{
-     2	  "coordinates" : "org.jboss.arquillian.core:arquillian-core-spi:1.1.10.Final",
-     3	  "repository-url" : "https://github.com/arquillian/arquillian-core",
-     4	  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-sources.jar",
-     5	  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-tests.jar",
-     6	  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-javadoc.jar",
-     7	  "description" : "Arquillian Core SPI provides service provider interfaces for extending the Arquillian core runtime. It defines extension loading, manager construction, context storage, event dispatch, observer, and injection-point contracts used by Arquillian components."
-     8	}
-
+exec
+/usr/bin/zsh -lc 'git status --short -- build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c
+ succeeded in 217ms:
 diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
-index 0f9af1ec700da22b1487a59483f469ea4ee96bba..4083b71b79c88a694b4c55060378b26ab5881854
+index 0f9af1ec700da22b1487a59483f469ea4ee96bba..07aa6a434f15eb5f1584eff59f6fa7a701c7ce7e
 --- a/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
 +++ b/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
 @@ -1,3 +1,8 @@
@@ -1189,23 +1334,19 @@ index 0f9af1ec700da22b1487a59483f469ea4ee96bba..4083b71b79c88a694b4c55060378b26a
 +  "coordinates" : "org.jboss.arquillian.core:arquillian-core-spi:1.1.10.Final",
 +  "repository-url" : "https://github.com/arquillian/arquillian-core",
 +  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-sources.jar",
-+  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-tests.jar",
++  "test-code-url" : "N/A",
 +  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-javadoc.jar",
-+  "description" : "Arquillian Core SPI provides service provider interfaces for extending the Arquillian core runtime. It defines extension loading, manager construction, context storage, event dispatch, observer, and injection-point contracts used by Arquillian components."
++  "description" : "Arquillian Core SPI provides the service provider interfaces, event abstractions, context APIs, and manager extension hooks used by Arquillian's core runtime. It lets extensions integrate with Arquillian's lifecycle, object stores, service loading, and observer/event processing without depending on a concrete implementation."
  }
 
-web search: 
-web search: site:repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/1.1.10.Final arquillian-core-spi-1.1.10.Final-javadoc.jar
-web search: 
-web search: https://github.com/arquillian/arquillian-core/tree/1.1.10.Final
 codex
-Updated [the JSON file](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json:1) with repository, Maven Central source/test/javadoc URLs, and the two-sentence description.
+Updated [org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json:1).
 
-I left `language` absent and did not set `not-for-native-image`: the upstream project is Java/JVM-oriented, and the artifact publishes JVM class files. The repository/tag was verified against `arquillian/arquillian-core` at `1.1.10.Final`, and the artifact is identified as Arquillian Core SPI. ([github.com](https://github.com/arquillian/arquillian-core/tree/1.1.10.Final))
+Set Maven Central sources/Javadoc URLs, GitHub repository root, `test-code-url: "N/A"` because the module has no real test suite and the Maven `tests.jar` only contains metadata. I left `language` absent and did not add `not-for-native-image` because the artifact is a JVM jar with class files.
 
-Validation: `jq .` passed.
+Verified JSON parses with `jq`; source and Javadoc URLs resolve with HTTP 200 after substituting `1.1.10.Final`.
 diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
-index 0f9af1ec700da22b1487a59483f469ea4ee96bba..4083b71b79c88a694b4c55060378b26ab5881854
+index 0f9af1ec700da22b1487a59483f469ea4ee96bba..07aa6a434f15eb5f1584eff59f6fa7a701c7ce7e
 --- a/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
 +++ b/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json
 @@ -1,3 +1,8 @@
@@ -1214,22 +1355,22 @@ index 0f9af1ec700da22b1487a59483f469ea4ee96bba..4083b71b79c88a694b4c55060378b26a
 +  "coordinates" : "org.jboss.arquillian.core:arquillian-core-spi:1.1.10.Final",
 +  "repository-url" : "https://github.com/arquillian/arquillian-core",
 +  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-sources.jar",
-+  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-tests.jar",
++  "test-code-url" : "N/A",
 +  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-javadoc.jar",
-+  "description" : "Arquillian Core SPI provides service provider interfaces for extending the Arquillian core runtime. It defines extension loading, manager construction, context storage, event dispatch, observer, and injection-point contracts used by Arquillian components."
++  "description" : "Arquillian Core SPI provides the service provider interfaces, event abstractions, context APIs, and manager extension hooks used by Arquillian's core runtime. It lets extensions integrate with Arquillian's lifecycle, object stores, service loading, and observer/event processing without depending on a concrete implementation."
  }
 
-2026-05-02T19:47:42.317345Z ERROR codex_core::session: failed to record rollout items: thread 019dea39-f437-76a0-bdd9-623ab83aff1a not found
+2026-05-02T20:08:16.398832Z ERROR codex_core::session: failed to record rollout items: thread 019dea4c-a5be-7283-a55c-b644b4a19d3f not found
 tokens used
-76,700
-Updated [the JSON file](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json:1) with repository, Maven Central source/test/javadoc URLs, and the two-sentence description.
+76,799
+Updated [org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c/build/discovered-artifact-metadata/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.json:1).
 
-I left `language` absent and did not set `not-for-native-image`: the upstream project is Java/JVM-oriented, and the artifact publishes JVM class files. The repository/tag was verified against `arquillian/arquillian-core` at `1.1.10.Final`, and the artifact is identified as Arquillian Core SPI. ([github.com](https://github.com/arquillian/arquillian-core/tree/1.1.10.Final))
+Set Maven Central sources/Javadoc URLs, GitHub repository root, `test-code-url: "N/A"` because the module has no real test suite and the Maven `tests.jar` only contains metadata. I left `language` absent and did not add `not-for-native-image` because the artifact is a JVM jar with class files.
 
-Validation: `jq .` passed.
-Ran agent for org.jboss.arquillian.core:arquillian-core-spi:1.1.10.Final (exit 0). Log: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be/build/agent-artifact-discovery-logs/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.log
+Verified JSON parses with `jq`; source and Javadoc URLs resolve with HTTP 200 after substituting `1.1.10.Final`.
+Ran agent for org.jboss.arquillian.core:arquillian-core-spi:1.1.10.Final (exit 0). Log: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c/build/agent-artifact-discovery-logs/org.jboss.arquillian.core-arquillian-core-spi-1.1.10.Final.log
 
-[Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-0b5d22be/build/reports/problems/problems-report.html
+[Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3765-fd30e56c/build/reports/problems/problems-report.html
 
 Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
 
@@ -1237,5 +1378,5 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD SUCCESSFUL in 2m 5s
+BUILD SUCCESSFUL in 1m 58s
 9 actionable tasks: 4 executed, 5 from cache
