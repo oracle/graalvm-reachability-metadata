@@ -638,7 +638,7 @@ public class Commons_fileupload2_javaxTest {
 
         @Override
         public StringBuffer getRequestURL() {
-            return new StringBuffer("http://localhost/upload");
+            return javax.servlet.http.HttpUtils.getRequestURL(this);
         }
 
         @Override
