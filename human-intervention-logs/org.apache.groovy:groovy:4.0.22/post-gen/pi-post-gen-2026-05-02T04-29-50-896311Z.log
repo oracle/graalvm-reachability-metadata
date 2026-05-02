@@ -1,0 +1,17 @@
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Completed.
+
+Changes made:
+- Removed generated non-metadata-related failing Groovy tests from:
+  - `tests/src/org.apache.groovy/groovy/4.0.22/src/test/groovy/org_apache_groovy/groovy/GroovyTest.groovy`
+- Preserved the metadata-related failing test:
+  - `observableCollectionsPublishMutationEvents()`
+- Wrote the intervention report to:
+  - `post-gen-interventions/org.apache.groovy_groovy_4.0.22.md`
+
+Validation:
+- Ran `./gradlew test -Pcoordinates=org.apache.groovy:groovy:4.0.22 --stacktrace`
+- Result: still fails as expected, but now only for the preserved metadata-related failure:
+  - missing proxy reflection metadata for `java.beans.PropertyChangeListener`
+
+No metadata files were modified during this intervention.

@@ -23,7 +23,20 @@ java {
     }
 }
 
+tasks.withType(org.gradle.api.tasks.compile.GroovyCompile).configureEach {
+    groovyOptions.optimizationOptions.put("indy", false)
+}
+
+tasks.named("test") {
+    systemProperty "groovy.target.indy", "false"
+}
+
 graalvmNative {
+    binaries {
+        test {
+            runtimeArgs("-Dgroovy.target.indy=false")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
