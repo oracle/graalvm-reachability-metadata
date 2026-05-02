@@ -99,6 +99,15 @@ public class Jsinterop_annotationsTest {
         assertThat(new JsOptionalLiteral().annotationType()).isSameAs(JsOptional.class);
     }
 
+    @Test
+    void jsIgnoreCanMarkConstructorOverloadsAsJavaOnly() {
+        ConstructableToken exportedToken = new ConstructableToken("alpha");
+        ConstructableToken javaOnlyToken = new ConstructableToken("beta", "trusted-java");
+
+        assertThat(exportedToken.describe()).isEqualTo("alpha:js-visible");
+        assertThat(javaOnlyToken.describe()).isEqualTo("beta:trusted-java");
+    }
+
     private static int applyMapping(int value, ValueMapper mapper) {
         return mapper.map(value);
     }
@@ -169,6 +178,27 @@ public class Jsinterop_annotationsTest {
         @JsIgnore
         private String internalId() {
             return internalId;
+        }
+    }
+
+    @JsType(namespace = "test.tokens", name = "Token")
+    private static final class ConstructableToken {
+        private final String name;
+        private final String source;
+
+        @JsConstructor
+        private ConstructableToken(String name) {
+            this(name, "js-visible");
+        }
+
+        @JsIgnore
+        private ConstructableToken(String name, String source) {
+            this.name = name;
+            this.source = source;
+        }
+
+        private String describe() {
+            return name + ":" + source;
         }
     }
 
