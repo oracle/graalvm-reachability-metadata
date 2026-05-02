@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="JUnit Jupiter" tests="15" skipped="0" failures="0" errors="0" time="0.119" hostname="kung-fu-workstation" timestamp="2026-05-02T22:40:12">
+<testsuite name="JUnit Jupiter" tests="17" skipped="0" failures="0" errors="2" time="0.203" hostname="kung-fu-workstation" timestamp="2026-05-02T22:53:56">
 <properties>
 <property name="file.encoding" value="UTF-8"/>
 <property name="file.separator" value="/"/>
@@ -55,7 +55,62 @@
 <property name="user.name" value="vjovanov"/>
 <property name="user.timezone" value="Europe/Zurich"/>
 </properties>
-<testcase name="geospatialCommandsDecodeCoordinatesAndDistances()" classname="io_lettuce.lettuce_core.Lettuce_coreTest" time="0.001">
+<testcase name="restoresMethodParameterTypeProviderFromSerializedMethodParameter()" classname="io_lettuce.lettuce_core.TypeWrapperInnerMethodParameterTypeProviderTest" time="0">
+<error message="Cannot reflectively invoke constructor 'public java.lang.Object()'. To allow this operation, add the following to the 'reflection' section of 'reachability-metadata.json' and rebuild the native image:
+
+    {
+      &quot;type&quot;: &quot;java.lang.Object&quot;,
+      &quot;methods&quot;: [
+        {
+          &quot;name&quot;: &quot;&lt;init&gt;&quot;,
+          &quot;parameterTypes&quot;: []
+        }
+      ]
+    }
+
+The 'reachability-metadata.json' file should be located in 'META-INF/native-image/&lt;group-id&gt;/&lt;artifact-id&gt;/' of your project. For further help, see https://www.graalvm.org/latest/reference-manual/native-image/metadata/#reflection" type="org.graalvm.nativeimage.MissingReflectionRegistrationError"><![CDATA[org.graalvm.nativeimage.MissingReflectionRegistrationError: Cannot reflectively invoke constructor 'public java.lang.Object()'. To allow this operation, add the following to the 'reflection' section of 'reachability-metadata.json' and rebuild the native image:
+
+    {
+      "type": "java.lang.Object",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    }
+
+The 'reachability-metadata.json' file should be located in 'META-INF/native-image/<group-id>/<artifact-id>/' of your project. For further help, see https://www.graalvm.org/latest/reference-manual/native-image/metadata/#reflection
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.MissingReflectionRegistrationUtils.reportInvokedExecutable(MissingReflectionRegistrationUtils.java:110)
+	at java.base@25.0.2/java.lang.reflect.Constructor.acquireConstructorAccessor(Constructor.java:101)
+	at java.base@25.0.2/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:496)
+	at java.base@25.0.2/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at java.base@25.0.2/java.io.ObjectStreamClass.newInstance(ObjectStreamClass.java:914)
+	at java.base@25.0.2/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2112)
+	at java.base@25.0.2/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
+	at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:487)
+	at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:445)
+	at io_lettuce.lettuce_core.TypeWrapperInnerMethodParameterTypeProviderTest.roundTrip(TypeWrapperInnerMethodParameterTypeProviderTest.java:58)
+	at io_lettuce.lettuce_core.TypeWrapperInnerMethodParameterTypeProviderTest.restoresMethodParameterTypeProviderFromSerializedMethodParameter(TypeWrapperInnerMethodParameterTypeProviderTest.java:28)
+	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+	at java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
+	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
+]]></error>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:io_lettuce.lettuce_core.TypeWrapperInnerMethodParameterTypeProviderTest]/[method:restoresMethodParameterTypeProviderFromSerializedMethodParameter()]
+display-name: restoresMethodParameterTypeProviderFromSerializedMethodParameter()
+]]></system-out>
+</testcase>
+<testcase name="geospatialCommandsDecodeCoordinatesAndDistances()" classname="io_lettuce.lettuce_core.Lettuce_coreTest" time="0.008">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:io_lettuce.lettuce_core.Lettuce_coreTest]/[method:geospatialCommandsDecodeCoordinatesAndDistances()]
 display-name: geospatialCommandsDecodeCoordinatesAndDistances()
@@ -67,13 +122,13 @@ unique-id: [engine:junit-jupiter]/[class:io_lettuce.lettuce_core.ConnectionWrapp
 display-name: wrappedPoolConnectionDelegatesConnectionMethodsAndCreatesCommandProxy()
 ]]></system-out>
 </testcase>
-<testcase name="asynchronousAndReactiveCommandsUseTheSameConnectionInfrastructure()" classname="io_lettuce.lettuce_core.Lettuce_coreTest" time="0.043">
+<testcase name="asynchronousAndReactiveCommandsUseTheSameConnectionInfrastructure()" classname="io_lettuce.lettuce_core.Lettuce_coreTest" time="0.05">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:io_lettuce.lettuce_core.Lettuce_coreTest]/[method:asynchronousAndReactiveCommandsUseTheSameConnectionInfrastructure()]
 display-name: asynchronousAndReactiveCommandsUseTheSameConnectionInfrastructure()
 ]]></system-out>
 </testcase>
-<testcase name="findsInterfaceAndClassMethodsAndInvokesClassMethod()" classname="io_lettuce.lettuce_core.ReflectionUtilsTest" time="0">
+<testcase name="findsInterfaceAndClassMethodsAndInvokesClassMethod()" classname="io_lettuce.lettuce_core.ReflectionUtilsTest" time="0.001">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:io_lettuce.lettuce_core.ReflectionUtilsTest]/[method:findsInterfaceAndClassMethodsAndInvokesClassMethod()]
 display-name: findsInterfaceAndClassMethodsAndInvokesClassMethod()
@@ -85,61 +140,116 @@ unique-id: [engine:junit-jupiter]/[class:io_lettuce.lettuce_core.ReflectionUtils
 display-name: visitsDeclaredFieldsAndReadsPublicStaticField()
 ]]></system-out>
 </testcase>
-<testcase name="clusterSynchronousProxySupportsCommandsConnectionsAndSelections()" classname="io_lettuce.lettuce_core.ClusterFutureSyncInvocationHandlerTest" time="0.06">
+<testcase name="clusterSynchronousProxySupportsCommandsConnectionsAndSelections()" classname="io_lettuce.lettuce_core.ClusterFutureSyncInvocationHandlerTest" time="0.071">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:io_lettuce.lettuce_core.ClusterFutureSyncInvocationHandlerTest]/[method:clusterSynchronousProxySupportsCommandsConnectionsAndSelections()]
 display-name: clusterSynchronousProxySupportsCommandsConnectionsAndSelections()
 ]]></system-out>
 </testcase>
-<testcase name="redisUriAndClientOptionsCanBeConfiguredWithoutConnecting()" classname="io_lettuce.lettuce_core.Lettuce_coreTest" time="0">
+<testcase name="redisUriAndClientOptionsCanBeConfiguredWithoutConnecting()" classname="io_lettuce.lettuce_core.Lettuce_coreTest" time="0.005">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:io_lettuce.lettuce_core.Lettuce_coreTest]/[method:redisUriAndClientOptionsCanBeConfiguredWithoutConnecting()]
 display-name: redisUriAndClientOptionsCanBeConfiguredWithoutConnecting()
 ]]></system-out>
 </testcase>
-<testcase name="extendedKeepAliveOptionsAreConfiguredWhenConnectingWithNioTransport()" classname="io_lettuce.lettuce_core.ConnectionBuilderInnerExtendedNioSocketOptionsTest" time="0.001">
+<testcase name="extendedKeepAliveOptionsAreConfiguredWhenConnectingWithNioTransport()" classname="io_lettuce.lettuce_core.ConnectionBuilderInnerExtendedNioSocketOptionsTest" time="0.002">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:io_lettuce.lettuce_core.ConnectionBuilderInnerExtendedNioSocketOptionsTest]/[method:extendedKeepAliveOptionsAreConfiguredWhenConnectingWithNioTransport()]
 display-name: extendedKeepAliveOptionsAreConfiguredWhenConnectingWithNioTransport()
 ]]></system-out>
 </testcase>
-<testcase name="createsArrayTypeFromResolvableComponent()" classname="io_lettuce.lettuce_core.ResolvableTypeTest" time="0">
+<testcase name="createsArrayTypeFromResolvableComponent()" classname="io_lettuce.lettuce_core.ResolvableTypeTest" time="0.002">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:io_lettuce.lettuce_core.ResolvableTypeTest]/[method:createsArrayTypeFromResolvableComponent()]
 display-name: createsArrayTypeFromResolvableComponent()
 ]]></system-out>
 </testcase>
-<testcase name="sortedSetCommandsMapScoredValues()" classname="io_lettuce.lettuce_core.Lettuce_coreTest" time="0.001">
+<testcase name="restoresMethodParameterTypeProviderFromSerializedConstructorParameter()" classname="io_lettuce.lettuce_core.TypeWrapperInnerMethodParameterTypeProviderTest" time="0">
+<error message="Cannot reflectively invoke constructor 'public java.lang.Object()'. To allow this operation, add the following to the 'reflection' section of 'reachability-metadata.json' and rebuild the native image:
+
+    {
+      &quot;type&quot;: &quot;java.lang.Object&quot;,
+      &quot;methods&quot;: [
+        {
+          &quot;name&quot;: &quot;&lt;init&gt;&quot;,
+          &quot;parameterTypes&quot;: []
+        }
+      ]
+    }
+
+The 'reachability-metadata.json' file should be located in 'META-INF/native-image/&lt;group-id&gt;/&lt;artifact-id&gt;/' of your project. For further help, see https://www.graalvm.org/latest/reference-manual/native-image/metadata/#reflection" type="org.graalvm.nativeimage.MissingReflectionRegistrationError"><![CDATA[org.graalvm.nativeimage.MissingReflectionRegistrationError: Cannot reflectively invoke constructor 'public java.lang.Object()'. To allow this operation, add the following to the 'reflection' section of 'reachability-metadata.json' and rebuild the native image:
+
+    {
+      "type": "java.lang.Object",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    }
+
+The 'reachability-metadata.json' file should be located in 'META-INF/native-image/<group-id>/<artifact-id>/' of your project. For further help, see https://www.graalvm.org/latest/reference-manual/native-image/metadata/#reflection
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.MissingReflectionRegistrationUtils.reportInvokedExecutable(MissingReflectionRegistrationUtils.java:110)
+	at java.base@25.0.2/java.lang.reflect.Constructor.acquireConstructorAccessor(Constructor.java:101)
+	at java.base@25.0.2/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:496)
+	at java.base@25.0.2/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at java.base@25.0.2/java.io.ObjectStreamClass.newInstance(ObjectStreamClass.java:914)
+	at java.base@25.0.2/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2112)
+	at java.base@25.0.2/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
+	at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:487)
+	at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:445)
+	at io_lettuce.lettuce_core.TypeWrapperInnerMethodParameterTypeProviderTest.roundTrip(TypeWrapperInnerMethodParameterTypeProviderTest.java:58)
+	at io_lettuce.lettuce_core.TypeWrapperInnerMethodParameterTypeProviderTest.restoresMethodParameterTypeProviderFromSerializedConstructorParameter(TypeWrapperInnerMethodParameterTypeProviderTest.java:42)
+	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+	at java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
+	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
+]]></error>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:io_lettuce.lettuce_core.TypeWrapperInnerMethodParameterTypeProviderTest]/[method:restoresMethodParameterTypeProviderFromSerializedConstructorParameter()]
+display-name: restoresMethodParameterTypeProviderFromSerializedConstructorParameter()
+]]></system-out>
+</testcase>
+<testcase name="sortedSetCommandsMapScoredValues()" classname="io_lettuce.lettuce_core.Lettuce_coreTest" time="0.014">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:io_lettuce.lettuce_core.Lettuce_coreTest]/[method:sortedSetCommandsMapScoredValues()]
 display-name: sortedSetCommandsMapScoredValues()
 ]]></system-out>
 </testcase>
-<testcase name="scriptingCommandsDecodeRequestedOutputTypes()" classname="io_lettuce.lettuce_core.Lettuce_coreTest" time="0.001">
+<testcase name="scriptingCommandsDecodeRequestedOutputTypes()" classname="io_lettuce.lettuce_core.Lettuce_coreTest" time="0.013">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:io_lettuce.lettuce_core.Lettuce_coreTest]/[method:scriptingCommandsDecodeRequestedOutputTypes()]
 display-name: scriptingCommandsDecodeRequestedOutputTypes()
 ]]></system-out>
 </testcase>
-<testcase name="synchronousCommandsRoundTripAgainstRedisProtocolServer()" classname="io_lettuce.lettuce_core.Lettuce_coreTest" time="0.001">
+<testcase name="synchronousCommandsRoundTripAgainstRedisProtocolServer()" classname="io_lettuce.lettuce_core.Lettuce_coreTest" time="0.014">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:io_lettuce.lettuce_core.Lettuce_coreTest]/[method:synchronousCommandsRoundTripAgainstRedisProtocolServer()]
 display-name: synchronousCommandsRoundTripAgainstRedisProtocolServer()
 ]]></system-out>
 </testcase>
-<testcase name="commandFactoryDiscoversInheritedCommandMethods()" classname="io_lettuce.lettuce_core.DefaultRedisCommandsMetadataTest" time="0.002">
+<testcase name="commandFactoryDiscoversInheritedCommandMethods()" classname="io_lettuce.lettuce_core.DefaultRedisCommandsMetadataTest" time="0.004">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:io_lettuce.lettuce_core.DefaultRedisCommandsMetadataTest]/[method:commandFactoryDiscoversInheritedCommandMethods()]
 display-name: commandFactoryDiscoversInheritedCommandMethods()
 ]]></system-out>
 </testcase>
-<testcase name="commandArgumentBuildersEncodeOptionsAndKeyValueResults()" classname="io_lettuce.lettuce_core.Lettuce_coreTest" time="0.001">
+<testcase name="commandArgumentBuildersEncodeOptionsAndKeyValueResults()" classname="io_lettuce.lettuce_core.Lettuce_coreTest" time="0.006">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:io_lettuce.lettuce_core.Lettuce_coreTest]/[method:commandArgumentBuildersEncodeOptionsAndKeyValueResults()]
 display-name: commandArgumentBuildersEncodeOptionsAndKeyValueResults()
 ]]></system-out>
 </testcase>
-<testcase name="resolvesGenericArrayTypeToArrayClass()" classname="io_lettuce.lettuce_core.ResolvableTypeTest" time="0">
+<testcase name="resolvesGenericArrayTypeToArrayClass()" classname="io_lettuce.lettuce_core.ResolvableTypeTest" time="0.003">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:io_lettuce.lettuce_core.ResolvableTypeTest]/[method:resolvesGenericArrayTypeToArrayClass()]
 display-name: resolvesGenericArrayTypeToArrayClass()
