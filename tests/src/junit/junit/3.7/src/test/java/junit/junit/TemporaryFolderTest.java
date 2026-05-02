@@ -23,6 +23,24 @@ public class TemporaryFolderTest {
     Path parentDirectory;
 
     @Test
+    public void createsTemporaryFolderInDefaultLocation() throws IOException {
+        TemporaryFolder temporaryFolder = new TemporaryFolder();
+        File rootDirectory = null;
+
+        try {
+            temporaryFolder.create();
+            rootDirectory = temporaryFolder.getRoot();
+
+            assertTrue(rootDirectory.isDirectory());
+            assertTrue(rootDirectory.getName().startsWith("junit"));
+        } finally {
+            temporaryFolder.delete();
+        }
+
+        assertFalse(rootDirectory.exists());
+    }
+
+    @Test
     public void createsTemporaryFolderInsideExplicitParentDirectory() throws IOException {
         TemporaryFolder temporaryFolder = TemporaryFolder.builder()
                 .parentFolder(parentDirectory.toFile())
