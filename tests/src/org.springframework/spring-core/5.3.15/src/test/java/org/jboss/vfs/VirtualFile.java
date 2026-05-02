@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class VirtualFile {
 
@@ -62,7 +64,27 @@ public class VirtualFile {
     }
 
     public void visit(VirtualFileVisitor visitor) {
-        visitor.visit(this);
+        visitor.getAttributes();
+        File[] children = this.file.listFiles();
+        if (children == null) {
+            return;
+        }
+        Arrays.sort(children, Comparator.comparing(File::getName));
+        for (File child : children) {
+            visitChild(visitor, child);
+        }
+    }
+
+    private static void visitChild(VirtualFileVisitor visitor, File file) {
+        visitor.visit(new VirtualFile(file));
+        File[] children = file.listFiles();
+        if (children == null) {
+            return;
+        }
+        Arrays.sort(children, Comparator.comparing(File::getName));
+        for (File child : children) {
+            visitChild(visitor, child);
+        }
     }
 
     @Override

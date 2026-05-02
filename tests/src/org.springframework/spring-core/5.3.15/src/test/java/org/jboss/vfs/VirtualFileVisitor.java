@@ -8,5 +8,7 @@ package org.jboss.vfs;
 
 public interface VirtualFileVisitor {
 
+    VisitorAttributes getAttributes();
+
     void visit(VirtualFile file);
 }

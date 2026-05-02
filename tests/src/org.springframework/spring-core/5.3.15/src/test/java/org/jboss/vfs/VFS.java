@@ -20,6 +20,9 @@ public final class VFS {
     }
 
     public static VirtualFile getChild(URI uri) {
-        return new VirtualFile(new File(uri));
+        if ("file".equals(uri.getScheme())) {
+            return new VirtualFile(new File(uri));
+        }
+        return new VirtualFile(new File(uri.getPath()));
     }
 }
