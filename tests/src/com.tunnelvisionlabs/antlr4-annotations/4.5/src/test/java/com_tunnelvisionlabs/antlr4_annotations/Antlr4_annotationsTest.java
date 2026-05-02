@@ -269,6 +269,7 @@ public class Antlr4_annotationsTest {
     }
 
     private CompilationResult compileWithNullUsageProcessor(String className, String source) throws IOException {
+        configureJavaHomeForDynamicCompilation();
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         assertThat(compiler).as("A JDK compiler is required to exercise the annotation processor").isNotNull();
 
@@ -283,6 +284,13 @@ public class Antlr4_annotationsTest {
 
             boolean success = task.call();
             return new CompilationResult(success, diagnostics.getDiagnostics());
+        }
+    }
+
+    private static void configureJavaHomeForDynamicCompilation() {
+        String environmentJavaHome = System.getenv("JAVA_HOME");
+        if (System.getProperty("java.home") == null && environmentJavaHome != null) {
+            System.setProperty("java.home", environmentJavaHome);
         }
     }
 
