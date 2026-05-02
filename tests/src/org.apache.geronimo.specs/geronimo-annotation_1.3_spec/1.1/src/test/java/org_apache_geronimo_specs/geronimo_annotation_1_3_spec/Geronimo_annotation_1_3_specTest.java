@@ -236,6 +236,21 @@ public class Geronimo_annotation_1_3_specTest {
         assertThat(annotation(GeneratedArtifact.class.getDeclaredMethod("generatedMethod"), Generated.class)).isNull();
     }
 
+    @Test
+    void generatedAnnotationElementsSupportToolNamesAndOptionalDetails() {
+        Generated defaultDetails = annotation(DefaultGeneratedMetadataComponent.class, GeneratedMetadata.class).value();
+        Generated explicitDetails = annotation(ExplicitGeneratedMetadataComponent.class, GeneratedMetadata.class)
+                .value();
+
+        assertThat(defaultDetails.value()).containsExactly("schema-generator", "client-generator");
+        assertThat(defaultDetails.date()).isEmpty();
+        assertThat(defaultDetails.comments()).isEmpty();
+
+        assertThat(explicitDetails.value()).containsExactly("component-generator");
+        assertThat(explicitDetails.date()).isEqualTo("2026-05-02T10:15:30Z");
+        assertThat(explicitDetails.comments()).isEqualTo("created for native-image metadata");
+    }
+
     // Checkstyle: allow direct annotation access
     private static <A extends Annotation> A annotation(AnnotatedElement element, Class<A> annotationType) {
         A[] annotations = element.getAnnotationsByType(annotationType);
@@ -362,6 +377,21 @@ public class Geronimo_annotation_1_3_specTest {
 
     @Generated(value = "generated-annotation-type", date = "2026-05-02", comments = "marker")
     private @interface GeneratedMarker {
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    private @interface GeneratedMetadata {
+        Generated value();
+    }
+
+    @GeneratedMetadata(@Generated(value = { "schema-generator", "client-generator" }))
+    private static final class DefaultGeneratedMetadataComponent {
+    }
+
+    @GeneratedMetadata(@Generated(value = "component-generator", date = "2026-05-02T10:15:30Z",
+            comments = "created for native-image metadata"))
+    private static final class ExplicitGeneratedMetadataComponent {
     }
 
     @Generated(value = "generated-type", date = "2026-05-02", comments = "created by test")
