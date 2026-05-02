@@ -11,7 +11,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -106,6 +108,46 @@ public class ServiceTrackerTest {
         @Override
         public String[] getPropertyKeys() {
             return new String[] {Constants.SERVICE_ID, Constants.SERVICE_RANKING};
+        }
+
+        @Override
+        public Dictionary<String, Object> getProperties() {
+            return new Dictionary<>() {
+                @Override
+                public int size() {
+                    return 2;
+                }
+
+                @Override
+                public boolean isEmpty() {
+                    return false;
+                }
+
+                @Override
+                public Enumeration<String> keys() {
+                    return Collections.enumeration(List.of(Constants.SERVICE_ID, Constants.SERVICE_RANKING));
+                }
+
+                @Override
+                public Enumeration<Object> elements() {
+                    return Collections.enumeration(List.of(serviceId, ranking));
+                }
+
+                @Override
+                public Object get(Object key) {
+                    return key instanceof String ? getProperty((String) key) : null;
+                }
+
+                @Override
+                public Object put(String key, Object value) {
+                    throw new UnsupportedOperationException();
+                }
+
+                @Override
+                public Object remove(Object key) {
+                    throw new UnsupportedOperationException();
+                }
+            };
         }
 
         @Override
