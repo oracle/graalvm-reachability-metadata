@@ -632,6 +632,61 @@ final class Compiler_interfaceTest {
   }
 
   @Test
+  def advancedApiTypesModelPolymorphicExistentialAnnotatedAndPathDependentShapes(): Unit = {
+    val scalaPath = Path.of(Array[PathComponent](Id.of("scala")))
+    val anyType = Projection.of(Singleton.of(scalaPath), "Any")
+    val anyRefType = Projection.of(Singleton.of(scalaPath), "AnyRef")
+    val ownerPath = Path.of(Array[PathComponent](This.of(), Id.of("Outer")))
+    val ownerMember = Projection.of(Singleton.of(ownerPath), "Member")
+    val typeParameterRef = ParameterRef.of("F")
+    val higherKindedParameter = TypeParameter.of(
+      "F",
+      Array.empty[Annotation],
+      Array.empty[TypeParameter],
+      Variance.Invariant,
+      EmptyType.of(),
+      anyType
+    )
+    val valueParameter = TypeParameter.of(
+      "A",
+      Array.empty[Annotation],
+      Array.empty[TypeParameter],
+      Variance.Covariant,
+      EmptyType.of(),
+      anyRefType
+    )
+    val polymorphicMember = Polymorphic.of(ownerMember, Array(higherKindedParameter))
+    val appliedParameter = Parameterized.of(typeParameterRef, Array(ownerMember))
+    val existentialAppliedParameter = Existential.of(appliedParameter, Array(valueParameter))
+    val uncheckedAnnotation = Annotation.of(
+      Projection.of(Singleton.of(scalaPath), "unchecked"),
+      Array.empty[AnnotationArgument]
+    )
+    val annotatedExistential = Annotated.of(existentialAppliedParameter, Array(uncheckedAnnotation))
+    val superQualifierPath = Path.of(Array[PathComponent](Id.of("example")))
+    val superPathComponent = Super.of(superQualifierPath)
+    val inheritedPath = Path.of(Array[PathComponent](superPathComponent, Id.of("Ops")))
+    val updatedSuper = superPathComponent.withQualifier(Path.of(Array[PathComponent](Id.of("api"))))
+
+    assertThat(typeParameterRef.id()).isEqualTo("F")
+    assertThat(typeParameterRef.withId("G").id()).isEqualTo("G")
+    assertThat(polymorphicMember.baseType()).isEqualTo(ownerMember)
+    assertThat(polymorphicMember.parameters()).containsExactly(higherKindedParameter)
+    assertThat(polymorphicMember.withBaseType(anyType).baseType()).isEqualTo(anyType)
+    assertThat(polymorphicMember.withParameters(Array(valueParameter)).parameters()).containsExactly(valueParameter)
+    assertThat(existentialAppliedParameter.baseType()).isEqualTo(appliedParameter)
+    assertThat(existentialAppliedParameter.clause()).containsExactly(valueParameter)
+    assertThat(existentialAppliedParameter.withBaseType(ownerMember).baseType()).isEqualTo(ownerMember)
+    assertThat(existentialAppliedParameter.withClause(Array(higherKindedParameter)).clause()).containsExactly(higherKindedParameter)
+    assertThat(annotatedExistential.baseType()).isEqualTo(existentialAppliedParameter)
+    assertThat(annotatedExistential.annotations()).containsExactly(uncheckedAnnotation)
+    assertThat(annotatedExistential.withAnnotations(Array.empty[Annotation]).annotations()).isEmpty()
+    assertThat(Private.of(Unqualified.of()).qualifier()).isEqualTo(Unqualified.of())
+    assertThat(inheritedPath.components()).containsExactly(superPathComponent, Id.of("Ops"))
+    assertThat(updatedSuper.qualifier().components()).containsExactly(Id.of("api"))
+  }
+
+  @Test
   def analysisCallbackImplementationsCanCaptureCompilerEvents(): Unit = {
     val callback = new RecordingAnalysisCallback(true)
     val source = new File("src/main/scala/example/Service.scala")
