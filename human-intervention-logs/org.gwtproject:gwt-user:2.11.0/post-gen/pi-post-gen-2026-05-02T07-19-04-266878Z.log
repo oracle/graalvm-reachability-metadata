@@ -1,0 +1,15 @@
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Completed the post-generation intervention.
+
+Changes made:
+- Removed non-metadata failing generated tests under:
+  - `tests/src/org.gwtproject/gwt-user/2.11.0/src/test/java/org_gwtproject/gwt_user/`
+- Removed generated test-only resource directories used only by those failing compiler/module tests.
+- Preserved the metadata-related `EnumMapTest`.
+- Did not modify metadata files.
+- Wrote the report to:
+  - `post-gen-interventions/org.gwtproject_gwt-user_2.11.0.md`
+
+Verification:
+- Ran `./gradlew compileTestJava -Pcoordinates=org.gwtproject:gwt-user:2.11.0 --stacktrace`
+- Compile passed.

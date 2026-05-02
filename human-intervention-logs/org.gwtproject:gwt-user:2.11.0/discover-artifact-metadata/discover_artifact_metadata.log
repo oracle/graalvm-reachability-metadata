@@ -1,0 +1,772 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de652-8949-7b63-bdb3-eeb9a2db6dc7
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.gwtproject:gwt-user:2.11.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.11.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json
+- Set "coordinates" to "org.gwtproject:gwt-user:2.11.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven Central first, then fall back to the upstream tag only where Maven does not publish the needed artifact. After that I’ll patch the JSON directly and validate it.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | head -20 && sed -n '1,160p' build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9
+build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json
+{
+  "coordinates" : "org.gwtproject:gwt-user:2.11.0"
+}
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"|\"documentation-url\"|\"test-code-url\"|\"language\"' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9
+ succeeded in 0ms:
+web search: 
+web search: Maven Central org.gwtproject gwt-user 2.11.0 sources javadoc tests
+web search: 
+web search: https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/
+codex
+Maven Central publishes the 2.11.0 sources and Javadoc jars for `gwt-user`; the directory listing does not show a tests classifier. I’m checking the upstream 2.11.0 tree now to choose the most specific tagged test-suite URL instead of a moving branch.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/gwt-user-2.11.0.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.gwtproject</groupId>
+        <artifactId>gwt</artifactId>
+        <version>2.11.0</version>
+    </parent>
+    <groupId>org.gwtproject</groupId>
+    <artifactId>gwt-user</artifactId>
+    <packaging>jar</packaging>
+    <version>2.11.0</version>
+    <dependencies>
+        <dependency>
+            <groupId>com.google.jsinterop</groupId>
+            <artifactId>jsinterop-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.w3c.css</groupId>
+            <artifactId>sac</artifactId>
+        </dependency>
+    </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/gwt-user-2.11.0-tests.jar; curl -fsSI https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/gwt-user-2.11.0-test-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/gwtproject/gwt.git 'refs/tags/2.11.0*'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9
+ succeeded in 302ms:
+7f76f0f2b5b1b028d2d870782048e44402637fb0	refs/tags/2.11.0
+
+ exited 22 in 599ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 02 May 2026 01:34:43 GMT
+content-type: text/html
+cf-ray: 9f5348fe3cc0bc06-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/gwtproject/gwt-user/2.11.0/gwt-user-2.11.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 02 May 2026 01:34:43 GMT
+content-type: text/html
+cf-ray: 9f5349004f0f039c-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/gwtproject/gwt-user/2.11.0/gwt-user-2.11.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/gwtproject/gwt/2.11.0/gwt-2.11.0.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>4</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.gwtproject</groupId>
+    <artifactId>gwt</artifactId>
+    <packaging>pom</packaging>
+    <name>GWT</name>
+    <url>http://www.gwtproject.org/</url>
+    <version>2.11.0</version>
+    <licenses>
+        <license>
+            <name>GWT Terms</name>
+            <url>http://www.gwtproject.org/terms.html</url>
+        </license>
+    </licenses>
+    <properties>
+      <jetty.version>9.4.44.v20210927</jetty.version>
+      <asm.version>9.2</asm.version>
+    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.google.gwt</groupId>
+                <artifactId>gwt-user</artifactId>
+                <version>2.10.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.gwtproject</groupId>
+                <artifactId>gwt-user</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.gwt</groupId>
+                <artifactId>gwt-dev</artifactId>
+                <version>2.10.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.gwtproject</groupId>
+                <artifactId>gwt-dev</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.gwt</groupId>
+                <artifactId>gwt-codeserver</artifactId>
+                <version>2.10.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.gwtproject</groupId>
+                <artifactId>gwt-codeserver</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.gwt</groupId>
+                <artifactId>gwt-servlet</artifactId>
+                <version>2.10.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.gwtproject</groupId>
+                <artifactId>gwt-servlet</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.gwtproject</groupId>
+                <artifactId>gwt-servlet-jakarta</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.gwtproject.web.bindery</groupId>
+                <artifactId>requestfactory</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.jsinterop</groupId>
+                <artifactId>jsinterop-annotations</artifactId>
+                <version>2.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>1.0.0.GA</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>1.0.0.GA</version>
+                <!-- Note: use classifier=sources rather than type=java-sources so they're added to the classpath -->
+                <classifier>sources</classifier>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>2.6.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm</artifactId>
+                <version>${asm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm-commons</artifactId>
+                <version>${asm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm-util</artifactId>
+                <version>${asm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>colt</groupId>
+                <artifactId>colt</artifactId>
+                <version>1.2.0</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>3.2.2</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.4</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ibm.icu</groupId>
+                <artifactId>icu4j</artifactId>
+                <version>63.1</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sourceforge.htmlunit</groupId>
+                <artifactId>htmlunit</artifactId>
+                <version>2.55.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.w3c.css</groupId>
+                <artifactId>sac</artifactId>
+                <version>1.3</version>
+            </dependency>
+            <dependency>
+                <groupId>tapestry</groupId>
+                <artifactId>tapestry</artifactId>
+                <version>4.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>1.3.9</version>
+            </dependency>
+            <!-- For DevMode / JUnitShell (transitive dependency on jetty-server for CodeServer) -->
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-webapp</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <!-- For CodeServer (GZip support) -->
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-servlets</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <!-- For JSPs (and annotations scanning) in DevMode -->
+            <!-- Those two dependencies are actually optional, included here mostly for backwards compatibility -->
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-annotations</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>apache-jsp</artifactId>
+                <version>${jetty.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.eclipse.jetty.orbit</groupId>
+                        <artifactId>org.eclipse.jdt.core</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <!-- Some transitive dependencies of the above, to (tentatively) prevent conflicts -->
+            <dependency>
+                <groupId>org.eclipse.jetty.websocket</groupId>
+                <artifactId>websocket-api</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty.websocket</groupId>
+                <artifactId>websocket-common</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-continuation</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-http</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-io</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-jndi</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-plus</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-util</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-security</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-server</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-servlet</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-xml</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/gwtproject/gwt-user/2.11.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/gwtproject/gwt-user/2.11.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="gwt-user-2.11.0-javadoc.jar" title="gwt-user-2.11.0-javadoc.jar">gwt-user-2.11.0-javadoc.jar</a>                       2024-01-04 02:44  13855976      
+<a href="gwt-user-2.11.0-javadoc.jar.asc" title="gwt-user-2.11.0-javadoc.jar.asc">gwt-user-2.11.0-javadoc.jar.asc</a>                   2024-01-04 02:44       528      
+<a href="gwt-user-2.11.0-javadoc.jar.asc.md5" title="gwt-user-2.11.0-javadoc.jar.asc.md5">gwt-user-2.11.0-javadoc.jar.asc.md5</a>               2024-01-04 02:44        32      
+<a href="gwt-user-2.11.0-javadoc.jar.asc.sha1" title="gwt-user-2.11.0-javadoc.jar.asc.sha1">gwt-user-2.11.0-javadoc.jar.asc.sha1</a>              2024-01-04 02:44        40      
+<a href="gwt-user-2.11.0-javadoc.jar.md5" title="gwt-user-2.11.0-javadoc.jar.md5">gwt-user-2.11.0-javadoc.jar.md5</a>                   2024-01-04 02:44        32      
+<a href="gwt-user-2.11.0-javadoc.jar.sha1" title="gwt-user-2.11.0-javadoc.jar.sha1">gwt-user-2.11.0-javadoc.jar.sha1</a>                  2024-01-04 02:44        40      
+<a href="gwt-user-2.11.0-sources.jar" title="gwt-user-2.11.0-sources.jar">gwt-user-2.11.0-sources.jar</a>                       2024-01-04 02:44   6580003      
+<a href="gwt-user-2.11.0-sources.jar.asc" title="gwt-user-2.11.0-sources.jar.asc">gwt-user-2.11.0-sources.jar.asc</a>                   2024-01-04 02:44       528      
+<a href="gwt-user-2.11.0-sources.jar.asc.md5" title="gwt-user-2.11.0-sources.jar.asc.md5">gwt-user-2.11.0-sources.jar.asc.md5</a>               2024-01-04 02:44        32      
+<a href="gwt-user-2.11.0-sources.jar.asc.sha1" title="gwt-user-2.11.0-sources.jar.asc.sha1">gwt-user-2.11.0-sources.jar.asc.sha1</a>              2024-01-04 02:44        40      
+<a href="gwt-user-2.11.0-sources.jar.md5" title="gwt-user-2.11.0-sources.jar.md5">gwt-user-2.11.0-sources.jar.md5</a>                   2024-01-04 02:44        32      
+<a href="gwt-user-2.11.0-sources.jar.sha1" title="gwt-user-2.11.0-sources.jar.sha1">gwt-user-2.11.0-sources.jar.sha1</a>                  2024-01-04 02:44        40      
+<a href="gwt-user-2.11.0.jar" title="gwt-user-2.11.0.jar">gwt-user-2.11.0.jar</a>                               2024-01-04 02:44  17422415      
+<a href="gwt-user-2.11.0.jar.asc" title="gwt-user-2.11.0.jar.asc">gwt-user-2.11.0.jar.asc</a>                           2024-01-04 02:44       528      
+<a href="gwt-user-2.11.0.jar.asc.md5" title="gwt-user-2.11.0.jar.asc.md5">gwt-user-2.11.0.jar.asc.md5</a>                       2024-01-04 02:44        32      
+<a href="gwt-user-2.11.0.jar.asc.sha1" title="gwt-user-2.11.0.jar.asc.sha1">gwt-user-2.11.0.jar.asc.sha1</a>                      2024-01-04 02:44        40      
+<a href="gwt-user-2.11.0.jar.md5" title="gwt-user-2.11.0.jar.md5">gwt-user-2.11.0.jar.md5</a>                           2024-01-04 02:44        32      
+<a href="gwt-user-2.11.0.jar.sha1" title="gwt-user-2.11.0.jar.sha1">gwt-user-2.11.0.jar.sha1</a>                          2024-01-04 02:44        40      
+<a href="gwt-user-2.11.0.pom" title="gwt-user-2.11.0.pom">gwt-user-2.11.0.pom</a>                               2024-01-04 02:44      1370      
+<a href="gwt-user-2.11.0.pom.asc" title="gwt-user-2.11.0.pom.asc">gwt-user-2.11.0.pom.asc</a>                           2024-01-04 02:44       528      
+<a href="gwt-user-2.11.0.pom.asc.md5" title="gwt-user-2.11.0.pom.asc.md5">gwt-user-2.11.0.pom.asc.md5</a>                       2024-01-04 02:44        32      
+<a href="gwt-user-2.11.0.pom.asc.sha1" title="gwt-user-2.11.0.pom.asc.sha1">gwt-user-2.11.0.pom.asc.sha1</a>                      2024-01-04 02:44        40      
+<a href="gwt-user-2.11.0.pom.md5" title="gwt-user-2.11.0.pom.md5">gwt-user-2.11.0.pom.md5</a>                           2024-01-04 02:44        32      
+<a href="gwt-user-2.11.0.pom.sha1" title="gwt-user-2.11.0.pom.sha1">gwt-user-2.11.0.pom.sha1</a>                          2024-01-04 02:44        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/gwtproject/gwt/git/trees/2.11.0?recursive=1 | rg '\"path\":' | rg '("'^|/)test|Test|gwt-user|user/'"' | head -120" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9
+ succeeded in 536ms:
+      "path": "dev/codeserver/javatests/com/google/gwt/dev/codeserver/CodeServerTest.gwt.xml",
+      "path": "dev/codeserver/javatests/com/google/gwt/dev/codeserver/RecompilerTest.java",
+      "path": "dev/codeserver/javatests/com/google/gwt/dev/codeserver/SourceHandlerTest.java",
+      "path": "dev/codeserver/javatests/com/google/gwt/dev/codeserver/client/CodeServerGwtTest.java",
+      "path": "dev/core/src/com/google/gwt/dev/javac/testing",
+      "path": "dev/core/src/com/google/gwt/dev/javac/testing/GeneratorContextBuilder.java",
+      "path": "dev/core/src/com/google/gwt/dev/javac/testing/JavaSource.java",
+      "path": "dev/core/src/com/google/gwt/dev/javac/testing/Source.java",
+      "path": "dev/core/src/com/google/gwt/dev/javac/testing/impl",
+      "path": "dev/core/src/com/google/gwt/dev/javac/testing/impl/Java7MockResources.java",
+      "path": "dev/core/src/com/google/gwt/dev/javac/testing/impl/JavaResourceBase.java",
+      "path": "dev/core/src/com/google/gwt/dev/javac/testing/impl/MockJavaResource.java",
+      "path": "dev/core/src/com/google/gwt/dev/javac/testing/impl/MockResource.java",
+      "path": "dev/core/src/com/google/gwt/dev/javac/testing/impl/MockResourceOracle.java",
+      "path": "dev/core/src/com/google/gwt/dev/javac/testing/impl/StaticJavaResource.java",
+      "path": "dev/core/test",
+      "path": "dev/core/test/com",
+      "path": "dev/core/test/com/google",
+      "path": "dev/core/test/com/google/gwt",
+      "path": "dev/core/test/com/google/gwt/core",
+      "path": "dev/core/test/com/google/gwt/core/ext",
+      "path": "dev/core/test/com/google/gwt/core/ext/linker",
+      "path": "dev/core/test/com/google/gwt/core/ext/linker/ArtifactSetTest.java",
+      "path": "dev/core/test/com/google/gwt/core/ext/linker/SourceMapTest.java",
+      "path": "dev/core/test/com/google/gwt/core/ext/linker/SymbolMapTest.java",
+      "path": "dev/core/test/com/google/gwt/core/ext/linker/TypeIndexedSetTest.java",
+      "path": "dev/core/test/com/google/gwt/core/ext/linker/impl",
+      "path": "dev/core/test/com/google/gwt/core/ext/linker/impl/SelectionScriptJavaScriptTest.java",
+      "path": "dev/core/test/com/google/gwt/core/ext/linker/impl/StandardSelectionPropertyTest.java",
+      "path": "dev/core/test/com/google/gwt/core/ext/linker/impl/StandardStatementRangesTest.java",
+      "path": "dev/core/test/com/google/gwt/core/ext/linker/impl/StatementRangesBuilderTest.java",
+      "path": "dev/core/test/com/google/gwt/core/ext/linker/impl/StatementRangesExtractorTest.java",
+      "path": "dev/core/test/com/google/gwt/core/ext/soyc",
+      "path": "dev/core/test/com/google/gwt/core/ext/soyc/SourceMappingWriterTest.java",
+      "path": "dev/core/test/com/google/gwt/core/ext/util",
+      "path": "dev/core/test/com/google/gwt/core/ext/util/UtilSuite.java",
+      "path": "dev/core/test/com/google/gwt/core/ext/util/UtilTest.java",
+      "path": "dev/core/test/com/google/gwt/core/linker",
+      "path": "dev/core/test/com/google/gwt/core/linker/ScriptChunkingTest.java",
+      "path": "dev/core/test/com/google/gwt/core/linker/SoycReportLinkerTest.java",
+      "path": "dev/core/test/com/google/gwt/dev",
+      "path": "dev/core/test/com/google/gwt/dev/AboutTest.java",
+      "path": "dev/core/test/com/google/gwt/dev/ArgHandlerFilterJsInteropExportsTest.java",
+      "path": "dev/core/test/com/google/gwt/dev/ArgHandlerSetPropertiesTest.java",
+      "path": "dev/core/test/com/google/gwt/dev/ArgProcessorBaseTest.java",
+      "path": "dev/core/test/com/google/gwt/dev/ArgProcessorTestBase.java",
+      "path": "dev/core/test/com/google/gwt/dev/BarReferencesFooGenerator.java",
+      "path": "dev/core/test/com/google/gwt/dev/CauseShortRebindGenerator.java",
+      "path": "dev/core/test/com/google/gwt/dev/CauseStringRebindGenerator.java",
+      "path": "dev/core/test/com/google/gwt/dev/CompilerTest.java",
+      "path": "dev/core/test/com/google/gwt/dev/DevelModeTabKeyTest.java",
+      "path": "dev/core/test/com/google/gwt/dev/FooBarGenerator.java",
+      "path": "dev/core/test/com/google/gwt/dev/FooResourceGenerator.java",
+      "path": "dev/core/test/com/google/gwt/dev/GwtVersionTest.java",
+      "path": "dev/core/test/com/google/gwt/dev/HostedModeTest.java",
+      "path": "dev/core/test/com/google/gwt/dev/MinimalRebuildCacheManagerTest.java",
+      "path": "dev/core/test/com/google/gwt/dev/MinimalRebuildCacheTest.java",
+      "path": "dev/core/test/com/google/gwt/dev/MultipleClassGenerator.java",
+      "path": "dev/core/test/com/google/gwt/dev/PrecompileTaskArgProcessorTest.java",
+      "path": "dev/core/test/com/google/gwt/dev/ServletValidatorTest.java",
+      "path": "dev/core/test/com/google/gwt/dev/SessionModuleTest.java",
+      "path": "dev/core/test/com/google/gwt/dev/SoycTest.java",
+      "path": "dev/core/test/com/google/gwt/dev/SwingTreeLoggerTestApp.java",
+      "path": "dev/core/test/com/google/gwt/dev/UnstableNestedAnonymousGenerator.java",
+      "path": "dev/core/test/com/google/gwt/dev/cfg",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/ConditionTest.java",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/DynamicPropertyOracleTest.java",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/MockModuleDef.java",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/ModuleDefLoaderTest.java",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/ModuleDefTest.java",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/dependents",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/dependents/FileSet.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/dependents/Five.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/dependents/Four.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/dependents/One.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/dependents/Six.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/dependents/Three.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/dependents/Two.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/errors",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/errors/BadLinker.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/errors/BadModule.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/errors/BadProperty.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/errors/BadPropertyValue.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/errors/DeepInheritsError0.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/errors/DeepInheritsError1.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/errors/InheritNotFound.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/errors/InvalidLinkerName.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/errors/InvalidName.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/errors/MultipleErrors.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/errors/UnexpectedAttribute.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/errors/UnexpectedTag.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/merging",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/merging/Empty.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/merging/One.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/merging/Three.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/merging/Two.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/merging/client",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/merging/client/InOne.java",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/merging/client/InTwo.java",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/merging/client/Shared.java",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/merging/client/Toxic.java",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/merging/public",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/merging/public/Public.java",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/merging/resources",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/merging/resources/NotAResource.java",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/merging/resources/logo.png",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/naming",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/naming/7Foo.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/naming/Foo-test.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/naming/Invalid..Foo.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/naming/Nested7Foo.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/naming/NestedInvalid.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/naming/client",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/naming/client/Mock.java",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/separate",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/separate/filesetone",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/separate/filesetone/FileSetOne.gwt.xml",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/separate/filesetone/client",
+      "path": "dev/core/test/com/google/gwt/dev/cfg/testdata/separate/filesetone/client/FileSetOne.java",
+curl: (23) Failure writing output to destination
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/gwtproject/gwt/contents/user?ref=2.11.0 | jq -r '.[].path'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22org.gwtproject%22%20AND%20a:%22gwt-user%22%20AND%20v:%222.11.0%22&rows=20&wt=json' | jq '.response.docs[0]'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/gwtproject/gwt/contents?ref=2.11.0 | jq -r '.[].path'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9
+ succeeded in 181ms:
+user/BUILD
+user/BUILD.bazel
+user/Gwt-dto-serializers.gwt.xml
+user/build.xml
+user/javadoc
+user/src
+user/style
+user/super
+user/test-super
+user/test
+user/test_i18n_bar
+user/test_i18n_dollar
+
+ succeeded in 181ms:
+{
+  "id": "org.gwtproject:gwt-user:2.11.0",
+  "g": "org.gwtproject",
+  "a": "gwt-user",
+  "v": "2.11.0",
+  "p": "jar",
+  "timestamp": 1704336260726,
+  "ec": [
+    "-sources.jar",
+    ".pom",
+    "-javadoc.jar",
+    ".jar"
+  ],
+  "tags": [
+    "projects",
+    "sonatype",
+    "repositories",
+    "maven",
+    "helps",
+    "source",
+    "https",
+    "open"
+  ]
+}
+
+ succeeded in 206ms:
+.github
+.gitignore
+CONTRIBUTING.md
+README.md
+WORKSPACE
+build.xml
+build_tools
+common.ant.xml
+dev-ext
+dev
+distro-source
+doc
+eclipse
+maven
+platforms.ant.xml
+requestfactory
+samples
+servlet
+tools
+user
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/
+codex
+The artifact is Java/GWT-specific but it does not match the requested Kotlin/Groovy/Scala language metadata categories, so I’m leaving `language` absent. I’m about to write Maven Central URLs for sources and Javadoc, the tagged upstream repository URL, and the tagged `user/test` suite URL.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json
+diff --git a/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json b/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json
+index 2cb619436f9fcdcf3efbe4a9bbbf61652bc6dba6..8cb258da8f60208fbf2c05ed62c9e968e07731c5
+--- a/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json
++++ b/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.gwtproject:gwt-user:2.11.0"
++  "coordinates" : "org.gwtproject:gwt-user:2.11.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/gwt-user-2.11.0-sources.jar",
++  "repository-url" : "https://github.com/gwtproject/gwt",
++  "test-code-url" : "https://github.com/gwtproject/gwt/tree/2.11.0/user/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/gwt-user-2.11.0-javadoc.jar",
++  "description" : "GWT User is the client-side API and widget library for Google Web Toolkit, providing browser, DOM, UI, internationalization, RPC, and validation APIs for GWT applications. It lets Java developers write browser applications that GWT compiles to JavaScript while sharing supported Java APIs and GWT-specific client/server integration types."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json b/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json
+index 2cb619436f9fcdcf3efbe4a9bbbf61652bc6dba6..8cb258da8f60208fbf2c05ed62c9e968e07731c5
+--- a/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json
++++ b/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.gwtproject:gwt-user:2.11.0"
++  "coordinates" : "org.gwtproject:gwt-user:2.11.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/gwt-user-2.11.0-sources.jar",
++  "repository-url" : "https://github.com/gwtproject/gwt",
++  "test-code-url" : "https://github.com/gwtproject/gwt/tree/2.11.0/user/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/gwt-user-2.11.0-javadoc.jar",
++  "description" : "GWT User is the client-side API and widget library for Google Web Toolkit, providing browser, DOM, UI, internationalization, RPC, and validation APIs for GWT applications. It lets Java developers write browser applications that GWT compiles to JavaScript while sharing supported Java APIs and GWT-specific client/server integration types."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9
+ succeeded in 0ms:
+{
+  "coordinates": "org.gwtproject:gwt-user:2.11.0",
+  "source-code-url": "https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/gwt-user-2.11.0-sources.jar",
+  "repository-url": "https://github.com/gwtproject/gwt",
+  "test-code-url": "https://github.com/gwtproject/gwt/tree/2.11.0/user/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/gwt-user-2.11.0-javadoc.jar",
+  "description": "GWT User is the client-side API and widget library for Google Web Toolkit, providing browser, DOM, UI, internationalization, RPC, and validation APIs for GWT applications. It lets Java developers write browser applications that GWT compiles to JavaScript while sharing supported Java APIs and GWT-specific client/server integration types."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/gwt-user-2.11.0-sources.jar >/tmp/gwt-src.head && curl -fsSI https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/gwt-user-2.11.0-javadoc.jar >/tmp/gwt-doc.head && curl -fsSI https://github.com/gwtproject/gwt/tree/2.11.0/user/test >/tmp/gwt-test.head && printf 'urls ok\\n'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9
+diff --git a/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json b/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json
+index 2cb619436f9fcdcf3efbe4a9bbbf61652bc6dba6..8cb258da8f60208fbf2c05ed62c9e968e07731c5
+--- a/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json
++++ b/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.gwtproject:gwt-user:2.11.0"
++  "coordinates" : "org.gwtproject:gwt-user:2.11.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/gwt-user-2.11.0-sources.jar",
++  "repository-url" : "https://github.com/gwtproject/gwt",
++  "test-code-url" : "https://github.com/gwtproject/gwt/tree/2.11.0/user/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/gwt-user-2.11.0-javadoc.jar",
++  "description" : "GWT User is the client-side API and widget library for Google Web Toolkit, providing browser, DOM, UI, internationalization, RPC, and validation APIs for GWT applications. It lets Java developers write browser applications that GWT compiles to JavaScript while sharing supported Java APIs and GWT-specific client/server integration types."
+ }
+
+ succeeded in 1513ms:
+urls ok
+
+diff --git a/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json b/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json
+index 2cb619436f9fcdcf3efbe4a9bbbf61652bc6dba6..8cb258da8f60208fbf2c05ed62c9e968e07731c5
+--- a/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json
++++ b/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.gwtproject:gwt-user:2.11.0"
++  "coordinates" : "org.gwtproject:gwt-user:2.11.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/gwt-user-2.11.0-sources.jar",
++  "repository-url" : "https://github.com/gwtproject/gwt",
++  "test-code-url" : "https://github.com/gwtproject/gwt/tree/2.11.0/user/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/gwt-user-2.11.0-javadoc.jar",
++  "description" : "GWT User is the client-side API and widget library for Google Web Toolkit, providing browser, DOM, UI, internationalization, RPC, and validation APIs for GWT applications. It lets Java developers write browser applications that GWT compiles to JavaScript while sharing supported Java APIs and GWT-specific client/server integration types."
+ }
+
+codex
+Updated [org.gwtproject-gwt-user-2.11.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json) with the discovered URLs and two-sentence description.
+
+I left `language` absent because it does not fall under the requested Kotlin/Groovy/Scala language-specific categories. Validated the JSON with `jq` and checked that the source, Javadoc, and tagged test URLs respond successfully.
+diff --git a/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json b/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json
+index 2cb619436f9fcdcf3efbe4a9bbbf61652bc6dba6..8cb258da8f60208fbf2c05ed62c9e968e07731c5
+--- a/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json
++++ b/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.gwtproject:gwt-user:2.11.0"
++  "coordinates" : "org.gwtproject:gwt-user:2.11.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/gwt-user-2.11.0-sources.jar",
++  "repository-url" : "https://github.com/gwtproject/gwt",
++  "test-code-url" : "https://github.com/gwtproject/gwt/tree/2.11.0/user/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/gwtproject/gwt-user/2.11.0/gwt-user-2.11.0-javadoc.jar",
++  "description" : "GWT User is the client-side API and widget library for Google Web Toolkit, providing browser, DOM, UI, internationalization, RPC, and validation APIs for GWT applications. It lets Java developers write browser applications that GWT compiles to JavaScript while sharing supported Java APIs and GWT-specific client/server integration types."
+ }
+
+tokens used
+39,805
+Updated [org.gwtproject-gwt-user-2.11.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9/build/discovered-artifact-metadata/org.gwtproject-gwt-user-2.11.0.json) with the discovered URLs and two-sentence description.
+
+I left `language` absent because it does not fall under the requested Kotlin/Groovy/Scala language-specific categories. Validated the JSON with `jq` and checked that the source, Javadoc, and tagged test URLs respond successfully.
+Ran agent for org.gwtproject:gwt-user:2.11.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9/build/agent-artifact-discovery-logs/org.gwtproject-gwt-user-2.11.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2641-03e51ca9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 11s
+9 actionable tasks: 4 executed, 5 from cache
