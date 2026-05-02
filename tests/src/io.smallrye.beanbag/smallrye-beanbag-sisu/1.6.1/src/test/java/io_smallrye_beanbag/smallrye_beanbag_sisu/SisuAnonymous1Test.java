@@ -36,7 +36,7 @@ class GenericArrayProvider<T extends GenericArrayElement> implements Provider<T[
     @Override
     @SuppressWarnings("unchecked")
     public T[] get() {
-        return (T[]) new GenericArrayElement[] { new GenericArrayElement("provided") };
+        return (T[]) new GenericArrayElement[] {new GenericArrayElement("provided")};
     }
 }
 
