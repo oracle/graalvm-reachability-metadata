@@ -1,0 +1,1745 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de951-76d3-7f91-902c-76245d6f4f74
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: velocity:velocity-dep:1.4
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.4" when "$version$" is replaced with "1.4".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+- Set "coordinates" to "velocity:velocity-dep:1.4".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.4".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream tags, then update the JSON in place with version-templated URLs where the target actually renders for `1.4`.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+{
+  "coordinates" : "velocity:velocity-dep:1.4"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"coordinates\": \"velocity:velocity-dep|velocity-dep|velocity:velocity' build/discovered-artifact-metadata metadata repository -S" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ exited 2 in 0ms:
+rg: repository: No such file or directory (os error 2)
+build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json:2:  "coordinates" : "velocity:velocity-dep:1.4"
+
+web search: 
+web search: Maven Central velocity velocity-dep 1.4 pom source tag
+web search: 
+web search: https://repo1.maven.org/maven2/velocity/velocity-dep/1.4/
+codex
+Maven Central has a `velocity-dep-1.4-sources.jar`, so I’m checking that first as the preferred source URL. I’m also checking whether there is a published tests artifact before falling back to the Apache 1.4 source distribution/tag.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/velocity/velocity-dep/1.4/velocity-dep-1.4.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>velocity</groupId>
+  <artifactId>velocity-dep</artifactId>
+  <name>Velocity</name>
+  <version>1.4</version>
+  <description>Velocity is a Java-based template engine. It permits anyone to use the
+    simple yet powerful template language to reference objects defined in Java
+    code.</description>
+  <url>http://jakarta.apache.org/velocity/</url>
+  <issueManagement>
+    <url>http://nagoya.apache.org/scarab/servlet/scarab/</url>
+  </issueManagement>
+  <inceptionYear>2000</inceptionYear>
+  <mailingLists>
+    <mailingList>
+      <name>Maven User List</name>
+      <subscribe>velocity-user-subscribe@jakarta.apache.org</subscribe>
+      <unsubscribe>velocity-user-unsubscribe@jakarta.apache.org</unsubscribe>
+      <archive>http://www.mail-archive.com/velocity-user@jakarta.apache.org/</archive>
+    </mailingList>
+    <mailingList>
+      <name>Maven Developer List</name>
+      <subscribe>velocity-dev-subscribe@jakarta.apache.org</subscribe>
+      <unsubscribe>velocity-dev-unsubscribe@jakarta.apache.org</unsubscribe>
+      <archive>http://www.mail-archive.com/velocity-dev@jakarta.apache.org/</archive>
+    </mailingList>
+  </mailingLists>
+  <scm>
+    <connection>scm:cvs:pserver:anoncvs@cvs.apache.org:/home/cvspublic:jakarta-velocity</connection>
+    <url>http://cvs.apache.org/viewcvs/jakarta-turbine-maven/</url>
+  </scm>
+  <organization>
+    <name>Apache Software Foundation</name>
+    <url>http://jakarta.apache.org/</url>
+  </organization>
+  <distributionManagement>
+    <repository>
+      <id>default</id>
+      <name>Default Repository</name>
+      <url>file:///www/jakarta.apache.org/builds/jakarta-velocity/</url>
+    </repository>
+    <site>
+      <id>default</id>
+      <name>Default Site</name>
+      <url>scp://jakarta.apache.org//www/jakarta.apache.org/velocity/</url>
+    </site>
+  </distributionManagement>
+</project>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/velocity/velocity-dep/1.4/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: velocity/velocity-dep/1.4</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>velocity/velocity-dep/1.4</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="old/" title="old/">old/</a>                                                             -         -      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2016-01-02 00:51       117      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2016-01-02 00:51        81      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2016-01-02 00:51       136      
+<a href="velocity-dep-1.4-sources.jar" title="velocity-dep-1.4-sources.jar">velocity-dep-1.4-sources.jar</a>                      2016-01-02 00:51    419841      
+<a href="velocity-dep-1.4-sources.jar.md5" title="velocity-dep-1.4-sources.jar.md5">velocity-dep-1.4-sources.jar.md5</a>                  2016-01-02 00:51        32      
+<a href="velocity-dep-1.4-sources.jar.sha1" title="velocity-dep-1.4-sources.jar.sha1">velocity-dep-1.4-sources.jar.sha1</a>                 2016-01-02 00:51        40      
+<a href="velocity-dep-1.4.jar" title="velocity-dep-1.4.jar">velocity-dep-1.4.jar</a>                              2016-01-02 00:51    517761      
+<a href="velocity-dep-1.4.jar.md5" title="velocity-dep-1.4.jar.md5">velocity-dep-1.4.jar.md5</a>                          2016-01-02 00:51        32      
+<a href="velocity-dep-1.4.jar.sha1" title="velocity-dep-1.4.jar.sha1">velocity-dep-1.4.jar.sha1</a>                         2016-01-02 00:51        40      
+<a href="velocity-dep-1.4.pom" title="velocity-dep-1.4.pom">velocity-dep-1.4.pom</a>                              2016-01-02 00:51      1896      
+<a href="velocity-dep-1.4.pom.md5" title="velocity-dep-1.4.pom.md5">velocity-dep-1.4.pom.md5</a>                          2016-01-02 00:51       139      
+<a href="velocity-dep-1.4.pom.sha1" title="velocity-dep-1.4.pom.sha1">velocity-dep-1.4.pom.sha1</a>                         2016-01-02 00:51       147      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\".*repo1.maven.org|\"test-code-url\".*repo1.maven.org|\"documentation-url\".*apache.org' build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 0ms:
+web search: 
+web search: Apache Velocity Engine 1.4 tag GitHub
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/velocity-engine.git 'refs/tags/*1.4*'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+exec
+/usr/bin/bash -lc 'git ls-remote --heads https://github.com/apache/velocity-engine.git' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/velocity-engine/tree/VELOCITY_1_4 | sed -n '1,20p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 305ms:
+b7a0f131d5bec4bc0c61f8744e32e27d483a9681	refs/heads/1.6.x
+267fc84f94b1560575ef28d996505a22619d9911	refs/heads/1.7.x
+df6783e9b731c1b909b7c7ee379da80056a420be	refs/heads/1.x
+b50970477b8f9bdfe3b97bc490f86ae2b2d334bd	refs/heads/2.0_Exp
+733a45e075f17bf0c91b3531a95b77a928ae5211	refs/heads/VELOCITY-892
+e2a90098eeb3f6c4aadf17eaf4c8cfd5a9498b4d	refs/heads/VELOCITY-898
+fec80129c96cff953d9d215f1332d9188bd7de32	refs/heads/VELOCITY-909
+603630c3d9557a9247bd9b533d2f7d6ea22c7f09	refs/heads/VELOCITY-944
+00a2089c60e31fd1ae5febef475a4a3cd50dc5ee	refs/heads/VELOCITY-948
+c163ef791b58bd19a9d513d3536c61a0843e4723	refs/heads/VELOCITY-952
+ca1e9e1c9bf3c63575995e8976932c3f987985b4	refs/heads/VELOCITY-957
+aead6947622842e2142e0b04ebb322a5e54ed918	refs/heads/VELOCITY-961
+c96986a1f7bf63c7e5888c52e145cf0cb0ddc8d1	refs/heads/VEL_1_0_1_BRANCH
+d6edd728c386bcb2bf1d0f826f953417e9130f4e	refs/heads/VEL_1_1_BRANCH
+2518bfef96fef146a070f3493259ee20d337cc6b	refs/heads/VEL_1_2_BRANCH
+c83fbccd7d0912e95fa7df1e04b56bc89d2b319f	refs/heads/VEL_1_3_1_BRANCH
+31eb222e343904c543b0e7feadd62e5c0b5b68ab	refs/heads/VEL_1_3_BRANCH
+4fdbb1d5a336404763357967685210597ac7092a	refs/heads/VEL_1_4_BRANCH
+6b1cfd09a1e074dea8c8f112e83255e9ccaf87c3	refs/heads/Velocity_1.5_BRANCH
+ebf657e9357a6add226ad50c14b3348960ecd423	refs/heads/bugfix/velocity-940
+836d28fa2e3884c72e20d7f42941c58031416b18	refs/heads/feature/fix-some-generics
+c57d259b230109a28a4a7afa50a94978e92cce41	refs/heads/master
+3db41d9daa0a079fb0c64e9d297af6db90b9e5d8	refs/heads/parser_experiments
+c96dbe69e5b0ee87cbdc6b6a645719252fc20565	refs/heads/spring-velocity-support
+6fbdd9f6fc61d7fa93fb87aaa9f8c155d1830504	refs/heads/trunk
+15a969fd410a6c6da2ef6ca1cbe1ce26bdfbbfb5	refs/heads/velocity-988
+489135a37bcfe289a329a88992ec048398a2c83c	refs/heads/velocity-989
+
+ succeeded in 342ms:
+ succeeded in 400ms:
+HTTP/2 404 
+date: Sat, 02 May 2026 15:32:27 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=yAY7v0Wy9QldezhqQmNu4SwNs0scZoiEjlwnAf4UOhPB%2BqdG3UFbD1hx%2FgoilgRmKCQVavFNC8YmwGd5uaJm60WjYnVPqkwJr2p3GEvPF6Xf4%2BhqU31aVCV2kh8pUfk2TVfwkWgfFd34rHfavgv5L9qaUSv6cazvYHNt5NhSTEoJu4oi22QzQWE7s5unsqeouW%2B%2FsNCs93TWuFnbPzN0cei%2FfbORLB2dtgRZAMHfUmiePe8LADFO7YIJENbyEObIR6QUVZam4L0NWf2ZtCdL6A%3D%3D--grmD76l%2FUvw%2Fd9By--1yFyAhbaG5ZSZ0RhOIKFqw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.439836.1777735947; expires=Sun, 02 May 2027 15:32:27 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 02 May 2027 15:32:27 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5110:1B854C:B8DC85A:8A1D154:69F6190B
+
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/velocity-engine.git | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 315ms:
+8556000f9c900b51173c8e8957581c42bd6729a3	refs/tags/1.6
+06bc1bc468dded2188457dde3cef2c74ba2bffe7	refs/tags/1.6^{}
+aca58ad759d2e524efa1dd69d2237ad75fbc3388	refs/tags/1.6-beta1
+f25194be29b89162c890f3ef8cf1650a99c69bbd	refs/tags/1.6-beta1^{}
+3cb5c03f38f4cfa10b48f462bc97374038381597	refs/tags/1.6-beta2
+13727d0df5b1e5c98fd646a48b36db86ac531d45	refs/tags/1.6-beta2^{}
+c92db672aae626ec8310c91e3be1174b5b78f7f9	refs/tags/1.6.1
+cb9bec4921bf6fb310eec5fbbc4b1b19148bfb6e	refs/tags/1.6.1^{}
+59f558f8848813276aeca97c498129eead61a121	refs/tags/1.6.2
+569fa36b6f7c8a6c66263ad781170b28df6177e0	refs/tags/1.6.2^{}
+6b939f9de489b853f4846f54b4094851345b37c8	refs/tags/1.6.3
+2ebef99ab18bf6d922a65377e03554f03995e99b	refs/tags/1.6.3^{}
+b0fcd7b7e6543611b14b19228e734c1fcc13a280	refs/tags/1.6.4
+92b423224143e2caf2396c9fbefcdfc7936d5da1	refs/tags/1.6.4^{}
+0d9673935da862efe76c8f7bea03bffc718747d6	refs/tags/1.7
+e0383483e1b0ab37874e09f31e71bf01143f8238	refs/tags/1.7^{}
+5112f028a52ce84a7fb0d6e6f9d3c577f868fd62	refs/tags/1.7-beta1
+f8896e5d39a735cc4f35af105d4eb7b1da89967b	refs/tags/1.7-beta1^{}
+47170e36860d3f045a7f260f557a1556e4e0fea4	refs/tags/2.0
+80d7d01f64aba387913ac6d8397c66bf8128ddb1	refs/tags/2.0^{}
+5f73234f3662ae6e474ffddd47412e9a16a11e27	refs/tags/2.0-RC1
+170faa95d3520b7438723a07d22842ae1a5b6789	refs/tags/2.0-RC1^{}
+3bd1a0a38d74875a3d8d5575a51b12ef7b484dc9	refs/tags/2.0-RC2
+26f3707f80a351a49c58b4f211597fd5ecf1dbf0	refs/tags/2.0-RC2^{}
+d06fe34693d3536f00fc92233537b247f4a15a52	refs/tags/2.0-RC3
+fee5ed013f302a86b21add04806c871f7163e6d2	refs/tags/2.0-RC3^{}
+a4e2d8b80427b93106f41842dacdb694bcc2ee6d	refs/tags/2.0-RC4
+7898a1a87945ce369c9fb684b3ac5fbe5408c2b6	refs/tags/2.0-RC4^{}
+911eed001bbdedc990b39790cc6b39f5d8902850	refs/tags/2.0-RC5
+b9d6403b383500a10d5e1e752ad6bedddfd707a0	refs/tags/2.0-RC5^{}
+3ca5a402113ccc020404f964b41434625a7761d1	refs/tags/2.0-RC6
+f1ad8c819e48930fc86980e470b3dac5c8629dcb	refs/tags/2.0-RC6^{}
+5e66496dbc9ff08cd71917b4f8aefdb4bef9794a	refs/tags/2.0-RC7
+21eb557922171b48ded06d96d61e933b9e5eb893	refs/tags/2.0-RC7^{}
+dd1347e2b9068c1f878689cb2ed8ac4d6c0265c3	refs/tags/2.0-RC8
+130397ab86af3079d88fa958d2653ec5777623f2	refs/tags/2.0-RC8^{}
+f5da0465fef4baf333d71ef429168d2d7c8e15bd	refs/tags/2.1
+7404d7afe706a6a59f04d8c32f4c913b37c915cc	refs/tags/2.1^{}
+55f031ac1e6fcb45dd65d1d772438539b397b3c5	refs/tags/2.1-RC1
+1859d8e998550ad59e0c2ef708fe4169a0bc717f	refs/tags/2.1-RC1^{}
+4378eb91b1cf9c25696609e320d2f4e8bc688f22	refs/tags/2.1-RC2
+b309cf9c33f79e921b724fa8db1b7fc807dfee46	refs/tags/2.1-RC2^{}
+260f91d314787ce65153e44db7246612c3ad5bc4	refs/tags/2.2
+7dd3f9bf6584244a30832c7fb4a8d6ebd66dd68a	refs/tags/2.2^{}
+0d9db90b1ba68fa620b6c787cd3b60f796f4cb56	refs/tags/2.2-RC1
+7b43316c174789aa72a9a205f75339a1f0c6467b	refs/tags/2.2-RC1^{}
+581be5ad57fbcc9b7c0aa0b6f63c8a359cefb5d0	refs/tags/2.2-RC2
+d20e59295ce2c6cd91843e8acdf7665c235b111b	refs/tags/2.2-RC2^{}
+3e1fe9a42b06d7586e27e7d128fd92e32eb17203	refs/tags/2.2-RC3
+6971571d91c8bc5d8ec9b51ed5b7b9ef0c6d1176	refs/tags/2.2-RC3^{}
+5af592c316461aee68d1aae389352d3e61437324	refs/tags/2.2-RC4
+498ac0d1f862fda9604395a0090e733a448763c7	refs/tags/2.2-RC4^{}
+5fca6b024621b1ed7f37a6b76dbead099bea44e1	refs/tags/2.2-RC5
+5d2a55fb03542ef664e967a4178aa312d1e2d70f	refs/tags/2.2-RC5^{}
+0df9b54d8729c1387f18c03a674960d953b69680	refs/tags/2.3
+9cd6c031f9a2b36b6c922b9f86c3034b822e8870	refs/tags/2.3^{}
+ec69ff28aa36be9e7a15b471c406651ba2b038eb	refs/tags/2.3-RC1
+a9c3432f357b62370992d4698a2f78c97cf484cb	refs/tags/2.3-RC1^{}
+b3288bfc19a753b0a78882d501c7db81651a9c92	refs/tags/2.3-RC2
+9cd6c031f9a2b36b6c922b9f86c3034b822e8870	refs/tags/2.3-RC2^{}
+8119dbb0615dd311fe494c9e49db15173612ba4a	refs/tags/2.4
+1b99d9e02f380ea85ff915f23c7d266d39adb9ad	refs/tags/2.4^{}
+da3dce1b591cc8bc00312c4692ab286010d641e1	refs/tags/2.4.1
+c541025518393bc65c394071d97bdb23f26f483b	refs/tags/2.4.1^{}
+d0f0ab24cb908d8a15dfdb453aa9ed730f54f194	refs/tags/2.4.1-rc1
+c541025518393bc65c394071d97bdb23f26f483b	refs/tags/2.4.1-rc1^{}
+48310588d88cf2ab310b8e6fc1627d251950b061	refs/tags/VEL_1_1
+bc67b37c6aee1310a3edb00e5093f37d31de88b1	refs/tags/VEL_1_1^{}
+ad275deb8b7751db6d2e4767001055224b30a2b8	refs/tags/VEL_1_1_RC1
+a02c4ef60adce60244be73743f39737bb5dbfb80	refs/tags/VEL_1_1_RC1^{}
+0260a31198656508c3f8d38fa66e5970a38565d7	refs/tags/VEL_1_1_RC2
+13fe1dd958aa0caecd7c4047618c89e9c360f632	refs/tags/VEL_1_1_RC2^{}
+1d34aa8d2806bdee6d12ba61f3a484761940916d	refs/tags/VEL_1_2
+63cea9c6199458d3505564d30015e8ce6cdbf319	refs/tags/VEL_1_2^{}
+02e5c8c1c21e9a499a56fe5b5a0f150d9f228f30	refs/tags/VEL_1_2_RC1
+b8ce45c4f2196e367d1154ebcdc4bc9d85da3353	refs/tags/VEL_1_2_RC1^{}
+6ce80e1b53b9bd50eee70c4c451213fc97c3b7ce	refs/tags/VEL_1_2_RC2
+766d993460bbef401d89fa77214347e7e5cb3ecf	refs/tags/VEL_1_2_RC2^{}
+4218676690783d6646a73ef3e2b275e506029a6e	refs/tags/VEL_1_2_RC3
+f55f9d2f1912720527f78d60d285e9125f064330	refs/tags/VEL_1_2_RC3^{}
+a600e912e61b283d86f47d9649bf12feb5424da3	refs/tags/VEL_1_3
+228bf0fea3fbb5f6159aa49c8bccf4f908742d7a	refs/tags/VEL_1_3^{}
+731ae1587482c5e1cef548a4495d4c1cb1db09b1	refs/tags/VEL_1_3_1
+68447d8423449244ebff570c08d447445d518c73	refs/tags/VEL_1_3_1^{}
+631646dd9d31d36f19478d114801df4aed592ed5	refs/tags/VEL_1_3_1_RC1
+6b5bdb98c802941b3fb8fef98d5f2698de2e109b	refs/tags/VEL_1_3_1_RC1^{}
+381b21c53ea1e2b80aed64eb44cb7a206e9e813c	refs/tags/VEL_1_3_1_RC2
+69d7b0b8b05525edd8b95d8c7f67c2eae3bb504a	refs/tags/VEL_1_3_1_RC2^{}
+a600d5c0d1f075f79f5cfc9e14b1643057f16040	refs/tags/VEL_1_3_RC1
+a7575aa36d09171979eb2b1f307deb8b5600e179	refs/tags/VEL_1_3_RC1^{}
+3476a80702e73297d428513ff20e3007fbd443cd	refs/tags/VEL_1_4
+a55d67f88d60de44dcec99b537e85f19af799c4e	refs/tags/VEL_1_4^{}
+0a240f533bb54f2f4047b795dd38300f9926fad9	refs/tags/VEL_1_4_RC1
+94f38a289e27db707f2d4251ab2a8829b8952f5f	refs/tags/VEL_1_4_RC1^{}
+f65e008fe760ce5439f369a4f2c28d9de7a2c1da	refs/tags/V_1_0
+eba8606e4a201ddcbf3ed1ec824270093a6f5a50	refs/tags/V_1_0^{}
+b75f71efa2c191bd089edace81f97da9f012d307	refs/tags/V_1_0B1
+3b4f9ee54c377b85da955025bd6aa144e687a7a3	refs/tags/V_1_0B1^{}
+2e860ca83abfb3de01d4c759485675dfd88956a8	refs/tags/V_1_0B2
+83ae229b63104833c28f9e586414459b553ab423	refs/tags/V_1_0B2^{}
+6117843c5c476a6668fee7dbc3ccbf4405332942	refs/tags/V_1_0_1
+17eba0cfd0b11842b77be29bbd9c177513d35d62	refs/tags/V_1_0_1^{}
+24c93112a627243655c8a6134d95fb045c0864dd	refs/tags/V_1_0_1_RC1
+74f5762b9639781d2735fcbc96c71379e89669a8	refs/tags/V_1_0_1_RC1^{}
+de50000a318114e6d329dde6e9446010a723a479	refs/tags/Velocity_1.5
+c2413d5c78e416636184c36b3854fdfca7e29806	refs/tags/Velocity_1.5^{}
+0dd048e108f57e5f7593522ff546bc11e5ee5f73	refs/tags/Velocity_1.5_BETA1
+212d0ea7b27c1fdd4b7b699620836a84875098e4	refs/tags/Velocity_1.5_BETA1^{}
+01d386f952a3f8c228715662154046beb194e870	refs/tags/Velocity_1.5_BETA2
+28bfdfb061202ea67505960db60020ca30a7718a	refs/tags/Velocity_1.5_BETA2^{}
+f14ed87c5d72d68fdc3f48b2b78598161a1bee64	refs/tags/start
+6fc259ec588d864d9a097ee310ba839ca757a7b7	refs/tags/start^{}
+fa3d4f609fcd4ae7006a23ea549d5199897f84d1	refs/tags/velocity-engine-parent-2.0.0
+9ffd7dc0e0ccd1e26287c8e00063505f6bdcdf47	refs/tags/velocity-engine-parent-2.0.0^{}
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/velocity-engine/tree/VEL_1_4 | sed -n '1,12p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/velocity-engine/tree/VEL_1_4/xdocs | sed -n '1,12p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/velocity-engine/tree/VEL_1_4/src/test | sed -n '1,12p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/velocity-engine/git/trees/VEL_1_4?recursive=1 | rg '\"path\": ' | sed -n '1,180p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 331ms:
+      "path": ".cvsignore",
+      "path": "LICENSE",
+      "path": "NOTICE",
+      "path": "README.txt",
+      "path": "TODO.txt",
+      "path": "WHY_TWO_JARS.txt",
+      "path": "build",
+      "path": "build/.cvsignore",
+      "path": "build/build.xml",
+      "path": "build/jakarta.scm",
+      "path": "build/lib",
+      "path": "build/lib/antlr-runtime.jar",
+      "path": "build/lib/bcel-5.0rc1.jar",
+      "path": "build/lib/commons-collections.jar",
+      "path": "build/lib/fop-bin-0_17_0.jar",
+      "path": "build/lib/jdom-b9.jar",
+      "path": "build/lib/junit-3.7.jar",
+      "path": "build/lib/log4j-1.1.3.jar",
+      "path": "build/lib/log4j-core-1.1.3.jar",
+      "path": "build/lib/logkit-1.0.1.jar",
+      "path": "build/lib/oro.jar",
+      "path": "build/lib/servlet.jar",
+      "path": "build/lib/w3c.jar",
+      "path": "build/lib/werken.xpath.jar",
+      "path": "build/test.sh",
+      "path": "build/testcases.xml",
+      "path": "build/xsl",
+      "path": "build/xsl/xml2pdf.xsl",
+      "path": "build/xsl/xml2xml.xsl",
+      "path": "contrib",
+      "path": "contrib/temporary",
+      "path": "contrib/temporary/enhydra-velocity",
+      "path": "contrib/temporary/enhydra-velocity/README.txt",
+      "path": "contrib/temporary/enhydra-velocity/classes",
+      "path": "contrib/temporary/enhydra-velocity/classes/com",
+      "path": "contrib/temporary/enhydra-velocity/classes/com/miceda",
+      "path": "contrib/temporary/enhydra-velocity/classes/com/miceda/velsrv",
+      "path": "contrib/temporary/enhydra-velocity/classes/com/miceda/velsrv/vpo",
+      "path": "contrib/temporary/enhydra-velocity/classes/com/miceda/velsrv/vpo/VelocityPO.class",
+      "path": "contrib/temporary/enhydra-velocity/classes/com/miceda/velsrv/vpo/VelocityService.class",
+      "path": "contrib/temporary/enhydra-velocity/example",
+      "path": "contrib/temporary/enhydra-velocity/example/VelocityApplication.java",
+      "path": "contrib/temporary/enhydra-velocity/example/presentation",
+      "path": "contrib/temporary/enhydra-velocity/example/presentation/WelcomePresentation.java",
+      "path": "contrib/temporary/enhydra-velocity/example/templates",
+      "path": "contrib/temporary/enhydra-velocity/example/templates/welcome.vm",
+      "path": "contrib/temporary/enhydra-velocity/src",
+      "path": "contrib/temporary/enhydra-velocity/src/com",
+      "path": "contrib/temporary/enhydra-velocity/src/com/miceda",
+      "path": "contrib/temporary/enhydra-velocity/src/com/miceda/velsrv",
+      "path": "contrib/temporary/enhydra-velocity/src/com/miceda/velsrv/vpo",
+      "path": "contrib/temporary/enhydra-velocity/src/com/miceda/velsrv/vpo/VelocityPO.java",
+      "path": "contrib/temporary/enhydra-velocity/src/com/miceda/velsrv/vpo/VelocityService.java",
+      "path": "contrib/temporary/stderrlogsystem",
+      "path": "contrib/temporary/stderrlogsystem/README.txt",
+      "path": "contrib/temporary/stderrlogsystem/StderrLogSystem.java",
+      "path": "contrib/temporary/stderrlogsystem/Test.java",
+      "path": "contrib/temporary/struts-velocity",
+      "path": "contrib/temporary/struts-velocity/README.txt",
+      "path": "contrib/temporary/struts-velocity/build.xml",
+      "path": "contrib/temporary/struts-velocity/notes.txt",
+      "path": "contrib/temporary/struts-velocity/src",
+      "path": "contrib/temporary/struts-velocity/src/conf",
+      "path": "contrib/temporary/struts-velocity/src/conf/MANIFEST.MF",
+      "path": "contrib/temporary/struts-velocity/src/java",
+      "path": "contrib/temporary/struts-velocity/src/java/org",
+      "path": "contrib/temporary/struts-velocity/src/java/org/apache",
+      "path": "contrib/temporary/struts-velocity/src/java/org/apache/velocity",
+      "path": "contrib/temporary/struts-velocity/src/java/org/apache/velocity/struts",
+      "path": "contrib/temporary/struts-velocity/src/java/org/apache/velocity/struts/ErrorsBean.java",
+      "path": "contrib/temporary/struts-velocity/src/java/org/apache/velocity/struts/MessageBean.java",
+      "path": "contrib/temporary/struts-velocity/src/java/org/apache/velocity/struts/VelServlet.java",
+      "path": "contrib/temporary/struts-velocity/src/java/org/apache/velocity/struts/VelocityBean.java",
+      "path": "contrib/temporary/struts-velocity/where-to-find-the-example.txt",
+      "path": "contrib/temporary/templatetool",
+      "path": "contrib/temporary/templatetool/README.txt",
+      "path": "contrib/temporary/templatetool/TemplateTool.java",
+      "path": "contrib/temporary/veltag",
+      "path": "contrib/temporary/veltag/README.txt",
+      "path": "contrib/temporary/veltag/build.xml",
+      "path": "contrib/temporary/veltag/examples",
+      "path": "contrib/temporary/veltag/examples/GeirBean.java",
+      "path": "contrib/temporary/veltag/examples/README.txt",
+      "path": "contrib/temporary/veltag/examples/veltag.tld",
+      "path": "contrib/temporary/veltag/examples/veltest.jsp",
+      "path": "contrib/temporary/veltag/index.html",
+      "path": "contrib/temporary/veltag/repository.xml",
+      "path": "contrib/temporary/veltag/src",
+      "path": "contrib/temporary/veltag/src/conf",
+      "path": "contrib/temporary/veltag/src/conf/MANIFEST.MF",
+      "path": "contrib/temporary/veltag/src/java",
+      "path": "contrib/temporary/veltag/src/java/org",
+      "path": "contrib/temporary/veltag/src/java/org/apache",
+      "path": "contrib/temporary/veltag/src/java/org/apache/taglibs",
+      "path": "contrib/temporary/veltag/src/java/org/apache/taglibs/velocity",
+      "path": "contrib/temporary/veltag/src/java/org/apache/taglibs/velocity/JSPContext.java",
+      "path": "contrib/temporary/veltag/src/java/org/apache/taglibs/velocity/ScopeTool.java",
+      "path": "contrib/temporary/veltag/src/java/org/apache/taglibs/velocity/VelocityTag.java",
+      "path": "contrib/tools",
+      "path": "contrib/tools/emacs",
+      "path": "contrib/tools/emacs/README.txt",
+      "path": "contrib/tools/emacs/vtl.el",
+      "path": "contrib/tools/intellij",
+      "path": "contrib/tools/intellij/IntelliJ-Live-Template.xml",
+      "path": "contrib/tools/intellij/README.txt",
+      "path": "contrib/tools/jedit",
+      "path": "contrib/tools/jedit/velocity.xml",
+      "path": "contrib/tools/ultraedit",
+      "path": "contrib/tools/ultraedit/README.txt",
+      "path": "contrib/tools/ultraedit/ultraedit.txt",
+      "path": "convert",
+      "path": "convert/.cvsignore",
+      "path": "convert/buildcp.bat",
+      "path": "convert/convert-wm.bat",
+      "path": "convert/convert-wm.sh",
+      "path": "convert/convert.wm",
+      "path": "docs",
+      "path": "docs/anakia.html",
+      "path": "docs/casestudy1.html",
+      "path": "docs/casestudy2.html",
+      "path": "docs/changes.html",
+      "path": "docs/code-standards.html",
+      "path": "docs/contributors.html",
+      "path": "docs/design.html",
+      "path": "docs/developer-guide.html",
+      "path": "docs/devtools.html",
+      "path": "docs/differences.html",
+      "path": "docs/getting-started.html",
+      "path": "docs/images",
+      "path": "docs/images/logo.gif",
+      "path": "docs/images/powered-by-logo.gif",
+      "path": "docs/index.html",
+      "path": "docs/install.html",
+      "path": "docs/license.html",
+      "path": "docs/migration.html",
+      "path": "docs/newshistory.html",
+      "path": "docs/powered.html",
+      "path": "docs/specification-ast.html",
+      "path": "docs/specification-bnf.html",
+      "path": "docs/specification.html",
+      "path": "docs/texen.html",
+      "path": "docs/todo.html",
+      "path": "docs/toolsubproject.html",
+      "path": "docs/user-guide.html",
+      "path": "docs/user-guide_es.html",
+      "path": "docs/user-guide_fi.html",
+      "path": "docs/user-guide_fr.html",
+      "path": "docs/velocity_and_weblogic.html",
+      "path": "docs/veltag.html",
+      "path": "docs/vtl-reference-guide.html",
+      "path": "docs/ymtd",
+      "path": "docs/ymtd/images",
+      "path": "docs/ymtd/images/hello-jsp.gif",
+      "path": "docs/ymtd/images/hello-jsp2.gif",
+      "path": "docs/ymtd/images/hello-velocity.gif",
+      "path": "docs/ymtd/images/jsp-nasa-crash.gif",
+      "path": "docs/ymtd/ymtd-changes.html",
+      "path": "docs/ymtd/ymtd-conclusion.html",
+      "path": "docs/ymtd/ymtd-embedded.html",
+      "path": "docs/ymtd/ymtd-error-handling.html",
+      "path": "docs/ymtd/ymtd-generation.html",
+      "path": "docs/ymtd/ymtd-hosting.html",
+      "path": "docs/ymtd/ymtd-implementation.html",
+      "path": "docs/ymtd/ymtd-javabeans.html",
+      "path": "docs/ymtd/ymtd-sampleapp.html",
+      "path": "docs/ymtd/ymtd-saying-hello.html",
+      "path": "docs/ymtd/ymtd-taglibs.html",
+      "path": "docs/ymtd/ymtd.html",
+      "path": "examples",
+      "path": "examples/README.txt",
+      "path": "examples/anakia",
+      "path": "examples/anakia/README.txt",
+      "path": "examples/anakia/build",
+      "path": "examples/anakia/build/.cvsignore",
+      "path": "examples/anakia/build/build.xml",
+      "path": "examples/anakia/xdocs",
+      "path": "examples/anakia/xdocs/about",
+      "path": "examples/anakia/xdocs/about/index.xml",
+      "path": "examples/anakia/xdocs/images",
+      "path": "examples/anakia/xdocs/images/velocity.gif",
+
+ succeeded in 456ms:
+HTTP/2 404 
+date: Sat, 02 May 2026 15:32:37 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+
+ succeeded in 522ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:32:37 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"53972058465399dd2e7915e4139b7862"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+ succeeded in 805ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:32:38 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"bff30ac0441b8dc96c7463e88e79bcbe"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/velocity-engine/git/trees/VEL_1_4?recursive=1 | rg '\"path\": \".*test' | sed -n '1,200p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/velocity-engine/git/trees/VEL_1_4?recursive=1 | rg '\"path\": \"src' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/velocity-engine/tree/VEL_1_4/test | sed -n '1,12p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 117ms:
+      "path": "build/test.sh",
+      "path": "build/testcases.xml",
+      "path": "contrib/temporary/veltag/examples/veltest.jsp",
+      "path": "examples/context_example/dbcontexttest.sh",
+      "path": "examples/context_example/dbtest.vm",
+      "path": "examples/xmlapp_example/test.xml",
+      "path": "src/java/org/apache/velocity/test",
+      "path": "src/java/org/apache/velocity/test/AnakiaTestCase.java",
+      "path": "src/java/org/apache/velocity/test/BaseTestCase.java",
+      "path": "src/java/org/apache/velocity/test/ClassloaderChangeTest.java",
+      "path": "src/java/org/apache/velocity/test/ClasspathResourceTest.java",
+      "path": "src/java/org/apache/velocity/test/CommonsExtPropTestCase.java",
+      "path": "src/java/org/apache/velocity/test/ConfigurationTestCase.java",
+      "path": "src/java/org/apache/velocity/test/ContextSafetyTestCase.java",
+      "path": "src/java/org/apache/velocity/test/EncodingTestCase.java",
+      "path": "src/java/org/apache/velocity/test/EventHandlingTestCase.java",
+      "path": "src/java/org/apache/velocity/test/ExternalLoggerTest.java",
+      "path": "src/java/org/apache/velocity/test/InlineScopeVMTestCase.java",
+      "path": "src/java/org/apache/velocity/test/IntrospectorTestCase.java",
+      "path": "src/java/org/apache/velocity/test/IntrospectorTestCase2.java",
+      "path": "src/java/org/apache/velocity/test/IntrospectorTestCase3.java",
+      "path": "src/java/org/apache/velocity/test/MethodInvocationExceptionTest.java",
+      "path": "src/java/org/apache/velocity/test/MiscTestCase.java",
+      "path": "src/java/org/apache/velocity/test/MultiLoaderTestCase.java",
+      "path": "src/java/org/apache/velocity/test/MultipleFileResourcePathTest.java",
+      "path": "src/java/org/apache/velocity/test/ParserTestCase.java",
+      "path": "src/java/org/apache/velocity/test/TemplateTestBase.java",
+      "path": "src/java/org/apache/velocity/test/TemplateTestCase.java",
+      "path": "src/java/org/apache/velocity/test/TemplateTestSuite.java",
+      "path": "src/java/org/apache/velocity/test/TexenClasspathTestCase.java",
+      "path": "src/java/org/apache/velocity/test/TexenTestCase.java",
+      "path": "src/java/org/apache/velocity/test/VelocimacroTestCase.java",
+      "path": "src/java/org/apache/velocity/test/VelocityAppTestCase.java",
+      "path": "src/java/org/apache/velocity/test/VelocityServletTest.java",
+      "path": "src/java/org/apache/velocity/test/misc",
+      "path": "src/java/org/apache/velocity/test/misc/Test.java",
+      "path": "src/java/org/apache/velocity/test/provider",
+      "path": "src/java/org/apache/velocity/test/provider/BoolObj.java",
+      "path": "src/java/org/apache/velocity/test/provider/Child.java",
+      "path": "src/java/org/apache/velocity/test/provider/Person.java",
+      "path": "src/java/org/apache/velocity/test/provider/TestProvider.java",
+      "path": "src/java/org/apache/velocity/test/view",
+      "path": "src/java/org/apache/velocity/test/view/TemplateNodeView.java",
+      "path": "test",
+      "path": "test/anakia",
+      "path": "test/anakia/.cvsignore",
+      "path": "test/anakia/compare",
+      "path": "test/anakia/compare/index.html",
+      "path": "test/anakia/xdocs",
+      "path": "test/anakia/xdocs/index.xml",
+      "path": "test/anakia/xdocs/stylesheets",
+      "path": "test/anakia/xdocs/stylesheets/project.xml",
+      "path": "test/anakia/xdocs/stylesheets/site.vsl",
+      "path": "test/classloader",
+      "path": "test/classloader/Foo.class",
+      "path": "test/classloader/Foo.java",
+      "path": "test/configuration",
+      "path": "test/configuration/compare",
+      "path": "test/configuration/compare/output.cmp",
+      "path": "test/configuration/include1.properties",
+      "path": "test/configuration/include2.properties",
+      "path": "test/configuration/test.config",
+      "path": "test/cpload",
+      "path": "test/cpload/compare",
+      "path": "test/cpload/compare/test1.cmp",
+      "path": "test/cpload/compare/test2.cmp",
+      "path": "test/cpload/test1.jar",
+      "path": "test/cpload/test2.jar",
+      "path": "test/misc",
+      "path": "test/misc/README.txt",
+      "path": "test/misc/compile.sh",
+      "path": "test/misc/dump.sh",
+      "path": "test/misc/test.sh",
+      "path": "test/multi",
+      "path": "test/multi/compare",
+      "path": "test/multi/compare/path1.cmp",
+      "path": "test/multi/compare/path2.cmp",
+      "path": "test/multi/path1",
+      "path": "test/multi/path1/path1.vm",
+      "path": "test/multi/path2",
+      "path": "test/multi/path2/path2.vm",
+      "path": "test/multiloader",
+      "path": "test/multiloader/compare",
+      "path": "test/multiloader/compare/path1.cmp",
+      "path": "test/multiloader/compare/test2.cmp",
+      "path": "test/multiloader/compare/test3.cmp",
+      "path": "test/multiloader/path1.vm",
+      "path": "test/multiloader/test1.jar",
+      "path": "test/multiloader/test2.jar",
+      "path": "test/templates",
+      "path": "test/templates/VM_global_library.vm",
+      "path": "test/templates/arithmetic.vm",
+      "path": "test/templates/array.vm",
+      "path": "test/templates/block.vm",
+      "path": "test/templates/comment.vm",
+      "path": "test/templates/compare",
+      "path": "test/templates/compare/arithmetic.cmp",
+      "path": "test/templates/compare/array.cmp",
+      "path": "test/templates/compare/block.cmp",
+      "path": "test/templates/compare/comment.cmp",
+      "path": "test/templates/compare/context_safety1.cmp",
+      "path": "test/templates/compare/context_safety2.cmp",
+      "path": "test/templates/compare/diabolical.cmp",
+      "path": "test/templates/compare/directive.cmp",
+      "path": "test/templates/compare/encodingtest.cmp",
+      "path": "test/templates/compare/encodingtest2.cmp",
+      "path": "test/templates/compare/encodingtest3.cmp",
+      "path": "test/templates/compare/encodingtest_KOI8-R.cmp",
+      "path": "test/templates/compare/equality.cmp",
+      "path": "test/templates/compare/escape.cmp",
+      "path": "test/templates/compare/escape2.cmp",
+      "path": "test/templates/compare/foreach-array.cmp",
+      "path": "test/templates/compare/foreach-introspect.cmp",
+      "path": "test/templates/compare/foreach-map.cmp",
+      "path": "test/templates/compare/foreach-method.cmp",
+      "path": "test/templates/compare/foreach-type.cmp",
+      "path": "test/templates/compare/foreach-variable.cmp",
+      "path": "test/templates/compare/formal.cmp",
+      "path": "test/templates/compare/get.cmp",
+      "path": "test/templates/compare/if.cmp",
+      "path": "test/templates/compare/ifstatement.cmp",
+      "path": "test/templates/compare/include.cmp",
+      "path": "test/templates/compare/interpolation.cmp",
+      "path": "test/templates/compare/literal.cmp",
+      "path": "test/templates/compare/logical.cmp",
+      "path": "test/templates/compare/loop.cmp",
+      "path": "test/templates/compare/map.cmp",
+      "path": "test/templates/compare/math.cmp",
+      "path": "test/templates/compare/method.cmp",
+      "path": "test/templates/compare/parse.cmp",
+      "path": "test/templates/compare/pedantic.cmp",
+      "path": "test/templates/compare/quotes.cmp",
+      "path": "test/templates/compare/range.cmp",
+      "path": "test/templates/compare/reference.cmp",
+      "path": "test/templates/compare/sample.cmp",
+      "path": "test/templates/compare/settest.cmp",
+      "path": "test/templates/compare/shorthand.cmp",
+      "path": "test/templates/compare/string-interpolation.cmp",
+      "path": "test/templates/compare/subclass.cmp",
+      "path": "test/templates/compare/test.cmp",
+      "path": "test/templates/compare/velocimacro.cmp",
+      "path": "test/templates/compare/velocimacro2.cmp",
+      "path": "test/templates/compare/vm_test1.cmp",
+      "path": "test/templates/compare/vm_test2.cmp",
+      "path": "test/templates/context_safety.vm",
+      "path": "test/templates/diabolical.vm",
+      "path": "test/templates/encodingtest.vm",
+      "path": "test/templates/encodingtest2.vm",
+      "path": "test/templates/encodingtest3.vm",
+      "path": "test/templates/encodingtest_KOI8-R.vm",
+      "path": "test/templates/equality.vm",
+      "path": "test/templates/escape.vm",
+      "path": "test/templates/escape2.vm",
+      "path": "test/templates/foreach-array.vm",
+      "path": "test/templates/foreach-introspect.vm",
+      "path": "test/templates/foreach-map.vm",
+      "path": "test/templates/foreach-method.vm",
+      "path": "test/templates/foreach-type.vm",
+      "path": "test/templates/foreach-variable.vm",
+      "path": "test/templates/formal.vm",
+      "path": "test/templates/get.vm",
+      "path": "test/templates/if.vm",
+      "path": "test/templates/ifstatement.vm",
+      "path": "test/templates/include.vm",
+      "path": "test/templates/interpolation.vm",
+      "path": "test/templates/literal.vm",
+      "path": "test/templates/logical.vm",
+      "path": "test/templates/loop.vm",
+      "path": "test/templates/map.vm",
+      "path": "test/templates/math.vm",
+      "path": "test/templates/method.vm",
+      "path": "test/templates/parse.vm",
+      "path": "test/templates/parse1.vm",
+      "path": "test/templates/parse2.vm",
+      "path": "test/templates/pedantic.vm",
+      "path": "test/templates/quotes.vm",
+      "path": "test/templates/range.vm",
+      "path": "test/templates/reference.vm",
+      "path": "test/templates/sample.vm",
+      "path": "test/templates/settest.vm",
+      "path": "test/templates/shorthand.vm",
+      "path": "test/templates/subclass.vm",
+      "path": "test/templates/subdir",
+      "path": "test/templates/subdir/test.txt",
+      "path": "test/templates/templates.properties",
+      "path": "test/templates/test.txt",
+      "path": "test/templates/test.vm",
+      "path": "test/templates/velocimacro.vm",
+      "path": "test/templates/velocimacro2.vm",
+      "path": "test/templates/vm_test1.vm",
+      "path": "test/templates/vm_test2.vm",
+      "path": "test/texen-classpath",
+      "path": "test/texen-classpath/compare",
+      "path": "test/texen-classpath/compare/Test.txt",
+      "path": "test/texen-classpath/compare/TurbineWeather.java",
+      "path": "test/texen-classpath/compare/TurbineWeatherService.java",
+      "path": "test/texen-classpath/compare/WeatherService.java",
+      "path": "test/texen-classpath/compare/book.txt",
+      "path": "test/texen-classpath/jar-contents",
+      "path": "test/texen-classpath/jar-contents/Control.vm",
+
+ succeeded in 114ms:
+runtime/parser/node/ASTEQNode.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTElseIfStatement.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTElseStatement.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTEscape.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTEscapedDirective.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTExpression.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTFalse.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTGENode.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTGTNode.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTIdentifier.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTIfStatement.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTIncludeStatement.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTIntegerRange.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTLENode.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTLTNode.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTMethod.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTModNode.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTMulNode.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTNENode.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTNotNode.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTNumberLiteral.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTObjectArray.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTOrNode.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTParameters.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTReference.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTSetDirective.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTStringLiteral.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTSubtractNode.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTText.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTTrue.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTVariable.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTWord.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ASTprocess.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/AbstractExecutor.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/BooleanPropertyExecutor.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/GetExecutor.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/Node.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/NodeUtils.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/ParserVisitor.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/PropertyExecutor.java",
+      "path": "src/java/org/apache/velocity/runtime/parser/node/SimpleNode.java",
+      "path": "src/java/org/apache/velocity/runtime/resource",
+      "path": "src/java/org/apache/velocity/runtime/resource/ContentResource.java",
+      "path": "src/java/org/apache/velocity/runtime/resource/Resource.java",
+      "path": "src/java/org/apache/velocity/runtime/resource/ResourceCache.java",
+      "path": "src/java/org/apache/velocity/runtime/resource/ResourceCacheImpl.java",
+      "path": "src/java/org/apache/velocity/runtime/resource/ResourceFactory.java",
+      "path": "src/java/org/apache/velocity/runtime/resource/ResourceManager.java",
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/velocity-engine/tree/VEL_1_4/src | sed -n '1,12p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 379ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:32:43 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"e1e05d599343e405f61b19539ce068e8"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+ succeeded in 471ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:32:43 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b1197b882c1a5f2e83c0f323926efe93"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+exec
+/usr/bin/bash -lc "rg -n 'VEL_\\"'$version'"\\"'$|tree/.+'"\\"'$version'"\\"'$|/tag/.+'"\\"'$version'"\\"'$|documentation-url'"' build/discovered-artifact-metadata | head -120" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' . | head -120" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 0ms:
+./metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+./metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:62:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:64:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:65:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+./metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+./metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+./metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+./metadata/com.google.re2j/re2j/index.json:7:    "test-code-url" : "https://github.com/google/re2j/tree/re2j-$version$/javatests",
+./metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:227:                promoteUrl("source-code-url", entry.sourceCodeUrl(), oldVersion, newVersion, UrlVerification.ARCHIVE_WITH_SOURCES),
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:228:                promoteUrl("test-code-url", entry.testCodeUrl(), oldVersion, newVersion, UrlVerification.TEST_CODE),
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:229:                promoteUrl("documentation-url", entry.documentationUrl(), oldVersion, newVersion, UrlVerification.RESOLVES)
+./metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+./metadata/org.apache.directory.api/api-util/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+./metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+./metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-sources.jar",
+./metadata/com.ning/compress-lzf/index.json:7:    "test-code-url" : "https://github.com/ning/compress/tree/compress-lzf-$version$/src/test",
+./metadata/com.ning/compress-lzf/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:116:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:118:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+./metadata/org.antlr/antlr4-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/$version$/antlr4-runtime-$version$-sources.jar",
+./metadata/org.antlr/antlr4-runtime/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr4/tree/$version$/runtime-testsuite/test/org/antlr/v4/test/runtime/java",
+./metadata/org.antlr/antlr4-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/$version$/antlr4-runtime-$version$-javadoc.jar",
+./metadata/io.perfmark/perfmark-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/perfmark/perfmark-api/$version$/perfmark-api-$version$-sources.jar",
+./metadata/io.perfmark/perfmark-api/index.json:7:    "test-code-url" : "https://github.com/perfmark/perfmark/tree/v$version$/api/src/test",
+./metadata/io.perfmark/perfmark-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/perfmark/perfmark-api/$version$/perfmark-api-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+./forge/utility_scripts/source_context.py:24:    "main": "source-code-url",
+./forge/utility_scripts/source_context.py:25:    "test": "test-code-url",
+./forge/utility_scripts/source_context.py:26:    "documentation": "documentation-url",
+./metadata/org.hamcrest/hamcrest-library/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-library/$version$/hamcrest-library-$version$-sources.jar",
+./metadata/org.hamcrest/hamcrest-library/index.json:7:    "test-code-url" : "https://github.com/hamcrest/JavaHamcrest/tree/hamcrest-java-$version$/hamcrest-unit-test/src/main/java",
+./metadata/org.hamcrest/hamcrest-library/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-library/$version$/hamcrest-library-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-session/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-session/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-tests.jar",
+./metadata/org.eclipse.jetty/jetty-session/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-javadoc.jar",
+./metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+./metadata/org.openjfx/javafx-base/index.json:7:    "test-code-url" : "https://github.com/javafxports/openjdk-jfx/tree/$version$+1/tests",
+./metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:27:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:31:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:33:        @JsonProperty("documentation-url")
+./metadata/xpp3/xpp3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/xpp3/xpp3/$version$/xpp3-$version$-sources.jar",
+./metadata/xpp3/xpp3/index.json:7:    "test-code-url" : "https://sources.debian.org/src/libxpp3-java/$version$-4/src/java/tests/",
+./metadata/xpp3/xpp3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/xpp3/xpp3/$version$/xpp3-$version$-javadoc.jar",
+./metadata/org.antlr/antlr-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr-runtime/$version$/antlr-runtime-$version$-sources.jar",
+./metadata/org.antlr/antlr-runtime/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr3/tree/$version$/runtime/Java/src/test",
+./metadata/org.antlr/antlr-runtime/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.antlr/antlr-runtime/$version$/",
+./metadata/org.eclipse.jdt.core.compiler/ecj/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+./metadata/org.eclipse.jdt.core.compiler/ecj/index.json:8:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_5/org.eclipse.jdt.core.tests.compiler/src",
+./metadata/org.eclipse.jdt.core.compiler/ecj/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-javadoc.jar",
+./metadata/org.eclipse.jdt.core.compiler/ecj/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+./metadata/org.eclipse.jdt.core.compiler/ecj/index.json:23:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_4_2/org.eclipse.jdt.core.tests.compiler/src",
+./metadata/org.eclipse.jdt.core.compiler/ecj/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-javadoc.jar",
+./metadata/org.hamcrest/hamcrest-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/$version$/hamcrest-core-$version$-sources.jar",
+./metadata/org.hamcrest/hamcrest-core/index.json:7:    "test-code-url" : "https://github.com/hamcrest/JavaHamcrest/tree/hamcrest-java-$version$/hamcrest-unit-test/src/main/java",
+./metadata/org.hamcrest/hamcrest-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/$version$/hamcrest-core-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:9:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:34:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:16:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:20:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:22:        @JsonProperty("documentation-url")
+./metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+./metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+./metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+./metadata/org.hamcrest/hamcrest/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/hamcrest/hamcrest/$version$/hamcrest-$version$-sources.jar",
+./metadata/org.hamcrest/hamcrest/index.json:7:    "test-code-url" : "https://github.com/hamcrest/JavaHamcrest/tree/v$version$/hamcrest/src/test",
+./metadata/org.hamcrest/hamcrest/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/hamcrest/hamcrest/$version$/hamcrest-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+./metadata/org.eclipse.jetty/jetty-io/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:49:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:51:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+./metadata/org.eclipse.jetty/jetty-io/index.json:52:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:64:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:66:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+./metadata/org.eclipse.jetty/jetty-io/index.json:67:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+./metadata/org.apache.camel/spi-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-sources.jar",
+./metadata/org.apache.camel/spi-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.camel/spi-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-javadoc.jar",
+./metadata/org.apache.camel/spi-annotations/index.json:49:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-sources.jar",
+./metadata/org.apache.camel/spi-annotations/index.json:51:    "test-code-url" : "N/A",
+./metadata/org.apache.camel/spi-annotations/index.json:52:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-javadoc.jar",
+./metadata/org.apache.camel/spi-annotations/index.json:65:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-sources.jar",
+./metadata/org.apache.camel/spi-annotations/index.json:67:    "test-code-url" : "N/A",
+./metadata/org.apache.camel/spi-annotations/index.json:68:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/$version$/jackrabbit-jcr-commons/src/test/java",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/$version$/jackrabbit-jcr-commons/README.txt",
+./metadata/org.apache-extras.beanshell/bsh/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache-extras/beanshell/bsh/$version$/bsh-$version$-sources.jar",
+./metadata/org.apache-extras.beanshell/bsh/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache-extras/beanshell/bsh/$version$/bsh-$version$-src.zip",
+./metadata/org.apache-extras.beanshell/bsh/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache-extras/beanshell/bsh/$version$/bsh-$version$-javadoc.jar",
+
+codex
+The old Velocity repository is mirrored at `apache/velocity-engine`; release `1.4` is tagged as `VEL_1_4`, and that tag contains both `src/java/org/apache/velocity/test` and `test`. Since that tag name does not contain the literal `1.4`, I’m checking alternate versioned URLs for documentation and tests before deciding whether any field should be `N/A`.
+exec
+/usr/bin/bash -lc "curl -I -L -s https://javadoc.io/doc/velocity/velocity-dep/1.4/ | sed -n '1,20p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo1.maven.org/maven2/velocity/velocity-dep/1.4/velocity-dep-1.4-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+exec
+/usr/bin/bash -lc "curl -I -L -s https://archive.apache.org/dist/velocity/engine/1.4/ | sed -n '1,20p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+exec
+/usr/bin/bash -lc "curl -I -L -s https://archive.apache.org/dist/jakarta/velocity/1.4/ | sed -n '1,20p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 0ms:
+HTTP/1.1 404 Not Found
+Date: Sat, 02 May 2026 15:33:07 GMT
+Server: Apache
+Content-Type: text/html; charset=iso-8859-1
+
+
+ succeeded in 141ms:
+HTTP/1.1 200 OK
+Date: Sat, 02 May 2026 15:33:07 GMT
+Server: Apache
+Vary: Slow,Glacial
+Content-Type: text/html;charset=UTF-8
+
+
+ succeeded in 261ms:
+HTTP/2 404 
+date: Sat, 02 May 2026 15:33:07 GMT
+content-type: text/html
+cf-ray: 9f58151e2d1f31a4-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/velocity/velocity-dep/1.4/velocity-dep-1.4-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 361ms:
+HTTP/2 301 
+date: Sat, 02 May 2026 15:33:06 GMT
+content-length: 0
+location: /doc/velocity/velocity-dep/1.4
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=YxEjXXsnd7fLmk7%2BcSHc8Yg1cqlYPs3nxk00jz66a4vl5qYyfWPi%2Fl6vwAVFwU8kBTxXDxRXkSYjdXp7aTKCcFRVZkvYLDhS6Sc0QTV77Q7LTa6lrAjZYOczzE8ayJIZ%2FuNxDilZD12Y"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f58151dab0624c4-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 303 
+date: Sat, 02 May 2026 15:33:07 GMT
+content-length: 0
+location: /doc/velocity/velocity-dep/1.4/index.html
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/velocity/engine/1.4/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 108ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/velocity/engine/1.4</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                    <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/velocity/engine/">Parent Directory</a>                             -   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="velocity-1.4.tar.gz">velocity-1.4.tar.gz</a>     2006-12-10 15:41  4.4M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="velocity-1.4.tar.gz.asc">velocity-1.4.tar.gz.asc</a> 2006-12-10 15:41  186   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="velocity-1.4.tar.gz.md5">velocity-1.4.tar.gz.md5</a> 2006-12-10 16:47   61   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="velocity-1.4.zip">velocity-1.4.zip</a>        2006-12-10 15:41  5.5M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="velocity-1.4.zip.asc">velocity-1.4.zip.asc</a>    2006-12-10 15:41  186   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="velocity-1.4.zip.md5">velocity-1.4.zip.md5</a>    2006-12-10 16:47   58   
+<hr></pre>
+</body></html>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/velocity/velocity-dep/1.4/index.html | sed -n '1,60p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/velocity/engine/1.4/velocity-1.4.zip -o /tmp/velocity-1.4.zip && unzip -l /tmp/velocity-1.4.zip | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/velocity/velocity-dep/1.4/velocity-dep-1.4-sources.jar -o /tmp/velocity-dep-1.4-sources.jar && jar tf /tmp/velocity-dep-1.4-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 0ms:
+org/
+org/apache/
+org/apache/velocity/
+org/apache/velocity/anakia/
+org/apache/velocity/anakia/AnakiaElement.java
+org/apache/velocity/anakia/AnakiaJDOMFactory.java
+org/apache/velocity/anakia/AnakiaTask.java
+org/apache/velocity/anakia/Escape.java
+org/apache/velocity/anakia/NodeList.java
+org/apache/velocity/anakia/OutputWrapper.java
+org/apache/velocity/anakia/TreeWalker.java
+org/apache/velocity/anakia/XPathCache.java
+org/apache/velocity/anakia/XPathTool.java
+org/apache/velocity/app/
+org/apache/velocity/app/event/
+org/apache/velocity/app/event/EventCartridge.java
+org/apache/velocity/app/event/EventHandler.java
+org/apache/velocity/app/event/MethodExceptionEventHandler.java
+org/apache/velocity/app/event/NullSetEventHandler.java
+org/apache/velocity/app/event/ReferenceInsertionEventHandler.java
+org/apache/velocity/app/FieldMethodizer.java
+org/apache/velocity/app/tools/
+org/apache/velocity/app/tools/VelocityFormatter.java
+org/apache/velocity/app/Velocity.java
+org/apache/velocity/app/VelocityEngine.java
+org/apache/velocity/context/
+org/apache/velocity/context/AbstractContext.java
+org/apache/velocity/context/Context.java
+org/apache/velocity/context/InternalContextAdapter.java
+org/apache/velocity/context/InternalContextAdapterImpl.java
+org/apache/velocity/context/InternalContextBase.java
+org/apache/velocity/context/InternalEventContext.java
+org/apache/velocity/context/InternalHousekeepingContext.java
+org/apache/velocity/context/InternalWrapperContext.java
+org/apache/velocity/context/VMContext.java
+org/apache/velocity/convert/
+org/apache/velocity/convert/WebMacro.java
+org/apache/velocity/exception/
+org/apache/velocity/exception/MethodInvocationException.java
+org/apache/velocity/exception/ParseErrorException.java
+org/apache/velocity/exception/ResourceNotFoundException.java
+org/apache/velocity/exception/VelocityException.java
+org/apache/velocity/io/
+org/apache/velocity/io/VelocityWriter.java
+org/apache/velocity/runtime/
+org/apache/velocity/runtime/compiler/
+org/apache/velocity/runtime/compiler/Compiler.java
+org/apache/velocity/runtime/configuration/
+org/apache/velocity/runtime/configuration/Configuration.java
+org/apache/velocity/runtime/defaults/
+org/apache/velocity/runtime/defaults/directive.properties
+org/apache/velocity/runtime/defaults/velocity.properties
+org/apache/velocity/runtime/directive/
+org/apache/velocity/runtime/directive/Directive.java
+org/apache/velocity/runtime/directive/DirectiveConstants.java
+org/apache/velocity/runtime/directive/Foreach.java
+org/apache/velocity/runtime/directive/Include.java
+org/apache/velocity/runtime/directive/InputBase.java
+org/apache/velocity/runtime/directive/Literal.java
+org/apache/velocity/runtime/directive/Macro.java
+org/apache/velocity/runtime/directive/MacroParseException.java
+org/apache/velocity/runtime/directive/Parse.java
+org/apache/velocity/runtime/directive/ParseDirectiveException.java
+org/apache/velocity/runtime/directive/VelocimacroProxy.java
+org/apache/velocity/runtime/directive/VMProxyArg.java
+org/apache/velocity/runtime/exception/
+org/apache/velocity/runtime/exception/NodeException.java
+org/apache/velocity/runtime/exception/ReferenceException.java
+org/apache/velocity/runtime/log/
+org/apache/velocity/runtime/log/AvalonLogSystem.java
+org/apache/velocity/runtime/log/Log4JLogSystem.java
+org/apache/velocity/runtime/log/LogManager.java
+org/apache/velocity/runtime/log/LogSystem.java
+org/apache/velocity/runtime/log/NullLogSystem.java
+org/apache/velocity/runtime/log/PrimordialLogSystem.java
+org/apache/velocity/runtime/log/SimpleLog4JLogSystem.java
+org/apache/velocity/runtime/log/VelocityFormatter.java
+org/apache/velocity/runtime/parser/
+org/apache/velocity/runtime/parser/build
+org/apache/velocity/runtime/parser/BUILD_README.txt
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/velocity/velocity-dep/1.4/velocity-dep-1.4.jar -o /tmp/velocity-dep-1.4.jar && jar tf /tmp/velocity-dep-1.4.jar | rg '\\.class"'$'"' | sed -n '1,20p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 0ms:
+org/apache/commons/collections/ExtendedProperties$PropertiesReader.class
+org/apache/commons/collections/ExtendedProperties$PropertiesTokenizer.class
+org/apache/commons/collections/ExtendedProperties.class
+org/apache/log/ContextMap.class
+org/apache/log/ContextStack.class
+org/apache/log/ErrorAware.class
+org/apache/log/ErrorHandler.class
+org/apache/log/FilterTarget.class
+org/apache/log/Formatter.class
+org/apache/log/Hierarchy$1.class
+org/apache/log/Hierarchy$InnerErrorHandler.class
+org/apache/log/Hierarchy.class
+org/apache/log/LogEvent.class
+org/apache/log/LogKit.class
+org/apache/log/LogTarget.class
+org/apache/log/Logger.class
+org/apache/log/Priority.class
+org/apache/log/filter/AbstractFilterTarget.class
+org/apache/log/filter/PriorityFilter.class
+org/apache/log/format/AvalonFormatter.class
+
+ succeeded in 121ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>velocity-dep 1.4 javadoc (velocity)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/velocity">velocity</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						velocity-dep
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/velocity/anakia" class="dropdown-item">
+							anakia
+						</a>
+						
+						<a href="/doc/velocity/velocity" class="dropdown-item">
+							velocity
+
+ succeeded in 1340ms:
+Archive:  /tmp/velocity-1.4.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2004-04-14 08:26   velocity-1.4/
+        0  2004-04-14 08:26   velocity-1.4/build/
+        0  2004-04-14 08:26   velocity-1.4/build/lib/
+        0  2004-04-14 08:26   velocity-1.4/build/xsl/
+        0  2004-04-14 08:26   velocity-1.4/convert/
+        0  2004-04-14 08:26   velocity-1.4/docs/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/anakia/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/anakia/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/app/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/app/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/app/event/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/app/event/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/app/tools/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/app/tools/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/context/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/context/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/convert/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/convert/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/exception/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/exception/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/io/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/io/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/compiler/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/compiler/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/configuration/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/configuration/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/directive/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/directive/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/exception/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/exception/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/log/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/log/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/parser/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/parser/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/parser/node/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/parser/node/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/resource/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/resource/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/resource/loader/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/resource/loader/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/visitor/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/runtime/visitor/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/servlet/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/servlet/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/test/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/test/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/test/misc/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/test/misc/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/test/provider/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/test/provider/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/test/view/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/test/view/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/texen/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/texen/ant/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/texen/ant/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/texen/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/texen/util/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/texen/util/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/util/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/util/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/util/introspection/
+        0  2004-04-14 08:26   velocity-1.4/docs/api/org/apache/velocity/util/introspection/class-use/
+        0  2004-04-14 08:26   velocity-1.4/docs/images/
+        0  2004-04-14 08:26   velocity-1.4/docs/ymtd/
+        0  2004-04-14 08:26   velocity-1.4/docs/ymtd/images/
+        0  2004-04-14 08:26   velocity-1.4/examples/
+        0  2004-04-14 08:26   velocity-1.4/examples/anakia/
+        0  2004-04-14 08:26   velocity-1.4/examples/anakia/build/
+        0  2004-04-14 08:26   velocity-1.4/examples/anakia/xdocs/
+        0  2004-04-14 08:26   velocity-1.4/examples/anakia/xdocs/about/
+        0  2004-04-14 08:26   velocity-1.4/examples/anakia/xdocs/images/
+        0  2004-04-14 08:26   velocity-1.4/examples/anakia/xdocs/stylesheets/
+        0  2004-04-14 08:26   velocity-1.4/examples/app_example1/
+        0  2004-04-14 08:26   velocity-1.4/examples/app_example2/
+        0  2004-04-14 08:26   velocity-1.4/examples/context_example/
+        0  2004-04-14 08:26   velocity-1.4/examples/event_example/
+        0  2004-04-14 08:26   velocity-1.4/examples/forumdemo/
+        0  2004-04-14 08:26   velocity-1.4/examples/forumdemo/WEB-INF/
+        0  2004-04-14 08:26   velocity-1.4/examples/forumdemo/WEB-INF/conf/
+        0  2004-04-14 08:26   velocity-1.4/examples/forumdemo/WEB-INF/src/
+        0  2004-04-14 08:26   velocity-1.4/examples/forumdemo/WEB-INF/src/org/
+        0  2004-04-14 08:26   velocity-1.4/examples/forumdemo/WEB-INF/src/org/apache/
+        0  2004-04-14 08:26   velocity-1.4/examples/forumdemo/WEB-INF/src/org/apache/velocity/
+        0  2004-04-14 08:26   velocity-1.4/examples/forumdemo/WEB-INF/src/org/apache/velocity/demo/
+        0  2004-04-14 08:26   velocity-1.4/examples/forumdemo/WEB-INF/src/org/apache/velocity/demo/action/
+        0  2004-04-14 08:26   velocity-1.4/examples/forumdemo/WEB-INF/src/org/apache/velocity/demo/om/
+        0  2004-04-14 08:26   velocity-1.4/examples/forumdemo/images/
+        0  2004-04-14 08:26   velocity-1.4/examples/forumdemo/template/
+        0  2004-04-14 08:26   velocity-1.4/examples/logger_example/
+        0  2004-04-14 08:26   velocity-1.4/examples/servlet_example1/
+        0  2004-04-14 08:26   velocity-1.4/examples/servlet_example2/
+        0  2004-04-14 08:26   velocity-1.4/examples/xmlapp_example/
+        0  2004-04-14 08:26   velocity-1.4/src/
+        0  2004-04-14 08:26   velocity-1.4/src/java/
+        0  2004-04-14 08:26   velocity-1.4/src/java/org/
+        0  2004-04-14 08:26   velocity-1.4/src/java/org/apache/
+        0  2004-04-14 08:26   velocity-1.4/src/java/org/apache/velocity/
+        0  2004-04-14 08:26   velocity-1.4/src/java/org/apache/velocity/anakia/
+        0  2004-04-14 08:26   velocity-1.4/src/java/org/apache/velocity/app/
+        0  2004-04-14 08:26   velocity-1.4/src/java/org/apache/velocity/app/event/
+        0  2004-04-14 08:26   velocity-1.4/src/java/org/apache/velocity/app/tools/
+        0  2004-04-14 08:26   velocity-1.4/src/java/org/apache/velocity/context/
+        0  2004-04-14 08:26   velocity-1.4/src/java/org/apache/velocity/convert/
+        0  2004-04-14 08:26   velocity-1.4/src/java/org/apache/velocity/exception/
+        0  2004-04-14 08:26   velocity-1.4/src/java/org/apache/velocity/io/
+        0  2004-04-14 08:26   velocity-1.4/src/java/org/apache/velocity/runtime/
+        0  2004-04-14 08:26   velocity-1.4/src/java/org/apache/velocity/runtime/compiler/
+        0  2004-04-14 08:26   velocity-1.4/src/java/org/apache/velocity/runtime/configuration/
+        0  2004-04-14 08:26   velocity-1.4/src/java/org/apache/velocity/runtime/defaults/
+        0  2004-04-14 08:26   velocity-1.4/src/java/org/apache/velocity/runtime/directive/
+
+codex
+I found no published Maven tests artifact for `velocity-dep:1.4`. I’m going to use the Maven sources JAR for source code, the Apache archive release ZIP for the test suite because it contains the `test/` tree, and javadoc.io for versioned API documentation.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+diff --git a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+index a7003a384cd073ae973c6e92710aa79cd49d6a3a..7a90990d5407b4ecc89c2c467e658d6d2955d305
+--- a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
++++ b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "velocity:velocity-dep:1.4"
++  "coordinates" : "velocity:velocity-dep:1.4",
++  "repository-url" : "https://github.com/apache/velocity-engine",
++  "source-code-url" : "https://repo1.maven.org/maven2/velocity/velocity-dep/$version$/velocity-dep-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/velocity/engine/$version$/velocity-$version$.zip",
++  "documentation-url" : "https://javadoc.io/doc/velocity/velocity-dep/$version$/",
++  "description" : "Apache Velocity is a Java template engine for merging templates with Java object data through the Velocity Template Language. The velocity-dep artifact packages Velocity 1.4 together with its runtime dependencies for applications that want a single bundled JAR."
+ }
+
+diff --git a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+index a7003a384cd073ae973c6e92710aa79cd49d6a3a..7a90990d5407b4ecc89c2c467e658d6d2955d305
+--- a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
++++ b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "velocity:velocity-dep:1.4"
++  "coordinates" : "velocity:velocity-dep:1.4",
++  "repository-url" : "https://github.com/apache/velocity-engine",
++  "source-code-url" : "https://repo1.maven.org/maven2/velocity/velocity-dep/$version$/velocity-dep-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/velocity/engine/$version$/velocity-$version$.zip",
++  "documentation-url" : "https://javadoc.io/doc/velocity/velocity-dep/$version$/",
++  "description" : "Apache Velocity is a Java template engine for merging templates with Java object data through the Velocity Template Language. The velocity-dep artifact packages Velocity 1.4 together with its runtime dependencies for applications that want a single bundled JAR."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 0ms:
+{
+  "coordinates": "velocity:velocity-dep:1.4",
+  "repository-url": "https://github.com/apache/velocity-engine",
+  "source-code-url": "https://repo1.maven.org/maven2/velocity/velocity-dep/$version$/velocity-dep-$version$-sources.jar",
+  "test-code-url": "https://archive.apache.org/dist/velocity/engine/$version$/velocity-$version$.zip",
+  "documentation-url": "https://javadoc.io/doc/velocity/velocity-dep/$version$/",
+  "description": "Apache Velocity is a Java template engine for merging templates with Java object data through the Velocity Template Language. The velocity-dep artifact packages Velocity 1.4 together with its runtime dependencies for applications that want a single bundled JAR."
+}
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo1.maven.org/maven2/velocity/velocity-dep/1.4/velocity-dep-1.4-sources.jar | sed -n '1,16p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:33:41 GMT
+content-type: application/java-archive
+content-length: 419841
+cf-ray: 9f5815f3e925bb0e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 700770
+etag: "d3a96c7732f707cbc4bc85f4b1aea7cd"
+last-modified: Sat, 02 Jan 2016 00:51:35 GMT
+x-checksum-md5: d3a96c7732f707cbc4bc85f4b1aea7cd
+x-checksum-sha1: e3aa6f721163705571573c9af5942a8706a97bea
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://archive.apache.org/dist/velocity/engine/1.4/velocity-1.4.zip | sed -n '1,16p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 0ms:
+HTTP/1.1 200 OK
+Date: Sat, 02 May 2026 15:33:41 GMT
+Server: Apache
+Vary: Slow,Glacial
+Last-Modified: Sun, 10 Dec 2006 15:41:35 GMT
+ETag: "57872e-42441e24cc9c0"
+Accept-Ranges: bytes
+Content-Length: 5736238
+Content-Type: application/zip
+
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://javadoc.io/doc/velocity/velocity-dep/1.4/ | sed -n '1,24p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+diff --git a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+index a7003a384cd073ae973c6e92710aa79cd49d6a3a..7a90990d5407b4ecc89c2c467e658d6d2955d305
+--- a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
++++ b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "velocity:velocity-dep:1.4"
++  "coordinates" : "velocity:velocity-dep:1.4",
++  "repository-url" : "https://github.com/apache/velocity-engine",
++  "source-code-url" : "https://repo1.maven.org/maven2/velocity/velocity-dep/$version$/velocity-dep-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/velocity/engine/$version$/velocity-$version$.zip",
++  "documentation-url" : "https://javadoc.io/doc/velocity/velocity-dep/$version$/",
++  "description" : "Apache Velocity is a Java template engine for merging templates with Java object data through the Velocity Template Language. The velocity-dep artifact packages Velocity 1.4 together with its runtime dependencies for applications that want a single bundled JAR."
+ }
+
+ succeeded in 350ms:
+HTTP/2 301 
+date: Sat, 02 May 2026 15:33:41 GMT
+content-length: 0
+location: /doc/velocity/velocity-dep/1.4
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=3kdL%2BSc4o7ozHbtQKsWf%2FuSc%2BjICsnEsk%2FISxIIljXeBv9%2BJcnaFV70bFMiUBn8cpZIrm19nvRF1tY%2FipBXDxuFdW4VLb6Bn8dbYjvGiumjcCb1ns3faiuPmNZTryD1v7sAXmB2nM%2FHY"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f5815f47bb2be6d-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 303 
+date: Sat, 02 May 2026 15:33:41 GMT
+content-length: 0
+location: /doc/velocity/velocity-dep/1.4/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://javadoc.io/doc/velocity/velocity-dep/1.4/ | tail -20' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+diff --git a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+index a7003a384cd073ae973c6e92710aa79cd49d6a3a..7a90990d5407b4ecc89c2c467e658d6d2955d305
+--- a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
++++ b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "velocity:velocity-dep:1.4"
++  "coordinates" : "velocity:velocity-dep:1.4",
++  "repository-url" : "https://github.com/apache/velocity-engine",
++  "source-code-url" : "https://repo1.maven.org/maven2/velocity/velocity-dep/$version$/velocity-dep-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/velocity/engine/$version$/velocity-$version$.zip",
++  "documentation-url" : "https://javadoc.io/doc/velocity/velocity-dep/$version$/",
++  "description" : "Apache Velocity is a Java template engine for merging templates with Java object data through the Velocity Template Language. The velocity-dep artifact packages Velocity 1.4 together with its runtime dependencies for applications that want a single bundled JAR."
+ }
+
+ succeeded in 352ms:
+server: cloudflare
+cf-ray: 9f581610ac44be8e-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 02 May 2026 15:33:45 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/velocity/velocity-dep/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=NUBPFFecHLtkjWIntqHxuy%2BcVWnwDMz2qKgEfw3Eam5XNlWBltprKEPGcRXA01bapjaIa6Jz4ko647tp8jCDJqCtQkOha2n2uOCXpzOfFh98ZTf%2FOaGtRRTgLAwotSPJ7Szy1JosUIhX"}]}
+server: cloudflare
+cf-ray: 9f5816116c9bbe8e-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+index a7003a384cd073ae973c6e92710aa79cd49d6a3a..7a90990d5407b4ecc89c2c467e658d6d2955d305
+--- a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
++++ b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "velocity:velocity-dep:1.4"
++  "coordinates" : "velocity:velocity-dep:1.4",
++  "repository-url" : "https://github.com/apache/velocity-engine",
++  "source-code-url" : "https://repo1.maven.org/maven2/velocity/velocity-dep/$version$/velocity-dep-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/velocity/engine/$version$/velocity-$version$.zip",
++  "documentation-url" : "https://javadoc.io/doc/velocity/velocity-dep/$version$/",
++  "description" : "Apache Velocity is a Java template engine for merging templates with Java object data through the Velocity Template Language. The velocity-dep artifact packages Velocity 1.4 together with its runtime dependencies for applications that want a single bundled JAR."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 0ms:
+{
+  "coordinates" : "velocity:velocity-dep:1.4",
+  "repository-url" : "https://github.com/apache/velocity-engine",
+  "source-code-url" : "https://repo1.maven.org/maven2/velocity/velocity-dep/$version$/velocity-dep-$version$-sources.jar",
+  "test-code-url" : "https://archive.apache.org/dist/velocity/engine/$version$/velocity-$version$.zip",
+  "documentation-url" : "https://javadoc.io/doc/velocity/velocity-dep/$version$/",
+  "description" : "Apache Velocity is a Java template engine for merging templates with Java object data through the Velocity Template Language. The velocity-dep artifact packages Velocity 1.4 together with its runtime dependencies for applications that want a single bundled JAR."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+diff --git a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+index a7003a384cd073ae973c6e92710aa79cd49d6a3a..7a90990d5407b4ecc89c2c467e658d6d2955d305
+--- a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
++++ b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "velocity:velocity-dep:1.4"
++  "coordinates" : "velocity:velocity-dep:1.4",
++  "repository-url" : "https://github.com/apache/velocity-engine",
++  "source-code-url" : "https://repo1.maven.org/maven2/velocity/velocity-dep/$version$/velocity-dep-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/velocity/engine/$version$/velocity-$version$.zip",
++  "documentation-url" : "https://javadoc.io/doc/velocity/velocity-dep/$version$/",
++  "description" : "Apache Velocity is a Java template engine for merging templates with Java object data through the Velocity Template Language. The velocity-dep artifact packages Velocity 1.4 together with its runtime dependencies for applications that want a single bundled JAR."
+ }
+
+ succeeded in 119ms:
+!! build/
+
+web search: 
+web search: https://repo1.maven.org/maven2/velocity/velocity-dep/1.4/
+web search: 
+web search: javadoc.io velocity velocity-dep 1.4
+web search: 
+web search: https://velocity.apache.org/engine/1.4/
+codex
+The official Velocity 1.4 documentation site is live at a versioned path, so I’m switching the documentation URL from javadoc.io to the official Apache docs.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+diff --git a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+index a7003a384cd073ae973c6e92710aa79cd49d6a3a..f926d11c2f862cca7bfb92e396dfbaa10e179df2
+--- a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
++++ b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "velocity:velocity-dep:1.4"
++  "coordinates" : "velocity:velocity-dep:1.4",
++  "repository-url" : "https://github.com/apache/velocity-engine",
++  "source-code-url" : "https://repo1.maven.org/maven2/velocity/velocity-dep/$version$/velocity-dep-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/velocity/engine/$version$/velocity-$version$.zip",
++  "documentation-url" : "https://velocity.apache.org/engine/$version$/",
++  "description" : "Apache Velocity is a Java template engine for merging templates with Java object data through the Velocity Template Language. The velocity-dep artifact packages Velocity 1.4 together with its runtime dependencies for applications that want a single bundled JAR."
+ }
+
+diff --git a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+index a7003a384cd073ae973c6e92710aa79cd49d6a3a..f926d11c2f862cca7bfb92e396dfbaa10e179df2
+--- a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
++++ b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "velocity:velocity-dep:1.4"
++  "coordinates" : "velocity:velocity-dep:1.4",
++  "repository-url" : "https://github.com/apache/velocity-engine",
++  "source-code-url" : "https://repo1.maven.org/maven2/velocity/velocity-dep/$version$/velocity-dep-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/velocity/engine/$version$/velocity-$version$.zip",
++  "documentation-url" : "https://velocity.apache.org/engine/$version$/",
++  "description" : "Apache Velocity is a Java template engine for merging templates with Java object data through the Velocity Template Language. The velocity-dep artifact packages Velocity 1.4 together with its runtime dependencies for applications that want a single bundled JAR."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 0ms:
+{
+  "coordinates" : "velocity:velocity-dep:1.4",
+  "repository-url" : "https://github.com/apache/velocity-engine",
+  "source-code-url" : "https://repo1.maven.org/maven2/velocity/velocity-dep/$version$/velocity-dep-$version$-sources.jar",
+  "test-code-url" : "https://archive.apache.org/dist/velocity/engine/$version$/velocity-$version$.zip",
+  "documentation-url" : "https://velocity.apache.org/engine/$version$/",
+  "description" : "Apache Velocity is a Java template engine for merging templates with Java object data through the Velocity Template Language. The velocity-dep artifact packages Velocity 1.4 together with its runtime dependencies for applications that want a single bundled JAR."
+}
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 0ms:
+{
+  "coordinates": "velocity:velocity-dep:1.4",
+  "repository-url": "https://github.com/apache/velocity-engine",
+  "source-code-url": "https://repo1.maven.org/maven2/velocity/velocity-dep/$version$/velocity-dep-$version$-sources.jar",
+  "test-code-url": "https://archive.apache.org/dist/velocity/engine/$version$/velocity-$version$.zip",
+  "documentation-url": "https://velocity.apache.org/engine/$version$/",
+  "description": "Apache Velocity is a Java template engine for merging templates with Java object data through the Velocity Template Language. The velocity-dep artifact packages Velocity 1.4 together with its runtime dependencies for applications that want a single bundled JAR."
+}
+
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://velocity.apache.org/engine/1.4/ | tail -16' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec
+ succeeded in 0ms:
+etag: "5095-64dd71c7339cf"
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+content-type: text/html
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+age: 6144
+date: Sat, 02 May 2026 15:34:11 GMT
+x-served-by: cache-hel1410022-HEL, cache-fra-eddf8230226-FRA
+x-cache: HIT, HIT
+x-cache-hits: 0, 0
+x-timer: S1777736052.764598,VS0,VE3
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 20629
+
+
+diff --git a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+index a7003a384cd073ae973c6e92710aa79cd49d6a3a..f926d11c2f862cca7bfb92e396dfbaa10e179df2
+--- a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
++++ b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "velocity:velocity-dep:1.4"
++  "coordinates" : "velocity:velocity-dep:1.4",
++  "repository-url" : "https://github.com/apache/velocity-engine",
++  "source-code-url" : "https://repo1.maven.org/maven2/velocity/velocity-dep/$version$/velocity-dep-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/velocity/engine/$version$/velocity-$version$.zip",
++  "documentation-url" : "https://velocity.apache.org/engine/$version$/",
++  "description" : "Apache Velocity is a Java template engine for merging templates with Java object data through the Velocity Template Language. The velocity-dep artifact packages Velocity 1.4 together with its runtime dependencies for applications that want a single bundled JAR."
+ }
+
+web search: 
+web search: repo1.maven.org velocity velocity-dep 1.4 sources jar
+web search: 
+web search: github apache velocity-engine VEL_1_4 test src/java/org/apache/velocity/test
+codex
+Updated [velocity-velocity-dep-1.4.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json:1).
+
+I used the Apache GitHub mirror as the repository root, Maven Central for the sources JAR, the Apache 1.4 release ZIP for tests, and the official Velocity 1.4 docs site for documentation. Maven Central lists `velocity-dep-1.4-sources.jar`, the Apache archive lists `velocity-1.4.zip`, and the Velocity site lists the Engine 1.4 release docs. ([github.com](https://github.com/apache/velocity-engine?utm_source=openai))
+
+I left `language` absent because this is not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because the artifact is a JVM JAR with class files. JSON validation passed with `jq`.
+diff --git a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+index a7003a384cd073ae973c6e92710aa79cd49d6a3a..f926d11c2f862cca7bfb92e396dfbaa10e179df2
+--- a/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
++++ b/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "velocity:velocity-dep:1.4"
++  "coordinates" : "velocity:velocity-dep:1.4",
++  "repository-url" : "https://github.com/apache/velocity-engine",
++  "source-code-url" : "https://repo1.maven.org/maven2/velocity/velocity-dep/$version$/velocity-dep-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/velocity/engine/$version$/velocity-$version$.zip",
++  "documentation-url" : "https://velocity.apache.org/engine/$version$/",
++  "description" : "Apache Velocity is a Java template engine for merging templates with Java object data through the Velocity Template Language. The velocity-dep artifact packages Velocity 1.4 together with its runtime dependencies for applications that want a single bundled JAR."
+ }
+
+tokens used
+94,911
+Updated [velocity-velocity-dep-1.4.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec/build/discovered-artifact-metadata/velocity-velocity-dep-1.4.json:1).
+
+I used the Apache GitHub mirror as the repository root, Maven Central for the sources JAR, the Apache 1.4 release ZIP for tests, and the official Velocity 1.4 docs site for documentation. Maven Central lists `velocity-dep-1.4-sources.jar`, the Apache archive lists `velocity-1.4.zip`, and the Velocity site lists the Engine 1.4 release docs. ([github.com](https://github.com/apache/velocity-engine?utm_source=openai))
+
+I left `language` absent because this is not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because the artifact is a JVM JAR with class files. JSON validation passed with `jq`.
+Ran agent for velocity:velocity-dep:1.4 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec/build/agent-artifact-discovery-logs/velocity-velocity-dep-1.4.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2397-9c86a3ec/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 26s
+9 actionable tasks: 4 executed, 5 from cache
