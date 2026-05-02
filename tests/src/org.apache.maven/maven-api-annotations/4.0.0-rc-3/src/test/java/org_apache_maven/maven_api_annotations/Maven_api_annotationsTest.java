@@ -12,6 +12,7 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 
 import org.apache.maven.api.annotations.Config;
 import org.apache.maven.api.annotations.Consumer;
@@ -98,6 +99,58 @@ public class Maven_api_annotationsTest {
         assertThat(immutableAnnotation)
                 .contains("RuntimeInvisibleAnnotations")
                 .contains("org/apache/maven/api/annotations/ThreadSafe");
+    }
+
+    @Test
+    void annotationsDeclareTheirRetentionAndTargetContracts() {
+        String configAnnotation = readLibraryClassFile(Config.class);
+        String nullableAnnotation = readLibraryClassFile(Nullable.class);
+        String experimentalAnnotation = readLibraryClassFile(Experimental.class);
+        String providerAnnotation = readLibraryClassFile(Provider.class);
+        String consumerAnnotation = readLibraryClassFile(Consumer.class);
+        String nonnullAnnotation = readLibraryClassFile(Nonnull.class);
+        String generatedAnnotation = readLibraryClassFile(Generated.class);
+        String threadSafeAnnotation = readLibraryClassFile(ThreadSafe.class);
+        String notThreadSafeAnnotation = readLibraryClassFile(NotThreadSafe.class);
+
+        assertThat(configAnnotation)
+                .contains("java/lang/annotation/Documented")
+                .contains("java/lang/annotation/RetentionPolicy")
+                .contains("CLASS")
+                .contains("java/lang/annotation/Target")
+                .contains("FIELD");
+        assertThat(nullableAnnotation)
+                .contains("java/lang/annotation/Documented")
+                .contains("java/lang/annotation/RetentionPolicy")
+                .contains("RUNTIME")
+                .doesNotContain("java/lang/annotation/Target");
+        assertThat(experimentalAnnotation)
+                .contains("java/lang/annotation/Documented")
+                .contains("java/lang/annotation/RetentionPolicy")
+                .contains("CLASS")
+                .doesNotContain("java/lang/annotation/Target");
+        assertThat(providerAnnotation)
+                .contains("CLASS")
+                .contains("TYPE")
+                .contains("PACKAGE");
+        assertThat(consumerAnnotation)
+                .contains("CLASS")
+                .contains("TYPE")
+                .contains("PACKAGE");
+        assertThat(nonnullAnnotation)
+                .contains("CLASS")
+                .contains("FIELD")
+                .contains("PARAMETER")
+                .contains("METHOD");
+        assertThat(generatedAnnotation)
+                .contains("CLASS")
+                .contains("TYPE");
+        assertThat(threadSafeAnnotation)
+                .contains("CLASS")
+                .contains("TYPE");
+        assertThat(notThreadSafeAnnotation)
+                .contains("CLASS")
+                .contains("TYPE");
     }
 
     @Test
@@ -291,8 +344,25 @@ public class Maven_api_annotationsTest {
         String resourceName = type.getName().replace('.', '/') + ".class";
 
         try (InputStream inputStream = type.getClassLoader().getResourceAsStream(resourceName)) {
-            assertThat(inputStream).isNotNull();
-            return new String(inputStream.readAllBytes(), StandardCharsets.ISO_8859_1);
+            if (inputStream != null) {
+                return new String(inputStream.readAllBytes(), StandardCharsets.ISO_8859_1);
+            }
+        } catch (IOException exception) {
+            throw new UncheckedIOException(exception);
+        }
+        return readEffectiveLibraryClassFile(resourceName);
+    }
+
+    private static String readEffectiveLibraryClassFile(String resourceName) {
+        Path effectiveClassesDirectory = Path.of("build", "jacoco", "effective");
+
+        assertThat(effectiveClassesDirectory).isDirectory();
+        try (Stream<Path> classFiles = Files.find(effectiveClassesDirectory, 20,
+                (path, attributes) -> attributes.isRegularFile()
+                        && path.toString().replace('\\', '/').endsWith(resourceName))) {
+            Path classFilePath = classFiles.findFirst()
+                    .orElseThrow(() -> new AssertionError("Class file resource not found: " + resourceName));
+            return Files.readString(classFilePath, StandardCharsets.ISO_8859_1);
         } catch (IOException exception) {
             throw new UncheckedIOException(exception);
         }
