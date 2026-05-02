@@ -129,6 +129,26 @@ public class JsonassertTest {
     }
 
     @Test
+    void comparesTopLevelScalarJsonValues() throws Exception {
+        JSONAssert.assertEquals("\"ready\"", "\"ready\"", JSONCompareMode.STRICT);
+        JSONAssert.assertEquals("42", "42", JSONCompareMode.LENIENT);
+        JSONAssert.assertNotEquals("\"ready\"", "\"failed\"", JSONCompareMode.STRICT);
+        JSONAssert.assertNotEquals("42", "43", JSONCompareMode.LENIENT);
+
+        JSONCompareResult matchingStringResult = JSONCompare.compareJSON("\"ready\"", "\"ready\"",
+                JSONCompareMode.STRICT);
+        JSONCompareResult matchingNumberResult = JSONCompare.compareJSON("42", "42", JSONCompareMode.LENIENT);
+        JSONCompareResult differentStringResult = JSONCompare.compareJSON("\"ready\"", "\"failed\"",
+                JSONCompareMode.STRICT);
+        JSONCompareResult differentNumberResult = JSONCompare.compareJSON("42", "43", JSONCompareMode.LENIENT);
+
+        assertThat(matchingStringResult.passed()).isTrue();
+        assertThat(matchingNumberResult.passed()).isTrue();
+        assertThat(differentStringResult.failed()).isTrue();
+        assertThat(differentNumberResult.failed()).isTrue();
+    }
+
+    @Test
     void comparesArraysAsJsonArraysAndJsonObjects() throws Exception {
         JSONArray expectedArray = new JSONArray("""
                 [
