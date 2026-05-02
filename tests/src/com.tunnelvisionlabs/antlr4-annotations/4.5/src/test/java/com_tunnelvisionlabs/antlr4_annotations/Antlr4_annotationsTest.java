@@ -9,12 +9,39 @@ package com_tunnelvisionlabs.antlr4_annotations;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.ServiceLoader;
 
+import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
+import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ElementVisitor;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.Name;
+import javax.lang.model.element.NestingKind;
+import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.PrimitiveType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVisitor;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
@@ -138,6 +165,22 @@ public class Antlr4_annotationsTest {
         } catch (Error error) {
             verifyUnsupportedDynamicCompilationError(error);
         }
+    }
+
+    @Test
+    void processorReportsNotNullPrimitiveFieldsAsWarnings() {
+        TestElements elements = new TestElements();
+        CapturingMessager messager = new CapturingMessager();
+        NullUsageProcessor processor = new NullUsageProcessor();
+        processor.init(new TestProcessingEnvironment(elements, messager));
+
+        boolean processed = processor.process(Set.of(), new PrimitiveFieldRoundEnvironment(elements));
+
+        assertThat(processed).isTrue();
+        assertThat(messager.messages()).extracting(ProcessorMessage::kind)
+                .containsExactly(Diagnostic.Kind.WARNING);
+        assertThat(messager.messages()).extracting(ProcessorMessage::message)
+                .containsExactly("field with a primitive type should not be annotated with NotNull");
     }
 
     @Test
@@ -282,6 +325,528 @@ public class Antlr4_annotationsTest {
         @Override
         public CharSequence getCharContent(boolean ignoreEncodingErrors) {
             return this.content;
+        }
+
+    }
+
+    private static final class TestProcessingEnvironment implements ProcessingEnvironment {
+
+        private final Elements elements;
+
+        private final Messager messager;
+
+        private TestProcessingEnvironment(Elements elements, Messager messager) {
+            this.elements = elements;
+            this.messager = messager;
+        }
+
+        @Override
+        public Map<String, String> getOptions() {
+            return Map.of();
+        }
+
+        @Override
+        public Messager getMessager() {
+            return this.messager;
+        }
+
+        @Override
+        public Filer getFiler() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Elements getElementUtils() {
+            return this.elements;
+        }
+
+        @Override
+        public Types getTypeUtils() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public SourceVersion getSourceVersion() {
+            return SourceVersion.latestSupported();
+        }
+
+        @Override
+        public Locale getLocale() {
+            return Locale.ROOT;
+        }
+
+    }
+
+    private static final class PrimitiveFieldRoundEnvironment implements RoundEnvironment {
+
+        private final TypeElement notNullType;
+
+        private final VariableElement notNullPrimitiveField;
+
+        private PrimitiveFieldRoundEnvironment(TestElements elements) {
+            this.notNullType = elements.notNullType();
+            this.notNullPrimitiveField = new TestVariableElement(this.notNullType);
+        }
+
+        @Override
+        public boolean processingOver() {
+            return false;
+        }
+
+        @Override
+        public boolean errorRaised() {
+            return false;
+        }
+
+        @Override
+        public Set<? extends Element> getRootElements() {
+            return Set.of();
+        }
+
+        @Override
+        public Set<? extends Element> getElementsAnnotatedWith(TypeElement annotation) {
+            if (annotation == this.notNullType) {
+                return Set.of(this.notNullPrimitiveField);
+            }
+
+            return Set.of();
+        }
+
+        @Override
+        public Set<? extends Element> getElementsAnnotatedWith(Class<? extends java.lang.annotation.Annotation> annotation) {
+            throw new UnsupportedOperationException();
+        }
+
+    }
+
+    private static final class CapturingMessager implements Messager {
+
+        private final List<ProcessorMessage> messages = new ArrayList<>();
+
+        @Override
+        public void printMessage(Diagnostic.Kind kind, CharSequence message) {
+            this.messages.add(new ProcessorMessage(kind, message.toString()));
+        }
+
+        @Override
+        public void printMessage(Diagnostic.Kind kind, CharSequence message, Element element) {
+            this.messages.add(new ProcessorMessage(kind, message.toString()));
+        }
+
+        @Override
+        public void printMessage(Diagnostic.Kind kind, CharSequence message, Element element,
+                AnnotationMirror annotation) {
+            this.messages.add(new ProcessorMessage(kind, message.toString()));
+        }
+
+        @Override
+        public void printMessage(Diagnostic.Kind kind, CharSequence message, Element element,
+                AnnotationMirror annotation, AnnotationValue value) {
+            this.messages.add(new ProcessorMessage(kind, message.toString()));
+        }
+
+        private List<ProcessorMessage> messages() {
+            return List.copyOf(this.messages);
+        }
+
+    }
+
+    private record ProcessorMessage(Diagnostic.Kind kind, String message) {
+    }
+
+    private static final class TestElements implements Elements {
+
+        private final TypeElement notNullType = new TestTypeElement(NullUsageProcessor.NotNullClassName);
+
+        private final TypeElement nullableType = new TestTypeElement(NullUsageProcessor.NullableClassName);
+
+        private TypeElement notNullType() {
+            return this.notNullType;
+        }
+
+        @Override
+        public TypeElement getTypeElement(CharSequence name) {
+            if (NullUsageProcessor.NotNullClassName.contentEquals(name)) {
+                return this.notNullType;
+            }
+            if (NullUsageProcessor.NullableClassName.contentEquals(name)) {
+                return this.nullableType;
+            }
+
+            return null;
+        }
+
+        @Override
+        public PackageElement getPackageElement(CharSequence name) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Map<? extends ExecutableElement, ? extends AnnotationValue> getElementValuesWithDefaults(
+                AnnotationMirror annotation) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getDocComment(Element element) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isDeprecated(Element element) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Name getBinaryName(TypeElement type) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public PackageElement getPackageOf(Element type) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public List<? extends Element> getAllMembers(TypeElement type) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public List<? extends AnnotationMirror> getAllAnnotationMirrors(Element element) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean hides(Element hider, Element hidden) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean overrides(ExecutableElement overrider, ExecutableElement overridden, TypeElement type) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getConstantExpression(Object value) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void printElements(java.io.Writer writer, Element... elements) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Name getName(CharSequence cs) {
+            return new TestName(cs.toString());
+        }
+
+        @Override
+        public boolean isFunctionalInterface(TypeElement type) {
+            throw new UnsupportedOperationException();
+        }
+
+    }
+
+    private static final class TestVariableElement implements VariableElement {
+
+        private final TypeElement annotationType;
+
+        private TestVariableElement(TypeElement annotationType) {
+            this.annotationType = annotationType;
+        }
+
+        @Override
+        public TypeMirror asType() {
+            return new TestPrimitiveType();
+        }
+
+        @Override
+        public Object getConstantValue() {
+            return 1;
+        }
+
+        @Override
+        public ElementKind getKind() {
+            return ElementKind.FIELD;
+        }
+
+        @Override
+        public Set<Modifier> getModifiers() {
+            return Set.of();
+        }
+
+        @Override
+        public Name getSimpleName() {
+            return new TestName("primitiveField");
+        }
+
+        @Override
+        public Element getEnclosingElement() {
+            return null;
+        }
+
+        @Override
+        public List<? extends Element> getEnclosedElements() {
+            return List.of();
+        }
+
+        @Override
+        public List<? extends AnnotationMirror> getAnnotationMirrors() {
+            return List.of(new TestAnnotationMirror(this.annotationType));
+        }
+
+        @Override
+        public <A extends java.lang.annotation.Annotation> A getAnnotation(Class<A> annotationType) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public <A extends java.lang.annotation.Annotation> A[] getAnnotationsByType(Class<A> annotationType) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public <R, P> R accept(ElementVisitor<R, P> visitor, P parameter) {
+            return visitor.visitVariable(this, parameter);
+        }
+
+    }
+
+    private static final class TestTypeElement implements TypeElement {
+
+        private final String qualifiedName;
+
+        private TestTypeElement(String qualifiedName) {
+            this.qualifiedName = qualifiedName;
+        }
+
+        @Override
+        public TypeMirror asType() {
+            return new TestDeclaredType(this);
+        }
+
+        @Override
+        public ElementKind getKind() {
+            return ElementKind.ANNOTATION_TYPE;
+        }
+
+        @Override
+        public Set<Modifier> getModifiers() {
+            return Set.of();
+        }
+
+        @Override
+        public Name getSimpleName() {
+            int lastDot = this.qualifiedName.lastIndexOf('.');
+            return new TestName(this.qualifiedName.substring(lastDot + 1));
+        }
+
+        @Override
+        public Element getEnclosingElement() {
+            return null;
+        }
+
+        @Override
+        public List<? extends Element> getEnclosedElements() {
+            return List.of();
+        }
+
+        @Override
+        public List<? extends AnnotationMirror> getAnnotationMirrors() {
+            return List.of();
+        }
+
+        @Override
+        public <A extends java.lang.annotation.Annotation> A getAnnotation(Class<A> annotationType) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public <A extends java.lang.annotation.Annotation> A[] getAnnotationsByType(Class<A> annotationType) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public <R, P> R accept(ElementVisitor<R, P> visitor, P parameter) {
+            return visitor.visitType(this, parameter);
+        }
+
+        @Override
+        public NestingKind getNestingKind() {
+            return NestingKind.TOP_LEVEL;
+        }
+
+        @Override
+        public Name getQualifiedName() {
+            return new TestName(this.qualifiedName);
+        }
+
+        @Override
+        public TypeMirror getSuperclass() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public List<? extends TypeMirror> getInterfaces() {
+            return List.of();
+        }
+
+        @Override
+        public List<? extends TypeParameterElement> getTypeParameters() {
+            return List.of();
+        }
+
+    }
+
+    private static final class TestAnnotationMirror implements AnnotationMirror {
+
+        private final TypeElement annotationType;
+
+        private TestAnnotationMirror(TypeElement annotationType) {
+            this.annotationType = annotationType;
+        }
+
+        @Override
+        public DeclaredType getAnnotationType() {
+            return new TestDeclaredType(this.annotationType);
+        }
+
+        @Override
+        public Map<? extends ExecutableElement, ? extends AnnotationValue> getElementValues() {
+            return Map.of();
+        }
+
+    }
+
+    private static final class TestDeclaredType implements DeclaredType {
+
+        private final TypeElement element;
+
+        private TestDeclaredType(TypeElement element) {
+            this.element = element;
+        }
+
+        @Override
+        public Element asElement() {
+            return this.element;
+        }
+
+        @Override
+        public TypeMirror getEnclosingType() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public List<? extends TypeMirror> getTypeArguments() {
+            return List.of();
+        }
+
+        @Override
+        public TypeKind getKind() {
+            return TypeKind.DECLARED;
+        }
+
+        @Override
+        public List<? extends AnnotationMirror> getAnnotationMirrors() {
+            return List.of();
+        }
+
+        @Override
+        public <A extends java.lang.annotation.Annotation> A getAnnotation(Class<A> annotationType) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public <A extends java.lang.annotation.Annotation> A[] getAnnotationsByType(Class<A> annotationType) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public <R, P> R accept(TypeVisitor<R, P> visitor, P parameter) {
+            return visitor.visitDeclared(this, parameter);
+        }
+
+    }
+
+    private static final class TestPrimitiveType implements PrimitiveType {
+
+        @Override
+        public TypeKind getKind() {
+            return TypeKind.INT;
+        }
+
+        @Override
+        public List<? extends AnnotationMirror> getAnnotationMirrors() {
+            return List.of();
+        }
+
+        @Override
+        public <A extends java.lang.annotation.Annotation> A getAnnotation(Class<A> annotationType) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public <A extends java.lang.annotation.Annotation> A[] getAnnotationsByType(Class<A> annotationType) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public <R, P> R accept(TypeVisitor<R, P> visitor, P parameter) {
+            return visitor.visitPrimitive(this, parameter);
+        }
+
+    }
+
+    private static final class TestName implements Name {
+
+        private final String value;
+
+        private TestName(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public boolean contentEquals(CharSequence cs) {
+            return this.value.contentEquals(cs);
+        }
+
+        @Override
+        public int length() {
+            return this.value.length();
+        }
+
+        @Override
+        public char charAt(int index) {
+            return this.value.charAt(index);
+        }
+
+        @Override
+        public CharSequence subSequence(int start, int end) {
+            return this.value.subSequence(start, end);
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            if (this == object) {
+                return true;
+            }
+            if (!(object instanceof Name other)) {
+                return false;
+            }
+
+            return this.contentEquals(other);
+        }
+
+        @Override
+        public int hashCode() {
+            return this.value.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return this.value;
         }
 
     }
