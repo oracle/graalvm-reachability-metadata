@@ -216,6 +216,42 @@ public class Netty_codec_haproxyTest {
     }
 
     @Test
+    void encodesThenDecodesBinaryUnixStreamHeader() {
+        String sourceAddress = "/var/run/source.sock";
+        String destinationAddress = "/var/run/destination.sock";
+        HAProxyMessage outboundMessage = new HAProxyMessage(
+                HAProxyProtocolVersion.V2,
+                HAProxyCommand.PROXY,
+                HAProxyProxiedProtocol.UNIX_STREAM,
+                sourceAddress,
+                destinationAddress,
+                0,
+                0);
+        EmbeddedChannel encoder = new EmbeddedChannel(HAProxyMessageEncoder.INSTANCE);
+
+        assertThat(encoder.writeOutbound(outboundMessage)).isTrue();
+        ByteBuf encoded = encoder.readOutbound();
+        assertThat(encoder.finish()).isFalse();
+
+        EmbeddedChannel decoder = new EmbeddedChannel(new HAProxyMessageDecoder());
+        assertThat(decoder.writeInbound(encoded)).isTrue();
+        HAProxyMessage inboundMessage = decoder.readInbound();
+        try {
+            assertThat(inboundMessage.protocolVersion()).isEqualTo(HAProxyProtocolVersion.V2);
+            assertThat(inboundMessage.command()).isEqualTo(HAProxyCommand.PROXY);
+            assertThat(inboundMessage.proxiedProtocol()).isEqualTo(HAProxyProxiedProtocol.UNIX_STREAM);
+            assertThat(inboundMessage.sourceAddress()).isEqualTo(sourceAddress);
+            assertThat(inboundMessage.destinationAddress()).isEqualTo(destinationAddress);
+            assertThat(inboundMessage.sourcePort()).isZero();
+            assertThat(inboundMessage.destinationPort()).isZero();
+            assertThat(inboundMessage.tlvs()).isEmpty();
+        } finally {
+            inboundMessage.release();
+            assertThat(decoder.finish()).isFalse();
+        }
+    }
+
+    @Test
     void decodesUnknownTextProtocolAndRejectsInvalidHeaders() {
         EmbeddedChannel unknownChannel = new EmbeddedChannel(new HAProxyMessageDecoder());
         assertThat(unknownChannel.writeInbound(
