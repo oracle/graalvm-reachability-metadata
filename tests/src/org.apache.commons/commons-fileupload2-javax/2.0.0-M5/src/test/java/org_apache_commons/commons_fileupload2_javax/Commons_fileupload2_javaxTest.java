@@ -213,7 +213,7 @@ public class Commons_fileupload2_javaxTest {
                 .satisfies(exception -> assertThat(exception.getContentType()).isEqualTo("text/plain"));
 
         JavaxServletDiskFileUpload sizeLimitedUpload = newDiskUpload(DiskFileItemFactory.DEFAULT_THRESHOLD);
-        sizeLimitedUpload.setFileSizeMax(3);
+        sizeLimitedUpload.setMaxFileSize(3);
         byte[] largeBody = multipart(boundary,
                 part("Content-Disposition: form-data; name=\"payload\"; filename=\"payload.txt\"",
                         "Content-Length: 4",
