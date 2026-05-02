@@ -8,7 +8,7 @@ package com_google_code_gson.gson;
 
 import org.junit.jupiter.api.Test;
 
-class GsonTest {
+public class GsonTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
