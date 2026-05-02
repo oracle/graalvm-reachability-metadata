@@ -9,6 +9,8 @@ package org_springframework.spring_aspects;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.aspectj.AnnotationBeanConfigurerAspect;
+import org.springframework.beans.factory.aspectj.ConfigurableObject;
+import org.springframework.beans.factory.aspectj.GenericInterfaceDrivenDependencyInjectionAspect;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -149,6 +151,17 @@ public class Spring_aspectsTest {
         assertThat(AnnotationAsyncExecutionAspect.hasAspect()).isTrue();
     }
 
+    @Test
+    void genericInterfaceDrivenAspectConfiguresConfigurableObjects() {
+        InterfaceDrivenConfigurableService service = new InterfaceDrivenConfigurableService();
+        InterfaceDrivenConfigurerAspect aspect = new InterfaceDrivenConfigurerAspect("configured through interface aspect");
+
+        aspect.configureBean(service);
+
+        assertThat(service.getMessage()).isEqualTo("configured through interface aspect");
+        assertThat(aspect.wasInvoked()).isTrue();
+    }
+
     @EnableSpringConfigured
     @Configuration(proxyBeanMethods = false)
     static class SpringConfiguredTestConfiguration {
@@ -185,6 +198,39 @@ public class Spring_aspectsTest {
 
         public void setMessage(String message) {
             this.message = message;
+        }
+    }
+
+    static class InterfaceDrivenConfigurableService implements ConfigurableObject {
+        private String message;
+
+        String getMessage() {
+            return this.message;
+        }
+
+        void setMessage(String message) {
+            this.message = message;
+        }
+    }
+
+    static class InterfaceDrivenConfigurerAspect
+            extends GenericInterfaceDrivenDependencyInjectionAspect<InterfaceDrivenConfigurableService> {
+        private final String message;
+
+        private boolean invoked;
+
+        InterfaceDrivenConfigurerAspect(String message) {
+            this.message = message;
+        }
+
+        boolean wasInvoked() {
+            return this.invoked;
+        }
+
+        @Override
+        protected void configure(InterfaceDrivenConfigurableService service) {
+            this.invoked = true;
+            service.setMessage(this.message);
         }
     }
 
