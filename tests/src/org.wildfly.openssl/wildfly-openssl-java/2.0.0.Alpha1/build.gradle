@@ -10,9 +10,24 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+repositories {
+    exclusiveContent {
+        forRepository {
+            mavenCentral {
+                metadataSources {
+                    artifact()
+                }
+            }
+        }
+        filter {
+            includeGroup "org.wildfly.openssl"
+        }
+    }
+}
+
 dependencies {
-    testImplementation "org.wildfly.openssl:wildfly-openssl-java:$libraryVersion"
-    testRuntimeOnly "org.wildfly.openssl:wildfly-openssl-linux-x86_64:$libraryVersion"
+    testImplementation "org.wildfly.openssl:wildfly-openssl-java:$libraryVersion@jar"
+    testRuntimeOnly "org.wildfly.openssl:wildfly-openssl-linux-x86_64:$libraryVersion@jar"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
