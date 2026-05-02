@@ -4840,7 +4840,6 @@ def process_single_issue(
         canonical_metrics_repo_path,
         authenticated_user,
         in_metadata_repo=in_metadata_repo,
-        large_library_resume_artifact_override=resume_artifact,
     )
     if not claimed_issue:
         print(f"ERROR: Could not claim issue #{issue_number}.", file=sys.stderr)
@@ -4876,6 +4875,7 @@ def process_large_library_continuation(
         canonical_metrics_repo_path,
         authenticated_user,
         in_metadata_repo=in_metadata_repo,
+        large_library_resume_artifact_override=resume_artifact,
     )
     if not claimed_issue:
         print(f"ERROR: Could not claim issue #{state.issue_number}.", file=sys.stderr)

@@ -41,7 +41,7 @@ flowchart TB
     end
 
     subgraph Outputs["Strategy Outputs"]
-        Status["status:<br/>success / failure /<br/>success_with_intervention"]
+        Status["status:<br/>success / failure /<br/>success_with_intervention /<br/>chunk_ready"]
         Iters["iteration counts"]
         Checkpoint["checkpoint commit hash"]
         Intervention["post_generation_intervention<br/>(intervention report)"]

@@ -94,15 +94,15 @@ def build_pull_request_body(
         part_line = f"- Large-library series: `{series_id or 'unknown'}`\n- Part: {large_library_part}\n"
 
     body = f"""
-    ## What does this PR do?
+## What does this PR do?
 
-    {issue_reference}
+{issue_reference}
 
-    This PR improves dynamic-access coverage for {coordinates} by generating additional tests.
+This PR improves dynamic-access coverage for {coordinates} by generating additional tests.
 
-    Summary:
-    {part_line}\
-    - Strategy: {strategy_name}
+Summary:
+{part_line}\
+- Strategy: {strategy_name}
 - Agent: {agent_name}
 - Model: {model_display_name}
 - Input tokens: {input_tokens_used}
