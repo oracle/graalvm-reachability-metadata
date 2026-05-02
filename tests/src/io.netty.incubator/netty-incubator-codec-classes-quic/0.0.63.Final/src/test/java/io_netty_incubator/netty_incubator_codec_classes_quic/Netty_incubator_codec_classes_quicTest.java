@@ -25,7 +25,7 @@ import io.netty.incubator.codec.quic.QuicClientCodecBuilder;
 import io.netty.incubator.codec.quic.QuicCongestionControlAlgorithm;
 import io.netty.incubator.codec.quic.QuicConnectionAddress;
 import io.netty.incubator.codec.quic.QuicConnectionIdGenerator;
-import io.netty.incubator.codec.quic.QuicError;
+import io.netty.incubator.codec.quic.QuicTransportError;
 import io.netty.incubator.codec.quic.QuicHeaderParser;
 import io.netty.incubator.codec.quic.QuicPacketType;
 import io.netty.incubator.codec.quic.QuicServerCodecBuilder;
@@ -212,31 +212,59 @@ public class Netty_incubator_codec_classes_quicTest {
     }
 
     @Test
-    void nativeBackedEnumsExposeMappingsWhenNativeLibraryIsAvailable() {
+    void transportErrorsExposeMappingsAndNativeBackedEnumsRespectAvailability() {
+        List<QuicTransportError> errors = List.of(
+                QuicTransportError.NO_ERROR,
+                QuicTransportError.INTERNAL_ERROR,
+                QuicTransportError.CONNECTION_REFUSED,
+                QuicTransportError.FLOW_CONTROL_ERROR,
+                QuicTransportError.STREAM_LIMIT_ERROR,
+                QuicTransportError.STREAM_STATE_ERROR,
+                QuicTransportError.FINAL_SIZE_ERROR,
+                QuicTransportError.FRAME_ENCODING_ERROR,
+                QuicTransportError.TRANSPORT_PARAMETER_ERROR,
+                QuicTransportError.CONNECTION_ID_LIMIT_ERROR,
+                QuicTransportError.PROTOCOL_VIOLATION,
+                QuicTransportError.INVALID_TOKEN,
+                QuicTransportError.APPLICATION_ERROR,
+                QuicTransportError.CRYPTO_BUFFER_EXCEEDED,
+                QuicTransportError.KEY_UPDATE_ERROR,
+                QuicTransportError.AEAD_LIMIT_REACHED,
+                QuicTransportError.NO_VIABLE_PATH
+        );
+
+        assertThat(errors).extracting(QuicTransportError::code)
+                .containsExactly(0L, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L);
+        assertThat(errors).extracting(QuicTransportError::name)
+                .containsExactly(
+                        "NO_ERROR",
+                        "INTERNAL_ERROR",
+                        "CONNECTION_REFUSED",
+                        "FLOW_CONTROL_ERROR",
+                        "STREAM_LIMIT_ERROR",
+                        "STREAM_STATE_ERROR",
+                        "FINAL_SIZE_ERROR",
+                        "FRAME_ENCODING_ERROR",
+                        "TRANSPORT_PARAMETER_ERROR",
+                        "CONNECTION_ID_LIMIT_ERROR",
+                        "PROTOCOL_VIOLATION",
+                        "INVALID_TOKEN",
+                        "APPLICATION_ERROR",
+                        "CRYPTO_BUFFER_EXCEEDED",
+                        "KEY_UPDATE_ERROR",
+                        "AEAD_LIMIT_REACHED",
+                        "NO_VIABLE_PATH"
+                );
+        assertThat(QuicTransportError.valueOf(0x3)).isSameAs(QuicTransportError.FLOW_CONTROL_ERROR);
+        assertThat(QuicTransportError.valueOf(0x10)).isSameAs(QuicTransportError.NO_VIABLE_PATH);
+        assertThat(QuicTransportError.NO_ERROR.isCryptoError()).isFalse();
+        assertThat(QuicTransportError.NO_VIABLE_PATH.toString()).contains("NO_VIABLE_PATH");
+
         if (!Quic.isAvailable()) {
-            assertMayRequireNativeLibrary(() -> QuicError.values());
             assertMayRequireNativeLibrary(() -> QuicCongestionControlAlgorithm.values());
             return;
         }
 
-        assertThat(QuicError.values()).containsExactly(
-                QuicError.BUFFER_TOO_SHORT,
-                QuicError.UNKNOWN_VERSION,
-                QuicError.INVALID_FRAME,
-                QuicError.INVALID_PACKET,
-                QuicError.INVALID_STATE,
-                QuicError.INVALID_STREAM_STATE,
-                QuicError.INVALID_TRANSPORT_PARAM,
-                QuicError.CRYPTO_FAIL,
-                QuicError.TLS_FAIL,
-                QuicError.FLOW_CONTROL,
-                QuicError.STREAM_LIMIT,
-                QuicError.FINAL_SIZE,
-                QuicError.CONGESTION_CONTROL,
-                QuicError.STREAM_RESET,
-                QuicError.STREAM_STOPPED
-        );
-        assertThat(QuicError.INVALID_PACKET.toString()).contains("INVALID_PACKET");
         assertThat(QuicCongestionControlAlgorithm.values()).containsExactly(
                 QuicCongestionControlAlgorithm.RENO,
                 QuicCongestionControlAlgorithm.CUBIC
