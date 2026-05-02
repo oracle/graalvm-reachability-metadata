@@ -1,0 +1,1355 @@
+Starting a Gradle Daemon, 13 busy and 6 incompatible and 211 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de611-aaa1-7243-b6ec-6459afcb8f11
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: xalan:xalan:2.7.3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.7.3".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c/metadata/xalan/xalan/index.json
+- Entry selector: "metadata-version" = "2.7.3"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "2.7.3".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.7.3
+- Entry test-version: 2.7.3
+codex
+I’ll verify the existing metadata entry first, then check Maven and upstream Apache sources so the URLs point at the exact 2.7.3 artifact/tag where possible.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/xalan/xalan/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.7.3",
+    "tested-versions" : [
+      "2.7.3"
+    ],
+    "allowed-packages" : [
+      "java_cup.runtime",
+      "org.apache"
+    ]
+  },
+  {
+    "metadata-version" : "2.7.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/xalan/xalan/2.7.0/xalan-2.7.0-sources.jar",
+    "repository-url" : "https://github.com/apache/xalan-java",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_0/xdocs",
+    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+    "tested-versions" : [
+      "2.7.0"
+    ],
+    "allowed-packages" : [
+      "java_cup.runtime",
+      "org.apache"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'rg -n "xalan|source-code-url|documentation-url|test-code-url|repository-url" metadata/xalan -S' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c
+ succeeded in 0ms:
+metadata/xalan/xalan/index.json:15:    "source-code-url" : "https://repo.maven.apache.org/maven2/xalan/xalan/2.7.0/xalan-2.7.0-sources.jar",
+metadata/xalan/xalan/index.json:16:    "repository-url" : "https://github.com/apache/xalan-java",
+metadata/xalan/xalan/index.json:17:    "test-code-url" : "N/A",
+metadata/xalan/xalan/index.json:18:    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_0/xdocs",
+metadata/xalan/xalan/index.json:19:    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:5:        "typeReached": "org.apache.xalan.lib.ExsltStrings$DocumentHolder"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:17:        "typeReached": "org.apache.xalan.processor.TransformerFactoryImpl"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:29:        "typeReached": "org.apache.xalan.transformer.TransformerImpl"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:35:        "typeReached": "org.apache.xalan.processor.ProcessorStylesheetElement"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:41:        "typeReached": "org.apache.xalan.processor.ProcessorStylesheetElement"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:47:        "typeReached": "org.apache.xalan.processor.ProcessorStylesheetElement"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:53:        "typeReached": "org.apache.xalan.processor.ProcessorStylesheetElement"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:59:        "typeReached": "org.apache.xalan.processor.ProcessorStylesheetElement"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:65:        "typeReached": "org.apache.xalan.processor.ProcessorStylesheetElement"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:71:        "typeReached": "org.apache.xalan.processor.ProcessorStylesheetElement"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:77:        "typeReached": "org.apache.xalan.processor.ProcessorStylesheetElement"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:101:        "typeReached": "org.apache.xalan.processor.ProcessorOutputElem"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:103:      "type": "org.apache.xalan.processor.ProcessorOutputElem",
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:127:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:129:      "type": "org.apache.xalan.templates.ElemApplyImport"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:133:        "typeReached": "org.apache.xalan.processor.ProcessorTemplateElem"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:135:      "type": "org.apache.xalan.templates.ElemApplyTemplates",
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:145:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:147:      "type": "org.apache.xalan.templates.ElemApplyTemplates"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:151:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:153:      "type": "org.apache.xalan.templates.ElemAttribute"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:157:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:159:      "type": "org.apache.xalan.templates.ElemCallTemplate"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:163:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:165:      "type": "org.apache.xalan.templates.ElemChoose"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:169:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:171:      "type": "org.apache.xalan.templates.ElemComment"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:175:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:177:      "type": "org.apache.xalan.templates.ElemCopy"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:181:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:183:      "type": "org.apache.xalan.templates.ElemCopyOf"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:187:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:189:      "type": "org.apache.xalan.templates.ElemElement"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:193:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:195:      "type": "org.apache.xalan.templates.ElemExsltFuncResult"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:199:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:201:      "type": "org.apache.xalan.templates.ElemExsltFunction"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:205:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:207:      "type": "org.apache.xalan.templates.ElemExtensionDecl"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:211:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:213:      "type": "org.apache.xalan.templates.ElemExtensionScript"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:217:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:219:      "type": "org.apache.xalan.templates.ElemFallback"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:223:        "typeReached": "org.apache.xalan.processor.ProcessorTemplateElem"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:225:      "type": "org.apache.xalan.templates.ElemForEach",
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:241:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:243:      "type": "org.apache.xalan.templates.ElemForEach"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:247:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:249:      "type": "org.apache.xalan.templates.ElemIf"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:253:        "typeReached": "org.apache.xalan.processor.ProcessorLRE"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:255:      "type": "org.apache.xalan.templates.ElemLiteralResult",
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:264:            "org.apache.xalan.templates.AVT"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:271:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:273:      "type": "org.apache.xalan.templates.ElemLiteralResult"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:277:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:279:      "type": "org.apache.xalan.templates.ElemMessage"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:283:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:285:      "type": "org.apache.xalan.templates.ElemNumber"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:289:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:291:      "type": "org.apache.xalan.templates.ElemOtherwise"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:295:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:297:      "type": "org.apache.xalan.templates.ElemPI"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:301:        "typeReached": "org.apache.xalan.processor.ProcessorTemplateElem"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:303:      "type": "org.apache.xalan.templates.ElemParam",
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:313:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:315:      "type": "org.apache.xalan.templates.ElemParam"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:319:        "typeReached": "org.apache.xalan.processor.ProcessorTemplateElem"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:321:      "type": "org.apache.xalan.templates.ElemSort",
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:330:            "org.apache.xalan.templates.AVT"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:336:            "org.apache.xalan.templates.AVT"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:349:        "typeReached": "org.apache.xalan.processor.XSLTAttributeDef"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:351:      "type": "org.apache.xalan.templates.ElemSort",
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:356:            "org.apache.xalan.templates.AVT"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:362:            "org.apache.xalan.templates.AVT"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:369:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:371:      "type": "org.apache.xalan.templates.ElemSort"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:375:        "typeReached": "org.apache.xalan.processor.ProcessorTemplateElem"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:377:      "type": "org.apache.xalan.templates.ElemTemplate",
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:393:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:395:      "type": "org.apache.xalan.templates.ElemTemplate"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:399:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:401:      "type": "org.apache.xalan.templates.ElemText"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:405:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:407:      "type": "org.apache.xalan.templates.ElemTextLiteral"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:411:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:413:      "type": "org.apache.xalan.templates.ElemUnknown"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:417:        "typeReached": "org.apache.xalan.processor.ProcessorTemplateElem"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:419:      "type": "org.apache.xalan.templates.ElemValueOf",
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:435:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:437:      "type": "org.apache.xalan.templates.ElemValueOf"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:441:        "typeReached": "org.apache.xalan.processor.ProcessorTemplateElem"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:443:      "type": "org.apache.xalan.templates.ElemVariable",
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:465:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:467:      "type": "org.apache.xalan.templates.ElemVariable"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:471:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:473:      "type": "org.apache.xalan.templates.ElemWhen"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:477:        "typeReached": "org.apache.xalan.processor.XSLTSchema"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:479:      "type": "org.apache.xalan.templates.ElemWithParam"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:483:        "typeReached": "org.apache.xalan.processor.StylesheetHandler"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:485:      "type": "org.apache.xalan.templates.FuncDocument"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:491:      "type": "org.apache.xalan.templates.FuncDocument",
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:501:        "typeReached": "org.apache.xalan.processor.StylesheetHandler"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:503:      "type": "org.apache.xalan.templates.FuncFormatNumb"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:507:        "typeReached": "org.apache.xalan.processor.XSLTAttributeDef"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:509:      "type": "org.apache.xalan.templates.FuncFormatNumb",
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:519:        "typeReached": "org.apache.xalan.templates.AVT"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:521:      "type": "org.apache.xalan.templates.FuncKey",
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:533:      "type": "org.apache.xalan.templates.FuncKey"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:537:        "typeReached": "org.apache.xalan.processor.ProcessorKey"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:539:      "type": "org.apache.xalan.templates.KeyDeclaration",
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:563:        "typeReached": "org.apache.xalan.processor.ProcessorStylesheetElement"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:565:      "type": "org.apache.xalan.templates.Stylesheet",
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:577:        "typeReached": "org.apache.xalan.processor.ProcessorStylesheetElement"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:579:      "type": "org.apache.xalan.templates.StylesheetRoot"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:585:      "type": "org.apache.xalan.transformer.TransformerImpl"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:619:        "typeReached": "org.apache.xalan.transformer.TransformerImpl"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:661:        "typeReached": "org.apache.xalan.processor.ProcessorTemplateElem"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:691:        "typeReached": "org.apache.xalan.templates.AVT"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:793:        "typeReached": "org.apache.xalan.processor.XSLTAttributeDef"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:817:        "typeReached": "org.apache.xalan.processor.XSLTAttributeDef"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:973:        "typeReached": "org.apache.xalan.transformer.NodeSortKey"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:987:        "typeReached": "org.apache.xalan.lib.ExsltStrings$DocumentHolder"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:993:        "typeReached": "org.apache.xalan.processor.TransformerFactoryImpl"
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:1065:        "typeReached": "org.apache.xalan.transformer.NodeSortKey"
+
+web search: 
+web search: xalan xalan 2.7.3 Maven sources jar tests jar documentation xalan-j_2_7_3
+web search: 
+web search: https://repo1.maven.org/maven2/xalan/xalan/2.7.3/
+web search: 
+web search: xalan-j_2_7_3-src.zip Apache archive
+codex
+The Maven Central directory for `xalan:xalan:2.7.3` only publishes the binary jar and POM, so there is no Maven `-sources.jar` or test jar to prefer. I’m checking Apache’s release archive and the GitHub tag situation now, because the final 2.7.3 tag appears to be represented differently than older Xalan-J releases.
+exec
+/usr/bin/bash -lc "rg -n 'archive\\.apache\\.org.*src|test-code-url\" : \"https://archive|documentation-url\" : \"https://github.com/.*/tree/.*/(docs|xdocs)|source-code-url\" : \"https://repo.maven.apache.org.*sources.jar\"' metadata -S" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/1.14.0/htmlunit-cssparser-1.14.0-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.70.0/neko-htmlunit-2.70.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.3.0.Final/jboss-logmanager-1.3.0.Final-sources.jar",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-sources.jar",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:34:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.0.GA/jboss-logmanager-1.2.0.GA-sources.jar",
+metadata/com.sun.xml.bind.external/rngom/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/bind/external/rngom/4.0.6/rngom-4.0.6-sources.jar",
+metadata/org.w3c.css/sac/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/w3c/css/sac/1.3/sac-1.3-sources.jar",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/4.2.0/metrics-jmx-4.2.0-sources.jar",
+metadata/io.dropwizard.metrics/metrics-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-json/4.2.0/metrics-json-4.2.0-sources.jar",
+metadata/io.dropwizard.metrics/metrics-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-core/4.1.12.1/metrics-core-4.1.12.1-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/2.5-20081211/servlet-api-2.5-20081211-sources.jar",
+metadata/io.dropwizard.metrics/metrics-graphite/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-graphite/4.2.0/metrics-graphite-4.2.0-sources.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar",
+metadata/org.fusesource.jansi/jansi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/2.0/jansi-2.0-sources.jar",
+metadata/org.fusesource.jansi/jansi/index.json:32:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/1.16/jansi-1.16-sources.jar",
+metadata/org.fusesource.jansi/jansi/index.json:50:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/1.13/jansi-1.13-sources.jar",
+metadata/org.apache.ant/ant-antlr/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/ant/ant-antlr/1.10.15/ant-antlr-1.10.15-sources.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1-sources.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/4.2.0/awaitility-4.2.0-sources.jar",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.implementation/1.0.0/org.osgi.namespace.implementation-1.0.0-sources.jar",
+metadata/org.abego.treelayout/org.abego.treelayout.core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/abego/treelayout/org.abego.treelayout.core/1.0.1/org.abego.treelayout.core-1.0.1-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/12.0.0/jetty-alpn-java-server-12.0.0-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:62:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/11.0.24/jetty-alpn-java-server-11.0.24-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-sources.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/12.0.10/jetty-session-12.0.10-sources.jar",
+metadata/org.osgi/org.osgi.core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.1/org.osgi.core-4.3.1-sources.jar",
+metadata/org.osgi/org.osgi.core/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.0/org.osgi.core-4.3.0-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/9.4.0.RC0/jetty-io-9.4.0.RC0-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/9.4.0.M0/jetty-io-9.4.0.M0-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:34:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/9.3.19.v20170502/jetty-io-9.3.19.v20170502-sources.jar",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.versioning/1.1.2/org.osgi.annotation.versioning-1.1.2-sources.jar",
+metadata/com.android.databinding/baseLibrary/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/2.3.0/baseLibrary-2.3.0-sources.jar",
+metadata/com.android.databinding/baseLibrary/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/1.0-rc5/baseLibrary-1.0-rc5-sources.jar",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/2.0.0-M15/apacheds-i18n-2.0.0-M15-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/2.40.0/artemis-log-annotation-processor-2.40.0-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:27:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/2.39.0/artemis-log-annotation-processor-2.39.0-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:41:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/2.28.0/artemis-log-annotation-processor-2.28.0-sources.jar",
+metadata/org.hamcrest/hamcrest/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/hamcrest/hamcrest/2.2/hamcrest-2.2-sources.jar",
+metadata/org.slf4j/slf4j-simple/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/1.8.0-alpha0/slf4j-simple-1.8.0-alpha0-sources.jar",
+metadata/org.slf4j/slf4j-simple/index.json:45:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/1.7.32/slf4j-simple-1.7.32-sources.jar",
+metadata/org.slf4j/slf4j-simple/index.json:63:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/1.7.25/slf4j-simple-1.7.25-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/15.0.0/arrow-format-15.0.0-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-sources.jar",
+metadata/com.diffplug.durian/durian-swt.os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/4.2.2/durian-swt.os-4.2.2-sources.jar",
+metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/3.2.0-m13/javax.jdo-3.2.0-m13-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/2.0.0.Final/jboss-interceptor-spi-2.0.0.Final-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/jakarta.websocket-client-api-2.1.0-sources.jar",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/2.1.0/jakarta.websocket-api-2.1.0-sources.jar",
+metadata/org.threeten/threeten-extra/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/1.5.0/threeten-extra-1.5.0-sources.jar",
+metadata/org.apache.kerby/kerby-xdr/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-xdr/2.0.2/kerby-xdr-2.0.2-sources.jar",
+metadata/org.apache.kerby/kerby-xdr/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-xdr/1.0.1/kerby-xdr-1.0.1-sources.jar",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.13.1/jackson-datatype-jsr310-2.13.1-sources.jar",
+metadata/org.clojure/google-closure-library-third-party/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20250515-f04e4c0e/google-closure-library-third-party-0.0-20250515-f04e4c0e-sources.jar",
+metadata/org.clojure/google-closure-library-third-party/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20150505-021ed5b3/google-closure-library-third-party-0.0-20150505-021ed5b3-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-sources.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-sources.jar",
+metadata/org.apache.commons/commons-lang3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-sources.jar",
+metadata/io.opentelemetry/opentelemetry-api-logs/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api-logs/1.26.0-alpha/opentelemetry-api-logs-1.26.0-alpha-sources.jar",
+metadata/org.apache.commons/commons-collections4/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/2.0.0-M5/commons-fileupload2-core-2.0.0-M5-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/2.0.0-M4/commons-fileupload2-core-2.0.0-M4-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/2.0.0-M3/commons-fileupload2-core-2.0.0-M3-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/2.0.0-M2/commons-fileupload2-core-2.0.0-M2-sources.jar",
+metadata/org.apache.commons/commons-text/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:128:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-sources.jar",
+metadata/org.apache.commons/commons-math/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-math/2.1/commons-math-2.1-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/4.5/ecj-4.5-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/4.4.2/ecj-4.4.2-sources.jar",
+metadata/com.google.guava/failureaccess/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/2.0.21/kotlin-test-2.0.21-sources.jar",
+metadata/org.slf4j/log4j-over-slf4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/log4j-over-slf4j/1.7.25/log4j-over-slf4j-1.7.25-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/4.0.0/istack-commons-runtime-4.0.0-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/2.3.20/kotlin-script-runtime-2.3.20-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/11.0.24/jetty-alpn-server-11.0.24-sources.jar",
+metadata/org.slf4j/jcl-over-slf4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/jcl-over-slf4j/1.7.0/jcl-over-slf4j-1.7.0-sources.jar",
+metadata/org.slf4j/jcl-over-slf4j/index.json:82:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/jcl-over-slf4j/1.5.7/jcl-over-slf4j-1.5.7-sources.jar",
+metadata/org.slf4j/jcl-over-slf4j/index.json:108:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/jcl-over-slf4j/1.5.6/jcl-over-slf4j-1.5.6-sources.jar",
+metadata/org.codehaus.woodstox/stax2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-sources.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/2.2.0/smallrye-common-expression-2.2.0-sources.jar",
+metadata/org.osgi/org.osgi.annotation.bundle/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.bundle/2.0.0/org.osgi.annotation.bundle-2.0.0-sources.jar",
+metadata/org.osgi/osgi.core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-sources.jar",
+metadata/org.osgi/org.osgi.namespace.service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.service/1.0.0/org.osgi.namespace.service-1.0.0-sources.jar",
+metadata/org.osgi/org.osgi.dto/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.dto/1.0.0/org.osgi.dto-1.0.0-sources.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/5.0.1/metrics-core-5.0.1-sources.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:24:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/5.0.0/metrics-core-5.0.0-sources.jar",
+metadata/io.opentelemetry/opentelemetry-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api/1.19.0/opentelemetry-api-1.19.0-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-parcelize-runtime/1.7.10/kotlin-parcelize-runtime-1.7.10-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.5.31/kotlin-stdlib-jdk7-1.5.31-sources.jar",
+metadata/io.opentelemetry/opentelemetry-context/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-context/1.19.0/opentelemetry-context-1.19.0-sources.jar",
+metadata/io.opentelemetry/opentelemetry-api-events/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api-events/1.32.0-alpha/opentelemetry-api-events-1.32.0-alpha-sources.jar",
+metadata/io.opentelemetry/opentelemetry-api-events/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api-events/1.25.0-alpha/opentelemetry-api-events-1.25.0-alpha-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.25.0/opentelemetry-sdk-extension-autoconfigure-spi-1.25.0-sources.jar",
+metadata/com.codahale.metrics/metrics-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/codahale/metrics/metrics-core/3.0.1/metrics-core-3.0.1-sources.jar",
+metadata/io.smallrye.common/smallrye-common-function/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-function/2.10.0/smallrye-common-function-2.10.0-sources.jar",
+metadata/io.smallrye.common/smallrye-common-function/index.json:39:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-function/2.2.0/smallrye-common-function-2.2.0-sources.jar",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-resource/2.14.0/smallrye-common-resource-2.14.0-sources.jar",
+metadata/io.opentelemetry/opentelemetry-exporter-logging/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-exporter-logging/1.20.0/opentelemetry-exporter-logging-1.20.0-sources.jar",
+metadata/io.smallrye.common/smallrye-common-net/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-net/2.2.0/smallrye-common-net-2.2.0-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-logs/1.26.0-alpha/opentelemetry-sdk-logs-1.26.0-alpha-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:27:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-logs/1.23.0-alpha/opentelemetry-sdk-logs-1.23.0-alpha-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:44:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-logs/1.20.0-alpha/opentelemetry-sdk-logs-1.20.0-alpha-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:61:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-logs/1.19.0-alpha/opentelemetry-sdk-logs-1.19.0-alpha-sources.jar",
+metadata/org.codehaus.plexus/plexus-xml/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/4.0.0/plexus-xml-4.0.0-sources.jar",
+metadata/org.codehaus.plexus/plexus-xml/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/3.0.0/plexus-xml-3.0.0-sources.jar",
+metadata/org.apache.camel/spi-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/3.2.0/spi-annotations-3.2.0-sources.jar",
+metadata/org.apache.camel/spi-annotations/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/3.0.0/spi-annotations-3.0.0-sources.jar",
+metadata/org.apache.camel/spi-annotations/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/2.16.2/spi-annotations-2.16.2-sources.jar",
+metadata/commons-cli/commons-cli/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/1.5.0/commons-cli-1.5.0-sources.jar",
+metadata/io.smallrye.common/smallrye-common-constraint/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-constraint/2.2.0/smallrye-common-constraint-2.2.0-sources.jar",
+metadata/org.jooq/jooq/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.20.0/jooq-3.20.0-sources.jar",
+metadata/org.jooq/jooq/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.18.2/jooq-3.18.2-sources.jar",
+metadata/org.jooq/jooq/index.json:112:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.17.7/jooq-3.17.7-sources.jar",
+metadata/io.smallrye.common/smallrye-common-ref/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-ref/2.2.0/smallrye-common-ref-2.2.0-sources.jar",
+metadata/io.smallrye.common/smallrye-common-os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-os/2.2.0/smallrye-common-os-2.2.0-sources.jar",
+metadata/org.xmlunit/xmlunit-placeholders/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/xmlunit/xmlunit-placeholders/2.10.2/xmlunit-placeholders-2.10.2-sources.jar",
+metadata/org.codehaus.plexus/plexus-component-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-component-annotations/1.5.4/plexus-component-annotations-1.5.4-sources.jar",
+metadata/org.jboss.resteasy/resteasy-client/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/resteasy/resteasy-client/6.2.12.Final/resteasy-client-6.2.12.Final-sources.jar",
+metadata/javax.transaction/transaction-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/transaction/transaction-api/1.1/transaction-api-1.1-sources.jar",
+metadata/javax.transaction/jta/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/transaction/jta/1.1/jta-1.1-sources.jar",
+metadata/org.apache.tomcat.embed/tomcat-embed-el/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-el/9.0.83/tomcat-embed-el-9.0.83-sources.jar",
+metadata/org.apache.tomcat.embed/tomcat-embed-el/index.json:8:    "documentation-url" : "https://github.com/apache/tomcat/tree/9.0.83/webapps/docs/elapi",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:9:    "documentation-url" : "https://github.com/apache/tomcat/tree/10.1.0/webapps/docs",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:88:    "documentation-url" : "https://github.com/apache/tomcat/tree/10.0.20/webapps/docs",
+metadata/org.scala-lang/scala3-interfaces/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala3-interfaces/3.3.1/scala3-interfaces-3.3.1-sources.jar",
+metadata/com.univocity/univocity-parsers/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/2.9.1/univocity-parsers-2.9.1-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.16/httpcore-4.4.16-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.15/httpcore-4.4.15-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.14/httpcore-4.4.14-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.13/httpcore-4.4.13-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:61:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.12/httpcore-4.4.12-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:75:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.0.1/httpcore-4.0.1-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:89:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.9/httpcore-4.4.9-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:103:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.10/httpcore-4.4.10-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:117:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.11/httpcore-4.4.11-sources.jar",
+metadata/dom4j/dom4j/index.json:8:    "documentation-url" : "https://github.com/dom4j/dom4j/tree/dom4j_1_6_1/xdocs",
+metadata/org.sonatype.aether/aether-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/1.7/aether-util-1.7-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-core-jvm/0.8.2/kotlinx-io-core-jvm-0.8.2-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-datetime-jvm/0.7.1/kotlinx-datetime-jvm-0.7.1-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-bytestring-jvm/0.8.2/kotlinx-io-bytestring-jvm-0.8.2-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:8:    "documentation-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/docs",
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu-jvm/0.19.0/atomicfu-jvm-0.19.0-sources.jar",
+metadata/org.sonatype.aether/aether-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-sources.jar",
+metadata/com.zaxxer/SparseBitSet/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/zaxxer/SparseBitSet/1.2/SparseBitSet-1.2-sources.jar",
+metadata/org.iq80.leveldb/leveldb-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/iq80/leveldb/leveldb-api/0.6/leveldb-api-0.6-sources.jar",
+metadata/xpp3/xpp3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/xpp3/xpp3/1.1.4c/xpp3-1.1.4c-sources.jar",
+metadata/com.vaadin.external.google/android-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1-sources.jar",
+metadata/org.brotli/dec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/brotli/dec/0.1.2/dec-0.1.2-sources.jar",
+metadata/org.apache.velocity/velocity-engine-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/velocity/velocity-engine-core/2.3/velocity-engine-core-2.3-sources.jar",
+metadata/org.glassfish/javax.servlet/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/javax.servlet/3.1/javax.servlet-3.1-sources.jar",
+metadata/org.scala-js/scalajs-javalib-intf/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-js/scalajs-javalib-intf/1.16.0/scalajs-javalib-intf-1.16.0-sources.jar",
+metadata/org.glassfish/javax.annotation/index.json:11:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/javax.annotation/10.0-b28/javax.annotation-10.0-b28-sources.jar",
+metadata/org.glassfish/javax.annotation/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/javax.annotation/3.1/javax.annotation-3.1-sources.jar",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/3.0.0/jakarta.xml.bind-api-3.0.0-sources.jar",
+metadata/com.android.tools.build/builder-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/tools/build/builder-model/1.5.0/builder-model-1.5.0-sources.jar",
+metadata/xalan/xalan/index.json:15:    "source-code-url" : "https://repo.maven.apache.org/maven2/xalan/xalan/2.7.0/xalan-2.7.0-sources.jar",
+metadata/xalan/xalan/index.json:18:    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_0/xdocs",
+metadata/io.projectreactor/reactor-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/3.5.1/reactor-core-3.5.1-sources.jar",
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-runtime_2.13/1.4.1/scalac-scoverage-runtime_2.13-1.4.1-sources.jar",
+metadata/org.asynchttpclient/async-http-client-netty-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/asynchttpclient/async-http-client-netty-utils/2.12.3/async-http-client-netty-utils-2.12.3-sources.jar",
+metadata/org.glassfish.jaxb/xsom/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/xsom/4.0.6/xsom-4.0.6-sources.jar",
+metadata/javax.money/money-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/money/money-api/1.0.3/money-api-1.0.3-sources.jar",
+metadata/redis.clients/jedis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/4.0.0/jedis-4.0.0-sources.jar",
+metadata/redis.clients/jedis/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/3.6.0/jedis-3.6.0-sources.jar",
+metadata/redis.clients/jedis/index.json:51:    "source-code-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/3.0.0/jedis-3.0.0-sources.jar",
+metadata/redis.clients/jedis/index.json:74:    "source-code-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/2.9.0/jedis-2.9.0-sources.jar",
+metadata/org.glassfish.jaxb/txw2/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/txw2/2.3.1/txw2-2.3.1-sources.jar",
+metadata/org.objenesis/objenesis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/3.2/objenesis-3.2-sources.jar",
+metadata/io.netty/netty-codec-stomp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-stomp/4.1.74.Final/netty-codec-stomp-4.1.74.Final-sources.jar",
+metadata/org.atteo.classindex/classindex/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/atteo/classindex/classindex/3.13/classindex-3.13-sources.jar",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/spec/javax/interceptor/jboss-interceptors-api_1.1_spec/1.0.0.Beta1/jboss-interceptors-api_1.1_spec-1.0.0.Beta1-sources.jar",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/2.22.2/surefire-logger-api-2.22.2-sources.jar",
+metadata/io.netty/netty-codec-smtp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/4.1.74.Final/netty-codec-smtp-4.1.74.Final-sources.jar",
+metadata/io.netty/netty-tcnative-classes/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-tcnative-classes/2.0.48.Final/netty-tcnative-classes-2.0.48.Final-sources.jar",
+metadata/io.netty/netty-transport-classes-epoll/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/4.1.99.Final/netty-transport-classes-epoll-4.1.99.Final-sources.jar",
+metadata/io.netty/netty-transport-classes-kqueue/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-kqueue/4.1.74.Final/netty-transport-classes-kqueue-4.1.74.Final-sources.jar",
+metadata/org.roaringbitmap/shims/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/roaringbitmap/shims/0.9.0/shims-0.9.0-sources.jar",
+metadata/io.netty/netty-common/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.79.Final/netty-common-4.1.79.Final-sources.jar",
+metadata/io.netty/netty-common/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.80.Final/netty-common-4.1.80.Final-sources.jar",
+metadata/io.netty/netty-common/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.115.Final/netty-common-4.1.115.Final-sources.jar",
+metadata/io.netty/netty-transport-sctp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-sctp/4.1.74.Final/netty-transport-sctp-4.1.74.Final-sources.jar",
+metadata/io.micrometer/micrometer-commons/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/micrometer/micrometer-commons/1.16.0/micrometer-commons-1.16.0-sources.jar",
+metadata/io.micrometer/micrometer-commons/index.json:28:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/micrometer/micrometer-commons/1.14.4/micrometer-commons-1.14.4-sources.jar",
+metadata/xml-apis/xml-apis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2-sources.jar",
+metadata/io.netty/netty-resolver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver/5.0.0.Alpha2/netty-resolver-5.0.0.Alpha2-sources.jar",
+metadata/io.netty/netty-resolver/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver/4.1.79.Final/netty-resolver-4.1.79.Final-sources.jar",
+metadata/org.jsoup/jsoup/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jsoup/jsoup/1.15.1/jsoup-1.15.1-sources.jar",
+metadata/org.jsoup/jsoup/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jsoup/jsoup/1.13.1/jsoup-1.13.1-sources.jar",
+metadata/com.atomikos/transactions-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/atomikos/transactions-api/6.0.0/transactions-api-6.0.0-sources.jar",
+metadata/org.ow2.asm/asm-tree/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-tree/9.7.1/asm-tree-9.7.1-sources.jar",
+metadata/org.ow2.asm/asm-analysis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-analysis/9.7.1/asm-analysis-9.7.1-sources.jar",
+metadata/org.ow2.asm/asm/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm/6.2/asm-6.2-sources.jar",
+metadata/org.ow2.asm/asm/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.4/asm-9.4-sources.jar",
+metadata/org.opentest4j/opentest4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0-sources.jar",
+metadata/org.ow2.asm/asm-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-util/9.7.1/asm-util-9.7.1-sources.jar",
+metadata/org.apache.tomcat/tomcat-jdbc/index.json:69:    "documentation-url" : "https://github.com/apache/tomcat/tree/10.1.7/webapps/docs",
+metadata/org.apache.tomcat/tomcat-juli/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat-juli/11.0.0/tomcat-juli-11.0.0-sources.jar",
+metadata/org.apache.tomcat/tomcat-juli/index.json:37:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat-juli/10.1.7/tomcat-juli-10.1.7-sources.jar",
+metadata/commons-net/commons-net/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-net/commons-net/3.1/commons-net-3.1-sources.jar",
+metadata/org.apache.tomcat/tomcat-annotations-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat-annotations-api/11.0.0/tomcat-annotations-api-11.0.0-sources.jar",
+metadata/org.apache.tomcat/tomcat-annotations-api/index.json:8:    "documentation-url" : "https://github.com/apache/tomcat/tree/11.0.0/webapps/docs/annotationapi",
+metadata/org.apache.tomcat/tomcat-annotations-api/index.json:40:    "documentation-url" : "https://github.com/apache/tomcat/tree/10.0.20/webapps/docs/annotationapi",
+metadata/org.apache.maven/maven-api-di/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-di/4.0.0-rc-5/maven-api-di-4.0.0-rc-5-sources.jar",
+metadata/org.apache.maven/maven-api-meta/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-meta/4.0.0-alpha-5/maven-api-meta-4.0.0-alpha-5-sources.jar",
+metadata/com.intellij/annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/intellij/annotations/12.0/annotations-12.0-sources.jar",
+metadata/com.esotericsoftware/minlog/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/1.3.0/minlog-1.3.0-sources.jar",
+metadata/org.apache.james/apache-mime4j-dom/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-dom/0.8.13/apache-mime4j-dom-0.8.13-sources.jar",
+metadata/org.glassfish.hk2.external/javax.inject/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/external/javax.inject/2.5.0-b05/javax.inject-2.5.0-b05-sources.jar",
+metadata/commons-daemon/commons-daemon/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-daemon/commons-daemon/1.0.13/commons-daemon-1.0.13-sources.jar",
+metadata/commons-codec/commons-codec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10-sources.jar",
+metadata/com.thoughtworks.proxytoys/proxytoys/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-sources.jar",
+metadata/com.mchange/mchange-commons-java/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/mchange-commons-java/0.2.15/mchange-commons-java-0.2.15-sources.jar",
+metadata/io.undertow/undertow-parser-generator/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/undertow/undertow-parser-generator/2.2.19.Final/undertow-parser-generator-2.2.19.Final-sources.jar",
+metadata/com.github.luben/zstd-jni/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.4-1/zstd-jni-1.5.4-1-sources.jar",
+metadata/com.github.luben/zstd-jni/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.5-1/zstd-jni-1.5.5-1-sources.jar",
+metadata/net.sf.proguard/proguard-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-base/5.2.1/proguard-base-5.2.1-sources.jar",
+metadata/net.razorvine/pyrolite/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/razorvine/pyrolite/5.0/pyrolite-5.0-sources.jar",
+metadata/net.razorvine/pyrolite/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/razorvine/pyrolite/4.30/pyrolite-4.30-sources.jar",
+metadata/net.sf.py4j/py4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/py4j/py4j/0.10.9.3/py4j-0.10.9.3-sources.jar",
+metadata/com.sun.activation/jakarta.activation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/2.0.0/jakarta.activation-2.0.0-sources.jar",
+metadata/org.hibernate.orm/hibernate-jcache/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-jcache/7.2.1.Final/hibernate-jcache-7.2.1.Final-sources.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/5.0.0.Alpha1/jakarta.enterprise.lang-model-5.0.0.Alpha1-sources.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/4.0.0/jakarta.enterprise.lang-model-4.0.0-sources.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/3.0.0/jakarta.jms-api-3.0.0-sources.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/2.0.3/jakarta.jms-api-2.0.3-sources.jar",
+metadata/io.swagger.core.v3/swagger-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/core/v3/swagger-annotations/2.2.22/swagger-annotations-2.2.22-sources.jar",
+metadata/org.jboss.logging/jboss-logging-processor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logging/jboss-logging-processor/2.1.0.Final/jboss-logging-processor-2.1.0.Final-sources.jar",
+metadata/org.jboss.logging/jboss-logging-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logging/jboss-logging-annotations/2.0.2.Final/jboss-logging-annotations-2.0.2.Final-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/1.9.25/maven-resolver-util-1.9.25-sources.jar",
+metadata/io.quarkus/quarkus-bootstrap-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-json/3.33.1/quarkus-bootstrap-json-3.33.1-sources.jar",
+metadata/io.quarkus/quarkus-value-registry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-value-registry/3.33.1/quarkus-value-registry-3.33.1-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-named-locks/2.0.0/maven-resolver-named-locks-2.0.0-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-named-locks/1.9.25/maven-resolver-named-locks-1.9.25-sources.jar",
+metadata/io.quarkus/quarkus-fs-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-fs-util/1.3.0/quarkus-fs-util-1.3.0-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/2.0.0/maven-resolver-api-2.0.0-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/1.9.25/maven-resolver-api-1.9.25-sources.jar",
+metadata/io.quarkus/quarkus-class-change-agent/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-class-change-agent/3.33.1/quarkus-class-change-agent-3.33.1-sources.jar",
+metadata/org.apache.maven/maven-monitor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-monitor/2.0.6/maven-monitor-2.0.6-sources.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/10.4.2/rocksdbjni-10.4.2-sources.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/7.1.2/rocksdbjni-7.1.2-sources.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:43:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/7.9.2/rocksdbjni-7.9.2-sources.jar",
+metadata/com.ibm.async/asyncutil/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/ibm/async/asyncutil/0.1.0/asyncutil-0.1.0-sources.jar",
+
+exec
+/usr/bin/bash -lc 'find metadata/xalan -maxdepth 3 -type f -name index.json -print' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c
+ succeeded in 0ms:
+metadata/xalan/xalan/index.json
+
+web search: 
+web search: https://archive.apache.org/dist/xalan/xalan-j/source/
+web search: 
+web search: repo.maven.apache.org/maven2/xalan/xalan/2.7.3 xalan-2.7.3.pom
+web search: 
+web search: https://repo1.maven.org/maven2/xalan/xalan/2.7.3/
+web search: 
+web search: https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10
+web search: 
+web search: https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs
+web search: 
+web search: https://github.com/apache/xalan-test/tags
+web search: 
+web search: "xalan-j_2_7_3" "xalan-java" "GitHub" -rc10
+codex
+I found Apache’s archived 2.7.3 source distribution and the GitHub release-candidate tag that the 2.7.3 release uses. I’ll keep the repository root canonical, use the archived 2.7.3 source artifact where Maven has no sources jar, and use the tagged Xalan test repository for the test suite.
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\" : \"https://github.com/.*/tree/|\"source-code-url\" : \"https://archive\\.apache\\.org/dist/.+src|\"documentation-url\" : \"https://github.com/.*/tree/.*/xdocs\"' metadata -S" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c
+ succeeded in 0ms:
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/2.23.2/zipkin-tests/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/8.0.01/src/jvmTest",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/com.squareup.okio/okio/index.json:7:    "test-code-url" : "https://github.com/square/okio/tree/okio-parent-1.17.2/okio/src/test",
+metadata/com.barchart.udt/barchart-udt-bundle/index.json:7:    "test-code-url" : "https://github.com/barchart/barchart-udt/tree/barchart-udt-2.3.0/barchart-udt-it/barchart-udt-it-02-bundle-test/src/test",
+metadata/com.sun.istack/istack-commons-runtime/index.json:6:    "test-code-url" : "https://github.com/javaee/jaxb-istack-commons/tree/3.0.7-RELEASE/istack-commons/test",
+metadata/com.sun.istack/istack-commons-runtime/index.json:21:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.0.0/istack-commons/runtime/src/test",
+metadata/commons-net/commons-net/index.json:7:    "test-code-url" : "https://github.com/apache/commons-net/tree/NET_3_1/src/test",
+metadata/com.itextpdf/kernel/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/kernel/src/test",
+metadata/org.threeten/threeten-extra/index.json:7:    "test-code-url" : "https://github.com/ThreeTen/threeten-extra/tree/v1.5.0/src/test",
+metadata/com.itextpdf/forms/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/forms/src/test",
+metadata/org.jboss.resteasy/resteasy-client/index.json:7:    "test-code-url" : "https://github.com/resteasy/resteasy/tree/v6.2.12.Final/resteasy-client/src/test",
+metadata/com.itextpdf/layout/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/layout/src/test",
+metadata/com.github.package-url/packageurl-java/index.json:7:    "test-code-url" : "https://github.com/package-url/packageurl-java/tree/packageurl-java-1.5.0/src/test",
+metadata/com.itextpdf/svg/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/svg/src/test",
+metadata/com.itextpdf/io/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/io/src/test",
+metadata/com.ning/compress-lzf/index.json:7:    "test-code-url" : "https://github.com/ning/compress/tree/compress-lzf-1.0.3/src/test",
+metadata/javax.validation/validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/2.0.0.Final/src/test",
+metadata/javax.validation/validation-api/index.json:22:    "test-code-url" : "https://github.com/jakartaee/validation/tree/1.1.0.Final/src/test",
+metadata/javax.validation/validation-api/index.json:36:    "test-code-url" : "https://github.com/jakartaee/validation/tree/1.0.0.GA/src/test",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:8:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_5/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:22:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_4_2/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.apache.activemq/artemis-jms-client/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/2.36.0/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:34:    "test-code-url" : "https://github.com/apache/artemis/tree/2.32.0/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:52:    "test-code-url" : "https://github.com/apache/artemis/tree/2.29.0/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:67:    "test-code-url" : "https://github.com/apache/artemis/tree/2.28.0/artemis-jms-client/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/1.14.0/src/test",
+metadata/io.r2dbc/r2dbc-spi/index.json:7:    "test-code-url" : "https://github.com/r2dbc/r2dbc-spi/tree/v0.9.1.RELEASE/r2dbc-spi/src/test",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v5.0.1/metrics-core/src/test",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:26:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v5.0.0-rc0/metrics-core/src/test",
+metadata/com.ibm.async/asyncutil/index.json:7:    "test-code-url" : "https://github.com/IBM/java-async-util/tree/v0.1.0/asyncutil/src/test",
+metadata/com.google.re2j/re2j/index.json:7:    "test-code-url" : "https://github.com/google/re2j/tree/re2j-1.1/javatests",
+metadata/org.slf4j/slf4j-simple/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/541e6f7d181ff3405ae9495724430825aefff6a9/slf4j-simple/src/test/java",
+metadata/org.slf4j/slf4j-simple/index.json:47:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_1.7.32/slf4j-simple/src/test/java",
+metadata/org.slf4j/slf4j-simple/index.json:65:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_1.7.25/slf4j-simple/src/test/java",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-2.14.3/cbor/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-2.15.2/toml/src/test",
+metadata/org.apache.activemq/activemq-client/index.json:37:    "test-code-url" : "https://github.com/apache/activemq/tree/activemq-5.18.1/activemq-client/src/test",
+metadata/org.codehaus.jackson/jackson-core-asl/index.json:7:    "test-code-url" : "https://github.com/codehaus/jackson/tree/1.8/1.8.3/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-2.18.1/yaml/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v5.12.0/src/test",
+metadata/org.json/json/index.json:7:    "test-code-url" : "https://github.com/stleary/JSON-java/tree/20220320/src/test/java",
+metadata/org.fusesource.jansi/jansi/index.json:7:    "test-code-url" : "https://github.com/fusesource/jansi/tree/jansi-2.0/src/test",
+metadata/org.fusesource.jansi/jansi/index.json:34:    "test-code-url" : "https://github.com/fusesource/jansi/tree/jansi-project-1.16/jansi/src/test",
+metadata/org.fusesource.jansi/jansi/index.json:52:    "test-code-url" : "https://github.com/fusesource/jansi/tree/jansi-project-1.13/jansi/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalatest-test/src/test",
+metadata/org.hibernate.models/hibernate-models/index.json:7:    "test-code-url" : "https://github.com/hibernate/hibernate-models/tree/1.0.0.CR3/hibernate-models/src/test",
+metadata/org.slf4j/slf4j-nop/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
+metadata/org.slf4j/slf4j-nop/index.json:21:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.3/slf4j-nop/src/test/java",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.0/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:64:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-11.0.24/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.slf4j/jcl-over-slf4j/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_1.7.0/jcl-over-slf4j/src/test/java",
+metadata/org.slf4j/jcl-over-slf4j/index.json:84:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.7_FINAL/jcl-over-slf4j/src/test/java",
+metadata/org.slf4j/jcl-over-slf4j/index.json:110:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/jcl-over-slf4j/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-10.0.0/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:111:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.38.v20210224/jetty-util-ajax/src/test",
+metadata/org.slf4j/slf4j-jdk14/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-jdk14/src/test",
+metadata/org.slf4j/jul-to-slf4j/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_1.7.30/jul-to-slf4j/src/test",
+metadata/org.osgi/org.osgi.core/index.json:7:    "test-code-url" : "https://github.com/osgi/osgi/tree/r4v431-core-cmpn-spec-final/org.osgi.test.cases.framework",
+metadata/org.osgi/org.osgi.core/index.json:23:    "test-code-url" : "https://github.com/osgi/osgi/tree/r4v43-core-ri-ct-final",
+metadata/com.codahale.metrics/metrics-core/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v3.0.1/metrics-core/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-2.3/paranamer/src/test",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/2.40.0/artemis-log-annotation-processor/tests",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:29:    "test-code-url" : "https://github.com/apache/artemis/tree/2.39.0/artemis-log-annotation-processor/tests",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:43:    "test-code-url" : "https://github.com/apache/activemq-artemis/tree/2.28.0/artemis-log-annotation-processor/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.0.RC0/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:21:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.0.M0/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:36:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.3.19.v20170502/jetty-io/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+metadata/org.apache.commons/commons-math/index.json:7:    "test-code-url" : "https://github.com/apache/commons-math/tree/MATH_2_1/src/test",
+metadata/org.openjfx/javafx-base/index.json:7:    "test-code-url" : "https://github.com/javafxports/openjdk-jfx/tree/11.0.2+1/tests",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.15.2/src/test",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-2.6.0/src/test",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:130:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-2.1.3/src/test",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.0.21/libraries/kotlin.test",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.20/compiler/daemon/daemon-tests/test",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.20/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-3.2.0-m13/src/test",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:6:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.3.72/libraries/stdlib/test",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:25:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.7.10/libraries/stdlib/test",
+metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-2.27.7/src/test",
+metadata/com.mchange/mchange-commons-java/index.json:7:    "test-code-url" : "https://github.com/swaldman/mchange-commons-java/tree/mchange-commons-java-0.2.15/src/test",
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.3.72/plugins/android-extensions/android-extensions-compiler/test",
+metadata/org.jline/jline-terminal-jna/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.20.0/terminal-jna/src/test",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.7.10/compiler/testData/codegen/box/reflection",
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.7.10/plugins/parcelize/parcelize-compiler/tests",
+metadata/org.jline/jline-console/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-3.28.0/console/src/test",
+metadata/org.jline/jline-console/index.json:52:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.22.0/console/src/test",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.5.31/libraries/stdlib/jdk7/test",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.5.31/libraries/stdlib/common/test",
+metadata/com.github.luben/zstd-jni/index.json:6:    "test-code-url" : "https://github.com/luben/zstd-jni/tree/c1.5.2-5/src/test",
+metadata/com.github.luben/zstd-jni/index.json:21:    "test-code-url" : "https://github.com/luben/zstd-jni/tree/v1.5.4-1/src/test",
+metadata/com.github.luben/zstd-jni/index.json:36:    "test-code-url" : "https://github.com/luben/zstd-jni/tree/v1.5.4-2/src/test",
+metadata/com.github.luben/zstd-jni/index.json:49:    "test-code-url" : "https://github.com/luben/zstd-jni/tree/v1.5.5-1/src/test",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-module-kotlin/tree/jackson-module-kotlin-2.17.2/src/test",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v4.2.0/metrics-jmx/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/2.0.0/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/1.8.2/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/1.8/stax-ex/src/test",
+metadata/com.diffplug.durian/durian-swt.os/index.json:7:    "test-code-url" : "https://github.com/diffplug/durian-swt/tree/release/4.2.2/durian-swt.os/src/test/java/com/diffplug/common/swt/os",
+metadata/io.dropwizard.metrics/metrics-json/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v4.2.0/metrics-json/src/test/java",
+metadata/io.dropwizard.metrics/metrics-core/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v4.1.12.1/metrics-core/src/test",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v4.2.0/metrics-jvm/src/test",
+metadata/net.sf.py4j/py4j/index.json:7:    "test-code-url" : "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-java/src/test/java",
+metadata/io.dropwizard.metrics/metrics-graphite/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v4.2.0/metrics-graphite/src/test/java",
+metadata/org.antlr/antlr4-runtime/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr4/tree/4.10/runtime-testsuite/test/org/antlr/v4/test/runtime/java",
+metadata/org.antlr/antlr-runtime/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr3/tree/3.5.2/runtime/Java/src/test",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.2.0/expression/src/test/java",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.10.0/cpu/src/test/java/io/smallrye/common/cpu",
+metadata/io.smallrye.common/smallrye-common-os/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.2.0/os/src/test/java",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.14.0/resource/src/test",
+metadata/io.smallrye.common/smallrye-common-net/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.2.0/net/src/test/java",
+metadata/org.apache.tomcat.embed/tomcat-embed-el/index.json:7:    "test-code-url" : "https://github.com/apache/tomcat/tree/9.0.83/test/org/apache/el",
+metadata/com.graphql-java/java-dataloader/index.json:7:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v3.0.1/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:22:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/0eec4c8390943c7875840b99bfba800d546d52ca/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:37:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/11a7348c1f24cfe9d16a9e1fcee856387e49a93a/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:51:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v5.0.0/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:69:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v3.2.0/src/test",
+metadata/org.rocksdb/rocksdbjni/index.json:7:    "test-code-url" : "https://github.com/facebook/rocksdb/tree/v10.4.2/java/src/test",
+metadata/org.rocksdb/rocksdbjni/index.json:31:    "test-code-url" : "https://github.com/facebook/rocksdb/tree/v7.1.2/java/src/test",
+metadata/org.rocksdb/rocksdbjni/index.json:45:    "test-code-url" : "https://github.com/facebook/rocksdb/tree/v7.9.2/java/src/test",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:7:    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/19.0/src/test",
+metadata/org.hamcrest/hamcrest-library/index.json:7:    "test-code-url" : "https://github.com/hamcrest/JavaHamcrest/tree/hamcrest-java-1.3/hamcrest-unit-test/src/main/java",
+metadata/org.hamcrest/hamcrest-core/index.json:7:    "test-code-url" : "https://github.com/hamcrest/JavaHamcrest/tree/hamcrest-java-1.3/hamcrest-unit-test/src/main/java",
+metadata/org.hamcrest/hamcrest/index.json:7:    "test-code-url" : "https://github.com/hamcrest/JavaHamcrest/tree/v2.2/hamcrest/src/test",
+metadata/com.github.virtuald/curvesapi/index.json:7:    "test-code-url" : "https://github.com/virtuald/curvesapi/tree/1.06/src/test/java",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v2.7.18/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/test",
+metadata/org.apache.kerby/kerby-util/index.json:7:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java",
+metadata/org.apache.kerby/kerby-asn1/index.json:7:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-asn1/src/test",
+metadata/org.apache.kerby/kerby-config/index.json:7:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-config/src/test/java",
+metadata/org.apache.kerby/kerby-xdr/index.json:7:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-2.0.2/kerby-common/kerby-xdr/src/test",
+metadata/org.apache.kerby/kerby-xdr/index.json:24:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-xdr/src/test",
+metadata/org.attoparser/attoparser/index.json:7:    "test-code-url" : "https://github.com/attoparser/attoparser/tree/attoparser-2.0.5.RELEASE/src/test",
+metadata/org.springframework.security/spring-security-crypto/index.json:50:    "test-code-url" : "https://github.com/spring-projects/spring-security/tree/6.0.0/crypto/src/test",
+metadata/org.springframework.security/spring-security-crypto/index.json:102:    "test-code-url" : "https://github.com/spring-projects/spring-security/tree/5.7.3/crypto/src/test",
+metadata/org.apache.httpcomponents/httpcore/index.json:77:    "test-code-url" : "https://github.com/apache/httpcomponents-core/tree/rel/v4.0.1/httpcore/src/test/java",
+metadata/com.sun.xml.bind.external/relaxng-datatype/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/external/relaxng-datatype/src/test",
+metadata/com.sun.xml.bind.external/rngom/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/external/rngom/src/test",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:7:    "test-code-url" : "https://github.com/lemire/javaewah/tree/JavaEWAH-1.1.13/src/test",
+metadata/dom4j/dom4j/index.json:7:    "test-code-url" : "https://github.com/dom4j/dom4j/tree/dom4j_1_6_1/src/test",
+metadata/dom4j/dom4j/index.json:8:    "documentation-url" : "https://github.com/dom4j/dom4j/tree/dom4j_1_6_1/xdocs",
+metadata/commons-logging/commons-logging-api/index.json:7:    "test-code-url" : "https://github.com/apache/commons-logging/tree/LOGGING_1_1_0/src/test",
+metadata/org.scala-lang/scala3-interfaces/index.json:7:    "test-code-url" : "https://github.com/scala/scala3/tree/3.3.1/tests",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/core/jvmTest",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx-io/tree/0.8.2/core/jvm/test",
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx-atomicfu/tree/0.19.0/atomicfu/src/jvmTest",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx-io/tree/0.8.2/bytestring/jvm/test",
+metadata/com.zaxxer/HikariCP/index.json:6:    "test-code-url" : "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-4.0.3/src/test",
+metadata/com.zaxxer/HikariCP/index.json:20:    "test-code-url" : "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-5.0.1/src/test",
+metadata/com.zaxxer/HikariCP/index.json:36:    "test-code-url" : "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-6.0.0/src/test",
+metadata/org.osgi/org.osgi.service.serviceloader/index.json:7:    "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final/org.osgi.test.cases.serviceloader",
+metadata/org.osgi/org.osgi.resource/index.json:7:    "test-code-url" : "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework/src/org/osgi/test/cases/framework/junit",
+metadata/org.osgi/osgi.core/index.json:7:    "test-code-url" : "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/osgi.ct",
+metadata/io.perfmark/perfmark-api/index.json:7:    "test-code-url" : "https://github.com/perfmark/perfmark/tree/v0.25.0/api/src/test",
+metadata/org.iq80.leveldb/leveldb-api/index.json:7:    "test-code-url" : "https://github.com/dain/leveldb/tree/0.6/leveldb/src/test",
+metadata/at.yawk.lz4/lz4-java/index.json:7:    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/v1.10.4/src/test",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:8:    "test-code-url" : "https://github.com/apache/tomcat/tree/10.1.0/test",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:87:    "test-code-url" : "https://github.com/apache/tomcat/tree/10.0.20/test",
+metadata/joda-time/joda-time/index.json:7:    "test-code-url" : "https://github.com/JodaOrg/joda-time/tree/v2.9.9/src/test/java",
+metadata/org.iq80.snappy/snappy/index.json:7:    "test-code-url" : "https://github.com/dain/snappy/tree/snappy-0.5/src/test",
+metadata/org.iq80.snappy/snappy/index.json:21:    "test-code-url" : "https://github.com/dain/snappy/tree/snappy-0.4/src/test",
+metadata/redis.clients/jedis/index.json:7:    "test-code-url" : "https://github.com/redis/jedis/tree/v4.0.0/src/test/java",
+metadata/redis.clients/jedis/index.json:31:    "test-code-url" : "https://github.com/redis/jedis/tree/jedis-3.6.0/src/test/java",
+metadata/redis.clients/jedis/index.json:53:    "test-code-url" : "https://github.com/redis/jedis/tree/jedis-3.0.0/src/test/java",
+metadata/redis.clients/jedis/index.json:76:    "test-code-url" : "https://github.com/redis/jedis/tree/jedis-2.9.0/src/test/java",
+metadata/org.scala-sbt/test-interface/index.json:7:    "test-code-url" : "https://github.com/sbt/test-interface/tree/v1.0/src/test",
+metadata/com.mysql/mysql-connector-j/index.json:7:    "test-code-url" : "https://github.com/mysql/mysql-connector-j/tree/8.0.31/src/test",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:7:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/0.12.0/extensions/gson/src/test",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:27:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/0.11.5/extensions/gson/src/test",
+metadata/io.jsonwebtoken/jjwt-api/index.json:6:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/0.11.5/api/src/test/groovy/io/jsonwebtoken",
+metadata/io.jsonwebtoken/jjwt-api/index.json:21:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/0.12.3/api/src/test/groovy/io/jsonwebtoken",
+metadata/org.testcontainers/testcontainers/index.json:7:    "test-code-url" : "https://github.com/testcontainers/testcontainers-java/tree/1.19.8/core/src/test",
+metadata/org.testcontainers/testcontainers/index.json:38:    "test-code-url" : "https://github.com/testcontainers/testcontainers-java/tree/1.17.6/core/src/test",
+metadata/org.testcontainers/junit-jupiter/index.json:7:    "test-code-url" : "https://github.com/testcontainers/testcontainers-java/tree/1.18.3/modules/junit-jupiter/src/test",
+metadata/io.projectreactor/reactor-core/index.json:7:    "test-code-url" : "https://github.com/reactor/reactor-core/tree/v3.5.1/reactor-core/src/test/java",
+metadata/org.glassfish.jaxb/xsom/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/4.0.6-RI/jaxb-ri/xsom/src/test",
+metadata/org.glassfish.jaxb/txw2/index.json:7:    "test-code-url" : "https://github.com/javaee/jaxb-v2/tree/2.3.1/jaxb-ri/txw/runtime/src/test/java",
+metadata/software.amazon.awssdk/s3/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/2.25.3/services/s3/src/test",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.17.0/jr-objects/src/test",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:40:    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.13.4/jr-objects/src/test",
+metadata/io.micrometer/micrometer-observation/index.json:7:    "test-code-url" : "https://github.com/micrometer-metrics/micrometer/tree/v1.16.4/micrometer-observation/src/test",
+metadata/io.micrometer/micrometer-observation/index.json:26:    "test-code-url" : "https://github.com/micrometer-metrics/micrometer/tree/v1.14.4/micrometer-observation/src/test",
+metadata/io.micrometer/micrometer-commons/index.json:7:    "test-code-url" : "https://github.com/micrometer-metrics/micrometer/tree/v1.16.0/micrometer-commons/src/test/java",
+metadata/io.micrometer/micrometer-commons/index.json:30:    "test-code-url" : "https://github.com/micrometer-metrics/micrometer/tree/v1.14.4/micrometer-commons/src/test/java",
+metadata/javax.xml.bind/jaxb-api/index.json:7:    "test-code-url" : "https://github.com/javaee/jaxb-spec/tree/2.3.1/jaxb-api-test/src/test",
+metadata/org.scala-js/scalajs-javalib-intf/index.json:7:    "test-code-url" : "https://github.com/scala-js/scala-js/tree/v1.16.0/test-suite",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/1.5.0/jackrabbit-jcr-commons/src/test/java",
+metadata/com.baomidou/mybatis-plus/index.json:7:    "test-code-url" : "https://github.com/baomidou/mybatis-plus/tree/v3.5.3/mybatis-plus/src/test",
+metadata/io.reactivex.rxjava3/rxjava/index.json:7:    "test-code-url" : "https://github.com/ReactiveX/RxJava/tree/v3.1.5/src/test",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:7:    "test-code-url" : "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-3.1.0.RELEASE/tests/thymeleaf-tests-springsecurity6",
+metadata/io.opentelemetry/opentelemetry-api-logs/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.26.0/api/logs/src/test/java/io/opentelemetry/api/logs",
+metadata/io.opentelemetry/opentelemetry-api-logs/index.json:21:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.23.0/api/logs/src/test/java/io/opentelemetry/api/logs",
+metadata/io.opentelemetry/opentelemetry-api-logs/index.json:38:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.19.0/api/logs/src/test/java/io/opentelemetry/api/logs",
+metadata/io.opentelemetry/opentelemetry-sdk-common/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.19.0/sdk/common/src/test",
+metadata/io.opentelemetry/opentelemetry-sdk/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.19.0/sdk/all/src/test",
+metadata/org.asynchttpclient/async-http-client-netty-utils/index.json:7:    "test-code-url" : "https://github.com/AsyncHttpClient/async-http-client/tree/async-http-client-project-2.12.3/netty-utils/src/test",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.59.0/sdk/metrics/src/test/java",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:24:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.56.0/sdk/metrics/src/test/java",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:41:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.19.0/sdk/metrics/src/test",
+metadata/io.opentelemetry/opentelemetry-sdk-trace/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.55.0/sdk/trace/src/test",
+metadata/io.opentelemetry/opentelemetry-sdk-trace/index.json:25:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.19.0/sdk/trace/src/test",
+metadata/org.atteo.classindex/classindex/index.json:7:    "test-code-url" : "https://github.com/atteo/classindex/tree/3.13/classindex/src/test",
+metadata/io.opentelemetry/opentelemetry-exporter-jaeger/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.20.0/exporters/jaeger/src/test",
+metadata/io.opentelemetry/opentelemetry-exporter-jaeger/index.json:39:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.19.0/exporters/jaeger/src/test",
+metadata/io.opentelemetry/opentelemetry-exporter-zipkin/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.20.0/exporters/zipkin/src/test",
+metadata/io.opentelemetry/opentelemetry-exporter-zipkin/index.json:39:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.19.0/exporters/zipkin/src/test",
+metadata/io.opentelemetry/opentelemetry-api/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.19.0/api/all/src/test/java",
+metadata/com.fasterxml/classmate/index.json:7:    "test-code-url" : "https://github.com/FasterXML/java-classmate/tree/classmate-1.5.1/src/test",
+metadata/io.opentelemetry/opentelemetry-exporter-common/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.19.0/exporters/common/src/test",
+metadata/io.opentelemetry/opentelemetry-context/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.19.0/context/src/test/java",
+metadata/io.opentelemetry/opentelemetry-api-events/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.32.0/api/events/src/test",
+metadata/io.opentelemetry/opentelemetry-api-events/index.json:22:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0/api/events/src/test",
+metadata/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.25.0/sdk-extensions/autoconfigure-spi/src/test/java",
+metadata/com.google.auto.value/auto-value-annotations/index.json:7:    "test-code-url" : "https://github.com/google/auto/tree/auto-value-1.10/value/src/test/java",
+metadata/com.google.auto.value/auto-value-annotations/index.json:27:    "test-code-url" : "https://github.com/google/auto/tree/auto-value-1.9/value/src/test/java",
+metadata/io.opentelemetry/opentelemetry-exporter-otlp/index.json:8:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.19.0/exporters/otlp/all/src/test",
+metadata/io.opentelemetry/opentelemetry-exporter-logging/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.20.0/exporters/logging/src/test",
+metadata/io.opentelemetry/opentelemetry-exporter-logging/index.json:39:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.19.0/exporters/logging/src/test",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.26.0/sdk/logs/src/test/java",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:29:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.23.0/sdk/logs/src/test/java",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:46:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.20.0/sdk/logs/src/test/java",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:63:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.19.0/sdk/logs/src/test/java",
+metadata/org.jsoup/jsoup/index.json:7:    "test-code-url" : "https://github.com/jhy/jsoup/tree/jsoup-1.15.1/src/test",
+metadata/org.jsoup/jsoup/index.json:37:    "test-code-url" : "https://github.com/jhy/jsoup/tree/jsoup-1.13.1/src/test",
+metadata/org.apache.velocity/velocity-engine-core/index.json:7:    "test-code-url" : "https://github.com/apache/velocity-engine/tree/2.3/velocity-engine-core/src/test",
+metadata/com.googlecode.concurrent-trees/concurrent-trees/index.json:7:    "test-code-url" : "https://github.com/npgall/concurrent-trees/tree/2.6.1/code/src/test",
+metadata/org.apache.tomcat/tomcat-jdbc/index.json:68:    "test-code-url" : "https://github.com/apache/tomcat/tree/10.1.7/modules/jdbc-pool/src/test",
+metadata/org.apache.tomcat/tomcat-juli/index.json:7:    "test-code-url" : "https://github.com/apache/tomcat/tree/11.0.0/test/org/apache/juli",
+metadata/org.apache.tomcat/tomcat-juli/index.json:39:    "test-code-url" : "https://github.com/apache/tomcat/tree/10.1.7/test/org/apache/juli",
+metadata/org.apache.tomcat/tomcat-annotations-api/index.json:7:    "test-code-url" : "https://github.com/apache/tomcat/tree/11.0.0/test",
+metadata/org.apache.tomcat/tomcat-annotations-api/index.json:39:    "test-code-url" : "https://github.com/apache/tomcat/tree/10.0.20/test",
+metadata/org.cache2k/cache2k-core/index.json:7:    "test-code-url" : "https://github.com/cache2k/cache2k/tree/v2.6.1.Final/cache2k-core/src/test",
+metadata/org.opentest4j/opentest4j/index.json:7:    "test-code-url" : "https://github.com/ota4j-team/opentest4j/tree/r1.2.0/src/test",
+metadata/io.github.x-stream/mxparser/index.json:7:    "test-code-url" : "https://github.com/x-stream/mxparser/tree/v-1.2.2/src/test/java",
+metadata/io.grpc/grpc-context/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v1.57.0/api/src/test/java/io/grpc",
+metadata/io.grpc/grpc-context/index.json:65:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v1.27.2/context/src/test",
+metadata/io.grpc/grpc-netty/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v1.51.0/netty/src/test",
+metadata/io.grpc/grpc-core/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v1.69.0/core/src/test",
+metadata/com.google.protobuf/protobuf-java-util/index.json:7:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v23.0/java/util/src/test",
+metadata/com.google.protobuf/protobuf-java-util/index.json:24:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v3.22.0/java/util/src/test",
+metadata/com.google.protobuf/protobuf-java-util/index.json:48:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v3.21.12/java/util/src/test",
+metadata/org.osgi/org.osgi.annotation.bundle/index.json:7:    "test-code-url" : "https://github.com/osgi/osgi/tree/8.0.0.1/org.osgi.test.cases.bundle.annotations",
+metadata/org.osgi/org.osgi.dto/index.json:7:    "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-spec-final/org.osgi.test.cases.framework/src/org/osgi/test/cases/framework/junit/dto",
+metadata/org.brotli/dec/index.json:7:    "test-code-url" : "https://github.com/google/brotli/tree/4363f2d74b8af198f78b08e10cd0b3ead48af590/java/org/brotli/dec",
+metadata/com.jamesmurty.utils/java-xmlbuilder/index.json:7:    "test-code-url" : "https://github.com/jmurty/java-xmlbuilder/tree/v1.1/src/test/java",
+metadata/com.jamesmurty.utils/java-xmlbuilder/index.json:23:    "test-code-url" : "https://github.com/jmurty/java-xmlbuilder/tree/v0.6/src/test/java",
+metadata/com.jamesmurty.utils/java-xmlbuilder/index.json:38:    "test-code-url" : "https://github.com/jmurty/java-xmlbuilder/tree/v0.4/src/test",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:7:    "test-code-url" : "https://github.com/apache/maven-resolver/tree/maven-resolver-1.9.25/maven-resolver-util/src/test",
+metadata/io.zipkin.reporter2/zipkin-reporter/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin-reporter-java/tree/3.4.0/core/src/test/java",
+metadata/io.zipkin.reporter2/zipkin-reporter/index.json:27:    "test-code-url" : "https://github.com/openzipkin/zipkin-reporter-java/tree/3.0.0/core/src/test/java",
+metadata/io.zipkin.reporter2/zipkin-reporter/index.json:48:    "test-code-url" : "https://github.com/openzipkin/zipkin-reporter-java/tree/2.16.3/core/src/test/java",
+metadata/io.quarkus/quarkus-bootstrap-json/index.json:7:    "test-code-url" : "https://github.com/quarkusio/quarkus/tree/3.33.1/independent-projects/bootstrap/json/src/test",
+metadata/io.quarkus/quarkus-fs-util/index.json:7:    "test-code-url" : "https://github.com/quarkusio/quarkus-fs-util/tree/1.3.0/src/test",
+metadata/org.glassfish/javax.ejb/index.json:23:    "test-code-url" : "https://github.com/javaee/glassfish/tree/3.1/tests/embedded/ejb/ejb-api",
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:7:    "test-code-url" : "https://github.com/scoverage/scalac-scoverage-plugin/tree/v1.4.1/scalac-scoverage-runtime",
+metadata/javax.money/money-api/index.json:7:    "test-code-url" : "https://github.com/JavaMoney/jsr354-api/tree/1.0.3/src/test",
+metadata/com.h2database/h2/index.json:7:    "test-code-url" : "https://github.com/h2database/h2database/tree/version-2.1.210/h2/src/test",
+metadata/io.netty/netty-tcnative-classes/index.json:7:    "test-code-url" : "https://github.com/netty/netty-tcnative/tree/netty-tcnative-parent-2.0.48.Final/openssl-dynamic/src/test",
+metadata/io.netty/netty-transport-classes-kqueue/index.json:7:    "test-code-url" : "https://github.com/netty/netty/tree/netty-4.1.74.Final/transport-native-kqueue/src/test/java/io/netty/channel/kqueue",
+metadata/com.shapesecurity/salvation2/index.json:7:    "test-code-url" : "https://github.com/shapesecurity/salvation/tree/v3.0.1/src/test",
+metadata/org.dom4j/dom4j/index.json:7:    "test-code-url" : "https://github.com/dom4j/dom4j/tree/version-2.1.1/src/test",
+metadata/org.latencyutils/LatencyUtils/index.json:7:    "test-code-url" : "https://github.com/LatencyUtils/LatencyUtils/tree/LatencyUtils-2.0.3/src/test",
+metadata/jakarta.validation/jakarta.validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/3.0.0/src/test",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-java8/tree/jackson-modules-java8-2.13.1/datetime/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.1.3/jetty-core/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:27:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.1/jetty-core/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:57:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-11.0.12/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:8:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.1.5/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:25:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.0/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:64:    "test-code-url" : "https://github.com/eclipse/jetty.project/tree/jetty-11.0.12/jetty-client/src/test",
+metadata/com.thoughtworks.proxytoys/proxytoys/index.json:7:    "test-code-url" : "https://github.com/proxytoys/proxytoys/tree/1.0/proxytoys/src/test/java",
+metadata/org.eclipse.jdt/ecj/index.json:7:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_20/org.eclipse.jdt.core.tests.compiler",
+metadata/net.razorvine/serpent/index.json:7:    "test-code-url" : "https://github.com/irmen/Serpent/tree/serpent-1.30/java/src/test",
+metadata/net.razorvine/serpent/index.json:22:    "test-code-url" : "https://github.com/irmen/Serpent/tree/serpent-1.23/java/src/test",
+metadata/net.razorvine/pyrolite/index.json:7:    "test-code-url" : "https://github.com/irmen/Pyrolite/tree/pyrolite-5.0/java/src/test",
+metadata/net.razorvine/pyrolite/index.json:22:    "test-code-url" : "https://github.com/irmen/Pyrolite/tree/pyrolite-4.30/java/src/test",
+metadata/net.razorvine/pickle/index.json:7:    "test-code-url" : "https://github.com/irmen/pickle/tree/pickle-1.2/java/src/test",
+metadata/org.hibernate.orm/hibernate-jcache/index.json:7:    "test-code-url" : "https://github.com/hibernate/hibernate-orm/tree/7.2.1/hibernate-jcache/src/test",
+metadata/org.slf4j/log4j-over-slf4j/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_1.7.25/log4j-over-slf4j/src/test/java",
+metadata/org.sonatype.aether/aether-api/index.json:7:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.13.1/aether-api/src/test/java",
+metadata/org.sonatype.aether/aether-api/index.json:21:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.9/aether-api/src/test/java",
+metadata/org.sonatype.aether/aether-api/index.json:40:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-api/src/test/java",
+metadata/org.sonatype.aether/aether-api/index.json:55:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-api/src/test/java",
+metadata/org.thymeleaf/thymeleaf/index.json:7:    "test-code-url" : "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-3.1.4.RELEASE/tests/thymeleaf-tests-core",
+metadata/org.thymeleaf/thymeleaf/index.json:22:    "test-code-url" : "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-3.1.0.RELEASE/lib/thymeleaf/src/test",
+metadata/org.thymeleaf/thymeleaf/index.json:39:    "test-code-url" : "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-3.1.0.M2/lib/thymeleaf/src/test",
+metadata/org.thymeleaf/thymeleaf-spring6/index.json:7:    "test-code-url" : "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-3.1.0.RELEASE/tests/thymeleaf-tests-spring6",
+metadata/tools.jackson.core/jackson-core/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-3.0.0/src/test",
+metadata/org.checkerframework/checker-compat-qual/index.json:7:    "test-code-url" : "https://github.com/typetools/checker-framework/tree/checker-framework-2.5.5/checker/tests/nullness-extra/compat",
+metadata/org.eclipse.jetty/jetty-util/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.9/jetty-core/jetty-util/src/test",
+metadata/com.zaxxer/SparseBitSet/index.json:7:    "test-code-url" : "https://github.com/brettwooldridge/SparseBitSet/tree/SparseBitSet-1.2/src/test/java",
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx-datetime/tree/v0.7.1/core/jvm/test",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-java8/tree/jackson-modules-java8-2.13.5/datatypes/src/test",
+metadata/xalan/xalan/index.json:18:    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_0/xdocs",
+metadata/org.jboss/jandex/index.json:7:    "test-code-url" : "https://github.com/smallrye/jandex/tree/2.4.2.Final/src/test/java",
+metadata/org.sonatype.aether/aether-util/index.json:7:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-util/src/test/java",
+metadata/org.apache.james/apache-mime4j-dom/index.json:7:    "test-code-url" : "https://github.com/apache/james-mime4j/tree/apache-mime4j-project-0.8.13/dom/src/test",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:6:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.0.6/src/test",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:42:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.5.2/src/test",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:7:    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.3.0.Final/src/test",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:21:    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.1.GA/src/test",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:36:    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.0.GA/src/test",
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c
+ succeeded in 0ms:
+codex
+I’m about to update only the missing fields in the 2.7.3 entry. I’ll leave `language` absent because this is a Java/XML library, not a Kotlin, Groovy, or Scala-specific artifact under this metadata schema.
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/xalan-java.git 'refs/tags/xalan-j_2_7_3*'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c
+exec
+/usr/bin/bash -lc "curl -fsSI https://archive.apache.org/dist/xalan/xalan-j/source/xalan-j_2_7_3-src.zip | sed -n '1,8p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c
+ succeeded in 0ms:
+HTTP/1.1 200 OK
+Date: Sat, 02 May 2026 00:24:25 GMT
+Server: Apache
+Vary: Slow,Glacial
+Last-Modified: Sat, 01 Apr 2023 06:29:34 GMT
+ETag: "11e4bbc-5f84072fab974"
+Accept-Ranges: bytes
+Content-Length: 18762684
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/xalan-test.git 'refs/tags/xalan-j_2_7_3*'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs | sed -n '1,8p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c
+ succeeded in 313ms:
+7a5ea4ac6e2ea33e170a58d823387eece689997e	refs/tags/xalan-j_2_7_3-rc10
+ab71b74184264e9ad66e0aa452f0d5797fc1c97b	refs/tags/xalan-j_2_7_3-rc10^{}
+
+ succeeded in 338ms:
+5ea1246ed3e5a6f9f1cb4030c9df6dc3780b8f96	refs/tags/xalan-j_2_7_3-rc10
+25b9c336f03263749ba6046a8a57b219331181b1	refs/tags/xalan-j_2_7_3-rc10^{}
+
+ succeeded in 321ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 00:24:25 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"53b675028c40183acdb547f4ce17e1ff"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+
+web search: 
+web search: https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/xalan/xalan/2.7.3/
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/xalan/xalan/2.7.3/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: xalan/xalan/2.7.3</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>xalan/xalan/2.7.3</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="xalan-2.7.3.jar" title="xalan-2.7.3.jar">xalan-2.7.3.jar</a>                                   2023-05-04 12:31   3455761      
+<a href="xalan-2.7.3.jar.asc" title="xalan-2.7.3.jar.asc">xalan-2.7.3.jar.asc</a>                               2023-05-04 12:31       499      
+<a href="xalan-2.7.3.jar.asc.md5" title="xalan-2.7.3.jar.asc.md5">xalan-2.7.3.jar.asc.md5</a>                           2023-05-04 12:31        32      
+<a href="xalan-2.7.3.jar.asc.sha1" title="xalan-2.7.3.jar.asc.sha1">xalan-2.7.3.jar.asc.sha1</a>                          2023-05-04 12:31        40      
+<a href="xalan-2.7.3.jar.asc.sha256" title="xalan-2.7.3.jar.asc.sha256">xalan-2.7.3.jar.asc.sha256</a>                        2023-05-04 12:31        64      
+<a href="xalan-2.7.3.jar.asc.sha512" title="xalan-2.7.3.jar.asc.sha512">xalan-2.7.3.jar.asc.sha512</a>                        2023-05-04 12:31       128      
+<a href="xalan-2.7.3.jar.md5" title="xalan-2.7.3.jar.md5">xalan-2.7.3.jar.md5</a>                               2023-05-04 12:31        32      
+<a href="xalan-2.7.3.jar.sha1" title="xalan-2.7.3.jar.sha1">xalan-2.7.3.jar.sha1</a>                              2023-05-04 12:31        40      
+<a href="xalan-2.7.3.pom" title="xalan-2.7.3.pom">xalan-2.7.3.pom</a>                                   2023-05-04 12:31       384      
+<a href="xalan-2.7.3.pom.asc" title="xalan-2.7.3.pom.asc">xalan-2.7.3.pom.asc</a>                               2023-05-04 12:31       499      
+<a href="xalan-2.7.3.pom.asc.md5" title="xalan-2.7.3.pom.asc.md5">xalan-2.7.3.pom.asc.md5</a>                           2023-05-04 12:31        32      
+<a href="xalan-2.7.3.pom.asc.sha1" title="xalan-2.7.3.pom.asc.sha1">xalan-2.7.3.pom.asc.sha1</a>                          2023-05-04 12:31        40      
+<a href="xalan-2.7.3.pom.asc.sha256" title="xalan-2.7.3.pom.asc.sha256">xalan-2.7.3.pom.asc.sha256</a>                        2023-05-04 12:31        64      
+<a href="xalan-2.7.3.pom.asc.sha512" title="xalan-2.7.3.pom.asc.sha512">xalan-2.7.3.pom.asc.sha512</a>                        2023-05-04 12:31       128      
+<a href="xalan-2.7.3.pom.md5" title="xalan-2.7.3.pom.md5">xalan-2.7.3.pom.md5</a>                               2023-05-04 12:31        32      
+<a href="xalan-2.7.3.pom.sha1" title="xalan-2.7.3.pom.sha1">xalan-2.7.3.pom.sha1</a>                              2023-05-04 12:31        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/xalan/xalan-j/source/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c
+ succeeded in 0ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/xalan/xalan-j/source</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                               <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/xalan/xalan-j/">Parent Directory</a>                                        -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="xslt3.0/">xslt3.0/</a>                           2026-04-27 20:23    -   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="xalan-j_2_7_1-src-2jars.tar.gz">xalan-j_2_7_1-src-2jars.tar.gz</a>     2007-11-27 19:38  6.0M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="xalan-j_2_7_1-src-2jars.tar.gz.asc">xalan-j_2_7_1-src-2jars.tar.gz.asc</a> 2007-11-27 19:38  194   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="xalan-j_2_7_1-src-2jars.tar.gz.md5">xalan-j_2_7_1-src-2jars.tar.gz.md5</a> 2007-11-27 19:38   66   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="xalan-j_2_7_1-src-2jars.zip">xalan-j_2_7_1-src-2jars.zip</a>        2007-11-27 19:41  7.3M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="xalan-j_2_7_1-src-2jars.zip.asc">xalan-j_2_7_1-src-2jars.zip.asc</a>    2007-11-27 19:41  194   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="xalan-j_2_7_1-src-2jars.zip.md5">xalan-j_2_7_1-src-2jars.zip.md5</a>    2007-11-27 19:41   63   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="xalan-j_2_7_1-src.tar.gz">xalan-j_2_7_1-src.tar.gz</a>           2007-11-27 19:43  6.0M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="xalan-j_2_7_1-src.tar.gz.asc">xalan-j_2_7_1-src.tar.gz.asc</a>       2007-11-27 19:43  194   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="xalan-j_2_7_1-src.tar.gz.md5">xalan-j_2_7_1-src.tar.gz.md5</a>       2007-11-27 19:43   60   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="xalan-j_2_7_1-src.zip">xalan-j_2_7_1-src.zip</a>              2007-11-27 19:45  7.3M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="xalan-j_2_7_1-src.zip.asc">xalan-j_2_7_1-src.zip.asc</a>          2007-11-27 19:45  194   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="xalan-j_2_7_1-src.zip.md5">xalan-j_2_7_1-src.zip.md5</a>          2007-11-27 19:45   57   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="xalan-j_2_7_2-src.tar.gz">xalan-j_2_7_2-src.tar.gz</a>           2014-10-30 17:57  8.0M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="xalan-j_2_7_2-src.tar.gz.asc">xalan-j_2_7_2-src.tar.gz.asc</a>       2014-10-30 17:57  499   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="xalan-j_2_7_2-src.tar.gz.md5">xalan-j_2_7_2-src.tar.gz.md5</a>       2014-10-30 17:57   60   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="xalan-j_2_7_2-src.zip">xalan-j_2_7_2-src.zip</a>              2014-10-30 17:57  9.3M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="xalan-j_2_7_2-src.zip.asc">xalan-j_2_7_2-src.zip.asc</a>          2014-10-30 17:57  499   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="xalan-j_2_7_2-src.zip.md5">xalan-j_2_7_2-src.zip.md5</a>          2014-10-30 17:57   57   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="xalan-j_2_7_3-src.tar.gz">xalan-j_2_7_3-src.tar.gz</a>           2023-04-01 06:29   13M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="xalan-j_2_7_3-src.tar.gz.asc">xalan-j_2_7_3-src.tar.gz.asc</a>       2023-04-01 06:29  849   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="xalan-j_2_7_3-src.tar.gz.sha512">xalan-j_2_7_3-src.tar.gz.sha512</a>    2023-04-01 06:29  276   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="xalan-j_2_7_3-src.zip">xalan-j_2_7_3-src.zip</a>              2023-04-01 06:29   18M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="xalan-j_2_7_3-src.zip.asc">xalan-j_2_7_3-src.zip.asc</a>          2023-04-01 06:29  849   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="xalan-j_2_7_3-src.zip.sha512">xalan-j_2_7_3-src.zip.sha512</a>       2023-04-01 06:29  264   
+<hr></pre>
+</body></html>
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests | sed -n '1,8p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c
+ succeeded in 640ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 00:24:38 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"8b25bcc269a9c12f9a1f507a99b40f00"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+
+codex
+I’m editing the first `metadata-version: 2.7.3` object only, preserving the existing 2.7.0 entry and the tested/allowed package fields unchanged.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c/metadata/xalan/xalan/index.json
+diff --git a/metadata/xalan/xalan/index.json b/metadata/xalan/xalan/index.json
+index 54aad1915a9d4667881d214bee4007af5d27bc31..021e325dc1141c525d097e7344ad0f039b99cc54
+--- a/metadata/xalan/xalan/index.json
++++ b/metadata/xalan/xalan/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.7.3",
++    "source-code-url" : "https://archive.apache.org/dist/xalan/xalan-j/source/xalan-j_2_7_3-src.tar.gz",
++    "repository-url" : "https://github.com/apache/xalan-java",
++    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
++    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
++    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+     "tested-versions" : [
+       "2.7.3"
+     ],
+
+diff --git a/metadata/xalan/xalan/index.json b/metadata/xalan/xalan/index.json
+index 54aad1915a9d4667881d214bee4007af5d27bc31..021e325dc1141c525d097e7344ad0f039b99cc54
+--- a/metadata/xalan/xalan/index.json
++++ b/metadata/xalan/xalan/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.7.3",
++    "source-code-url" : "https://archive.apache.org/dist/xalan/xalan-j/source/xalan-j_2_7_3-src.tar.gz",
++    "repository-url" : "https://github.com/apache/xalan-java",
++    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
++    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
++    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+     "tested-versions" : [
+       "2.7.3"
+     ],
+
+codex
+The metadata entry is patched. I’m running a JSON parse and the focused metadata validation task for `xalan:xalan:2.7.3` so we catch formatting or schema issues before I wrap up.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/xalan/xalan/index.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c
+ succeeded in 0ms:
+diff --git i/metadata/xalan/xalan/index.json w/metadata/xalan/xalan/index.json
+index 54aad1915a..021e325dc1 100644
+--- i/metadata/xalan/xalan/index.json
++++ w/metadata/xalan/xalan/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.7.3",
++    "source-code-url" : "https://archive.apache.org/dist/xalan/xalan-j/source/xalan-j_2_7_3-src.tar.gz",
++    "repository-url" : "https://github.com/apache/xalan-java",
++    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
++    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
++    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+     "tested-versions" : [
+       "2.7.3"
+     ],
+
+exec
+/usr/bin/bash -lc 'python -m json.tool metadata/xalan/xalan/index.json >/dev/null' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=xalan:xalan:2.7.3 --stacktrace' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c
+diff --git a/metadata/xalan/xalan/index.json b/metadata/xalan/xalan/index.json
+index 54aad1915a9d4667881d214bee4007af5d27bc31..021e325dc1141c525d097e7344ad0f039b99cc54
+--- a/metadata/xalan/xalan/index.json
++++ b/metadata/xalan/xalan/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.7.3",
++    "source-code-url" : "https://archive.apache.org/dist/xalan/xalan-j/source/xalan-j_2_7_3-src.tar.gz",
++    "repository-url" : "https://github.com/apache/xalan-java",
++    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
++    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
++    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+     "tested-versions" : [
+       "2.7.3"
+     ],
+
+ exited 1 in 1294ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+Metadata files check failed for xalan:xalan:2.7.3: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c/metadata/xalan/xalan/2.7.3/
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c/build/reports/problems/problems-report.html
+
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - xalan:xalan:2.7.3: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c/metadata/xalan/xalan/2.7.3/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - xalan:xalan:2.7.3: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c/metadata/xalan/xalan/2.7.3/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+BUILD FAILED in 1s9 actionable tasks: 1 executed, 8 up-to-date
+
+
+codex
+The JSON parse passed. The repository’s `checkMetadataFiles` task cannot complete for this coordinate because the existing tree has no `metadata/xalan/xalan/2.7.3/reachability-metadata.json`; that failure is outside the requested index-field update.
+exec
+/usr/bin/bash -lc "nl -ba metadata/xalan/xalan/index.json | sed -n '1,35p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "2.7.3",
+     5	    "source-code-url" : "https://archive.apache.org/dist/xalan/xalan-j/source/xalan-j_2_7_3-src.tar.gz",
+     6	    "repository-url" : "https://github.com/apache/xalan-java",
+     7	    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
+     8	    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
+     9	    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+    10	    "tested-versions" : [
+    11	      "2.7.3"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "java_cup.runtime",
+    15	      "org.apache"
+    16	    ]
+    17	  },
+    18	  {
+    19	    "metadata-version" : "2.7.0",
+    20	    "source-code-url" : "https://repo.maven.apache.org/maven2/xalan/xalan/2.7.0/xalan-2.7.0-sources.jar",
+    21	    "repository-url" : "https://github.com/apache/xalan-java",
+    22	    "test-code-url" : "N/A",
+    23	    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_0/xdocs",
+    24	    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+    25	    "tested-versions" : [
+    26	      "2.7.0"
+    27	    ],
+    28	    "allowed-packages" : [
+    29	      "java_cup.runtime",
+    30	      "org.apache"
+    31	    ]
+    32	  }
+    33	]
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/xalan/xalan/index.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c
+ succeeded in 0ms:
+ M metadata/xalan/xalan/index.json
+
+diff --git a/metadata/xalan/xalan/index.json b/metadata/xalan/xalan/index.json
+index 54aad1915a9d4667881d214bee4007af5d27bc31..021e325dc1141c525d097e7344ad0f039b99cc54
+--- a/metadata/xalan/xalan/index.json
++++ b/metadata/xalan/xalan/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.7.3",
++    "source-code-url" : "https://archive.apache.org/dist/xalan/xalan-j/source/xalan-j_2_7_3-src.tar.gz",
++    "repository-url" : "https://github.com/apache/xalan-java",
++    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
++    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
++    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+     "tested-versions" : [
+       "2.7.3"
+     ],
+
+web search: 
+web search: https://archive.apache.org/dist/xalan/xalan-j/source/
+web search: 
+web search: https://repo1.maven.org/maven2/xalan/xalan/2.7.3/
+codex
+Updated [metadata/xalan/xalan/index.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c/metadata/xalan/xalan/index.json:5) for `xalan:xalan:2.7.3` with source, repository, test suite, documentation, and a two-sentence description. I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+Maven Central only has the binary jar and POM for `2.7.3`, so I used Apache’s archived `xalan-j_2_7_3` source distribution; the docs and tests use the `xalan-j_2_7_3-rc10` tagged GitHub trees, including the `tests/2.7.3_release` suite. ([repo1.maven.org](https://repo1.maven.org/maven2/xalan/xalan/2.7.3/))
+
+Validation:
+- JSON parse passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=xalan:xalan:2.7.3 --stacktrace` failed because the repo already lacks `metadata/xalan/xalan/2.7.3/reachability-metadata.json`, outside this index update.
+diff --git a/metadata/xalan/xalan/index.json b/metadata/xalan/xalan/index.json
+index 54aad1915a9d4667881d214bee4007af5d27bc31..021e325dc1141c525d097e7344ad0f039b99cc54
+--- a/metadata/xalan/xalan/index.json
++++ b/metadata/xalan/xalan/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.7.3",
++    "source-code-url" : "https://archive.apache.org/dist/xalan/xalan-j/source/xalan-j_2_7_3-src.tar.gz",
++    "repository-url" : "https://github.com/apache/xalan-java",
++    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
++    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
++    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+     "tested-versions" : [
+       "2.7.3"
+     ],
+
+tokens used
+128,910
+Updated [metadata/xalan/xalan/index.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c/metadata/xalan/xalan/index.json:5) for `xalan:xalan:2.7.3` with source, repository, test suite, documentation, and a two-sentence description. I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+Maven Central only has the binary jar and POM for `2.7.3`, so I used Apache’s archived `xalan-j_2_7_3` source distribution; the docs and tests use the `xalan-j_2_7_3-rc10` tagged GitHub trees, including the `tests/2.7.3_release` suite. ([repo1.maven.org](https://repo1.maven.org/maven2/xalan/xalan/2.7.3/))
+
+Validation:
+- JSON parse passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=xalan:xalan:2.7.3 --stacktrace` failed because the repo already lacks `metadata/xalan/xalan/2.7.3/reachability-metadata.json`, outside this index update.
+Ran agent for xalan:xalan:2.7.3 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c/build/agent-url-discovery-logs/xalan-xalan-2.7.3.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-b165672c/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 2s
+9 actionable tasks: 1 executed, 8 up-to-date
