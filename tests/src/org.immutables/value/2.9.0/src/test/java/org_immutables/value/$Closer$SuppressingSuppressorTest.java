@@ -6,51 +6,38 @@
  */
 package org_immutables.value;
 
-import java.io.Closeable;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.immutables.value.internal.$guava$.io.$Closer;
+import org.immutables.value.internal.$guava$.io.$CharStreams;
+import org.immutables.value.internal.$guava$.io.$LineProcessor;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowableOfType;
 
 class CloserSuppressingSuppressorTest {
 
     @Test
-    void closeAddsLaterCloseFailuresAsSuppressedExceptions() {
-        List<String> closedResources = new ArrayList<>();
-        $Closer closer = $Closer.create();
+    void readLinesStopsWhenProcessorReturnsFalse() throws IOException {
+        List<String> processedLines = new ArrayList<>();
+        $LineProcessor<List<String>> processor = new $LineProcessor<>() {
+            @Override
+            public boolean processLine(String line) {
+                processedLines.add(line);
+                return !"second".equals(line);
+            }
 
-        closer.register(new FailingCloseable("secondary", closedResources));
-        closer.register(new FailingCloseable("primary", closedResources));
+            @Override
+            public List<String> getResult() {
+                return processedLines;
+            }
+        };
 
-        IOException thrown = catchThrowableOfType(closer::close, IOException.class);
+        List<String> result = $CharStreams.readLines(new StringReader("first\nsecond\nthird"), processor);
 
-        assertThat(closedResources).containsExactly("primary", "secondary");
-        assertThat(thrown)
-                .isNotNull()
-                .hasMessage("primary");
-        assertThat(thrown.getSuppressed())
-                .singleElement()
-                .isInstanceOfSatisfying(IOException.class, suppressed -> assertThat(suppressed).hasMessage("secondary"));
-    }
-
-    private static final class FailingCloseable implements Closeable {
-        private final String name;
-        private final List<String> closedResources;
-
-        private FailingCloseable(String name, List<String> closedResources) {
-            this.name = name;
-            this.closedResources = closedResources;
-        }
-
-        @Override
-        public void close() throws IOException {
-            closedResources.add(name);
-            throw new IOException(name);
-        }
+        assertThat(result).isSameAs(processedLines);
+        assertThat(processedLines).containsExactly("first", "second");
     }
 }
