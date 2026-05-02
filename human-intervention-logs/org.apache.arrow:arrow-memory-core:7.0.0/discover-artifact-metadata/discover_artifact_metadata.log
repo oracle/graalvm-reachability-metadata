@@ -1,0 +1,1329 @@
+Starting a Gradle Daemon, 8 busy and 5 incompatible and 191 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3102-3b5a04ca
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de6a7-67cb-7e93-82b7-a7ac5e359e9d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.arrow:arrow-memory-core:7.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "7.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3102-3b5a04ca/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+- Set "coordinates" to "org.apache.arrow:arrow-memory-core:7.0.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven Central first because the prompt prefers Maven-hosted sources/tests when available, then fall back to the Apache Arrow tag for exact-version docs and repository context.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json && sed -n '1,200p' build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3102-3b5a04ca
+ succeeded in 0ms:
+/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3102-3b5a04ca
+-rw-rw-r-- 1 vjovanov vjovanov 65 May  2 05:07 build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+{
+  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "source-code-url|test-code-url|documentation-url|repository-url|language" build/discovered-artifact-metadata | head -40' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3102-3b5a04ca
+ succeeded in 0ms:
+web search: 
+web search: Maven Central org.apache.arrow arrow-memory-core 7.0.0 sources jar tests jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/
+web search: 
+web search: 
+codex
+Maven Central has exact `7.0.0` sources, tests, and Javadoc artifacts for `arrow-memory-core`; I’m checking the POM and project metadata now to pin the repository and decide whether the docs field should use the versioned Javadoc artifact or the Apache Arrow 7.0 Java docs.
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\"\\s*:' . | head -80" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3102-3b5a04ca
+ succeeded in 0ms:
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-javadoc.jar",
+./metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/1.2.4.Final/jboss-classfilewriter-1.2.4.Final-javadoc.jar",
+./metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-javadoc.jar",
+./metadata/org.freemarker/freemarker/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/freemarker/freemarker/2.3.31/freemarker-2.3.31-javadoc.jar",
+./metadata/org.jboss.resteasy/resteasy-client/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/resteasy/resteasy-client/6.2.12.Final/resteasy-client-6.2.12.Final-javadoc.jar",
+./metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-javadoc.jar",
+./metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-javadoc.jar",
+./metadata/org.jboss.logmanager/jboss-logmanager/index.json:8:    "documentation-url" : "N/A",
+./metadata/org.jboss.logmanager/jboss-logmanager/index.json:22:    "documentation-url" : "N/A",
+./metadata/org.jboss.logmanager/jboss-logmanager/index.json:37:    "documentation-url" : "N/A",
+./metadata/com.googlecode.javaewah/JavaEWAH/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/googlecode/javaewah/JavaEWAH/1.1.13/JavaEWAH-1.1.13-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/1.14.0/htmlunit-cssparser-1.14.0-javadoc.jar",
+./metadata/org.apache.kerby/kerby-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-javadoc.jar",
+./metadata/io.dropwizard.metrics/metrics-jmx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/4.2.0/metrics-jmx-4.2.0-javadoc.jar",
+./metadata/org.apache.kerby/kerby-asn1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-asn1/1.0.1/kerby-asn1-1.0.1-javadoc.jar",
+./metadata/com.itextpdf/svg/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/8.0.3/svg-8.0.3-javadoc.jar",
+./metadata/com.itextpdf/io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/8.0.3/io-8.0.3-javadoc.jar",
+./docs/CONTRIBUTING.md:143:     "documentation-url": "https://github.com/example/repo/tree/main/README.md",
+./metadata/org.yaml/snakeyaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.32/snakeyaml-1.32-javadoc.jar",
+./metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/2.5-20081211/servlet-api-2.5-20081211-javadoc.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:223:                    "documentation-url": "https://example.com/docs-a",
+./metadata/javax.validation/validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/2.0.0.Final/validation-api-2.0.0.Final-javadoc.jar",
+./metadata/javax.validation/validation-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.1.0.Final/validation-api-1.1.0.Final-javadoc.jar",
+./metadata/javax.validation/validation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-javadoc.jar",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.3/paranamer-2.3-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.36.0/artemis-jms-client-2.36.0-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.32.0/artemis-jms-client-2.32.0-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.29.0/artemis-jms-client-2.29.0-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:68:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.28.0/artemis-jms-client-2.28.0-javadoc.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/2.0.0/api-i18n-2.0.0-javadoc.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/1.0.0-M20/",
+./metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/1.0.0-M20/api-util-1.0.0-M20-javadoc.jar",
+./metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-javadoc.jar",
+./metadata/io.dropwizard.metrics5/metrics-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/5.0.1/metrics-core-5.0.1-javadoc.jar",
+./metadata/io.dropwizard.metrics5/metrics-core/index.json:27:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/5.0.0/metrics-core-5.0.0-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.70.0/neko-htmlunit-2.70.0-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:34:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-javadoc.jar",
+./metadata/org.apache.activemq/activemq-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/6.0.0/activemq-client-6.0.0-javadoc.jar",
+./metadata/org.apache.activemq/activemq-client/index.json:38:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/5.18.1/activemq-client-5.18.1-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/com.sun.xml.bind.external/relaxng-datatype/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/xml/bind/external/relaxng-datatype/4.0.6/relaxng-datatype-4.0.6-javadoc.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/1.5.0/jackrabbit-jcr-commons/README.txt",
+./metadata/org.apache.activemq/activemq-broker/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/5.18.1/activemq-broker-5.18.1-javadoc.jar",
+./metadata/org.apache.activemq/activemq-broker/index.json:30:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/6.0.0/activemq-broker-6.0.0-javadoc.jar",
+./metadata/org.jooq/jooq/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.20.0/jooq-3.20.0-javadoc.jar",
+./metadata/org.jooq/jooq/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.18.2/jooq-3.18.2-javadoc.jar",
+./metadata/org.jooq/jooq/index.json:115:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.17.7/jooq-3.17.7-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+./metadata/net.java.dev.jna/jna/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/net/java/dev/jna/jna/5.8.0/jna-5.8.0-javadoc.jar",
+./metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/1.1/re2j-1.1-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-javadoc.jar",
+./metadata/org.immutables/value/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.9-ea-0/value-2.8.9-ea-0-javadoc.jar",
+./metadata/org.immutables/value/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.6/value-2.8.6-javadoc.jar",
+./metadata/org.immutables/value/index.json:41:    "documentation-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.2/value-2.8.2-javadoc.jar",
+./metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/2.40.0/artemis-log-annotation-processor-2.40.0-javadoc.jar",
+./metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:30:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/2.39.0/artemis-log-annotation-processor-2.39.0-javadoc.jar",
+./metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:44:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/2.28.0/artemis-log-annotation-processor-2.28.0-javadoc.jar",
+./metadata/at.yawk.lz4/lz4-java/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.10.4/lz4-java-1.10.4-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/2.14.3/jackson-dataformat-cbor-2.14.3-javadoc.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-javadoc.jar",
+./metadata/org.apache.activemq/activemq-openwire-legacy/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.apache.activemq/activemq-openwire-legacy/5.18.1",
+./metadata/com.ibm.async/asyncutil/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/ibm/async/asyncutil/0.1.0/asyncutil-0.1.0-javadoc.jar",
+./metadata/org.fusesource.jansi/jansi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/2.0/jansi-2.0-javadoc.jar",
+./metadata/org.fusesource.jansi/jansi/index.json:35:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/1.16/jansi-1.16-javadoc.jar",
+./metadata/org.fusesource.jansi/jansi/index.json:53:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/1.13/jansi-1.13-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.18.1/jackson-dataformat-yaml-2.18.1-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/5.12.0/amqp-client-5.12.0-javadoc.jar",
+./metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/com.github.stephenc.jcip/jcip-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/stephenc/jcip/jcip-annotations/1.0-1/jcip-annotations-1.0-1-javadoc.jar",
+./metadata/org.apache.ant/ant-antlr/index.json:8:    "documentation-url" : "https://github.com/apache/ant/blob/rel/1.10.15/manual/Tasks/antlr.html",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/4.0.0-M2/jakarta.persistence-api-4.0.0-M2-javadoc.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/4.0.0-M1/jakarta.persistence-api-4.0.0-M1-javadoc.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:36:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.2.0/jakarta.persistence-api-3.2.0-javadoc.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:50:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0-javadoc.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/15.0.0/arrow-format-15.0.0-javadoc.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0.pom' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3102-3b5a04ca
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor
+  license agreements. See the NOTICE file distributed with this work for additional
+  information regarding copyright ownership. The ASF licenses this file to
+  You under the Apache License, Version 2.0 (the "License"); you may not use
+  this file except in compliance with the License. You may obtain a copy of
+  the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required
+  by applicable law or agreed to in writing, software distributed under the
+  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+  OF ANY KIND, either express or implied. See the License for the specific
+  language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>arrow-memory</artifactId>
+    <groupId>org.apache.arrow</groupId>
+    <version>7.0.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>arrow-memory-core</artifactId>
+
+  <name>Arrow Memory - Core</name>
+  <description>Core off-heap memory management libraries for Arrow ValueVectors.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.immutables</groupId>
+      <artifactId>value</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-sources.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-tests.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-javadoc.jar' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3102-3b5a04ca
+ succeeded in 593ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 03:07:24 GMT
+content-type: application/java-archive
+content-length: 32416
+cf-ray: 9f53d0c23d590396-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "f133e895c6285139f0055e40e76390b8"
+last-modified: Sat, 29 Jan 2022 09:12:28 GMT
+x-checksum-md5: f133e895c6285139f0055e40e76390b8
+x-checksum-sha1: 84e52c616acb3975a8cb2a901f65b06627857a79
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 02 May 2026 03:07:24 GMT
+content-type: application/java-archive
+content-length: 312326
+cf-ray: 9f53d0c3bf2f9a60-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "15f98402ef9423703270753c949e9e05"
+last-modified: Sat, 29 Jan 2022 09:12:27 GMT
+x-checksum-md5: 15f98402ef9423703270753c949e9e05
+x-checksum-sha1: 3190c676e9edced8a609d399304fdda7c9b6f526
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.apache.arrow/arrow-format/index.json" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3102-3b5a04ca
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "15.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/15.0.0/arrow-format-15.0.0-sources.jar",
+    "repository-url" : "https://github.com/apache/arrow",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/15.0.0/arrow-format-15.0.0-javadoc.jar",
+    "description" : "Apache Arrow Format provides generated Java classes for Apache Arrow IPC FlatBuffer metadata definitions. It lets Java applications work with the schema, record batch, dictionary batch, and message structures used by Arrow's columnar interchange format.",
+    "tested-versions" : [
+      "15.0.0",
+      "15.0.1",
+      "15.0.2",
+      "16.0.0",
+      "16.1.0",
+      "17.0.0",
+      "18.0.0",
+      "18.1.0",
+      "18.2.0",
+      "18.3.0",
+      "19.0.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.arrow.flatbuf"
+    ]
+  },
+  {
+    "metadata-version" : "7.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-sources.jar",
+    "repository-url" : "https://github.com/apache/arrow",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-javadoc.jar",
+    "description" : "Apache Arrow Format provides generated Java classes for the Apache Arrow IPC FlatBuffer metadata definitions. It lets Java applications work with the schema, record batch, dictionary batch, and message structures used by Arrow's columnar interchange format.",
+    "tested-versions" : [
+      "7.0.0",
+      "8.0.0",
+      "9.0.0",
+      "10.0.0",
+      "10.0.1",
+      "11.0.0",
+      "12.0.0",
+      "12.0.1",
+      "13.0.0",
+      "14.0.0",
+      "14.0.1",
+      "14.0.2"
+    ],
+    "allowed-packages" : [
+      "org.apache.arrow.flatbuf"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-java-root/7.0.0/arrow-java-root-7.0.0.pom' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3102-3b5a04ca
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor
+  license agreements. See the NOTICE file distributed with this work for additional
+  information regarding copyright ownership. The ASF licenses this file to
+  You under the Apache License, Version 2.0 (the "License"); you may not use
+  this file except in compliance with the License. You may obtain a copy of
+  the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required
+  by applicable law or agreed to in writing, software distributed under the
+  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+  OF ANY KIND, either express or implied. See the License for the specific
+  language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>18</version>
+  </parent>
+
+  <groupId>org.apache.arrow</groupId>
+  <artifactId>arrow-java-root</artifactId>
+  <version>7.0.0</version>
+  <packaging>pom</packaging>
+
+  <name>Apache Arrow Java Root POM</name>
+  <description>Apache Arrow is open source, in-memory columnar data structures and low-overhead messaging</description>
+  <url>https://arrow.apache.org/</url>
+
+  <properties>
+    <target.gen.source.path>${project.build.directory}/generated-sources</target.gen.source.path>
+    <dep.junit.platform.version>1.4.0</dep.junit.platform.version>
+    <dep.junit.jupiter.version>5.4.0</dep.junit.jupiter.version>
+    <dep.slf4j.version>1.7.25</dep.slf4j.version>
+    <dep.guava.version>30.1.1-jre</dep.guava.version>
+    <dep.netty.version>4.1.68.Final</dep.netty.version>
+    <dep.jackson.version>2.11.4</dep.jackson.version>
+    <dep.hadoop.version>2.7.1</dep.hadoop.version>
+    <dep.fbs.version>1.12.0</dep.fbs.version>
+    <dep.avro.version>1.10.0</dep.avro.version>
+    <arrow.vector.classifier />
+    <forkCount>2</forkCount>
+    <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
+    <errorprone.javac.version>9+181-r4173-1</errorprone.javac.version>
+  </properties>
+
+  <scm>
+    <connection>scm:git:https://github.com/apache/arrow.git</connection>
+    <developerConnection>scm:git:https://github.com/apache/arrow.git</developerConnection>
+    <url>https://github.com/apache/arrow</url>
+    <tag>apache-arrow-2.0.0</tag>
+  </scm>
+
+  <mailingLists>
+    <mailingList>
+      <name>Developer List</name>
+      <subscribe>dev-subscribe@arrow.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@arrow.apache.org</unsubscribe>
+      <post>dev@arrow.apache.org</post>
+      <archive>https://mail-archives.apache.org/mod_mbox/arrow-dev/</archive>
+    </mailingList>
+    <mailingList>
+      <name>Commits List</name>
+      <subscribe>commits-subscribe@arrow.apache.org</subscribe>
+      <unsubscribe>commits-unsubscribe@arrow.apache.org</unsubscribe>
+      <post>commits@arrow.apache.org</post>
+      <archive>https://mail-archives.apache.org/mod_mbox/arrow-commits/</archive>
+    </mailingList>
+    <mailingList>
+      <name>Issues List</name>
+      <subscribe>issues-subscribe@arrow.apache.org</subscribe>
+      <unsubscribe>issues-unsubscribe@arrow.apache.org</unsubscribe>
+      <archive>https://mail-archives.apache.org/mod_mbox/arrow-issues/</archive>
+    </mailingList>
+  </mailingLists>
+
+  <repositories>
+
+  </repositories>
+
+  <issueManagement>
+    <system>Jira</system>
+    <url>https://issues.apache.org/jira/browse/arrow</url>
+  </issueManagement>
+
+  <build>
+    <extensions>
+      <!-- provides os.detected.classifier (i.e. linux-x86_64, osx-x86_64) property -->
+      <extension>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+        <version>1.5.0.Final</version>
+      </extension>
+    </extensions>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>rat-checks</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <excludeSubProjects>false</excludeSubProjects>
+          <excludes>
+            <exclude>**/dependency-reduced-pom.xml</exclude>
+            <exclude>**/*.log</exclude>
+            <exclude>**/*.css</exclude>
+            <exclude>**/*.js</exclude>
+            <exclude>**/*.md</exclude>
+            <exclude>**/*.eps</exclude>
+            <exclude>**/*.json</exclude>
+            <exclude>**/*.seq</exclude>
+            <exclude>**/*.parquet</exclude>
+            <exclude>**/*.sql</exclude>
+            <exclude>**/git.properties</exclude>
+            <exclude>**/*.csv</exclude>
+            <exclude>**/*.csvh</exclude>
+            <exclude>**/*.csvh-test</exclude>
+            <exclude>**/*.tsv</exclude>
+            <exclude>**/*.txt</exclude>
+            <exclude>**/*.ssv</exclude>
+            <exclude>**/arrow-*.conf</exclude>
+            <exclude>**/.buildpath</exclude>
+            <exclude>**/*.proto</exclude>
+            <exclude>**/*.fmpp</exclude>
+            <exclude>**/target/**</exclude>
+            <exclude>**/*.tdd</exclude>
+            <exclude>**/*.project</exclude>
+            <exclude>**/TAGS</exclude>
+            <exclude>**/*.checkstyle</exclude>
+            <exclude>**/.classpath</exclude>
+            <exclude>**/.factorypath</exclude>
+            <exclude>**/.settings/**</exclude>
+            <exclude>.*/**</exclude>
+            <exclude>**/*.patch</exclude>
+            <exclude>**/*.pb.cc</exclude>
+            <exclude>**/*.pb.h</exclude>
+            <exclude>**/*.linux</exclude>
+            <exclude>**/client/build/**</exclude>
+            <exclude>**/*.tbl</exclude>
+            <exclude>**/*.iml</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/logging.properties</exclude>
+            <exclude>**/logback-test.xml</exclude>
+            <exclude>**/logback.out.xml</exclude>
+            <exclude>**/logback.xml</exclude>
+          </excludes>
+          <archive>
+            <index>true</index>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+            </manifest>
+            <manifestEntries>
+              <Extension-Name>org.apache.arrow</Extension-Name>
+              <Built-By>${username}</Built-By>
+              <url>https://arrow.apache.org/</url>
+            </manifestEntries>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+            <configuration>
+              <skipIfEmpty>true</skipIfEmpty>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+          <maxmem>2048m</maxmem>
+          <useIncrementalCompilation>false</useIncrementalCompilation>
+          <fork>true</fork>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>validate_java_and_maven_version</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <inherited>false</inherited>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>[3.3.0,4)</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+          <execution>
+            <id>avoid_bad_dependencies</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <bannedDependencies>
+                  <excludes>
+                    <exclude>commons-logging</exclude>
+                    <exclude>javax.servlet:servlet-api</exclude>
+                    <exclude>org.mortbay.jetty:servlet-api</exclude>
+                    <exclude>org.mortbay.jetty:servlet-api-2.5</exclude>
+                    <exclude>log4j:log4j</exclude>
+                  </excludes>
+                </bannedDependencies>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>pl.project13.maven</groupId>
+        <artifactId>git-commit-id-plugin</artifactId>
+        <version>2.2.2</version>
+        <executions>
+          <execution>
+            <id>for-jars</id>
+            <inherited>true</inherited>
+            <goals>
+              <goal>revision</goal>
+            </goals>
+            <configuration>
+              <generateGitPropertiesFilename>target/classes/git.properties</generateGitPropertiesFilename>
+            </configuration>
+          </execution>
+          <execution>
+            <id>for-source-tarball</id>
+            <goals>
+              <goal>revision</goal>
+            </goals>
+            <inherited>false</inherited>
+            <configuration>
+              <generateGitPropertiesFilename>./git.properties</generateGitPropertiesFilename>
+            </configuration>
+          </execution>
+        </executions>
+
+        <configuration>
+          <dateFormat>dd.MM.yyyy '@' HH:mm:ss z</dateFormat>
+          <verbose>false</verbose>
+          <skipPoms>false</skipPoms>
+          <generateGitPropertiesFile>true</generateGitPropertiesFile>
+          <failOnNoGitDirectory>false</failOnNoGitDirectory>
+          <gitDescribe>
+            <skip>false</skip>
+            <always>false</always>
+            <abbrev>7</abbrev>
+            <dirty>-dirty</dirty>
+            <forceLongFormat>true</forceLongFormat>
+          </gitDescribe>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>3.1.0</version>
+        <dependencies>
+          <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>8.19</version>
+          </dependency>
+          <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${dep.guava.version}</version>
+          </dependency>
+          <dependency>
+              <groupId>org.slf4j</groupId>
+              <artifactId>jcl-over-slf4j</artifactId>
+              <version>1.7.5</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>validate</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <configLocation>dev/checkstyle/checkstyle.xml</configLocation>
+          <headerLocation>dev/checkstyle/checkstyle.license</headerLocation>
+          <suppressionsLocation>dev/checkstyle/suppressions.xml</suppressionsLocation>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <encoding>UTF-8</encoding>
+          <consoleOutput>true</consoleOutput>
+          <failsOnError>${checkstyle.failOnViolation}</failsOnError>
+          <failOnViolation>${checkstyle.failOnViolation}</failOnViolation>
+          <violationSeverity>warning</violationSeverity>
+          <format>xml</format>
+          <format>html</format>
+          <outputFile>${project.build.directory}/test/checkstyle-errors.xml</outputFile>
+          <linkXRef>false</linkXRef>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>analyze</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>analyze-only</goal>
+            </goals>
+            <configuration>
+              <ignoreNonCompile>true</ignoreNonCompile>
+              <failOnWarning>true</failOnWarning>
+              <ignoredDependencies>
+                <!-- source annotations (not kept in compiled code) -->
+                <ignoredDependency>javax.annotation:javax.annotation-api:*</ignoredDependency>
+              </ignoredDependencies>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>3.0.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <version>0.13</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.6</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.6.2</version>
+          <configuration>
+            <annotationProcessorPaths>
+              <path>
+                <groupId>org.immutables</groupId>
+                <artifactId>value</artifactId>
+                <version>2.8.2</version>
+              </path>
+            </annotationProcessorPaths>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>3.0.0-M2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.0.0-M3</version>
+          <configuration>
+            <enableAssertions>true</enableAssertions>
+            <childDelegation>true</childDelegation>
+            <forkCount>${forkCount}</forkCount>
+            <reuseForks>true</reuseForks>
+            <systemPropertyVariables>
+              <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
+              <io.netty.tryReflectionSetAccessible>true</io.netty.tryReflectionSetAccessible>
+              <user.timezone>UTC</user.timezone>
+              <!-- Note: changing the below configuration might increase the max allocation size for a vector
+              which in turn can cause OOM. -->
+              <arrow.vector.max_allocation_bytes>1048576</arrow.vector.max_allocation_bytes>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>3.0.0-M3</version>
+          <configuration>
+            <systemPropertyVariables>
+              <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
+              <io.netty.tryReflectionSetAccessible>true</io.netty.tryReflectionSetAccessible>
+              <user.timezone>UTC</user.timezone>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.8.7</version>
+        </plugin>
+
+        <!--This plugin's configuration is used to store Eclipse m2e settings
+          only. It has no influence on the Maven build itself. -->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <versionRange>[1.6,)</versionRange>
+                    <goals>
+                      <goal>run</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <versionRange>[1.2,)</versionRange>
+                    <goals>
+                      <goal>enforce</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>
+                      maven-remote-resources-plugin
+                    </artifactId>
+                    <versionRange>[1.1,)</versionRange>
+                    <goals>
+                      <goal>process</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.rat</groupId>
+                    <artifactId>apache-rat-plugin</artifactId>
+                    <versionRange>[0.10,)</versionRange>
+                    <goals>
+                      <goal>check</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <versionRange>[0,)</versionRange>
+                    <goals>
+                      <goal>check</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.flatbuffers</groupId>
+        <artifactId>flatbuffers-java</artifactId>
+        <version>${dep.fbs.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${dep.guava.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-handler</artifactId>
+        <version>${dep.netty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-buffer</artifactId>
+        <version>${dep.netty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-common</artifactId>
+        <version>${dep.netty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${dep.jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${dep.jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${dep.jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>jsr305</artifactId>
+        <version>3.0.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${dep.slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.annotation</groupId>
+        <artifactId>javax.annotation-api</artifactId>
+        <version>1.3.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.immutables</groupId>
+        <artifactId>value</artifactId>
+        <version>2.8.2</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest</artifactId>
+        <version>2.2</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!-- Test Dependencies -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+      <version>${dep.slf4j.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>${dep.slf4j.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+      <version>${dep.slf4j.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-runner</artifactId>
+      <version>${dep.junit.platform.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${dep.junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${dep.junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <version>${dep.junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- Use to keep older tests running -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <version>2.25.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.2.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>de.huxhorn.lilith</groupId>
+      <artifactId>de.huxhorn.lilith.logback.appender.multiplex-classic</artifactId>
+      <version>0.9.44</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.0.0-M1</version>
+        <reportSets>
+          <reportSet><!-- by default, id = "default" -->
+            <reports><!-- select non-aggregate reports -->
+              <report>javadoc</report>
+              <report>test-javadoc</report>
+            </reports>
+          </reportSet>
+          <reportSet><!-- aggregate reportSet, to define in poms having modules -->
+            <id>aggregate</id>
+            <inherited>false</inherited><!-- don't run aggregate in child modules -->
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+
+  <modules>
+    <module>format</module>
+    <module>memory</module>
+    <module>vector</module>
+    <module>tools</module>
+    <module>adapter/jdbc</module>
+    <module>plasma</module>
+    <module>flight</module>
+    <module>performance</module>
+    <module>algorithm</module>
+    <module>adapter/avro</module>
+    <module>compression</module>
+  </modules>
+
+  <profiles>
+    <profile>
+      <id>java-8</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
+      <properties>
+        <doclint>none</doclint>
+        <additionalparam>-Xdoclint:none</additionalparam>
+      </properties>
+    </profile>
+
+    <profile>
+      <!-- C data interface depends on building a native library -->
+      <id>arrow-c-data</id>
+      <modules>
+        <module>c</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <!-- orc java depends on arrow cpp, and arrow cpp isn't enabled by default yet -->
+      <id>arrow-jni</id>
+      <modules>
+        <!-- these have dependency on cpp -->
+        <module>adapter/orc</module>
+        <module>gandiva</module>
+        <module>dataset</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <!-- Use the version of arrow-vector that shades flatbuffers and packages format -->
+      <id>shade-flatbuffers</id>
+      <properties>
+       <arrow.vector.classifier>shade-format-flatbuffers</arrow.vector.classifier>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>error-prone</id>
+      <!--
+           Do not activate Error Prone while running with Eclipse/M2E as it causes incompatibilities
+           with other annotation processors.
+           See https://github.com/jbosstools/m2e-apt/issues/62 for details
+      -->
+      <activation>
+        <property>
+           <name>!m2e.version</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <compilerArgs combine.children="append">
+                <arg>-XDcompilePolicy=simple</arg>
+                <arg>-Xplugin:ErrorProne</arg>
+              </compilerArgs>
+              <annotationProcessorPaths combine.children="append">
+                <path>
+                  <groupId>com.google.errorprone</groupId>
+                  <artifactId>error_prone_core</artifactId>
+                  <version>2.4.0</version>
+                </path>
+              </annotationProcessorPaths>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>error-prone-jdk8</id>
+      <!-- using github.com/google/error-prone-javac is required when running on JDK 8 -->
+      <activation>
+        <jdk>1.8</jdk>
+        <property>
+           <name>!m2e.version</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <fork>true</fork>
+              <compilerArgs combine.children="append">
+                <arg>-J-Xbootclasspath/p:${settings.localRepository}/com/google/errorprone/javac/${errorprone.javac.version}/javac-${errorprone.javac.version}.jar</arg>
+              </compilerArgs>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>code-coverage</id>
+      <!--
+        Use `mvn -Pcode-coverage install site` to capture and generate the code coverage report
+        Alternatively, if you do not want to generate the full set of reports, use:
+        `mvn -Pcode-coverage install org.jacoco:jacoco-maven-plugin:report org.jacoco:jacoco-maven-plugin:report-integration`
+
+        Add `-Pintegration-tests` to the previous commandline to also capture integration tests coverage
+      -->
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>default-prepare-agent</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>default-prepare-agent-integration</id>
+                <goals>
+                  <goal>prepare-agent-integration</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.7</version>
+            <reportSets>
+              <reportSet>
+                <inherited>false</inherited><!-- don't run aggregate in child modules -->
+                <reports>
+                  <!-- select non-aggregate reports -->
+                  <report>report</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
+
+  </profiles>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory/7.0.0/arrow-memory-7.0.0.pom' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3102-3b5a04ca
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor
+  license agreements. See the NOTICE file distributed with this work for additional
+  information regarding copyright ownership. The ASF licenses this file to
+  You under the Apache License, Version 2.0 (the "License"); you may not use
+  this file except in compliance with the License. You may obtain a copy of
+  the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required
+  by applicable law or agreed to in writing, software distributed under the
+  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+  OF ANY KIND, either express or implied. See the License for the specific
+  language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.arrow</groupId>
+    <artifactId>arrow-java-root</artifactId>
+    <version>7.0.0</version>
+  </parent>
+  <artifactId>arrow-memory</artifactId>
+  <name>Arrow Memory</name>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>memory-core</module>
+    <module>memory-unsafe</module>
+    <module>memory-netty</module>
+  </modules>
+
+</project>
+
+codex
+I found exact Maven artifacts for sources, tests, and Javadocs, plus the Apache Arrow GitHub repository from the parent POM. I’m going to update the JSON with those Maven URLs and omit `language` because this artifact is a Java module, not a Kotlin/Groovy/Scala-specific library under the requested schema.
+apply patch
+patch: completed
+/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3102-3b5a04ca/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+diff --git a/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json b/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+index 4191d7025cb4b06e37ed3f694f67e5ba867611c5..15d203adc63c14e5f9ec580067e209776d172a8e
+--- a/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
++++ b/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0"
++  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-sources.jar",
++  "repository-url" : "https://github.com/apache/arrow",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-javadoc.jar",
++  "description" : "Apache Arrow Memory Core provides the core Java APIs for Arrow's off-heap memory management, including allocators, buffers, and accounting used by Arrow ValueVectors. It lets Arrow components and applications manage direct memory consistently while sharing buffers across Arrow data structures."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json b/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+index 4191d7025cb4b06e37ed3f694f67e5ba867611c5..15d203adc63c14e5f9ec580067e209776d172a8e
+--- a/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
++++ b/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0"
++  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-sources.jar",
++  "repository-url" : "https://github.com/apache/arrow",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-javadoc.jar",
++  "description" : "Apache Arrow Memory Core provides the core Java APIs for Arrow's off-heap memory management, including allocators, buffers, and accounting used by Arrow ValueVectors. It lets Arrow components and applications manage direct memory consistently while sharing buffers across Arrow data structures."
+ }
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org org/apache/arrow/arrow-memory-core/7.0.0 arrow-memory-core-7.0.0-sources.jar tests javadoc
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/
+web search: 
+web search: 
+web search: 
+web search: github apache arrow repository Apache Arrow
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3102-3b5a04ca
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.arrow:arrow-memory-core:7.0.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-sources.jar",
+  "repository-url": "https://github.com/apache/arrow",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-tests.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-javadoc.jar",
+  "description": "Apache Arrow Memory Core provides the core Java APIs for Arrow's off-heap memory management, including allocators, buffers, and accounting used by Arrow ValueVectors. It lets Arrow components and applications manage direct memory consistently while sharing buffers across Arrow data structures."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3102-3b5a04ca
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json b/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+index 4191d7025cb4b06e37ed3f694f67e5ba867611c5..15d203adc63c14e5f9ec580067e209776d172a8e
+--- a/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
++++ b/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0"
++  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-sources.jar",
++  "repository-url" : "https://github.com/apache/arrow",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-javadoc.jar",
++  "description" : "Apache Arrow Memory Core provides the core Java APIs for Arrow's off-heap memory management, including allocators, buffers, and accounting used by Arrow ValueVectors. It lets Arrow components and applications manage direct memory consistently while sharing buffers across Arrow data structures."
+ }
+
+codex
+The JSON parses cleanly with `jq`. `git diff` is empty because this path appears to be outside tracked changes or ignored build output, so I’m checking the file contents directly before wrapping up.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json && git status --short -- build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3102-3b5a04ca
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-sources.jar",
+  "repository-url" : "https://github.com/apache/arrow",
+  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-tests.jar",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-javadoc.jar",
+  "description" : "Apache Arrow Memory Core provides the core Java APIs for Arrow's off-heap memory management, including allocators, buffers, and accounting used by Arrow ValueVectors. It lets Arrow components and applications manage direct memory consistently while sharing buffers across Arrow data structures."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json b/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+index 4191d7025cb4b06e37ed3f694f67e5ba867611c5..15d203adc63c14e5f9ec580067e209776d172a8e
+--- a/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
++++ b/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0"
++  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-sources.jar",
++  "repository-url" : "https://github.com/apache/arrow",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-javadoc.jar",
++  "description" : "Apache Arrow Memory Core provides the core Java APIs for Arrow's off-heap memory management, including allocators, buffers, and accounting used by Arrow ValueVectors. It lets Arrow components and applications manage direct memory consistently while sharing buffers across Arrow data structures."
+ }
+
+web search: 
+web search: arrow-memory-core 7.0.0 Maven Central
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/
+web search: 
+web search: 
+web search: 
+web search: Apache Arrow GitHub apache/arrow
+codex
+Updated [org.apache.arrow-arrow-memory-core-7.0.0.json](/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3102-3b5a04ca/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json) with the exact `7.0.0` Maven Central sources, tests, and Javadoc artifacts, plus the Apache Arrow repository URL. Maven Central lists the `sources`, `tests`, and `javadoc` JARs for this exact version, and Apache Arrow’s repository is `apache/arrow`. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/))
+
+I left `language` absent because this is not Kotlin/Groovy/Scala-specific under the requested schema. Validation: `jq .` passes.
+diff --git a/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json b/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+index 4191d7025cb4b06e37ed3f694f67e5ba867611c5..15d203adc63c14e5f9ec580067e209776d172a8e
+--- a/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
++++ b/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0"
++  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-sources.jar",
++  "repository-url" : "https://github.com/apache/arrow",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-javadoc.jar",
++  "description" : "Apache Arrow Memory Core provides the core Java APIs for Arrow's off-heap memory management, including allocators, buffers, and accounting used by Arrow ValueVectors. It lets Arrow components and applications manage direct memory consistently while sharing buffers across Arrow data structures."
+ }
+
+tokens used
+60,962
+Updated [org.apache.arrow-arrow-memory-core-7.0.0.json](/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3102-3b5a04ca/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json) with the exact `7.0.0` Maven Central sources, tests, and Javadoc artifacts, plus the Apache Arrow repository URL. Maven Central lists the `sources`, `tests`, and `javadoc` JARs for this exact version, and Apache Arrow’s repository is `apache/arrow`. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/))
+
+I left `language` absent because this is not Kotlin/Groovy/Scala-specific under the requested schema. Validation: `jq .` passes.
+Ran agent for org.apache.arrow:arrow-memory-core:7.0.0 (exit 0). Log: /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3102-3b5a04ca/build/agent-artifact-discovery-logs/org.apache.arrow-arrow-memory-core-7.0.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3102-3b5a04ca/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 18s
+9 actionable tasks: 4 executed, 5 from cache
