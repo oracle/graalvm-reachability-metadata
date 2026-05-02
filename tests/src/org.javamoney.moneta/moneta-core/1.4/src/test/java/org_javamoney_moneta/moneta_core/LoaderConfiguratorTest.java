@@ -6,9 +6,9 @@
  */
 package org_javamoney_moneta.moneta_core;
 
-import org.javamoney.moneta.internal.loader.DefaultLoaderService;
-import org.javamoney.moneta.spi.LoaderService;
-import org.javamoney.moneta.spi.LoaderService.UpdatePolicy;
+import org.javamoney.moneta.spi.loader.DefaultLoaderService;
+import org.javamoney.moneta.spi.loader.LoaderService;
+import org.javamoney.moneta.spi.loader.LoaderService.UpdatePolicy;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
