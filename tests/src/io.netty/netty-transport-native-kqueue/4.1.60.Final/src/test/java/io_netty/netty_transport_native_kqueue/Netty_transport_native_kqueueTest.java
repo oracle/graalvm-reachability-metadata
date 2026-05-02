@@ -37,6 +37,7 @@ import io.netty.channel.kqueue.KQueueServerDomainSocketChannel;
 import io.netty.channel.kqueue.KQueueServerSocketChannel;
 import io.netty.channel.kqueue.KQueueSocketChannel;
 import io.netty.channel.kqueue.KQueueSocketChannelConfig;
+import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.unix.DomainSocketReadMode;
 import io.netty.util.CharsetUtil;
 import org.junit.jupiter.api.Test;
@@ -180,6 +181,93 @@ public class Netty_transport_native_kqueueTest {
             clientGroup.shutdownGracefully().syncUninterruptibly();
             workerGroup.shutdownGracefully().syncUninterruptibly();
             bossGroup.shutdownGracefully().syncUninterruptibly();
+        }
+    }
+
+    @Test
+    void kqueueDatagramChannelsCanExchangePacketsWhenAvailable() throws Exception {
+        if (!KQueue.isAvailable()) {
+            assertThatThrownBy(KQueueEventLoopGroup::new).isInstanceOf(LinkageError.class);
+            return;
+        }
+
+        EventLoopGroup serverGroup = new KQueueEventLoopGroup(1);
+        EventLoopGroup clientGroup = new KQueueEventLoopGroup(1);
+        Channel serverChannel = null;
+        Channel clientChannel = null;
+        try {
+            CountDownLatch responseReceived = new CountDownLatch(1);
+            AtomicReference<String> response = new AtomicReference<>();
+            AtomicReference<Throwable> failure = new AtomicReference<>();
+
+            Bootstrap serverBootstrap = new Bootstrap()
+                    .group(serverGroup)
+                    .channel(KQueueDatagramChannel.class)
+                    .handler(new ChannelInitializer<Channel>() {
+                        @Override
+                        protected void initChannel(Channel channel) {
+                            channel.pipeline().addLast(new SimpleChannelInboundHandler<DatagramPacket>() {
+                                @Override
+                                protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket packet) {
+                                    String request = packet.content().toString(CharsetUtil.UTF_8);
+                                    ctx.writeAndFlush(new DatagramPacket(
+                                            Unpooled.copiedBuffer("datagram:" + request, CharsetUtil.UTF_8),
+                                            packet.sender()
+                                    ));
+                                }
+
+                                @Override
+                                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+                                    failure.compareAndSet(null, cause);
+                                    ctx.close();
+                                }
+                            });
+                        }
+                    });
+            serverChannel = serverBootstrap.bind(new InetSocketAddress("127.0.0.1", 0)).syncUninterruptibly().channel();
+            InetSocketAddress serverAddress = (InetSocketAddress) serverChannel.localAddress();
+
+            Bootstrap clientBootstrap = new Bootstrap()
+                    .group(clientGroup)
+                    .channel(KQueueDatagramChannel.class)
+                    .handler(new ChannelInitializer<Channel>() {
+                        @Override
+                        protected void initChannel(Channel channel) {
+                            channel.pipeline().addLast(new SimpleChannelInboundHandler<DatagramPacket>() {
+                                @Override
+                                protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket packet) {
+                                    response.set(packet.content().toString(CharsetUtil.UTF_8));
+                                    responseReceived.countDown();
+                                    ctx.close();
+                                }
+
+                                @Override
+                                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+                                    failure.compareAndSet(null, cause);
+                                    responseReceived.countDown();
+                                    ctx.close();
+                                }
+                            });
+                        }
+                    });
+            clientChannel = clientBootstrap.bind(new InetSocketAddress("127.0.0.1", 0)).syncUninterruptibly().channel();
+            clientChannel.writeAndFlush(new DatagramPacket(
+                    Unpooled.copiedBuffer("ping", CharsetUtil.UTF_8),
+                    serverAddress
+            )).syncUninterruptibly();
+
+            assertThat(responseReceived.await(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(failure.get()).isNull();
+            assertThat(response.get()).isEqualTo("datagram:ping");
+        } finally {
+            if (clientChannel != null) {
+                clientChannel.close().syncUninterruptibly();
+            }
+            if (serverChannel != null) {
+                serverChannel.close().syncUninterruptibly();
+            }
+            clientGroup.shutdownGracefully().syncUninterruptibly();
+            serverGroup.shutdownGracefully().syncUninterruptibly();
         }
     }
 
