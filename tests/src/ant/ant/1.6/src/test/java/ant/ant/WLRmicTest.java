@@ -6,6 +6,10 @@
  */
 package ant.ant;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.invoke.VarHandle;
 import java.nio.file.Path;
 
 import org.apache.tools.ant.Project;
@@ -24,8 +28,16 @@ public class WLRmicTest {
     Path temporaryDirectory;
 
     @Test
-    void executeLoadsWebLogicRmicImplementationAndRunsIt() {
+    void compilerGeneratedClassLiteralHelperResolvesStringArrayType() throws Throwable {
+        Class<?> stringArrayType = resolveCompilerGeneratedClassLiteral("[Ljava.lang.String;");
+
+        assertThat(stringArrayType).isSameAs(String[].class);
+    }
+
+    @Test
+    void executeLoadsWebLogicRmicImplementationAndRunsIt() throws Throwable {
         rmic.reset();
+        clearCompilerGeneratedClassCache();
         WLRmic adapter = new WLRmic();
         adapter.setRmic(newRmic());
 
@@ -41,6 +53,29 @@ public class WLRmicTest {
                 throw error;
             }
         }
+    }
+
+    private static Class<?> resolveCompilerGeneratedClassLiteral(String className) throws Throwable {
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
+                WLRmic.class,
+                MethodHandles.lookup());
+        MethodHandle handle = lookup.findStatic(
+                WLRmic.class,
+                "class$",
+                MethodType.methodType(Class.class, String.class));
+        return (Class<?>) handle.invoke(className);
+    }
+
+    private static void clearCompilerGeneratedClassCache()
+            throws IllegalAccessException, NoSuchFieldException {
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
+                WLRmic.class,
+                MethodHandles.lookup());
+        VarHandle handle = lookup.findStaticVarHandle(
+                WLRmic.class,
+                "array$Ljava$lang$String",
+                Class.class);
+        handle.set(null);
     }
 
     private Rmic newRmic() {
