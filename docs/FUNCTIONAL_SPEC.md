@@ -88,6 +88,32 @@ The `forge/` toolkit composes LLM agents (Aider, Codex, Pi) with deterministic G
 
 Each Forge run produces a schema-validated metrics record (under `metrics_repo/...`) and, when invoked through `complete_pipelines/` or `git_scripts/make_pr_*.py`, opens a PR ready for human review. See [forge/README.md](../forge/README.md) and [forge/docs/architecture.md](../forge/docs/architecture.md).
 
+#### GitHub label contract
+
+GitHub labels are part of the public triage surface for issues and PRs. Pipeline labels are exact and case-sensitive.
+
+| Label | Applies to | Meaning |
+| --- | --- | --- |
+| `library-new-request` | Issue | Request to add support for a library that is not covered yet. |
+| `library-update-request` | Issue / PR | Request or PR to improve support for an already-covered library, including coverage-improvement work. |
+| `library-unsupported-version` | Issue | Compatibility automation found a newer upstream library version that is not currently supported by the existing metadata and tests. |
+| `library-add-new` | PR | PR adds a newly tested library to the repository. |
+| `library-bulk-update` | PR | PR records newly tested upstream versions for already-supported libraries when no repair is required. |
+| `fails-javac-compile` | Issue | New-version compatibility failed during the `compileTestJava` / Java compilation stage. |
+| `fails-java-run` | Issue | New-version compatibility failed during the `javaTest` / JVM runtime stage. |
+| `fails-native-image-build` | Issue | New-version compatibility failed while building the native image. These issues are assigned for maintainer follow-up. |
+| `fails-native-image-run` | Issue | New-version compatibility failed while running the native image. |
+| `fixes-javac-fail` | PR | PR repairs a `fails-javac-compile` compatibility issue. |
+| `fixes-java-run-fail` | PR | PR repairs a `fails-java-run` compatibility issue. |
+| `fixes-native-image-build-fail` | PR | PR repairs a `fails-native-image-build` compatibility issue. |
+| `fixes-native-image-run-fail` | PR | PR repairs a `fails-native-image-run` compatibility issue. |
+| `docker` | PR | PR updates allowed Docker images used by tests. |
+| `GenAI` | PR | PR was produced by generative-AI automation. Generated PR titles also use a `[GenAI]` prefix when created by the corresponding Forge scripts. |
+| `priority` | Issue | Work-queue priority marker. Forge processes matching issues with this label before regular issues in the same pipeline batch; issue triage also adds it to eligible native-build-tools-created support requests. |
+| `high-priority` | Issue | Manual urgency marker for issues that should be handled immediately. |
+| `human-intervention` | Issue / PR | Automation could not safely complete the work without manual follow-up, or automated PR review requested changes. |
+| `human-intervention-fixed` | PR | Manual follow-up has fixed a PR previously requiring intervention; review automation may approve and merge it after merge gates pass. |
+
 ### 4.7 Consumption by native-build-tools
 
 Application developers consume this repository indirectly, through the `org.graalvm.buildtools` Gradle plugin or its Maven counterpart (collectively *native-build-tools*). They never check this repository out themselves.
