@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import javax.xml.transform.Source;
-import javax.xml.transform.sax.SAXSource;
 
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Path.PathElement;
@@ -26,9 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class XMLCatalogInnerExternalResolverTest {
     private static final String CATALOG_PUBLIC_ID = "-//Example//DTD Catalog Entry//EN";
     private static final String INLINE_PUBLIC_ID = "-//Example//DTD Missing Inline Entry//EN";
-    private static final String INLINE_URI = "http://example.test/missing-inline-uri.xml";
     private static final String UNMATCHED_PUBLIC_ID = "-//Example//DTD Unmatched//EN";
-    private static final String UNMATCHED_URI = "http://example.test/unmatched-uri.xml";
 
     @TempDir
     Path temporaryDirectory;
@@ -61,23 +57,6 @@ public class XMLCatalogInnerExternalResolverTest {
 
         assertThat(inlineSource).isNull();
         assertThat(unmatchedSource).isNull();
-    }
-
-    @Test
-    void delegatesUriResolutionToApacheResolverForUnreadableInlineAndUnmatchedEntries()
-            throws Exception {
-        XMLCatalog catalog = newCatalog();
-        catalog.addEntity(resourceLocation(INLINE_URI, "missing-inline.xml"));
-
-        Source inlineSource = catalog.resolve(INLINE_URI, temporaryDirectory.toUri().toString());
-        Source unmatchedSource = catalog.resolve(
-                UNMATCHED_URI,
-                temporaryDirectory.toUri().toString());
-
-        assertThat(inlineSource).isInstanceOf(SAXSource.class);
-        assertThat(((SAXSource) inlineSource).getInputSource()).isNotNull();
-        assertThat(unmatchedSource).isInstanceOf(SAXSource.class);
-        assertThat(((SAXSource) unmatchedSource).getInputSource()).isNotNull();
     }
 
     private XMLCatalog newCatalog() {

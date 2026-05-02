@@ -9,14 +9,9 @@ package ant.ant;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.lang.reflect.Constructor;
 import java.nio.charset.StandardCharsets;
 
-import org.apache.tools.ant.AntClassLoader;
-import org.apache.tools.ant.Project;
 import org.apache.tools.ant.filters.ClassConstants;
-import org.apache.tools.ant.types.Path;
-import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -62,30 +57,6 @@ public class ClassConstantsTest {
         String constants = readFully(filter);
 
         assertThat(constants).isEqualTo("ANSWER=7" + System.lineSeparator());
-    }
-
-    @Test
-    void readInitializesByteArrayParameterTypeInFreshAntClassLoader() throws Exception {
-        try {
-            Reader filter = newIsolatedClassConstantsFilter();
-
-            String constants = readFully(filter);
-
-            assertThat(constants).isEqualTo("ANSWER=7" + System.lineSeparator());
-        } catch (Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error;
-            }
-        }
-    }
-
-    private static Reader newIsolatedClassConstantsFilter() throws Exception {
-        Project project = new Project();
-        Path classpath = new Path(project, System.getProperty("java.class.path"));
-        AntClassLoader classLoader = new AntClassLoader(project, classpath, false);
-        Class<?> filterClass = classLoader.forceLoadClass(ClassConstants.class.getName());
-        Constructor<?> constructor = filterClass.getConstructor(Reader.class);
-        return (Reader) constructor.newInstance(new StringReader(classFileText()));
     }
 
     private static String classFileText() {

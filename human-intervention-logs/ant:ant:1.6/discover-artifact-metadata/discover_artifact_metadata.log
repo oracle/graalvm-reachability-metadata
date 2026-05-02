@@ -1,0 +1,881 @@
+Starting a Gradle Daemon, 18 busy and 6 incompatible and 218 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de600-8e0e-7ac2-bf74-0ded2b36f374
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: ant:ant:1.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6/build/discovered-artifact-metadata/ant-ant-1.6.json
+- Set "coordinates" to "ant:ant:1.6".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the exact 1.6 artifact metadata from Maven and upstream Apache sources, then update the JSON in place.
+web search: 
+web search: Maven Central ant ant 1.6 sources jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/ant/ant/1.6/
+codex
+Maven Central has a `ant-1.6-sources.jar`, but no obvious classifier for tests in the directory listing. I’m checking the local metadata patterns and the source archive contents so the URLs match this repo’s conventions.
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+build/discovered-artifact-metadata/ant-ant-1.6.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/ant-ant-1.6.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+ succeeded in 0ms:
+{
+  "coordinates" : "ant:ant:1.6"
+}
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"' build/discovered-artifact-metadata -n | head -20" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+ succeeded in 0ms:
+web search: 
+web search: https://repo.maven.apache.org/maven2/ant/ant/1.6/
+web search: 
+web search: 
+web search: 
+web search: Apache Ant release 1.6 tag ANT_160 SVN
+web search: 
+web search: 
+web search: 
+web search: site:svn.apache.org/repos/asf/ant/core/tags/ANT_160 Apache Ant 1.6 docs manual cover
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>ant</groupId>  
+  <artifactId>ant</artifactId>
+  <name>Ant</name>
+  <version>1.6</version>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar -o /tmp/ant-1.6-sources.jar && jar tf /tmp/ant-1.6-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/ant/source/apache-ant-1.6.0-src.zip -o /tmp/apache-ant-1.6.0-src.zip && unzip -l /tmp/apache-ant-1.6.0-src.zip | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+ succeeded in 508ms:
+main/org/
+main/org/apache/
+main/org/apache/tools/
+main/org/apache/tools/ant/
+main/org/apache/tools/ant/AntClassLoader.java
+main/org/apache/tools/ant/AntTypeDefinition.java
+main/org/apache/tools/ant/BuildEvent.java
+main/org/apache/tools/ant/BuildException.java
+main/org/apache/tools/ant/BuildListener.java
+main/org/apache/tools/ant/BuildLogger.java
+main/org/apache/tools/ant/ComponentHelper.java
+main/org/apache/tools/ant/DefaultLogger.java
+main/org/apache/tools/ant/defaultManifest.mf
+main/org/apache/tools/ant/DemuxInputStream.java
+main/org/apache/tools/ant/DemuxOutputStream.java
+main/org/apache/tools/ant/Diagnostics.java
+main/org/apache/tools/ant/DirectoryScanner.java
+main/org/apache/tools/ant/DynamicConfigurator.java
+main/org/apache/tools/ant/ExitException.java
+main/org/apache/tools/ant/FileScanner.java
+main/org/apache/tools/ant/filters/
+main/org/apache/tools/ant/filters/BaseFilterReader.java
+main/org/apache/tools/ant/filters/BaseParamFilterReader.java
+main/org/apache/tools/ant/filters/ChainableReader.java
+main/org/apache/tools/ant/filters/ClassConstants.java
+main/org/apache/tools/ant/filters/ConcatFilter.java
+main/org/apache/tools/ant/filters/EscapeUnicode.java
+main/org/apache/tools/ant/filters/ExpandProperties.java
+main/org/apache/tools/ant/filters/HeadFilter.java
+main/org/apache/tools/ant/filters/LineContains.java
+main/org/apache/tools/ant/filters/LineContainsRegExp.java
+main/org/apache/tools/ant/filters/PrefixLines.java
+main/org/apache/tools/ant/filters/ReplaceTokens.java
+main/org/apache/tools/ant/filters/StringInputStream.java
+main/org/apache/tools/ant/filters/StripJavaComments.java
+main/org/apache/tools/ant/filters/StripLineBreaks.java
+main/org/apache/tools/ant/filters/StripLineComments.java
+main/org/apache/tools/ant/filters/TabsToSpaces.java
+main/org/apache/tools/ant/filters/TailFilter.java
+main/org/apache/tools/ant/filters/TokenFilter.java
+main/org/apache/tools/ant/filters/util/
+main/org/apache/tools/ant/filters/util/ChainReaderHelper.java
+main/org/apache/tools/ant/filters/util/JavaClassHelper.java
+main/org/apache/tools/ant/helper/
+main/org/apache/tools/ant/helper/AntXMLContext.java
+main/org/apache/tools/ant/helper/ProjectHelper2.java
+main/org/apache/tools/ant/helper/ProjectHelperImpl.java
+main/org/apache/tools/ant/input/
+main/org/apache/tools/ant/input/DefaultInputHandler.java
+main/org/apache/tools/ant/input/InputHandler.java
+main/org/apache/tools/ant/input/InputRequest.java
+main/org/apache/tools/ant/input/MultipleChoiceInputRequest.java
+main/org/apache/tools/ant/input/PropertyFileInputHandler.java
+main/org/apache/tools/ant/IntrospectionHelper.java
+main/org/apache/tools/ant/launch/
+main/org/apache/tools/ant/launch/AntMain.java
+main/org/apache/tools/ant/launch/Launcher.java
+main/org/apache/tools/ant/launch/LaunchException.java
+main/org/apache/tools/ant/launch/Locator.java
+main/org/apache/tools/ant/listener/
+main/org/apache/tools/ant/listener/AnsiColorLogger.java
+main/org/apache/tools/ant/listener/CommonsLoggingListener.java
+main/org/apache/tools/ant/listener/defaults.properties
+main/org/apache/tools/ant/listener/Log4jListener.java
+main/org/apache/tools/ant/listener/MailLogger.java
+main/org/apache/tools/ant/loader/
+main/org/apache/tools/ant/loader/AntClassLoader2.java
+main/org/apache/tools/ant/Location.java
+main/org/apache/tools/ant/MagicNames.java
+main/org/apache/tools/ant/Main.java
+main/org/apache/tools/ant/NoBannerLogger.java
+main/org/apache/tools/ant/PathTokenizer.java
+main/org/apache/tools/ant/Project.java
+main/org/apache/tools/ant/ProjectComponent.java
+main/org/apache/tools/ant/ProjectHelper.java
+main/org/apache/tools/ant/PropertyHelper.java
+main/org/apache/tools/ant/RuntimeConfigurable.java
+main/org/apache/tools/ant/Target.java
+main/org/apache/tools/ant/Task.java
+main/org/apache/tools/ant/TaskAdapter.java
+main/org/apache/tools/ant/TaskContainer.java
+main/org/apache/tools/ant/taskdefs/
+main/org/apache/tools/ant/taskdefs/AbstractCvsTask.java
+main/org/apache/tools/ant/taskdefs/Ant.java
+main/org/apache/tools/ant/taskdefs/Antlib.java
+main/org/apache/tools/ant/taskdefs/AntlibDefinition.java
+main/org/apache/tools/ant/taskdefs/AntStructure.java
+main/org/apache/tools/ant/taskdefs/Available.java
+main/org/apache/tools/ant/taskdefs/Basename.java
+main/org/apache/tools/ant/taskdefs/BuildNumber.java
+main/org/apache/tools/ant/taskdefs/BUnzip2.java
+main/org/apache/tools/ant/taskdefs/BZip2.java
+main/org/apache/tools/ant/taskdefs/CallTarget.java
+main/org/apache/tools/ant/taskdefs/Checksum.java
+main/org/apache/tools/ant/taskdefs/Chmod.java
+main/org/apache/tools/ant/taskdefs/compilers/
+main/org/apache/tools/ant/taskdefs/compilers/CompilerAdapter.java
+main/org/apache/tools/ant/taskdefs/compilers/CompilerAdapterFactory.java
+main/org/apache/tools/ant/taskdefs/compilers/DefaultCompilerAdapter.java
+main/org/apache/tools/ant/taskdefs/compilers/Gcj.java
+main/org/apache/tools/ant/taskdefs/compilers/Javac12.java
+main/org/apache/tools/ant/taskdefs/compilers/Javac13.java
+main/org/apache/tools/ant/taskdefs/compilers/JavacExternal.java
+main/org/apache/tools/ant/taskdefs/compilers/Jikes.java
+main/org/apache/tools/ant/taskdefs/compilers/Jvc.java
+main/org/apache/tools/ant/taskdefs/compilers/Kjc.java
+main/org/apache/tools/ant/taskdefs/compilers/Sj.java
+main/org/apache/tools/ant/taskdefs/Concat.java
+main/org/apache/tools/ant/taskdefs/condition/
+main/org/apache/tools/ant/taskdefs/condition/And.java
+main/org/apache/tools/ant/taskdefs/condition/Condition.java
+main/org/apache/tools/ant/taskdefs/condition/ConditionBase.java
+main/org/apache/tools/ant/taskdefs/condition/Contains.java
+main/org/apache/tools/ant/taskdefs/condition/Equals.java
+main/org/apache/tools/ant/taskdefs/condition/FilesMatch.java
+main/org/apache/tools/ant/taskdefs/condition/Http.java
+main/org/apache/tools/ant/taskdefs/condition/IsFalse.java
+main/org/apache/tools/ant/taskdefs/condition/IsReference.java
+main/org/apache/tools/ant/taskdefs/condition/IsSet.java
+main/org/apache/tools/ant/taskdefs/condition/IsTrue.java
+
+ succeeded in 1162ms:
+Archive:  /tmp/apache-ant-1.6.0-src.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2003-12-18 21:15   apache-ant-1.6.0/
+     3848  2003-12-18 21:16   apache-ant-1.6.0/bootstrap.sh
+     1041  2003-12-18 21:16   apache-ant-1.6.0/build.sh
+        0  2003-12-18 21:16   apache-ant-1.6.0/docs/
+        0  2003-12-18 21:16   apache-ant-1.6.0/docs/ant2/
+        0  2003-12-18 21:16   apache-ant-1.6.0/docs/images/
+        0  2003-12-18 21:16   apache-ant-1.6.0/docs/manual/
+        0  2003-12-18 21:16   apache-ant-1.6.0/docs/manual/CoreTasks/
+        0  2003-12-18 21:16   apache-ant-1.6.0/docs/manual/CoreTypes/
+        0  2003-12-18 21:16   apache-ant-1.6.0/docs/manual/Integration/
+        0  2003-12-18 21:16   apache-ant-1.6.0/docs/manual/OptionalTasks/
+        0  2003-12-18 21:16   apache-ant-1.6.0/docs/manual/OptionalTypes/
+        0  2003-12-18 21:16   apache-ant-1.6.0/docs/manual/stylesheets/
+        0  2003-12-18 21:16   apache-ant-1.6.0/docs/projects/
+        0  2003-12-18 21:16   apache-ant-1.6.0/docs/projects/antidote/
+        0  2003-12-18 21:16   apache-ant-1.6.0/docs/projects/antidote/images/
+        0  2003-12-18 21:16   apache-ant-1.6.0/docs/projects/antlib/
+        0  2003-12-18 21:15   apache-ant-1.6.0/lib/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/antidote/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/checkstyle/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/containersrc/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/containersrc/test/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/include/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/include/basic/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/include/frag#ment/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/include/included_file_parse_error/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/include/included_file_task_error/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/include/including_file_parse_error/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/include/including_file_task_error/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/include/with space/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/loaderref/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/loaderref/src/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/topleveltasks/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/filters/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/filters/expected/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/filters/input/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/ant/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/checksum/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/checksum/foo/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/checksum/foo/zap/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/concat-input/
+        0  2003-12-18 21:16   apache-ant-1.6.0/src/etc/testcases/taskdefs/conditions/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/copy/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/copy/expected/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/copy/input/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/email/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/exec/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/expected/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/fixcrlf/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/fixcrlf/expected/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/fixcrlf/input/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/import/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/import/subdir/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/manifests/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/antlr/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/depend/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/depend/src1/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/depend/src2/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/depend/src3/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/depend/src4/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/depend/src4/test/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/depend/src5/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/dotnet/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/i18n/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/i18n/translate/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/i18n/translate/expected/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/i18n/translate/expected/de/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/i18n/translate/input/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/i18n/translate/output/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/i18n/translate/output/de/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/image/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/image/src/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/jdepend/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/jsp/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/jsp/WEB-INF/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/junitreport/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/net/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/script/
+        0  2003-12-18 21:16   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/sitraka/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/sos/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/unix/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/vss/
+        0  2003-12-18 21:16   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/wsdl/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/xml/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/replace/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/style/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/subant/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/subant/subant-test1/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/subant/subant-test2/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/xmlproperty/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/xmlproperty/goldfiles/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/xmlproperty/inputs/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/zip/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/types/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/types/assertions/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/types/gold/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/main/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/main/org/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/main/org/apache/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/main/org/apache/tools/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/main/org/apache/tools/ant/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/main/org/apache/tools/ant/filters/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/main/org/apache/tools/ant/filters/util/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/main/org/apache/tools/ant/helper/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/main/org/apache/tools/ant/input/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/main/org/apache/tools/ant/launch/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/main/org/apache/tools/ant/listener/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/main/org/apache/tools/ant/loader/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/main/org/apache/tools/ant/taskdefs/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/main/org/apache/tools/ant/taskdefs/compilers/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/main/org/apache/tools/ant/taskdefs/condition/
+
+exec
+/usr/bin/bash -lc "unzip -l /tmp/apache-ant-1.6.0-src.zip | rg 'src/testcases|src/etc/testcases|src/test' | head -40" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+ succeeded in 0ms:
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/containersrc/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/containersrc/test/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/include/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/include/basic/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/include/frag#ment/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/include/included_file_parse_error/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/include/included_file_task_error/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/include/including_file_parse_error/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/include/including_file_task_error/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/include/with space/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/loaderref/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/loaderref/src/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/core/topleveltasks/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/filters/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/filters/expected/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/filters/input/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/ant/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/checksum/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/checksum/foo/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/checksum/foo/zap/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/concat-input/
+        0  2003-12-18 21:16   apache-ant-1.6.0/src/etc/testcases/taskdefs/conditions/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/copy/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/copy/expected/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/copy/input/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/email/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/exec/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/expected/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/fixcrlf/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/fixcrlf/expected/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/fixcrlf/input/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/import/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/import/subdir/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/manifests/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/antlr/
+        0  2003-12-18 21:15   apache-ant-1.6.0/src/etc/testcases/taskdefs/optional/depend/
+
+exec
+/usr/bin/bash -lc "jar tf /tmp/ant-1.6-sources.jar | rg '("'^|/)test|testcases|src/test|junit'"' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+ succeeded in 0ms:
+main/org/apache/tools/ant/taskdefs/optional/junit/
+main/org/apache/tools/ant/taskdefs/optional/junit/AggregateTransformer.java
+main/org/apache/tools/ant/taskdefs/optional/junit/BaseTest.java
+main/org/apache/tools/ant/taskdefs/optional/junit/BatchTest.java
+main/org/apache/tools/ant/taskdefs/optional/junit/BriefJUnitResultFormatter.java
+main/org/apache/tools/ant/taskdefs/optional/junit/DOMUtil.java
+main/org/apache/tools/ant/taskdefs/optional/junit/Enumerations.java
+main/org/apache/tools/ant/taskdefs/optional/junit/FormatterElement.java
+main/org/apache/tools/ant/taskdefs/optional/junit/JUnitResultFormatter.java
+main/org/apache/tools/ant/taskdefs/optional/junit/JUnitTask.java
+main/org/apache/tools/ant/taskdefs/optional/junit/JUnitTest.java
+main/org/apache/tools/ant/taskdefs/optional/junit/JUnitTestRunner.java
+main/org/apache/tools/ant/taskdefs/optional/junit/JUnitVersionHelper.java
+main/org/apache/tools/ant/taskdefs/optional/junit/PlainJUnitResultFormatter.java
+main/org/apache/tools/ant/taskdefs/optional/junit/SummaryJUnitResultFormatter.java
+main/org/apache/tools/ant/taskdefs/optional/junit/Xalan1Executor.java
+main/org/apache/tools/ant/taskdefs/optional/junit/Xalan2Executor.java
+main/org/apache/tools/ant/taskdefs/optional/junit/XalanExecutor.java
+main/org/apache/tools/ant/taskdefs/optional/junit/XMLConstants.java
+main/org/apache/tools/ant/taskdefs/optional/junit/XMLJUnitResultFormatter.java
+main/org/apache/tools/ant/taskdefs/optional/junit/XMLResultAggregator.java
+
+exec
+/usr/bin/bash -lc "unzip -l /tmp/apache-ant-1.6.0-src.zip | rg 'src/testcases/.+\\.java"'$'"' | head -30" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+ succeeded in 0ms:
+     4288  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/AntClassLoaderTest.java
+    17077  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/BuildFileTest.java
+     3522  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/CaseTest.java
+    19180  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/DirectoryScannerTest.java
+     2860  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/DummyTaskAbstract.java
+     2701  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/DummyTaskInterface.java
+     2796  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/DummyTaskOk.java
+     2760  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/DummyTaskOkNonTask.java
+     2775  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/DummyTaskWithNonPublicExecute.java
+     2796  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/DummyTaskWithNonVoidExecute.java
+     2851  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/DummyTaskWithoutDefaultConstructor.java
+     2782  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/DummyTaskWithoutExecute.java
+     2833  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/DummyTaskWithoutPublicConstructor.java
+     4388  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/ImmutableTest.java
+     6813  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/IncludeTest.java
+    17723  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/IntrospectionHelperTest.java
+     3273  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/LoaderRefTest.java
+     4233  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/MockBuildListener.java
+    10967  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/ProjectTest.java
+     4717  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/PropertyExpansionTest.java
+     4004  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/TaskContainerTest.java
+     3528  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/TopLevelTaskTest.java
+     7047  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/filters/ConcatFilterTest.java
+     5824  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/filters/DynamicFilterTest.java
+     3498  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/filters/EscapeUnicodeTest.java
+     8228  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/filters/HeadTailTest.java
+     3529  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/filters/LineContainsTest.java
+     3298  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/filters/NoNewLineTest.java
+     3530  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/filters/ReplaceTokensTest.java
+     3572  2003-12-18 21:16   apache-ant-1.6.0/src/testcases/org/apache/tools/ant/filters/StripJavaCommentsTest.java
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/ant/core/tags/ | rg 'ANT_16|1\\.6|160' | head -50" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+ succeeded in 109ms:
+<html><head><title>asf - Revision 1933696: /ant/core/tags/ANT_160/src/testcases</title></head>
+<body>
+ <h2>asf - Revision 1933696: /ant/core/tags/ANT_160/src/testcases</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="org/">org/</a></li>
+ </ul>
+</body></html>
+ succeeded in 120ms:
+<html><head><title>asf - Revision 1933696: /ant/core/tags/ANT_160</title></head>
+<body>
+ <h2>asf - Revision 1933696: /ant/core/tags/ANT_160</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href=".cvsignore">.cvsignore</a></li>
+  <li><a href="KEYS">KEYS</a></li>
+  <li><a href="LICENSE">LICENSE</a></li>
+  <li><a href="LICENSE.dom">LICENSE.dom</a></li>
+  <li><a href="LICENSE.junit">LICENSE.junit</a></li>
+  <li><a href="LICENSE.sax">LICENSE.sax</a></li>
+  <li><a href="LICENSE.xerces">LICENSE.xerces</a></li>
+  <li><a href="README">README</a></li>
+  <li><a href="ReleaseInstructions">ReleaseInstructions</a></li>
+  <li><a href="STATUS">STATUS</a></li>
+  <li><a href="WHATSNEW">WHATSNEW</a></li>
+  <li><a href="ant.properties.sample">ant.properties.sample</a></li>
+  <li><a href="bootstrap.bat">bootstrap.bat</a></li>
+  <li><a href="bootstrap.sh">bootstrap.sh</a></li>
+  <li><a href="build.bat">build.bat</a></li>
+  <li><a href="build.sh">build.sh</a></li>
+  <li><a href="build.xml">build.xml</a></li>
+  <li><a href="check.xml">check.xml</a></li>
+  <li><a href="docs/">docs/</a></li>
+  <li><a href="docs.xml">docs.xml</a></li>
+  <li><a href="lib/">lib/</a></li>
+  <li><a href="patch.xml">patch.xml</a></li>
+  <li><a href="proposal/">proposal/</a></li>
+  <li><a href="src/">src/</a></li>
+  <li><a href="welcome.html">welcome.html</a></li>
+  <li><a href="xdocs/">xdocs/</a></li>
+ </ul>
+</body></html>
+ succeeded in 119ms:
+<html><head><title>asf - Revision 1933696: /ant/core/tags/ANT_160/docs/manual</title></head>
+<body>
+ <h2>asf - Revision 1933696: /ant/core/tags/ANT_160/docs/manual</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="CoreTasks/">CoreTasks/</a></li>
+  <li><a href="CoreTypes/">CoreTypes/</a></li>
+  <li><a href="Integration/">Integration/</a></li>
+  <li><a href="LICENSE">LICENSE</a></li>
+  <li><a href="OptionalTasks/">OptionalTasks/</a></li>
+  <li><a href="OptionalTypes/">OptionalTypes/</a></li>
+  <li><a href="antexternal.html">antexternal.html</a></li>
+  <li><a href="anttaskslist.html">anttaskslist.html</a></li>
+  <li><a href="api/">api/</a></li>
+  <li><a href="base_task_classes.html">base_task_classes.html</a></li>
+  <li><a href="conceptstypeslist.html">conceptstypeslist.html</a></li>
+  <li><a href="coretasklist.html">coretasklist.html</a></li>
+  <li><a href="cover.html">cover.html</a></li>
+  <li><a href="credits.html">credits.html</a></li>
+  <li><a href="develop.html">develop.html</a></li>
+  <li><a href="developlist.html">developlist.html</a></li>
+  <li><a href="dirtasks.html">dirtasks.html</a></li>
+  <li><a href="favicon.ico">favicon.ico</a></li>
+  <li><a href="feedback.html">feedback.html</a></li>
+  <li><a href="ide.html">ide.html</a></li>
+  <li><a href="index.html">index.html</a></li>
+  <li><a href="inputhandler.html">inputhandler.html</a></li>
+  <li><a href="install.html">install.html</a></li>
+  <li><a href="installlist.html">installlist.html</a></li>
+  <li><a href="intro.html">intro.html</a></li>
+  <li><a href="listeners.html">listeners.html</a></li>
+  <li><a href="optionaltasklist.html">optionaltasklist.html</a></li>
+  <li><a href="platform.html">platform.html</a></li>
+  <li><a href="running.html">running.html</a></li>
+  <li><a href="runninglist.html">runninglist.html</a></li>
+  <li><a href="stylesheets/">stylesheets/</a></li>
+  <li><a href="sysclasspath.html">sysclasspath.html</a></li>
+  <li><a href="tasksoverview.html">tasksoverview.html</a></li>
+  <li><a href="toc.html">toc.html</a></li>
+  <li><a href="tutorial-writing-tasks-src.zip">tutorial-writing-tasks-src.zip</a></li>
+  <li><a href="tutorial-writing-tasks.html">tutorial-writing-tasks.html</a></li>
+  <li><a href="using.html">using.html</a></li>
+  <li><a href="usinglist.html">usinglist.html</a></li>
+ </ul>
+</body></html>
+ succeeded in 121ms:
+  <li><a href="ANT_160/">ANT_160/</a></li>
+  <li><a href="ANT_161/">ANT_161/</a></li>
+  <li><a href="ANT_161_B1/">ANT_161_B1/</a></li>
+  <li><a href="ANT_162/">ANT_162/</a></li>
+  <li><a href="ANT_162_B1/">ANT_162_B1/</a></li>
+  <li><a href="ANT_163/">ANT_163/</a></li>
+  <li><a href="ANT_163_B1/">ANT_163_B1/</a></li>
+  <li><a href="ANT_164/">ANT_164/</a></li>
+  <li><a href="ANT_165/">ANT_165/</a></li>
+  <li><a href="ANT_16_B1/">ANT_16_B1/</a></li>
+  <li><a href="ANT_16_B2/">ANT_16_B2/</a></li>
+  <li><a href="ANT_16_B3/">ANT_16_B3/</a></li>
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/ant/ant/1.6/
+web search: 
+web search: https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/
+web search: 
+web search: "/ant/core/tags/ANT_160/src/testcases"
+web search: 
+web search: https://archive.apache.org/dist/ant/source/
+web search: 
+web search: 'apache-ant-1.6.0-src.zip' in https://archive.apache.org/dist/ant/source/
+web search: 
+web search: Apache Ant Java-based build tool official
+web search: 
+web search: https://ant.apache.org/
+web search: 
+web search: https://ant.apache.org/git.html
+codex
+The exact historical tag is `ANT_160`; its SVN tree has `src/testcases/` and `docs/manual/`. Because Maven Central publishes an exact `ant-1.6-sources.jar`, I’m using that for source code and the tag URLs for tests and docs.
+web search: 
+web search: site:svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/index.html "Apache Ant User Manual"
+codex
+I’m updating the artifact metadata now. I’ll leave `language` absent because Ant is a Java library/tool, not one of the Kotlin, Groovy, or Scala language-specific libraries covered by the requested schema.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6/build/discovered-artifact-metadata/ant-ant-1.6.json
+diff --git a/build/discovered-artifact-metadata/ant-ant-1.6.json b/build/discovered-artifact-metadata/ant-ant-1.6.json
+index ab57171d85b35aa5cb319971c127f307278fdf1c..fd7426224ff5abb2168e9584c63b3a510cb24ada
+--- a/build/discovered-artifact-metadata/ant-ant-1.6.json
++++ b/build/discovered-artifact-metadata/ant-ant-1.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ant:ant:1.6"
++  "coordinates" : "ant:ant:1.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
++  "repository-url" : "https://gitbox.apache.org/repos/asf/ant.git",
++  "test-code-url" : "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/",
++  "description" : "Apache Ant is a Java library and command-line build tool for running build files composed of targets and tasks. It provides built-in tasks to compile, assemble, test, and run Java applications while also supporting custom tasks and non-Java build processes."
+ }
+
+diff --git a/build/discovered-artifact-metadata/ant-ant-1.6.json b/build/discovered-artifact-metadata/ant-ant-1.6.json
+index ab57171d85b35aa5cb319971c127f307278fdf1c..fd7426224ff5abb2168e9584c63b3a510cb24ada
+--- a/build/discovered-artifact-metadata/ant-ant-1.6.json
++++ b/build/discovered-artifact-metadata/ant-ant-1.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ant:ant:1.6"
++  "coordinates" : "ant:ant:1.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
++  "repository-url" : "https://gitbox.apache.org/repos/asf/ant.git",
++  "test-code-url" : "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/",
++  "description" : "Apache Ant is a Java library and command-line build tool for running build files composed of targets and tasks. It provides built-in tasks to compile, assemble, test, and run Java applications while also supporting custom tasks and non-Java build processes."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/ant-ant-1.6.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+ succeeded in 0ms:
+{
+  "coordinates": "ant:ant:1.6",
+  "source-code-url": "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
+  "repository-url": "https://gitbox.apache.org/repos/asf/ant.git",
+  "test-code-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/",
+  "documentation-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/",
+  "description": "Apache Ant is a Java library and command-line build tool for running build files composed of targets and tasks. It provides built-in tasks to compile, assemble, test, and run Java applications while also supporting custom tasks and non-Java build processes."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 00:06:22 GMT
+content-type: application/java-archive
+content-length: 2182693
+cf-ray: 9f52c7978f51be5c-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 62
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/ | sed -n '1,8p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+exec
+/usr/bin/bash -lc "curl -fsSI https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/ | sed -n '1,8p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+ succeeded in 296ms:
+HTTP/1.1 200 OK
+Date: Sat, 02 May 2026 00:06:22 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Thu, 18 Dec 2003 12:46:41 GMT
+ETag: W/"275813//ant/core/tags/ANT_160/src/testcases"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+
+ succeeded in 276ms:
+HTTP/1.1 200 OK
+Date: Sat, 02 May 2026 00:06:23 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Thu, 18 Dec 2003 12:46:41 GMT
+ETag: W/"275813//ant/core/tags/ANT_160/docs/manual"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+
+diff --git a/build/discovered-artifact-metadata/ant-ant-1.6.json b/build/discovered-artifact-metadata/ant-ant-1.6.json
+index ab57171d85b35aa5cb319971c127f307278fdf1c..fd7426224ff5abb2168e9584c63b3a510cb24ada
+--- a/build/discovered-artifact-metadata/ant-ant-1.6.json
++++ b/build/discovered-artifact-metadata/ant-ant-1.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ant:ant:1.6"
++  "coordinates" : "ant:ant:1.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
++  "repository-url" : "https://gitbox.apache.org/repos/asf/ant.git",
++  "test-code-url" : "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/",
++  "description" : "Apache Ant is a Java library and command-line build tool for running build files composed of targets and tasks. It provides built-in tasks to compile, assemble, test, and run Java applications while also supporting custom tasks and non-Java build processes."
+ }
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://gitbox.apache.org/repos/asf/ant.git | sed -n '1,8p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+diff --git a/build/discovered-artifact-metadata/ant-ant-1.6.json b/build/discovered-artifact-metadata/ant-ant-1.6.json
+index ab57171d85b35aa5cb319971c127f307278fdf1c..fd7426224ff5abb2168e9584c63b3a510cb24ada
+--- a/build/discovered-artifact-metadata/ant-ant-1.6.json
++++ b/build/discovered-artifact-metadata/ant-ant-1.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ant:ant:1.6"
++  "coordinates" : "ant:ant:1.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
++  "repository-url" : "https://gitbox.apache.org/repos/asf/ant.git",
++  "test-code-url" : "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/",
++  "description" : "Apache Ant is a Java library and command-line build tool for running build files composed of targets and tasks. It provides built-in tasks to compile, assemble, test, and run Java applications while also supporting custom tasks and non-Java build processes."
+ }
+
+ succeeded in 443ms:
+HTTP/2 302 
+location: https://github.com/apache/ant
+content-type: text/html; charset=iso-8859-1
+date: Sat, 02 May 2026 00:06:27 GMT
+server: Apache
+
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/apache/ant | sed -n '1,8p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/apache/ant/tree/ANT_160 | sed -n '1,8p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+ succeeded in 698ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 00:06:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"ef95dfe235243a92824b5f85acbf4616"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+
+diff --git a/build/discovered-artifact-metadata/ant-ant-1.6.json b/build/discovered-artifact-metadata/ant-ant-1.6.json
+index ab57171d85b35aa5cb319971c127f307278fdf1c..fd7426224ff5abb2168e9584c63b3a510cb24ada
+--- a/build/discovered-artifact-metadata/ant-ant-1.6.json
++++ b/build/discovered-artifact-metadata/ant-ant-1.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ant:ant:1.6"
++  "coordinates" : "ant:ant:1.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
++  "repository-url" : "https://gitbox.apache.org/repos/asf/ant.git",
++  "test-code-url" : "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/",
++  "description" : "Apache Ant is a Java library and command-line build tool for running build files composed of targets and tasks. It provides built-in tasks to compile, assemble, test, and run Java applications while also supporting custom tasks and non-Java build processes."
+ }
+
+ succeeded in 1001ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 00:06:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"ce3bedc409505a8a1aa1abc2687516dc"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+
+web search: 
+web search: https://github.com/apache/ant/tree/ANT_160/src/testcases
+web search: 
+web search: https://repo.maven.apache.org/maven2/ant/ant/1.6/
+web search: 
+web search: https://github.com/apache/ant
+codex
+I found that Apache’s GitHub mirror exposes the historical `ANT_160` tag directly, so I’m switching the repository, test, and documentation URLs to those tagged GitHub paths for consistency and easier inspection.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6/build/discovered-artifact-metadata/ant-ant-1.6.json
+diff --git a/build/discovered-artifact-metadata/ant-ant-1.6.json b/build/discovered-artifact-metadata/ant-ant-1.6.json
+index ab57171d85b35aa5cb319971c127f307278fdf1c..ce5f125bb3b2a6df041b7a5be94bee846658665e
+--- a/build/discovered-artifact-metadata/ant-ant-1.6.json
++++ b/build/discovered-artifact-metadata/ant-ant-1.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ant:ant:1.6"
++  "coordinates" : "ant:ant:1.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
++  "repository-url" : "https://github.com/apache/ant",
++  "test-code-url" : "https://github.com/apache/ant/tree/ANT_160/src/testcases",
++  "documentation-url" : "https://github.com/apache/ant/tree/ANT_160/docs/manual",
++  "description" : "Apache Ant is a Java library and command-line build tool for running build files composed of targets and tasks. It provides built-in tasks to compile, assemble, test, and run Java applications while also supporting custom tasks and non-Java build processes."
+ }
+
+diff --git a/build/discovered-artifact-metadata/ant-ant-1.6.json b/build/discovered-artifact-metadata/ant-ant-1.6.json
+index ab57171d85b35aa5cb319971c127f307278fdf1c..ce5f125bb3b2a6df041b7a5be94bee846658665e
+--- a/build/discovered-artifact-metadata/ant-ant-1.6.json
++++ b/build/discovered-artifact-metadata/ant-ant-1.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ant:ant:1.6"
++  "coordinates" : "ant:ant:1.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
++  "repository-url" : "https://github.com/apache/ant",
++  "test-code-url" : "https://github.com/apache/ant/tree/ANT_160/src/testcases",
++  "documentation-url" : "https://github.com/apache/ant/tree/ANT_160/docs/manual",
++  "description" : "Apache Ant is a Java library and command-line build tool for running build files composed of targets and tasks. It provides built-in tasks to compile, assemble, test, and run Java applications while also supporting custom tasks and non-Java build processes."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/ant-ant-1.6.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+ succeeded in 0ms:
+{
+  "coordinates": "ant:ant:1.6",
+  "source-code-url": "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
+  "repository-url": "https://github.com/apache/ant",
+  "test-code-url": "https://github.com/apache/ant/tree/ANT_160/src/testcases",
+  "documentation-url": "https://github.com/apache/ant/tree/ANT_160/docs/manual",
+  "description": "Apache Ant is a Java library and command-line build tool for running build files composed of targets and tasks. It provides built-in tasks to compile, assemble, test, and run Java applications while also supporting custom tasks and non-Java build processes."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar | sed -n '1,6p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 00:06:54 GMT
+content-type: application/java-archive
+content-length: 2182693
+cf-ray: 9f52c85df99470cb-ZRH
+cf-cache-status: HIT
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/apache/ant/tree/ANT_160/docs/manual | sed -n '1,6p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/apache/ant/tree/ANT_160/src/testcases | sed -n '1,6p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6
+ succeeded in 473ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 00:06:54 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"8407fea2af7e498b11e5b087acde7c03"
+cache-control: max-age=0, private, must-revalidate
+
+diff --git a/build/discovered-artifact-metadata/ant-ant-1.6.json b/build/discovered-artifact-metadata/ant-ant-1.6.json
+index ab57171d85b35aa5cb319971c127f307278fdf1c..ce5f125bb3b2a6df041b7a5be94bee846658665e
+--- a/build/discovered-artifact-metadata/ant-ant-1.6.json
++++ b/build/discovered-artifact-metadata/ant-ant-1.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ant:ant:1.6"
++  "coordinates" : "ant:ant:1.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
++  "repository-url" : "https://github.com/apache/ant",
++  "test-code-url" : "https://github.com/apache/ant/tree/ANT_160/src/testcases",
++  "documentation-url" : "https://github.com/apache/ant/tree/ANT_160/docs/manual",
++  "description" : "Apache Ant is a Java library and command-line build tool for running build files composed of targets and tasks. It provides built-in tasks to compile, assemble, test, and run Java applications while also supporting custom tasks and non-Java build processes."
+ }
+
+ succeeded in 630ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 00:06:54 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"187613877b93dde31ba9486fb8acd4ac"
+cache-control: max-age=0, private, must-revalidate
+
+web search: 
+web search: Maven Central ant ant 1.6 ant-1.6-sources.jar
+web search: 
+web search: https://github.com/apache/ant/tree/ANT_160/src/testcases
+codex
+Updated [ant-ant-1.6.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6/build/discovered-artifact-metadata/ant-ant-1.6.json).
+
+I used the Maven Central `1.6` sources JAR, the Apache Ant GitHub repository, and the `ANT_160` tagged paths for the test suite and manual. Ant is Java-based, but not Kotlin, Groovy, or Scala-specific, so I left `language` absent. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/ant/ant/1.6/?utm_source=openai))
+
+Validation: `jq` parsed the JSON successfully, and the selected source/test/doc URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/ant-ant-1.6.json b/build/discovered-artifact-metadata/ant-ant-1.6.json
+index ab57171d85b35aa5cb319971c127f307278fdf1c..ce5f125bb3b2a6df041b7a5be94bee846658665e
+--- a/build/discovered-artifact-metadata/ant-ant-1.6.json
++++ b/build/discovered-artifact-metadata/ant-ant-1.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ant:ant:1.6"
++  "coordinates" : "ant:ant:1.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
++  "repository-url" : "https://github.com/apache/ant",
++  "test-code-url" : "https://github.com/apache/ant/tree/ANT_160/src/testcases",
++  "documentation-url" : "https://github.com/apache/ant/tree/ANT_160/docs/manual",
++  "description" : "Apache Ant is a Java library and command-line build tool for running build files composed of targets and tasks. It provides built-in tasks to compile, assemble, test, and run Java applications while also supporting custom tasks and non-Java build processes."
+ }
+
+tokens used
+126,205
+Updated [ant-ant-1.6.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6/build/discovered-artifact-metadata/ant-ant-1.6.json).
+
+I used the Maven Central `1.6` sources JAR, the Apache Ant GitHub repository, and the `ANT_160` tagged paths for the test suite and manual. Ant is Java-based, but not Kotlin, Groovy, or Scala-specific, so I left `language` absent. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/ant/ant/1.6/?utm_source=openai))
+
+Validation: `jq` parsed the JSON successfully, and the selected source/test/doc URLs returned HTTP 200.
+Ran agent for ant:ant:1.6 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6/build/agent-artifact-discovery-logs/ant-ant-1.6.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2392-e88107e6/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 29s
+9 actionable tasks: 4 executed, 5 from cache

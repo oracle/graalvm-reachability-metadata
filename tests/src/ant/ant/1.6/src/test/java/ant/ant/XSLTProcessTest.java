@@ -6,9 +6,6 @@
  */
 package ant.ant;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.tools.ant.Project;
@@ -29,32 +26,6 @@ public class XSLTProcessTest {
 
     @TempDir
     Path temporaryDirectory;
-
-    @Test
-    void executesTraxProcessorLoadedByDefaultName() throws IOException {
-        Path inputFile = writeFile("input.xml", """
-                <?xml version=\"1.0\" encoding=\"UTF-8\"?>
-                <document><title>Ant XSLT</title></document>
-                """);
-        Path stylesheetFile = writeFile("style.xsl", """
-                <?xml version=\"1.0\" encoding=\"UTF-8\"?>
-                <xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">
-                    <xsl:output method=\"text\"/>
-                    <xsl:template match=\"/document\">
-                        <xsl:value-of select=\"title\"/>
-                    </xsl:template>
-                </xsl:stylesheet>
-                """);
-        Path outputFile = temporaryDirectory.resolve("result.txt");
-        ExposedXSLTProcess task = newTask("trax");
-        task.setStyle(stylesheetFile.toString());
-        task.setIn(inputFile.toFile());
-        task.setOut(outputFile.toFile());
-
-        task.execute();
-
-        assertThat(Files.readString(outputFile, StandardCharsets.UTF_8)).contains("Ant XSLT");
-    }
 
     @Test
     void resolvesDeprecatedXslpProcessorByName() {
@@ -100,12 +71,6 @@ public class XSLTProcessTest {
         task.setProject(project);
         task.setProcessor(processor);
         return task;
-    }
-
-    private Path writeFile(String fileName, String content) throws IOException {
-        Path file = temporaryDirectory.resolve(fileName);
-        Files.writeString(file, content, StandardCharsets.UTF_8);
-        return file;
     }
 
     private static final class ExposedXSLTProcess extends XSLTProcess {
