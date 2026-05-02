@@ -7,6 +7,7 @@
 package org_apache_maven.maven_api_annotations;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -88,6 +89,15 @@ public class Maven_api_annotationsTest {
 
         assertThat(contract.name()).isEqualTo("preview");
         assertThat(contract.render("api")).isEqualTo("preview-api");
+    }
+
+    @Test
+    void immutableAnnotationDeclaresThreadSafeSemantics() {
+        String immutableAnnotation = readLibraryClassFile(Immutable.class);
+
+        assertThat(immutableAnnotation)
+                .contains("RuntimeInvisibleAnnotations")
+                .contains("org/apache/maven/api/annotations/ThreadSafe");
     }
 
     @Test
@@ -272,6 +282,17 @@ public class Maven_api_annotationsTest {
         assertThat(classFilePath).exists();
         try {
             return Files.readString(classFilePath, StandardCharsets.ISO_8859_1);
+        } catch (IOException exception) {
+            throw new UncheckedIOException(exception);
+        }
+    }
+
+    private static String readLibraryClassFile(Class<?> type) {
+        String resourceName = type.getName().replace('.', '/') + ".class";
+
+        try (InputStream inputStream = type.getClassLoader().getResourceAsStream(resourceName)) {
+            assertThat(inputStream).isNotNull();
+            return new String(inputStream.readAllBytes(), StandardCharsets.ISO_8859_1);
         } catch (IOException exception) {
             throw new UncheckedIOException(exception);
         }
