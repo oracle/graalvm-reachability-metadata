@@ -7,6 +7,8 @@
 package io_netty.netty_transport_native_kqueue;
 
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -38,6 +40,7 @@ import io.netty.channel.kqueue.KQueueServerSocketChannel;
 import io.netty.channel.kqueue.KQueueSocketChannel;
 import io.netty.channel.kqueue.KQueueSocketChannelConfig;
 import io.netty.channel.socket.DatagramPacket;
+import io.netty.channel.unix.DomainSocketAddress;
 import io.netty.channel.unix.DomainSocketReadMode;
 import io.netty.util.CharsetUtil;
 import org.junit.jupiter.api.Test;
@@ -181,6 +184,54 @@ public class Netty_transport_native_kqueueTest {
             clientGroup.shutdownGracefully().syncUninterruptibly();
             workerGroup.shutdownGracefully().syncUninterruptibly();
             bossGroup.shutdownGracefully().syncUninterruptibly();
+        }
+    }
+
+    @Test
+    void kqueueDomainSocketChannelsCanExchangeBytesWhenAvailable() throws Exception {
+        if (!KQueue.isAvailable()) {
+            assertThatThrownBy(KQueueEventLoopGroup::new).isInstanceOf(LinkageError.class);
+            return;
+        }
+
+        Path socketPath = Files.createTempFile("netty-kqueue-domain-", ".sock");
+        Files.deleteIfExists(socketPath);
+        DomainSocketAddress socketAddress = new DomainSocketAddress(socketPath.toFile());
+        EventLoopGroup serverGroup = new KQueueEventLoopGroup(1);
+        EventLoopGroup clientGroup = new KQueueEventLoopGroup(1);
+        Channel serverChannel = null;
+        Channel clientChannel = null;
+        try {
+            CountDownLatch responseReceived = new CountDownLatch(1);
+            AtomicReference<String> response = new AtomicReference<>();
+            AtomicReference<Throwable> failure = new AtomicReference<>();
+
+            ServerBootstrap serverBootstrap = new ServerBootstrap()
+                    .group(serverGroup)
+                    .channel(KQueueServerDomainSocketChannel.class)
+                    .childHandler(new EchoServerInitializer(failure));
+            serverChannel = serverBootstrap.bind(socketAddress).syncUninterruptibly().channel();
+
+            Bootstrap clientBootstrap = new Bootstrap()
+                    .group(clientGroup)
+                    .channel(KQueueDomainSocketChannel.class)
+                    .handler(new EchoClientInitializer(response, responseReceived, failure));
+            clientChannel = clientBootstrap.connect(socketAddress).syncUninterruptibly().channel();
+            clientChannel.writeAndFlush(Unpooled.copiedBuffer("domain", CharsetUtil.UTF_8)).syncUninterruptibly();
+
+            assertThat(responseReceived.await(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(failure.get()).isNull();
+            assertThat(response.get()).isEqualTo("echo:domain");
+        } finally {
+            if (clientChannel != null) {
+                clientChannel.close().syncUninterruptibly();
+            }
+            if (serverChannel != null) {
+                serverChannel.close().syncUninterruptibly();
+            }
+            clientGroup.shutdownGracefully().syncUninterruptibly();
+            serverGroup.shutdownGracefully().syncUninterruptibly();
+            Files.deleteIfExists(socketPath);
         }
     }
 
