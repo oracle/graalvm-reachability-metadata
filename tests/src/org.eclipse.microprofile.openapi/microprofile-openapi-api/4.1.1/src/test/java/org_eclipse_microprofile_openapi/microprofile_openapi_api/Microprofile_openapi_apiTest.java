@@ -37,6 +37,7 @@ import org.eclipse.microprofile.openapi.models.info.Contact;
 import org.eclipse.microprofile.openapi.models.info.Info;
 import org.eclipse.microprofile.openapi.models.info.License;
 import org.eclipse.microprofile.openapi.models.links.Link;
+import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.media.Discriminator;
 import org.eclipse.microprofile.openapi.models.media.Encoding;
 import org.eclipse.microprofile.openapi.models.media.MediaType;
@@ -414,6 +415,53 @@ public class Microprofile_openapi_apiTest {
     }
 
     @Test
+    void supportsContentBasedParametersAndHeaders() {
+        Schema searchCriteria = OASFactory.createSchema()
+                .addType(Schema.SchemaType.OBJECT)
+                .addProperty("query", OASFactory.createSchema().addType(Schema.SchemaType.STRING))
+                .addProperty("limit", OASFactory.createSchema().addType(Schema.SchemaType.INTEGER));
+        MediaType jsonCriteria = OASFactory.createMediaType()
+                .schema(searchCriteria)
+                .example(Map.of("query", "boots", "limit", 10));
+        MediaType vendorCriteria = OASFactory.createMediaType()
+                .schema(searchCriteria)
+                .addExample("compact", OASFactory.createExample().value(Map.of("query", "boots")));
+        Content parameterContent = OASFactory.createContent()
+                .addMediaType("application/json", jsonCriteria)
+                .addMediaType("application/vnd.search+json", vendorCriteria);
+        Parameter filterParameter = OASFactory.createParameter()
+                .name("filter")
+                .in(Parameter.In.QUERY)
+                .description("structured search criteria")
+                .allowReserved(true)
+                .explode(false)
+                .content(parameterContent);
+        MediaType plainSignature = OASFactory.createMediaType()
+                .schema(OASFactory.createSchema().addType(Schema.SchemaType.STRING))
+                .example("sha256=abc123");
+        Content headerContent = OASFactory.createContent()
+                .addMediaType("text/plain", plainSignature);
+        Header signatureHeader = OASFactory.createHeader()
+                .description("request signature")
+                .required(true)
+                .content(headerContent);
+
+        assertThat(filterParameter.getContent()).isSameAs(parameterContent);
+        assertThat(filterParameter.getContent().hasMediaType("application/json")).isTrue();
+        assertThat(filterParameter.getContent().getMediaType("application/json").getSchema().getProperties())
+                .containsKeys("query", "limit");
+        assertThat(filterParameter.getContent().getMediaTypes())
+                .containsEntry("application/vnd.search+json", vendorCriteria);
+        assertThat(filterParameter.getAllowReserved()).isTrue();
+        assertThat(filterParameter.getExplode()).isFalse();
+        assertThat(signatureHeader.getContent().getMediaType("text/plain").getExample()).isEqualTo("sha256=abc123");
+        assertThat(signatureHeader.getRequired()).isTrue();
+
+        parameterContent.removeMediaType("application/vnd.search+json");
+        assertThat(parameterContent.hasMediaType("application/vnd.search+json")).isFalse();
+    }
+
+    @Test
     void exposesConfigurationConstantsEnumsAndDefaultFilterBehavior() {
         assertThat(OASConfig.MODEL_READER).isEqualTo("mp.openapi.model.reader");
         assertThat(OASConfig.FILTER).isEqualTo("mp.openapi.filter");
@@ -463,7 +511,7 @@ public class Microprofile_openapi_apiTest {
     private static final class TestOASFactoryResolver extends OASFactoryResolver {
         @Override
         public <T extends org.eclipse.microprofile.openapi.models.Constructible> T createObject(Class<T> type) {
-            Object proxy = Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] { type }, new ModelInvocationHandler(type));
+            Object proxy = Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] {type}, new ModelInvocationHandler(type));
             return type.cast(proxy);
         }
     }
