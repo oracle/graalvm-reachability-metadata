@@ -8,7 +8,7 @@ package io_quarkus.quarkus_bootstrap_app_model;
 
 import org.junit.jupiter.api.Test;
 
-class Quarkus_bootstrap_app_modelTest {
+public class Quarkus_bootstrap_app_modelTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
