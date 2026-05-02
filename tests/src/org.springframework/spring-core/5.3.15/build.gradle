@@ -9,6 +9,7 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String cglibDebugLocation = layout.buildDirectory.dir("cglib-debug").get().asFile.absolutePath
 
 dependencies {
     testImplementation "org.springframework:spring-core:$libraryVersion"
@@ -17,6 +18,7 @@ dependencies {
 }
 
 tasks.withType(Test).configureEach {
+    systemProperty "cglib.debugLocation", cglibDebugLocation
     jvmArgs += [
         "--add-opens=java.base/java.lang=ALL-UNNAMED",
         "--add-opens=java.base/java.io=ALL-UNNAMED"
@@ -33,6 +35,9 @@ graalvmNative {
         }
     }
     binaries {
+        test {
+            runtimeArgs("-Dcglib.debugLocation=${cglibDebugLocation}")
+        }
         all {
             buildArgs.addAll([
                 "--add-opens=java.base/java.io=ALL-UNNAMED"
