@@ -261,6 +261,31 @@ public class Portlet_apiTest {
     }
 
     @Test
+    void genericPortletHonorsSeparateRenderHeaderAndMarkupParts() throws Exception {
+        RecordingGenericPortlet portlet = initializedPortlet();
+        RecordingRenderResponse headersResponse = new RecordingRenderResponse();
+
+        portlet.render(new RenderPartRequest(PortletRequest.RENDER_HEADERS), headersResponse);
+
+        assertThat(portlet.events).containsExactly("headers");
+        assertThat(headersResponse.title).isEqualTo("Localized Sample Portlet");
+        assertThat(headersResponse.nextPossiblePortletModes).containsExactly(PortletMode.EDIT, PortletMode.HELP);
+
+        portlet.events.clear();
+        RecordingRenderResponse markupResponse = new RecordingRenderResponse();
+
+        portlet.render(new RenderPartRequest(PortletRequest.RENDER_MARKUP), markupResponse);
+
+        assertThat(portlet.events).containsExactly("view");
+        assertThat(markupResponse.title).isNull();
+        assertThat(markupResponse.nextPossiblePortletModes).isNull();
+
+        PortletException exception = assertThrows(PortletException.class, () ->
+                portlet.render(new RenderPartRequest("unknown-part"), new RecordingRenderResponse()));
+        assertThat(exception).hasMessage("Unknown value of the 'javax.portlet.render_part' request attribute");
+    }
+
+    @Test
     void genericPortletAnnotationBasedActionRenderAndEventDispatch() throws Exception {
         AnnotatedPortlet portlet = new AnnotatedPortlet();
         portlet.init(new TestPortletConfig(new RecordingPortletContext()));
@@ -584,6 +609,328 @@ public class Portlet_apiTest {
                 .returns("getCookies", null)
                 .returns("getPrivateParameterMap", Map.of("private", new String[] {"1"}))
                 .returns("getPublicParameterMap", Map.of("public", new String[] {"2"}));
+    }
+
+    private static class RenderPartRequest implements RenderRequest {
+        private final Object renderPart;
+
+        RenderPartRequest(Object renderPart) {
+            this.renderPart = renderPart;
+        }
+
+        @Override
+        public String getETag() {
+            return "etag";
+        }
+
+        @Override
+        public boolean isWindowStateAllowed(WindowState state) {
+            return true;
+        }
+
+        @Override
+        public boolean isPortletModeAllowed(PortletMode mode) {
+            return true;
+        }
+
+        @Override
+        public PortletMode getPortletMode() {
+            return PortletMode.VIEW;
+        }
+
+        @Override
+        public WindowState getWindowState() {
+            return WindowState.NORMAL;
+        }
+
+        @Override
+        public PortletPreferences getPreferences() {
+            return new RecordingPortletPreferences(Map.of("theme", "light"));
+        }
+
+        @Override
+        public PortletSession getPortletSession() {
+            return new RecordingPortletSession(new RecordingPortletContext());
+        }
+
+        @Override
+        public PortletSession getPortletSession(boolean create) {
+            return create ? getPortletSession() : null;
+        }
+
+        @Override
+        public String getProperty(String name) {
+            return null;
+        }
+
+        @Override
+        public Enumeration<String> getProperties(String name) {
+            return Collections.emptyEnumeration();
+        }
+
+        @Override
+        public Enumeration<String> getPropertyNames() {
+            return Collections.emptyEnumeration();
+        }
+
+        @Override
+        public PortalContext getPortalContext() {
+            return new TestPortalContext();
+        }
+
+        @Override
+        public String getAuthType() {
+            return PortletRequest.BASIC_AUTH;
+        }
+
+        @Override
+        public String getContextPath() {
+            return "/sample";
+        }
+
+        @Override
+        public String getRemoteUser() {
+            return "tester";
+        }
+
+        @Override
+        public Principal getUserPrincipal() {
+            return () -> "tester";
+        }
+
+        @Override
+        public boolean isUserInRole(String role) {
+            return true;
+        }
+
+        @Override
+        public Object getAttribute(String name) {
+            return PortletRequest.RENDER_PART.equals(name) ? renderPart : null;
+        }
+
+        @Override
+        public Enumeration<String> getAttributeNames() {
+            return Collections.enumeration(List.of(PortletRequest.RENDER_PART));
+        }
+
+        @Override
+        public String getParameter(String name) {
+            return null;
+        }
+
+        @Override
+        public Enumeration<String> getParameterNames() {
+            return Collections.emptyEnumeration();
+        }
+
+        @Override
+        public String[] getParameterValues(String name) {
+            return null;
+        }
+
+        @Override
+        public Map<String, String[]> getParameterMap() {
+            return Map.of();
+        }
+
+        @Override
+        public boolean isSecure() {
+            return true;
+        }
+
+        @Override
+        public void setAttribute(String name, Object object) {
+        }
+
+        @Override
+        public void removeAttribute(String name) {
+        }
+
+        @Override
+        public String getRequestedSessionId() {
+            return "session-1";
+        }
+
+        @Override
+        public boolean isRequestedSessionIdValid() {
+            return true;
+        }
+
+        @Override
+        public String getResponseContentType() {
+            return "text/html";
+        }
+
+        @Override
+        public Enumeration<String> getResponseContentTypes() {
+            return Collections.enumeration(List.of("text/html"));
+        }
+
+        @Override
+        public Locale getLocale() {
+            return Locale.ENGLISH;
+        }
+
+        @Override
+        public Enumeration<Locale> getLocales() {
+            return Collections.enumeration(List.of(Locale.ENGLISH));
+        }
+
+        @Override
+        public String getScheme() {
+            return "https";
+        }
+
+        @Override
+        public String getServerName() {
+            return "localhost";
+        }
+
+        @Override
+        public int getServerPort() {
+            return 443;
+        }
+
+        @Override
+        public String getWindowID() {
+            return "window-1";
+        }
+
+        @Override
+        public javax.servlet.http.Cookie[] getCookies() {
+            return null;
+        }
+
+        @Override
+        public Map<String, String[]> getPrivateParameterMap() {
+            return Map.of();
+        }
+
+        @Override
+        public Map<String, String[]> getPublicParameterMap() {
+            return Map.of();
+        }
+    }
+
+    private static class RecordingRenderResponse implements RenderResponse {
+        private String title;
+        private Collection<PortletMode> nextPossiblePortletModes;
+
+        @Override
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        @Override
+        public void setNextPossiblePortletModes(Collection<PortletMode> portletModes) {
+            nextPossiblePortletModes = portletModes;
+        }
+
+        @Override
+        public String getContentType() {
+            return "text/html";
+        }
+
+        @Override
+        public void setContentType(String type) {
+        }
+
+        @Override
+        public String getCharacterEncoding() {
+            return "UTF-8";
+        }
+
+        @Override
+        public PrintWriter getWriter() {
+            return new PrintWriter(new StringWriter(), true);
+        }
+
+        @Override
+        public Locale getLocale() {
+            return Locale.ENGLISH;
+        }
+
+        @Override
+        public void setBufferSize(int size) {
+        }
+
+        @Override
+        public int getBufferSize() {
+            return 0;
+        }
+
+        @Override
+        public void flushBuffer() {
+        }
+
+        @Override
+        public void resetBuffer() {
+        }
+
+        @Override
+        public boolean isCommitted() {
+            return false;
+        }
+
+        @Override
+        public void reset() {
+        }
+
+        @Override
+        public java.io.OutputStream getPortletOutputStream() {
+            return java.io.OutputStream.nullOutputStream();
+        }
+
+        @Override
+        public PortletURL createRenderURL() {
+            return null;
+        }
+
+        @Override
+        public PortletURL createActionURL() {
+            return null;
+        }
+
+        @Override
+        public ResourceURL createResourceURL() {
+            return null;
+        }
+
+        @Override
+        public CacheControl getCacheControl() {
+            return new RecordingCacheControl();
+        }
+
+        @Override
+        public void addProperty(String key, String value) {
+        }
+
+        @Override
+        public void setProperty(String key, String value) {
+        }
+
+        @Override
+        public String encodeURL(String path) {
+            return path;
+        }
+
+        @Override
+        public String getNamespace() {
+            return "sample_";
+        }
+
+        @Override
+        public void addProperty(javax.servlet.http.Cookie cookie) {
+        }
+
+        @Override
+        public void addProperty(String key, org.w3c.dom.Element element) {
+        }
+
+        @Override
+        public org.w3c.dom.Element createElement(String tagName) {
+            return null;
+        }
     }
 
     @SuppressWarnings("unchecked")
