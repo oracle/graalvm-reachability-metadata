@@ -1,0 +1,1319 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de615-f593-7f32-984d-ef3ab280c581
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.google.collections:google-collections:1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+- Set "coordinates" to "com.google.collections:google-collections:1.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+ERROR: Reconnecting... 1/5
+codex
+I’ll verify the artifact metadata against Maven Central and upstream release/tag information, then write the JSON file directly with only the requested fields changed.
+exec
+/usr/bin/zsh -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+ succeeded in 0ms:
+{
+  "coordinates" : "com.google.collections:google-collections:1.0"
+}
+
+exec
+/usr/bin/zsh -lc 'pwd && ls -l build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+ succeeded in 0ms:
+/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+-rw-rw-r-- 1 mihailo mihailo 70 May  2 02:28 build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+
+exec
+/usr/bin/zsh -lc "rg -n \"com\\.google\\.collections|google-collections\" build/discovered-artifact-metadata metadata tests -S" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json:2:  "coordinates" : "com.google.collections:google-collections:1.0"
+
+web search: 
+web search: com.google.collections google-collections 1.0 maven source jar javadoc jar
+web search: 
+web search: https://central.sonatype.com/artifact/com.google.collections/google-collections
+codex
+The POM on Maven Central identifies the original project and SCM as the old Google Code SVN project, and Maven Central has the exact 1.0 POM metadata. I’m checking the repository directory now to confirm whether exact-version sources, tests, and javadoc artifacts were published.
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0.pom' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+exec
+/usr/bin/zsh -lc 'curl -I -fsSL https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-javadoc.jar && curl -I -fsSL https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-tests.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+ succeeded in 136ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.google</groupId>
+    <artifactId>google</artifactId>
+    <version>1</version>
+  </parent>
+  <groupId>com.google.collections</groupId>
+  <artifactId>google-collections</artifactId>
+  <version>1.0</version>
+  <packaging>jar</packaging>
+  <name>Google Collections Library</name>
+  <description>Google Collections Library is a suite of new collections and collection-related goodness for Java 5.0</description>
+  <inceptionYear>2007</inceptionYear>
+  <url>http://code.google.com/p/google-collections/</url>
+  <organization>
+    <name>Google</name>
+    <url>http://www.google.com</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>http://code.google.com/p/google-collections/source/browse/</url>
+    <connection>scm:svn:http://google-collections.googlecode.com/svn/trunk/</connection>
+  </scm>
+  <!-- this is temporarily copied from the parent pom.  remove this section when that is used -->
+  <distributionManagement>
+    <repository>
+      <id>google-maven-repository</id>
+      <name>Google Maven Repository</name>
+      <url>dav:https://google-maven-repository.googlecode.com/svn/repository/</url>
+    </repository>
+    <snapshotRepository>
+      <id>google-maven-snapshot-repository</id>
+      <name>Google Maven Snapshot Repository</name>
+      <url>dav:https://google-maven-repository.googlecode.com/svn/snapshot-repository/</url>
+      <uniqueVersion>true</uniqueVersion>
+    </snapshotRepository>
+  </distributionManagement>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>1.3.7</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+ succeeded in 208ms:
+<html>
+<head><title>Index of /maven2/com/google/collections/google-collections/1.0/</title></head>
+<body bgcolor=white>
+<h1>Index of /maven2/com/google/collections/google-collections/1.0/</h1>
+<hr>
+<pre>
+<a href=../>../</a>
+<a href="google-collections-1.0.jar">google-collections-1.0.jar</a>                         2009-12-30 17:28               639592
+<a href="google-collections-1.0.jar.md5">google-collections-1.0.jar.md5</a>                     2010-03-20 11:35                   33
+<a href="google-collections-1.0.jar.md5.sha1">google-collections-1.0.jar.md5.sha1</a>                2010-03-20 11:36                   41
+<a href="google-collections-1.0.jar.sha1">google-collections-1.0.jar.sha1</a>                    2010-03-20 11:36                   41
+<a href="google-collections-1.0-javadoc.jar">google-collections-1.0-javadoc.jar</a>                 2009-12-30 17:28               707958
+<a href="google-collections-1.0-javadoc.jar.md5">google-collections-1.0-javadoc.jar.md5</a>             2010-03-20 11:35                   33
+<a href="google-collections-1.0-javadoc.jar.md5.sha1">google-collections-1.0-javadoc.jar.md5.sha1</a>        2010-03-20 11:36                   41
+<a href="google-collections-1.0-javadoc.jar.sha1">google-collections-1.0-javadoc.jar.sha1</a>            2010-03-20 11:36                   41
+<a href="google-collections-1.0.pom">google-collections-1.0.pom</a>                         2009-12-30 17:28                 2478
+<a href="google-collections-1.0.pom.md5">google-collections-1.0.pom.md5</a>                     2010-03-20 11:35                   33
+<a href="google-collections-1.0.pom.md5.sha1">google-collections-1.0.pom.md5.sha1</a>                2010-03-20 11:36                   41
+<a href="google-collections-1.0.pom.sha1">google-collections-1.0.pom.sha1</a>                    2010-03-20 11:36                   41
+<a href="google-collections-1.0-sources.jar">google-collections-1.0-sources.jar</a>                 2009-12-30 17:28               309295
+<a href="google-collections-1.0-sources.jar.md5">google-collections-1.0-sources.jar.md5</a>             2010-03-20 11:35                   33
+<a href="google-collections-1.0-sources.jar.md5.sha1">google-collections-1.0-sources.jar.md5.sha1</a>        2010-03-20 11:36                   41
+<a href="google-collections-1.0-sources.jar.sha1">google-collections-1.0-sources.jar.sha1</a>            2010-03-20 11:36                   41
+</pre>
+<hr>
+</body>
+</html>
+
+ exited 22 in 662ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 00:28:36 GMT
+content-type: application/java-archive
+content-length: 309295
+cf-ray: 9f52e827fc291778-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 962012
+etag: "934edfb8fd1b32db5a576cde46901c92"
+last-modified: Wed, 30 Dec 2009 23:28:04 GMT
+x-checksum-md5: 934edfb8fd1b32db5a576cde46901c92
+x-checksum-sha1: 8283dd0edd369f2cb594cd3f2433c498801bcb09
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 02 May 2026 00:28:36 GMT
+content-type: application/java-archive
+content-length: 707958
+cf-ray: 9f52e828cc929857-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 409048
+etag: "0d82345119e2f4dcc4de40f2817e61a4"
+last-modified: Wed, 30 Dec 2009 23:28:04 GMT
+x-checksum-md5: 0d82345119e2f4dcc4de40f2817e61a4
+x-checksum-sha1: 4a02bcc6bb9f9445659551e3c3469b65440c8dd1
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Sat, 02 May 2026 00:28:36 GMT
+content-type: text/html
+cf-ray: 9f52e8297dc1a8bc-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/google/collections/google-collections/1.0/google-collections-1.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: google-collections 1.0 tag SVN source browse tests
+web search: 
+web search: https://code.google.com/archive/p/google-collections/
+web search: 
+web search: code.google.com/archive/p/google-collections source
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://storage.googleapis.com/google-code-archive/v2/code.google.com/google-collections/source-page-1.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://storage.googleapis.com/google-code-archive/v2/code.google.com/google-collections/project.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://storage.googleapis.com/google-code-archive/v2/code.google.com/google-collections/downloads-page-1.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+ succeeded in 352ms:
+{"domain":"code.google.com","name":"google-collections","summary":"Google Collections Library","description":"## This library was renamed to [Guava](http://guava-libraries.googlecode.com)! ##\n\nWhat you see here is ancient and unmaintained.  **Do not use it.**\n\nGuava is a fully compatible _superset_ of the old Google Collections Library. It also includes years worth of bug fixes, doc fixes, and performance fixes, so we strongly encourage you to use Guava instead of Google Collections.\n\nIf your application ever ends up with both google-collect-1.0.jar and guava-r##.jar on the same classpath, simply remove the Google Collections JAR and you should be fine. If you don\u0027t remove it, it will either cause terrible problems (if it comes before guava in the classpath) or will never even be seen anyway (if it comes after).\n\nThe project you\u0027re looking at now will not be maintained.  We apologize for any confusion this causes.\n\n### [Go to the Guava project page now](http://guava-libraries.googlecode.com) ###","stars":1368,"license":"asf20","contentLicense":"","labels":["Java","Collections","Generics","Iterators","Multiset","Multimap","Google","ReferenceMap","SoftReferences","WeakReferences","Predicate","Immutable","Functional","MapMaker"],"creationTime":0,"repoType":"svn","subrepos":[],"hasSource":true,"ancestorRepo":"","logoName":"","movedTo":""}
+ succeeded in 398ms:
+{"pageNumber":1,"totalPages":1,"downloads":[{"filename":"google-collect-1.0.zip","summary":"Google Collections Library 1.0 - FINAL","description":"","labels":["Deprecated","Type-Archive"],"releaseDate":0,"fileSize":1595359,"uploadDate":1262198418,"sha1Checksum":"880bce3810c92e7dcdbdfdb03dfc5aa7460da76b","stars":1},{"filename":"google-collect-1.0-rc5.zip","summary":"Google Collections Library 1.0 - release candidate 5","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1596516,"uploadDate":1260381255,"sha1Checksum":"2ccdccf57366a0302ab7ba08c888800ac4f2349b","stars":0},{"filename":"google-collect-1.0-rc4.zip","summary":"Google Collections Library 1.0 - release candidate 4","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1596871,"uploadDate":1257897114,"sha1Checksum":"9c7582da4dce40e4c761afeab593f4547bffa20b","stars":0},{"filename":"google-collect-1.0-rc3.zip","summary":"Google Collections Library 1.0 - release candidate 3","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1597710,"uploadDate":1255724483,"sha1Checksum":"53d4c666442c88f04c213cb546eadfebce051f17","stars":0},{"filename":"collections-connection.pdf","summary":"JavaOne 2009 \"Collections Connection\" BOF slides","description":"","labels":[],"releaseDate":0,"fileSize":250310,"uploadDate":1247686958,"sha1Checksum":"288890e6cb6cb422ee6f1c94f04495a9d361d376","stars":7},{"filename":"google-collect-1.0-rc2.zip","summary":"Google Collections Library 1.0 - release candidate 2","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1759280,"uploadDate":1243987889,"sha1Checksum":"fc2dcc2c5e0835e29b177180f7c058c268df7b7e","stars":0},{"filename":"google-collect-1.0-rc1.zip","summary":"Google Collections Library 1.0 - release candidate 1","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1470175,"uploadDate":1239048240,"sha1Checksum":"da57f3e83597d295badccef38ff8b4ca527d4489","stars":0},{"filename":"google-collect-snapshot-20090211.zip","summary":"2009/02/11 snapshot build","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1469882,"uploadDate":1234387204,"sha1Checksum":"ebe3ec96bad44af732c43c3612c439b5df0e771f","stars":0},{"filename":"google-collect-snapshot-20080820.zip","summary":"2008/08/20 snapshot build  ","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1162341,"uploadDate":1219278032,"sha1Checksum":"75d4fab6edd4d70d5a0c4c740d2000ae837408e7","stars":0},{"filename":"google-collect-snapshot-20080818.zip","summary":"2008/08/18 snapshot build (accidentally built with Java 6)","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1138640,"uploadDate":1219105534,"sha1Checksum":"4fde7555435c2568cf0e638ac357282f922a7aec","stars":0},{"filename":"google-collections-svgtug-2008-08-06.pdf","summary":"Presentation at SV-GTUG 2008-08-06","description":"","labels":[],"releaseDate":0,"fileSize":178001,"uploadDate":1218135017,"sha1Checksum":"a0c8c10bcb412094396f37ecc92629ef3ade2f9a","stars":1},{"filename":"google-collect-snapshot-20080530-bundle.jar","summary":"Maven bundle for 20080530 snapshot","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1237826,"uploadDate":1212429824,"sha1Checksum":"66d0e359fbe89ffe299025bf30fe1738e155d67b","stars":0},{"filename":"google-collect-snapshot-20080530.zip","summary":"2008/05/30 snapshot build","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1073572,"uploadDate":1212180403,"sha1Checksum":"f2b4c79c4e1a1b1221e5d7fa6a2e2e27f0b88390","stars":0},{"filename":"google-collect-snapshot-20080321-bundle.jar","summary":"Maven bundle for 20080321 snapshot","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1117800,"uploadDate":1210288939,"sha1Checksum":"def2590c48cf3a620c274e49196376c29919efd9","stars":0},{"filename":"google-collect-snapshot-20071022-bundle.jar","summary":"Maven bundle for 20071022 snapshot","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":1002256,"uploadDate":1210288831,"sha1Checksum":"c077f4326098811fe60d3459fc08946ed3424694","stars":0},{"filename":"google-collect-snapshot-20080321.zip","summary":"2008/03/21 snapshot build","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":997001,"uploadDate":1206145028,"sha1Checksum":"3840aae9c2ad90f04a5a80ea57f1248a3407e960","stars":0},{"filename":"google-collect-snapshot-20071022.zip","summary":"Snapshot release 2007/10/22 (ALPHA)","description":"","labels":["Deprecated"],"releaseDate":0,"fileSize":937700,"uploadDate":1193105141,"sha1Checksum":"8edef6d25dbd50008e1c1eb81af5fa1b6e47cec1","stars":0}]}
+ succeeded in 446ms:
+{"Page":1,"TotalPages":26,"uncompressed_size":19969854,"compressed_size":5658671,"zip_file_size":6459431,"num_entries":2597,"entries":[{"f":"google-collections/","s":0,"d":true},{"f":"google-collections/branches/","s":0,"d":true},{"f":"google-collections/branches/.svn/","s":0,"d":true},{"f":"google-collections/branches/.svn/props/","s":0,"d":true},{"f":"google-collections/branches/.svn/entries","s":198,"d":false},{"f":"google-collections/branches/.svn/text-base/","s":0,"d":true},{"f":"google-collections/branches/.svn/prop-base/","s":0,"d":true},{"f":"google-collections/branches/.svn/all-wcprops","s":65,"d":false},{"f":"google-collections/branches/.svn/tmp/","s":0,"d":true},{"f":"google-collections/branches/.svn/tmp/props/","s":0,"d":true},{"f":"google-collections/branches/.svn/tmp/text-base/","s":0,"d":true},{"f":"google-collections/branches/.svn/tmp/prop-base/","s":0,"d":true},{"f":"google-collections/.svn/","s":0,"d":true},{"f":"google-collections/.svn/props/","s":0,"d":true},{"f":"google-collections/.svn/entries","s":248,"d":false},{"f":"google-collections/.svn/text-base/","s":0,"d":true},{"f":"google-collections/.svn/prop-base/","s":0,"d":true},{"f":"google-collections/.svn/all-wcprops","s":58,"d":false},{"f":"google-collections/.svn/tmp/","s":0,"d":true},{"f":"google-collections/.svn/tmp/props/","s":0,"d":true},{"f":"google-collections/.svn/tmp/text-base/","s":0,"d":true},{"f":"google-collections/.svn/tmp/prop-base/","s":0,"d":true},{"f":"google-collections/wiki/","s":0,"d":true},{"f":"google-collections/wiki/Acknowledgements.wiki","s":1235,"d":false},{"f":"google-collections/wiki/.svn/","s":0,"d":true},{"f":"google-collections/wiki/.svn/props/","s":0,"d":true},{"f":"google-collections/wiki/.svn/entries","s":669,"d":false},{"f":"google-collections/wiki/.svn/text-base/","s":0,"d":true},{"f":"google-collections/wiki/.svn/text-base/Acknowledgements.wiki.svn-base","s":1235,"d":false},{"f":"google-collections/wiki/.svn/text-base/Faq.wiki.svn-base","s":9039,"d":false},{"f":"google-collections/wiki/.svn/text-base/Releases.wiki.svn-base","s":19461,"d":false},{"f":"google-collections/wiki/.svn/prop-base/","s":0,"d":true},{"f":"google-collections/wiki/.svn/all-wcprops","s":340,"d":false},{"f":"google-collections/wiki/.svn/tmp/","s":0,"d":true},{"f":"google-collections/wiki/.svn/tmp/props/","s":0,"d":true},{"f":"google-collections/wiki/.svn/tmp/text-base/","s":0,"d":true},{"f":"google-collections/wiki/.svn/tmp/prop-base/","s":0,"d":true},{"f":"google-collections/wiki/Faq.wiki","s":9039,"d":false},{"f":"google-collections/wiki/Releases.wiki","s":19461,"d":false},{"f":"google-collections/trunk/","s":0,"d":true},{"f":"google-collections/trunk/gwt/","s":0,"d":true},{"f":"google-collections/trunk/gwt/.svn/","s":0,"d":true},{"f":"google-collections/trunk/gwt/.svn/props/","s":0,"d":true},{"f":"google-collections/trunk/gwt/.svn/entries","s":228,"d":false},{"f":"google-collections/trunk/gwt/.svn/text-base/","s":0,"d":true},{"f":"google-collections/trunk/gwt/.svn/prop-base/","s":0,"d":true},{"f":"google-collections/trunk/gwt/.svn/dir-prop-base","s":28,"d":false},{"f":"google-collections/trunk/gwt/.svn/all-wcprops","s":68,"d":false},{"f":"google-collections/trunk/gwt/.svn/tmp/","s":0,"d":true},{"f":"google-collections/trunk/gwt/.svn/tmp/props/","s":0,"d":true},{"f":"google-collections/trunk/gwt/.svn/tmp/text-base/","s":0,"d":true},{"f":"google-collections/trunk/gwt/.svn/tmp/prop-base/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/.svn/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/.svn/props/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/.svn/entries","s":233,"d":false},{"f":"google-collections/trunk/gwt/com/google/.svn/text-base/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/.svn/prop-base/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/.svn/all-wcprops","s":79,"d":false},{"f":"google-collections/trunk/gwt/com/google/.svn/tmp/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/.svn/tmp/props/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/.svn/tmp/text-base/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/.svn/tmp/prop-base/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/.svn/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/.svn/props/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/.svn/entries","s":409,"d":false},{"f":"google-collections/trunk/gwt/com/google/common/.svn/text-base/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/.svn/text-base/Collect.gwt.xml.svn-base","s":282,"d":false},{"f":"google-collections/trunk/gwt/com/google/common/.svn/prop-base/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/.svn/all-wcprops","s":204,"d":false},{"f":"google-collections/trunk/gwt/com/google/common/.svn/tmp/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/.svn/tmp/props/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/.svn/tmp/text-base/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/.svn/tmp/prop-base/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/Collect.gwt.xml","s":282,"d":false},{"f":"google-collections/trunk/gwt/com/google/common/super/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/super/.svn/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/super/.svn/props/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/super/.svn/entries","s":256,"d":false},{"f":"google-collections/trunk/gwt/com/google/common/super/.svn/text-base/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/super/.svn/prop-base/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/super/.svn/all-wcprops","s":92,"d":false},{"f":"google-collections/trunk/gwt/com/google/common/super/.svn/tmp/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/super/.svn/tmp/props/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/super/.svn/tmp/text-base/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/super/.svn/tmp/prop-base/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/super/com/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/super/com/google/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/super/com/google/.svn/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/super/com/google/.svn/props/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/super/com/google/.svn/entries","s":259,"d":false},{"f":"google-collections/trunk/gwt/com/google/common/super/com/google/.svn/text-base/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/super/com/google/.svn/prop-base/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/super/com/google/.svn/all-wcprops","s":103,"d":false},{"f":"google-collections/trunk/gwt/com/google/common/super/com/google/.svn/tmp/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/super/com/google/.svn/tmp/props/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/super/com/google/.svn/tmp/text-base/","s":0,"d":true},{"f":"google-collections/trunk/gwt/com/google/common/super/com/google/.svn/tmp/prop-base/","s":0,"d":true}]}
+codex
+Maven Central publishes `google-collections-1.0-sources.jar` and `google-collections-1.0-javadoc.jar`, but no `tests.jar`. For tests, I’m validating the archived Google Code 1.0 release zip because that is the exact-version project archive and should include the test tree if it was distributed.
+exec
+/usr/bin/zsh -lc 'tmpdir=$(mktemp -d) && cd "$tmpdir" && curl -fsSLO https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/google-collections/google-collect-1.0.zip && unzip -l google-collect-1.0.zip | sed -n '"'1,220p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+exec
+/usr/bin/zsh -lc 'tmpdir=$(mktemp -d) && cd "$tmpdir" && curl -fsSLO https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-sources.jar && jar tf google-collections-1.0-sources.jar | sed -n '"'1,160p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+exec
+/usr/bin/zsh -lc 'tmpdir=$(mktemp -d) && cd "$tmpdir" && curl -fsSLO https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-javadoc.jar && jar tf google-collections-1.0-javadoc.jar | sed -n '"'1,120p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+ succeeded in 473ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/google/
+com/google/common/
+com/google/common/annotations/
+com/google/common/base/
+com/google/common/base/internal/
+com/google/common/collect/
+com/google/common/annotations/GwtCompatible.java
+com/google/common/annotations/GwtIncompatible.java
+com/google/common/annotations/VisibleForTesting.java
+com/google/common/base/internal/Finalizer.java
+com/google/common/base/FinalizablePhantomReference.java
+com/google/common/base/FinalizableReference.java
+com/google/common/base/FinalizableReferenceQueue.java
+com/google/common/base/FinalizableSoftReference.java
+com/google/common/base/FinalizableWeakReference.java
+com/google/common/base/Function.java
+com/google/common/base/Functions.java
+com/google/common/base/Joiner.java
+com/google/common/base/Objects.java
+com/google/common/base/Platform.java
+com/google/common/base/Preconditions.java
+com/google/common/base/Predicate.java
+com/google/common/base/Predicates.java
+com/google/common/base/Supplier.java
+com/google/common/base/Suppliers.java
+com/google/common/base/package-info.java
+com/google/common/collect/AbstractBiMap.java
+com/google/common/collect/AbstractIterator.java
+com/google/common/collect/AbstractListMultimap.java
+com/google/common/collect/AbstractMapBasedMultiset.java
+com/google/common/collect/AbstractMapEntry.java
+com/google/common/collect/AbstractMultimap.java
+com/google/common/collect/AbstractMultiset.java
+com/google/common/collect/AbstractSetMultimap.java
+com/google/common/collect/AbstractSortedSetMultimap.java
+com/google/common/collect/ArrayListMultimap.java
+com/google/common/collect/AsynchronousComputationException.java
+com/google/common/collect/BiMap.java
+com/google/common/collect/ByFunctionOrdering.java
+com/google/common/collect/ClassToInstanceMap.java
+com/google/common/collect/Collections2.java
+com/google/common/collect/ComparatorOrdering.java
+com/google/common/collect/CompoundOrdering.java
+com/google/common/collect/ComputationException.java
+com/google/common/collect/ConcurrentHashMultiset.java
+com/google/common/collect/ConstrainedMap.java
+com/google/common/collect/CustomConcurrentHashMap.java
+com/google/common/collect/EmptyImmutableList.java
+com/google/common/collect/EmptyImmutableListMultimap.java
+com/google/common/collect/EmptyImmutableMap.java
+com/google/common/collect/EmptyImmutableMultiset.java
+com/google/common/collect/EmptyImmutableSet.java
+com/google/common/collect/EmptyImmutableSetMultimap.java
+com/google/common/collect/EmptyImmutableSortedSet.java
+com/google/common/collect/EnumBiMap.java
+com/google/common/collect/EnumHashBiMap.java
+com/google/common/collect/EnumMultiset.java
+com/google/common/collect/ExpirationTimer.java
+com/google/common/collect/ExplicitOrdering.java
+com/google/common/collect/ForwardingCollection.java
+com/google/common/collect/ForwardingConcurrentMap.java
+com/google/common/collect/ForwardingIterator.java
+com/google/common/collect/ForwardingList.java
+com/google/common/collect/ForwardingListIterator.java
+com/google/common/collect/ForwardingMap.java
+com/google/common/collect/ForwardingMapEntry.java
+com/google/common/collect/ForwardingMultimap.java
+com/google/common/collect/ForwardingMultiset.java
+com/google/common/collect/ForwardingObject.java
+com/google/common/collect/ForwardingQueue.java
+com/google/common/collect/ForwardingSet.java
+com/google/common/collect/ForwardingSortedMap.java
+com/google/common/collect/ForwardingSortedSet.java
+com/google/common/collect/HashBiMap.java
+com/google/common/collect/HashMultimap.java
+com/google/common/collect/HashMultiset.java
+com/google/common/collect/Hashing.java
+com/google/common/collect/ImmutableBiMap.java
+com/google/common/collect/ImmutableClassToInstanceMap.java
+com/google/common/collect/ImmutableCollection.java
+com/google/common/collect/ImmutableEntry.java
+com/google/common/collect/ImmutableEnumSet.java
+com/google/common/collect/ImmutableList.java
+com/google/common/collect/ImmutableListMultimap.java
+com/google/common/collect/ImmutableMap.java
+com/google/common/collect/ImmutableMultimap.java
+com/google/common/collect/ImmutableMultiset.java
+com/google/common/collect/ImmutableSet.java
+com/google/common/collect/ImmutableSetMultimap.java
+com/google/common/collect/ImmutableSortedMap.java
+com/google/common/collect/ImmutableSortedMapFauxverideShim.java
+com/google/common/collect/ImmutableSortedSet.java
+com/google/common/collect/ImmutableSortedSetFauxverideShim.java
+com/google/common/collect/Iterables.java
+com/google/common/collect/Iterators.java
+com/google/common/collect/LinkedHashMultimap.java
+com/google/common/collect/LinkedHashMultiset.java
+com/google/common/collect/LinkedListMultimap.java
+com/google/common/collect/ListMultimap.java
+com/google/common/collect/Lists.java
+com/google/common/collect/MapConstraint.java
+com/google/common/collect/MapDifference.java
+com/google/common/collect/MapMaker.java
+com/google/common/collect/Maps.java
+com/google/common/collect/Multimap.java
+com/google/common/collect/Multimaps.java
+com/google/common/collect/Multiset.java
+com/google/common/collect/Multisets.java
+com/google/common/collect/MutableClassToInstanceMap.java
+com/google/common/collect/NaturalOrdering.java
+com/google/common/collect/NullOutputException.java
+com/google/common/collect/NullsFirstOrdering.java
+com/google/common/collect/NullsLastOrdering.java
+com/google/common/collect/ObjectArrays.java
+com/google/common/collect/Ordering.java
+com/google/common/collect/PeekingIterator.java
+com/google/common/collect/Platform.java
+com/google/common/collect/RegularImmutableBiMap.java
+com/google/common/collect/RegularImmutableList.java
+com/google/common/collect/RegularImmutableMap.java
+com/google/common/collect/RegularImmutableSet.java
+com/google/common/collect/RegularImmutableSortedSet.java
+com/google/common/collect/ReverseNaturalOrdering.java
+com/google/common/collect/ReverseOrdering.java
+com/google/common/collect/Serialization.java
+com/google/common/collect/SetMultimap.java
+com/google/common/collect/Sets.java
+com/google/common/collect/SingletonImmutableList.java
+com/google/common/collect/SingletonImmutableMap.java
+com/google/common/collect/SingletonImmutableSet.java
+com/google/common/collect/SortedSetMultimap.java
+com/google/common/collect/Synchronized.java
+com/google/common/collect/TreeMultimap.java
+com/google/common/collect/TreeMultiset.java
+com/google/common/collect/UnmodifiableIterator.java
+com/google/common/collect/UsingToStringOrdering.java
+com/google/common/collect/package-info.java
+README
+
+ succeeded in 517ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/google/
+com/google/common/
+com/google/common/annotations/
+com/google/common/annotations/class-use/
+com/google/common/base/
+com/google/common/base/class-use/
+com/google/common/base/internal/
+com/google/common/base/internal/class-use/
+com/google/common/collect/
+com/google/common/collect/class-use/
+resources/
+com/google/common/annotations/class-use/GwtCompatible.html
+com/google/common/annotations/class-use/GwtIncompatible.html
+com/google/common/annotations/class-use/VisibleForTesting.html
+com/google/common/annotations/GwtCompatible.html
+com/google/common/annotations/GwtIncompatible.html
+com/google/common/annotations/VisibleForTesting.html
+com/google/common/annotations/package-frame.html
+com/google/common/annotations/package-summary.html
+com/google/common/annotations/package-tree.html
+com/google/common/annotations/package-use.html
+com/google/common/base/class-use/FinalizablePhantomReference.html
+com/google/common/base/class-use/FinalizableReference.html
+com/google/common/base/class-use/FinalizableReferenceQueue.html
+com/google/common/base/class-use/FinalizableSoftReference.html
+com/google/common/base/class-use/FinalizableWeakReference.html
+com/google/common/base/class-use/Function.html
+com/google/common/base/class-use/Functions.html
+com/google/common/base/class-use/Joiner.MapJoiner.html
+com/google/common/base/class-use/Joiner.html
+com/google/common/base/class-use/Objects.html
+com/google/common/base/class-use/Preconditions.html
+com/google/common/base/class-use/Predicate.html
+com/google/common/base/class-use/Predicates.html
+com/google/common/base/class-use/Supplier.html
+com/google/common/base/class-use/Suppliers.html
+com/google/common/base/internal/class-use/Finalizer.html
+com/google/common/base/internal/Finalizer.html
+com/google/common/base/internal/package-frame.html
+com/google/common/base/internal/package-summary.html
+com/google/common/base/internal/package-tree.html
+com/google/common/base/internal/package-use.html
+com/google/common/base/FinalizablePhantomReference.html
+com/google/common/base/FinalizableReference.html
+com/google/common/base/FinalizableReferenceQueue.html
+com/google/common/base/FinalizableSoftReference.html
+com/google/common/base/FinalizableWeakReference.html
+com/google/common/base/Function.html
+com/google/common/base/Functions.html
+com/google/common/base/Joiner.MapJoiner.html
+com/google/common/base/Joiner.html
+com/google/common/base/Objects.html
+com/google/common/base/Preconditions.html
+com/google/common/base/Predicate.html
+com/google/common/base/Predicates.html
+com/google/common/base/Supplier.html
+com/google/common/base/Suppliers.html
+com/google/common/base/package-frame.html
+com/google/common/base/package-summary.html
+com/google/common/base/package-tree.html
+com/google/common/base/package-use.html
+com/google/common/collect/class-use/ComputationException.html
+com/google/common/collect/class-use/AbstractIterator.html
+com/google/common/collect/class-use/ArrayListMultimap.html
+com/google/common/collect/class-use/BiMap.html
+com/google/common/collect/class-use/AsynchronousComputationException.html
+com/google/common/collect/class-use/ClassToInstanceMap.html
+com/google/common/collect/class-use/Collections2.html
+com/google/common/collect/class-use/ConcurrentHashMultiset.html
+com/google/common/collect/class-use/EnumBiMap.html
+com/google/common/collect/class-use/EnumHashBiMap.html
+com/google/common/collect/class-use/EnumMultiset.html
+com/google/common/collect/class-use/ForwardingCollection.html
+com/google/common/collect/class-use/ForwardingConcurrentMap.html
+com/google/common/collect/class-use/ForwardingIterator.html
+com/google/common/collect/class-use/ForwardingList.html
+com/google/common/collect/class-use/ForwardingListIterator.html
+com/google/common/collect/class-use/ForwardingMap.html
+com/google/common/collect/class-use/ForwardingMapEntry.html
+com/google/common/collect/class-use/ForwardingMultimap.html
+com/google/common/collect/class-use/ForwardingMultiset.html
+com/google/common/collect/class-use/ForwardingObject.html
+com/google/common/collect/class-use/ForwardingQueue.html
+com/google/common/collect/class-use/ForwardingSet.html
+com/google/common/collect/class-use/ForwardingSortedMap.html
+com/google/common/collect/class-use/ForwardingSortedSet.html
+com/google/common/collect/class-use/HashBiMap.html
+com/google/common/collect/class-use/HashMultimap.html
+com/google/common/collect/class-use/HashMultiset.html
+com/google/common/collect/class-use/ImmutableBiMap.Builder.html
+com/google/common/collect/class-use/ImmutableBiMap.html
+com/google/common/collect/class-use/ImmutableClassToInstanceMap.Builder.html
+com/google/common/collect/class-use/ImmutableClassToInstanceMap.html
+com/google/common/collect/class-use/ImmutableCollection.html
+com/google/common/collect/class-use/ImmutableList.Builder.html
+com/google/common/collect/class-use/ImmutableList.html
+com/google/common/collect/class-use/ImmutableListMultimap.Builder.html
+com/google/common/collect/class-use/ImmutableListMultimap.html
+com/google/common/collect/class-use/ImmutableMap.Builder.html
+com/google/common/collect/class-use/ImmutableMap.html
+com/google/common/collect/class-use/ImmutableMultimap.Builder.html
+com/google/common/collect/class-use/ImmutableMultimap.html
+com/google/common/collect/class-use/ImmutableMultiset.Builder.html
+com/google/common/collect/class-use/ImmutableMultiset.html
+com/google/common/collect/class-use/ImmutableSet.Builder.html
+com/google/common/collect/class-use/ImmutableSet.html
+com/google/common/collect/class-use/ImmutableSetMultimap.Builder.html
+com/google/common/collect/class-use/ImmutableSetMultimap.html
+com/google/common/collect/class-use/ImmutableSortedMap.Builder.html
+com/google/common/collect/class-use/ImmutableSortedMap.html
+com/google/common/collect/class-use/ImmutableSortedSet.Builder.html
+com/google/common/collect/class-use/ImmutableSortedSet.html
+com/google/common/collect/class-use/Iterables.html
+com/google/common/collect/class-use/Iterators.html
+com/google/common/collect/class-use/LinkedHashMultimap.html
+com/google/common/collect/class-use/LinkedHashMultiset.html
+com/google/common/collect/class-use/LinkedListMultimap.html
+
+ succeeded in 1343ms:
+Archive:  google-collect-1.0.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2009-12-30 10:35   google-collect-1.0/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/com/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/class-use/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/resources/
+    11358  2009-12-30 10:35   google-collect-1.0/COPYING
+   577311  2009-12-30 10:35   google-collect-1.0/google-collect-1.0.jar
+    14885  2009-12-30 10:35   google-collect-1.0/javadoc/allclasses-frame.html
+    12965  2009-12-30 10:35   google-collect-1.0/javadoc/allclasses-noframe.html
+    11590  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/GwtCompatible.html
+    10663  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/GwtIncompatible.html
+     6782  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/VisibleForTesting.html
+    68289  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/class-use/GwtCompatible.html
+    19703  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/class-use/GwtIncompatible.html
+     6099  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/class-use/VisibleForTesting.html
+     1240  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/package-frame.html
+     7351  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/package-summary.html
+     7037  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/package-tree.html
+    10619  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/package-use.html
+    16105  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/FinalizablePhantomReference.html
+     9500  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/FinalizableReference.html
+    11862  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/FinalizableReferenceQueue.html
+    16160  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/FinalizableSoftReference.html
+    15592  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/FinalizableWeakReference.html
+    12669  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Function.html
+    22480  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Functions.html
+    17485  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Joiner.MapJoiner.html
+    38846  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Joiner.html
+    14200  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Objects.html
+    40428  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Preconditions.html
+    11962  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Predicate.html
+    35265  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Predicates.html
+     8669  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Supplier.html
+    16923  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/Suppliers.html
+     6119  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/FinalizablePhantomReference.html
+     9174  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/FinalizableReference.html
+     9743  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/FinalizableReferenceQueue.html
+     6089  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/FinalizableSoftReference.html
+     6089  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/FinalizableWeakReference.html
+    29842  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Function.html
+     5939  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Functions.html
+     9053  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Joiner.MapJoiner.html
+     9880  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Joiner.html
+     5919  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Objects.html
+     5979  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Preconditions.html
+    48759  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Predicate.html
+     5949  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Predicates.html
+    21469  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Supplier.html
+     5939  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/class-use/Suppliers.html
+     2773  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/package-frame.html
+    11653  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/package-summary.html
+    10227  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/package-tree.html
+    10933  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/base/package-use.html
+    21927  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/AbstractIterator.html
+    59162  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ArrayListMultimap.html
+    15498  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/AsynchronousComputationException.html
+    26409  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/BiMap.html
+    17281  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ClassToInstanceMap.html
+    16169  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/Collections2.html
+    15221  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ComputationException.html
+    85631  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ConcurrentHashMultiset.html
+    49723  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/EnumBiMap.html
+    50605  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/EnumHashBiMap.html
+    76768  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/EnumMultiset.html
+    47085  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingCollection.html
+    34150  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingConcurrentMap.html
+    20299  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingIterator.html
+    52995  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingList.html
+    31489  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingListIterator.html
+    55956  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingMap.html
+    29783  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingMapEntry.html
+    64639  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingMultimap.html
+    48129  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingMultiset.html
+    16887  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingObject.html
+    30131  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingQueue.html
+    29362  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingSet.html
+    38213  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingSortedMap.html
+    36159  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ForwardingSortedSet.html
+    48575  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/HashBiMap.html
+    57030  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/HashMultimap.html
+    76900  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/HashMultiset.html
+    21625  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableBiMap.Builder.html
+    67500  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableBiMap.html
+    20007  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableClassToInstanceMap.Builder.html
+    30851  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableClassToInstanceMap.html
+    41692  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableCollection.html
+    22266  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableList.Builder.html
+    66047  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableList.html
+    28770  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableListMultimap.Builder.html
+    42979  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableListMultimap.html
+    19693  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableMap.Builder.html
+    64092  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableMap.html
+    25134  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableMultimap.Builder.html
+    75453  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableMultimap.html
+    27787  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableMultiset.Builder.html
+    62258  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableMultiset.html
+    22906  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableSet.Builder.html
+    49136  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableSet.html
+    28700  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableSetMultimap.Builder.html
+    47390  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableSetMultimap.html
+    22931  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableSortedMap.Builder.html
+    80611  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableSortedMap.html
+    26522  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableSortedSet.Builder.html
+    70733  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ImmutableSortedSet.html
+    72442  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/Iterables.html
+    81109  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/Iterators.html
+    61498  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/LinkedHashMultimap.html
+    77493  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/LinkedHashMultiset.html
+    73756  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/LinkedListMultimap.html
+    26782  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ListMultimap.html
+    38709  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/Lists.html
+    14304  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/MapDifference.ValueDifference.html
+    19912  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/MapDifference.html
+    37113  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/MapMaker.html
+    61110  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/Maps.html
+    44892  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/Multimap.html
+    58042  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/Multimaps.html
+    19398  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/Multiset.Entry.html
+    57180  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/Multiset.html
+    14490  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/Multisets.html
+    35554  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/MutableClassToInstanceMap.html
+    17513  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/ObjectArrays.html
+    57422  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/Ordering.html
+    14381  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/PeekingIterator.html
+    29981  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/SetMultimap.html
+    20977  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/Sets.SetView.html
+    60361  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/Sets.html
+    29097  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/SortedSetMultimap.html
+    67663  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/TreeMultimap.html
+    81255  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/TreeMultiset.html
+    14192  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/UnmodifiableIterator.html
+     6039  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/AbstractIterator.html
+    10224  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ArrayListMultimap.html
+     6199  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/AsynchronousComputationException.html
+    14986  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/BiMap.html
+     8710  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ClassToInstanceMap.html
+     5999  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/Collections2.html
+     8118  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ComputationException.html
+     9544  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ConcurrentHashMultiset.html
+    10054  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/EnumBiMap.html
+     9664  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/EnumHashBiMap.html
+     9611  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/EnumMultiset.html
+     9881  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ForwardingCollection.html
+     6109  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ForwardingConcurrentMap.html
+     8080  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ForwardingIterator.html
+     6019  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ForwardingList.html
+     6099  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ForwardingListIterator.html
+    11259  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ForwardingMap.html
+     6059  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ForwardingMapEntry.html
+     6059  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ForwardingMultimap.html
+     6059  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ForwardingMultiset.html
+    16316  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ForwardingObject.html
+     6029  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ForwardingQueue.html
+     7992  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ForwardingSet.html
+     6069  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ForwardingSortedMap.html
+     6069  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ForwardingSortedSet.html
+     9841  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/HashBiMap.html
+    10074  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/HashMultimap.html
+     9965  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/HashMultiset.html
+    10834  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableBiMap.Builder.html
+    14888  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableBiMap.html
+    11425  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableClassToInstanceMap.Builder.html
+     9698  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableClassToInstanceMap.html
+    15865  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableCollection.html
+    12173  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableList.Builder.html
+    24703  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableList.html
+    13783  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableListMultimap.Builder.html
+    15668  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableListMultimap.html
+    12269  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableMap.Builder.html
+    18921  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableMap.html
+    15119  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableMultimap.Builder.html
+    15944  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableMultimap.html
+    14311  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableMultiset.Builder.html
+    12349  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableMultiset.html
+    13361  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableSet.Builder.html
+    28101  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableSet.html
+    13912  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableSetMultimap.Builder.html
+    14421  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableSetMultimap.html
+    13237  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableSortedMap.Builder.html
+    20835  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableSortedMap.html
+    14905  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableSortedSet.Builder.html
+    23795  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ImmutableSortedSet.html
+     5969  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/Iterables.html
+     5969  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/Iterators.html
+    10254  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/LinkedHashMultimap.html
+    10145  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/LinkedHashMultiset.html
+    10210  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/LinkedListMultimap.html
+    15407  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ListMultimap.html
+     5929  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/Lists.html
+     8845  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/MapDifference.ValueDifference.html
+     8650  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/MapDifference.html
+    12443  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/MapMaker.html
+     5919  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/Maps.html
+    39388  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/Multimap.html
+     5969  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/Multimaps.html
+    12102  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/Multiset.Entry.html
+    16454  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/Multiset.html
+     5969  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/Multisets.html
+     9841  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/MutableClassToInstanceMap.html
+     5999  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/ObjectArrays.html
+    20123  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/Ordering.html
+     8533  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/PeekingIterator.html
+    17960  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/SetMultimap.html
+    10689  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/Sets.SetView.html
+     5919  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/Sets.html
+    14580  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/SortedSetMultimap.html
+    11066  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/TreeMultimap.html
+    10465  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/TreeMultiset.html
+    19895  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/class-use/UnmodifiableIterator.html
+    10822  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/collect/package-frame.html
+
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://storage.googleapis.com/google-code-archive/v2/code.google.com/google-collections/source-page-26.json | rg -n "tags|1.0|release|google-collect" -C 2' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+exec
+/usr/bin/zsh -lc 'tmpdir=$(mktemp -d) && cd "$tmpdir" && curl -fsSLO https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/google-collections/google-collect-1.0.zip && unzip -l google-collect-1.0.zip | rg -i "test|src|source|'"\\.java\" | sed -n '1,240p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+exec
+/usr/bin/zsh -lc 'tmpdir=$(mktemp -d) && cd "$tmpdir" && curl -fsSLO https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/google-collections/google-collect-1.0.zip && unzip -q google-collect-1.0.zip && find google-collect-1.0 -maxdepth 3 -type f | sort | sed -n '"'1,220p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+ succeeded in 472ms:
+1:{"Page":26,"TotalPages":26,"uncompressed_size":19969854,"compressed_size":5658671,"zip_file_size":6459431,"num_entries":2597,"entries":[{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/MapFeature.java","s":2223,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/","s":0,"d":true},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/props/","s":0,"d":true},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/entries","s":1931,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/text-base/","s":0,"d":true},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/text-base/TesterRequirements.java.svn-base","s":2400,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/text-base/ConflictingRequirementsException.java.svn-base","s":1415,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/text-base/MapFeature.java.svn-base","s":2223,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/text-base/TesterAnnotation.java.svn-base","s":1408,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/text-base/ListFeature.java.svn-base","s":1993,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/text-base/Feature.java.svn-base","s":1005,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/text-base/CollectionSize.java.svn-base","s":3350,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/text-base/FeatureUtil.java.svn-base","s":11560,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/text-base/SetFeature.java.svn-base","s":1874,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/text-base/CollectionFeature.java.svn-base","s":3605,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/prop-base/","s":0,"d":true},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/prop-base/TesterRequirements.java.svn-base","s":106,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/prop-base/ConflictingRequirementsException.java.svn-base","s":106,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/prop-base/MapFeature.java.svn-base","s":106,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/prop-base/TesterAnnotation.java.svn-base","s":106,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/prop-base/ListFeature.java.svn-base","s":106,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/prop-base/Feature.java.svn-base","s":106,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/prop-base/CollectionSize.java.svn-base","s":106,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/prop-base/FeatureUtil.java.svn-base","s":106,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/prop-base/SetFeature.java.svn-base","s":106,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/prop-base/CollectionFeature.java.svn-base","s":106,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/all-wcprops","s":1656,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/tmp/","s":0,"d":true},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/tmp/props/","s":0,"d":true},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/tmp/text-base/","s":0,"d":true},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/.svn/tmp/prop-base/","s":0,"d":true},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/ListFeature.java","s":1993,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/TesterRequirements.java","s":2400,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/Feature.java","s":1005,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/ConflictingRequirementsException.java","s":1415,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/TesterAnnotation.java","s":1408,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/features/CollectionSize.java","s":3350,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/TestStringSetGenerator.java","s":1497,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/CollectionTestSuiteBuilder.java","s":1201,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/TestEnumMapGenerator.java","s":2230,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/ListTestSuiteBuilder.java","s":4023,"d":false},{"f":"google-collections/trunk/testfw/com/google/common/collect/testing/QueueTestSuiteBuilder.java","s":2424,"d":false},{"f":"google-collections/trunk/testfw/com/.svn/","s":0,"d":true},{"f":"google-collections/trunk/testfw/com/.svn/props/","s":0,"d":true},{"f":"google-collections/trunk/testfw/com/.svn/entries","s":228,"d":false},{"f":"google-collections/trunk/testfw/com/.svn/text-base/","s":0,"d":true},{"f":"google-collections/trunk/testfw/com/.svn/prop-base/","s":0,"d":true},{"f":"google-collections/trunk/testfw/com/.svn/all-wcprops","s":74,"d":false},{"f":"google-collections/trunk/testfw/com/.svn/tmp/","s":0,"d":true},{"f":"google-collections/trunk/testfw/com/.svn/tmp/props/","s":0,"d":true},{"f":"google-collections/trunk/testfw/com/.svn/tmp/text-base/","s":0,"d":true},{"f":"google-collections/trunk/testfw/com/.svn/tmp/prop-base/","s":0,"d":true},{"f":"google-collections/trunk/testfw/testfw.iml","s":672,"d":false},{"f":"google-collections/trunk/google-collect.ipr","s":22032,"d":false},{"f":"google-collections/trunk/lib/","s":0,"d":true},{"f":"google-collections/trunk/lib/junit.jar","s":121070,"d":false},{"f":"google-collections/trunk/lib/jsr305.jar","s":33017,"d":false},{"f":"google-collections/trunk/lib/.svn/","s":0,"d":true},{"f":"google-collections/trunk/lib/.svn/props/","s":0,"d":true},{"f":"google-collections/trunk/lib/.svn/entries","s":1382,"d":false},{"f":"google-collections/trunk/lib/.svn/text-base/","s":0,"d":true},{"f":"google-collections/trunk/lib/.svn/text-base/junit.jar.svn-base","s":121070,"d":false},{"f":"google-collections/trunk/lib/.svn/text-base/tl4j-1.1.0.jar.svn-base","s":5578,"d":false},{"f":"google-collections/trunk/lib/.svn/text-base/easymockclassextension-2.4.jar.svn-base","s":56010,"d":false},{"f":"google-collections/trunk/lib/.svn/text-base/cglib-nodep-2.2.jar.svn-base","s":322362,"d":false},{"f":"google-collections/trunk/lib/.svn/text-base/jsr305.jar.svn-base","s":33017,"d":false},{"f":"google-collections/trunk/lib/.svn/text-base/gwt-servlet.jar.svn-base","s":938019,"d":false},{"f":"google-collections/trunk/lib/.svn/text-base/easymock-2.4.jar.svn-base","s":78815,"d":false},{"f":"google-collections/trunk/lib/.svn/prop-base/","s":0,"d":true},{"f":"google-collections/trunk/lib/.svn/prop-base/junit.jar.svn-base","s":53,"d":false},{"f":"google-collections/trunk/lib/.svn/prop-base/tl4j-1.1.0.jar.svn-base","s":53,"d":false},{"f":"google-collections/trunk/lib/.svn/prop-base/easymockclassextension-2.4.jar.svn-base","s":53,"d":false},{"f":"google-collections/trunk/lib/.svn/prop-base/cglib-nodep-2.2.jar.svn-base","s":53,"d":false},{"f":"google-collections/trunk/lib/.svn/prop-base/jsr305.jar.svn-base","s":53,"d":false},{"f":"google-collections/trunk/lib/.svn/prop-base/gwt-servlet.jar.svn-base","s":53,"d":false},{"f":"google-collections/trunk/lib/.svn/prop-base/easymock-2.4.jar.svn-base","s":53,"d":false},{"f":"google-collections/trunk/lib/.svn/all-wcprops","s":778,"d":false},{"f":"google-collections/trunk/lib/.svn/tmp/","s":0,"d":true},{"f":"google-collections/trunk/lib/.svn/tmp/props/","s":0,"d":true},{"f":"google-collections/trunk/lib/.svn/tmp/text-base/","s":0,"d":true},{"f":"google-collections/trunk/lib/.svn/tmp/prop-base/","s":0,"d":true},{"f":"google-collections/trunk/lib/gwt-servlet.jar","s":938019,"d":false},{"f":"google-collections/trunk/lib/tl4j-1.1.0.jar","s":5578,"d":false},{"f":"google-collections/trunk/lib/easymock-2.4.jar","s":78815,"d":false},{"f":"google-collections/trunk/lib/cglib-nodep-2.2.jar","s":322362,"d":false},{"f":"google-collections/trunk/lib/easymockclassextension-2.4.jar","s":56010,"d":false},{"f":"google-collections/tags/","s":0,"d":true},{"f":"google-collections/tags/.svn/","s":0,"d":true},{"f":"google-collections/tags/.svn/props/","s":0,"d":true},{"f":"google-collections/tags/.svn/entries","s":194,"d":false},{"f":"google-collections/tags/.svn/text-base/","s":0,"d":true},{"f":"google-collections/tags/.svn/prop-base/","s":0,"d":true},{"f":"google-collections/tags/.svn/all-wcprops","s":61,"d":false},{"f":"google-collections/tags/.svn/tmp/","s":0,"d":true},{"f":"google-collections/tags/.svn/tmp/props/","s":0,"d":true},{"f":"google-collections/tags/.svn/tmp/text-base/","s":0,"d":true},{"f":"google-collections/tags/.svn/tmp/prop-base/","s":0,"d":true}]}
+
+ succeeded in 595ms:
+google-collect-1.0/COPYING
+google-collect-1.0/google-collect-1.0.jar
+google-collect-1.0/javadoc/allclasses-frame.html
+google-collect-1.0/javadoc/allclasses-noframe.html
+google-collect-1.0/javadoc/constant-values.html
+google-collect-1.0/javadoc/deprecated-list.html
+google-collect-1.0/javadoc/help-doc.html
+google-collect-1.0/javadoc/index-all.html
+google-collect-1.0/javadoc/index.html
+google-collect-1.0/javadoc/overview-frame.html
+google-collect-1.0/javadoc/overview-summary.html
+google-collect-1.0/javadoc/overview-tree.html
+google-collect-1.0/javadoc/package-list
+google-collect-1.0/javadoc/resources/inherit.gif
+google-collect-1.0/javadoc/serialized-form.html
+google-collect-1.0/javadoc/stylesheet.css
+google-collect-1.0/src-1.0.zip
+
+ succeeded in 1352ms:
+        0  2009-12-30 10:35   google-collect-1.0/javadoc/resources/
+     6782  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/VisibleForTesting.html
+     6099  2009-12-30 10:35   google-collect-1.0/javadoc/com/google/common/annotations/class-use/VisibleForTesting.html
+       57  2009-12-30 10:35   google-collect-1.0/javadoc/resources/inherit.gif
+   309101  2009-12-30 10:35   google-collect-1.0/src-1.0.zip
+
+exec
+/usr/bin/zsh -lc 'for i in $(seq 1 26); do curl -fsSL "https://storage.googleapis.com/google-code-archive/v2/code.google.com/google-collections/source-page-$i.json" | rg -o '"'google-collections/tags/["'^" ]+'"' || true; done | sort -u | sed -n '1,200p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+ succeeded in 12451ms:
+google-collections/tags/.svn/
+google-collections/tags/.svn/all-wcprops
+google-collections/tags/.svn/entries
+google-collections/tags/.svn/prop-base/
+google-collections/tags/.svn/props/
+google-collections/tags/.svn/text-base/
+google-collections/tags/.svn/tmp/
+google-collections/tags/.svn/tmp/prop-base/
+google-collections/tags/.svn/tmp/props/
+google-collections/tags/.svn/tmp/text-base/
+
+exec
+/usr/bin/zsh -lc "find build/discovered-artifact-metadata -type f | sed -n '1,20p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+
+exec
+/usr/bin/zsh -lc "find build/discovered-artifact-metadata -type f -size +100c | head -20 | xargs -r sed -n '1,80p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' build/discovered-artifact-metadata -S | sed -n '1,160p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc "rg -n 'source-code-url|test-code-url|documentation-url|repository-url|language' . -g '*.json' -S | sed -n '1,200p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+ succeeded in 0ms:
+./metadata/org.antlr/antlr4-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-sources.jar",
+./metadata/org.antlr/antlr4-runtime/index.json:6:    "repository-url" : "https://github.com/antlr/antlr4",
+./metadata/org.antlr/antlr4-runtime/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr4/tree/4.10/runtime-testsuite/test/org/antlr/v4/test/runtime/java",
+./metadata/org.antlr/antlr4-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-javadoc.jar",
+./metadata/org.antlr/antlr4-runtime/index.json:9:    "description" : "ANTLR 4 Runtime is the Java runtime library that supplies the core classes needed to execute parsers and lexers generated by ANTLR 4. It provides token streams, parse tree support, error handling, and other infrastructure used by generated language recognizers.",
+./metadata/org.antlr/antlr-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr-runtime/3.5.2/antlr-runtime-3.5.2-sources.jar",
+./metadata/org.antlr/antlr-runtime/index.json:6:    "repository-url" : "https://github.com/antlr/antlr3",
+./metadata/org.antlr/antlr-runtime/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr3/tree/3.5.2/runtime/Java/src/test",
+./metadata/org.antlr/antlr-runtime/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.antlr/antlr-runtime/3.5.2/",
+./metadata/org.antlr/antlr-runtime/index.json:9:    "description" : "ANTLR 3 Runtime provides the Java runtime support needed by lexers, parsers, and tree parsers generated by ANTLR 3. It includes token streams, recognizer base classes, error handling, and tree APIs used to execute grammars generated from language descriptions.",
+./metadata/org.mockito/mockito-core/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/5.0.0/mockito-core-5.0.0-sources.jar",
+./metadata/org.mockito/mockito-core/index.json:9:    "repository-url": "https://github.com/mockito/mockito",
+./metadata/org.mockito/mockito-core/index.json:10:    "test-code-url": "https://github.com/mockito/mockito/tree/v5.0.0/src/test",
+./metadata/org.mockito/mockito-core/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/5.0.0/mockito-core-5.0.0-javadoc.jar",
+./metadata/org.mockito/mockito-core/index.json:50:    "source-code-url": "https://repo1.maven.org/maven2/org/mockito/mockito-core/4.8.1/mockito-core-4.8.1-sources.jar",
+./metadata/org.mockito/mockito-core/index.json:51:    "repository-url": "https://github.com/mockito/mockito",
+./metadata/org.mockito/mockito-core/index.json:52:    "test-code-url": "https://github.com/mockito/mockito/tree/v4.8.1/src/test",
+./metadata/org.mockito/mockito-core/index.json:53:    "documentation-url": "https://github.com/mockito/mockito/blob/v4.8.1/README.md",
+./metadata/javax.transaction/transaction-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/transaction/transaction-api/1.1/transaction-api-1.1-sources.jar",
+./metadata/javax.transaction/transaction-api/index.json:6:    "repository-url" : "N/A",
+./metadata/javax.transaction/transaction-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.transaction/transaction-api/index.json:8:    "documentation-url" : "https://download.oracle.com/otndocs/jcp/jta-1.1-javadoc-oth-JSpec/?submit=Download",
+./metadata/javax.transaction/jta/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/transaction/jta/1.1/jta-1.1-sources.jar",
+./metadata/javax.transaction/jta/index.json:6:    "repository-url" : "https://github.com/javaee/jta-spec",
+./metadata/javax.transaction/jta/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.transaction/jta/index.json:8:    "documentation-url" : "https://download.oracle.com/otndocs/jcp/jta-1.1-spec-oth-JSpec/",
+./metadata/software.amazon.awssdk/s3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-sources.jar",
+./metadata/software.amazon.awssdk/s3/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+./metadata/software.amazon.awssdk/s3/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/2.25.3/services/s3/src/test",
+./metadata/software.amazon.awssdk/s3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-javadoc.jar",
+./metadata/com.esotericsoftware/minlog/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/1.3.0/minlog-1.3.0-sources.jar",
+./metadata/com.esotericsoftware/minlog/index.json:6:    "repository-url" : "https://github.com/EsotericSoftware/minlog",
+./metadata/com.esotericsoftware/minlog/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/1.3.0/minlog-1.3.0-tests.jar",
+./metadata/com.esotericsoftware/minlog/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/1.3.0/minlog-1.3.0-javadoc.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/4.0.0-M2/jakarta.persistence-api-4.0.0-M2-sources.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/persistence",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/persistence-tck-dist/4.0.0-M2/persistence-tck-dist-4.0.0-M2.zip",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/4.0.0-M2/jakarta.persistence-api-4.0.0-M2-javadoc.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/4.0.0-M1/jakarta.persistence-api-4.0.0-M1-sources.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:20:    "repository-url" : "https://github.com/jakartaee/persistence",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/persistence-tck-dist/4.0.0-M1/persistence-tck-dist-4.0.0-M1.zip",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/4.0.0-M1/jakarta.persistence-api-4.0.0-M1-javadoc.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.2.0/jakarta.persistence-api-3.2.0-sources.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:34:    "repository-url" : "https://github.com/jakartaee/persistence",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:35:    "test-code-url" : "https://download.eclipse.org/jakartaee/persistence/3.2/jakarta-persistence-tck-3.2.0.zip",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:36:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.2.0/jakarta.persistence-api-3.2.0-javadoc.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:47:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0-sources.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:48:    "repository-url" : "https://github.com/jakartaee/persistence",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:49:    "test-code-url" : "N/A",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:50:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0-javadoc.jar",
+./metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/1.0.3/compress-lzf-1.0.3-sources.jar",
+./metadata/com.ning/compress-lzf/index.json:6:    "repository-url" : "https://github.com/ning/compress",
+./metadata/com.ning/compress-lzf/index.json:7:    "test-code-url" : "https://github.com/ning/compress/tree/compress-lzf-1.0.3/src/test",
+./metadata/com.ning/compress-lzf/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/1.0.3/compress-lzf-1.0.3-javadoc.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-sources.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:5:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:6:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.0.6/src/test",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-javadoc.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:40:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-sources.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:41:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:42:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.5.2/src/test",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:43:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-javadoc.jar",
+./metadata/jline/jline/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/jline/jline/2.14.6/jline-2.14.6-sources.jar",
+./metadata/jline/jline/index.json:7:    "repository-url": "https://github.com/jline/jline2",
+./metadata/jline/jline/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/jline/jline/2.14.6/jline-2.14.6-tests.jar",
+./metadata/jline/jline/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/jline/jline/2.14.6/jline-2.14.6-javadoc.jar",
+./metadata/org.apache.directory.server/apacheds-i18n/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/2.0.0-M15/apacheds-i18n-2.0.0-M15-sources.jar",
+./metadata/org.apache.directory.server/apacheds-i18n/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/apacheds/tags/2.0.0-M15",
+./metadata/org.apache.directory.server/apacheds-i18n/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.directory.server/apacheds-i18n/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/2.0.0-M15/apacheds-i18n-2.0.0-M15-javadoc.jar",
+./metadata/com.microsoft.sqlserver/mssql-jdbc/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/12.2.0.jre11/mssql-jdbc-12.2.0.jre11-sources.jar",
+./metadata/com.microsoft.sqlserver/mssql-jdbc/index.json:9:    "repository-url": "https://github.com/microsoft/mssql-jdbc",
+./metadata/com.microsoft.sqlserver/mssql-jdbc/index.json:10:    "test-code-url": "https://github.com/microsoft/mssql-jdbc/tree/v12.2.0/src/test",
+./metadata/com.microsoft.sqlserver/mssql-jdbc/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/12.2.0.jre11/mssql-jdbc-12.2.0.jre11-javadoc.jar",
+./metadata/org.glassfish.hk2.external/javax.inject/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/external/javax.inject/2.5.0-b05/javax.inject-2.5.0-b05-sources.jar",
+./metadata/org.glassfish.hk2.external/javax.inject/index.json:6:    "repository-url" : "https://github.com/javaee/hk2",
+./metadata/org.glassfish.hk2.external/javax.inject/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.glassfish.hk2.external/javax.inject/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/external/javax.inject/2.5.0-b05/javax.inject-2.5.0-b05-javadoc.jar",
+./metadata/org.glassfish.hk2.external/jakarta.inject/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/hk2/external/jakarta.inject/2.6.1/jakarta.inject-2.6.1-sources.jar",
+./metadata/org.glassfish.hk2.external/jakarta.inject/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+./metadata/org.glassfish.hk2.external/jakarta.inject/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.glassfish.hk2.external/jakarta.inject/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/hk2/external/jakarta.inject/2.6.1/jakarta.inject-2.6.1-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/2.0.0.Final/jboss-interceptor-spi-2.0.0.Final-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:6:    "repository-url" : "https://github.com/jbossinterceptors/jbossinterceptors",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:8:    "documentation-url" : "N/A",
+./metadata/org.apache.kafka/kafka-clients/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/3.5.1/kafka-clients-3.5.1-sources.jar",
+./metadata/org.apache.kafka/kafka-clients/index.json:9:    "repository-url": "https://github.com/apache/kafka",
+./metadata/org.apache.kafka/kafka-clients/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/3.5.1/kafka-clients-3.5.1-test-sources.jar",
+./metadata/org.apache.kafka/kafka-clients/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/3.5.1/kafka-clients-3.5.1-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+./metadata/org.apache.kafka/kafka-streams/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/kafka/kafka-streams/3.5.1/kafka-streams-3.5.1-sources.jar",
+./metadata/org.apache.kafka/kafka-streams/index.json:20:    "repository-url" : "https://github.com/apache/kafka",
+./metadata/org.apache.kafka/kafka-streams/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/kafka/kafka-streams/3.5.1/kafka-streams-3.5.1-test-sources.jar",
+./metadata/org.apache.kafka/kafka-streams/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kafka/kafka-streams/3.5.1/kafka-streams-3.5.1-javadoc.jar",
+./metadata/org.objenesis/objenesis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/3.2/objenesis-3.2-sources.jar",
+./metadata/org.objenesis/objenesis/index.json:6:    "repository-url" : "https://github.com/easymock/objenesis",
+./metadata/org.objenesis/objenesis/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis-tck/3.2/objenesis-tck-3.2-sources.jar",
+./metadata/org.objenesis/objenesis/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/3.2/objenesis-3.2-javadoc.jar",
+./metadata/com.android.tools/annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/android/tools/annotations/24.5.0/annotations-24.5.0-sources.jar",
+./metadata/com.android.tools/annotations/index.json:6:    "repository-url" : "https://android.googlesource.com/platform/tools/base",
+./metadata/com.android.tools/annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/com.android.tools/annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/android/tools/annotations/24.5.0/annotations-24.5.0-javadoc.jar",
+./metadata/org.atteo.classindex/classindex/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/atteo/classindex/classindex/3.13/classindex-3.13-sources.jar",
+./metadata/org.atteo.classindex/classindex/index.json:6:    "repository-url" : "https://github.com/atteo/classindex",
+./metadata/org.atteo.classindex/classindex/index.json:7:    "test-code-url" : "https://github.com/atteo/classindex/tree/3.13/classindex/src/test",
+./metadata/org.atteo.classindex/classindex/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/atteo/classindex/classindex/3.13/classindex-3.13-javadoc.jar",
+./metadata/org.flywaydb/flyway-core/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/12.3.0/flyway-core-12.3.0-sources.jar",
+./metadata/org.flywaydb/flyway-core/index.json:7:    "repository-url" : "https://github.com/flyway/flyway",
+./metadata/org.flywaydb/flyway-core/index.json:8:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-core/index.json:9:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-12.3.0/documentation",
+./metadata/org.flywaydb/flyway-core/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/11.14.1/flyway-core-11.14.1-sources.jar",
+./metadata/org.flywaydb/flyway-core/index.json:25:    "repository-url" : "https://github.com/flyway/flyway",
+./metadata/org.flywaydb/flyway-core/index.json:26:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-core/index.json:27:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-11.14.1/documentation",
+./metadata/org.flywaydb/flyway-core/index.json:94:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.20.1/flyway-core-10.20.1-sources.jar",
+./metadata/org.flywaydb/flyway-core/index.json:95:    "repository-url" : "https://github.com/flyway/flyway",
+./metadata/org.flywaydb/flyway-core/index.json:96:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-core/index.json:97:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-10.20.1/documentation",
+./metadata/org.flywaydb/flyway-core/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.20.0/flyway-core-10.20.0-sources.jar",
+./metadata/org.flywaydb/flyway-core/index.json:112:    "repository-url" : "https://github.com/flyway/flyway",
+./metadata/org.flywaydb/flyway-core/index.json:113:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-core/index.json:114:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-10.20.0/documentation",
+./metadata/org.flywaydb/flyway-core/index.json:128:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.15.0/flyway-core-10.15.0-sources.jar",
+./metadata/org.flywaydb/flyway-core/index.json:129:    "repository-url" : "https://github.com/flyway/flyway",
+./metadata/org.flywaydb/flyway-core/index.json:130:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-core/index.json:131:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-10.15.0/documentation",
+./metadata/org.flywaydb/flyway-core/index.json:145:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.10.0/flyway-core-10.10.0-sources.jar",
+./metadata/org.flywaydb/flyway-core/index.json:146:    "repository-url" : "https://github.com/flyway/flyway",
+./metadata/org.flywaydb/flyway-core/index.json:147:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-core/index.json:148:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-10.10.0/documentation",
+./metadata/org.flywaydb/flyway-core/index.json:162:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/9.0.1/flyway-core-9.0.1-sources.jar",
+./metadata/org.flywaydb/flyway-core/index.json:163:    "repository-url" : "https://github.com/flyway/flyway",
+./metadata/org.flywaydb/flyway-core/index.json:164:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-core/index.json:165:    "documentation-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/9.0.1/flyway-core-9.0.1-javadoc.jar",
+./metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/3.0.0/jakarta.xml.bind-api-3.0.0-sources.jar",
+./metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:20:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-api",
+./metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api-test/3.0.0/jakarta.xml.bind-api-test-3.0.0-sources.jar",
+./metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/3.0.0/jakarta.xml.bind-api-3.0.0-javadoc.jar",
+./metadata/org.flywaydb/flyway-sqlserver/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/10.19.0/flyway-sqlserver-10.19.0-sources.jar",
+./metadata/org.flywaydb/flyway-sqlserver/index.json:7:    "repository-url" : "https://github.com/flyway/flyway",
+./metadata/org.flywaydb/flyway-sqlserver/index.json:8:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-sqlserver/index.json:9:    "documentation-url" : "https://github.com/flyway/flyway/blob/flyway-10.19.0/documentation/Flyway%20CLI%20and%20API/Supported%20Databases/SQL%20Server%20Database.md",
+./metadata/org.flywaydb/flyway-sqlserver/index.json:43:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/10.13.0/flyway-sqlserver-10.13.0-sources.jar",
+./metadata/org.flywaydb/flyway-sqlserver/index.json:44:    "repository-url" : "https://github.com/flyway/flyway",
+./metadata/org.flywaydb/flyway-sqlserver/index.json:45:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-sqlserver/index.json:46:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-10.13.0/documentation",
+./metadata/org.flywaydb/flyway-sqlserver/index.json:68:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/10.10.0/flyway-sqlserver-10.10.0-sources.jar",
+./metadata/org.flywaydb/flyway-sqlserver/index.json:69:    "repository-url" : "https://github.com/flyway/flyway",
+./metadata/org.flywaydb/flyway-sqlserver/index.json:70:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-sqlserver/index.json:71:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-10.10.0/documentation",
+./metadata/org.clojure/google-closure-library-third-party/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20250515-f04e4c0e/google-closure-library-third-party-0.0-20250515-f04e4c0e-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:6:    "repository-url" : "https://github.com/google/closure-library",
+./metadata/org.clojure/google-closure-library-third-party/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20250515-f04e4c0e/google-closure-library-third-party-0.0-20250515-f04e4c0e-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:8:    "documentation-url" : "https://github.com/google/closure-library/blob/f04e4c0e/README.md",
+./metadata/org.clojure/google-closure-library-third-party/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20150505-021ed5b3/google-closure-library-third-party-0.0-20150505-021ed5b3-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:20:    "repository-url" : "https://github.com/google/closure-library",
+./metadata/org.clojure/google-closure-library-third-party/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20150505-021ed5b3/google-closure-library-third-party-0.0-20150505-021ed5b3-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:22:    "documentation-url" : "https://github.com/google/closure-library/blob/021ed5b313da392a7139d0d3cf7011999ac8b672/README.md",
+./metadata/org.flywaydb/flyway-database-postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/flywaydb/flyway-database-postgresql/10.13.0/flyway-database-postgresql-10.13.0-sources.jar",
+./metadata/org.flywaydb/flyway-database-postgresql/index.json:9:    "repository-url": "https://github.com/flyway/flyway",
+./metadata/org.flywaydb/flyway-database-postgresql/index.json:10:    "test-code-url": "https://github.com/flyway/flyway/tree/flyway-10.13.0/flyway-database/flyway-database-postgresql",
+./metadata/org.flywaydb/flyway-database-postgresql/index.json:11:    "documentation-url": "https://github.com/flyway/flyway/tree/flyway-10.13.0/documentation",
+./metadata/org.flywaydb/flyway-database-postgresql/index.json:34:    "source-code-url": "https://repo1.maven.org/maven2/org/flywaydb/flyway-database-postgresql/10.10.0/flyway-database-postgresql-10.10.0-sources.jar",
+./metadata/org.flywaydb/flyway-database-postgresql/index.json:35:    "repository-url": "https://github.com/flyway/flyway",
+./metadata/org.flywaydb/flyway-database-postgresql/index.json:36:    "test-code-url": "https://github.com/flyway/flyway/tree/flyway-10.10.0/flyway-database/flyway-database-postgresql",
+./metadata/org.flywaydb/flyway-database-postgresql/index.json:37:    "documentation-url": "https://github.com/flyway/flyway/tree/flyway-10.10.0/documentation",
+./metadata/org.immutables/value/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.9-ea-0/value-2.8.9-ea-0-sources.jar",
+./metadata/org.immutables/value/index.json:7:    "repository-url" : "https://github.com/immutables/immutables",
+./metadata/org.immutables/value/index.json:8:    "test-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.9-ea-0/value-2.8.9-ea-0-tests.jar",
+./metadata/org.immutables/value/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.9-ea-0/value-2.8.9-ea-0-javadoc.jar",
+./metadata/org.immutables/value/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.6/value-2.8.6-sources.jar",
+./metadata/org.immutables/value/index.json:22:    "repository-url" : "https://github.com/immutables/immutables",
+./metadata/org.immutables/value/index.json:23:    "test-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.6/value-2.8.6-tests.jar",
+./metadata/org.immutables/value/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.6/value-2.8.6-javadoc.jar",
+./metadata/org.immutables/value/index.json:38:    "source-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.2/value-2.8.2-sources.jar",
+./metadata/org.immutables/value/index.json:39:    "repository-url" : "https://github.com/immutables/immutables",
+./metadata/org.immutables/value/index.json:40:    "test-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.2/value-2.8.2-tests.jar",
+./metadata/org.immutables/value/index.json:41:    "documentation-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.2/value-2.8.2-javadoc.jar",
+./metadata/org.apache.camel/spi-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/3.2.0/spi-annotations-3.2.0-sources.jar",
+./metadata/org.apache.camel/spi-annotations/index.json:6:    "repository-url" : "https://github.com/apache/camel",
+./metadata/org.apache.camel/spi-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.camel/spi-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/3.2.0/spi-annotations-3.2.0-javadoc.jar",
+./metadata/org.apache.camel/spi-annotations/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/3.0.0/spi-annotations-3.0.0-sources.jar",
+./metadata/org.apache.camel/spi-annotations/index.json:20:    "repository-url" : "https://github.com/apache/camel",
+./metadata/org.apache.camel/spi-annotations/index.json:21:    "test-code-url" : "N/A",
+./metadata/org.apache.camel/spi-annotations/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/3.0.0/spi-annotations-3.0.0-javadoc.jar",
+./metadata/org.apache.camel/spi-annotations/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/2.16.2/spi-annotations-2.16.2-sources.jar",
+./metadata/org.apache.camel/spi-annotations/index.json:36:    "repository-url" : "https://github.com/apache/camel",
+./metadata/org.apache.camel/spi-annotations/index.json:37:    "test-code-url" : "N/A",
+./metadata/org.apache.camel/spi-annotations/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/2.16.2/spi-annotations-2.16.2-javadoc.jar",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-sources.jar",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:6:    "repository-url" : "https://github.com/google/j2objc",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-javadoc.jar",
+./metadata/org.jboss.arquillian.core/arquillian-core-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-api/1.1.10.Final/arquillian-core-api-1.1.10.Final-sources.jar",
+./metadata/org.jboss.arquillian.core/arquillian-core-api/index.json:6:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+
+exec
+/usr/bin/zsh -lc "rg -n 'discovered-artifact-metadata|source-code-url|test-code-url' . -S | sed -n '1,200p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+ succeeded in 0ms:
+./skills/review-library-bulk-update/SKILL.md:3:description: Review automated pull requests with the `library-bulk-update` label in graalvm-reachability-metadata. Use when asked to review or triage a PR that bumps tested versions for existing libraries, including approve vs close decisions, CI checks, diff-scope validation, and verification of `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` changes.
+./skills/review-library-bulk-update/SKILL.md:57:   - Review `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` with the same rules used by `PopulateArtifactURLs`.
+./skills/review-library-bulk-update/SKILL.md:69:- `source-code-url`, `test-code-url`, and `documentation-url` must point to the exact library version in the changed entry.
+./metadata/software.amazon.awssdk/s3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-sources.jar",
+./metadata/software.amazon.awssdk/s3/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/2.25.3/services/s3/src/test",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:178:                .containsEntry("source-code-url", "https://example.com/source")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:180:                .containsEntry("test-code-url", "https://example.com/tests")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:224:                .containsEntry("source-code-url", "https://example.com/source")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:226:                .containsEntry("test-code-url", "https://example.com/tests")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:58:                .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", \"description\", and \"language\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:66:                .contains("- source-code-url: <missing>")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:121:                .contains("- source-code-url: https://example.com/source-a")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:150:                .contains("- source-code-url: https://example.com/source-a")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:220:                    "source-code-url": "https://example.com/source-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:222:                    "test-code-url": "https://example.com/tests-a",
+./metadata/com.esotericsoftware/minlog/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/1.3.0/minlog-1.3.0-sources.jar",
+./metadata/com.esotericsoftware/minlog/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/1.3.0/minlog-1.3.0-tests.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:56:                .contains("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:69:        Path discoveryFile = tempDir.resolve("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/4.0.0-M2/jakarta.persistence-api-4.0.0-M2-sources.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/persistence-tck-dist/4.0.0-M2/persistence-tck-dist-4.0.0-M2.zip",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/4.0.0-M1/jakarta.persistence-api-4.0.0-M1-sources.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/persistence-tck-dist/4.0.0-M1/persistence-tck-dist-4.0.0-M1.zip",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.2.0/jakarta.persistence-api-3.2.0-sources.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:35:    "test-code-url" : "https://download.eclipse.org/jakartaee/persistence/3.2/jakarta-persistence-tck-3.2.0.zip",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:47:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0-sources.jar",
+./metadata/jakarta.persistence/jakarta.persistence-api/index.json:49:    "test-code-url" : "N/A",
+./forge/docs/dynamic-access-workflow.md:52:   `source-code-url`, `test-code-url`, and `documentation-url` as required.
+./metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/1.0.3/compress-lzf-1.0.3-sources.jar",
+./metadata/com.ning/compress-lzf/index.json:7:    "test-code-url" : "https://github.com/ning/compress/tree/compress-lzf-1.0.3/src/test",
+./metadata/jline/jline/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/jline/jline/2.14.6/jline-2.14.6-sources.jar",
+./metadata/jline/jline/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/jline/jline/2.14.6/jline-2.14.6-tests.jar",
+./metadata/org.apache.directory.server/apacheds-i18n/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/2.0.0-M15/apacheds-i18n-2.0.0-M15-sources.jar",
+./metadata/org.apache.directory.server/apacheds-i18n/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.glassfish.hk2.external/javax.inject/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/external/javax.inject/2.5.0-b05/javax.inject-2.5.0-b05-sources.jar",
+./metadata/org.glassfish.hk2.external/javax.inject/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.glassfish.hk2.external/jakarta.inject/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/hk2/external/jakarta.inject/2.6.1/jakarta.inject-2.6.1-sources.jar",
+./metadata/org.glassfish.hk2.external/jakarta.inject/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.kafka/kafka-clients/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/3.5.1/kafka-clients-3.5.1-sources.jar",
+./metadata/org.apache.kafka/kafka-clients/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/3.5.1/kafka-clients-3.5.1-test-sources.jar",
+./metadata/org.apache.kafka/kafka-streams/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/kafka/kafka-streams/3.5.1/kafka-streams-3.5.1-sources.jar",
+./metadata/org.apache.kafka/kafka-streams/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/kafka/kafka-streams/3.5.1/kafka-streams-3.5.1-test-sources.jar",
+./metadata/com.android.tools/annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/android/tools/annotations/24.5.0/annotations-24.5.0-sources.jar",
+./metadata/com.android.tools/annotations/index.json:7:    "test-code-url" : "N/A",
+./forge/utility_scripts/source_context.py:23:    "main": "source-code-url",
+./forge/utility_scripts/source_context.py:24:    "test": "test-code-url",
+./metadata/org.flywaydb/flyway-core/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/12.3.0/flyway-core-12.3.0-sources.jar",
+./metadata/org.flywaydb/flyway-core/index.json:8:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-core/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/11.14.1/flyway-core-11.14.1-sources.jar",
+./metadata/org.flywaydb/flyway-core/index.json:26:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-core/index.json:94:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.20.1/flyway-core-10.20.1-sources.jar",
+./metadata/org.flywaydb/flyway-core/index.json:96:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-core/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.20.0/flyway-core-10.20.0-sources.jar",
+./metadata/org.flywaydb/flyway-core/index.json:113:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-core/index.json:128:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.15.0/flyway-core-10.15.0-sources.jar",
+./metadata/org.flywaydb/flyway-core/index.json:130:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-core/index.json:145:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.10.0/flyway-core-10.10.0-sources.jar",
+./metadata/org.flywaydb/flyway-core/index.json:147:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-core/index.json:162:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/9.0.1/flyway-core-9.0.1-sources.jar",
+./metadata/org.flywaydb/flyway-core/index.json:164:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-sqlserver/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/10.19.0/flyway-sqlserver-10.19.0-sources.jar",
+./metadata/org.flywaydb/flyway-sqlserver/index.json:8:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-sqlserver/index.json:43:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/10.13.0/flyway-sqlserver-10.13.0-sources.jar",
+./metadata/org.flywaydb/flyway-sqlserver/index.json:45:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-sqlserver/index.json:68:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/10.10.0/flyway-sqlserver-10.10.0-sources.jar",
+./metadata/org.flywaydb/flyway-sqlserver/index.json:70:    "test-code-url" : "N/A",
+./metadata/org.flywaydb/flyway-database-postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/flywaydb/flyway-database-postgresql/10.13.0/flyway-database-postgresql-10.13.0-sources.jar",
+./metadata/org.flywaydb/flyway-database-postgresql/index.json:10:    "test-code-url": "https://github.com/flyway/flyway/tree/flyway-10.13.0/flyway-database/flyway-database-postgresql",
+./metadata/org.flywaydb/flyway-database-postgresql/index.json:34:    "source-code-url": "https://repo1.maven.org/maven2/org/flywaydb/flyway-database-postgresql/10.10.0/flyway-database-postgresql-10.10.0-sources.jar",
+./metadata/org.flywaydb/flyway-database-postgresql/index.json:36:    "test-code-url": "https://github.com/flyway/flyway/tree/flyway-10.10.0/flyway-database/flyway-database-postgresql",
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:24:    private static final String DISCOVERY_DIR = "discovered-artifact-metadata";
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:299:                null, // source-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:301:                null, // test-code-url
+./metadata/org.immutables/value/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.9-ea-0/value-2.8.9-ea-0-sources.jar",
+./metadata/org.immutables/value/index.json:8:    "test-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.9-ea-0/value-2.8.9-ea-0-tests.jar",
+./metadata/org.immutables/value/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.6/value-2.8.6-sources.jar",
+./metadata/org.immutables/value/index.json:23:    "test-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.6/value-2.8.6-tests.jar",
+./metadata/org.immutables/value/index.json:38:    "source-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.2/value-2.8.2-sources.jar",
+./metadata/org.immutables/value/index.json:40:    "test-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.2/value-2.8.2-tests.jar",
+./metadata/org.jboss.arquillian.core/arquillian-core-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-api/1.1.10.Final/arquillian-core-api-1.1.10.Final-sources.jar",
+./metadata/org.jboss.arquillian.core/arquillian-core-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-api/1.1.10.Final/arquillian-core-api-1.1.10.Final-tests.jar",
+./metadata/org.jboss.logging/jboss-logging/index.json:15:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/logging/jboss-logging/3.5.0.Final/jboss-logging-3.5.0.Final-sources.jar",
+./metadata/org.jboss.logging/jboss-logging/index.json:17:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/logging/jboss-logging/3.5.0.Final/jboss-logging-3.5.0.Final-source-release.zip",
+./metadata/org.jboss.logging/jboss-logging-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logging/jboss-logging-annotations/2.0.2.Final/jboss-logging-annotations-2.0.2.Final-sources.jar",
+./metadata/org.jboss.logging/jboss-logging-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logging/jboss-logging-tools-parent/2.0.2.Final/jboss-logging-tools-parent-2.0.2.Final-source-release.zip",
+./metadata/org.jboss.logging/jboss-logging-processor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logging/jboss-logging-processor/2.1.0.Final/jboss-logging-processor-2.1.0.Final-sources.jar",
+./metadata/org.jboss.logging/jboss-logging-processor/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logging/jboss-logging-tools-parent/2.1.0.Final/jboss-logging-tools-parent-2.1.0.Final-source-release.zip",
+./metadata/org.jboss.logging/jboss-logging-processor/index.json:27:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/logging/jboss-logging-processor/2.0.2.Final/jboss-logging-processor-2.0.2.Final-sources.jar",
+./metadata/org.jboss.logging/jboss-logging-processor/index.json:29:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/logging/jboss-logging-tools-parent/2.0.2.Final/jboss-logging-tools-parent-2.0.2.Final-source-release.zip",
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:26:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:30:        @JsonProperty("test-code-url")
+./metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:8:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.1.5/jetty-core/jetty-client/src/test",
+./metadata/org.eclipse.jetty/jetty-client/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:25:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.0/jetty-core/jetty-client/src/test",
+./metadata/org.eclipse.jetty/jetty-client/index.json:62:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:64:    "test-code-url" : "https://github.com/eclipse/jetty.project/tree/jetty-11.0.12/jetty-client/src/test",
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:16:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:20:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:308:    task.setDescription("Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:96:    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, description, and language when those fields already contain values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:106:    @Option(option = "verify-artifact-sources", description = "Require source/test-source validation before selecting source-code-url or test-code-url values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:304:                - source-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:306:                - test-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:352:                    - Set "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:355:                    - Set "test-code-url" to the selected test suite URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:362:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:365:                - Set missing "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:368:                - Set missing "test-code-url" to the selected test suite URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:169:                - Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+./metadata/org.eclipse.jetty/jetty-server/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-sources.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.1.3/jetty-core/jetty-server/src/test",
+./metadata/org.eclipse.jetty/jetty-server/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-sources.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:27:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.1/jetty-core/jetty-server/src/test",
+./metadata/org.eclipse.jetty/jetty-server/index.json:55:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-sources.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:57:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-11.0.12/jetty-server/src/test",
+./metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.4.1.v20170120/jetty-http-9.4.1.v20170120-sources.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.4.1.v20170120/jetty-http-9.4.1.v20170120-tests.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:79:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.4.0.M0/jetty-http-9.4.0.M0-sources.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:81:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.4.0.M0/jetty-http-9.4.0.M0-tests.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:100:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.3.19.v20170502/jetty-http-9.3.19.v20170502-sources.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:102:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.3.19.v20170502/jetty-http-9.3.19.v20170502-tests.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/12.0.0/jetty-alpn-java-server-12.0.0-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.0/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:62:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/11.0.24/jetty-alpn-java-server-11.0.24-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:64:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-11.0.24/jetty-alpn/jetty-alpn-java-server/src/test",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/10.0.0/jetty-util-ajax-10.0.0-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-10.0.0/jetty-util-ajax/src/test",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:109:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/9.4.38.v20210224/jetty-util-ajax-9.4.38.v20210224-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:111:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.38.v20210224/jetty-util-ajax/src/test",
+./metadata/org.eclipse.jetty/jetty-alpn-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/11.0.24/jetty-alpn-server-11.0.24-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-server/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-12.0.9/jetty-core/jetty-util/src/test",
+./metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/3.0.0/jakarta.xml.bind-api-3.0.0-sources.jar",
+./metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api-test/3.0.0/jakarta.xml.bind-api-test-3.0.0-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20250515-f04e4c0e/google-closure-library-third-party-0.0-20250515-f04e4c0e-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20250515-f04e4c0e/google-closure-library-third-party-0.0-20250515-f04e4c0e-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20150505-021ed5b3/google-closure-library-third-party-0.0-20150505-021ed5b3-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20150505-021ed5b3/google-closure-library-third-party-0.0-20150505-021ed5b3-sources.jar",
+./metadata/org.apache.camel/spi-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/3.2.0/spi-annotations-3.2.0-sources.jar",
+./metadata/org.apache.camel/spi-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.camel/spi-annotations/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/3.0.0/spi-annotations-3.0.0-sources.jar",
+./metadata/org.apache.camel/spi-annotations/index.json:21:    "test-code-url" : "N/A",
+./metadata/org.apache.camel/spi-annotations/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/2.16.2/spi-annotations-2.16.2-sources.jar",
+./metadata/org.apache.camel/spi-annotations/index.json:37:    "test-code-url" : "N/A",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-sources.jar",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.scala-sbt/test-interface/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0-sources.jar",
+./metadata/org.scala-sbt/test-interface/index.json:7:    "test-code-url" : "https://github.com/sbt/test-interface/tree/v1.0/src/test",
+./metadata/org.scala-sbt/util-interface/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scala-sbt/util-interface/1.3.0/util-interface-1.3.0-sources.jar",
+./metadata/org.scala-sbt/util-interface/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-sources.jar",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+./metadata/mysql/mysql-connector-java/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.29/mysql-connector-java-8.0.29-sources.jar",
+./metadata/mysql/mysql-connector-java/index.json:10:    "test-code-url": "https://github.com/mysql/mysql-connector-j/tree/8.0.29/src/test",
+./metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/paho/org.eclipse.paho.mqttv5.client/1.2.5/org.eclipse.paho.mqttv5.client-1.2.5-sources.jar",
+./metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:10:    "test-code-url": "https://github.com/eclipse-paho/paho.mqtt.java/tree/v1.2.5/org.eclipse.paho.mqttv5.client.test/src/test",
+./metadata/org.eclipse.paho/org.eclipse.paho.client.mqttv3/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/paho/org.eclipse.paho.client.mqttv3/1.2.5/org.eclipse.paho.client.mqttv3-1.2.5-sources.jar",
+./metadata/org.eclipse.paho/org.eclipse.paho.client.mqttv3/index.json:10:    "test-code-url": "https://github.com/eclipse-paho/paho.mqtt.java/tree/v1.2.5/org.eclipse.paho.client.mqttv3.test",
+./metadata/io.projectreactor/reactor-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/3.5.1/reactor-core-3.5.1-sources.jar",
+./metadata/io.projectreactor/reactor-core/index.json:7:    "test-code-url" : "https://github.com/reactor/reactor-core/tree/v3.5.1/reactor-core/src/test/java",
+./metadata/com.diffplug.durian/durian-swt.os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/4.2.2/durian-swt.os-4.2.2-sources.jar",
+./metadata/com.diffplug.durian/durian-swt.os/index.json:7:    "test-code-url" : "https://github.com/diffplug/durian-swt/tree/release/4.2.2/durian-swt.os/src/test/java/com/diffplug/common/swt/os",
+./metadata/com.graphql-java/graphql-java/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/19.2/graphql-java-19.2-sources.jar",
+./metadata/com.graphql-java/graphql-java/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java/tree/v19.2/src/test",
+./metadata/com.graphql-java/graphql-java-extended-validation/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/19.1/graphql-java-extended-validation-19.1-sources.jar",
+./metadata/com.graphql-java/graphql-java-extended-validation/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java-extended-validation/tree/v19.1/src/test",
+./metadata/com.graphql-java/java-dataloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-07-17T01-39-28-682c652/java-dataloader-2021-07-17T01-39-28-682c652-sources.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:7:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v3.0.1/src/test",
+./metadata/com.graphql-java/java-dataloader/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-06-25T00-59-41-0eec4c8/java-dataloader-2021-06-25T00-59-41-0eec4c8-sources.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:22:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/0eec4c8390943c7875840b99bfba800d546d52ca/src/test",
+./metadata/com.graphql-java/java-dataloader/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-06-27T00-42-24-11a7348/java-dataloader-2021-06-27T00-42-24-11a7348-sources.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:37:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/11a7348c1f24cfe9d16a9e1fcee856387e49a93a/src/test",
+./metadata/com.graphql-java/java-dataloader/index.json:49:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/5.0.0/java-dataloader-5.0.0-sources.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:51:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v5.0.0/src/test",
+./metadata/com.graphql-java/java-dataloader/index.json:67:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/3.2.0/java-dataloader-3.2.0-sources.jar",
+./metadata/com.graphql-java/java-dataloader/index.json:69:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v3.2.0/src/test",
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/19.0/graphql-java-extended-scalars-19.0-sources.jar",
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:7:    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/19.0/src/test",
+./metadata/org.apache.zookeeper/zookeeper/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-sources.jar",
+./metadata/org.apache.zookeeper/zookeeper/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-tests.jar",
+./metadata/org.apache.zookeeper/zookeeper-jute/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/3.8.1/zookeeper-jute-3.8.1-sources.jar",
+./metadata/org.apache.zookeeper/zookeeper-jute/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/3.8.1/zookeeper-jute-3.8.1-tests.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/9.4.0.RC0/jetty-io-9.4.0.RC0-sources.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.0.RC0/jetty-io/src/test",
+./metadata/org.eclipse.jetty/jetty-io/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/9.4.0.M0/jetty-io-9.4.0.M0-sources.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:21:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.0.M0/jetty-io/src/test",
+./metadata/org.eclipse.jetty/jetty-io/index.json:34:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/9.3.19.v20170502/jetty-io-9.3.19.v20170502-sources.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:36:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.3.19.v20170502/jetty-io/src/test",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-sources.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-tests.jar",
+./metadata/xalan/xalan/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/xalan/xalan/2.7.0/xalan-2.7.0-sources.jar",
+./metadata/xalan/xalan/index.json:7:    "test-code-url" : "N/A",
+./metadata/info.picocli/picocli/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-sources.jar",
+./metadata/info.picocli/picocli/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-test-sources.jar",
+./metadata/org.unbescape/unbescape/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/unbescape/unbescape/1.1.6.RELEASE/unbescape-1.1.6.RELEASE-sources.jar",
+./metadata/org.unbescape/unbescape/index.json:8:    "test-code-url": "N/A",
+./metadata/org.reactivestreams/reactive-streams/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-sources.jar",
+./metadata/org.reactivestreams/reactive-streams/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams-tck/1.0.3/reactive-streams-tck-1.0.3-sources.jar",
+
+codex
+The exact Maven sources and javadocs are available and verified. I did not find a Maven test artifact or an exact-version upstream test archive; the Google Code 1.0 release zip contains the binary, javadoc, and `src-1.0.zip`, but not tests, so I’ll mark `test-code-url` as `N/A`.
+apply patch
+patch: completed
+/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+diff --git a/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json b/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+index 4e7d6a611b0d30a47d8833b1abe9e136b151dc7d..bfb9adeec6670c5993ca2dd045b64f2734755cbd
+--- a/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
++++ b/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.collections:google-collections:1.0"
++  "coordinates" : "com.google.collections:google-collections:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-sources.jar",
++  "repository-url" : "https://code.google.com/archive/p/google-collections/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-javadoc.jar",
++  "description" : "Google Collections Library is a Java 5 library that extends the standard collections APIs with immutable collections, multimaps, multisets, bidirectional maps, ordering utilities, and iterator helpers. It is the predecessor of Guava and provides reusable collection-related primitives and base utilities for Java applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json b/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+index 4e7d6a611b0d30a47d8833b1abe9e136b151dc7d..bfb9adeec6670c5993ca2dd045b64f2734755cbd
+--- a/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
++++ b/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.collections:google-collections:1.0"
++  "coordinates" : "com.google.collections:google-collections:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-sources.jar",
++  "repository-url" : "https://code.google.com/archive/p/google-collections/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-javadoc.jar",
++  "description" : "Google Collections Library is a Java 5 library that extends the standard collections APIs with immutable collections, multimaps, multisets, bidirectional maps, ordering utilities, and iterator helpers. It is the predecessor of Guava and provides reusable collection-related primitives and base utilities for Java applications."
+ }
+
+exec
+/usr/bin/zsh -lc 'jq . build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+ succeeded in 0ms:
+{
+  "coordinates": "com.google.collections:google-collections:1.0",
+  "source-code-url": "https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-sources.jar",
+  "repository-url": "https://code.google.com/archive/p/google-collections/",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-javadoc.jar",
+  "description": "Google Collections Library is a Java 5 library that extends the standard collections APIs with immutable collections, multimaps, multisets, bidirectional maps, ordering utilities, and iterator helpers. It is the predecessor of Guava and provides reusable collection-related primitives and base utilities for Java applications."
+}
+
+exec
+/usr/bin/zsh -lc 'git diff -- build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json b/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+index 4e7d6a611b0d30a47d8833b1abe9e136b151dc7d..bfb9adeec6670c5993ca2dd045b64f2734755cbd
+--- a/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
++++ b/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.collections:google-collections:1.0"
++  "coordinates" : "com.google.collections:google-collections:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-sources.jar",
++  "repository-url" : "https://code.google.com/archive/p/google-collections/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-javadoc.jar",
++  "description" : "Google Collections Library is a Java 5 library that extends the standard collections APIs with immutable collections, multimaps, multisets, bidirectional maps, ordering utilities, and iterator helpers. It is the predecessor of Guava and provides reusable collection-related primitives and base utilities for Java applications."
+ }
+
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org maven2 com google collections google-collections 1.0 google-collections-1.0-sources.jar google-collections-1.0-javadoc.jar
+web search: 
+web search: https://central.sonatype.com/artifact/com.google.collections/google-collections
+web search: 
+web search: https://maven.gluu.org/maven/com/google/collections/google-collections/1.0/
+web search: 
+web search: 
+web search: 
+web search: search.maven.org solrsearch com.google.collections google-collections 1.0 ec sources javadoc
+codex
+Updated [com.google.collections-google-collections-1.0.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json) with the exact-version Maven source and javadoc URLs, the archived Google Code repository URL, `test-code-url: "N/A"`, and a two-sentence description.
+
+I left `language` absent because this is a Java library, not Kotlin/Groovy/Scala-specific. JSON validates with `jq`. The Maven metadata identifies version `1.0`, the Java 5.0 collection-library description, and the original Google Code SCM/project URL. ([central.sonatype.com](https://central.sonatype.com/artifact/com.google.collections/google-collections))
+diff --git a/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json b/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+index 4e7d6a611b0d30a47d8833b1abe9e136b151dc7d..bfb9adeec6670c5993ca2dd045b64f2734755cbd
+--- a/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
++++ b/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.collections:google-collections:1.0"
++  "coordinates" : "com.google.collections:google-collections:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-sources.jar",
++  "repository-url" : "https://code.google.com/archive/p/google-collections/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/1.0/google-collections-1.0-javadoc.jar",
++  "description" : "Google Collections Library is a Java 5 library that extends the standard collections APIs with immutable collections, multimaps, multisets, bidirectional maps, ordering utilities, and iterator helpers. It is the predecessor of Guava and provides reusable collection-related primitives and base utilities for Java applications."
+ }
+
+2026-05-02T00:30:28.865857Z ERROR codex_core::session: failed to record rollout items: thread 019de615-f593-7f32-984d-ef3ab280c581 not found
+tokens used
+93,690
+Updated [com.google.collections-google-collections-1.0.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f/build/discovered-artifact-metadata/com.google.collections-google-collections-1.0.json) with the exact-version Maven source and javadoc URLs, the archived Google Code repository URL, `test-code-url: "N/A"`, and a two-sentence description.
+
+I left `language` absent because this is a Java library, not Kotlin/Groovy/Scala-specific. JSON validates with `jq`. The Maven metadata identifies version `1.0`, the Java 5.0 collection-library description, and the original Google Code SCM/project URL. ([central.sonatype.com](https://central.sonatype.com/artifact/com.google.collections/google-collections))
+Ran agent for com.google.collections:google-collections:1.0 (exit 0). Log: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f/build/agent-artifact-discovery-logs/com.google.collections-google-collections-1.0.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2237-9913286f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 21s
+9 actionable tasks: 4 executed, 5 from cache
