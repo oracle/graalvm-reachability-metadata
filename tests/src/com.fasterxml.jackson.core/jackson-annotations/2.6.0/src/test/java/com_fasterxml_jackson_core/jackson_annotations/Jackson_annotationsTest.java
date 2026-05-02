@@ -42,7 +42,8 @@ class Jackson_annotationsTest {
                 "yyyy-MM-dd",
                 JsonFormat.Shape.STRING,
                 "fr",
-                "UTC"
+                "UTC",
+                JsonFormat.Features.empty()
         );
 
         assertThat(explicitValue.getPattern()).isEqualTo("yyyy-MM-dd");
@@ -54,7 +55,8 @@ class Jackson_annotationsTest {
                 "pattern",
                 JsonFormat.Shape.OBJECT,
                 JsonFormat.DEFAULT_LOCALE,
-                JsonFormat.DEFAULT_TIMEZONE
+                JsonFormat.DEFAULT_TIMEZONE,
+                JsonFormat.Features.empty()
         );
 
         assertThat(defaultMarkerValue.getLocale()).isNull();
@@ -64,7 +66,8 @@ class Jackson_annotationsTest {
                 "pattern",
                 JsonFormat.Shape.ARRAY,
                 "",
-                ""
+                "",
+                JsonFormat.Features.empty()
         );
 
         assertThat(emptyMarkerValue.getLocale()).isNull();
@@ -196,10 +199,14 @@ class Jackson_annotationsTest {
         assertThat(JsonInclude.Include.values()).containsExactly(
                 JsonInclude.Include.ALWAYS,
                 JsonInclude.Include.NON_NULL,
+                JsonInclude.Include.NON_ABSENT,
+                JsonInclude.Include.NON_EMPTY,
                 JsonInclude.Include.NON_DEFAULT,
-                JsonInclude.Include.NON_EMPTY
+                JsonInclude.Include.USE_DEFAULTS
         );
         assertThat(JsonInclude.Include.valueOf("NON_EMPTY")).isEqualTo(JsonInclude.Include.NON_EMPTY);
+        assertThat(JsonInclude.Include.valueOf("NON_ABSENT")).isEqualTo(JsonInclude.Include.NON_ABSENT);
+        assertThat(JsonInclude.Include.valueOf("USE_DEFAULTS")).isEqualTo(JsonInclude.Include.USE_DEFAULTS);
     }
 
     @Test
@@ -225,6 +232,8 @@ class Jackson_annotationsTest {
 
         assertThat(ignoreProperties.value()).containsExactly("internalId", "debugOnly");
         assertThat(ignoreProperties.ignoreUnknown()).isTrue();
+        assertThat(ignoreProperties.allowGetters()).isFalse();
+        assertThat(ignoreProperties.allowSetters()).isFalse();
 
         assertThat(propertyOrder.value()).containsExactly("id", "name", "createdAt");
         assertThat(propertyOrder.alphabetic()).isTrue();
@@ -370,6 +379,16 @@ class Jackson_annotationsTest {
             }
 
             @Override
+            public JsonFormat.Feature[] with() {
+                return new JsonFormat.Feature[0];
+            }
+
+            @Override
+            public JsonFormat.Feature[] without() {
+                return new JsonFormat.Feature[0];
+            }
+
+            @Override
             public Class<? extends Annotation> annotationType() {
                 return JsonFormat.class;
             }
@@ -422,6 +441,16 @@ class Jackson_annotationsTest {
             @Override
             public boolean ignoreUnknown() {
                 return ignoreUnknown;
+            }
+
+            @Override
+            public boolean allowGetters() {
+                return false;
+            }
+
+            @Override
+            public boolean allowSetters() {
+                return false;
             }
 
             @Override
