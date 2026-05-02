@@ -266,6 +266,64 @@ public class AtomicfuTest {
     }
 
     @Test
+    fun reentrantLockSupportsDirectLockingTryLockAndReentrantAcquisition() {
+        val lock = reentrantLock()
+        val acquiredFromWorker = atomic(false)
+        val attempted = CountDownLatch(1)
+        val finished = CountDownLatch(1)
+        val events = mutableListOf<String>()
+
+        lock.lock()
+        try {
+            events += "outer-acquired"
+            assertThat(lock.tryLock()).isTrue()
+            try {
+                events += "inner-acquired"
+            } finally {
+                lock.unlock()
+                events += "inner-released"
+            }
+
+            val worker = Thread {
+                attempted.countDown()
+                if (lock.tryLock()) {
+                    try {
+                        acquiredFromWorker.value = true
+                    } finally {
+                        lock.unlock()
+                    }
+                }
+                finished.countDown()
+            }
+
+            worker.start()
+            assertThat(attempted.await(10, TimeUnit.SECONDS)).isTrue()
+            assertThat(finished.await(10, TimeUnit.SECONDS)).isTrue()
+            worker.join(1_000L)
+            assertThat(worker.isAlive).isFalse()
+            assertThat(acquiredFromWorker.value).isFalse()
+        } finally {
+            lock.unlock()
+            events += "outer-released"
+        }
+
+        assertThat(lock.tryLock()).isTrue()
+        try {
+            events += "after-release-acquired"
+        } finally {
+            lock.unlock()
+        }
+
+        assertThat(events).containsExactly(
+            "outer-acquired",
+            "inner-acquired",
+            "inner-released",
+            "outer-released",
+            "after-release-acquired",
+        )
+    }
+
+    @Test
     fun atomicUpdatesRemainCorrectUnderContention() {
         val intCounter = atomic(0)
         val longCounter = atomic(0L)
