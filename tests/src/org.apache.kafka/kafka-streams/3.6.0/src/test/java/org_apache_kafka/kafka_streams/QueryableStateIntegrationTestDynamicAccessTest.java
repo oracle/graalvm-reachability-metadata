@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Timeout;
 public class QueryableStateIntegrationTestDynamicAccessTest {
 
     @Test
-    @Timeout(600)
+    @Timeout(60)
     void shouldInitializeQueryableStateInputValues(TestInfo testInfo) throws Exception {
         QueryableStateIntegrationTest.startCluster();
         QueryableStateIntegrationTest test = new QueryableStateIntegrationTest();

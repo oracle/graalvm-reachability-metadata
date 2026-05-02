@@ -130,7 +130,7 @@ class Agent(ABC):
 
     @abstractmethod
     def run_test_command(self, test_cmd: str) -> str:
-        """Execute a shell test command via the agent and return its combined stdout/stderr."""
+        """Execute a shell test command and return agent-visible stdout/stderr diagnostics."""
 
     def graphify(self, source_dirs: list[str]) -> str:
         """Send graphify prompts to the agent session to build a merged knowledge graph context."""

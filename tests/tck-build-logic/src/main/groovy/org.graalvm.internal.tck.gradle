@@ -62,6 +62,63 @@ tasks.withType(Checkstyle).configureEach {
     }
 }
 
+int maxJUnitTestTimeoutSeconds = 60
+List<String> junitTimeoutRuntimeArgs = [
+        "-Djunit.jupiter.execution.timeout.default=${maxJUnitTestTimeoutSeconds} s",
+        "-Djunit.jupiter.execution.timeout.mode=enabled",
+        "-Djunit.jupiter.execution.timeout.thread.mode.default=separate_thread"
+]
+
+def timeoutAnnotationWithinLimit = { String annotationBody ->
+    def valueMatcher = annotationBody =~ /\b(?:value\s*=\s*)?([0-9]+)\b/
+    if (!valueMatcher.find()) {
+        return true
+    }
+    long value = Long.parseLong(valueMatcher.group(1))
+    def unitMatcher = annotationBody =~ /\bunit\s*=\s*(?:TimeUnit\.)?([A-Z_]+)\b/
+    String unit = unitMatcher.find() ? unitMatcher.group(1) : "SECONDS"
+    switch (unit) {
+        case "NANOSECONDS":
+            return value <= maxJUnitTestTimeoutSeconds * 1000L * 1000L * 1000L
+        case "MICROSECONDS":
+            return value <= maxJUnitTestTimeoutSeconds * 1000L * 1000L
+        case "MILLISECONDS":
+            return value <= maxJUnitTestTimeoutSeconds * 1000L
+        case "SECONDS":
+            return value <= maxJUnitTestTimeoutSeconds
+        case "MINUTES":
+            return value <= 1L
+        default:
+            return false
+    }
+}
+
+tasks.register("checkTestTimeoutAnnotations") {
+    description = "Rejects JUnit @Timeout annotations above ${maxJUnitTestTimeoutSeconds} seconds."
+    group = JavaBasePlugin.VERIFICATION_GROUP
+    def testSources = fileTree("src/test") {
+        include "**/*.java", "**/*.kt", "**/*.groovy", "**/*.scala"
+    }
+    inputs.files(testSources)
+    doLast {
+        List<String> violations = []
+        testSources.files.each { File sourceFile ->
+            String content = sourceFile.getText("UTF-8")
+            def matcher = content =~ /(?s)@Timeout\s*\((.*?)\)/
+            while (matcher.find()) {
+                String annotationBody = matcher.group(1)
+                if (!timeoutAnnotationWithinLimit(annotationBody)) {
+                    int lineNumber = content.substring(0, matcher.start()).count("\n") + 1
+                    violations.add("${sourceFile}:${lineNumber}: @Timeout(${annotationBody}) exceeds ${maxJUnitTestTimeoutSeconds} seconds")
+                }
+            }
+        }
+        if (!violations.isEmpty()) {
+            throw new GradleException("JUnit test timeouts must not exceed ${maxJUnitTestTimeoutSeconds} seconds:\n" + violations.join("\n"))
+        }
+    }
+}
+
 String metadataPath = Objects.requireNonNullElse(
 		System.getenv("GVM_TCK_MD"),
 		providers.gradleProperty('metadata.dir').get()
@@ -366,6 +423,9 @@ tasks.register("mergeNativeTraceMetadata", Exec) { Exec task ->
 
 // Ensure detailed exception/stacktrace logging for all Test tasks, including nativeTest
 tasks.withType(Test).configureEach {
+    systemProperty "junit.jupiter.execution.timeout.default", "${maxJUnitTestTimeoutSeconds} s"
+    systemProperty "junit.jupiter.execution.timeout.mode", "enabled"
+    systemProperty "junit.jupiter.execution.timeout.thread.mode.default", "separate_thread"
     testLogging {
         // Options: 'full' or 'short'; use full to include stack traces and causes
         exceptionFormat = 'full'
@@ -377,6 +437,11 @@ tasks.withType(Test).configureEach {
 
 tasks.named('test') {
     useJUnitPlatform()
+    dependsOn tasks.named("checkTestTimeoutAnnotations")
+}
+
+tasks.named("nativeTest", NativeRunTask).configure { NativeRunTask task ->
+    task.runtimeArgs.addAll(junitTimeoutRuntimeArgs)
 }
 
  // Configure JaCoCo report to analyze only the effective classes of the target library (handles multi-release JARs)

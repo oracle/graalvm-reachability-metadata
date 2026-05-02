@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 
 from ai_workflows.agents.agent import Agent
 from ai_workflows.agents.pi_rpc_client import PiRpcClient, PiRpcError, PromptResult
+from utility_scripts.gradle_test_runner import run_gradle_test_command
 from utility_scripts.pi_logs import build_pi_log_path
 
 
@@ -144,16 +145,7 @@ class PiAgent(Agent):
         self._prev_cache = 0
 
     def run_test_command(self, test_cmd: str) -> str:
-        result = subprocess.run(
-            test_cmd,
-            cwd=self._working_dir,
-            shell=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            check=False,
-        )
-        return result.stdout
+        return run_gradle_test_command(test_cmd, self._working_dir, library=self._library)
 
     def _update_token_counters(self, session_stats: dict) -> None:
         tokens = self._extract_token_totals(session_stats)

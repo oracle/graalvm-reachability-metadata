@@ -19,6 +19,7 @@ from ai_workflows.fix_post_generation_pi import (
     run_pi_post_generation_fix,
 )
 from utility_scripts.library_finalization import run_library_finalization
+from utility_scripts.gradle_test_runner import run_gradle_test_command
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.strategy_loader import load_prompt_template
@@ -137,6 +138,13 @@ class WorkflowStrategy(ABC):
 
     def _run_command_with_env(self, cmd: str, env: dict[str, str] | None = None) -> str:
         """Execute a shell command with optional environment overrides."""
+        if cmd.startswith("./gradlew test "):
+            return run_gradle_test_command(
+                cmd,
+                getattr(self, "reachability_repo_path", os.getcwd()),
+                library=getattr(self, "library", None),
+                env=env,
+            )
         result = subprocess.run(
             cmd,
             shell=True,

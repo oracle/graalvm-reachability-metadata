@@ -10,6 +10,7 @@ import tempfile
 import time
 from ai_workflows.agents.agent import Agent
 from ai_workflows.agents.codex_app_server import CodexAppServerClient
+from utility_scripts.gradle_test_runner import run_gradle_test_command
 
 
 @Agent.register("codex")
@@ -239,16 +240,7 @@ class CodexAgent(Agent):
         self._thread_id = None
 
     def run_test_command(self, test_cmd: str) -> str:
-        result = subprocess.run(
-            test_cmd,
-            cwd=self._working_dir,
-            shell=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            check=False,
-        )
-        return result.stdout
+        return run_gradle_test_command(test_cmd, self._working_dir, library=self._library)
 
     def _record_token_usage(self, prompt: str, output: str) -> None:
         usage = self._extract_usage_from_output(output)
