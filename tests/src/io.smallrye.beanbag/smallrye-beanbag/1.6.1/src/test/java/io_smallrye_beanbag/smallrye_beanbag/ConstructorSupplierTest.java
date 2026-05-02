@@ -7,6 +7,8 @@
 package io_smallrye_beanbag.smallrye_beanbag;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import io.smallrye.beanbag.BeanBag;
 import io.smallrye.beanbag.BeanSupplier;
@@ -38,6 +40,30 @@ public class ConstructorSupplierTest {
         assertThat(client.retryCount()).isEqualTo(3);
     }
 
+    @Test
+    void injectsFieldAndSetterDependencies() throws NoSuchFieldException, NoSuchMethodException {
+        ServiceConfig config = new ServiceConfig("billing", 5);
+        Field configField = ServiceClient.class.getField("config");
+        Method routePrefixSetter = ServiceClient.class.getMethod("setRoutePrefix", String.class);
+
+        BeanBag beanBag = BeanBag.builder()
+                .addBeanInstance(config)
+                .addBean(ServiceClient.class)
+                .buildSupplier()
+                .setConstructor(ServiceClient.class.getConstructor())
+                .injectField(configField)
+                .injectMethod(routePrefixSetter, BeanSupplier.of("secondary"))
+                .build()
+                .build()
+                .build();
+
+        ServiceClient client = beanBag.requireBean(ServiceClient.class);
+
+        assertThat(client.config()).isSameAs(config);
+        assertThat(client.routeName()).isEqualTo("secondary-billing");
+        assertThat(client.retryCount()).isEqualTo(5);
+    }
+
     public static final class ServiceConfig {
         private final String serviceName;
         private final int retryCount;
@@ -57,11 +83,23 @@ public class ConstructorSupplierTest {
     }
 
     public static final class ServiceClient {
-        private final ServiceConfig config;
-        private final String routeName;
+        public ServiceConfig config;
+        private String routeName;
+
+        public ServiceClient() {
+            this.routeName = null;
+        }
 
         public ServiceClient(ServiceConfig config, String routePrefix) {
             this.config = config;
+            setRoutePrefix(routePrefix);
+        }
+
+        public void setRoutePrefix(String routePrefix) {
+            // Field injection must happen first; this setter derives state from the injected config.
+            if (config == null) {
+                throw new IllegalStateException("config must be injected before route prefix");
+            }
             this.routeName = routePrefix + "-" + config.serviceName();
         }
 
