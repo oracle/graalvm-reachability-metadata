@@ -23,6 +23,7 @@ dependencies {
 
 tasks.withType(Test).configureEach {
     systemProperty 'hazelcastLegacyClasspath', configurations.hazelcastLegacy.asPath
+    jvmArgs += ['--add-opens=java.base/java.util.concurrent=ALL-UNNAMED']
 }
 
 graalvmNative {
@@ -32,6 +33,13 @@ graalvmNative {
             conditional {
                 userCodeFilterPath = "user-code-filter.json"
             }
+        }
+    }
+    binaries {
+        all {
+            buildArgs.addAll([
+                '--add-opens=java.base/java.util.concurrent=ALL-UNNAMED'
+            ])
         }
     }
 }
