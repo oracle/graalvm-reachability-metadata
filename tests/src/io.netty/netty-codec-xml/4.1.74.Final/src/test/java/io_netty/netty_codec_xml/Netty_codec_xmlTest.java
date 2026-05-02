@@ -109,6 +109,34 @@ public class Netty_codec_xmlTest {
     }
 
     @Test
+    void decoderClosesNamespaceScopeForEmptyElements() {
+        String xml = """
+                <root>
+                  <p:item xmlns:p="urn:item"/>
+                </root>
+                """.stripLeading();
+
+        List<Object> events = decode(xml);
+
+        XmlElementStart itemStart = elementStart(events, "item");
+        assertThat(itemStart.prefix()).isEqualTo("p");
+        assertThat(itemStart.namespace()).isEqualTo("urn:item");
+        assertThat(itemStart.namespaces()).singleElement().satisfies(namespace -> {
+            assertThat(namespace.prefix()).isEqualTo("p");
+            assertThat(namespace.uri()).isEqualTo("urn:item");
+        });
+
+        XmlElementEnd itemEnd = elementEnd(events, "item");
+        assertThat(itemEnd.prefix()).isEqualTo("p");
+        assertThat(itemEnd.namespace()).isEqualTo("urn:item");
+        assertThat(itemEnd.namespaces()).singleElement().satisfies(namespace -> {
+            assertThat(namespace.prefix()).isEqualTo("p");
+            assertThat(namespace.uri()).isEqualTo("urn:item");
+        });
+        assertThat(structuralEvents(events)).containsSubsequence("start:item", "end:item", "end:root");
+    }
+
+    @Test
     void xmlValueObjectsExposeStateAndValueSemantics() {
         XmlAttribute attribute = new XmlAttribute("CDATA", "id", "p", "urn:test", "42");
         assertThat(attribute.type()).isEqualTo("CDATA");
