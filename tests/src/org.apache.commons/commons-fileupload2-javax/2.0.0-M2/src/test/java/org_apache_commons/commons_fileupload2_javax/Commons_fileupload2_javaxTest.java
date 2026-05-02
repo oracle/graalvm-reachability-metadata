@@ -167,6 +167,31 @@ public class Commons_fileupload2_javaxTest {
     }
 
     @Test
+    void decodesMultipartHeadersWithConfiguredHeaderCharset() throws Exception {
+        String boundary = "latin-headers";
+        String fileName = "r\u00e9sum\u00e9.txt";
+        byte[] body = multipartEncoded(StandardCharsets.ISO_8859_1, boundary,
+                part("Content-Disposition: form-data; name=\"document\"; filename=\"" + fileName + "\"",
+                        "Content-Type: text/plain",
+                        "",
+                        "plain text"));
+        MemoryHttpServletRequest request = multipartRequest("POST", boundary, body, StandardCharsets.UTF_8);
+        JavaxServletDiskFileUpload upload = newDiskUpload(DiskFileItemFactory.DEFAULT_THRESHOLD);
+        upload.setHeaderCharset(StandardCharsets.ISO_8859_1);
+
+        List<DiskFileItem> items = upload.parseRequest(request);
+
+        assertThat(upload.getHeaderCharset()).isEqualTo(StandardCharsets.ISO_8859_1);
+        assertThat(items).hasSize(1);
+        DiskFileItem document = items.get(0);
+        assertThat(document.getFieldName()).isEqualTo("document");
+        assertThat(document.isFormField()).isFalse();
+        assertThat(document.getName()).isEqualTo(fileName);
+        assertThat(document.getContentType()).isEqualTo("text/plain");
+        assertThat(document.getString(StandardCharsets.UTF_8)).isEqualTo("plain text");
+    }
+
+    @Test
     void rejectsRequestsThatServletUploadMustNotParse() throws Exception {
         String boundary = "reject";
         byte[] body = multipart(boundary, part("Content-Disposition: form-data; name=\"field\"", "", "value"));
@@ -241,6 +266,15 @@ public class Commons_fileupload2_javaxTest {
         }
         builder.append("--").append(boundary).append("--").append(CRLF);
         return builder.toString().getBytes(StandardCharsets.UTF_8);
+    }
+
+    private static byte[] multipartEncoded(final Charset charset, final String boundary, final String... parts) {
+        StringBuilder builder = new StringBuilder();
+        for (String part : parts) {
+            builder.append("--").append(boundary).append(CRLF).append(part).append(CRLF);
+        }
+        builder.append("--").append(boundary).append("--").append(CRLF);
+        return builder.toString().getBytes(charset);
     }
 
     private static String part(final String... lines) {
