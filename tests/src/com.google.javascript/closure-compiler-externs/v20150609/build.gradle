@@ -1,0 +1,57 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+File generatedTestResourcesDir = layout.buildDirectory.dir("generated/test-resources").get().asFile
+
+sourceSets {
+    test {
+        resources.srcDir generatedTestResourcesDir
+    }
+}
+
+tasks.register("generateNativeImageResourceConfig") {
+    outputs.dir(generatedTestResourcesDir)
+    doLast {
+        File baseDir = new File(
+                generatedTestResourcesDir,
+                "META-INF/native-image/com.google.javascript/closure-compiler-externs")
+        baseDir.mkdirs()
+        new File(baseDir, "resource-config.json").text = """
+                {
+                  "resources": {
+                    "includes": [
+                      { "pattern": "externs[.]zip" }
+                    ]
+                  }
+                }
+                """.stripIndent()
+    }
+}
+
+tasks.named("processTestResources") {
+    dependsOn("generateNativeImageResourceConfig")
+}
+
+dependencies {
+    testImplementation "com.google.javascript:closure-compiler-externs:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
