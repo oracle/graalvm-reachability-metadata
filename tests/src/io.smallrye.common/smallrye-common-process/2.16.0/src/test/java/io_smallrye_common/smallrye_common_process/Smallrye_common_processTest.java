@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -222,6 +223,21 @@ public class Smallrye_common_processTest {
                 .run();
 
         assertThat(output).isEqualTo("accepted");
+    }
+
+    @Test
+    void errorLinesCanBeConsumedWithoutChangingOutputResult() {
+        List<String> errorLines = new ArrayList<>();
+
+        String output = shellCommand("printf 'stdout-result'; printf 'warning-one\\nwarning-two\\n' >&2")
+                .output()
+                .toSingleString(100)
+                .error()
+                .consumeLinesWith(100, errorLines::add)
+                .run();
+
+        assertThat(output).isEqualTo("stdout-result");
+        assertThat(errorLines).containsExactly("warning-one", "warning-two");
     }
 
     @Test
