@@ -1,0 +1,762 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de951-b982-7681-9684-51e5e384ae4e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: classworlds:classworlds:1.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.1" when "$version$" is replaced with "1.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02/metadata/classworlds/classworlds/index.json
+- Entry selector: "metadata-version" = "1.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing version "1.1".
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "1.1".
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "1.1".
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for entry metadata-version "1.1" and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar
+- repository-url: http://cvs.classworlds.codehaus.org/
+- test-code-url: N/A
+- documentation-url: N/A
+- description: Classworlds is a Java class loader management framework for defining isolated class realms and controlling how classes and resources are loaded between them. It also provides launch support for applications that need configurable classpaths or embedded/uber-JAR bootstrapping.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.1
+- Entry metadata-version: 1.1
+- Entry test-version: 1.1
+codex
+I’ll inspect the target entry first, then verify the Maven and project URLs before touching the JSON. The key point here is preserving any non-blank fields unless a versioned URL template renders incorrectly for `1.1`.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"1\\.1\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/classworlds/classworlds/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+4:    "metadata-version" : "1.1",
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar",
+6:    "repository-url" : "http://cvs.classworlds.codehaus.org/",
+7:    "test-code-url" : "N/A",
+8:    "documentation-url" : "N/A",
+9:    "description" : "Classworlds is a Java class loader management framework for defining isolated class realms and controlling how classes and resources are loaded between them. It also provides launch support for applications that need configurable classpaths or embedded/uber-JAR bootstrapping.",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/classworlds/classworlds/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar",
+    "repository-url" : "http://cvs.classworlds.codehaus.org/",
+    "test-code-url" : "N/A",
+    "documentation-url" : "N/A",
+    "description" : "Classworlds is a Java class loader management framework for defining isolated class realms and controlling how classes and resources are loaded between them. It also provides launch support for applications that need configurable classpaths or embedded/uber-JAR bootstrapping.",
+    "tested-versions" : [
+      "1.1"
+    ],
+    "allowed-packages" : [
+      "org.codehaus.classworlds"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/classworlds/classworlds/index.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 130ms:
+?? metadata/classworlds/classworlds/index.json
+
+web search: 
+web search: classworlds classworlds 1.1 source jar javadoc jar Maven Central
+web search: 
+web search: https://repo1.maven.org/maven2/classworlds/classworlds/1.1/
+web search: 
+web search: 
+web search: 
+web search: 
+codex
+The target entry has no blank fields; `language` is absent, which is correct if the artifact is just a Java library. I’m checking the rendered Maven artifact URLs now, including whether Central published tests or javadocs for `1.1`.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/classworlds/classworlds/1.1/classworlds-1.1.pom' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>classworlds</groupId>
+  <artifactId>classworlds</artifactId>
+  <name>classworlds</name>
+  <version>1.1</version>
+  <description></description>
+  <url>http://classworlds.codehaus.org/</url>
+  <ciManagement>
+    <notifiers>
+      <notifier>
+        <configuration>
+          <address>classworlds-scm@lists.codehaus.org</address>
+        </configuration>
+      </notifier>
+    </notifiers>
+  </ciManagement>
+  <inceptionYear>2002</inceptionYear>
+  <mailingLists>
+    <mailingList>
+      <name>classworlds users</name>
+      <subscribe>http://lists.codehaus.org/mailman/listinfo/classworlds-user</subscribe>
+      <unsubscribe>http://lists.codehaus.org/mailman/listinfo/classworlds-user</unsubscribe>
+      <archive>http://lists.codehaus.org/pipermail/classworlds-user/</archive>
+    </mailingList>
+    <mailingList>
+      <name>classworlds developers</name>
+      <subscribe>http://lists.codehaus.org/mailman/listinfo/classworlds-dev</subscribe>
+      <unsubscribe>http://lists.codehaus.org/mailman/listinfo/classworlds-dev</unsubscribe>
+      <archive>http://lists.codehaus.org/pipermail/classworlds-dev/</archive>
+    </mailingList>
+    <mailingList>
+      <name>classworlds commit messages</name>
+      <subscribe>http://lists.codehaus.org/mailman/listinfo/classworlds-scm</subscribe>
+      <unsubscribe>http://lists.codehaus.org/mailman/listinfo/classworlds-scm</unsubscribe>
+      <archive>http://lists.codehaus.org/pipermail/classworlds-scm/</archive>
+    </mailingList>
+  </mailingLists>
+  <developers>
+    <developer>
+      <id>bob</id>
+      <name>bob mcwhirter</name>
+      <email>bob@werken.com</email>
+      <organization>The Werken Company</organization>
+      <roles>
+        <role>Founder</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jvanzyl</id>
+      <name>Jason van Zyl</name>
+      <email>jason@zenplex.com</email>
+      <organization>Zenplex</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>bwalding</id>
+      <name>Ben Walding</name>
+      <email>ben@walding.com</email>
+      <organization>Walding Consulting Services</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:cvs:pserver:anonymous@cvs.classworlds.codehaus.org:/home/projects/classworlds/scm/:classworlds</connection>
+    <developerConnection>scm:cvs:ext:brett@cvs.classworlds.codehaus.org:/home/projects/classworlds/scm/:classworlds</developerConnection>
+    <url>http://cvs.classworlds.codehaus.org/</url>
+  </scm>
+  <organization>
+    <name>The Codehaus</name>
+    <url>http://codehaus.org/</url>
+  </organization>
+  <build>
+    <sourceDirectory>src/java/main</sourceDirectory>
+    <testSourceDirectory>src/java/test</testSourceDirectory>
+    <plugins>
+      <plugin>
+        <artifactId>surefire</artifactId>
+        <configuration>
+          <includes>
+            <include>**/*Test.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <distributionManagement>
+    <site>
+      <id>default</id>
+      <name>Default Site</name>
+      <url>scp://classworlds.codehaus.org//www/classworlds.codehaus.org</url>
+    </site>
+  </distributionManagement>
+</project>
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://repo.maven.apache.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-sources.jar https://repo.maven.apache.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-test-sources.jar https://repo.maven.apache.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-tests.jar https://repo.maven.apache.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-javadoc.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-sources.jar -o /tmp/classworlds-1.1-sources.jar && jar tf /tmp/classworlds-1.1-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 0ms:
+org/codehaus/classworlds/BytesURLConnection.java
+org/codehaus/classworlds/BytesURLStreamHandler.java
+org/codehaus/classworlds/ClassRealm.java
+org/codehaus/classworlds/ClassWorld.java
+org/codehaus/classworlds/ClassWorldException.java
+org/codehaus/classworlds/ConfigurationException.java
+org/codehaus/classworlds/Configurator.java
+org/codehaus/classworlds/DefaultClassRealm.java
+org/codehaus/classworlds/DuplicateRealmException.java
+org/codehaus/classworlds/EmbeddedLauncher.java
+org/codehaus/classworlds/Entry.java
+org/codehaus/classworlds/Launcher.java
+org/codehaus/classworlds/NoSuchRealmException.java
+org/codehaus/classworlds/RealmClassLoader.java
+org/codehaus/classworlds/RealmDelegatingClassLoader.java
+org/codehaus/classworlds/UberJarRealmClassLoader.java
+org/codehaus/classworlds/UrlUtils.java
+org/codehaus/classworlds/uberjar/boot/Bootstrapper.java
+org/codehaus/classworlds/uberjar/boot/InitialClassLoader.java
+org/codehaus/classworlds/uberjar/protocol/jar/Handler.java
+org/codehaus/classworlds/uberjar/protocol/jar/JarUrlConnection.java
+
+ succeeded in 300ms:
+HTTP/2 404 
+date: Sat, 02 May 2026 15:32:53 GMT
+content-type: text/html
+cf-ray: 9f5814c839edbc66-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/classworlds/classworlds/1.1/classworlds-1.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Sat, 02 May 2026 15:32:53 GMT
+content-type: text/html
+cf-ray: 9f5814c9cb40bc66-ZRH
+cf-cache-status: HIT
+age: 96
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/classworlds/classworlds/1.1/classworlds-1.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Sat, 02 May 2026 15:32:53 GMT
+content-type: text/html
+cf-ray: 9f5814c9eb59bc66-ZRH
+cf-cache-status: HIT
+age: 96
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/classworlds/classworlds/1.1/classworlds-1.1-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: classworlds GitHub classworlds 1.1 org.codehaus.classworlds
+codex
+The Maven Central directory contains only the main JAR, POM, and sources JAR for `1.1`; there is no `tests`, `test-sources`, or `javadoc` artifact. The POM’s SCM URL matches the existing repository value, and the artifact is Java-specific only in the ordinary sense, not one of the Kotlin/Groovy/Scala language-specific cases.
+exec
+/usr/bin/bash -lc 'python3 -m json.tool metadata/classworlds/classworlds/index.json >/dev/null && git diff -- metadata/classworlds/classworlds/index.json && git status --short -- metadata/classworlds/classworlds/index.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 0ms:
+?? metadata/classworlds/classworlds/index.json
+
+exec
+/usr/bin/bash -lc "curl -I -L -s http://cvs.classworlds.codehaus.org/ http://classworlds.codehaus.org/ https://javadoc.io/doc/classworlds/classworlds/1.1 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 309ms:
+HTTP/2 303 
+date: Sat, 02 May 2026 15:33:03 GMT
+content-length: 0
+location: /doc/classworlds/classworlds/1.1/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=AGDz5HCi%2BhgEHdF%2BCv1PyNeBp0D2jjxYGTdOyG%2BZjrfdmyyt0QZI2N38wii%2B64GEq5xs1llLUfZSwU4U3dwwq3iNthbsufMbYJZESDqr0PpKIavkNGnfQSghwc3%2BHUh0%2B1yjPmeX%2BqZK"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f5815091d1e9808-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 02 May 2026 15:33:03 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/classworlds/classworlds/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=e7iJZS3l8dint3Gpo7GqHUv1UvKwxY7mazMiwgC8FaBD2dNUJ7BcGx7BwLQ0DSeuuTrGHzQooUUP6odNqqFHxkpGm66pq6IKkSMKGEAIFOvhr0ICYTD2ofmLF7Zu2564v3v%2FNhFnH1Ou"}]}
+server: cloudflare
+cf-ray: 9f581509de6e9808-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: site:repo.maven.apache.org/maven2/classworlds/classworlds/1.1 classworlds-1.1-sources.jar
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-sources.jar
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/classworlds/classworlds/1.1/index.html | sed -n '1,80p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/classworlds/classworlds/1.1/org/codehaus/classworlds/ClassWorld.html | sed -n '1,80p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/classworlds/classworlds/1.1/allclasses-index.html | sed -n '1,80p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 110ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>classworlds 1.1 javadoc (classworlds)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/classworlds">classworlds</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						classworlds
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/classworlds/classworlds" class="dropdown-item">
+							classworlds
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						1.1
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						<a href="/doc/classworlds/classworlds/latest/index.html" class="dropdown-item">
+							1.1
+						</a>
+
+						
+						<a href="/doc/classworlds/classworlds/1.1-alpha-2/index.html" class="dropdown-item">
+							1.1-alpha-2
+						</a>
+						
+						<a href="/doc/classworlds/classworlds/20040709.190353/index.html" class="dropdown-item">
+							20040709.190353
+						</a>
+						
+						<a href="/doc/classworlds/classworlds/20030905.201339/index.html" class="dropdown-item">
+							20030905.201339
+
+ succeeded in 233ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>classworlds 1.1 javadoc (classworlds)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/classworlds">classworlds</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						classworlds
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/classworlds/classworlds" class="dropdown-item">
+							classworlds
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						1.1
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						<a href="/doc/classworlds/classworlds/latest/index.html" class="dropdown-item">
+							1.1
+						</a>
+
+						
+						<a href="/doc/classworlds/classworlds/1.1-alpha-2/index.html" class="dropdown-item">
+							1.1-alpha-2
+						</a>
+						
+						<a href="/doc/classworlds/classworlds/20040709.190353/index.html" class="dropdown-item">
+							20040709.190353
+						</a>
+						
+						<a href="/doc/classworlds/classworlds/20030905.201339/index.html" class="dropdown-item">
+							20030905.201339
+
+ succeeded in 236ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>classworlds 1.1 javadoc (classworlds)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/classworlds">classworlds</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						classworlds
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/classworlds/classworlds" class="dropdown-item">
+							classworlds
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						1.1
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						<a href="/doc/classworlds/classworlds/latest/index.html" class="dropdown-item">
+							1.1
+						</a>
+
+						
+						<a href="/doc/classworlds/classworlds/1.1-alpha-2/index.html" class="dropdown-item">
+							1.1-alpha-2
+						</a>
+						
+						<a href="/doc/classworlds/classworlds/20040709.190353/index.html" class="dropdown-item">
+							20040709.190353
+						</a>
+						
+						<a href="/doc/classworlds/classworlds/20030905.201339/index.html" class="dropdown-item">
+							20030905.201339
+
+exec
+/usr/bin/bash -lc 'git ls-files --stage -- metadata/classworlds/classworlds/index.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/classworlds/classworlds/1.1/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/classworlds/classworlds/1.1/org/codehaus/classworlds/ClassWorld.html | rg -n \"ClassWorld|classworlds 1\\.1|org\\.codehaus\\.classworlds\" -m 10" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 250ms:
+13:		<title>classworlds 1.1 javadoc (classworlds)</title>
+
+ succeeded in 5030ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: classworlds/classworlds/1.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>classworlds/classworlds/1.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="classworlds-1.1-sources.jar" title="classworlds-1.1-sources.jar">classworlds-1.1-sources.jar</a>                       2006-01-12 04:26     44722      
+<a href="classworlds-1.1-sources.jar.asc" title="classworlds-1.1-sources.jar.asc">classworlds-1.1-sources.jar.asc</a>                   2006-01-12 04:26       189      
+<a href="classworlds-1.1-sources.jar.md5" title="classworlds-1.1-sources.jar.md5">classworlds-1.1-sources.jar.md5</a>                   2006-01-12 04:26        32      
+<a href="classworlds-1.1-sources.jar.sha1" title="classworlds-1.1-sources.jar.sha1">classworlds-1.1-sources.jar.sha1</a>                  2006-01-12 04:26        40      
+<a href="classworlds-1.1.jar" title="classworlds-1.1.jar">classworlds-1.1.jar</a>                               2006-01-12 04:26     37854      
+<a href="classworlds-1.1.jar.md5" title="classworlds-1.1.jar.md5">classworlds-1.1.jar.md5</a>                           2006-01-12 04:26        32      
+<a href="classworlds-1.1.jar.sha1" title="classworlds-1.1.jar.sha1">classworlds-1.1.jar.sha1</a>                          2006-01-12 04:26        40      
+<a href="classworlds-1.1.pom" title="classworlds-1.1.pom">classworlds-1.1.pom</a>                               2006-01-12 04:26      3324      
+<a href="classworlds-1.1.pom.md5" title="classworlds-1.1.pom.md5">classworlds-1.1.pom.md5</a>                           2006-01-12 04:26        32      
+<a href="classworlds-1.1.pom.sha1" title="classworlds-1.1.pom.sha1">classworlds-1.1.pom.sha1</a>                          2006-01-12 04:26        40      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-01-12 04:26       119      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-01-12 04:26        83      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-01-12 04:26       138      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/classworlds/classworlds/1.1/
+web search: 
+web search: https://repo1.maven.org/maven2/classworlds/classworlds/1.1/
+web search: 
+web search: 
+web search: 
+web search: "http://cvs.classworlds.codehaus.org/" "classworlds-1.1.pom"
+web search: 
+web search: github "classworlds" "org.codehaus.classworlds" "ClassWorld"
+codex
+I found one versioned javadoc.io page, but it explicitly says no JavaDoc was released for `classworlds:classworlds:1.1`, so I’m not treating it as usable documentation. I’ll run the repository metadata validation for this coordinate now; since every relevant field is already non-blank and compliant, I don’t expect a file edit.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=classworlds:classworlds:1.1 --stacktrace' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 480ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles
+Metadata files check passed for classworlds:classworlds:1.1
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 479ms
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: 
+web search: 
+web search: Central Repository classworlds classworlds 1.1 sources jar pom
+web search: 
+web search: https://repo1.maven.org/maven2/classworlds/classworlds/1.1/
+web search: 
+web search: 
+web search: 
+web search: https://central.sonatype.com/artifact/classworlds/classworlds
+web search: 
+web search: "scm:cvs:pserver:anonymous@cvs.classworlds.codehaus.org:/home/projects/classworlds/scm/:classworlds"
+codex
+Checked [metadata/classworlds/classworlds/index.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02/metadata/classworlds/classworlds/index.json). No edit was needed: all managed fields are already non-blank, and `language` correctly remains absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+Selected/verified values:
+
+```text
+source-code-url: https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar
+repository-url: http://cvs.classworlds.codehaus.org/
+test-code-url: N/A
+documentation-url: N/A
+description: already present, exactly two sentences
+language: absent
+```
+
+Maven Central publishes the `1.1` sources JAR and POM, but no tests/test-sources/javadoc artifacts; javadoc.io also reports no JavaDoc released for `classworlds:classworlds:1.1`. ([repo1.maven.org](https://repo1.maven.org/maven2/classworlds/classworlds/1.1/)) The 1.1 POM’s SCM/test metadata matches the existing repository root and confirms tests existed only as source tree layout, not as a published test artifact. ([android.googlesource.com](https://android.googlesource.com/platform/prebuilts/eclipse/%2B/4b6337f8d6887e5597344810d3fe9c43f3a6d9c1%5E1..4b6337f8d6887e5597344810d3fe9c43f3a6d9c1/?utm_source=openai))
+
+Validation passed:
+
+```text
+./gradlew checkMetadataFiles -Pcoordinates=classworlds:classworlds:1.1 --stacktrace
+```
+tokens used
+88,811
+Checked [metadata/classworlds/classworlds/index.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02/metadata/classworlds/classworlds/index.json). No edit was needed: all managed fields are already non-blank, and `language` correctly remains absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+Selected/verified values:
+
+```text
+source-code-url: https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar
+repository-url: http://cvs.classworlds.codehaus.org/
+test-code-url: N/A
+documentation-url: N/A
+description: already present, exactly two sentences
+language: absent
+```
+
+Maven Central publishes the `1.1` sources JAR and POM, but no tests/test-sources/javadoc artifacts; javadoc.io also reports no JavaDoc released for `classworlds:classworlds:1.1`. ([repo1.maven.org](https://repo1.maven.org/maven2/classworlds/classworlds/1.1/)) The 1.1 POM’s SCM/test metadata matches the existing repository root and confirms tests existed only as source tree layout, not as a published test artifact. ([android.googlesource.com](https://android.googlesource.com/platform/prebuilts/eclipse/%2B/4b6337f8d6887e5597344810d3fe9c43f3a6d9c1%5E1..4b6337f8d6887e5597344810d3fe9c43f3a6d9c1/?utm_source=openai))
+
+Validation passed:
+
+```text
+./gradlew checkMetadataFiles -Pcoordinates=classworlds:classworlds:1.1 --stacktrace
+```
+Ran agent for classworlds:classworlds:1.1 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02/build/agent-url-discovery-logs/classworlds-classworlds-1.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 13s
+9 actionable tasks: 1 executed, 8 up-to-date

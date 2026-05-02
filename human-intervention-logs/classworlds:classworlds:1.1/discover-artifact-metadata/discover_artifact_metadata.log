@@ -1,0 +1,829 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de94f-c972-76c0-9613-1a637164847d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: classworlds:classworlds:1.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.1" when "$version$" is replaced with "1.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+- Set "coordinates" to "classworlds:classworlds:1.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream project references, then update the JSON in place. I’ll prefer Maven-hosted source/test artifacts where they exist and only fall back to repository tags if Maven doesn’t carry those files.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/classworlds-classworlds-1.1.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+{
+  "coordinates" : "classworlds:classworlds:1.1"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "classworlds" .' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ exited 1 in 0ms:
+web search: 
+web search: Maven Central classworlds classworlds 1.1 pom scm source repository
+web search: 
+web search: https://repo1.maven.org/maven2/classworlds/classworlds/1.1/
+codex
+Maven Central has a `classworlds-1.1-sources.jar`, so I’m checking whether it contains tests/docs before using repository links. I’m also reading nearby generated metadata files to match the project’s URL conventions rather than inventing a different format.
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/classworlds/classworlds/1.1/classworlds-1.1.pom' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>classworlds</groupId>
+  <artifactId>classworlds</artifactId>
+  <name>classworlds</name>
+  <version>1.1</version>
+  <description></description>
+  <url>http://classworlds.codehaus.org/</url>
+  <ciManagement>
+    <notifiers>
+      <notifier>
+        <configuration>
+          <address>classworlds-scm@lists.codehaus.org</address>
+        </configuration>
+      </notifier>
+    </notifiers>
+  </ciManagement>
+  <inceptionYear>2002</inceptionYear>
+  <mailingLists>
+    <mailingList>
+      <name>classworlds users</name>
+      <subscribe>http://lists.codehaus.org/mailman/listinfo/classworlds-user</subscribe>
+      <unsubscribe>http://lists.codehaus.org/mailman/listinfo/classworlds-user</unsubscribe>
+      <archive>http://lists.codehaus.org/pipermail/classworlds-user/</archive>
+    </mailingList>
+    <mailingList>
+      <name>classworlds developers</name>
+      <subscribe>http://lists.codehaus.org/mailman/listinfo/classworlds-dev</subscribe>
+      <unsubscribe>http://lists.codehaus.org/mailman/listinfo/classworlds-dev</unsubscribe>
+      <archive>http://lists.codehaus.org/pipermail/classworlds-dev/</archive>
+    </mailingList>
+    <mailingList>
+      <name>classworlds commit messages</name>
+      <subscribe>http://lists.codehaus.org/mailman/listinfo/classworlds-scm</subscribe>
+      <unsubscribe>http://lists.codehaus.org/mailman/listinfo/classworlds-scm</unsubscribe>
+      <archive>http://lists.codehaus.org/pipermail/classworlds-scm/</archive>
+    </mailingList>
+  </mailingLists>
+  <developers>
+    <developer>
+      <id>bob</id>
+      <name>bob mcwhirter</name>
+      <email>bob@werken.com</email>
+      <organization>The Werken Company</organization>
+      <roles>
+        <role>Founder</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jvanzyl</id>
+      <name>Jason van Zyl</name>
+      <email>jason@zenplex.com</email>
+      <organization>Zenplex</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>bwalding</id>
+      <name>Ben Walding</name>
+      <email>ben@walding.com</email>
+      <organization>Walding Consulting Services</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:cvs:pserver:anonymous@cvs.classworlds.codehaus.org:/home/projects/classworlds/scm/:classworlds</connection>
+    <developerConnection>scm:cvs:ext:brett@cvs.classworlds.codehaus.org:/home/projects/classworlds/scm/:classworlds</developerConnection>
+    <url>http://cvs.classworlds.codehaus.org/</url>
+  </scm>
+  <organization>
+    <name>The Codehaus</name>
+    <url>http://codehaus.org/</url>
+  </organization>
+  <build>
+    <sourceDirectory>src/java/main</sourceDirectory>
+    <testSourceDirectory>src/java/test</testSourceDirectory>
+    <plugins>
+      <plugin>
+        <artifactId>surefire</artifactId>
+        <configuration>
+          <includes>
+            <include>**/*Test.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <distributionManagement>
+    <site>
+      <id>default</id>
+      <name>Default Site</name>
+      <url>scp://classworlds.codehaus.org//www/classworlds.codehaus.org</url>
+    </site>
+  </distributionManagement>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-javadoc.jar && curl -fsSL -I https://repo1.maven.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-tests.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ exited 22 in 250ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 02 May 2026 15:30:30 GMT
+content-type: text/html
+cf-ray: 9f58114a3910bc5d-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/classworlds/classworlds/1.1/classworlds-1.1-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: https://repo1.maven.org/maven2/classworlds/classworlds/1.1/
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -type f | head -40' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 0ms:
+build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+
+exec
+/usr/bin/bash -lc "find metadata -name '*.json' -type f | head -40" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 0ms:
+metadata/org.eclipse.jetty/jetty-alpn-server/11.0.24/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json
+metadata/org.eclipse.jetty/jetty-server/12.0.1/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-server/index.json
+metadata/org.eclipse.jetty/jetty-server/11.0.12/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-server/12.1.3/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-client/12.1.5/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-client/index.json
+metadata/org.eclipse.jetty/jetty-client/11.0.12/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-client/12.0.0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-util/index.json
+metadata/org.eclipse.jetty/jetty-util/12.0.9/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-http/index.json
+metadata/org.eclipse.jetty/jetty-http/9.4.1.v20170120/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-http/9.4.0.M0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-http/9.3.19.v20170502/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-io/index.json
+metadata/org.eclipse.jetty/jetty-io/9.4.0.RC0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-io/9.4.0.M0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-io/9.3.19.v20170502/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-session/index.json
+metadata/org.eclipse.jetty/jetty-session/12.0.10/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json
+metadata/org.eclipse.jetty/jetty-util-ajax/9.4.38.v20210224/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-util-ajax/10.0.0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-alpn-java-server/11.0.24/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json
+metadata/org.eclipse.jetty/jetty-alpn-java-server/12.0.0/reachability-metadata.json
+metadata/org.scalatest/scalatest-compatible/index.json
+metadata/org.scalatest/scalatest-compatible/3.2.19/reachability-metadata.json
+metadata/org.awaitility/awaitility/4.2.0/reachability-metadata.json
+metadata/org.awaitility/awaitility/index.json
+metadata/org.awaitility/awaitility/4.2.1/reachability-metadata.json
+metadata/org.apache.thrift/libthrift/0.17.0/reachability-metadata.json
+metadata/org.apache.thrift/libthrift/index.json
+metadata/org.apache.thrift/libthrift/0.13.0/reachability-metadata.json
+metadata/org.springframework/spring-jcl/index.json
+metadata/org.springframework/spring-jcl/5.3.15/reachability-metadata.json
+metadata/org.springframework/spring-instrument/5.3.31/reachability-metadata.json
+metadata/org.springframework/spring-instrument/index.json
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-sources.jar -o /tmp/classworlds-1.1-sources.jar && jar tf /tmp/classworlds-1.1-sources.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 0ms:
+org/codehaus/classworlds/BytesURLConnection.java
+org/codehaus/classworlds/BytesURLStreamHandler.java
+org/codehaus/classworlds/ClassRealm.java
+org/codehaus/classworlds/ClassWorld.java
+org/codehaus/classworlds/ClassWorldException.java
+org/codehaus/classworlds/ConfigurationException.java
+org/codehaus/classworlds/Configurator.java
+org/codehaus/classworlds/DefaultClassRealm.java
+org/codehaus/classworlds/DuplicateRealmException.java
+org/codehaus/classworlds/EmbeddedLauncher.java
+org/codehaus/classworlds/Entry.java
+org/codehaus/classworlds/Launcher.java
+org/codehaus/classworlds/NoSuchRealmException.java
+org/codehaus/classworlds/RealmClassLoader.java
+org/codehaus/classworlds/RealmDelegatingClassLoader.java
+org/codehaus/classworlds/UberJarRealmClassLoader.java
+org/codehaus/classworlds/UrlUtils.java
+org/codehaus/classworlds/uberjar/boot/Bootstrapper.java
+org/codehaus/classworlds/uberjar/boot/InitialClassLoader.java
+org/codehaus/classworlds/uberjar/protocol/jar/Handler.java
+org/codehaus/classworlds/uberjar/protocol/jar/JarUrlConnection.java
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|\"not-for-native-image\"' metadata tests buildSrc | head -120" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 0ms:
+rg: buildSrc: No such file or directory (os error 2)
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-sources.jar",
+metadata/com.itextpdf/kernel/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/kernel/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/kernel/src/test",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-javadoc.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:119:                    "not-for-native-image": true,
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:130:                .hasMessageContaining("not-for-native-image");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:204:                .containsEntry("source-code-url", "https://example.com/source")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:205:                .containsEntry("repository-url", "https://example.com/repository")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:206:                .containsEntry("test-code-url", "https://example.com/tests")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:207:                .containsEntry("documentation-url", "https://example.com/docs")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:209:                .containsEntry("language", Map.of("name", "kotlin", "version", "2.0"));
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:253:                .containsEntry("source-code-url", "https://example.com/source")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:254:                .containsEntry("repository-url", "https://example.com/repository")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:255:                .containsEntry("test-code-url", "https://example.com/tests")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:256:                .containsEntry("documentation-url", "https://example.com/docs")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:258:                .containsEntry("language", Map.of("name", "groovy", "version", "4.0"));
+metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-sources.jar",
+metadata/com.itextpdf/forms/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/forms/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/forms/src/test",
+metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-sources.jar",
+metadata/com.itextpdf/layout/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/layout/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/layout/src/test",
+metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-javadoc.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:255:                    "source-code-url": "https://example.com/source-a",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:256:                    "repository-url": "https://example.com/repository-a",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:257:                    "test-code-url": "https://example.com/tests-a",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:258:                    "documentation-url": "https://example.com/docs-a",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/com.itextpdf/svg/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-sources.jar",
+metadata/com.itextpdf/svg/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/svg/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/svg/src/test",
+metadata/com.itextpdf/svg/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-javadoc.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/TckExtensionTests.java:88:                    "not-for-native-image": true,
+metadata/com.itextpdf/io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-sources.jar",
+metadata/com.itextpdf/io/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/io/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/io/src/test",
+metadata/com.itextpdf/io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-javadoc.jar",
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:227:                promoteUrl("source-code-url", entry.sourceCodeUrl(), oldVersion, newVersion, UrlVerification.ARCHIVE_WITH_SOURCES),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:228:                promoteUrl("test-code-url", entry.testCodeUrl(), oldVersion, newVersion, UrlVerification.TEST_CODE),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:229:                promoteUrl("documentation-url", entry.documentationUrl(), oldVersion, newVersion, UrlVerification.RESOLVES)
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:211:                    .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-sources.jar")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:212:                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:213:            assertThat(indexEntries.get(0)).containsEntry("test-code-url", "N/A");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:252:                    .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-sources.jar")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:253:                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:288:                    .containsEntry("test-code-url", baseUrl + "/svn/demo/tags/$version$/src/test");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:380:        appendUrlField(fields, "source-code-url", sourceCodeUrl);
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:381:        appendUrlField(fields, "test-code-url", testCodeUrl);
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:382:        appendUrlField(fields, "documentation-url", documentationUrl);
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:6:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml",
+metadata/org.yaml/snakeyaml/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml/src/snakeyaml-$version$/src/test/",
+metadata/org.yaml/snakeyaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/com.github.virtuald/curvesapi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/virtuald/curvesapi/$version$/curvesapi-$version$-sources.jar",
+metadata/com.github.virtuald/curvesapi/index.json:6:    "repository-url" : "https://github.com/virtuald/curvesapi",
+metadata/com.github.virtuald/curvesapi/index.json:7:    "test-code-url" : "https://github.com/virtuald/curvesapi/tree/$version$/src/test/java",
+metadata/com.github.virtuald/curvesapi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/virtuald/curvesapi/$version$/curvesapi-$version$-javadoc.jar",
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:27:        @JsonProperty("source-code-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:29:        @JsonProperty("repository-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:31:        @JsonProperty("test-code-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:33:        @JsonProperty("documentation-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:37:        @JsonProperty("language")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:47:        @JsonProperty("not-for-native-image")
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:16:        @JsonProperty("source-code-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:18:        @JsonProperty("repository-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:20:        @JsonProperty("test-code-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:22:        @JsonProperty("documentation-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:26:        @JsonProperty("language")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:28:        @JsonProperty("not-for-native-image")
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:6:    "repository-url" : "http://svn.codehaus.org/jetty/servlet-api",
+metadata/org.mortbay.jetty/servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/test",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-javadoc.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:13:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-sources.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:14:    "repository-url": "https://github.com/eclipse-jgit/jgit",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:15:    "test-code-url": "https://github.com/eclipse-jgit/jgit/tree/v$version$/org.eclipse.jgit.test",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:16:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-javadoc.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:28:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-sources.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:29:    "repository-url": "https://github.com/eclipse-jgit/jgit",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:30:    "test-code-url": "https://github.com/eclipse-jgit/jgit/tree/v$version$/org.eclipse.jgit.test",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:31:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-javadoc.jar",
+metadata/com.ibm.async/asyncutil/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/ibm/async/asyncutil/$version$/asyncutil-$version$-sources.jar",
+metadata/com.ibm.async/asyncutil/index.json:6:    "repository-url" : "https://github.com/IBM/java-async-util",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/classworlds/classworlds/1.1/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: classworlds/classworlds/1.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>classworlds/classworlds/1.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="classworlds-1.1-sources.jar" title="classworlds-1.1-sources.jar">classworlds-1.1-sources.jar</a>                       2006-01-12 04:26     44722      
+<a href="classworlds-1.1-sources.jar.asc" title="classworlds-1.1-sources.jar.asc">classworlds-1.1-sources.jar.asc</a>                   2006-01-12 04:26       189      
+<a href="classworlds-1.1-sources.jar.md5" title="classworlds-1.1-sources.jar.md5">classworlds-1.1-sources.jar.md5</a>                   2006-01-12 04:26        32      
+<a href="classworlds-1.1-sources.jar.sha1" title="classworlds-1.1-sources.jar.sha1">classworlds-1.1-sources.jar.sha1</a>                  2006-01-12 04:26        40      
+<a href="classworlds-1.1.jar" title="classworlds-1.1.jar">classworlds-1.1.jar</a>                               2006-01-12 04:26     37854      
+<a href="classworlds-1.1.jar.md5" title="classworlds-1.1.jar.md5">classworlds-1.1.jar.md5</a>                           2006-01-12 04:26        32      
+<a href="classworlds-1.1.jar.sha1" title="classworlds-1.1.jar.sha1">classworlds-1.1.jar.sha1</a>                          2006-01-12 04:26        40      
+<a href="classworlds-1.1.pom" title="classworlds-1.1.pom">classworlds-1.1.pom</a>                               2006-01-12 04:26      3324      
+<a href="classworlds-1.1.pom.md5" title="classworlds-1.1.pom.md5">classworlds-1.1.pom.md5</a>                           2006-01-12 04:26        32      
+<a href="classworlds-1.1.pom.sha1" title="classworlds-1.1.pom.sha1">classworlds-1.1.pom.sha1</a>                          2006-01-12 04:26        40      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-01-12 04:26       119      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-01-12 04:26        83      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-01-12 04:26       138      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-tests.jar ; curl -fsSL -I https://repo1.maven.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-test-sources.jar ; curl -fsSL -I https://javadoc.io/doc/classworlds/classworlds/1.1/' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 879ms:
+HTTP/2 404 
+date: Sat, 02 May 2026 15:30:41 GMT
+content-type: text/html
+cf-ray: 9f58118fc82cbc68-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/classworlds/classworlds/1.1/classworlds-1.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 02 May 2026 15:30:41 GMT
+content-type: text/html
+cf-ray: 9f5811916830cd00-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/classworlds/classworlds/1.1/classworlds-1.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 301 
+date: Sat, 02 May 2026 15:30:41 GMT
+content-length: 0
+location: /doc/classworlds/classworlds/1.1
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=uavC3fZ9n7cQwmjLaSajynUCuHwMSVh5Uy1rTgWxK7b3bitnsbCA15lKRjzluTZo5uujtRii682QY6Z5ZRWRwjcrsYGGeMNkCcoQxlSyGRAqjdBC2m8PnktR%2FXUOZBF2%2FNwB9zfWnxxE"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f5811932ba4bac8-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 303 
+date: Sat, 02 May 2026 15:30:42 GMT
+content-length: 0
+location: /doc/classworlds/classworlds/1.1/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=CGNtKDcXZ6ts7sdKPnTbUVShchCeoKSiolgNVEyfz2Cq%2BSsnsodO1Qzu3fecmK4c1UFpuYOwMQlKXVKzNQQGxzVTmpkAmMBQkWPkF%2B3xqaChmsnU9INUbrR8meffU8dEJBvk7cMp7AUV"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f581193ecf6bac8-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 02 May 2026 15:30:42 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/classworlds/classworlds/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=qI%2Fx%2FtXjUzwT4bIkBc53LVQYX%2FXx0l%2FOO8kLC%2BR5vvqgKVPsAbP7vJo0EKZUsS6AjuFcU%2FN1lQ39susERIZXn0bzuCvl%2FMVqPLjp%2BswFD7Ufefmi7prg3RIsLSDcmYvdXgNpQtZj%2ByfY"}]}
+server: cloudflare
+cf-ray: 9f581194ad95bac8-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: "classworlds" "cvs.classworlds.codehaus.org"
+codex
+The published POM identifies the original Codehaus CVS SCM and the build layout (`src/java/main`, `src/java/test`). The Maven directory only publishes the binary, POM, and sources jar, with no javadoc or tests jar, so tests need either a reliable upstream tag URL or should be marked `N/A`.
+exec
+/usr/bin/bash -lc 'curl -fsSL -I http://cvs.classworlds.codehaus.org/ ; curl -fsSL -I http://classworlds.codehaus.org/ ; curl -fsSL -I https://classworlds.codehaus.org/' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ exited 6 in 0ms:
+curl: (6) Could not resolve host: cvs.classworlds.codehaus.org
+curl: (6) Could not resolve host: classworlds.codehaus.org
+curl: (6) Could not resolve host: classworlds.codehaus.org
+
+exec
+/usr/bin/bash -lc "jar xf /tmp/classworlds-1.1-sources.jar META-INF/MANIFEST.MF 2>/dev/null || true; if [ -f META-INF/MANIFEST.MF ]; then sed -n '1,120p' META-INF/MANIFEST.MF; rm -rf META-INF; fi" in /tmp
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/classworlds/classworlds/1.1/classworlds-1.1.jar -o /tmp/classworlds-1.1.jar && jar tf /tmp/classworlds-1.1.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/codehaus/
+org/codehaus/classworlds/
+org/codehaus/classworlds/uberjar/
+org/codehaus/classworlds/uberjar/boot/
+org/codehaus/classworlds/uberjar/protocol/
+org/codehaus/classworlds/uberjar/protocol/jar/
+org/codehaus/classworlds/BytesURLConnection.class
+org/codehaus/classworlds/BytesURLStreamHandler.class
+org/codehaus/classworlds/ClassRealm.class
+org/codehaus/classworlds/ClassWorld.class
+org/codehaus/classworlds/ClassWorldException.class
+org/codehaus/classworlds/ConfigurationException.class
+org/codehaus/classworlds/Configurator$1.class
+org/codehaus/classworlds/Configurator$2.class
+org/codehaus/classworlds/Configurator.class
+org/codehaus/classworlds/DefaultClassRealm.class
+org/codehaus/classworlds/DuplicateRealmException.class
+org/codehaus/classworlds/EmbeddedLauncher.class
+org/codehaus/classworlds/Entry.class
+org/codehaus/classworlds/Launcher.class
+org/codehaus/classworlds/NoSuchRealmException.class
+org/codehaus/classworlds/RealmClassLoader.class
+org/codehaus/classworlds/RealmDelegatingClassLoader.class
+org/codehaus/classworlds/UberJarRealmClassLoader.class
+org/codehaus/classworlds/UrlUtils.class
+org/codehaus/classworlds/uberjar/boot/Bootstrapper.class
+org/codehaus/classworlds/uberjar/boot/InitialClassLoader.class
+org/codehaus/classworlds/uberjar/protocol/jar/Handler.class
+org/codehaus/classworlds/uberjar/protocol/jar/JarUrlConnection.class
+META-INF/LICENSE.txt
+
+ succeeded in 150ms:
+web search: 
+web search: Maven repository classworlds classworlds 1.1 sources jar pom
+web search: 
+web search: "Classworlds" "classloader" framework
+web search: 
+web search: https://repo1.maven.org/maven2/classworlds/classworlds/1.1/
+web search: 
+web search: 
+web search: 
+web search: "scm:cvs:pserver:anonymous@cvs.classworlds.codehaus.org"
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-sources.jar ; curl -fsSL -I https://repo.maven.apache.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-javadoc.jar ; curl -fsSL -I https://repo.maven.apache.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-tests.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+exec
+/usr/bin/bash -lc "javap -classpath /tmp/classworlds-1.1.jar org.codehaus.classworlds.ClassWorld org.codehaus.classworlds.ClassRealm org.codehaus.classworlds.Launcher | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+exec
+/usr/bin/bash -lc "jar xf /tmp/classworlds-1.1.jar META-INF/MANIFEST.MF && sed -n '1,120p' META-INF/MANIFEST.MF && rm -rf META-INF" in /tmp
+ succeeded in 259ms:
+Compiled from "ClassWorld.java"
+public class org.codehaus.classworlds.ClassWorld {
+  public org.codehaus.classworlds.ClassWorld(java.lang.String, java.lang.ClassLoader);
+  public org.codehaus.classworlds.ClassWorld();
+  public org.codehaus.classworlds.ClassRealm newRealm(java.lang.String) throws org.codehaus.classworlds.DuplicateRealmException;
+  public org.codehaus.classworlds.ClassRealm newRealm(java.lang.String, java.lang.ClassLoader) throws org.codehaus.classworlds.DuplicateRealmException;
+  public void disposeRealm(java.lang.String) throws org.codehaus.classworlds.NoSuchRealmException;
+  public org.codehaus.classworlds.ClassRealm getRealm(java.lang.String) throws org.codehaus.classworlds.NoSuchRealmException;
+  public java.util.Collection getRealms();
+  java.lang.Class loadClass(java.lang.String) throws java.lang.ClassNotFoundException;
+}
+Compiled from "ClassRealm.java"
+public interface org.codehaus.classworlds.ClassRealm {
+  public abstract java.lang.String getId();
+  public abstract org.codehaus.classworlds.ClassWorld getWorld();
+  public abstract void importFrom(java.lang.String, java.lang.String) throws org.codehaus.classworlds.NoSuchRealmException;
+  public abstract void addConstituent(java.net.URL);
+  public abstract org.codehaus.classworlds.ClassRealm locateSourceRealm(java.lang.String);
+  public abstract void setParent(org.codehaus.classworlds.ClassRealm);
+  public abstract org.codehaus.classworlds.ClassRealm createChildRealm(java.lang.String) throws org.codehaus.classworlds.DuplicateRealmException;
+  public abstract java.lang.ClassLoader getClassLoader();
+  public abstract org.codehaus.classworlds.ClassRealm getParent();
+  public abstract java.net.URL[] getConstituents();
+  public abstract java.lang.Class loadClass(java.lang.String) throws java.lang.ClassNotFoundException;
+  public abstract java.net.URL getResource(java.lang.String);
+  public abstract java.util.Enumeration findResources(java.lang.String) throws java.io.IOException;
+  public abstract java.io.InputStream getResourceAsStream(java.lang.String);
+  public abstract void display();
+}
+Compiled from "Launcher.java"
+public class org.codehaus.classworlds.Launcher {
+  protected static final java.lang.String CLASSWORLDS_CONF;
+  protected static final java.lang.String UBERJAR_CONF_DIR;
+  protected java.lang.ClassLoader systemClassLoader;
+  protected java.lang.String mainClassName;
+  protected java.lang.String mainRealmName;
+  protected org.codehaus.classworlds.ClassWorld world;
+  static java.lang.Class class$org$codehaus$classworlds$ClassWorld;
+  static java.lang.Class array$Ljava$lang$String;
+  public org.codehaus.classworlds.Launcher();
+  public void setSystemClassLoader(java.lang.ClassLoader);
+  public java.lang.ClassLoader getSystemClassLoader();
+  public int getExitCode();
+  public void setAppMain(java.lang.String, java.lang.String);
+  public java.lang.String getMainRealmName();
+  public java.lang.String getMainClassName();
+  public void setWorld(org.codehaus.classworlds.ClassWorld);
+  public org.codehaus.classworlds.ClassWorld getWorld();
+  public void configure(java.io.InputStream) throws java.io.IOException, java.net.MalformedURLException, org.codehaus.classworlds.ConfigurationException, org.codehaus.classworlds.DuplicateRealmException, org.codehaus.classworlds.NoSuchRealmException;
+  public java.lang.Class getMainClass() throws java.lang.ClassNotFoundException, org.codehaus.classworlds.NoSuchRealmException;
+  public org.codehaus.classworlds.ClassRealm getMainRealm() throws org.codehaus.classworlds.NoSuchRealmException;
+  protected java.lang.reflect.Method getEnhancedMainMethod() throws java.lang.ClassNotFoundException, java.lang.NoSuchMethodException, org.codehaus.classworlds.NoSuchRealmException;
+  protected java.lang.reflect.Method getMainMethod() throws java.lang.ClassNotFoundException, java.lang.NoSuchMethodException, org.codehaus.classworlds.NoSuchRealmException;
+  public void launch(java.lang.String[]) throws java.lang.ClassNotFoundException, java.lang.IllegalAccessException, java.lang.reflect.InvocationTargetException, java.lang.NoSuchMethodException, org.codehaus.classworlds.NoSuchRealmException;
+  protected void launchEnhanced(java.lang.String[]) throws java.lang.ClassNotFoundException, java.lang.IllegalAccessException, java.lang.reflect.InvocationTargetException, java.lang.NoSuchMethodException, org.codehaus.classworlds.NoSuchRealmException;
+  protected void launchStandard(java.lang.String[]) throws java.lang.ClassNotFoundException, java.lang.IllegalAccessException, java.lang.reflect.InvocationTargetException, java.lang.NoSuchMethodException, org.codehaus.classworlds.NoSuchRealmException;
+  public static void main(java.lang.String[]);
+  public static int mainWithExitCode(java.lang.String[]) throws java.lang.Exception;
+  static java.lang.Class class$(java.lang.String);
+}
+
+ succeeded in 253ms:
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.6.5
+Created-By: Apache Maven
+Built-By: brett
+Package: org.codehaus.classworlds
+Build-Jdk: 1.5.0_06
+Extension-Name: classworlds
+Specification-Title: classworlds: Java(tm) ClassLoader Management F...
+Specification-Vendor: The Codehaus
+Implementation-Title: org.codehaus.classworlds
+Implementation-Vendor: The Codehaus
+Implementation-Version: 1.1
+
+
+ exited 22 in 620ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 02 May 2026 15:31:17 GMT
+content-type: text/html
+cf-ray: 9f58126dde5e985f-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/classworlds/classworlds/1.1/classworlds-1.1-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 02 May 2026 15:31:17 GMT
+content-type: text/html
+cf-ray: 9f58126fbeec01e3-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/classworlds/classworlds/1.1/classworlds-1.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: 
+web search: 
+web search: site:javadoc.io/doc/classworlds/classworlds/1.1 classworlds
+web search: 
+web search: "classworlds-1.1-sources.jar" "classworlds-1.1.pom"
+web search: 
+web search: 
+codex
+I’ve got enough to patch: Maven sources are available, Maven tests and javadocs are not, and the artifact itself is a normal JVM jar with class files. I’m going to set tests and docs to `N/A`, keep language/native-image special fields absent, and use the SCM root from the published POM for the repository URL.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+diff --git a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+index 397e3c46a06cc372fca22901b766002da437cfaf..e7eb56c3b0c376224ff415c7c68545ad198270c7
+--- a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
++++ b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "classworlds:classworlds:1.1"
++  "coordinates" : "classworlds:classworlds:1.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar",
++  "repository-url" : "http://cvs.classworlds.codehaus.org/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "Classworlds is a Java class loader management framework for defining isolated class realms and controlling how classes and resources are loaded between them. It also provides launch support for applications that need configurable classpaths or embedded/uber-JAR bootstrapping."
+ }
+
+diff --git a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+index 397e3c46a06cc372fca22901b766002da437cfaf..e7eb56c3b0c376224ff415c7c68545ad198270c7
+--- a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
++++ b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "classworlds:classworlds:1.1"
++  "coordinates" : "classworlds:classworlds:1.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar",
++  "repository-url" : "http://cvs.classworlds.codehaus.org/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "Classworlds is a Java class loader management framework for defining isolated class realms and controlling how classes and resources are loaded between them. It also provides launch support for applications that need configurable classpaths or embedded/uber-JAR bootstrapping."
+ }
+
+web search: 
+web search: repo.maven.apache.org maven2 classworlds classworlds 1.1 classworlds-1.1-sources.jar
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/classworlds-classworlds-1.1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 0ms:
+{
+  "coordinates": "classworlds:classworlds:1.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar",
+  "repository-url": "http://cvs.classworlds.codehaus.org/",
+  "test-code-url": "N/A",
+  "documentation-url": "N/A",
+  "description": "Classworlds is a Java class loader management framework for defining isolated class realms and controlling how classes and resources are loaded between them. It also provides launch support for applications that need configurable classpaths or embedded/uber-JAR bootstrapping."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/classworlds-classworlds-1.1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL -I https://repo.maven.apache.org/maven2/classworlds/classworlds/1.1/classworlds-1.1-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:31:41 GMT
+content-type: application/java-archive
+content-length: 44722
+cf-ray: 9f5813087f17739d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1495407
+etag: "c8d134c6e1421421ca6748d6aa798a79"
+last-modified: Thu, 20 May 2010 08:55:18 GMT
+x-checksum-md5: c8d134c6e1421421ca6748d6aa798a79
+x-checksum-sha1: 44673eb402d35a91bee8ea1ce7d318c016e3e63e
+
+diff --git a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+index 397e3c46a06cc372fca22901b766002da437cfaf..e7eb56c3b0c376224ff415c7c68545ad198270c7
+--- a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
++++ b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "classworlds:classworlds:1.1"
++  "coordinates" : "classworlds:classworlds:1.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar",
++  "repository-url" : "http://cvs.classworlds.codehaus.org/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "Classworlds is a Java class loader management framework for defining isolated class realms and controlling how classes and resources are loaded between them. It also provides launch support for applications that need configurable classpaths or embedded/uber-JAR bootstrapping."
+ }
+
+web search: 
+web search: Central Repository classworlds classworlds 1.1 classworlds-1.1-sources.jar
+web search: 
+web search: 
+web search: 
+web search: "https://repo1.maven.org/maven2/classworlds/classworlds/1.1/classworlds-1.1.pom"
+web search: 
+web search: https://repo1.maven.org/maven2/classworlds/classworlds/1.1/
+web search: 
+web search: 
+codex
+Updated [classworlds-classworlds-1.1.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json).
+
+I used the Maven Central sources jar for `source-code-url`; the Maven directory for `1.1` lists the sources jar, binary jar, POM, and checksums, but no tests or javadocs artifacts, so `test-code-url` and `documentation-url` are `N/A`. The repository root is from the published POM’s SCM URL. ([repo1.maven.org](https://repo1.maven.org/maven2/classworlds/classworlds/1.1/))
+
+Validation: `jq` parsed the JSON successfully, and the resolved sources URL returned HTTP 200. The artifact contains JVM `.class` files, so I left `not-for-native-image` absent, and it is not Kotlin/Groovy/Scala-specific, so I left `language` absent.
+diff --git a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+index 397e3c46a06cc372fca22901b766002da437cfaf..e7eb56c3b0c376224ff415c7c68545ad198270c7
+--- a/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
++++ b/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "classworlds:classworlds:1.1"
++  "coordinates" : "classworlds:classworlds:1.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/classworlds/classworlds/$version$/classworlds-$version$-sources.jar",
++  "repository-url" : "http://cvs.classworlds.codehaus.org/",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "Classworlds is a Java class loader management framework for defining isolated class realms and controlling how classes and resources are loaded between them. It also provides launch support for applications that need configurable classpaths or embedded/uber-JAR bootstrapping."
+ }
+
+tokens used
+89,811
+Updated [classworlds-classworlds-1.1.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02/build/discovered-artifact-metadata/classworlds-classworlds-1.1.json).
+
+I used the Maven Central sources jar for `source-code-url`; the Maven directory for `1.1` lists the sources jar, binary jar, POM, and checksums, but no tests or javadocs artifacts, so `test-code-url` and `documentation-url` are `N/A`. The repository root is from the published POM’s SCM URL. ([repo1.maven.org](https://repo1.maven.org/maven2/classworlds/classworlds/1.1/))
+
+Validation: `jq` parsed the JSON successfully, and the resolved sources URL returned HTTP 200. The artifact contains JVM `.class` files, so I left `not-for-native-image` absent, and it is not Kotlin/Groovy/Scala-specific, so I left `language` absent.
+Ran agent for classworlds:classworlds:1.1 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02/build/agent-artifact-discovery-logs/classworlds-classworlds-1.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2224-e73b5e02/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 57s
+9 actionable tasks: 4 executed, 5 from cache
