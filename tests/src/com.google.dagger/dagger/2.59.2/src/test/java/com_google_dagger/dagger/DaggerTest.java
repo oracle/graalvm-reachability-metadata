@@ -128,6 +128,16 @@ public class DaggerTest {
         assertThat(secondSession.label()).isEqualTo("Console:session-b:active");
     }
 
+    @Test
+    void componentDependencyExposesBindingsToDependentComponent() {
+        ConfigurationComponent configuration = DaggerDaggerTest_ConfigurationComponent.factory()
+                .create("Analytics", new FeatureFlags(true));
+        DependentComponent dependent = DaggerDaggerTest_DependentComponent.factory()
+                .create(configuration);
+
+        assertThat(dependent.featureService().status()).isEqualTo("Analytics feature enabled");
+    }
+
     @Qualifier
     @Retention(RetentionPolicy.RUNTIME)
     @interface ApplicationName {
@@ -206,6 +216,31 @@ public class DaggerTest {
         @Component.Factory
         interface Factory {
             ParentComponent create(@BindsInstance @ApplicationName String applicationName);
+        }
+    }
+
+    @Component
+    interface ConfigurationComponent {
+        @ApplicationName
+        String applicationName();
+
+        FeatureFlags featureFlags();
+
+        @Component.Factory
+        interface Factory {
+            ConfigurationComponent create(
+                    @BindsInstance @ApplicationName String applicationName,
+                    @BindsInstance FeatureFlags featureFlags);
+        }
+    }
+
+    @Component(dependencies = ConfigurationComponent.class)
+    interface DependentComponent {
+        FeatureService featureService();
+
+        @Component.Factory
+        interface Factory {
+            DependentComponent create(ConfigurationComponent configurationComponent);
         }
     }
 
@@ -528,6 +563,33 @@ public class DaggerTest {
 
         String value() {
             return value;
+        }
+    }
+
+    static final class FeatureFlags {
+        private final boolean featureEnabled;
+
+        FeatureFlags(boolean featureEnabled) {
+            this.featureEnabled = featureEnabled;
+        }
+
+        boolean featureEnabled() {
+            return featureEnabled;
+        }
+    }
+
+    static final class FeatureService {
+        private final String applicationName;
+        private final FeatureFlags featureFlags;
+
+        @Inject
+        FeatureService(@ApplicationName String applicationName, FeatureFlags featureFlags) {
+            this.applicationName = applicationName;
+            this.featureFlags = featureFlags;
+        }
+
+        String status() {
+            return applicationName + " feature " + (featureFlags.featureEnabled() ? "enabled" : "disabled");
         }
     }
 }
