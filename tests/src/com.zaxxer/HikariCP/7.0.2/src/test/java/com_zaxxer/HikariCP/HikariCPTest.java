@@ -64,6 +64,32 @@ public class HikariCPTest {
         }
     }
 
+    @Test
+    void appliesConfiguredConnectionStateToBorrowedConnections() throws SQLException {
+        HikariConfig config = new HikariConfig();
+        config.setPoolName("connection-state-pool");
+        config.setDataSource(new RecordingDataSource());
+        config.setMaximumPoolSize(1);
+        config.setMinimumIdle(0);
+        config.setConnectionTimeout(1_000);
+        config.setValidationTimeout(500);
+        config.setInitializationFailTimeout(1_000);
+        config.setAutoCommit(false);
+        config.setReadOnly(true);
+        config.setCatalog("tenant_catalog");
+        config.setSchema("tenant_schema");
+        config.setTransactionIsolation("TRANSACTION_SERIALIZABLE");
+
+        try (HikariDataSource dataSource = new HikariDataSource(config);
+                Connection connection = dataSource.getConnection()) {
+            assertThat(connection.getAutoCommit()).isFalse();
+            assertThat(connection.isReadOnly()).isTrue();
+            assertThat(connection.getCatalog()).isEqualTo("tenant_catalog");
+            assertThat(connection.getSchema()).isEqualTo("tenant_schema");
+            assertThat(connection.getTransactionIsolation()).isEqualTo(Connection.TRANSACTION_SERIALIZABLE);
+        }
+    }
+
     public static final class StaticCredentialsProvider implements HikariCredentialsProvider {
         @Override
         public Credentials getCredentials() {
