@@ -1,0 +1,2218 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de952-ad67-7992-89ad-82d8ee44f637
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: javax.persistence:persistence-api:1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0" when "$version$" is replaced with "1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
+- Set "coordinates" to "javax.persistence:persistence-api:1.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata format first, then verify the artifact’s Maven contents and upstream links before editing the JSON.
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+-rw-rw-r-- 1 vjovanov vjovanov 62 May  2 17:33 build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
+
+ succeeded in 0ms:
+{
+  "coordinates" : "javax.persistence:persistence-api:1.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"not-for-native-image\"|\"language\"' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+codex
+The target file is only a stub right now. I’m checking the repository’s metadata conventions so the new fields match local formatting and naming.
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|test-code-url|documentation-url|repository-url|not-for-native-image|\"language\"' . --glob '*.json' --glob '"'!build/**'"' | head -120" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+./metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+./metadata/org.awaitility/awaitility/index.json:6:    "repository-url" : "https://github.com/awaitility/awaitility",
+./metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+./metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+./metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+./metadata/org.awaitility/awaitility/index.json:22:    "repository-url" : "https://github.com/awaitility/awaitility",
+./metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+./metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-compatible/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+./metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+./metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:62:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:63:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:64:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:65:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:116:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:117:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:118:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-session/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-session/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-session/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-tests.jar",
+./metadata/org.eclipse.jetty/jetty-session/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-io/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+./metadata/org.eclipse.jetty/jetty-io/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:49:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:50:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-io/index.json:51:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+./metadata/org.eclipse.jetty/jetty-io/index.json:52:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:64:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:65:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-io/index.json:66:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+./metadata/org.eclipse.jetty/jetty-io/index.json:67:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty/jetty-http/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:90:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:91:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-http/index.json:92:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:93:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:112:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty/jetty-http/index.json:113:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:114:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-util/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-util/src/test",
+./metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:7:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-client/index.json:8:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+./metadata/org.eclipse.jetty/jetty-client/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:24:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-client/index.json:25:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+./metadata/org.eclipse.jetty/jetty-client/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:62:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:63:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty/jetty-client/index.json:64:    "test-code-url" : "https://github.com/eclipse/jetty.project/tree/jetty-$version$/jetty-client/src/test",
+./metadata/org.eclipse.jetty/jetty-client/index.json:65:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:6:    "repository-url" : "https://github.com/google/closure-compiler",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:7:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+./metadata/org.eclipse.jetty/jetty-server/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-server/src/test",
+./metadata/org.eclipse.jetty/jetty-server/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:26:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-server/index.json:27:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-server/src/test",
+./metadata/org.eclipse.jetty/jetty-server/index.json:28:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:55:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:56:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-server/index.json:57:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-server/src/test",
+
+exec
+/usr/bin/bash -lc "rg --files | rg 'artifact.*metadata|metadata.*json|discovered' | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+tests/tck-build-logic/src/main/resources/scaffold/reachability-metadata.json.template
+metadata/javax.validation/validation-api/2.0.0.Final/reachability-metadata.json
+metadata/javax.validation/validation-api/1.0.0.GA/reachability-metadata.json
+metadata/javax.validation/validation-api/index.json
+metadata/javax.validation/validation-api/1.1.0.Final/reachability-metadata.json
+metadata/org.apache.activemq/artemis-jms-client/2.29.0/reachability-metadata.json
+metadata/org.apache.activemq/artemis-jms-client/index.json
+metadata/org.apache.activemq/artemis-jms-client/2.28.0/reachability-metadata.json
+metadata/org.apache.activemq/artemis-jms-client/2.32.0/reachability-metadata.json
+metadata/org.apache.activemq/artemis-jms-client/2.36.0/reachability-metadata.json
+metadata/log4j/log4j/1.2.17/reachability-metadata.json
+metadata/log4j/log4j/index.json
+metadata/org.apache.activemq/activemq-client/5.18.1/reachability-metadata.json
+metadata/org.apache.activemq/activemq-client/6.0.0/reachability-metadata.json
+metadata/org.apache.activemq/activemq-client/index.json
+metadata/org.apache.activemq/activemq-broker/5.18.1/reachability-metadata.json
+metadata/com.thoughtworks.paranamer/paranamer/2.8.1/reachability-metadata.json
+metadata/org.apache.activemq/activemq-broker/6.0.0/reachability-metadata.json
+metadata/org.apache.activemq/activemq-broker/index.json
+metadata/com.thoughtworks.paranamer/paranamer/2.3/reachability-metadata.json
+metadata/com.thoughtworks.paranamer/paranamer/index.json
+metadata/io.github.oshai/kotlin-logging-jvm/8.0.01/reachability-metadata.json
+metadata/io.github.oshai/kotlin-logging-jvm/index.json
+metadata/com.rabbitmq/amqp-client/index.json
+metadata/com.rabbitmq/amqp-client/5.12.0/reachability-metadata.json
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/reachability-metadata.json
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json
+metadata/org.springframework/spring-instrument/index.json
+metadata/org.springframework/spring-instrument/5.3.31/reachability-metadata.json
+metadata/org.ehcache/ehcache/3.10.8-jakarta/reachability-metadata.json
+metadata/org.ehcache/ehcache/index.json
+metadata/org.apache.yetus/audience-annotations/0.12.0/reachability-metadata.json
+metadata/org.apache.yetus/audience-annotations/index.json
+metadata/org.apache.yetus/audience-annotations/0.14.0/reachability-metadata.json
+metadata/org.springframework/spring-jcl/5.3.15/reachability-metadata.json
+metadata/org.springframework/spring-jcl/index.json
+metadata/io.opencensus/opencensus-api/index.json
+metadata/io.opencensus/opencensus-api/0.31.1/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-client/9.4.40.v20210413/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json
+metadata/org.apache.thrift/libthrift/0.13.0/reachability-metadata.json
+metadata/org.apache.thrift/libthrift/index.json
+metadata/org.apache.thrift/libthrift/0.17.0/reachability-metadata.json
+metadata/org.playframework/play-exceptions/3.0.0/reachability-metadata.json
+metadata/org.playframework/play-exceptions/index.json
+metadata/org.apache.activemq/artemis-log-annotation-processor/2.40.0/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-api/9.4.40.v20210413/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json
+metadata/org.apache.activemq/artemis-log-annotation-processor/2.39.0/reachability-metadata.json
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json
+metadata/org.playframework/play-build-link/3.0.0/reachability-metadata.json
+metadata/org.playframework/play-build-link/index.json
+metadata/org.apache.activemq/artemis-log-annotation-processor/2.28.0/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-common/9.4.40.v20210413/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json
+metadata/com.google.javascript/closure-compiler-externs/index.json
+metadata/org.apache.activemq/activemq-openwire-legacy/5.18.1/reachability-metadata.json
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json
+metadata/com.google.javascript/closure-compiler-externs/v20150505/reachability-metadata.json
+metadata/org.awaitility/awaitility/4.2.1/reachability-metadata.json
+metadata/org.awaitility/awaitility/index.json
+metadata/com.github.stephenc.jcip/jcip-annotations/1.0-1/reachability-metadata.json
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json
+metadata/org.awaitility/awaitility/4.2.0/reachability-metadata.json
+metadata/org.apiguardian/apiguardian-api/1.1.2/reachability-metadata.json
+metadata/org.apiguardian/apiguardian-api/index.json
+metadata/org.scalatest/scalatest-compatible/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-compatible/index.json
+metadata/org.glassfish.hk2/hk2-utils/2.5.0-b05/reachability-metadata.json
+metadata/com.diffplug.durian/durian-swt.os/4.2.2/reachability-metadata.json
+metadata/com.diffplug.durian/durian-swt.os/index.json
+metadata/org.glassfish.hk2/hk2-utils/2.5.0/reachability-metadata.json
+metadata/org.glassfish.hk2/hk2-utils/index.json
+metadata/org.datanucleus/javax.jdo/3.2.0-m13/reachability-metadata.json
+metadata/org.datanucleus/javax.jdo/index.json
+metadata/javax.activation/javax.activation-api/1.2.0/reachability-metadata.json
+metadata/javax.activation/javax.activation-api/index.json
+metadata/org.eclipse.jetty/jetty-alpn-java-server/12.0.0/reachability-metadata.json
+
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
+
+web search: 
+web search: javax.persistence persistence-api 1.0 Maven POM scm source repository
+web search: 
+web search: https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/
+web search: 
+web search: 
+codex
+Maven Central has the main jar and sources jar for `1.0`, but that version listing does not expose a tests jar or javadoc jar there. I’m checking the POM and alternate Maven mirrors next, because the instructions prefer Maven-hosted sources/tests/docs when they exist.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0.pom' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project 
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.persistence</groupId>
+  <artifactId>persistence-api</artifactId>
+  <version>1.0</version>
+  <name>Enterprise JavaBeans (EJB) 3.0</name>
+  <description>
+    The Enterprise JavaBeans architecture is a component architecture for the development and deployment of component-based business applications.
+    The purpose of Enterprise JavaBeans (EJB) 3.0 is to improve the EJB architecture by reducing its complexity from the developer's point of view.
+  </description>
+  <url>http://www.jcp.org/en/jsr/detail?id=220</url>
+
+  <licenses>
+    <license>
+      <name>Common Development and Distribution License (CDDL) v1.0</name>
+      <url>http://www.sun.com/cddl/cddl.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/persistence/persistence-api/1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/persistence/persistence-api/1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="persistence-api-1.0-sources.jar" title="persistence-api-1.0-sources.jar">persistence-api-1.0-sources.jar</a>                   2006-08-22 19:49    106248      
+<a href="persistence-api-1.0-sources.jar.md5" title="persistence-api-1.0-sources.jar.md5">persistence-api-1.0-sources.jar.md5</a>               2006-08-22 19:49        32      
+<a href="persistence-api-1.0-sources.jar.sha1" title="persistence-api-1.0-sources.jar.sha1">persistence-api-1.0-sources.jar.sha1</a>              2006-08-22 19:49        40      
+<a href="persistence-api-1.0.jar" title="persistence-api-1.0.jar">persistence-api-1.0.jar</a>                           2006-08-22 19:49     52150      
+<a href="persistence-api-1.0.jar.md5" title="persistence-api-1.0.jar.md5">persistence-api-1.0.jar.md5</a>                       2006-08-22 19:49        32      
+<a href="persistence-api-1.0.jar.sha1" title="persistence-api-1.0.jar.sha1">persistence-api-1.0.jar.sha1</a>                      2006-08-22 19:49        40      
+<a href="persistence-api-1.0.pom" title="persistence-api-1.0.pom">persistence-api-1.0.pom</a>                           2006-08-22 19:49      1307      
+<a href="persistence-api-1.0.pom.md5" title="persistence-api-1.0.pom.md5">persistence-api-1.0.pom.md5</a>                       2006-08-22 19:49        36      
+<a href="persistence-api-1.0.pom.sha1" title="persistence-api-1.0.pom.sha1">persistence-api-1.0.pom.sha1</a>                      2006-08-22 19:49        44      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repository.jboss.org/maven2/javax/persistence/persistence-api/1.0/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 358ms:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Index of /maven2/javax/persistence/persistence-api/1.0</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+
+    <link rel="icon" type="image/png" href="https://origin-repository.jboss.org/nexus/static/rapture/resources/safari-favicon-32x32.png?3.77.2-02" sizes="32x32">
+    <link rel="mask-icon" href="https://origin-repository.jboss.org/nexus/static/rapture/resources/favicon-white.svg?3.77.2-02" color="#00bb6c">
+    <link rel="icon" type="image/png" href="https://origin-repository.jboss.org/nexus/static/rapture/resources/favicon.svg?3.77.2-02" sizes="16x16">
+
+    <link rel="stylesheet" type="text/css" href="https://origin-repository.jboss.org/nexus/static/css/nexus-content.css?3.77.2-02"/>
+</head>
+<body class="htmlIndex">
+<h1>Index of /maven2/javax/persistence/persistence-api/1.0</h1>
+
+
+<table cellspacing="10">
+    <tr>
+        <th align="left">Name</th>
+        <th>Last Modified</th>
+        <th>Size</th>
+        <th>Description</th>
+    </tr>
+        <tr>
+            <td><a href="../">Parent Directory</a></td>
+        </tr>
+        <tr>
+            <td><a href="https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-javadoc.jar">persistence-api-1.0-javadoc.jar</a></td>
+            <td>
+                    Fri Nov 26 13:11:07 Z 2021
+            </td>
+            <td align="right">
+                    408456
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-javadoc.jar.md5">persistence-api-1.0-javadoc.jar.md5</a></td>
+            <td>
+                    Fri Nov 26 13:11:07 Z 2021
+            </td>
+            <td align="right">
+                    32
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-javadoc.jar.sha1">persistence-api-1.0-javadoc.jar.sha1</a></td>
+            <td>
+                    Fri Nov 26 13:11:07 Z 2021
+            </td>
+            <td align="right">
+                    40
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0.jar">persistence-api-1.0.jar</a></td>
+            <td>
+                    Fri Nov 26 13:11:07 Z 2021
+            </td>
+            <td align="right">
+                    52150
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0.jar.md5">persistence-api-1.0.jar.md5</a></td>
+            <td>
+                    Fri Nov 26 13:11:07 Z 2021
+            </td>
+            <td align="right">
+                    32
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0.jar.sha1">persistence-api-1.0.jar.sha1</a></td>
+            <td>
+                    Fri Nov 26 13:11:07 Z 2021
+            </td>
+            <td align="right">
+                    40
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0.pom">persistence-api-1.0.pom</a></td>
+            <td>
+                    Fri Nov 26 13:11:07 Z 2021
+            </td>
+            <td align="right">
+                    165
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0.pom.md5">persistence-api-1.0.pom.md5</a></td>
+            <td>
+                    Fri Nov 26 13:11:07 Z 2021
+            </td>
+            <td align="right">
+                    32
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0.pom.sha1">persistence-api-1.0.pom.sha1</a></td>
+            <td>
+                    Fri Nov 26 13:11:07 Z 2021
+            </td>
+            <td align="right">
+                    40
+            </td>
+            <td></td>
+        </tr>
+</table>
+</body>
+</html>
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/javax.validation/validation-api/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.0.Final",
+    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/jakartaee/validation",
+    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+    "description" : "Bean Validation API defines the standard Java annotations and interfaces for declaring and inspecting constraints on objects, properties, method parameters, return values, and container elements. It provides the JSR 380 contracts that validation providers implement so applications can use a portable validation model without depending on a specific provider.",
+    "tested-versions" : [
+      "2.0.0.Final",
+      "2.0.1.Final"
+    ],
+    "allowed-packages" : [
+      "javax.validation"
+    ]
+  },
+  {
+    "metadata-version" : "1.1.0.Final",
+    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/jakartaee/validation",
+    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+    "description" : "Bean Validation API defines the standard Java annotations and interfaces for declaring and inspecting constraints on objects, properties, method parameters, and return values. It provides the JSR 349 contracts that validation providers implement so applications can use a portable validation model without depending on a specific provider.",
+    "tested-versions" : [
+      "1.1.0.Final"
+    ],
+    "allowed-packages" : [
+      "javax.validation"
+    ]
+  },
+  {
+    "metadata-version" : "1.0.0.GA",
+    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/jakartaee/validation",
+    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+    "description" : "Bean Validation API defines the standard Java annotations and interfaces for declaring and inspecting constraints on objects, properties, method parameters, and return values. It provides the JSR 303 contracts that validation providers implement so applications can use a portable validation model without depending on a specific provider.",
+    "tested-versions" : [
+      "1.0.0.GA"
+    ],
+    "allowed-packages" : [
+      "javax.validation"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/javax.activation/javax.activation-api/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages": [ "javax.activation" ],
+    "metadata-version": "1.2.0",
+    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-sources.jar",
+    "repository-url": "https://github.com/javaee/activation",
+    "test-code-url": "N/A",
+    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-javadoc.jar",
+    "description": "JavaBeans Activation Framework API defines the javax.activation types for describing data sources, determining MIME types, and dispatching data to content handlers. It provides the standard activation API that other libraries use to work with arbitrary data without bundling the implementation classes.",
+    "tested-versions": [
+      "1.2.0"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'javax\\.persistence|persistence-api' metadata build/discovered-artifact-metadata --glob '*.json'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json:2:  "coordinates" : "javax.persistence:persistence-api:1.0"
+metadata/javax.persistence/javax.persistence-api/2.2/reachability-metadata.json:5:        "typeReached" : "javax.persistence.spi.PersistenceProviderResolverHolder$DefaultPersistenceProviderResolver"
+metadata/javax.persistence/javax.persistence-api/2.2/reachability-metadata.json:16:        "typeReached" : "javax.persistence.spi.PersistenceProviderResolverHolder$DefaultPersistenceProviderResolver"
+metadata/javax.persistence/javax.persistence-api/2.2/reachability-metadata.json:24:        "typeReached" : "javax.persistence.spi.PersistenceProviderResolverHolder$DefaultPersistenceProviderResolver"
+metadata/javax.persistence/javax.persistence-api/2.2/reachability-metadata.json:30:        "typeReached" : "javax.persistence.spi.PersistenceProviderResolverHolder$DefaultPersistenceProviderResolver"
+metadata/javax.persistence/javax.persistence-api/2.2/reachability-metadata.json:32:      "glob" : "META-INF/services/javax.persistence.spi.PersistenceProvider"
+metadata/javax.persistence/javax.persistence-api/2.2/reachability-metadata.json:36:        "typeReached" : "javax.persistence.spi.PersistenceProviderResolverHolder$DefaultPersistenceProviderResolver"
+metadata/javax.persistence/javax.persistence-api/2.2/reachability-metadata.json:43:        "typeReached" : "javax.persistence.spi.PersistenceProviderResolverHolder$DefaultPersistenceProviderResolver"
+metadata/javax.persistence/javax.persistence-api/index.json:4:    "allowed-packages": [ "javax.persistence" ],
+metadata/javax.persistence/javax.persistence-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/$version$/javax.persistence-api-$version$-sources.jar",
+metadata/javax.persistence/javax.persistence-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/$version$/javax.persistence-api-$version$-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:36:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:47:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:50:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+metadata/org.apache.openejb/javaee-api/index.json:4:    "allowed-packages": [ "javax.activation", "javax.annotation", "javax.ejb", "javax.enterprise.deploy", "javax.interceptor", "javax.jms", "javax.jws", "javax.mail", "javax.management.j2ee", "javax.persistence", "javax.resource", "javax.security.jacc", "javax.servlet", "javax.transaction", "javax.xml", "org.apache.geronimo.mail" ],
+
+exec
+/usr/bin/bash -lc "sed -n '1,90p' metadata/jakarta.persistence/jakarta.persistence-api/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/javax.persistence/javax.persistence-api/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages": [ "javax.persistence" ],
+    "metadata-version": "2.2",
+    "source-code-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/$version$/javax.persistence-api-$version$-sources.jar",
+    "repository-url": "https://github.com/javaee/jpa-spec",
+    "test-code-url": "N/A",
+    "documentation-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/$version$/javax.persistence-api-$version$-javadoc.jar",
+    "tested-versions": [
+      "2.2"
+    ]
+  }
+]
+
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.0.0-M2",
+    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/jakartaee/persistence",
+    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/persistence-tck-dist/$version$/persistence-tck-dist-$version$.zip",
+    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+    "description" : "Jakarta Persistence API defines the standard Java API for persistence and object/relational mapping in Jakarta EE and Java SE environments. It provides annotations and interfaces for mapping domain objects to relational data, managing entity lifecycle, querying, transactions, caching, and schema-related metadata.",
+    "tested-versions" : [
+      "4.0.0-M2"
+    ],
+    "allowed-packages" : [
+      "jakarta.persistence"
+    ]
+  },
+  {
+    "metadata-version" : "4.0.0-M1",
+    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/jakartaee/persistence",
+    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/persistence-tck-dist/$version$/persistence-tck-dist-$version$.zip",
+    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+    "description" : "Jakarta Persistence API defines the standard Java API for persistence and object/relational mapping in Jakarta EE and Java SE environments. It provides annotations and interfaces for mapping domain objects to relational data, managing entity lifecycle, querying, transactions, caching, and schema-related metadata.",
+    "tested-versions" : [
+      "4.0.0-M1"
+    ],
+    "allowed-packages" : [
+      "jakarta.persistence"
+    ]
+  },
+  {
+    "metadata-version" : "3.2.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/jakartaee/persistence",
+    "test-code-url" : "https://download.eclipse.org/jakartaee/persistence/3.2/jakarta-persistence-tck-$version$.zip",
+    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+    "description" : "Jakarta Persistence API defines the standard Java API for persistence and object/relational mapping in Jakarta EE and Java SE environments. It provides annotations and interfaces for mapping domain objects to relational data, managing entity lifecycle, querying, transactions, caching, and schema-related metadata.",
+    "tested-versions" : [
+      "3.2.0"
+    ],
+    "allowed-packages" : [
+      "jakarta.persistence"
+    ]
+  },
+  {
+    "metadata-version" : "3.0.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/jakartaee/persistence",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+    "tested-versions" : [
+      "3.0.0",
+      "3.1.0"
+    ],
+    "allowed-packages" : [
+      "jakarta.persistence"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/2.2/javax.persistence-api-2.2.pom | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2017 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
+    which accompanies this distribution.
+    The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
+    and the Eclipse Distribution License is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    Contributors:
+        Lukas Jungmann - initial implementation
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>net.java</groupId>
+        <artifactId>jvnet-parent</artifactId>
+        <version>5</version>
+    </parent>
+
+    <groupId>javax.persistence</groupId>
+    <artifactId>javax.persistence-api</artifactId>
+    <version>2.2</version>
+
+    <description>Java(TM) Persistence API</description>
+    <url>https://github.com/javaee/jpa-spec</url>
+
+    <licenses>
+        <license>
+            <name>Eclipse Public License v1.0</name>
+            <url>http://www.eclipse.org/legal/epl-v10.html</url>
+            <distribution>repo</distribution>
+            <comments>Standard Eclipse Licence</comments>
+        </license>
+        <license>
+            <name>Eclipse Distribution License v. 1.0</name>
+            <url>http://www.eclipse.org/org/documents/edl-v10.php</url>
+            <distribution>repo</distribution>
+            <comments>Standard Eclipse Distribution License</comments>
+        </license>
+    </licenses>
+
+    <issueManagement>
+        <system>IssueTracker</system>
+        <url>https://github.com/javaee/jpa-spec/issues</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>JPA Specification Group</name>
+            <subscribe>jpa-spec+subscribe@javaee.groups.io</subscribe>
+            <post>jpa-spec@javaee.groups.io</post>
+            <archive>https://javaee.groups.io/g/jpa-spec/topics</archive>
+        </mailingList>
+    </mailingLists>
+
+    <scm>
+        <connection>scm:git:git://github.com/javaee/jpa-spec.git</connection>
+        <developerConnection>scm:git:git@github.com:javaee/jpa-spec.git</developerConnection>
+        <url>https://github.com/javaee/jpa-spec.git</url>
+        <tag>javax.persistence-api-2.2</tag>
+    </scm>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <spec.non.final>false</spec.non.final>
+        <spec.version>2.2</spec.version>
+        <spec.build>01</spec.build>
+        <spec.impl.version>2.2</spec.impl.version>
+        <spec.api.package>javax.persistence</spec.api.package>
+        <spec.new.spec.version>2.3</spec.new.spec.version>
+    </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.0.0-M1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.build</groupId>
+                    <artifactId>spec-version-maven-plugin</artifactId>
+                    <version>1.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.6.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.0.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.0.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.0.0-M1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5.3</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.scm</groupId>
+                            <artifactId>maven-scm-provider-gitexe</artifactId>
+                            <version>1.9.5</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <configuration>
+                    <rules>
+                        <requireJavaVersion>
+                            <version>[1.8,)</version>
+                        </requireJavaVersion>
+                    </rules>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>display-info</goal>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.glassfish.build</groupId>
+                <artifactId>spec-version-maven-plugin</artifactId>
+                <configuration>
+
+web search: 
+web search: site:github.com/javaee/jpa-spec persistence-api 1.0 javax.persistence:persistence-api
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:34:14 GMT
+content-type: application/java-archive
+content-length: 106248
+cf-ray: 9f5816c5ffc3bb0d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1544106
+etag: "eb6c488db142e3f9c10fa8d9bee3c0d7"
+last-modified: Mon, 17 Jul 2006 11:09:04 GMT
+x-checksum-md5: eb6c488db142e3f9c10fa8d9bee3c0d7
+x-checksum-sha1: 2773a7910e8f0c7d59749dc4fcef2a4b94fcf85a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-tests.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 227ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 02 May 2026 15:34:14 GMT
+content-type: text/html
+cf-ray: 9f5816c64f304f9a-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 261ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 02 May 2026 15:34:15 GMT
+content-type: text/html
+cf-ray: 9f5816c68fae24c0-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 349ms:
+HTTP/2 200 
+strict-transport-security: max-age=7776000
+server: Nexus/3.77.2-02 (PRO)
+x-content-type-options: nosniff
+content-security-policy: sandbox allow-forms allow-modals allow-popups allow-presentation allow-scripts allow-top-navigation
+x-xss-protection: 1; mode=block
+etag: "9a7d6f0eea0c767034658f19fd628c0302d7bc82"
+last-modified: Thu, 03 Jul 2025 10:51:58 GMT
+content-type: application/java-archive
+content-length: 408456
+expires: Sat, 02 May 2026 15:34:15 GMT
+cache-control: max-age=0, no-cache, no-store
+pragma: no-cache
+date: Sat, 02 May 2026 15:34:15 GMT
+x-rh-edge-request-id: ad73d91
+x-rh-edge-reference-id: 0.6161502.1777736054.ad73d91
+x-rh-edge-cache-status: NotCacheable from child
+
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-tests.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22javax.persistence%22%20AND%20a:%22persistence-api%22%20AND%20v:%221.0%22&core=gav&rows=20&wt=json'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 273ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+strict-transport-security: max-age=7776000
+server: Nexus/3.77.2-02 (PRO)
+x-content-type-options: nosniff
+content-security-policy: sandbox allow-forms allow-modals allow-popups allow-presentation allow-scripts allow-top-navigation
+x-xss-protection: 1; mode=block
+x-frame-options: DENY
+content-type: text/html
+content-length: 1
+expires: Sat, 02 May 2026 15:34:19 GMT
+cache-control: max-age=0, no-cache, no-store
+pragma: no-cache
+date: Sat, 02 May 2026 15:34:19 GMT
+x-rh-edge-request-id: 1f51957
+x-rh-edge-reference-id: 0.67f90a17.1777736059.1f51957
+x-rh-edge-cache-status: NotCacheable from child
+
+
+ succeeded in 326ms:
+{"responseHeader":{"status":0,"QTime":1,"params":{"q":"g:\"javax.persistence\" AND a:\"persistence-api\" AND v:\"1.0\"","core":"gav","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"javax.persistence:persistence-api:1.0","g":"javax.persistence","a":"persistence-api","v":"1.0","p":"jar","timestamp":1156276152000,"ec":["-sources.jar",".jar",".pom"],"tags":["development","reducing","complexity","javabeans","enterprise","from","architecture","purpose","improve","business","point","component","developer","applications","deployment","view","based"]}]}}
+ succeeded in 459ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+strict-transport-security: max-age=7776000
+server: Nexus/3.77.2-02 (PRO)
+x-content-type-options: nosniff
+content-security-policy: sandbox allow-forms allow-modals allow-popups allow-presentation allow-scripts allow-top-navigation
+x-xss-protection: 1; mode=block
+x-frame-options: DENY
+content-type: text/html
+content-length: 1
+expires: Sat, 02 May 2026 15:34:19 GMT
+cache-control: max-age=0, no-cache, no-store
+pragma: no-cache
+date: Sat, 02 May 2026 15:34:19 GMT
+x-rh-edge-request-id: 1f51958
+x-rh-edge-reference-id: 0.67f90a17.1777736059.1f51958
+x-rh-edge-cache-status: NotCacheable from child
+
+
+codex
+The Maven Central artifact exposes only `-sources.jar`, the main jar, and the POM; no `-tests.jar` and no Central `-javadoc.jar`. A JBoss Maven repository has a `1.0` javadoc jar, so I’m using that for documentation and leaving tests as `N/A`.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/persistence-api-1.0.jar" https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0.jar; jar tf "$tmp/persistence-api-1.0.jar" | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/LICENSE.txt
+javax/
+javax/persistence/
+javax/persistence/AssociationOverride.class
+javax/persistence/AssociationOverrides.class
+javax/persistence/AttributeOverride.class
+javax/persistence/AttributeOverrides.class
+javax/persistence/Basic.class
+javax/persistence/CascadeType.class
+javax/persistence/Column.class
+javax/persistence/ColumnResult.class
+javax/persistence/DiscriminatorColumn.class
+javax/persistence/DiscriminatorType.class
+javax/persistence/DiscriminatorValue.class
+javax/persistence/Embeddable.class
+javax/persistence/Embedded.class
+javax/persistence/EmbeddedId.class
+javax/persistence/Entity.class
+javax/persistence/EntityExistsException.class
+javax/persistence/EntityListeners.class
+javax/persistence/EntityManager.class
+javax/persistence/EntityManagerFactory.class
+javax/persistence/EntityNotFoundException.class
+javax/persistence/EntityResult.class
+javax/persistence/EntityTransaction.class
+javax/persistence/EnumType.class
+javax/persistence/Enumerated.class
+javax/persistence/ExcludeDefaultListeners.class
+javax/persistence/ExcludeSuperclassListeners.class
+javax/persistence/FetchType.class
+javax/persistence/FieldResult.class
+javax/persistence/FlushModeType.class
+javax/persistence/GeneratedValue.class
+javax/persistence/GenerationType.class
+javax/persistence/Id.class
+javax/persistence/IdClass.class
+javax/persistence/Inheritance.class
+javax/persistence/InheritanceType.class
+javax/persistence/JoinColumn.class
+javax/persistence/JoinColumns.class
+javax/persistence/JoinTable.class
+javax/persistence/Lob.class
+javax/persistence/LockModeType.class
+javax/persistence/ManyToMany.class
+javax/persistence/ManyToOne.class
+javax/persistence/MapKey.class
+javax/persistence/MappedSuperclass.class
+javax/persistence/NamedNativeQueries.class
+javax/persistence/NamedNativeQuery.class
+javax/persistence/NamedQueries.class
+javax/persistence/NamedQuery.class
+javax/persistence/NoResultException.class
+javax/persistence/NonUniqueResultException.class
+javax/persistence/OneToMany.class
+javax/persistence/OneToOne.class
+javax/persistence/OptimisticLockException.class
+javax/persistence/OrderBy.class
+javax/persistence/Persistence.class
+javax/persistence/PersistenceContext.class
+javax/persistence/PersistenceContextType.class
+javax/persistence/PersistenceContexts.class
+javax/persistence/PersistenceException.class
+javax/persistence/PersistenceProperty.class
+javax/persistence/PersistenceUnit.class
+javax/persistence/PersistenceUnits.class
+javax/persistence/PostLoad.class
+javax/persistence/PostPersist.class
+javax/persistence/PostRemove.class
+javax/persistence/PostUpdate.class
+javax/persistence/PrePersist.class
+javax/persistence/PreRemove.class
+javax/persistence/PreUpdate.class
+javax/persistence/PrimaryKeyJoinColumn.class
+javax/persistence/PrimaryKeyJoinColumns.class
+javax/persistence/Query.class
+javax/persistence/QueryHint.class
+javax/persistence/RollbackException.class
+javax/persistence/SecondaryTable.class
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/persistence-api-1.0-sources.jar" https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-sources.jar; jar tf "$tmp/persistence-api-1.0-sources.jar" | sed -n '"'1,100p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+javax/
+javax/persistence/
+javax/persistence/AssociationOverride.java
+javax/persistence/AssociationOverrides.java
+javax/persistence/AttributeOverride.java
+javax/persistence/AttributeOverrides.java
+javax/persistence/Basic.java
+javax/persistence/CascadeType.java
+javax/persistence/Column.java
+javax/persistence/ColumnResult.java
+javax/persistence/DiscriminatorColumn.java
+javax/persistence/DiscriminatorType.java
+javax/persistence/DiscriminatorValue.java
+javax/persistence/Embeddable.java
+javax/persistence/Embedded.java
+javax/persistence/EmbeddedId.java
+javax/persistence/Entity.java
+javax/persistence/EntityExistsException.java
+javax/persistence/EntityListeners.java
+javax/persistence/EntityManager.java
+javax/persistence/EntityManagerFactory.java
+javax/persistence/EntityNotFoundException.java
+javax/persistence/EntityResult.java
+javax/persistence/EntityTransaction.java
+javax/persistence/EnumType.java
+javax/persistence/Enumerated.java
+javax/persistence/ExcludeDefaultListeners.java
+javax/persistence/ExcludeSuperclassListeners.java
+javax/persistence/FetchType.java
+javax/persistence/FieldResult.java
+javax/persistence/FlushModeType.java
+javax/persistence/GeneratedValue.java
+javax/persistence/GenerationType.java
+javax/persistence/Id.java
+javax/persistence/IdClass.java
+javax/persistence/Inheritance.java
+javax/persistence/InheritanceType.java
+javax/persistence/JoinColumn.java
+javax/persistence/JoinColumns.java
+javax/persistence/JoinTable.java
+javax/persistence/Lob.java
+javax/persistence/LockModeType.java
+javax/persistence/ManyToMany.java
+javax/persistence/ManyToOne.java
+javax/persistence/MapKey.java
+javax/persistence/MappedSuperclass.java
+javax/persistence/NamedNativeQueries.java
+javax/persistence/NamedNativeQuery.java
+javax/persistence/NamedQueries.java
+javax/persistence/NamedQuery.java
+javax/persistence/NoResultException.java
+javax/persistence/NonUniqueResultException.java
+javax/persistence/OneToMany.java
+javax/persistence/OneToOne.java
+javax/persistence/OptimisticLockException.java
+javax/persistence/OrderBy.java
+javax/persistence/Persistence.java
+javax/persistence/PersistenceContext.java
+javax/persistence/PersistenceContextType.java
+javax/persistence/PersistenceContexts.java
+javax/persistence/PersistenceException.java
+javax/persistence/PersistenceProperty.java
+javax/persistence/PersistenceUnit.java
+javax/persistence/PersistenceUnits.java
+javax/persistence/PostLoad.java
+javax/persistence/PostPersist.java
+javax/persistence/PostRemove.java
+javax/persistence/PostUpdate.java
+javax/persistence/PrePersist.java
+javax/persistence/PreRemove.java
+javax/persistence/PreUpdate.java
+javax/persistence/PrimaryKeyJoinColumn.java
+javax/persistence/PrimaryKeyJoinColumns.java
+javax/persistence/Query.java
+javax/persistence/QueryHint.java
+javax/persistence/RollbackException.java
+javax/persistence/SecondaryTable.java
+javax/persistence/SecondaryTables.java
+javax/persistence/SequenceGenerator.java
+javax/persistence/SqlResultSetMapping.java
+javax/persistence/SqlResultSetMappings.java
+javax/persistence/Table.java
+javax/persistence/TableGenerator.java
+javax/persistence/Temporal.java
+javax/persistence/TemporalType.java
+javax/persistence/TransactionRequiredException.java
+javax/persistence/Transient.java
+javax/persistence/UniqueConstraint.java
+javax/persistence/Version.java
+javax/persistence/spi/
+javax/persistence/spi/ClassTransformer.java
+javax/persistence/spi/PersistenceProvider.java
+javax/persistence/spi/PersistenceUnitInfo.java
+javax/persistence/spi/PersistenceUnitTransactionType.java
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/javaee/jpa-spec/master/README.md | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 195ms:
+#### :warning:This project is now part of the EE4J initiative. This repository has been archived as all activities are now happening in the [corresponding Eclipse repository](https://github.com/eclipse-ee4j/jpa-api). See [here](https://www.eclipse.org/ee4j/status.php) for the overall EE4J transition status.
+ 
+---
+# Java Persistence API specification
+
+This is collaboration repository for JSR 338: Java Persistence 2.1: https://www.jcp.org/en/jsr/detail?id=338
+
+For specification related discussions join https://javaee.groups.io/g/jpa-spec
+
+Latest version of the specification: [JavaPersistence.pdf](jsr338-MR/JavaPersistence.pdf)
+
+Latest version of the XML schema for persitence.xml: [persistence_2_2.xsd](jsr338-MR/persistence_2_2.xsd)
+
+Reference of the API defined by the specification and full reference implementation of the specification are available
+through the [EclipseLink project](eclipselink.org) with sources of the API available at: https://github.com/eclipse/javax.persistence
+and of the RI at: https://github.com/eclipse/eclipselink.runtime
+
+Latest version of the javadoc: https://javadoc.io/doc/org.eclipse.persistence/javax.persistence/2.2.0
+
+
+web search: 
+web search: github eclipse javax.persistence 1.0 persistence-api javax.persistence:persistence-api
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/persistence/persistence-api/maven-metadata.xml' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+<!-- manually fixed by juven@sonatype.com -->
+  <groupId>javax.persistence</groupId>
+  <artifactId>persistence-api</artifactId>
+  <versioning>
+    <latest>1.0.2</latest>
+    <release>1.0.2</release>
+    <versions>
+      <version>1.0-rev-1</version>
+      <version>1.0b</version>
+      <version>1.0</version>
+      <version>1.0.2</version>
+    </versions>
+    <lastUpdated>20110815192723</lastUpdated>
+  </versioning>
+</metadata>
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://javadoc.io/doc/javax.persistence/persistence-api/1.0/index.html | sed -n '1,30p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://javadoc.io/doc/javax.persistence/persistence-api/1.0 | sed -n '1,30p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 126ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:34:34 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/javax.persistence/persistence-api/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=QCGO9eW82EpmoHX695Doebas4yPnEPWdlBYGJRomRzXE7TyHYpnNgWN5317TRITt3JKX5BDdfWFCJYMTnVUagGEOAuKnZP3UPuH8oKgePZk%2F9ln%2FgsBrwAi1syZy4UWyBIGlRlVPV%2BwK"}]}
+server: cloudflare
+cf-ray: 9f58174228a9bc6c-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 237ms:
+HTTP/2 303 
+date: Sat, 02 May 2026 15:34:34 GMT
+content-length: 0
+location: /doc/javax.persistence/persistence-api/1.0/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=ClBQgyMsTZm1wAwNyvKEHfEd0DH4gJLp7BPkbfuvGXCWbwNE11CMvT%2Bzlav%2B2w6FsKFjD5ctUYzJt%2FMOjxRDGFXMPSelvD9O7JpWuVOH9S%2ByBNML4LCCn3Zsyzm44xbr7cbgUg4lKwaf"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f581742381cbc0e-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 02 May 2026 15:34:34 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/javax.persistence/persistence-api/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=1kBSbiLi0lhbbyNqGoxnLwts%2Bl1AcH0FY3PZ84gxpdN0mmlX3oVmTI9LVPCxf8HtZlIWB3tkh9NFntn0AKCQE3EkeFtbbVin%2BVWFqvPLz2TRb3b4cc87EH4l5OmFGIfQlJLkb3iH3zMa"}]}
+server: cloudflare
+cf-ray: 9f581742f8aabc0e-ZRH
+
+web search: 
+web search: "javax.persistence" "persistence-api" "1.0" "scm"
+exec
+/usr/bin/bash -lc "rg -n 'discovered-artifact-metadata|discovered' . --glob '"'!build/**'"' -S" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+./skills/review-fixes-javac-fail/SKILL.md:19:- Native-image execution should remain enabled by default when the repaired test reaches the native lane. Do not accept changes that skip or short-circuit native-image behavior. When a test exercises behavior that fundamentally relies on open-ended dynamic class loading that native image cannot support, such as loading classes, JARs, generated bytecode, plugin implementations, or other class definitions that are only discovered after the native executable is built, accept the `NativeImageSupport.isUnsupportedFeatureError(e)` catch pattern from `org.graalvm.internal.tck`. Reject raw native-only skips, bare `catch (Error)` blocks, and use of this pattern for ordinary reflection, resources, serialization, dynamic proxies, JNI, or missing reachability metadata.
+./skills/review-fixes-javac-fail/SKILL.md:154:        // Expected: Native Image cannot load generated classes discovered after build.
+./skills/review-library-new-request/SKILL.md:19:- Tests should execute under native image by default. Do not accept tests that disable themselves under native image. When a test exercises behavior that fundamentally relies on open-ended dynamic class loading that native image cannot support, such as loading classes, JARs, generated bytecode, plugin implementations, or other class definitions that are only discovered after the native executable is built, accept the `NativeImageSupport.isUnsupportedFeatureError(e)` catch pattern from `org.graalvm.internal.tck`. Reject raw native-only skips, bare `catch (Error)` blocks, and use of this pattern for ordinary reflection, resources, serialization, dynamic proxies, JNI, or missing reachability metadata.
+./skills/review-library-new-request/SKILL.md:163:        // Expected: Native Image cannot load classes from JARs discovered after build.
+./docs/CollectingMetadata.md:2:When the repository doesn’t have reachability metadata for a library you are using, the easiest way to generate it is to execute the test suite of the library with the Native Image Agent enabled. The agent is installed together with native-image and can be used to identify elements used during application execution that cannot be discovered by static analysis.
+./forge/utility_scripts/native_image_artifact.py:34:    return os.path.join(repo_path, "build", "discovered-artifact-metadata", f"{sanitized}.json")
+./forge/utility_scripts/native_image_artifact.py:37:def load_discovered_eligibility(repo_path: str, coordinate: str) -> NativeImageEligibility:
+./forge/utility_scripts/native_image_artifact.py:58:    discovered = load_discovered_eligibility(repo_path, coordinate)
+./forge/utility_scripts/native_image_artifact.py:59:    if discovered.not_for_native_image:
+./forge/utility_scripts/native_image_artifact.py:60:        return discovered
+./forge/utility_scripts/source_context.py:193:    log_stage("discover-artifact-metadata", f"Artifact metadata discovered for {coordinate}")
+./skills/review-fixes-java-run-fail/SKILL.md:19:- Native-image execution should remain enabled by default when the repaired test reaches the native lane. Do not accept changes that skip or short-circuit native-image behavior. When a test exercises behavior that fundamentally relies on open-ended dynamic class loading that native image cannot support, such as loading classes, JARs, generated bytecode, plugin implementations, or other class definitions that are only discovered after the native executable is built, accept the `NativeImageSupport.isUnsupportedFeatureError(e)` catch pattern from `org.graalvm.internal.tck`. Reject raw native-only skips, bare `catch (Error)` blocks, and use of this pattern for ordinary reflection, resources, serialization, dynamic proxies, JNI, or missing reachability metadata.
+./skills/review-fixes-java-run-fail/SKILL.md:163:        // Expected: Native Image cannot load plugin JARs discovered after build.
+./forge/prompt_templates/initial/basic_initial.md:19:- When a test exercises behavior that fundamentally requires open-ended dynamic class loading that Native Image cannot support, such as loading classes, JARs, generated bytecode, plugin implementations, or other class definitions that are only discovered after the native executable is built, catch `Error`, verify it with `NativeImageSupport.isUnsupportedFeatureError(e)` from `org.graalvm.internal.tck`, and re-throw if it does not match. This proves Native Image fails for the right reason instead of skipping the test.
+./forge/prompt_templates/dynamic_access/dynamic-access-iteration.md:36:- When a test exercises behavior that fundamentally requires open-ended dynamic class loading that Native Image cannot support, such as loading classes, JARs, generated bytecode, plugin implementations, or other class definitions that are only discovered after the native executable is built, catch `Error`, verify it with `NativeImageSupport.isUnsupportedFeatureError(e)` from `org.graalvm.internal.tck`, and re-throw if it does not match. This proves Native Image fails for the right reason instead of skipping the test.
+./forge/prompt_templates/dynamic_access/optimistic-dynamic-access-iteration.md:32:- When a test exercises behavior that fundamentally requires open-ended dynamic class loading that Native Image cannot support, such as loading classes, JARs, generated bytecode, plugin implementations, or other class definitions that are only discovered after the native executable is built, catch `Error`, verify it with `NativeImageSupport.isUnsupportedFeatureError(e)` from `org.graalvm.internal.tck`, and re-throw if it does not match. This proves Native Image fails for the right reason instead of skipping the test.
+./forge/ai_workflows/workflow_strategies/workflow_strategy.py:40:    Strategies are discovered via a class-level registry. Use the
+./forge/ai_workflows/agents/agent.py:22:    Agents are discovered via a class-level registry. Use the ``@Agent.register``
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:12:import org.graalvm.internal.tck.model.DiscoveredArtifactMetadata;
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:24:    private static final String DISCOVERY_DIR = "discovered-artifact-metadata";
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:41:        writeDiscoveryFile(discoveryFile, new DiscoveredArtifactMetadata(
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:55:    public static void writeDiscoveryFile(Path discoveryFile, DiscoveredArtifactMetadata metadata) throws IOException {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:64:    public static DiscoveredArtifactMetadata readDiscoveryFile(Path discoveryFile) throws IOException {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:65:        return OBJECT_MAPPER.readValue(discoveryFile.toFile(), DiscoveredArtifactMetadata.class);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:12: * Build-local discovered metadata for a single library coordinate.
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:14:public record DiscoveredArtifactMetadata(
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:15:import org.graalvm.internal.tck.model.DiscoveredArtifactMetadata;
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:103:        DiscoveredArtifactMetadata discoveredMetadata = loadDiscoveredArtifactMetadata(coordinates);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:105:        LibraryLanguage entryLanguage = resolveEntryLanguage(discoveredMetadata, existingEntries);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:116:                updateCoordinatesMetadataRootJson(coordinatesMetadataRoot, coordinates, packageRoots, discoveredMetadata, entryLanguage);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:119:            writeCoordinatesMetadataRootJson(coordinatesMetadataRoot, coordinates, packageRoots, discoveredMetadata, entryLanguage);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:206:    private void writeCoordinatesMetadataRootJson(Path metadataRoot, Coordinates coordinates, List<String> packageRoots, DiscoveredArtifactMetadata discoveredMetadata, LibraryLanguage language) throws IOException {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:208:        entries.add(createIndexEntry(coordinates, packageRoots, discoveredMetadata, language, true));
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:212:    private void updateCoordinatesMetadataRootJson(Path metadataRoot, Coordinates coordinates, List<String> packageRoots, DiscoveredArtifactMetadata discoveredMetadata, LibraryLanguage language) throws IOException {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:221:        MetadataVersionsIndexEntry newEntry = createIndexEntry(coordinates, packageRoots, discoveredMetadata, language, false);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:306:    private DiscoveredArtifactMetadata loadDiscoveredArtifactMetadata(Coordinates coordinates) throws IOException {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:311:        DiscoveredArtifactMetadata metadata = ArtifactMetadataDiscoveryUtils.readDiscoveryFile(discoveryFile);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:318:    private LibraryLanguage resolveEntryLanguage(DiscoveredArtifactMetadata discoveredMetadata, List<MetadataVersionsIndexEntry> existingEntries) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:319:        if (discoveredMetadata != null && discoveredMetadata.language() != null) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:320:            return discoveredMetadata.language();
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:330:    private MetadataVersionsIndexEntry createIndexEntry(Coordinates coordinates, List<String> packageRoots, DiscoveredArtifactMetadata discoveredMetadata, LibraryLanguage language, boolean latest) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:337:                discoveredMetadata == null ? null : discoveredMetadata.sourceCodeUrl(),
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:338:                discoveredMetadata == null ? null : discoveredMetadata.repositoryUrl(),
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:339:                discoveredMetadata == null ? null : discoveredMetadata.testCodeUrl(),
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:340:                discoveredMetadata == null ? null : discoveredMetadata.documentationUrl(),
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:341:                discoveredMetadata == null ? null : discoveredMetadata.description(),
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:16:import org.graalvm.internal.tck.model.DiscoveredArtifactMetadata;
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:93:            getLogger().lifecycle("Skipping {} because discovered metadata already exists at {}.", coordinates, discoveryFile);
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:125:                throw new GradleException("Expected discovered metadata file was not created: " + discoveryFile);
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:128:            DiscoveredArtifactMetadata metadata = ArtifactMetadataDiscoveryUtils.readDiscoveryFile(discoveryFile);
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:130:                throw new GradleException("Discovered metadata file " + discoveryFile + " has unexpected coordinates: " + metadata.coordinates());
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:173:                - Set "repository-url" to the discovered repository root URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:174:                - Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "%s".
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:11:import org.graalvm.internal.tck.model.DiscoveredArtifactMetadata;
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:165:    void runUsesDiscoveredKotlinScaffoldAndSeedsIndexEntry() throws IOException {
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:172:        writeDiscoveredArtifactMetadata(project, new DiscoveredArtifactMetadata(
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:213:    void runUsesDiscoveredGroovyScaffoldAndSeedsIndexEntry() throws IOException {
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:220:        writeDiscoveredArtifactMetadata(project, new DiscoveredArtifactMetadata(
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:262:    void runUsesDiscoveredScala3Scaffold() throws IOException {
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:269:        writeDiscoveredArtifactMetadata(project, new DiscoveredArtifactMetadata(
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:298:    void runUsesDiscoveredScala2Scaffold() throws IOException {
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:305:        writeDiscoveredArtifactMetadata(project, new DiscoveredArtifactMetadata(
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:618:    private void writeDiscoveredArtifactMetadata(Project project, DiscoveredArtifactMetadata metadata) throws IOException {
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:57:                .contains("Set \"source-code-url\", \"test-code-url\", and \"documentation-url\" to the discovered values with \"$version$\" replacing version \"3.1.0\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:58:                .contains("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:71:        Path discoveryFile = tempDir.resolve("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+./metadata/org.eclipse.jdt.core.compiler/ecj/4.5/reachability-metadata.json:3030:      "glob" : "org_eclipse_jdt_core_compiler/ecj/BatchAnnotationProcessorManagerTest$ServiceDiscoveredProcessor.class"
+./metadata/org.eclipse.jdt.core.compiler/ecj/4.4.2/reachability-metadata.json:3003:      "glob" : "org_eclipse_jdt_core_compiler/ecj/BatchAnnotationProcessorManagerTest$ServiceDiscoveredProcessor.class"
+./tests/src/javax.validation/validation-api/2.0.0.Final/src/test/java/javax_validation/validation_api/ValidationInnerDefaultValidationProviderResolverTest.java:53:            assertDiscoveredProvider(configuration);
+./tests/src/javax.validation/validation-api/2.0.0.Final/src/test/java/javax_validation/validation_api/ValidationInnerDefaultValidationProviderResolverTest.java:70:            assertDiscoveredProvider(configuration);
+./tests/src/javax.validation/validation-api/2.0.0.Final/src/test/java/javax_validation/validation_api/ValidationInnerDefaultValidationProviderResolverTest.java:95:    private static void assertDiscoveredProvider(TestValidationConfiguration configuration) {
+./tests/src/javax.validation/validation-api/1.0.0.GA/src/test/java/javax_validation/validation_api/ValidationInnerDefaultValidationProviderResolverTest.java:49:            assertDiscoveredProvider(configuration);
+./tests/src/javax.validation/validation-api/1.0.0.GA/src/test/java/javax_validation/validation_api/ValidationInnerDefaultValidationProviderResolverTest.java:66:            assertDiscoveredProvider(configuration);
+./tests/src/javax.validation/validation-api/1.0.0.GA/src/test/java/javax_validation/validation_api/ValidationInnerDefaultValidationProviderResolverTest.java:91:    private static void assertDiscoveredProvider(TestValidationConfiguration configuration) {
+./tests/src/javax.validation/validation-api/1.1.0.Final/src/test/java/javax_validation/validation_api/ValidationInnerDefaultValidationProviderResolverTest.java:51:            assertDiscoveredProvider(configuration);
+./tests/src/javax.validation/validation-api/1.1.0.Final/src/test/java/javax_validation/validation_api/ValidationInnerDefaultValidationProviderResolverTest.java:68:            assertDiscoveredProvider(configuration);
+./tests/src/javax.validation/validation-api/1.1.0.Final/src/test/java/javax_validation/validation_api/ValidationInnerDefaultValidationProviderResolverTest.java:93:    private static void assertDiscoveredProvider(TestValidationConfiguration configuration) {
+./tests/src/org.eclipse.jdt.core.compiler/ecj/4.4.2/src/test/resources/META-INF/native-image/reachability-metadata.json:51:      "type" : "org_eclipse_jdt_core_compiler.ecj.BatchAnnotationProcessorManagerTest$ServiceDiscoveredProcessor"
+./tests/src/org.eclipse.jdt.core.compiler/ecj/4.4.2/src/test/java/org_eclipse_jdt_core_compiler/ecj/BatchAnnotationProcessorManagerTest.java:47:    private static final String SERVICE_DISCOVERED_PROCESSOR =
+./tests/src/org.eclipse.jdt.core.compiler/ecj/4.4.2/src/test/java/org_eclipse_jdt_core_compiler/ecj/BatchAnnotationProcessorManagerTest.java:48:            "org_eclipse_jdt_core_compiler.ecj.BatchAnnotationProcessorManagerTest$ServiceDiscoveredProcessor";
+./tests/src/org.eclipse.jdt.core.compiler/ecj/4.4.2/src/test/java/org_eclipse_jdt_core_compiler/ecj/BatchAnnotationProcessorManagerTest.java:72:                    SERVICE_DISCOVERED_PROCESSOR,
+./tests/src/org.eclipse.jdt.core.compiler/ecj/4.4.2/src/test/java/org_eclipse_jdt_core_compiler/ecj/BatchAnnotationProcessorManagerTest.java:77:            assertThat(result.getCompilerOutput()).contains("Discovered processor service");
+./tests/src/org.eclipse.jdt.core.compiler/ecj/4.4.2/src/test/java/org_eclipse_jdt_core_compiler/ecj/BatchAnnotationProcessorManagerTest.java:78:            assertThat(result.getCompilerOutput()).contains(SERVICE_DISCOVERED_PROCESSOR);
+./tests/src/org.eclipse.jdt.core.compiler/ecj/4.4.2/src/test/java/org_eclipse_jdt_core_compiler/ecj/BatchAnnotationProcessorManagerTest.java:80:                    .isEqualTo(SERVICE_DISCOVERED_PROCESSOR);
+./tests/src/org.eclipse.jdt.core.compiler/ecj/4.4.2/src/test/java/org_eclipse_jdt_core_compiler/ecj/BatchAnnotationProcessorManagerTest.java:247:    public static class ServiceDiscoveredProcessor extends MarkerProcessor {
+./tests/src/org.eclipse.jdt.core.compiler/ecj/4.4.2/src/test/java/org_eclipse_jdt_core_compiler/ecj/BatchAnnotationProcessorManagerTest.java:248:        public ServiceDiscoveredProcessor() {
+./metadata/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/index.json:9:    "description" : "This library defines service provider interfaces for customizing OpenTelemetry Java SDK auto-configuration. It lets extensions contribute configuration properties, resource providers, propagators, exporters, samplers, and tracer provider configuration hooks that are discovered by the autoconfigure module.",
+./tests/src/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/2.13.5/src/test/java/com_fasterxml_jackson_datatype/jackson_datatype_jdk8/Jackson_datatype_jdk8Test.java:223:        Optional<String> value = Optional.of("auto-discovered");
+./tests/src/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/2.13.5/src/test/java/com_fasterxml_jackson_datatype/jackson_datatype_jdk8/Jackson_datatype_jdk8Test.java:228:        assertThat(json).isEqualTo("\"auto-discovered\"");
+./tests/src/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/2.13.5/src/test/java/com_fasterxml_jackson_datatype/jackson_datatype_jdk8/Jackson_datatype_jdk8Test.java:229:        assertThat(mapper.readValue(json, optionalStringType)).contains("auto-discovered");
+./metadata/org.apache.geronimo.specs/geronimo-osgi-registry/index.json:9:    "description" : "Geronimo OSGi Registry provides an extender that lets Geronimo specification provider bundles register factory implementations discovered through service metadata. It maintains a registry that spec bundles can use to locate factory classes supplied by other OSGi bundles.",
+./metadata/org.eclipse.jdt/ecj/3.27.0/reachability-metadata.json:4694:      "glob" : "org_eclipse_jdt/ecj/BatchAnnotationProcessorManagerTest$ServiceDiscoveredProcessor.class"
+./metadata/org.eclipse.jdt/ecj/3.28.0/reachability-metadata.json:4766:      "glob" : "org_eclipse_jdt/ecj/BatchAnnotationProcessorManagerTest$ServiceDiscoveredProcessor.class"
+./metadata/org.eclipse.jdt/ecj/3.26.0/reachability-metadata.json:4665:      "glob" : "org_eclipse_jdt/ecj/BatchAnnotationProcessorManagerTest$ServiceDiscoveredProcessor.class"
+./tests/src/org.apache.velocity/velocity-engine-core/2.3/src/test/java/org_apache_velocity/velocity_engine_core/PropertyExecutorTest.java:22:    void invokesDiscoveredGetterMethod() throws Exception {
+./tests/src/org.apache.velocity/velocity-engine-core/2.3/src/test/java/org_apache_velocity/velocity_engine_core/SetPropertyExecutorTest.java:23:    void invokesDiscoveredSetterMethod() throws Exception {
+./tests/src/org.scala-sbt/test-interface/1.0/src/test/scala/org_scala_sbt/test_interface/Test_interfaceTest.scala:346:  private final class RecordingModernFramework(discoveredFingerprints: Array[Fingerprint]) extends Framework {
+./tests/src/org.scala-sbt/test-interface/1.0/src/test/scala/org_scala_sbt/test_interface/Test_interfaceTest.scala:349:    override def fingerprints(): Array[Fingerprint] = discoveredFingerprints
+./tests/src/org.scala-sbt/test-interface/1.0/src/test/scala/org_scala_sbt/test_interface/Test_interfaceTest.scala:480:    discoveredFingerprints: Array[org.scalatools.testing.Fingerprint],
+./tests/src/org.scala-sbt/test-interface/1.0/src/test/scala/org_scala_sbt/test_interface/Test_interfaceTest.scala:485:    override def tests(): Array[org.scalatools.testing.Fingerprint] = discoveredFingerprints
+./tests/src/org.mongodb/mongo-java-driver/3.4.0/src/test/java/org_mongodb/mongo_java_driver/WriteConcernTest.java:20:    void namedWriteConcernsAreDiscoveredCaseInsensitively() {
+./tests/src/org.mongodb/mongo-java-driver/3.9.0/src/test/java/org_mongodb/mongo_java_driver/WriteConcernTest.java:20:    void namedWriteConcernsAreDiscoveredCaseInsensitively() {
+./tests/src/org.eclipse.jdt/ecj/3.26.0/src/test/resources/META-INF/native-image/reachability-metadata.json:51:      "type" : "org_eclipse_jdt.ecj.BatchAnnotationProcessorManagerTest$ServiceDiscoveredProcessor"
+./tests/src/org.eclipse.jdt/ecj/3.26.0/src/test/java/org_eclipse_jdt/ecj/BatchAnnotationProcessorManagerTest.java:47:    private static final String SERVICE_DISCOVERED_PROCESSOR =
+./tests/src/org.eclipse.jdt/ecj/3.26.0/src/test/java/org_eclipse_jdt/ecj/BatchAnnotationProcessorManagerTest.java:48:            "org_eclipse_jdt.ecj.BatchAnnotationProcessorManagerTest$ServiceDiscoveredProcessor";
+./tests/src/org.eclipse.jdt/ecj/3.26.0/src/test/java/org_eclipse_jdt/ecj/BatchAnnotationProcessorManagerTest.java:72:                    SERVICE_DISCOVERED_PROCESSOR,
+./tests/src/org.eclipse.jdt/ecj/3.26.0/src/test/java/org_eclipse_jdt/ecj/BatchAnnotationProcessorManagerTest.java:77:            assertThat(result.getCompilerOutput()).contains("Discovered processor service");
+./tests/src/org.eclipse.jdt/ecj/3.26.0/src/test/java/org_eclipse_jdt/ecj/BatchAnnotationProcessorManagerTest.java:78:            assertThat(result.getCompilerOutput()).contains(SERVICE_DISCOVERED_PROCESSOR);
+./tests/src/org.eclipse.jdt/ecj/3.26.0/src/test/java/org_eclipse_jdt/ecj/BatchAnnotationProcessorManagerTest.java:80:                    .isEqualTo(SERVICE_DISCOVERED_PROCESSOR);
+./tests/src/org.eclipse.jdt/ecj/3.26.0/src/test/java/org_eclipse_jdt/ecj/BatchAnnotationProcessorManagerTest.java:247:    public static class ServiceDiscoveredProcessor extends MarkerProcessor {
+./tests/src/org.eclipse.jdt/ecj/3.26.0/src/test/java/org_eclipse_jdt/ecj/BatchAnnotationProcessorManagerTest.java:248:        public ServiceDiscoveredProcessor() {
+./tests/src/tools.jackson.core/jackson-core/3.0.0/src/test/java/tools_jackson_core/jackson_core/VersionUtilTest.java:20:        Version discoveredVersion = VersionUtil.versionFor(JsonFactory.class);
+./tests/src/tools.jackson.core/jackson-core/3.0.0/src/test/java/tools_jackson_core/jackson_core/VersionUtilTest.java:23:        assertThat(discoveredVersion.isUnknownVersion()).isFalse();
+./tests/src/tools.jackson.core/jackson-core/3.0.0/src/test/java/tools_jackson_core/jackson_core/VersionUtilTest.java:24:        assertThat(discoveredVersion).isEqualTo(factoryVersion);
+./tests/src/io.netty/netty-common/4.1.79.Final/src/test/java/io_netty/netty_common/VersionTest.java:30:        Assertions.assertFalse(versions.isEmpty(), "Expected Netty version metadata to be discovered");
+
+exec
+/usr/bin/bash -lc "rg -n 'repository-url|source-code-url|documentation-url|test-code-url|not-for-native-image' build.gradle settings.gradle gradle src tests -S" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ exited 2 in 0ms:
+rg: src: No such file or directory (os error 2)
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:248:            throw new GradleException("Cannot mark a new version latest for not-for-native-image artifact: " + newCoords.group() + ":" + newCoords.artifact());
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:305:                null, // source-code-url
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:306:                null, // repository-url
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:307:                null, // test-code-url
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:308:                null, // documentation-url
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:315:                null, // not-for-native-image
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:136:            throw new IllegalStateException("Cannot add tested versions to not-for-native-image artifact: " + coordinatesMetadataIndex);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:227:                promoteUrl("source-code-url", entry.sourceCodeUrl(), oldVersion, newVersion, UrlVerification.ARCHIVE_WITH_SOURCES),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:228:                promoteUrl("test-code-url", entry.testCodeUrl(), oldVersion, newVersion, UrlVerification.TEST_CODE),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:229:                promoteUrl("documentation-url", entry.documentationUrl(), oldVersion, newVersion, UrlVerification.RESOLVES)
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:27:        @JsonProperty("source-code-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:29:        @JsonProperty("repository-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:31:        @JsonProperty("test-code-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:33:        @JsonProperty("documentation-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:47:        @JsonProperty("not-for-native-image")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:16:        @JsonProperty("source-code-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:18:        @JsonProperty("repository-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:20:        @JsonProperty("test-code-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:22:        @JsonProperty("documentation-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:28:        @JsonProperty("not-for-native-image")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:100:            throw new IllegalStateException("Artifact '%s:%s' is marked not-for-native-image. Remove the marker before scaffolding Native Image metadata.".formatted(coordinates.group(), coordinates.artifact()));
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:347:                null, // not-for-native-image
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:296:    task.setDescription("Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:96:    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, description, and language when those fields already contain values.")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:106:    @Option(option = "verify-artifact-sources", description = "Require source/test-source validation before selecting source-code-url or test-code-url values.")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:304:                - source-code-url: %s
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:305:                - repository-url: %s
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:306:                - test-code-url: %s
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:307:                - documentation-url: %s
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:356:                    - Set "source-code-url" to the selected source URL with "$version$" replacing version "%s".
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:357:                    - Set "repository-url" to the selected repository URL.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:358:                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:359:                    - Set "test-code-url" to the selected test suite URL with "$version$" replacing version "%s".
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:360:                    - Set "documentation-url" to the selected project documentation URL with "$version$" replacing version "%s".
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:361:                    - Treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:370:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:373:                - Set missing "source-code-url" to the selected source URL with "$version$" replacing version "%s".
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:374:                - Set missing "repository-url" to the selected repository URL.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:375:                - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:376:                - Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "%s".
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:377:                - Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "%s".
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:378:                - When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:161:                Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:162:                If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:163:                If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:173:                - Set "repository-url" to the discovered repository root URL.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:174:                - Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "%s".
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:177:                - Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:211:                    .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-sources.jar")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:212:                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:213:            assertThat(indexEntries.get(0)).containsEntry("test-code-url", "N/A");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:252:                    .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-sources.jar")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:253:                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:288:                    .containsEntry("test-code-url", baseUrl + "/svn/demo/tags/$version$/src/test");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:319:                    .hasMessageContaining("Cannot promote source-code-url")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:380:        appendUrlField(fields, "source-code-url", sourceCodeUrl);
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:381:        appendUrlField(fields, "test-code-url", testCodeUrl);
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:382:        appendUrlField(fields, "documentation-url", documentationUrl);
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:58:                .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", \"description\", and \"language\".")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:59:                .contains("Set missing \"repository-url\" to the selected repository URL.")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:60:                .contains("\"repository-url\" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no \"/tree/v_1.2.11\").")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:61:                .contains("Set missing \"source-code-url\" to the selected source URL with \"$version$\" replacing version \"1.4.1\".")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:62:                .contains("Set missing \"documentation-url\" to the selected project documentation URL with \"$version$\" replacing version \"1.4.1\".")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:69:                .contains("- source-code-url: <missing>")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:124:                .contains("- source-code-url: https://example.com/source-a")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:153:                .contains("- source-code-url: https://example.com/source-a")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:212:                .contains("Set missing \"source-code-url\" to the selected source URL with \"$version$\" replacing version \"1.4.1\".")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:255:                    "source-code-url": "https://example.com/source-a",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:256:                    "repository-url": "https://example.com/repository-a",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:257:                    "test-code-url": "https://example.com/tests-a",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:258:                    "documentation-url": "https://example.com/docs-a",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:57:                .contains("Set \"source-code-url\", \"test-code-url\", and \"documentation-url\" to the discovered values with \"$version$\" replacing version \"3.1.0\".")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/TckExtensionTests.java:88:                    "not-for-native-image": true,
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:119:                    "not-for-native-image": true,
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:130:                .hasMessageContaining("not-for-native-image");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:204:                .containsEntry("source-code-url", "https://example.com/source")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:205:                .containsEntry("repository-url", "https://example.com/repository")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:206:                .containsEntry("test-code-url", "https://example.com/tests")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:207:                .containsEntry("documentation-url", "https://example.com/docs")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:253:                .containsEntry("source-code-url", "https://example.com/source")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:254:                .containsEntry("repository-url", "https://example.com/repository")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:255:                .containsEntry("test-code-url", "https://example.com/tests")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:256:                .containsEntry("documentation-url", "https://example.com/docs")
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Build-local discovered metadata for a single library coordinate.
+ */
+public record DiscoveredArtifactMetadata(
+        String coordinates,
+        @JsonProperty("source-code-url")
+        String sourceCodeUrl,
+        @JsonProperty("repository-url")
+        String repositoryUrl,
+        @JsonProperty("test-code-url")
+        String testCodeUrl,
+        @JsonProperty("documentation-url")
+        String documentationUrl,
+        @JsonProperty("description")
+        String description,
+        @JsonProperty("language")
+        LibraryLanguage language,
+        @JsonProperty("not-for-native-image")
+        Boolean notForNativeImage,
+        @JsonProperty("reason")
+        String reason,
+        @JsonProperty("replacement")
+        String replacement
+) {}
+
+exec
+/usr/bin/bash -lc "sed -n '30,80p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+    }
+
+    public static Path discoveryFile(ProjectLayout layout, String coordinates) {
+        return layout.getBuildDirectory().dir(DISCOVERY_DIR).get().getAsFile().toPath().resolve(sanitizeCoordinate(coordinates) + ".json");
+    }
+
+    public static void initializeDiscoveryFile(Path discoveryFile, String coordinates) throws IOException {
+        if (Files.exists(discoveryFile)) {
+            return;
+        }
+        Files.createDirectories(discoveryFile.getParent());
+        writeDiscoveryFile(discoveryFile, new DiscoveredArtifactMetadata(
+                coordinates,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        ));
+    }
+
+    public static void writeDiscoveryFile(Path discoveryFile, DiscoveredArtifactMetadata metadata) throws IOException {
+        Files.createDirectories(discoveryFile.getParent());
+        String json = OBJECT_MAPPER.writeValueAsString(metadata);
+        if (!json.endsWith(System.lineSeparator())) {
+            json = json + System.lineSeparator();
+        }
+        Files.writeString(discoveryFile, json, StandardCharsets.UTF_8);
+    }
+
+    public static DiscoveredArtifactMetadata readDiscoveryFile(Path discoveryFile) throws IOException {
+        return OBJECT_MAPPER.readValue(discoveryFile.toFile(), DiscoveredArtifactMetadata.class);
+    }
+
+    public static String sanitizeCoordinate(String coordinate) {
+        return coordinate.replace(":", "-").replace("/", "-");
+    }
+}
+
+exec
+/usr/bin/bash -lc "sed -n '150,185p' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+
+    private String buildPrompt(Coordinates parsedCoordinates, Path discoveryFile) {
+        return """
+                Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: %s
+                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+                - { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+                - { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+                - { "name": "scala", "version": "2" } for Scala 2 libraries
+                - { "name": "scala", "version": "3" } for Scala 3 libraries
+                If the library is not language-specific, leave the "language" field absent.
+                Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+                Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+                If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+                If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+                The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "%s" when "$version$" is replaced with "%s".
+                The source, test suite, and documentation URLs should point to the right tag of the library.
+                If we have these source of these artifacts on maven, that should be prefered.
+                If there are tests on maven that should also be prefered.
+                The "description" field must explain what the library does in exactly two sentences.
+
+                Update this file directly:
+                - File: %s
+                - Set "coordinates" to "%s".
+                - Set "repository-url" to the discovered repository root URL.
+                - Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "%s".
+                - Set "description" to the selected two-sentence explanation.
+                - If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+                - Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+                - Keep the JSON valid and consistently formatted.
+                """.formatted(
+                parsedCoordinates.toString(),
+                parsedCoordinates.version(),
+                parsedCoordinates.version(),
+                discoveryFile.toString().replace('\\', '/'),
+                parsedCoordinates.toString(),
+                parsedCoordinates.version()
+
+exec
+/usr/bin/bash -lc "rg -n 'OBJECT_MAPPER' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils -n" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:25:    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:57:        String json = OBJECT_MAPPER.writeValueAsString(metadata);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:65:        return OBJECT_MAPPER.readValue(discoveryFile.toFile(), DiscoveredArtifactMetadata.class);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:25:    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:57:        String json = OBJECT_MAPPER.writeValueAsString(metadata);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:65:        return OBJECT_MAPPER.readValue(discoveryFile.toFile(), DiscoveredArtifactMetadata.class);
+
+exec
+/usr/bin/bash -lc "sed -n '1,35p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.utils;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.graalvm.internal.tck.model.DiscoveredArtifactMetadata;
+import org.gradle.api.file.ProjectLayout;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+/**
+ * Utilities for build-local artifact metadata discovery files.
+ */
+public final class ArtifactMetadataDiscoveryUtils {
+    private static final String DISCOVERY_DIR = "discovered-artifact-metadata";
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+            .enable(SerializationFeature.INDENT_OUTPUT)
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+    private ArtifactMetadataDiscoveryUtils() {
+    }
+
+    public static Path discoveryFile(ProjectLayout layout, String coordinates) {
+        return layout.getBuildDirectory().dir(DISCOVERY_DIR).get().getAsFile().toPath().resolve(sanitizeCoordinate(coordinates) + ".json");
+    }
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/javaee/jpa-spec/tags?per_page=100 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse/javax.persistence/tags?per_page=100 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/jpa-api/tags?per_page=100 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 214ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 245ms:
+[
+  {
+    "name": "javax.persistence-api-2.2",
+    "zipball_url": "https://api.github.com/repos/javaee/jpa-spec/zipball/refs/tags/javax.persistence-api-2.2",
+    "tarball_url": "https://api.github.com/repos/javaee/jpa-spec/tarball/refs/tags/javax.persistence-api-2.2",
+    "commit": {
+      "sha": "40f458efc2f25f0f6df4bf656a13879108b13acf",
+      "url": "https://api.github.com/repos/javaee/jpa-spec/commits/40f458efc2f25f0f6df4bf656a13879108b13acf"
+    },
+    "node_id": "MDM6UmVmOTAzNDIxMDA6cmVmcy90YWdzL2phdmF4LnBlcnNpc3RlbmNlLWFwaS0yLjI="
+  }
+]
+
+ succeeded in 404ms:
+[
+  {
+    "name": "4.0.0-M2",
+    "zipball_url": "https://api.github.com/repos/jakartaee/persistence/zipball/refs/tags/4.0.0-M2",
+    "tarball_url": "https://api.github.com/repos/jakartaee/persistence/tarball/refs/tags/4.0.0-M2",
+    "commit": {
+      "sha": "5da384770f8a35cd74740db6a75445dd9466d6db",
+      "url": "https://api.github.com/repos/jakartaee/persistence/commits/5da384770f8a35cd74740db6a75445dd9466d6db"
+    },
+    "node_id": "MDM6UmVmMTQ0MTQzNzY0OnJlZnMvdGFncy80LjAuMC1NMg=="
+  },
+  {
+    "name": "4.0.0-M1",
+    "zipball_url": "https://api.github.com/repos/jakartaee/persistence/zipball/refs/tags/4.0.0-M1",
+    "tarball_url": "https://api.github.com/repos/jakartaee/persistence/tarball/refs/tags/4.0.0-M1",
+    "commit": {
+      "sha": "bc2ff0b9541bf59bdaabe5f37de60011bd6a3e74",
+      "url": "https://api.github.com/repos/jakartaee/persistence/commits/bc2ff0b9541bf59bdaabe5f37de60011bd6a3e74"
+    },
+    "node_id": "MDM6UmVmMTQ0MTQzNzY0OnJlZnMvdGFncy80LjAuMC1NMQ=="
+  },
+  {
+    "name": "3.2.1-TCK-RELEASE",
+    "zipball_url": "https://api.github.com/repos/jakartaee/persistence/zipball/refs/tags/3.2.1-TCK-RELEASE",
+    "tarball_url": "https://api.github.com/repos/jakartaee/persistence/tarball/refs/tags/3.2.1-TCK-RELEASE",
+    "commit": {
+      "sha": "163f5ab0b00b01262f2bf98cff38e9fe95663967",
+      "url": "https://api.github.com/repos/jakartaee/persistence/commits/163f5ab0b00b01262f2bf98cff38e9fe95663967"
+    },
+    "node_id": "MDM6UmVmMTQ0MTQzNzY0OnJlZnMvdGFncy8zLjIuMS1UQ0stUkVMRUFTRQ=="
+  },
+  {
+    "name": "3.2.0-DRAFT02-3.2.0-M2-RELEASE",
+    "zipball_url": "https://api.github.com/repos/jakartaee/persistence/zipball/refs/tags/3.2.0-DRAFT02-3.2.0-M2-RELEASE",
+    "tarball_url": "https://api.github.com/repos/jakartaee/persistence/tarball/refs/tags/3.2.0-DRAFT02-3.2.0-M2-RELEASE",
+    "commit": {
+      "sha": "6633fb5d30e27b1d73a1c7a94759f6f21fde8bc2",
+      "url": "https://api.github.com/repos/jakartaee/persistence/commits/6633fb5d30e27b1d73a1c7a94759f6f21fde8bc2"
+    },
+    "node_id": "MDM6UmVmMTQ0MTQzNzY0OnJlZnMvdGFncy8zLjIuMC1EUkFGVDAyLTMuMi4wLU0yLVJFTEVBU0U="
+  },
+  {
+    "name": "3.2-M1-3.2.0-M1-RELEASE",
+    "zipball_url": "https://api.github.com/repos/jakartaee/persistence/zipball/refs/tags/3.2-M1-3.2.0-M1-RELEASE",
+    "tarball_url": "https://api.github.com/repos/jakartaee/persistence/tarball/refs/tags/3.2-M1-3.2.0-M1-RELEASE",
+    "commit": {
+      "sha": "dab46e28067510aee8bc025c8d57a6bd554eb947",
+      "url": "https://api.github.com/repos/jakartaee/persistence/commits/dab46e28067510aee8bc025c8d57a6bd554eb947"
+    },
+    "node_id": "MDM6UmVmMTQ0MTQzNzY0OnJlZnMvdGFncy8zLjItTTEtMy4yLjAtTTEtUkVMRUFTRQ=="
+  },
+  {
+    "name": "3.2-DRAFT01-3.2.0-B02-RELEASE",
+    "zipball_url": "https://api.github.com/repos/jakartaee/persistence/zipball/refs/tags/3.2-DRAFT01-3.2.0-B02-RELEASE",
+    "tarball_url": "https://api.github.com/repos/jakartaee/persistence/tarball/refs/tags/3.2-DRAFT01-3.2.0-B02-RELEASE",
+    "commit": {
+      "sha": "4fd337bcd0befdc160ff88a80f244d344aa2ad0f",
+      "url": "https://api.github.com/repos/jakartaee/persistence/commits/4fd337bcd0befdc160ff88a80f244d344aa2ad0f"
+    },
+    "node_id": "MDM6UmVmMTQ0MTQzNzY0OnJlZnMvdGFncy8zLjItRFJBRlQwMS0zLjIuMC1CMDItUkVMRUFTRQ=="
+  },
+  {
+    "name": "3.2-DRAFT01-3.2.0-B01-RELEASE",
+    "zipball_url": "https://api.github.com/repos/jakartaee/persistence/zipball/refs/tags/3.2-DRAFT01-3.2.0-B01-RELEASE",
+    "tarball_url": "https://api.github.com/repos/jakartaee/persistence/tarball/refs/tags/3.2-DRAFT01-3.2.0-B01-RELEASE",
+    "commit": {
+      "sha": "d8974f49dc9ba6d2c5431999b22121c5f0ee42ed",
+      "url": "https://api.github.com/repos/jakartaee/persistence/commits/d8974f49dc9ba6d2c5431999b22121c5f0ee42ed"
+    },
+    "node_id": "MDM6UmVmMTQ0MTQzNzY0OnJlZnMvdGFncy8zLjItRFJBRlQwMS0zLjIuMC1CMDEtUkVMRUFTRQ=="
+  },
+  {
+    "name": "3.2-3.2.0-RELEASE",
+    "zipball_url": "https://api.github.com/repos/jakartaee/persistence/zipball/refs/tags/3.2-3.2.0-RELEASE",
+    "tarball_url": "https://api.github.com/repos/jakartaee/persistence/tarball/refs/tags/3.2-3.2.0-RELEASE",
+    "commit": {
+      "sha": "320bface63284bf72f5844dc34f6b8ddad7b39c7",
+      "url": "https://api.github.com/repos/jakartaee/persistence/commits/320bface63284bf72f5844dc34f6b8ddad7b39c7"
+    },
+    "node_id": "MDM6UmVmMTQ0MTQzNzY0OnJlZnMvdGFncy8zLjItMy4yLjAtUkVMRUFTRQ=="
+  },
+  {
+    "name": "3.1-3.1.0-RELEASE",
+    "zipball_url": "https://api.github.com/repos/jakartaee/persistence/zipball/refs/tags/3.1-3.1.0-RELEASE",
+    "tarball_url": "https://api.github.com/repos/jakartaee/persistence/tarball/refs/tags/3.1-3.1.0-RELEASE",
+    "commit": {
+      "sha": "a36e492b0697cf260c1ffa63b57c7f2762a1e0ed",
+      "url": "https://api.github.com/repos/jakartaee/persistence/commits/a36e492b0697cf260c1ffa63b57c7f2762a1e0ed"
+    },
+    "node_id": "MDM6UmVmMTQ0MTQzNzY0OnJlZnMvdGFncy8zLjEtMy4xLjAtUkVMRUFTRQ=="
+  },
+  {
+    "name": "3.1-3.1.0-RC2-RELEASE",
+    "zipball_url": "https://api.github.com/repos/jakartaee/persistence/zipball/refs/tags/3.1-3.1.0-RC2-RELEASE",
+    "tarball_url": "https://api.github.com/repos/jakartaee/persistence/tarball/refs/tags/3.1-3.1.0-RC2-RELEASE",
+    "commit": {
+      "sha": "148ab4731650cbca4f8c4d1a033199826b1d722e",
+      "url": "https://api.github.com/repos/jakartaee/persistence/commits/148ab4731650cbca4f8c4d1a033199826b1d722e"
+    },
+    "node_id": "MDM6UmVmMTQ0MTQzNzY0OnJlZnMvdGFncy8zLjEtMy4xLjAtUkMyLVJFTEVBU0U="
+  },
+  {
+    "name": "3.1-3.1.0-RC1-RELEASE",
+    "zipball_url": "https://api.github.com/repos/jakartaee/persistence/zipball/refs/tags/3.1-3.1.0-RC1-RELEASE",
+    "tarball_url": "https://api.github.com/repos/jakartaee/persistence/tarball/refs/tags/3.1-3.1.0-RC1-RELEASE",
+    "commit": {
+      "sha": "c766be9799d98160542c9841ad38a68263678501",
+      "url": "https://api.github.com/repos/jakartaee/persistence/commits/c766be9799d98160542c9841ad38a68263678501"
+    },
+    "node_id": "MDM6UmVmMTQ0MTQzNzY0OnJlZnMvdGFncy8zLjEtMy4xLjAtUkMxLVJFTEVBU0U="
+  },
+  {
+    "name": "3.0-3.0.0-RELEASE",
+    "zipball_url": "https://api.github.com/repos/jakartaee/persistence/zipball/refs/tags/3.0-3.0.0-RELEASE",
+    "tarball_url": "https://api.github.com/repos/jakartaee/persistence/tarball/refs/tags/3.0-3.0.0-RELEASE",
+    "commit": {
+      "sha": "64b31976b2597eb9873a9918eefe8de6ceb5c75c",
+      "url": "https://api.github.com/repos/jakartaee/persistence/commits/64b31976b2597eb9873a9918eefe8de6ceb5c75c"
+    },
+    "node_id": "MDM6UmVmMTQ0MTQzNzY0OnJlZnMvdGFncy8zLjAtMy4wLjAtUkVMRUFTRQ=="
+  },
+  {
+    "name": "3.0-3.0.0-RC2-RELEASE",
+    "zipball_url": "https://api.github.com/repos/jakartaee/persistence/zipball/refs/tags/3.0-3.0.0-RC2-RELEASE",
+    "tarball_url": "https://api.github.com/repos/jakartaee/persistence/tarball/refs/tags/3.0-3.0.0-RC2-RELEASE",
+    "commit": {
+      "sha": "44c36426d406ff63656ae4a2e0369ced14e7784f",
+      "url": "https://api.github.com/repos/jakartaee/persistence/commits/44c36426d406ff63656ae4a2e0369ced14e7784f"
+    },
+    "node_id": "MDM6UmVmMTQ0MTQzNzY0OnJlZnMvdGFncy8zLjAtMy4wLjAtUkMyLVJFTEVBU0U="
+  },
+  {
+    "name": "2.2.2-RELEASE",
+    "zipball_url": "https://api.github.com/repos/jakartaee/persistence/zipball/refs/tags/2.2.2-RELEASE",
+    "tarball_url": "https://api.github.com/repos/jakartaee/persistence/tarball/refs/tags/2.2.2-RELEASE",
+    "commit": {
+      "sha": "3bdcf7f1e0443e0f3c15e46c0e13eaf2bfffcb63",
+      "url": "https://api.github.com/repos/jakartaee/persistence/commits/3bdcf7f1e0443e0f3c15e46c0e13eaf2bfffcb63"
+    },
+    "node_id": "MDM6UmVmMTQ0MTQzNzY0OnJlZnMvdGFncy8yLjIuMi1SRUxFQVNF"
+  },
+  {
+    "name": "2.2.1-RELEASE",
+    "zipball_url": "https://api.github.com/repos/jakartaee/persistence/zipball/refs/tags/2.2.1-RELEASE",
+    "tarball_url": "https://api.github.com/repos/jakartaee/persistence/tarball/refs/tags/2.2.1-RELEASE",
+    "commit": {
+      "sha": "5f3814ddc1049bcf5a5c94d0fe291254b8ef9aab",
+      "url": "https://api.github.com/repos/jakartaee/persistence/commits/5f3814ddc1049bcf5a5c94d0fe291254b8ef9aab"
+    },
+    "node_id": "MDM6UmVmMTQ0MTQzNzY0OnJlZnMvdGFncy8yLjIuMS1SRUxFQVNF"
+  },
+  {
+    "name": "2.2-3.0.0-RC1-RELEASE",
+    "zipball_url": "https://api.github.com/repos/jakartaee/persistence/zipball/refs/tags/2.2-3.0.0-RC1-RELEASE",
+    "tarball_url": "https://api.github.com/repos/jakartaee/persistence/tarball/refs/tags/2.2-3.0.0-RC1-RELEASE",
+    "commit": {
+      "sha": "653cc9bf3963f06e87a549095515f083a5817c95",
+      "url": "https://api.github.com/repos/jakartaee/persistence/commits/653cc9bf3963f06e87a549095515f083a5817c95"
+    },
+    "node_id": "MDM6UmVmMTQ0MTQzNzY0OnJlZnMvdGFncy8yLjItMy4wLjAtUkMxLVJFTEVBU0U="
+
+exec
+/usr/bin/bash -lc "rg -n 'jcp\\.org|repository-url\" : \"N/A\"|repository-url\": \"N/A\"' metadata build/discovered-artifact-metadata --glob '*.json'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:6:    "repository-url" : "N/A",
+metadata/javax.transaction/transaction-api/index.json:6:    "repository-url" : "N/A",
+metadata/javax.servlet.jsp/jsp-api/index.json:6:    "repository-url" : "N/A",
+metadata/javax.jcr/jcr/index.json:6:    "repository-url" : "N/A",
+metadata/org.example/library/index.json:10:    "repository-url": "N/A",
+metadata/javax.annotation/jsr250-api/index.json:7:    "repository-url": "N/A",
+metadata/javax.annotation/jsr250-api/index.json:9:    "documentation-url": "https://jcp.org/aboutJava/communityprocess/final/jsr250/index.html",
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/javax.transaction/transaction-api/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/transaction/transaction-api/$version$/transaction-api-$version$-sources.jar",
+    "repository-url" : "N/A",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://download.oracle.com/otndocs/jcp/jta-$version$-javadoc-oth-JSpec/?submit=Download",
+    "description" : "The Java Transaction API defines standard interfaces and exceptions for demarcating and coordinating transactions in Java applications and application servers. It covers user-managed transactions, transaction manager operations, synchronization callbacks, and XA resource integration contracts used by compliant transaction implementations.",
+    "tested-versions" : [
+      "1.1-rev-1",
+      "1.1"
+    ],
+    "allowed-packages" : [
+      "javax.transaction"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/javax.jcr/jcr/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/javax/jcr/jcr/$version$/jcr-$version$-sources.jar",
+    "repository-url" : "N/A",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/javax/jcr/jcr/$version$/jcr-$version$-javadoc.jar",
+    "description" : "Defines the Java Content Repository (JCR) 1.0 API for accessing content repositories independently of a specific implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+    "tested-versions" : [
+      "1.0"
+    ],
+    "allowed-packages" : [
+      "javax.jcr"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/javax.servlet.jsp/jsp-api/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/$version$/jsp-api-$version$-sources.jar",
+    "repository-url" : "N/A",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://javadoc.io/doc/javax.servlet.jsp/jsp-api/$version$",
+    "description" : "This artifact provides the JavaServer Pages 2.1 API contracts, including core JSP, tag extension, and expression language interfaces used by JSP containers and applications. It defines standard types that JSP engines and custom tag libraries implement at compile time and runtime.",
+    "tested-versions" : [
+      "2.1"
+    ],
+    "allowed-packages" : [
+      "javax.el",
+      "javax.servlet.jsp"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/javax.annotation/jsr250-api/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages": [ "javax.annotation" ],
+    "metadata-version": "1.0",
+    "source-code-url": "https://repo.maven.apache.org/maven2/javax/annotation/jsr250-api/$version$/jsr250-api-$version$-sources.jar",
+    "repository-url": "N/A",
+    "test-code-url": "N/A",
+    "documentation-url": "https://jcp.org/aboutJava/communityprocess/final/jsr250/index.html",
+    "description": "Provides the JSR-250 Common Annotations API for the Java platform, including lifecycle, resource injection, and security annotations. It defines annotations such as @Resource, @PostConstruct, @PreDestroy, and role-based security markers for use by compliant runtimes and applications.",
+    "tested-versions": [
+      "1.0"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/persistence-api-1.0-javadoc.jar" https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-javadoc.jar; jar tf "$tmp/persistence-api-1.0-javadoc.jar" | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 704ms:
+META-INF/
+META-INF/MANIFEST.MF
+javax/
+javax/persistence/
+javax/persistence/class-use/
+javax/persistence/spi/
+javax/persistence/spi/class-use/
+resources/
+allclasses-frame.html
+allclasses-noframe.html
+constant-values.html
+deprecated-list.html
+files
+help-doc.html
+index-all.html
+index.html
+javax/persistence/AssociationOverride.html
+javax/persistence/AssociationOverrides.html
+javax/persistence/AttributeOverride.html
+javax/persistence/AttributeOverrides.html
+javax/persistence/Basic.html
+javax/persistence/CascadeType.html
+javax/persistence/class-use/AssociationOverride.html
+javax/persistence/class-use/AssociationOverrides.html
+javax/persistence/class-use/AttributeOverride.html
+javax/persistence/class-use/AttributeOverrides.html
+javax/persistence/class-use/Basic.html
+javax/persistence/class-use/CascadeType.html
+javax/persistence/class-use/Column.html
+javax/persistence/class-use/ColumnResult.html
+javax/persistence/class-use/DiscriminatorColumn.html
+javax/persistence/class-use/DiscriminatorType.html
+javax/persistence/class-use/DiscriminatorValue.html
+javax/persistence/class-use/Embeddable.html
+javax/persistence/class-use/Embedded.html
+javax/persistence/class-use/EmbeddedId.html
+javax/persistence/class-use/Entity.html
+javax/persistence/class-use/EntityExistsException.html
+javax/persistence/class-use/EntityListeners.html
+javax/persistence/class-use/EntityManager.html
+javax/persistence/class-use/EntityManagerFactory.html
+javax/persistence/class-use/EntityNotFoundException.html
+javax/persistence/class-use/EntityResult.html
+javax/persistence/class-use/EntityTransaction.html
+javax/persistence/class-use/Enumerated.html
+javax/persistence/class-use/EnumType.html
+javax/persistence/class-use/ExcludeDefaultListeners.html
+javax/persistence/class-use/ExcludeSuperclassListeners.html
+javax/persistence/class-use/FetchType.html
+javax/persistence/class-use/FieldResult.html
+javax/persistence/class-use/FlushModeType.html
+javax/persistence/class-use/GeneratedValue.html
+javax/persistence/class-use/GenerationType.html
+javax/persistence/class-use/Id.html
+javax/persistence/class-use/IdClass.html
+javax/persistence/class-use/Inheritance.html
+javax/persistence/class-use/InheritanceType.html
+javax/persistence/class-use/JoinColumn.html
+javax/persistence/class-use/JoinColumns.html
+javax/persistence/class-use/JoinTable.html
+javax/persistence/class-use/Lob.html
+javax/persistence/class-use/LockModeType.html
+javax/persistence/class-use/ManyToMany.html
+javax/persistence/class-use/ManyToOne.html
+javax/persistence/class-use/MapKey.html
+javax/persistence/class-use/MappedSuperclass.html
+javax/persistence/class-use/NamedNativeQueries.html
+javax/persistence/class-use/NamedNativeQuery.html
+javax/persistence/class-use/NamedQueries.html
+javax/persistence/class-use/NamedQuery.html
+javax/persistence/class-use/NonUniqueResultException.html
+javax/persistence/class-use/NoResultException.html
+javax/persistence/class-use/OneToMany.html
+javax/persistence/class-use/OneToOne.html
+javax/persistence/class-use/OptimisticLockException.html
+javax/persistence/class-use/OrderBy.html
+javax/persistence/class-use/Persistence.html
+javax/persistence/class-use/PersistenceContext.html
+javax/persistence/class-use/PersistenceContexts.html
+javax/persistence/class-use/PersistenceContextType.html
+
+codex
+The artifact is a normal JVM jar with `javax.persistence` `.class` files, so it should remain eligible for Native Image metadata; no language marker applies. I’m writing the discovered fields now, with `repository-url` as `N/A` because this legacy JSR artifact has no confident canonical source repository root.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
+diff --git a/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json b/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
+index d8169e11975f1e638639a66d577ada05509ba664..9b7dba70da220a2ac4ecad6f8fc08ff8aceea8fd
+--- a/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
++++ b/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.persistence:persistence-api:1.0"
++  "coordinates" : "javax.persistence:persistence-api:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/persistence/persistence-api/$version$/persistence-api-$version$-sources.jar",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/$version$/persistence-api-$version$-javadoc.jar",
++  "description" : "The Java Persistence API 1.0 defines the standard Java contracts for object-relational persistence used by EJB 3.0 and Java SE applications. It provides javax.persistence annotations and interfaces for mapping entities, managing persistence units and entity managers, querying data, and integrating persistence providers."
+ }
+
+diff --git a/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json b/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
+index d8169e11975f1e638639a66d577ada05509ba664..9b7dba70da220a2ac4ecad6f8fc08ff8aceea8fd
+--- a/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
++++ b/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.persistence:persistence-api:1.0"
++  "coordinates" : "javax.persistence:persistence-api:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/persistence/persistence-api/$version$/persistence-api-$version$-sources.jar",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/$version$/persistence-api-$version$-javadoc.jar",
++  "description" : "The Java Persistence API 1.0 defines the standard Java contracts for object-relational persistence used by EJB 3.0 and Java SE applications. It provides javax.persistence annotations and interfaces for mapping entities, managing persistence units and entity managers, querying data, and integrating persistence providers."
+ }
+
+codex
+The JSON is updated. I’m doing a quick validation pass: parse the file and verify the templated source and documentation URLs resolve for `1.0`.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+{
+  "coordinates": "javax.persistence:persistence-api:1.0",
+  "source-code-url": "https://repo1.maven.org/maven2/javax/persistence/persistence-api/$version$/persistence-api-$version$-sources.jar",
+  "repository-url": "N/A",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/$version$/persistence-api-$version$-javadoc.jar",
+  "description": "The Java Persistence API 1.0 defines the standard Java contracts for object-relational persistence used by EJB 3.0 and Java SE applications. It provides javax.persistence annotations and interfaces for mapping entities, managing persistence units and entity managers, querying data, and integrating persistence providers."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "url='https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-sources.jar'; curl -I -fsSL \""'$url" | sed -n '"'1,12p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:35:39 GMT
+content-type: application/java-archive
+content-length: 106248
+cf-ray: 9f5818d5ac812373-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1544191
+etag: "eb6c488db142e3f9c10fa8d9bee3c0d7"
+last-modified: Mon, 17 Jul 2006 11:09:04 GMT
+x-checksum-md5: eb6c488db142e3f9c10fa8d9bee3c0d7
+x-checksum-sha1: 2773a7910e8f0c7d59749dc4fcef2a4b94fcf85a
+
+exec
+/usr/bin/bash -lc "url='https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-javadoc.jar'; curl -I -fsSL \""'$url" | sed -n '"'1,12p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+diff --git a/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json b/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
+index d8169e11975f1e638639a66d577ada05509ba664..9b7dba70da220a2ac4ecad6f8fc08ff8aceea8fd
+--- a/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
++++ b/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.persistence:persistence-api:1.0"
++  "coordinates" : "javax.persistence:persistence-api:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/persistence/persistence-api/$version$/persistence-api-$version$-sources.jar",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/$version$/persistence-api-$version$-javadoc.jar",
++  "description" : "The Java Persistence API 1.0 defines the standard Java contracts for object-relational persistence used by EJB 3.0 and Java SE applications. It provides javax.persistence annotations and interfaces for mapping entities, managing persistence units and entity managers, querying data, and integrating persistence providers."
+ }
+
+ succeeded in 753ms:
+HTTP/2 200 
+strict-transport-security: max-age=7776000
+server: Nexus/3.77.2-02 (PRO)
+x-content-type-options: nosniff
+content-security-policy: sandbox allow-forms allow-modals allow-popups allow-presentation allow-scripts allow-top-navigation
+x-xss-protection: 1; mode=block
+etag: "9a7d6f0eea0c767034658f19fd628c0302d7bc82"
+last-modified: Thu, 03 Jul 2025 10:51:58 GMT
+content-type: application/java-archive
+content-length: 408456
+expires: Sat, 02 May 2026 15:35:39 GMT
+cache-control: max-age=0, no-cache, no-store
+
+exec
+/usr/bin/bash -lc 'git ls-files --error-unmatch build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json >/dev/null 2>&1; echo tracked=$?' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+tracked=1
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+diff --git a/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json b/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
+index d8169e11975f1e638639a66d577ada05509ba664..9b7dba70da220a2ac4ecad6f8fc08ff8aceea8fd
+--- a/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
++++ b/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.persistence:persistence-api:1.0"
++  "coordinates" : "javax.persistence:persistence-api:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/persistence/persistence-api/$version$/persistence-api-$version$-sources.jar",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/$version$/persistence-api-$version$-javadoc.jar",
++  "description" : "The Java Persistence API 1.0 defines the standard Java contracts for object-relational persistence used by EJB 3.0 and Java SE applications. It provides javax.persistence annotations and interfaces for mapping entities, managing persistence units and entity managers, querying data, and integrating persistence providers."
+ }
+
+ succeeded in 130ms:
+exec
+/usr/bin/bash -lc 'git diff --cached -- build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "git show HEAD:build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json 2>/dev/null | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "sed -n '1,80p' build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+{
+  "coordinates" : "javax.persistence:persistence-api:1.0",
+  "source-code-url" : "https://repo1.maven.org/maven2/javax/persistence/persistence-api/$version$/persistence-api-$version$-sources.jar",
+  "repository-url" : "N/A",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/$version$/persistence-api-$version$-javadoc.jar",
+  "description" : "The Java Persistence API 1.0 defines the standard Java contracts for object-relational persistence used by EJB 3.0 and Java SE applications. It provides javax.persistence annotations and interfaces for mapping entities, managing persistence units and entity managers, querying data, and integrating persistence providers."
+}
+
+diff --git a/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json b/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
+index d8169e11975f1e638639a66d577ada05509ba664..9b7dba70da220a2ac4ecad6f8fc08ff8aceea8fd
+--- a/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
++++ b/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.persistence:persistence-api:1.0"
++  "coordinates" : "javax.persistence:persistence-api:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/persistence/persistence-api/$version$/persistence-api-$version$-sources.jar",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/$version$/persistence-api-$version$-javadoc.jar",
++  "description" : "The Java Persistence API 1.0 defines the standard Java contracts for object-relational persistence used by EJB 3.0 and Java SE applications. It provides javax.persistence annotations and interfaces for mapping entities, managing persistence units and entity managers, querying data, and integrating persistence providers."
+ }
+
+exec
+/usr/bin/bash -lc 'git ls-files -v -- build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short --ignored -- build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+!! build/
+
+exec
+/usr/bin/bash -lc 'git diff --name-only -- build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json; git diff --stat -- build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json b/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
+index d8169e11975f1e638639a66d577ada05509ba664..9b7dba70da220a2ac4ecad6f8fc08ff8aceea8fd
+--- a/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
++++ b/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.persistence:persistence-api:1.0"
++  "coordinates" : "javax.persistence:persistence-api:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/persistence/persistence-api/$version$/persistence-api-$version$-sources.jar",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/$version$/persistence-api-$version$-javadoc.jar",
++  "description" : "The Java Persistence API 1.0 defines the standard Java contracts for object-relational persistence used by EJB 3.0 and Java SE applications. It provides javax.persistence annotations and interfaces for mapping entities, managing persistence units and entity managers, querying data, and integrating persistence providers."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/
+web search: 
+web search: 
+codex
+Updated [javax.persistence-persistence-api-1.0.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json).
+
+Set Maven Central sources, `test-code-url: "N/A"` because the `1.0` Central listing only has sources, jar, and POM, and used the JBoss Maven javadoc jar for documentation. ([repo1.maven.org](https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/))
+
+No `language` field and no `not-for-native-image` marker were added; I verified locally that the artifact jar contains normal JVM `.class` files. Validation done: `jq` parsed the JSON, and the rendered source/docs URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json b/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
+index d8169e11975f1e638639a66d577ada05509ba664..9b7dba70da220a2ac4ecad6f8fc08ff8aceea8fd
+--- a/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
++++ b/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.persistence:persistence-api:1.0"
++  "coordinates" : "javax.persistence:persistence-api:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/persistence/persistence-api/$version$/persistence-api-$version$-sources.jar",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/$version$/persistence-api-$version$-javadoc.jar",
++  "description" : "The Java Persistence API 1.0 defines the standard Java contracts for object-relational persistence used by EJB 3.0 and Java SE applications. It provides javax.persistence annotations and interfaces for mapping entities, managing persistence units and entity managers, querying data, and integrating persistence providers."
+ }
+
+tokens used
+95,284
+Updated [javax.persistence-persistence-api-1.0.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131/build/discovered-artifact-metadata/javax.persistence-persistence-api-1.0.json).
+
+Set Maven Central sources, `test-code-url: "N/A"` because the `1.0` Central listing only has sources, jar, and POM, and used the JBoss Maven javadoc jar for documentation. ([repo1.maven.org](https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/))
+
+No `language` field and no `not-for-native-image` marker were added; I verified locally that the artifact jar contains normal JVM `.class` files. Validation done: `jq` parsed the JSON, and the rendered source/docs URLs returned HTTP 200.
+Ran agent for javax.persistence:persistence-api:1.0 (exit 0). Log: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131/build/agent-artifact-discovery-logs/javax.persistence-persistence-api-1.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2335-6e51d131/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 49s
+9 actionable tasks: 4 executed, 5 from cache
