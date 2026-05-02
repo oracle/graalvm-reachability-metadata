@@ -7,6 +7,7 @@
 package org_springframework.spring_aspects;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.aspectj.AnnotationBeanConfigurerAspect;
 import org.springframework.beans.factory.aspectj.ConfigurableObject;
@@ -75,6 +76,22 @@ public class Spring_aspectsTest {
         aspect.configureBean(service);
 
         assertThat(service.getMessage()).isEqualTo("configured by aspect");
+    }
+
+    @Test
+    void beanConfigurerAspectAutowiresConfigurableObjectsByType() {
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        MessageProvider provider = new MessageProvider("autowired by type");
+        beanFactory.registerSingleton("messageProvider", provider);
+        AnnotationBeanConfigurerAspect aspect = AnnotationBeanConfigurerAspect.aspectOf();
+        aspect.setBeanFactory(beanFactory);
+        aspect.afterPropertiesSet();
+
+        AutowiredConfigurableService service = new AutowiredConfigurableService();
+        aspect.configureBean(service);
+
+        assertThat(service.getMessage()).isEqualTo("autowired by type");
+        assertThat(service.getMessageProvider()).isSameAs(provider);
     }
 
     @Test
@@ -198,6 +215,35 @@ public class Spring_aspectsTest {
 
         public void setMessage(String message) {
             this.message = message;
+        }
+    }
+
+    @Configurable(autowire = Autowire.BY_TYPE)
+    public static class AutowiredConfigurableService {
+        private MessageProvider messageProvider;
+
+        public MessageProvider getMessageProvider() {
+            return this.messageProvider;
+        }
+
+        public void setMessageProvider(MessageProvider messageProvider) {
+            this.messageProvider = messageProvider;
+        }
+
+        public String getMessage() {
+            return this.messageProvider.getMessage();
+        }
+    }
+
+    static class MessageProvider {
+        private final String message;
+
+        MessageProvider(String message) {
+            this.message = message;
+        }
+
+        String getMessage() {
+            return this.message;
         }
     }
 
