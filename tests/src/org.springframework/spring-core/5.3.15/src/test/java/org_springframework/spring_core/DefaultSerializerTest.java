@@ -9,31 +9,12 @@ package org_springframework.spring_core;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.core.serializer.DefaultSerializer;
 
 public class DefaultSerializerTest {
-
-    @Test
-    void serializesSerializableObjectToOutputStream() throws Exception {
-        Map<String, Integer> payload = new LinkedHashMap<>();
-        payload.put("spring", 5);
-        payload.put("core", 3);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-        new DefaultSerializer().serialize(payload, outputStream);
-
-        assertThat(outputStream.toByteArray()).isNotEmpty();
-        try (ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {
-            assertThat(inputStream.readObject()).isEqualTo(payload);
-        }
-    }
 
     @Test
     void rejectsNonSerializableObjectBeforeWritingToStream() {

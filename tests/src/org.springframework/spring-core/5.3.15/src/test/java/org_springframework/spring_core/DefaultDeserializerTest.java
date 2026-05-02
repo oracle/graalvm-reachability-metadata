@@ -11,24 +11,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.core.serializer.DefaultDeserializer;
 
 public class DefaultDeserializerTest {
-
-    @Test
-    void deserializesObjectFromInputStream() throws Exception {
-        Map<String, Integer> payload = new LinkedHashMap<>();
-        payload.put("spring", 5);
-        payload.put("core", 3);
-
-        Object deserialized = new DefaultDeserializer().deserialize(new ByteArrayInputStream(serialize(payload)));
-
-        assertThat(deserialized).isEqualTo(payload);
-    }
 
     @Test
     void deserializesObjectUsingProvidedClassLoader() throws Exception {

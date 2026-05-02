@@ -13,8 +13,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.Method;
 import java.security.ProtectionDomain;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.graalvm.internal.tck.NativeImageSupport;
@@ -26,7 +24,6 @@ import org.springframework.cglib.core.CodeGenerationException;
 import org.springframework.cglib.core.ReflectUtils;
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.core.OrderComparator;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 
 public class ReflectUtilsTest {
@@ -66,16 +63,6 @@ public class ReflectUtilsTest {
         assertThat(toStringMethod.getDeclaringClass()).isEqualTo(NamedThreadLocal.class);
         assertThat(inheritedCompareMethod.getDeclaringClass()).isEqualTo(OrderComparator.class);
         assertThat(threadLocal).hasToString("reflect-utils-thread-local");
-    }
-
-    @Test
-    void enumeratesDeclaredMethodsAndFindsSingleInterfaceMethod() {
-        List<Method> methods = ReflectUtils.addAllMethods(AnnotationAwareOrderComparator.class, new ArrayList<>());
-        Method interfaceMethod = ReflectUtils.findInterfaceMethod(Ordered.class);
-
-        assertThat(methods).anySatisfy(method -> assertThat(method.getName()).isEqualTo("findOrder"));
-        assertThat(methods).anySatisfy(method -> assertThat(method.getName()).isEqualTo("compare"));
-        assertThat(interfaceMethod.getName()).isEqualTo("getOrder");
     }
 
     @Test

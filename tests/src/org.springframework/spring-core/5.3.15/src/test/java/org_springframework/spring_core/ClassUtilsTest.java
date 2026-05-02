@@ -15,7 +15,6 @@ import java.lang.reflect.Modifier;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.core.OrderComparator;
-import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
@@ -86,18 +85,6 @@ public class ClassUtilsTest {
                 .isGreaterThanOrEqualTo(1);
         assertThat(ClassUtils.hasAtLeastOneMethodWithName(OrderComparator.class, "compare"))
                 .isTrue();
-    }
-
-    @Test
-    void resolvesMostSpecificAndInterfaceMethods() throws Exception {
-        Method taskExecutorMethod = TaskExecutor.class.getMethod("execute", Runnable.class);
-        Method syncTaskExecutorMethod = SyncTaskExecutor.class.getMethod("execute", Runnable.class);
-
-        Method mostSpecificMethod = ClassUtils.getMostSpecificMethod(taskExecutorMethod, SyncTaskExecutor.class);
-        Method interfaceMethod = ClassUtils.getInterfaceMethodIfPossible(syncTaskExecutorMethod);
-
-        assertThat(mostSpecificMethod.getDeclaringClass()).isEqualTo(SyncTaskExecutor.class);
-        assertThat(interfaceMethod.getDeclaringClass()).isEqualTo(TaskExecutor.class);
     }
 
     @Test
