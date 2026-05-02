@@ -8,12 +8,14 @@ package com.zaxxer.hikaricp.test;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariConfigMXBean;
+import com.zaxxer.hikari.HikariCredentialsProvider;
 import com.zaxxer.hikari.HikariDataSource;
 import com.zaxxer.hikari.HikariPoolMXBean;
 import com.zaxxer.hikari.SQLExceptionOverride;
 import com.zaxxer.hikari.metrics.IMetricsTracker;
 import com.zaxxer.hikari.metrics.MetricsTrackerFactory;
 import com.zaxxer.hikari.metrics.PoolStats;
+import com.zaxxer.hikari.util.Credentials;
 import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
@@ -282,6 +284,31 @@ public class HikariCPIntegrationTest {
     }
 
     @Test
+    void credentialsProviderSuppliesCredentialsForEachPhysicalConnection() throws SQLException {
+        RecordingDataSource recordingDataSource = new RecordingDataSource();
+        SequencedCredentialsProvider credentialsProvider = new SequencedCredentialsProvider();
+        HikariConfig config = baseDataSourceConfig("credentials-provider", recordingDataSource);
+        config.setMaximumPoolSize(2);
+        config.setMinimumIdle(0);
+        config.setInitializationFailTimeout(-1);
+        config.setCredentialsProvider(credentialsProvider);
+
+        try (HikariDataSource dataSource = new HikariDataSource(config);
+             Connection first = dataSource.getConnection();
+             Connection second = dataSource.getConnection()) {
+            RecordingConnection firstPhysicalConnection = first.unwrap(RecordingConnection.class);
+            RecordingConnection secondPhysicalConnection = second.unwrap(RecordingConnection.class);
+
+            assertProviderCredentials(firstPhysicalConnection);
+            assertProviderCredentials(secondPhysicalConnection);
+            assertFalse(firstPhysicalConnection.getUsername().equals(secondPhysicalConnection.getUsername()));
+        }
+
+        assertTrue(credentialsProvider.getInvocationCount() >= 2);
+        assertTrue(recordingDataSource.getConnections().size() >= 2);
+    }
+
+    @Test
     void metricsTrackerRecordsAcquireUsageCreationAndTimeout() throws SQLException {
         RecordingDataSource recordingDataSource = new RecordingDataSource();
         RecordingMetricsFactory metricsFactory = new RecordingMetricsFactory();
@@ -363,6 +390,13 @@ public class HikariCPIntegrationTest {
 
     private static String nextPoolName(String prefix) {
         return "hikari-" + prefix + '-' + POOL_COUNTER.incrementAndGet();
+    }
+
+    private static void assertProviderCredentials(RecordingConnection connection) {
+        String username = connection.getUsername();
+        assertNotNull(username);
+        assertTrue(username.startsWith("provider-user-"));
+        assertEquals(username.replace("provider-user-", "provider-password-"), connection.getPassword());
     }
 
     public static final class RecordingDataSource implements DataSource {
@@ -851,6 +885,20 @@ public class HikariCPIntegrationTest {
             if (this.physicallyClosed) {
                 throw new SQLException("Connection is closed", "08003");
             }
+        }
+    }
+
+    public static final class SequencedCredentialsProvider implements HikariCredentialsProvider {
+        private final AtomicInteger invocationCount = new AtomicInteger();
+
+        @Override
+        public Credentials getCredentials() {
+            int credentialsNumber = this.invocationCount.incrementAndGet();
+            return Credentials.of("provider-user-" + credentialsNumber, "provider-password-" + credentialsNumber);
+        }
+
+        int getInvocationCount() {
+            return this.invocationCount.get();
         }
     }
 
