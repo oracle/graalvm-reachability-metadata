@@ -38,6 +38,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 public class HttpmimeTest {
 
     private static final Charset UTF_8 = StandardCharsets.UTF_8;
+    private static final Charset US_ASCII = StandardCharsets.US_ASCII;
 
     @TempDir
     Path tempDir;
@@ -59,6 +60,31 @@ public class HttpmimeTest {
         assertThat(body.getContentLength()).isEqualTo(text.getBytes(UTF_8).length);
         assertThat(outputStream.toByteArray()).isEqualTo(text.getBytes(UTF_8));
         assertThat(readAll(body.getReader())).isEqualTo(text);
+    }
+
+    @Test
+    void stringBodyFactoryMethodsApplyProvidedContentTypeAndDefaultCharset() throws Exception {
+        String defaultText = "factory generated text";
+        String unicodeText = "factory generated snowman: ☃";
+        StringBody defaultBody = StringBody.create(defaultText, "text/plain", null);
+        StringBody utf8Body = StringBody.create(unicodeText, "text/plain", UTF_8);
+        ByteArrayOutputStream defaultOutputStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream utf8OutputStream = new ByteArrayOutputStream();
+
+        defaultBody.writeTo(defaultOutputStream);
+        utf8Body.writeTo(utf8OutputStream);
+
+        assertThat(defaultBody.getMimeType()).isEqualTo("text/plain");
+        assertThat(defaultBody.getMediaType()).isEqualTo("text");
+        assertThat(defaultBody.getSubType()).isEqualTo("plain");
+        assertThat(defaultBody.getCharset()).isEqualTo("US-ASCII");
+        assertThat(defaultBody.getContentLength()).isEqualTo(defaultText.getBytes(US_ASCII).length);
+        assertThat(defaultOutputStream.toByteArray()).isEqualTo(defaultText.getBytes(US_ASCII));
+        assertThat(readAll(defaultBody.getReader())).isEqualTo(defaultText);
+        assertThat(utf8Body.getMimeType()).isEqualTo("text/plain");
+        assertThat(utf8Body.getCharset()).isEqualTo("UTF-8");
+        assertThat(utf8Body.getContentLength()).isEqualTo(unicodeText.getBytes(UTF_8).length);
+        assertThat(utf8OutputStream.toByteArray()).isEqualTo(unicodeText.getBytes(UTF_8));
     }
 
     @Test
