@@ -53,7 +53,7 @@ public class Commons_fileuploadTest {
                                 + "Content-Type: text/plain; charset=UTF-8\r\n"
                                 + "X-Trace: first\r\n"
                                 + "X-Trace: second\r\n",
-                        "Résumé upload"),
+                        "R\u00e9sum\u00e9 upload"),
                 part(
                         "Content-Disposition: form-data; name=\"document\"; filename=\"notes.txt\"\r\n"
                                 + "Content-Type: text/plain\r\n",
@@ -70,7 +70,7 @@ public class Commons_fileuploadTest {
         assertThat(description.isFormField()).isTrue();
         assertThat(description.getFieldName()).isEqualTo("description");
         assertThat(description.getContentType()).isEqualTo("text/plain; charset=UTF-8");
-        assertThat(description.getString(StandardCharsets.UTF_8.name())).isEqualTo("Résumé upload");
+        assertThat(description.getString(StandardCharsets.UTF_8.name())).isEqualTo("R\u00e9sum\u00e9 upload");
         assertThat(headers(description.getHeaders().getHeaders("x-trace"))).containsExactly("first", "second");
 
         FileItem document = items.get(1);
@@ -84,7 +84,7 @@ public class Commons_fileuploadTest {
         assertThat(parameterMap).containsOnlyKeys("description", "document");
         assertThat(parameterMap.get("description")).singleElement().satisfies(item -> {
             assertThat(item.isFormField()).isTrue();
-            assertThat(item.getString(StandardCharsets.UTF_8.name())).isEqualTo("Résumé upload");
+            assertThat(item.getString(StandardCharsets.UTF_8.name())).isEqualTo("R\u00e9sum\u00e9 upload");
         });
         assertThat(parameterMap.get("document")).singleElement().satisfies(item -> {
             assertThat(item.isFormField()).isFalse();
@@ -179,14 +179,14 @@ public class Commons_fileuploadTest {
         factory.setDefaultCharset(StandardCharsets.UTF_8.name());
         FileItem item = factory.createItem("comment", "text/plain", true, null);
         try (OutputStream output = item.getOutputStream()) {
-            output.write("Grüße".getBytes(StandardCharsets.UTF_8));
+            output.write("Gr\u00fc\u00dfe".getBytes(StandardCharsets.UTF_8));
         }
 
         assertThat(item.isInMemory()).isTrue();
         assertThat(item.isFormField()).isTrue();
         assertThat(item.getFieldName()).isEqualTo("comment");
         assertThat(item.getName()).isNull();
-        assertThat(item.getString()).isEqualTo("Grüße");
+        assertThat(item.getString()).isEqualTo("Gr\u00fc\u00dfe");
 
         item.setFieldName("renamed");
         item.setFormField(false);
@@ -200,13 +200,13 @@ public class Commons_fileuploadTest {
         factory.setDefaultCharset(StandardCharsets.UTF_8.name());
         FileItem item = factory.createItem("message", "text/plain; charset=ISO-8859-1", true, null);
         try (OutputStream output = item.getOutputStream()) {
-            output.write("olá".getBytes(StandardCharsets.ISO_8859_1));
+            output.write("ol\u00e1".getBytes(StandardCharsets.ISO_8859_1));
         }
 
         assertThat(item).isInstanceOf(DiskFileItem.class);
         DiskFileItem diskItem = (DiskFileItem) item;
         assertThat(diskItem.getCharSet()).isEqualTo(StandardCharsets.ISO_8859_1.name());
-        assertThat(item.getString()).isEqualTo("olá");
+        assertThat(item.getString()).isEqualTo("ol\u00e1");
     }
 
     @Test
@@ -289,9 +289,9 @@ public class Commons_fileuploadTest {
 
     @Test
     void streamUtilitiesCopyDecodeAndRejectInvalidFileNames() throws Exception {
-        byte[] utf8 = "Zażółć gęślą jaźń".getBytes(StandardCharsets.UTF_8);
+        byte[] utf8 = "Za\u017c\u00f3\u0142\u0107 g\u0119\u015bl\u0105 ja\u017a\u0144".getBytes(StandardCharsets.UTF_8);
         assertThat(Streams.asString(new ByteArrayInputStream(utf8), StandardCharsets.UTF_8.name()))
-                .isEqualTo("Zażółć gęślą jaźń");
+                .isEqualTo("Za\u017c\u00f3\u0142\u0107 g\u0119\u015bl\u0105 ja\u017a\u0144");
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         assertThat(Streams.copy(new ByteArrayInputStream(utf8), output, true, new byte[3]))
