@@ -8,7 +8,7 @@ package com_fasterxml.aalto_xml;
 
 import org.junit.jupiter.api.Test;
 
-class Aalto_xmlTest {
+public class Aalto_xmlTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
