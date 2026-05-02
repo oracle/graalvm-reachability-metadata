@@ -1,0 +1,206 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.jboss.narayana.jta:jta:7.3.1.Final
+Command: `/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1844-302c4bb8/gradlew nativeTest`
+Executing test...
+-------
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :jar
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources
+> Task :tck-test-support:compileJava
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes
+> Task :tck-test-support:jar
+> Task :compileTestJava
+> Task :testClasses
+
+> Task :test FAILED
+
+JNDIManagerTest > bindTransactionSynchronizationRegistryImplementationUsesConfiguredClass() FAILED
+    java.lang.RuntimeException: java.lang.ExceptionInInitializerError
+        at com.arjuna.common.internal.util.propertyservice.BeanPopulator.getNamedInstance(BeanPopulator.java:75)
+        at com.arjuna.common.internal.util.propertyservice.BeanPopulator.getDefaultInstance(BeanPopulator.java:38)
+        at com.arjuna.ats.jta.common.jtaPropertyManager.getJTAEnvironmentBean(jtaPropertyManager.java:18)
+        at org_jboss_narayana_jta.jta.JNDIManagerTest.bindTransactionSynchronizationRegistryImplementationUsesConfiguredClass(JNDIManagerTest.java:29)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError
+            at com.arjuna.common.util.propertyservice.AbstractPropertiesFactory.getPropertiesFromFile(AbstractPropertiesFactory.java:64)
+            at com.arjuna.common.util.propertyservice.AbstractPropertiesFactory.initDefaultProperties(AbstractPropertiesFactory.java:172)
+            at com.arjuna.common.util.propertyservice.AbstractPropertiesFactory.getDefaultProperties(AbstractPropertiesFactory.java:38)
+            at com.arjuna.common.util.propertyservice.PropertiesFactory.getDefaultProperties(PropertiesFactory.java:32)
+            at com.arjuna.common.internal.util.propertyservice.BeanPopulator.getNamedInstance(BeanPopulator.java:71)
+            ... 3 more
+
+            Caused by:
+            java.lang.IllegalArgumentException: Invalid logger interface com.arjuna.common.logging.commonI18NLogger (implementation not found)
+                at org.jboss.logging.Logger.doGetMessageLogger(Logger.java:2630)
+                at org.jboss.logging.Logger.getMessageLogger(Logger.java:2536)
+                at org.jboss.logging.Logger.getMessageLogger(Logger.java:2521)
+                at com.arjuna.common.logging.commonLogger.<clinit>(commonLogger.java:16)
+                ... 8 more
+
+XAOnePhaseResourceTest > packAndUnpackSerializableXaResource() FAILED
+    java.lang.RuntimeException: java.lang.NoClassDefFoundError: Could not initialize class com.arjuna.common.logging.commonLogger
+        at com.arjuna.common.internal.util.propertyservice.BeanPopulator.getNamedInstance(BeanPopulator.java:75)
+        at com.arjuna.common.internal.util.propertyservice.BeanPopulator.getDefaultInstance(BeanPopulator.java:38)
+        at com.arjuna.ats.arjuna.common.arjPropertyManager.getCoreEnvironmentBean(arjPropertyManager.java:25)
+        at com.arjuna.ats.arjuna.utils.Utility.initDefaultProcess(Utility.java:302)
+        at com.arjuna.ats.arjuna.utils.Utility.getProcess(Utility.java:313)
+        at com.arjuna.ats.arjuna.utils.Utility.getpid(Utility.java:258)
+        at com.arjuna.ats.arjuna.common.Uid.<init>(Uid.java:52)
+        at com.arjuna.ats.arjuna.state.OutputObjectState.<init>(OutputObjectState.java:35)
+        at org_jboss_narayana_jta.jta.XAOnePhaseResourceTest.packAndUnpackSerializableXaResource(XAOnePhaseResourceTest.java:33)
+
+        Caused by:
+        java.lang.NoClassDefFoundError: Could not initialize class com.arjuna.common.logging.commonLogger
+            at com.arjuna.common.util.propertyservice.AbstractPropertiesFactory.getPropertiesFromFile(AbstractPropertiesFactory.java:64)
+            at com.arjuna.common.util.propertyservice.AbstractPropertiesFactory.initDefaultProperties(AbstractPropertiesFactory.java:172)
+            at com.arjuna.common.util.propertyservice.AbstractPropertiesFactory.getDefaultProperties(AbstractPropertiesFactory.java:38)
+            at com.arjuna.common.util.propertyservice.PropertiesFactory.getDefaultProperties(PropertiesFactory.java:32)
+            at com.arjuna.common.internal.util.propertyservice.BeanPopulator.getNamedInstance(BeanPopulator.java:71)
+            ... 8 more
+
+            Caused by:
+            java.lang.ExceptionInInitializerError: Exception java.lang.IllegalArgumentException: Invalid logger interface com.arjuna.common.logging.commonI18NLogger (implementation not found) [in thread "junit-timeout-thread-1"]
+                at org.jboss.logging.Logger.doGetMessageLogger(Logger.java:2630)
+                at org.jboss.logging.Logger.getMessageLogger(Logger.java:2536)
+                at org.jboss.logging.Logger.getMessageLogger(Logger.java:2521)
+                at com.arjuna.common.logging.commonLogger.<clinit>(commonLogger.java:16)
+                at com.arjuna.common.util.propertyservice.AbstractPropertiesFactory.getPropertiesFromFile(AbstractPropertiesFactory.java:64)
+                at com.arjuna.common.util.propertyservice.AbstractPropertiesFactory.initDefaultProperties(AbstractPropertiesFactory.java:172)
+                at com.arjuna.common.util.propertyservice.AbstractPropertiesFactory.getDefaultProperties(AbstractPropertiesFactory.java:38)
+                at com.arjuna.common.util.propertyservice.PropertiesFactory.getDefaultProperties(PropertiesFactory.java:32)
+                at com.arjuna.common.internal.util.propertyservice.BeanPopulator.getNamedInstance(BeanPopulator.java:71)
+                at com.arjuna.common.internal.util.propertyservice.BeanPopulator.getDefaultInstance(BeanPopulator.java:38)
+                at com.arjuna.ats.jta.common.jtaPropertyManager.getJTAEnvironmentBean(jtaPropertyManager.java:18)
+                at org_jboss_narayana_jta.jta.JNDIManagerTest.bindTransactionSynchronizationRegistryImplementationUsesConfiguredClass(JNDIManagerTest.java:29)
+                at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+                at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+                at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+                at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+                at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+                at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+                at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+                at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+                at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+                at java.base/java.lang.Thread.run(Thread.java:1474)
+
+XAResourceRecordTest > saveAndRestoreStateWithSerializableXaResource() FAILED
+    java.lang.ExceptionInInitializerError
+        at org_jboss_narayana_jta.jta.XAResourceRecordTest.saveAndRestoreStateWithSerializableXaResource(XAResourceRecordTest.java:28)
+
+        Caused by:
+        java.lang.RuntimeException: java.lang.NoClassDefFoundError: Could not initialize class com.arjuna.common.logging.commonLogger
+            at com.arjuna.common.internal.util.propertyservice.BeanPopulator.getNamedInstance(BeanPopulator.java:75)
+            at com.arjuna.common.internal.util.propertyservice.BeanPopulator.getDefaultInstance(BeanPopulator.java:38)
+            at com.arjuna.ats.arjuna.common.arjPropertyManager.getCoordinatorEnvironmentBean(arjPropertyManager.java:36)
+            at com.arjuna.ats.arjuna.coordinator.AbstractRecord.<clinit>(AbstractRecord.java:691)
+            ... 1 more
+
+            Caused by:
+            java.lang.NoClassDefFoundError: Could not initialize class com.arjuna.common.logging.commonLogger
+                at com.arjuna.common.util.propertyservice.AbstractPropertiesFactory.getPropertiesFromFile(AbstractPropertiesFactory.java:64)
+                at com.arjuna.common.util.propertyservice.AbstractPropertiesFactory.initDefaultProperties(AbstractPropertiesFactory.java:172)
+                at com.arjuna.common.util.propertyservice.AbstractPropertiesFactory.getDefaultProperties(AbstractPropertiesFactory.java:38)
+                at com.arjuna.common.util.propertyservice.PropertiesFactory.getDefaultProperties(PropertiesFactory.java:32)
+                at com.arjuna.common.internal.util.propertyservice.BeanPopulator.getNamedInstance(BeanPopulator.java:71)
+                ... 4 more
+
+                Caused by:
+                java.lang.ExceptionInInitializerError: Exception java.lang.IllegalArgumentException: Invalid logger interface com.arjuna.common.logging.commonI18NLogger (implementation not found) [in thread "junit-timeout-thread-1"]
+                    at org.jboss.logging.Logger.doGetMessageLogger(Logger.java:2630)
+                    at org.jboss.logging.Logger.getMessageLogger(Logger.java:2536)
+                    at org.jboss.logging.Logger.getMessageLogger(Logger.java:2521)
+                    at com.arjuna.common.logging.commonLogger.<clinit>(commonLogger.java:16)
+                    at com.arjuna.common.util.propertyservice.AbstractPropertiesFactory.getPropertiesFromFile(AbstractPropertiesFactory.java:64)
+                    at com.arjuna.common.util.propertyservice.AbstractPropertiesFactory.initDefaultProperties(AbstractPropertiesFactory.java:172)
+                    at com.arjuna.common.util.propertyservice.AbstractPropertiesFactory.getDefaultProperties(AbstractPropertiesFactory.java:38)
+                    at com.arjuna.common.util.propertyservice.PropertiesFactory.getDefaultProperties(PropertiesFactory.java:32)
+                    at com.arjuna.common.internal.util.propertyservice.BeanPopulator.getNamedInstance(BeanPopulator.java:71)
+                    at com.arjuna.common.internal.util.propertyservice.BeanPopulator.getDefaultInstance(BeanPopulator.java:38)
+                    at com.arjuna.ats.jta.common.jtaPropertyManager.getJTAEnvironmentBean(jtaPropertyManager.java:18)
+                    at org_jboss_narayana_jta.jta.JNDIManagerTest.bindTransactionSynchronizationRegistryImplementationUsesConfiguredClass(JNDIManagerTest.java:29)
+                    at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+                    at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+                    at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+                    at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+                    at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+                    at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+                    at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+                    at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+                    at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+                    at java.base/java.lang.Thread.run(Thread.java:1474)
+
+3 tests completed, 3 failed
+
+
+FAILURE: Build failed with an exception.
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1844-302c4bb8/tests/src/org.jboss.narayana.jta/jta/7.3.1.Final/build/reports/problems/problems-report.html
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1844-302c4bb8/tests/src/org.jboss.narayana.jta/jta/7.3.1.Final/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+15 actionable tasks: 7 executed, 8 up-to-date
+BUILD FAILED in 4s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1844-302c4bb8/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.jboss.narayana.jta:jta:7.3.1.Final failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 5s
+9 actionable tasks: 1 executed, 8 up-to-date
