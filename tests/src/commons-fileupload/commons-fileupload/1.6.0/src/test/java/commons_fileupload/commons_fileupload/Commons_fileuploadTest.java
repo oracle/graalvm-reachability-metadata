@@ -195,6 +195,21 @@ public class Commons_fileuploadTest {
     }
 
     @Test
+    void decodesItemTextUsingCharsetDeclaredInContentType() throws Exception {
+        DiskFileItemFactory factory = new DiskFileItemFactory(1024, tempDirectory.toFile());
+        factory.setDefaultCharset(StandardCharsets.UTF_8.name());
+        FileItem item = factory.createItem("message", "text/plain; charset=ISO-8859-1", true, null);
+        try (OutputStream output = item.getOutputStream()) {
+            output.write("olá".getBytes(StandardCharsets.ISO_8859_1));
+        }
+
+        assertThat(item).isInstanceOf(DiskFileItem.class);
+        DiskFileItem diskItem = (DiskFileItem) item;
+        assertThat(diskItem.getCharSet()).isEqualTo(StandardCharsets.ISO_8859_1.name());
+        assertThat(item.getString()).isEqualTo("olá");
+    }
+
+    @Test
     void rejectsRequestsExceedingConfiguredTotalFileAndFileCountLimits() throws Exception {
         byte[] oneLargeFile = multipartBody(part(
                 "Content-Disposition: form-data; name=\"file\"; filename=\"large.txt\"\r\n"
