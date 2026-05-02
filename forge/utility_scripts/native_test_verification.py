@@ -16,6 +16,8 @@ code. The gate routes on that exit code:
   earlier cycle).
 - ``172``   → metadata gap; append the cycle's trace dir to the running
   ``metadataConfigDirs`` so the next cycle's build sees it, then continue.
+  If the trace dir adds no new metadata, route to codex instead of spinning
+  until the outer budget is exhausted.
 - any other → run ``run_codex_metadata_fix`` once. Codex finishes it: on
   codex success return ``PASSED_WITH_INTERVENTION``; on codex failure return
   ``FAILED``. The gate does not re-verify after codex.
@@ -35,6 +37,7 @@ import subprocess
 from dataclasses import dataclass, field
 
 from ai_workflows.fix_metadata_codex import run_codex_metadata_fix
+from utility_scripts.native_metadata_exploration import collect_trace_entries
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import (
     build_timestamped_task_log_path,
@@ -120,6 +123,7 @@ def verify_native_test_passes(
     )
 
     accepted_run_dirs: list[str] = []
+    accepted_entries: set[str] = set()
     intervention_records: list[InterventionRecord] = []
     intervention_used = False
     last_log_path: str | None = None
@@ -168,12 +172,50 @@ def verify_native_test_passes(
             status = STATUS_PASSED_WITH_INTERVENTION if intervention_used else STATUS_PASSED
             return _make_result(status, cycle + 1)
 
+        reproduction_command = _run_native_trace_image_command(
+            coordinate=coordinate,
+            run_dir=run_dir,
+            condition_packages_arg=condition_packages_arg,
+            metadata_config_dirs=accepted_run_dirs,
+        )
+
         if binary_rc == MISSING_METADATA_EXIT_CODE:
+            trace_entries = collect_trace_entries(run_dir)
+            added_entries = trace_entries - accepted_entries
+            if not added_entries:
+                log_stage(
+                    _GATE_STAGE,
+                    f"cycle {cycle + 1}: binary exited 172 but trace added no new metadata; "
+                    "routing to codex (terminal)",
+                )
+                codex_rc, codex_log_path, codex_timed_out = run_codex_metadata_fix(
+                    reachability_repo_path,
+                    coordinate,
+                    reproduction_command=reproduction_command,
+                )
+                intervention_records.append(
+                    InterventionRecord(
+                        stage=f"cycle-{cycle + 1}-codex-no-trace-progress",
+                        kind="codex",
+                        log_path=codex_log_path,
+                    )
+                )
+                if codex_timed_out or codex_rc != 0:
+                    log_stage(
+                        _GATE_STAGE,
+                        f"codex did not converge (timed_out={codex_timed_out}, rc={codex_rc}); FAILED",
+                    )
+                    return _make_result(STATUS_FAILED, cycle + 1)
+                log_stage(_GATE_STAGE, "codex finished after no trace progress; trusting codex's outcome")
+                return _make_result(STATUS_PASSED_WITH_INTERVENTION, cycle + 1)
+
             log_stage(
                 _GATE_STAGE,
                 f"cycle {cycle + 1}: binary exited 172 (missing metadata); "
-                f"adding {os.path.basename(run_dir)} to config_dirs",
+                f"adding {os.path.basename(run_dir)} to config_dirs "
+                f"({len(added_entries)} new trace entries)",
             )
+            accepted_entries.update(added_entries)
             accepted_run_dirs.append(run_dir)
             continue
 
@@ -185,12 +227,7 @@ def verify_native_test_passes(
         codex_rc, codex_log_path, codex_timed_out = run_codex_metadata_fix(
             reachability_repo_path,
             coordinate,
-            reproduction_command=_run_native_trace_image_command(
-                coordinate=coordinate,
-                run_dir=run_dir,
-                condition_packages_arg=condition_packages_arg,
-                metadata_config_dirs=accepted_run_dirs,
-            ),
+            reproduction_command=reproduction_command,
         )
         intervention_records.append(
             InterventionRecord(
@@ -252,7 +289,10 @@ def _run_native_trace_image(
     log-scrape — see ``_parse_binary_exit_code``. ``binary_rc`` is
     ``None`` when neither source produced a value.
     """
-    exit_file = os.path.join(run_dir, "binary-exit-code")
+    exit_file = os.path.join(
+        os.path.dirname(run_dir),
+        f"{os.path.basename(run_dir)}.binary-exit-code",
+    )
     cmd = [
         "./gradlew",
         "runNativeTraceImage",

@@ -259,7 +259,7 @@ def _new_log_path(coordinate: str, prefix: str) -> str:
     )
 
 
-def _collect_entries(run_dir: str) -> set[str]:
+def collect_trace_entries(run_dir: str) -> set[str]:
     """Return a set of canonical-string entries representing ``run_dir`` content.
 
     The set is used solely for the convergence comparison: an iteration that
@@ -274,6 +274,8 @@ def _collect_entries(run_dir: str) -> set[str]:
         for name in files:
             absolute = os.path.join(root, name)
             relative = os.path.relpath(absolute, run_dir)
+            if relative == "binary-exit-code":
+                continue
             try:
                 with open(absolute, "r", encoding="utf-8") as handle:
                     data = json.load(handle)
@@ -291,6 +293,10 @@ def _collect_entries(run_dir: str) -> set[str]:
             for entry in _flatten_json(data):
                 entries.add(f"{relative}::{entry}")
     return entries
+
+
+def _collect_entries(run_dir: str) -> set[str]:
+    return collect_trace_entries(run_dir)
 
 
 def _flatten_json(node: Any) -> list[str]:

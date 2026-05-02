@@ -23,9 +23,11 @@ code:
 
 - `0`              -> `PASSED` (or `PASSED_WITH_INTERVENTION` if codex ran
   earlier in this gate invocation).
-- `172`            -> metadata gap; append the cycle's trace dir to the
-  running `metadataConfigDirs` so the next cycle's build sees it, then
-  continue.
+- `172`            -> metadata gap; if the cycle's trace dir contains
+  metadata entries not already accepted, append it to the running
+  `metadataConfigDirs` so the next cycle's build sees it, then continue.
+  If it adds no new entries, route to codex as a terminal no-progress
+  condition instead of burning the outer budget.
 - any other non-0  -> code/test failure; route to codex (the coding
   agent). Codex finishes it: on codex success return
   `PASSED_WITH_INTERVENTION`; on codex failure return `FAILED`. The gate
@@ -67,10 +69,11 @@ branch to its checkpoint.
   `runNativeTraceImage` Gradle log. Required when status is `FAILED`;
   callers surface it in run metrics and the PR description.
 - `last_native_test_exit_code` — the verification binary's own exit code
-  parsed from the Gradle log (e.g. `172`), or `None` when no exit-value
-  line was captured.
+  read from the Gradle sentinel file, or parsed from the Gradle log as a
+  fallback (e.g. `172`), or `None` when no exit value was captured.
 - `accepted_run_dirs` — absolute paths of the per-cycle trace dirs that
-  produced 172 and were folded into the running `metadataConfigDirs`.
+  produced 172, added new trace entries, and were folded into the running
+  `metadataConfigDirs`.
 - `intervention_records` — ordered list of `{stage, kind: "codex",
   log_path}` entries (zero or one entry; codex is invoked at most once
   per gate invocation).
@@ -86,7 +89,9 @@ flowchart TD
     Run --> Route{binary exit code}
     Route -- 0 --> Merge[mergeNativeTraceMetadata<br/>config_dirs &rarr; output_dir]
     Merge --> Pass([return PASSED<br/>or PASSED_WITH_INTERVENTION])
-    Route -- 172 --> Append[config_dirs += runs/cycle-i]
+    Route -- 172 --> Delta{new trace entries?}
+    Delta -- yes --> Append[config_dirs += runs/cycle-i]
+    Delta -- no --> Codex
     Append --> Bump[i = i + 1]
     Bump --> Outer
     Route -- other --> Codex[run_codex_metadata_fix]
@@ -114,10 +119,12 @@ Per-cycle semantics:
     test are sufficient. The gate runs a single
     `mergeNativeTraceMetadata` to populate `output_dir` with the merged
     metadata and returns.
-  - `172` → `ExitStatus.MISSING_METADATA`. The trace dir captured at
-    least one missing access; appending it to `config_dirs` makes the
-    next cycle's build see that metadata. Codex is **not** invoked —
-    tracing is the authoritative way to fill metadata gaps.
+  - `172` → `ExitStatus.MISSING_METADATA`. The gate compares the cycle's
+    trace entries to all previously accepted entries. If the trace dir
+    added new entries, appending it to `config_dirs` makes the next
+    cycle's build see that metadata. If it added no entries, the trace
+    loop has no new signal and codex is invoked terminally instead of
+    retrying the same metadata gap until the budget is exhausted.
   - any other non-zero → the test or library code is broken in a way
     that more metadata cannot fix. Codex finishes it: codex is invoked
     once, and the gate returns based on codex's exit code. The gate does
@@ -131,10 +138,11 @@ Per-cycle semantics:
   tests when codex cannot recover — exactly the wrong move when the
   failure is a real code/test bug we want surfaced.
 - **Two failure reasons, one status.** `FAILED` is returned on
-  `metadata-gap-exhausted` (172 every cycle until the budget runs out) or
-  `code-failure` (codex did not converge on a non-172 failure). The
-  diagnostic is recorded in the result's `intervention_records`,
-  `accepted_run_dirs`, and `last_native_test_log_path`.
+  `metadata-gap-exhausted` (172 with new trace entries every cycle until
+  the budget runs out) or `code-failure` (codex did not converge on a
+  non-172 or no-trace-progress failure). The diagnostic is recorded in
+  the result's `intervention_records`, `accepted_run_dirs`, and
+  `last_native_test_log_path`.
 - **Codex keeps prior config_dirs.** Codex's fixes are additive; the gate
   does not discard `config_dirs` before codex runs. (Codex returns
   terminally so the question of carrying state across codex is moot for
@@ -210,8 +218,11 @@ A `verify_native_test_passes(...)` invocation is correct iff:
      dirs as `-PinputDirs=` and the caller's `output_dir` as
      `-PoutputDir=`, then return `PASSED` (or
      `PASSED_WITH_INTERVENTION` if codex ran in an earlier cycle).
-   - `172` → append `runs_dir/cycle-<i>` to the running config dirs and
-     continue to the next outer cycle. Codex is **not** invoked.
+   - `172` with new trace entries → append `runs_dir/cycle-<i>` to the
+     running config dirs and continue to the next outer cycle. Codex is
+     **not** invoked while tracing is still making progress.
+   - `172` with no new trace entries → invoke `run_codex_metadata_fix`
+     once and return based on its exit code.
    - any other non-zero → invoke `run_codex_metadata_fix` once and
      return based on its exit code: `PASSED_WITH_INTERVENTION` on codex
      success, `FAILED` on codex failure. The gate does not re-run

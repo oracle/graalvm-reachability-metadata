@@ -209,14 +209,15 @@ class GateRoutingTests(unittest.TestCase):
         )
         self.addCleanup(_rmtree, os.path.dirname(self.output_dir))
 
-    def _fake_run_factory(self, scripted_exits: list[int]):
+    def _fake_run_factory(self, scripted_exits: list[int], trace_entry_mode: str = "unique"):
         """Build a subprocess.run replacement that consumes ``scripted_exits``.
 
         Each call corresponds to one ``./gradlew`` invocation. When the
         invocation contains ``runNativeTraceImage``, the script writes the
         next scripted exit code to the sentinel file referenced by the
         ``-PtraceBinaryExitFile=`` argument so the gate's reader returns
-        that value.
+        that value. For 172 exits it also writes synthetic trace metadata
+        unless ``trace_entry_mode`` is ``none``.
         """
         calls: list[list[str]] = []
         remaining = list(scripted_exits)
@@ -232,10 +233,22 @@ class GateRoutingTests(unittest.TestCase):
                     (a.split("=", 1)[1] for a in cmd if a.startswith("-PtraceBinaryExitFile=")),
                     None,
                 )
+                trace_dir = next(
+                    (a.split("=", 1)[1] for a in cmd if a.startswith("-PtraceMetadataPath=")),
+                    None,
+                )
                 rc = remaining.pop(0)
                 if exit_file:
                     Path(exit_file).parent.mkdir(parents=True, exist_ok=True)
                     Path(exit_file).write_text(str(rc), encoding="utf-8")
+                if rc == ntv.MISSING_METADATA_EXIT_CODE and trace_dir and trace_entry_mode != "none":
+                    trace_index = 0 if trace_entry_mode == "duplicate" else len(scripted_exits) - len(remaining)
+                    trace_path = Path(trace_dir) / "reachability-metadata.json"
+                    trace_path.parent.mkdir(parents=True, exist_ok=True)
+                    trace_path.write_text(
+                        json.dumps({"reflection": [{"type": f"Trace{trace_index}"}]}),
+                        encoding="utf-8",
+                    )
                 # Gradle-side exit is always 0 (Exec uses ignoreExitValue).
                 return subprocess.CompletedProcess(cmd, 0)
             # mergeNativeTraceMetadata or anything else — succeeds.
@@ -303,6 +316,46 @@ class GateRoutingTests(unittest.TestCase):
         self.assertEqual(result.iterations_used, 2)
         self.assertEqual(result.last_native_test_exit_code, ntv.MISSING_METADATA_EXIT_CODE)
         self.assertEqual(result.intervention_records, [])
+
+    def test_routes_to_codex_when_172_adds_no_trace_entries(self) -> None:
+        fake, _calls = self._fake_run_factory([172], trace_entry_mode="none")
+        with patch(
+                "utility_scripts.native_test_verification.subprocess.run",
+                side_effect=fake,
+        ), patch(
+            "utility_scripts.native_test_verification.run_codex_metadata_fix",
+            return_value=(0, "/tmp/codex.log", False),
+        ) as codex_mock:
+            result = ntv.verify_native_test_passes(
+                reachability_repo_path=self.repo,
+                coordinate="g:a:1.0",
+                output_dir=self.output_dir,
+                max_iterations=5,
+            )
+        self.assertEqual(result.status, ntv.STATUS_PASSED_WITH_INTERVENTION)
+        self.assertEqual(result.iterations_used, 1)
+        self.assertEqual(result.accepted_run_dirs, [])
+        codex_mock.assert_called_once()
+
+    def test_routes_to_codex_when_172_repeats_same_trace_entries(self) -> None:
+        fake, _calls = self._fake_run_factory([172, 172], trace_entry_mode="duplicate")
+        with patch(
+                "utility_scripts.native_test_verification.subprocess.run",
+                side_effect=fake,
+        ), patch(
+            "utility_scripts.native_test_verification.run_codex_metadata_fix",
+            return_value=(0, "/tmp/codex.log", False),
+        ) as codex_mock:
+            result = ntv.verify_native_test_passes(
+                reachability_repo_path=self.repo,
+                coordinate="g:a:1.0",
+                output_dir=self.output_dir,
+                max_iterations=5,
+            )
+        self.assertEqual(result.status, ntv.STATUS_PASSED_WITH_INTERVENTION)
+        self.assertEqual(result.iterations_used, 2)
+        self.assertEqual(len(result.accepted_run_dirs), 1)
+        codex_mock.assert_called_once()
 
     def test_routes_to_codex_on_non_172_failure(self) -> None:
         fake, _calls = self._fake_run_factory([1])
