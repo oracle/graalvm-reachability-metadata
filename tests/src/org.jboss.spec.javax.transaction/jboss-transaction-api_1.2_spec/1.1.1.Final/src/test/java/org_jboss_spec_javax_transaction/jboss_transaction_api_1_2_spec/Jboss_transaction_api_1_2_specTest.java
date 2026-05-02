@@ -9,6 +9,7 @@ package org_jboss_spec_javax_transaction.jboss_transaction_api_1_2_spec;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -101,6 +102,22 @@ public class Jboss_transaction_api_1_2_specTest {
         assertThat(bean.defaultTransactionalWork()).isEqualTo("required");
         assertThat(bean.requiresNewWork()).isEqualTo("requires-new");
         assertThat(bean.transactionScopedState).isEqualTo("scoped");
+    }
+
+    @Test
+    void transactionalRollbackRulesHonorExplicitRollbackAndDontRollbackPolicies() {
+        Transactional policy = new ConfiguredTransactional(
+                TxType.REQUIRED,
+                new Class<?>[] {CheckedBusinessException.class, RuntimeException.class},
+                new Class<?>[] {IgnoredBusinessException.class, IllegalArgumentException.class});
+        Transactional defaultPolicy = new ConfiguredTransactional(TxType.SUPPORTS, new Class<?>[0], new Class<?>[0]);
+
+        assertThat(shouldRollback(policy, new CheckedBusinessException())).isTrue();
+        assertThat(shouldRollback(policy, new RuntimeException("runtime failure"))).isTrue();
+        assertThat(shouldRollback(policy, new IgnoredBusinessException())).isFalse();
+        assertThat(shouldRollback(policy, new IllegalArgumentException("ignored runtime failure"))).isFalse();
+        assertThat(shouldRollback(defaultPolicy, new CheckedBusinessException())).isFalse();
+        assertThat(shouldRollback(defaultPolicy, new IllegalStateException("default runtime failure"))).isTrue();
     }
 
     @Test
@@ -243,6 +260,25 @@ public class Jboss_transaction_api_1_2_specTest {
         assertThat(userTransaction.getStatus()).isEqualTo(Status.STATUS_NO_TRANSACTION);
     }
 
+    private static boolean shouldRollback(Transactional transactional, Throwable throwable) {
+        if (matchesExceptionType(transactional.dontRollbackOn(), throwable)) {
+            return false;
+        }
+        if (matchesExceptionType(transactional.rollbackOn(), throwable)) {
+            return true;
+        }
+        return throwable instanceof RuntimeException;
+    }
+
+    private static boolean matchesExceptionType(Class<?>[] exceptionTypes, Throwable throwable) {
+        for (Class<?> exceptionType : exceptionTypes) {
+            if (exceptionType.isAssignableFrom(throwable.getClass())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Transactional
     private static final class AnnotatedTransactionalBean {
         @TransactionScoped
@@ -259,6 +295,44 @@ public class Jboss_transaction_api_1_2_specTest {
         private String requiresNewWork() {
             return "requires-new";
         }
+    }
+
+    private static final class ConfiguredTransactional implements Transactional {
+        private final TxType value;
+        private final Class<?>[] rollbackOn;
+        private final Class<?>[] dontRollbackOn;
+
+        private ConfiguredTransactional(TxType value, Class<?>[] rollbackOn, Class<?>[] dontRollbackOn) {
+            this.value = value;
+            this.rollbackOn = rollbackOn;
+            this.dontRollbackOn = dontRollbackOn;
+        }
+
+        @Override
+        public TxType value() {
+            return value;
+        }
+
+        @Override
+        public Class<?>[] rollbackOn() {
+            return rollbackOn;
+        }
+
+        @Override
+        public Class<?>[] dontRollbackOn() {
+            return dontRollbackOn;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return Transactional.class;
+        }
+    }
+
+    private static class CheckedBusinessException extends Exception {
+    }
+
+    private static final class IgnoredBusinessException extends CheckedBusinessException {
     }
 
     private static final class RecordingTransactionManager implements TransactionManager {
