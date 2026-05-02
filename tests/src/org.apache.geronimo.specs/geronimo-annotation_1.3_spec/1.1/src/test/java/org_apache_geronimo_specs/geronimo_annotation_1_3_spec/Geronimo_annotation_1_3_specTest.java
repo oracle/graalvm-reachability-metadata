@@ -127,6 +127,15 @@ public class Geronimo_annotation_1_3_specTest {
     }
 
     @Test
+    void securityAnnotationsSupportClassLevelAccessPolicies() {
+        RolesAllowed rolesAllowed = annotation(ClassLevelRolesComponent.class, RolesAllowed.class);
+        DenyAll denyAll = annotation(ShutdownOnlyComponent.class, DenyAll.class);
+
+        assertThat(rolesAllowed.value()).containsExactly("operator", "supervisor");
+        assertThat(denyAll).isNotNull();
+    }
+
+    @Test
     void priorityAnnotationSupportsTypeAndParameterUseCases() throws NoSuchMethodException {
         assertRuntimeRetention(Priority.class);
         assertDocumented(Priority.class);
@@ -350,6 +359,14 @@ public class Geronimo_annotation_1_3_specTest {
         @PermitAll
         private void health() {
         }
+    }
+
+    @RolesAllowed({ "operator", "supervisor" })
+    private static final class ClassLevelRolesComponent {
+    }
+
+    @DenyAll
+    private static final class ShutdownOnlyComponent {
     }
 
     @Priority(10)
