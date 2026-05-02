@@ -7,6 +7,8 @@
 package com_google_guava.guava_bootstrap;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -121,6 +123,20 @@ public class Guava_bootstrapTest {
         }
     }
 
+    @Test
+    void closePerformsOrderlyShutdownAndWaitsUntilTerminated() {
+        RecordingExecutorService executor = new RecordingExecutorService();
+
+        executor.close();
+
+        assertThat(executor.shutdownCalls).isEqualTo(1);
+        assertThat(executor.shutdownNowCalls).isZero();
+        assertThat(executor.awaitTerminationCalls).isEqualTo(2);
+        assertThat(executor.lastAwaitTimeout).isEqualTo(1L);
+        assertThat(executor.lastAwaitTimeUnit).isEqualTo(TimeUnit.DAYS);
+        assertThat(executor.isTerminated()).isTrue();
+    }
+
     private static void shutdownAndAwait(ExecutorService executor) {
         executor.shutdownNow();
         try {
@@ -128,6 +144,89 @@ public class Guava_bootstrapTest {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new AssertionError("Interrupted while waiting for executor termination", e);
+        }
+    }
+
+    private static final class RecordingExecutorService implements ExecutorService {
+        private int shutdownCalls;
+        private int shutdownNowCalls;
+        private int awaitTerminationCalls;
+        private long lastAwaitTimeout;
+        private TimeUnit lastAwaitTimeUnit;
+        private boolean shutdown;
+        private boolean terminated;
+
+        @Override
+        public void shutdown() {
+            shutdownCalls++;
+            shutdown = true;
+        }
+
+        @Override
+        public List<Runnable> shutdownNow() {
+            shutdownNowCalls++;
+            shutdown = true;
+            terminated = true;
+            return Collections.emptyList();
+        }
+
+        @Override
+        public boolean isShutdown() {
+            return shutdown;
+        }
+
+        @Override
+        public boolean isTerminated() {
+            return terminated;
+        }
+
+        @Override
+        public boolean awaitTermination(long timeout, TimeUnit unit) {
+            awaitTerminationCalls++;
+            lastAwaitTimeout = timeout;
+            lastAwaitTimeUnit = unit;
+            terminated = awaitTerminationCalls >= 2;
+            return terminated;
+        }
+
+        @Override
+        public void execute(Runnable command) {
+            throw new UnsupportedOperationException("execute is not used by this test");
+        }
+
+        @Override
+        public <T> Future<T> submit(Callable<T> task) {
+            throw new UnsupportedOperationException("submit is not used by this test");
+        }
+
+        @Override
+        public <T> Future<T> submit(Runnable task, T result) {
+            throw new UnsupportedOperationException("submit is not used by this test");
+        }
+
+        @Override
+        public Future<?> submit(Runnable task) {
+            throw new UnsupportedOperationException("submit is not used by this test");
+        }
+
+        @Override
+        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) {
+            throw new UnsupportedOperationException("invokeAll is not used by this test");
+        }
+
+        @Override
+        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) {
+            throw new UnsupportedOperationException("invokeAll is not used by this test");
+        }
+
+        @Override
+        public <T> T invokeAny(Collection<? extends Callable<T>> tasks) {
+            throw new UnsupportedOperationException("invokeAny is not used by this test");
+        }
+
+        @Override
+        public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) {
+            throw new UnsupportedOperationException("invokeAny is not used by this test");
         }
     }
 }
