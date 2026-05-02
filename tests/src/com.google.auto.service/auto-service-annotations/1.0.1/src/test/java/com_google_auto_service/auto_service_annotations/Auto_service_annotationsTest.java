@@ -31,6 +31,7 @@ import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
@@ -135,6 +136,34 @@ public class Auto_service_annotationsTest {
                 .isEqualTo(ElementKind.ANNOTATION_TYPE);
         assertThat(processor.recordsBySimpleName().get("AnnotationService").serviceTypes())
                 .containsExactly("java.lang.annotation.Annotation");
+    }
+
+    @Test
+    void processorDiscoversAutoServiceOnStaticMemberClass() {
+        NestedAutoServiceUseProcessor processor = new NestedAutoServiceUseProcessor();
+
+        CompilationResult result = compile("test.EnclosingServiceContainer", """
+                package test;
+
+                import com.google.auto.service.AutoService;
+
+                final class EnclosingServiceContainer {
+                    @AutoService(Runnable.class)
+                    static final class NestedRunnableService implements Runnable {
+                        @Override
+                        public void run() {
+                        }
+                    }
+                }
+                """, processor);
+
+        assertThat(result.successful()).as(result.diagnosticText()).isTrue();
+        NestedAnnotationUse annotationUse = processor.annotationUse();
+        assertThat(annotationUse.qualifiedName())
+                .isEqualTo("test.EnclosingServiceContainer.NestedRunnableService");
+        assertThat(annotationUse.enclosingQualifiedName()).isEqualTo("test.EnclosingServiceContainer");
+        assertThat(annotationUse.nestingKind()).isEqualTo(NestingKind.MEMBER);
+        assertThat(annotationUse.serviceTypes()).containsExactly("java.lang.Runnable");
     }
 
     @Test
@@ -389,6 +418,9 @@ public class Auto_service_annotationsTest {
         if (processor instanceof AutoServiceUseProcessor) {
             return "use";
         }
+        if (processor instanceof NestedAutoServiceUseProcessor) {
+            return "nested";
+        }
         if (processor instanceof AutoServiceTypedUseProcessor) {
             return "typed";
         }
@@ -404,6 +436,7 @@ public class Auto_service_annotationsTest {
     private static AbstractProcessor processorForKind(String processorKind) {
         return switch (processorKind) {
             case "use" -> new AutoServiceUseProcessor();
+            case "nested" -> new NestedAutoServiceUseProcessor();
             case "typed" -> new AutoServiceTypedUseProcessor();
             case "contract" -> new AutoServiceContractProcessor();
             case "noop" -> new NoopProcessor();
@@ -421,6 +454,13 @@ public class Auto_service_annotationsTest {
                 properties.setProperty("record." + index + ".serviceTypes", joinList(entry.getValue().serviceTypes()));
                 index++;
             }
+        } else if (processor instanceof NestedAutoServiceUseProcessor nestedUseProcessor
+                && nestedUseProcessor.annotationUse != null) {
+            NestedAnnotationUse annotationUse = nestedUseProcessor.annotationUse;
+            properties.setProperty("nested.qualifiedName", annotationUse.qualifiedName());
+            properties.setProperty("nested.enclosingQualifiedName", annotationUse.enclosingQualifiedName());
+            properties.setProperty("nested.nestingKind", annotationUse.nestingKind().name());
+            properties.setProperty("nested.serviceTypes", joinList(annotationUse.serviceTypes()));
         } else if (processor instanceof AutoServiceTypedUseProcessor typedUseProcessor) {
             properties.setProperty("typed.count", Integer.toString(typedUseProcessor.serviceTypesBySimpleName.size()));
             int index = 0;
@@ -450,6 +490,13 @@ public class Auto_service_annotationsTest {
                 List<String> serviceTypes = splitList(properties.getProperty("record." + index + ".serviceTypes", ""));
                 useProcessor.recordsBySimpleName.put(name, new AnnotationUse(kind, serviceTypes));
             }
+        } else if (processor instanceof NestedAutoServiceUseProcessor nestedUseProcessor
+                && properties.containsKey("nested.qualifiedName")) {
+            nestedUseProcessor.annotationUse = new NestedAnnotationUse(
+                    properties.getProperty("nested.qualifiedName"),
+                    properties.getProperty("nested.enclosingQualifiedName"),
+                    NestingKind.valueOf(properties.getProperty("nested.nestingKind")),
+                    splitList(properties.getProperty("nested.serviceTypes", "")));
         } else if (processor instanceof AutoServiceTypedUseProcessor typedUseProcessor) {
             int count = Integer.parseInt(properties.getProperty("typed.count", "0"));
             typedUseProcessor.serviceTypesBySimpleName.clear();
@@ -539,6 +586,13 @@ public class Auto_service_annotationsTest {
     private record AnnotationUse(ElementKind kind, List<String> serviceTypes) {
     }
 
+    private record NestedAnnotationUse(
+            String qualifiedName,
+            String enclosingQualifiedName,
+            NestingKind nestingKind,
+            List<String> serviceTypes) {
+    }
+
     private record AutoServiceContract(
             String qualifiedName,
             ElementKind annotationKind,
@@ -620,6 +674,35 @@ public class Auto_service_annotationsTest {
                 }
             }
             return List.of();
+        }
+    }
+
+    private static final class NestedAutoServiceUseProcessor extends BaseProcessor {
+        private NestedAnnotationUse annotationUse;
+
+        @Override
+        public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+            if (roundEnv.processingOver()) {
+                return false;
+            }
+
+            for (Element element : roundEnv.getElementsAnnotatedWith(autoServiceType())) {
+                assertThat(element).isInstanceOf(TypeElement.class);
+                TypeElement typeElement = (TypeElement) element;
+                assertThat(typeElement.getEnclosingElement()).isInstanceOf(TypeElement.class);
+                TypeElement enclosingElement = (TypeElement) typeElement.getEnclosingElement();
+                annotationUse = new NestedAnnotationUse(
+                        typeElement.getQualifiedName().toString(),
+                        enclosingElement.getQualifiedName().toString(),
+                        typeElement.getNestingKind(),
+                        AutoServiceUseProcessor.serviceTypes(element));
+            }
+            return false;
+        }
+
+        private NestedAnnotationUse annotationUse() {
+            assertThat(annotationUse).isNotNull();
+            return annotationUse;
         }
     }
 
