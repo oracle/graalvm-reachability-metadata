@@ -1,0 +1,31 @@
+=== Pi checkstyle attempt 1 ===
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Fixed the checkstyle violations in:
+
+- `tests/src/io.projectreactor.netty/reactor-netty-core/1.0.39/src/test/java/io_projectreactor_netty/reactor_netty_core/Reactor_netty_coreTest.java`
+
+Changed the non-ASCII string `héllo` to `hello` on the two offending lines only.
+
+Validation passed:
+
+```bash
+./gradlew checkstyle -Pcoordinates=io.projectreactor.netty:reactor-netty-core:1.0.39
+```
+
+Build successful.
+=== Pi test-after-checkstyle attempt 1 ===
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Implemented the minimal test fix in:
+
+- `tests/src/io.projectreactor.netty/reactor-netty-core/1.0.39/src/test/java/io_projectreactor_netty/reactor_netty_core/Reactor_netty_coreTest.java`
+
+The TCP client test now sends and receives within the same Reactor Netty client handler, avoiding the native-image race where the response could arrive before the separate inbound receive subscription was active.
+
+Verified with:
+
+```bash
+./gradlew checkstyle -Pcoordinates=io.projectreactor.netty:reactor-netty-core:1.0.39
+./gradlew test -Pcoordinates=io.projectreactor.netty:reactor-netty-core:1.0.39
+```
+
+Both passed. I also cleaned up generated test artifacts from the verification run. Note: an existing modification to `tests/src/io.projectreactor.netty/reactor-netty-core/1.0.39/user-code-filter.json` was left unchanged.

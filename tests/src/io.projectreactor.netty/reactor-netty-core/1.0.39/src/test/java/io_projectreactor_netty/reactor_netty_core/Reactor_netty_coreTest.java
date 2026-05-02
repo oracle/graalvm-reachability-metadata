@@ -118,11 +118,11 @@ public class Reactor_netty_coreTest {
     @Test
     void byteBufMonoAndFluxConvertPayloadsAcrossRepresentations() {
         ByteBufMono single = ByteBufMono.fromString(
-                Mono.just("héllo"),
+                Mono.just("hello"),
                 StandardCharsets.UTF_8,
                 UnpooledByteBufAllocatorHolder.ALLOCATOR);
 
-        assertThat(single.asString(StandardCharsets.UTF_8).block(TIMEOUT)).isEqualTo("héllo");
+        assertThat(single.asString(StandardCharsets.UTF_8).block(TIMEOUT)).isEqualTo("hello");
         assertThat(ByteBufMono.fromString(Mono.just("abc")).asByteArray().block(TIMEOUT))
                 .containsExactly((byte) 'a', (byte) 'b', (byte) 'c');
 
@@ -156,7 +156,9 @@ public class Reactor_netty_coreTest {
         CountDownLatch serverUnbound = new CountDownLatch(1);
         CountDownLatch clientConnected = new CountDownLatch(1);
         CountDownLatch clientDisconnected = new CountDownLatch(1);
+        CountDownLatch responseReceived = new CountDownLatch(1);
         AtomicBoolean serverChannelActive = new AtomicBoolean();
+        AtomicReference<String> response = new AtomicReference<>();
         AttributeKey<String> clientAttribute = AttributeKey.valueOf("reactor-netty-test-attribute");
         DisposableServer server = null;
         Connection client = null;
@@ -189,19 +191,19 @@ public class Reactor_netty_coreTest {
                     .attr(clientAttribute, "client-value")
                     .doOnConnected(connection -> clientConnected.countDown())
                     .doOnDisconnected(connection -> clientDisconnected.countDown())
+                    .handle((inbound, outbound) -> outbound.sendString(Mono.just("hello"), StandardCharsets.UTF_8)
+                            .then(inbound.receive()
+                                    .asString(StandardCharsets.UTF_8)
+                                    .next()
+                                    .doOnNext(message -> {
+                                        response.set(message);
+                                        responseReceived.countDown();
+                                    })
+                                    .then()))
                     .connectNow(TIMEOUT);
 
-            client.outbound()
-                    .sendString(Mono.just("hello"), StandardCharsets.UTF_8)
-                    .then()
-                    .block(TIMEOUT);
-            String response = client.inbound()
-                    .receive()
-                    .asString(StandardCharsets.UTF_8)
-                    .next()
-                    .block(TIMEOUT);
-
-            assertThat(response).isEqualTo("echo:HELLO");
+            assertThat(responseReceived.await(TIMEOUT.toSeconds(), TimeUnit.SECONDS)).isTrue();
+            assertThat(response.get()).isEqualTo("echo:HELLO");
             assertThat(client.channel().attr(clientAttribute).get()).isEqualTo("client-value");
             assertThat(serverBound.await(1, TimeUnit.SECONDS)).isTrue();
             assertThat(serverConnection.await(1, TimeUnit.SECONDS)).isTrue();

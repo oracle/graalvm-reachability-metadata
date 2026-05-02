@@ -1,0 +1,898 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de963-0076-7472-82e0-64cb87fff369
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.projectreactor.netty:reactor-netty-core:1.0.39
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0.39" when "$version$" is replaced with "1.0.39".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json
+- Set "coordinates" to "io.projectreactor.netty:reactor-netty-core:1.0.39".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0.39".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata patterns first, then verify the Reactor Netty artifact coordinates and tag layout from Maven/GitHub before editing the JSON.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'reactor|netty|io.projectreactor'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c
+build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|not-for-native-image' metadata build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-sources.jar",
+metadata/com.itextpdf/kernel/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/kernel/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/kernel/src/test",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:13:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-sources.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:14:    "repository-url": "https://github.com/eclipse-jgit/jgit",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:15:    "test-code-url": "https://github.com/eclipse-jgit/jgit/tree/v$version$/org.eclipse.jgit.test",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:16:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-javadoc.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:28:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-sources.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:29:    "repository-url": "https://github.com/eclipse-jgit/jgit",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:30:    "test-code-url": "https://github.com/eclipse-jgit/jgit/tree/v$version$/org.eclipse.jgit.test",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:31:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-javadoc.jar",
+metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-sources.jar",
+metadata/com.itextpdf/forms/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/forms/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/forms/src/test",
+metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-sources.jar",
+metadata/com.itextpdf/layout/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/layout/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/layout/src/test",
+metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-javadoc.jar",
+metadata/com.github.virtuald/curvesapi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/virtuald/curvesapi/$version$/curvesapi-$version$-sources.jar",
+metadata/com.github.virtuald/curvesapi/index.json:6:    "repository-url" : "https://github.com/virtuald/curvesapi",
+metadata/com.github.virtuald/curvesapi/index.json:7:    "test-code-url" : "https://github.com/virtuald/curvesapi/tree/$version$/src/test/java",
+metadata/com.github.virtuald/curvesapi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/virtuald/curvesapi/$version$/curvesapi-$version$-javadoc.jar",
+metadata/com.itextpdf/svg/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-sources.jar",
+metadata/com.itextpdf/svg/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/svg/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/svg/src/test",
+metadata/com.itextpdf/svg/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-javadoc.jar",
+metadata/com.ibm.async/asyncutil/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/ibm/async/asyncutil/$version$/asyncutil-$version$-sources.jar",
+metadata/com.ibm.async/asyncutil/index.json:6:    "repository-url" : "https://github.com/IBM/java-async-util",
+metadata/com.ibm.async/asyncutil/index.json:7:    "test-code-url" : "https://github.com/IBM/java-async-util/tree/v$version$/asyncutil/src/test",
+metadata/com.ibm.async/asyncutil/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/ibm/async/asyncutil/$version$/asyncutil-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/xpp3/xpp3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/xpp3/xpp3/$version$/xpp3-$version$-sources.jar",
+metadata/xpp3/xpp3/index.json:6:    "repository-url" : "http://www.extreme.indiana.edu/viewcvs/~checkout~/XPP3/java/",
+metadata/xpp3/xpp3/index.json:7:    "test-code-url" : "https://sources.debian.org/src/libxpp3-java/$version$-4/src/java/tests/",
+metadata/xpp3/xpp3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/xpp3/xpp3/$version$/xpp3-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/test",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-javadoc.jar",
+metadata/com.itextpdf/io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-sources.jar",
+metadata/com.itextpdf/io/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/io/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/io/src/test",
+metadata/com.itextpdf/io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerby-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/$version$/kerby-util-$version$-sources.jar",
+metadata/org.apache.kerby/kerby-util/index.json:6:    "repository-url" : "https://github.com/apache/directory-kerby",
+metadata/org.apache.kerby/kerby-util/index.json:7:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-common/kerby-util/src/test/java",
+metadata/org.apache.kerby/kerby-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/$version$/kerby-util-$version$-javadoc.jar",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/code/findbugs/findbugs-annotations/$version$/findbugs-annotations-$version$-sources.jar",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:7:    "repository-url": "https://github.com/findbugsproject/findbugs",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:8:    "test-code-url": "N/A",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/code/findbugs/findbugs-annotations/$version$/findbugs-annotations-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+
+exec
+/usr/bin/bash -lc "ls -l build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json && sed -n '1,220p' build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c
+ succeeded in 0ms:
+-rw-rw-r-- 1 vjovanov vjovanov 74 May  2 17:51 build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json
+{
+  "coordinates" : "io.projectreactor.netty:reactor-netty-core:1.0.39"
+}
+
+web search: 
+web search: Maven Central io.projectreactor.netty reactor-netty-core 1.0.39 sources javadoc tests jar
+web search: 
+web search: https://central.sonatype.com/artifact/io.projectreactor.netty/reactor-netty-core/1.0.39
+codex
+The local examples prefer Maven Central `-sources.jar` and `-javadoc.jar` when present, with GitHub tag paths for tests unless a tests artifact exists. I’m checking the actual 1.0.39 publication now so the URLs are concrete rather than guessed.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/projectreactor/netty/reactor-netty-core/1.0.39/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/projectreactor/netty/reactor-netty-core/1.0.39</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/projectreactor/netty/reactor-netty-core/1.0.39</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="reactor-netty-core-1.0.39-javadoc.jar" title="reactor-netty-core-1.0.39-javadoc.jar">reactor-netty-core-1.0.39-javadoc.jar</a>             2023-11-14 12:03    456198      
+<a href="reactor-netty-core-1.0.39-javadoc.jar.asc" title="reactor-netty-core-1.0.39-javadoc.jar.asc">reactor-netty-core-1.0.39-javadoc.jar.asc</a>         2023-11-14 12:03       821      
+<a href="reactor-netty-core-1.0.39-javadoc.jar.asc.md5" title="reactor-netty-core-1.0.39-javadoc.jar.asc.md5">reactor-netty-core-1.0.39-javadoc.jar.asc.md5</a>     2023-11-14 12:03        32      
+<a href="reactor-netty-core-1.0.39-javadoc.jar.asc.sha1" title="reactor-netty-core-1.0.39-javadoc.jar.asc.sha1">reactor-netty-core-1.0.39-javadoc.jar.asc.sha...</a>  2023-11-14 12:03        40      
+<a href="reactor-netty-core-1.0.39-javadoc.jar.asc.sha256" title="reactor-netty-core-1.0.39-javadoc.jar.asc.sha256">reactor-netty-core-1.0.39-javadoc.jar.asc.sha...</a>  2023-11-14 12:03        64      
+<a href="reactor-netty-core-1.0.39-javadoc.jar.asc.sha512" title="reactor-netty-core-1.0.39-javadoc.jar.asc.sha512">reactor-netty-core-1.0.39-javadoc.jar.asc.sha...</a>  2023-11-14 12:03       128      
+<a href="reactor-netty-core-1.0.39-javadoc.jar.md5" title="reactor-netty-core-1.0.39-javadoc.jar.md5">reactor-netty-core-1.0.39-javadoc.jar.md5</a>         2023-11-14 12:03        32      
+<a href="reactor-netty-core-1.0.39-javadoc.jar.sha1" title="reactor-netty-core-1.0.39-javadoc.jar.sha1">reactor-netty-core-1.0.39-javadoc.jar.sha1</a>        2023-11-14 12:03        40      
+<a href="reactor-netty-core-1.0.39-javadoc.jar.sha256" title="reactor-netty-core-1.0.39-javadoc.jar.sha256">reactor-netty-core-1.0.39-javadoc.jar.sha256</a>      2023-11-14 12:03        64      
+<a href="reactor-netty-core-1.0.39-javadoc.jar.sha512" title="reactor-netty-core-1.0.39-javadoc.jar.sha512">reactor-netty-core-1.0.39-javadoc.jar.sha512</a>      2023-11-14 12:03       128      
+<a href="reactor-netty-core-1.0.39-original.jar" title="reactor-netty-core-1.0.39-original.jar">reactor-netty-core-1.0.39-original.jar</a>            2023-11-14 12:03    352661      
+<a href="reactor-netty-core-1.0.39-original.jar.asc" title="reactor-netty-core-1.0.39-original.jar.asc">reactor-netty-core-1.0.39-original.jar.asc</a>        2023-11-14 12:03       821      
+<a href="reactor-netty-core-1.0.39-original.jar.asc.md5" title="reactor-netty-core-1.0.39-original.jar.asc.md5">reactor-netty-core-1.0.39-original.jar.asc.md...</a>  2023-11-14 12:03        32      
+<a href="reactor-netty-core-1.0.39-original.jar.asc.sha1" title="reactor-netty-core-1.0.39-original.jar.asc.sha1">reactor-netty-core-1.0.39-original.jar.asc.sh...</a>  2023-11-14 12:03        40      
+<a href="reactor-netty-core-1.0.39-original.jar.asc.sha256" title="reactor-netty-core-1.0.39-original.jar.asc.sha256">reactor-netty-core-1.0.39-original.jar.asc.sh...</a>  2023-11-14 12:03        64      
+<a href="reactor-netty-core-1.0.39-original.jar.asc.sha512" title="reactor-netty-core-1.0.39-original.jar.asc.sha512">reactor-netty-core-1.0.39-original.jar.asc.sh...</a>  2023-11-14 12:03       128      
+<a href="reactor-netty-core-1.0.39-original.jar.md5" title="reactor-netty-core-1.0.39-original.jar.md5">reactor-netty-core-1.0.39-original.jar.md5</a>        2023-11-14 12:03        32      
+<a href="reactor-netty-core-1.0.39-original.jar.sha1" title="reactor-netty-core-1.0.39-original.jar.sha1">reactor-netty-core-1.0.39-original.jar.sha1</a>       2023-11-14 12:03        40      
+<a href="reactor-netty-core-1.0.39-original.jar.sha256" title="reactor-netty-core-1.0.39-original.jar.sha256">reactor-netty-core-1.0.39-original.jar.sha256</a>     2023-11-14 12:03        64      
+<a href="reactor-netty-core-1.0.39-original.jar.sha512" title="reactor-netty-core-1.0.39-original.jar.sha512">reactor-netty-core-1.0.39-original.jar.sha512</a>     2023-11-14 12:03       128      
+<a href="reactor-netty-core-1.0.39-sources.jar" title="reactor-netty-core-1.0.39-sources.jar">reactor-netty-core-1.0.39-sources.jar</a>             2023-11-14 12:03    208499      
+<a href="reactor-netty-core-1.0.39-sources.jar.asc" title="reactor-netty-core-1.0.39-sources.jar.asc">reactor-netty-core-1.0.39-sources.jar.asc</a>         2023-11-14 12:03       821      
+<a href="reactor-netty-core-1.0.39-sources.jar.asc.md5" title="reactor-netty-core-1.0.39-sources.jar.asc.md5">reactor-netty-core-1.0.39-sources.jar.asc.md5</a>     2023-11-14 12:03        32      
+<a href="reactor-netty-core-1.0.39-sources.jar.asc.sha1" title="reactor-netty-core-1.0.39-sources.jar.asc.sha1">reactor-netty-core-1.0.39-sources.jar.asc.sha...</a>  2023-11-14 12:03        40      
+<a href="reactor-netty-core-1.0.39-sources.jar.asc.sha256" title="reactor-netty-core-1.0.39-sources.jar.asc.sha256">reactor-netty-core-1.0.39-sources.jar.asc.sha...</a>  2023-11-14 12:03        64      
+<a href="reactor-netty-core-1.0.39-sources.jar.asc.sha512" title="reactor-netty-core-1.0.39-sources.jar.asc.sha512">reactor-netty-core-1.0.39-sources.jar.asc.sha...</a>  2023-11-14 12:03       128      
+<a href="reactor-netty-core-1.0.39-sources.jar.md5" title="reactor-netty-core-1.0.39-sources.jar.md5">reactor-netty-core-1.0.39-sources.jar.md5</a>         2023-11-14 12:03        32      
+<a href="reactor-netty-core-1.0.39-sources.jar.sha1" title="reactor-netty-core-1.0.39-sources.jar.sha1">reactor-netty-core-1.0.39-sources.jar.sha1</a>        2023-11-14 12:03        40      
+<a href="reactor-netty-core-1.0.39-sources.jar.sha256" title="reactor-netty-core-1.0.39-sources.jar.sha256">reactor-netty-core-1.0.39-sources.jar.sha256</a>      2023-11-14 12:03        64      
+<a href="reactor-netty-core-1.0.39-sources.jar.sha512" title="reactor-netty-core-1.0.39-sources.jar.sha512">reactor-netty-core-1.0.39-sources.jar.sha512</a>      2023-11-14 12:03       128      
+<a href="reactor-netty-core-1.0.39.jar" title="reactor-netty-core-1.0.39.jar">reactor-netty-core-1.0.39.jar</a>                     2023-11-14 12:03    412253      
+<a href="reactor-netty-core-1.0.39.jar.asc" title="reactor-netty-core-1.0.39.jar.asc">reactor-netty-core-1.0.39.jar.asc</a>                 2023-11-14 12:03       821      
+<a href="reactor-netty-core-1.0.39.jar.asc.md5" title="reactor-netty-core-1.0.39.jar.asc.md5">reactor-netty-core-1.0.39.jar.asc.md5</a>             2023-11-14 12:03        32      
+<a href="reactor-netty-core-1.0.39.jar.asc.sha1" title="reactor-netty-core-1.0.39.jar.asc.sha1">reactor-netty-core-1.0.39.jar.asc.sha1</a>            2023-11-14 12:03        40      
+<a href="reactor-netty-core-1.0.39.jar.asc.sha256" title="reactor-netty-core-1.0.39.jar.asc.sha256">reactor-netty-core-1.0.39.jar.asc.sha256</a>          2023-11-14 12:03        64      
+<a href="reactor-netty-core-1.0.39.jar.asc.sha512" title="reactor-netty-core-1.0.39.jar.asc.sha512">reactor-netty-core-1.0.39.jar.asc.sha512</a>          2023-11-14 12:03       128      
+<a href="reactor-netty-core-1.0.39.jar.md5" title="reactor-netty-core-1.0.39.jar.md5">reactor-netty-core-1.0.39.jar.md5</a>                 2023-11-14 12:03        32      
+<a href="reactor-netty-core-1.0.39.jar.sha1" title="reactor-netty-core-1.0.39.jar.sha1">reactor-netty-core-1.0.39.jar.sha1</a>                2023-11-14 12:03        40      
+<a href="reactor-netty-core-1.0.39.jar.sha256" title="reactor-netty-core-1.0.39.jar.sha256">reactor-netty-core-1.0.39.jar.sha256</a>              2023-11-14 12:03        64      
+<a href="reactor-netty-core-1.0.39.jar.sha512" title="reactor-netty-core-1.0.39.jar.sha512">reactor-netty-core-1.0.39.jar.sha512</a>              2023-11-14 12:03       128      
+<a href="reactor-netty-core-1.0.39.pom" title="reactor-netty-core-1.0.39.pom">reactor-netty-core-1.0.39.pom</a>                     2023-11-14 12:03      3924      
+<a href="reactor-netty-core-1.0.39.pom.asc" title="reactor-netty-core-1.0.39.pom.asc">reactor-netty-core-1.0.39.pom.asc</a>                 2023-11-14 12:03       821      
+<a href="reactor-netty-core-1.0.39.pom.asc.md5" title="reactor-netty-core-1.0.39.pom.asc.md5">reactor-netty-core-1.0.39.pom.asc.md5</a>             2023-11-14 12:03        32      
+<a href="reactor-netty-core-1.0.39.pom.asc.sha1" title="reactor-netty-core-1.0.39.pom.asc.sha1">reactor-netty-core-1.0.39.pom.asc.sha1</a>            2023-11-14 12:03        40      
+<a href="reactor-netty-core-1.0.39.pom.asc.sha256" title="reactor-netty-core-1.0.39.pom.asc.sha256">reactor-netty-core-1.0.39.pom.asc.sha256</a>          2023-11-14 12:03        64      
+<a href="reactor-netty-core-1.0.39.pom.asc.sha512" title="reactor-netty-core-1.0.39.pom.asc.sha512">reactor-netty-core-1.0.39.pom.asc.sha512</a>          2023-11-14 12:03       128      
+<a href="reactor-netty-core-1.0.39.pom.md5" title="reactor-netty-core-1.0.39.pom.md5">reactor-netty-core-1.0.39.pom.md5</a>                 2023-11-14 12:03        32      
+<a href="reactor-netty-core-1.0.39.pom.sha1" title="reactor-netty-core-1.0.39.pom.sha1">reactor-netty-core-1.0.39.pom.sha1</a>                2023-11-14 12:03        40      
+<a href="reactor-netty-core-1.0.39.pom.sha256" title="reactor-netty-core-1.0.39.pom.sha256">reactor-netty-core-1.0.39.pom.sha256</a>              2023-11-14 12:03        64      
+<a href="reactor-netty-core-1.0.39.pom.sha512" title="reactor-netty-core-1.0.39.pom.sha512">reactor-netty-core-1.0.39.pom.sha512</a>              2023-11-14 12:03       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/io/projectreactor/netty/reactor-netty-core/1.0.39/reactor-netty-core-1.0.39-sources.jar && curl -fsSI https://repo1.maven.org/maven2/io/projectreactor/netty/reactor-netty-core/1.0.39/reactor-netty-core-1.0.39-javadoc.jar && curl -fsSI https://repo1.maven.org/maven2/io/projectreactor/netty/reactor-netty-core/1.0.39/reactor-netty-core-1.0.39-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/reactor/reactor-netty/v1.0.39/settings.gradle | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/reactor/reactor-netty/tree/v1.0.39/reactor-netty-core/src/test' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c
+ succeeded in 155ms:
+/*
+ * Copyright (c) 2011-2021 VMware, Inc. or its affiliates, All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+rootProject.name = 'reactor-netty'
+include 'reactor-netty-core'
+include 'reactor-netty-http'
+include 'reactor-netty-http-brave'
+include 'reactor-netty-incubator-quic'
+include 'reactor-netty-examples'
+include 'reactor-netty'
+ succeeded in 490ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:51:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"d22c5e8120cef10e190643c36dee1a4b"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=gpw6xdtco5uV6YX%2BF2LKkWG6aRGO5EviCdWlok2ZGnZkKR%2F%2BhOOe3JVd8UPHbLJ5Nm2uvIHV4%2FLnTujksekdIcSE2Zm4rUlW3rCM39rJjPgUdG6sYLRnhQQXzq8NjymRolnNP4NkIxwkuRmPImtM0aQHzkTgtRVO%2FDhfhr%2FokT0RNCS7Ff6Orxock9tNYYHAqCAVXT%2F4h4uvA%2F5xSPbIKYIekLq79HmlAz0VQRthJ9ton0Fod03M%2BuGIjF0sVLtaVlQHdD%2FgC%2BSnISrsBzuGLQ%3D%3D--EFOqiNCMZQCTTVdZ--ZGMQyJiU%2BaRGWI1M7D6A2g%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1434967423.1777737091; expires=Sun, 02 May 2027 15:51:31 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 02 May 2027 15:51:31 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5108:AA8D8:BEED694:8EDEB46:69F61D83
+
+
+ exited 22 in 719ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:51:32 GMT
+content-type: application/java-archive
+content-length: 208499
+cf-ray: 9f583017d9e1c126-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "57af1f9b58a37b2a58b68cce3bec75e1"
+last-modified: Tue, 14 Nov 2023 12:03:41 GMT
+x-checksum-md5: 57af1f9b58a37b2a58b68cce3bec75e1
+x-checksum-sha1: d14c24269adbe5ed71fd37c0e5e3e4ed36fd6b2f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 02 May 2026 15:51:32 GMT
+content-type: application/java-archive
+content-length: 456198
+cf-ray: 9f5830197f1a0396-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "54b6d7e98c6e56f3f80742b7244732e7"
+last-modified: Tue, 14 Nov 2023 12:03:40 GMT
+x-checksum-md5: 54b6d7e98c6e56f3f80742b7244732e7
+x-checksum-sha1: 2770c34364e4f3f79090ab0d0193d37a274f1bba
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Sat, 02 May 2026 15:51:32 GMT
+content-type: text/html
+cf-ray: 9f58301aeee8bc54-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/projectreactor/netty/reactor-netty-core/1.0.39/reactor-netty-core-1.0.39-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/projectreactor/netty/reactor-netty-core/1.0.39/reactor-netty-core-1.0.39.pom | sed -n '1,240p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.projectreactor.netty</groupId>
+  <artifactId>reactor-netty-core</artifactId>
+  <version>1.0.39</version>
+  <name>Core functionality for the Reactor Netty library</name>
+  <description>Core functionality for the Reactor Netty library</description>
+  <url>https://github.com/reactor/reactor-netty</url>
+  <organization>
+    <name>reactor</name>
+    <url>https://github.com/reactor</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>simonbasle</id>
+      <name>Simon Baslé</name>
+      <email>sbasle@vmware.com</email>
+    </developer>
+    <developer>
+      <id>violetagg</id>
+      <name>Violeta Georgieva</name>
+      <email>violetag@vmware.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/reactor/reactor-netty</connection>
+    <developerConnection>scm:git:git://github.com/reactor/reactor-netty</developerConnection>
+    <url>https://github.com/reactor/reactor-netty</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/reactor/reactor-netty/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-handler</artifactId>
+      <version>4.1.101.Final</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-handler-proxy</artifactId>
+      <version>4.1.101.Final</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-resolver-dns</artifactId>
+      <version>4.1.101.Final</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-resolver-dns-native-macos</artifactId>
+      <version>4.1.101.Final</version>
+      <classifier>osx-x86_64</classifier>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-epoll</artifactId>
+      <version>4.1.101.Final</version>
+      <classifier>linux-x86_64</classifier>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-core</artifactId>
+      <version>3.4.34</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/reactor/reactor-netty/v1.0.39/reactor-netty-core/build.gradle | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/reactor/reactor-netty/git/ref/tags/v1.0.39 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/reactor/reactor-netty/contents/reactor-netty-core/src/test?ref=v1.0.39 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c
+ succeeded in 154ms:
+/*
+ * Copyright (c) 2020-2023 VMware, Inc. or its affiliates, All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import aQute.bnd.gradle.BundleTaskConvention
+import me.champeau.gradle.japicmp.JapicmpTask
+
+apply plugin: 'java-test-fixtures'
+apply plugin: 'io.spring.javadoc'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'me.champeau.gradle.japicmp'
+apply plugin: 'de.undercouch.download'
+apply plugin: 'biz.aQute.bnd.builder'
+
+ext {
+	bndOptions = [
+			"Export-Package" : "reactor.netty*;version=$osgiVersion;-noimport:=true",
+			"Import-Package": [
+					"!javax.annotation",
+					"io.netty.channel.kqueue;resolution:=optional;version=\"[4.1,5)\"",
+					"io.netty.incubator.channel.uring;resolution:=optional",
+					"io.micrometer.*;resolution:=optional",
+					"*"
+			].join(","),
+			"Bundle-Name" : "reactor-netty-core",
+			"Bundle-SymbolicName" : "io.projectreactor.netty.reactor-netty-core",
+			"Bundle-Version" : "$osgiVersion"
+	]
+}
+
+sourceSets {
+	jarFileTest
+	contextPropagationTest {
+		compileClasspath += sourceSets.main.output
+		runtimeClasspath += sourceSets.main.output
+	}
+}
+
+configurations {
+	shaded
+	contextPropagationTestImplementation.extendsFrom(implementation)
+	contextPropagationTestRuntimeOnly.extendsFrom(runtimeOnly)
+}
+
+dependencies {
+	// JSR-305 annotations
+	compileOnly "com.google.code.findbugs:jsr305:$jsr305Version"
+
+	api "io.netty:netty-handler:$nettyVersion"
+	api "io.netty:netty-handler-proxy:$nettyVersion"
+	api "io.netty:netty-resolver-dns:$nettyVersion"
+	if (!"$nettyVersion".endsWithAny("SNAPSHOT")) {
+		if (osdetector.classifier == "osx-x86_64" || osdetector.classifier == "osx-aarch_64") {
+			api "io.netty:netty-resolver-dns-native-macos:$nettyVersion$os_suffix"
+		}
+		else {
+			api "io.netty:netty-resolver-dns-native-macos:$nettyVersion:osx-x86_64"
+		}
+	}
+	else {
+		// MacOS binaries are not available for Netty SNAPSHOT version
+		api "io.netty:netty-resolver-dns-native-macos:$nettyVersion"
+	}
+	//transport resolution: typical build forces epoll but not kqueue transitively
+	//on the other hand, if we want to make transport-specific tests, we'll make all
+	// native optional at compile time and add correct native/nio to testRuntime
+	if (project.hasProperty("forceTransport")) {
+		//so that the main code compiles
+		compileOnly "io.netty:netty-transport-native-epoll:$nettyVersion"
+		compileOnly "io.netty:netty-transport-native-kqueue:$nettyVersion"
+		compileOnly "io.netty.incubator:netty-incubator-transport-native-io_uring:$nettyIoUringVersion"
+		testImplementation "io.netty:netty-transport-native-epoll:$nettyVersion"
+		testImplementation "io.netty:netty-transport-native-kqueue:$nettyVersion"
+		testImplementation "io.netty.incubator:netty-incubator-transport-native-io_uring:$nettyIoUringVersion"
+		//now we explicitly add correctly qualified native, or do nothing if we want to test NIO
+		if (forceTransport == "native") {
+			if (osdetector.os == "osx") {
+				testImplementation "io.netty:netty-transport-native-kqueue:$nettyVersion$os_suffix"
+			}
+			else if (osdetector.os == "linux") {
+				testImplementation "io.netty:netty-transport-native-epoll:$nettyVersion$os_suffix"
+			}
+		}
+		else if (forceTransport == "io_uring" && osdetector.os == "linux") {
+			testImplementation "io.netty.incubator:netty-incubator-transport-native-io_uring:$nettyIoUringVersion$os_suffix"
+		}
+		else if (forceTransport != "nio") {
+			throw new InvalidUserDataException("invalid -PforceTranport option " + forceTransport + ", should be native|nio")
+		}
+	}
+	else {
+		//classic build to be distributed
+		api "io.netty:netty-transport-native-epoll:$nettyVersion:linux-x86_64"
+		compileOnly "io.netty:netty-transport-native-kqueue:$nettyVersion"
+		compileOnly "io.netty.incubator:netty-incubator-transport-native-io_uring:$nettyIoUringVersion"
+		testImplementation "io.netty:netty-transport-native-kqueue:$nettyVersion"
+		testImplementation "io.netty.incubator:netty-incubator-transport-native-io_uring:$nettyIoUringVersion"
+	}
+
+	//Metrics
+	compileOnly "io.micrometer:micrometer-core:$micrometerVersion"
+	compileOnly "io.micrometer:context-propagation:$contextPropagationVersion"
+
+	// Logging
+	compileOnly "org.slf4j:slf4j-api:$slf4jVersion"
+
+	api "io.projectreactor:reactor-core:$reactorCoreVersion"
+	shaded("io.projectreactor.addons:reactor-pool:$reactorPoolVersion") {
+		exclude module: "reactor-core"
+	}
+
+	// Testing
+
+	// JSR-305 annotations
+	testCompileOnly "com.google.code.findbugs:jsr305:$jsr305Version"
+
+	testImplementation "com.fasterxml.jackson.core:jackson-databind:$jacksonDatabindVersion"
+	testImplementation "io.projectreactor:reactor-test:$testAddonVersion"
+	testImplementation "io.projectreactor.addons:reactor-extra:$reactorAddonsVersion"
+	testImplementation "org.assertj:assertj-core:$assertJVersion"
+	testImplementation "org.awaitility:awaitility:$awaitilityVersion"
+	testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+	testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
+	testImplementation "org.mockito:mockito-core:$mockitoVersion"
+	testImplementation "ch.qos.logback:logback-classic:$logbackVersion"
+	testImplementation "io.projectreactor.tools:blockhound-junit-platform:$blockHoundVersion"
+	testImplementation "io.micrometer:micrometer-core:$micrometerVersion"
+
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junitPlatformLauncherVersion"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+	testRuntimeOnly "org.slf4j:jcl-over-slf4j:$slf4jVersion"
+
+	testFixturesApi("ch.qos.logback:logback-classic:$logbackVersion")
+
+	for (dependency in project.configurations.shaded.dependencies) {
+		compileOnly(dependency)
+		testImplementation(dependency)
+		contextPropagationTestImplementation(dependency)
+	}
+
+	jarFileTestImplementation "org.assertj:assertj-core:$assertJVersion"
+	jarFileTestImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+	jarFileTestRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+
+	contextPropagationTestImplementation "io.projectreactor:reactor-test:$testAddonVersion"
+	contextPropagationTestImplementation "org.assertj:assertj-core:$assertJVersion"
+	contextPropagationTestImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+	contextPropagationTestImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
+	contextPropagationTestImplementation "ch.qos.logback:logback-classic:$logbackVersion"
+	contextPropagationTestImplementation "io.micrometer:context-propagation:$contextPropagationVersion"
+	contextPropagationTestRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+}
+
+jar {
+	archiveClassifier.set('original')
+	manifest {
+		attributes("Automatic-Module-Name": "reactor.netty.core")
+	}
+	bnd(bndOptions)
+}
+
+components.java.withVariantsFromConfiguration(configurations.testFixturesApiElements) { skip() }
+components.java.withVariantsFromConfiguration(configurations.testFixturesRuntimeElements) { skip() }
+
+task downloadBaseline(type: Download) {
+	onlyIf {
+		if (project.gradle.startParameter.isOffline()) {
+			println "Offline: skipping downloading of baseline and JAPICMP"
+			return false
+		}
+		else if ("$compatibleVersion" == "SKIP") {
+			println "SKIP: Instructed to skip the baseline comparison"
+			return false
+		}
+		else {
+			println "Will download and perform baseline comparison with ${compatibleVersion}"
+			return true
+		}
+	}
+
+	onlyIfNewer true
+	compress true
+	src "${repositories.mavenCentral().url}io/projectreactor/netty/reactor-netty-core/$compatibleVersion/reactor-netty-core-${compatibleVersion}-original.jar"
+	dest "${buildDir}/baselineLibs/reactor-netty-core-${compatibleVersion}-original.jar"
+}
+
+def japicmpReport = tasks.register('japicmpReport') {
+	onlyIf {
+		japicmp.state.failure != null
+	}
+	doLast {
+		def reportFile = file("${project.buildDir}/reports/japi.txt")
+		if (reportFile.exists()) {
+			println "\n **********************************"
+			println " * /!\\ API compatibility failures *"
+			println " **********************************"
+			println "Japicmp report was filtered and interpreted to find the following incompatibilities:"
+			reportFile.eachLine {
+				if (it.contains("*") && (!it.contains("***") || it.contains("****")))
+					println "source incompatible change: $it"
+				else if (it.contains("!"))
+					println "binary incompatible change: $it"
+			}
+		}
+		else println "No incompatible change to report"
+	}
+}
+
+task japicmp(type: JapicmpTask) {
+
+ succeeded in 156ms:
+[
+  {
+    "name": "java",
+    "path": "reactor-netty-core/src/test/java",
+    "sha": "db253e675e84777e343bfc687dbec8aef1f14bbf",
+    "size": 0,
+    "url": "https://api.github.com/repos/reactor/reactor-netty/contents/reactor-netty-core/src/test/java?ref=v1.0.39",
+    "html_url": "https://github.com/reactor/reactor-netty/tree/v1.0.39/reactor-netty-core/src/test/java",
+    "git_url": "https://api.github.com/repos/reactor/reactor-netty/git/trees/db253e675e84777e343bfc687dbec8aef1f14bbf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/reactor/reactor-netty/contents/reactor-netty-core/src/test/java?ref=v1.0.39",
+      "git": "https://api.github.com/repos/reactor/reactor-netty/git/trees/db253e675e84777e343bfc687dbec8aef1f14bbf",
+      "html": "https://github.com/reactor/reactor-netty/tree/v1.0.39/reactor-netty-core/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "reactor-netty-core/src/test/resources",
+    "sha": "709544e80806a168305b4e6b17dbaf21277eaf6f",
+    "size": 0,
+    "url": "https://api.github.com/repos/reactor/reactor-netty/contents/reactor-netty-core/src/test/resources?ref=v1.0.39",
+    "html_url": "https://github.com/reactor/reactor-netty/tree/v1.0.39/reactor-netty-core/src/test/resources",
+    "git_url": "https://api.github.com/repos/reactor/reactor-netty/git/trees/709544e80806a168305b4e6b17dbaf21277eaf6f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/reactor/reactor-netty/contents/reactor-netty-core/src/test/resources?ref=v1.0.39",
+      "git": "https://api.github.com/repos/reactor/reactor-netty/git/trees/709544e80806a168305b4e6b17dbaf21277eaf6f",
+      "html": "https://github.com/reactor/reactor-netty/tree/v1.0.39/reactor-netty-core/src/test/resources"
+    }
+  }
+]
+
+ succeeded in 190ms:
+{
+  "ref": "refs/tags/v1.0.39",
+  "node_id": "MDM6UmVmNjYwMzAzMDY6cmVmcy90YWdzL3YxLjAuMzk=",
+  "url": "https://api.github.com/repos/reactor/reactor-netty/git/refs/tags/v1.0.39",
+  "object": {
+    "sha": "6abdb47a913066a8e75c2be1e2ad46b0abb317c1",
+    "type": "tag",
+    "url": "https://api.github.com/repos/reactor/reactor-netty/git/tags/6abdb47a913066a8e75c2be1e2ad46b0abb317c1"
+  }
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/reactor/reactor-netty/contents/reactor-netty-core/src/test?ref=v1.0.39 | rg '\"html_url\"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c
+ succeeded in 0ms:
+    "html_url": "https://github.com/reactor/reactor-netty/tree/v1.0.39/reactor-netty-core/src/test/java",
+    "html_url": "https://github.com/reactor/reactor-netty/tree/v1.0.39/reactor-netty-core/src/test/resources",
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/io/projectreactor/netty/reactor-netty-core/1.0.39/reactor-netty-core-1.0.39-sources.jar && curl -fsSI https://repo.maven.apache.org/maven2/io/projectreactor/netty/reactor-netty-core/1.0.39/reactor-netty-core-1.0.39-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp) && curl -fsSL -o "$tmp" https://repo.maven.apache.org/maven2/io/projectreactor/netty/reactor-netty-core/1.0.39/reactor-netty-core-1.0.39.jar && jar tf "$tmp" | rg '"'\\.class"'$'"' | head -10 && rm -f \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c
+ succeeded in 112ms:
+reactor/netty/ByteBufFlux$ByteBufFluxFuseable.class
+reactor/netty/ByteBufFlux.class
+reactor/netty/ByteBufMono$ByteBufMonoFuseable.class
+reactor/netty/ByteBufMono$ReleasingInputStream.class
+reactor/netty/ByteBufMono.class
+reactor/netty/ChannelBindException.class
+reactor/netty/ChannelOperationsId.class
+reactor/netty/ChannelPipelineConfigurer.class
+reactor/netty/Connection.class
+reactor/netty/ConnectionObserver$State.class
+
+ succeeded in 406ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:51:49 GMT
+content-type: application/java-archive
+content-length: 456198
+cf-ray: 9f58308338d301f0-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "54b6d7e98c6e56f3f80742b7244732e7"
+last-modified: Tue, 14 Nov 2023 12:03:40 GMT
+x-checksum-md5: 54b6d7e98c6e56f3f80742b7244732e7
+x-checksum-sha1: 2770c34364e4f3f79090ab0d0193d37a274f1bba
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+I’ve confirmed Maven Central publishes the main JAR, sources JAR, and Javadoc JAR, but no tests JAR. The artifact contains JVM `.class` files and the project/test sources are Java, so I’m leaving `language` and `not-for-native-image` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json
+diff --git a/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json b/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json
+index ff59c53000dfe9f6bc507d5aca5bcb53c94c6a29..4b581f39bd31dd2cc84de0774d36b41a550b684b
+--- a/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json
++++ b/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.projectreactor.netty:reactor-netty-core:1.0.39"
++  "coordinates" : "io.projectreactor.netty:reactor-netty-core:1.0.39",
++  "repository-url" : "https://github.com/reactor/reactor-netty",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/netty/reactor-netty-core/$version$/reactor-netty-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/reactor/reactor-netty/tree/v$version$/reactor-netty-core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/netty/reactor-netty-core/$version$/reactor-netty-core-$version$-javadoc.jar",
++  "description" : "Reactor Netty Core provides the shared TCP, UDP, DNS, channel, connection, and byte buffer infrastructure used by Reactor Netty's reactive networking clients and servers. It integrates Netty with Project Reactor's non-blocking programming model so JVM applications can build backpressure-aware network components."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json b/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json
+index ff59c53000dfe9f6bc507d5aca5bcb53c94c6a29..4b581f39bd31dd2cc84de0774d36b41a550b684b
+--- a/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json
++++ b/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.projectreactor.netty:reactor-netty-core:1.0.39"
++  "coordinates" : "io.projectreactor.netty:reactor-netty-core:1.0.39",
++  "repository-url" : "https://github.com/reactor/reactor-netty",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/netty/reactor-netty-core/$version$/reactor-netty-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/reactor/reactor-netty/tree/v$version$/reactor-netty-core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/netty/reactor-netty-core/$version$/reactor-netty-core-$version$-javadoc.jar",
++  "description" : "Reactor Netty Core provides the shared TCP, UDP, DNS, channel, connection, and byte buffer infrastructure used by Reactor Netty's reactive networking clients and servers. It integrates Netty with Project Reactor's non-blocking programming model so JVM applications can build backpressure-aware network components."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c
+ succeeded in 0ms:
+{
+  "coordinates": "io.projectreactor.netty:reactor-netty-core:1.0.39",
+  "repository-url": "https://github.com/reactor/reactor-netty",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/projectreactor/netty/reactor-netty-core/$version$/reactor-netty-core-$version$-sources.jar",
+  "test-code-url": "https://github.com/reactor/reactor-netty/tree/v$version$/reactor-netty-core/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/projectreactor/netty/reactor-netty-core/$version$/reactor-netty-core-$version$-javadoc.jar",
+  "description": "Reactor Netty Core provides the shared TCP, UDP, DNS, channel, connection, and byte buffer infrastructure used by Reactor Netty's reactive networking clients and servers. It integrates Netty with Project Reactor's non-blocking programming model so JVM applications can build backpressure-aware network components."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json b/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json
+index ff59c53000dfe9f6bc507d5aca5bcb53c94c6a29..4b581f39bd31dd2cc84de0774d36b41a550b684b
+--- a/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json
++++ b/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.projectreactor.netty:reactor-netty-core:1.0.39"
++  "coordinates" : "io.projectreactor.netty:reactor-netty-core:1.0.39",
++  "repository-url" : "https://github.com/reactor/reactor-netty",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/netty/reactor-netty-core/$version$/reactor-netty-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/reactor/reactor-netty/tree/v$version$/reactor-netty-core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/netty/reactor-netty-core/$version$/reactor-netty-core-$version$-javadoc.jar",
++  "description" : "Reactor Netty Core provides the shared TCP, UDP, DNS, channel, connection, and byte buffer infrastructure used by Reactor Netty's reactive networking clients and servers. It integrates Netty with Project Reactor's non-blocking programming model so JVM applications can build backpressure-aware network components."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c
+diff --git a/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json b/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json
+index ff59c53000dfe9f6bc507d5aca5bcb53c94c6a29..4b581f39bd31dd2cc84de0774d36b41a550b684b
+--- a/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json
++++ b/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.projectreactor.netty:reactor-netty-core:1.0.39"
++  "coordinates" : "io.projectreactor.netty:reactor-netty-core:1.0.39",
++  "repository-url" : "https://github.com/reactor/reactor-netty",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/netty/reactor-netty-core/$version$/reactor-netty-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/reactor/reactor-netty/tree/v$version$/reactor-netty-core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/netty/reactor-netty-core/$version$/reactor-netty-core-$version$-javadoc.jar",
++  "description" : "Reactor Netty Core provides the shared TCP, UDP, DNS, channel, connection, and byte buffer infrastructure used by Reactor Netty's reactive networking clients and servers. It integrates Netty with Project Reactor's non-blocking programming model so JVM applications can build backpressure-aware network components."
+ }
+
+ succeeded in 109ms:
+!! build/
+
+web search: 
+web search: https://central.sonatype.com/artifact/io.projectreactor.netty/reactor-netty-core/1.0.39
+web search: 
+web search: 'src/test' in https://github.com/reactor/reactor-netty/tree/v1.0.39/reactor-netty-core/src/test
+codex
+Updated [io.projectreactor.netty-reactor-netty-core-1.0.39.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json) with repository, Maven sources/Javadoc URLs, GitHub test URL, and the two-sentence description.
+
+I omitted `language` and `not-for-native-image`: this is a JVM Maven artifact, and Maven Central identifies the Reactor Netty GitHub repo plus the 1.0.39 coordinates/description; the GitHub `v1.0.39` tag contains the `reactor-netty-core/src/test` suite. ([central.sonatype.com](https://central.sonatype.com/artifact/io.projectreactor.netty/reactor-netty-core/1.0.39))
+
+Validation run: `jq . build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json`.
+diff --git a/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json b/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json
+index ff59c53000dfe9f6bc507d5aca5bcb53c94c6a29..4b581f39bd31dd2cc84de0774d36b41a550b684b
+--- a/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json
++++ b/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.projectreactor.netty:reactor-netty-core:1.0.39"
++  "coordinates" : "io.projectreactor.netty:reactor-netty-core:1.0.39",
++  "repository-url" : "https://github.com/reactor/reactor-netty",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/netty/reactor-netty-core/$version$/reactor-netty-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/reactor/reactor-netty/tree/v$version$/reactor-netty-core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/netty/reactor-netty-core/$version$/reactor-netty-core-$version$-javadoc.jar",
++  "description" : "Reactor Netty Core provides the shared TCP, UDP, DNS, channel, connection, and byte buffer infrastructure used by Reactor Netty's reactive networking clients and servers. It integrates Netty with Project Reactor's non-blocking programming model so JVM applications can build backpressure-aware network components."
+ }
+
+tokens used
+46,881
+Updated [io.projectreactor.netty-reactor-netty-core-1.0.39.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c/build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json) with repository, Maven sources/Javadoc URLs, GitHub test URL, and the two-sentence description.
+
+I omitted `language` and `not-for-native-image`: this is a JVM Maven artifact, and Maven Central identifies the Reactor Netty GitHub repo plus the 1.0.39 coordinates/description; the GitHub `v1.0.39` tag contains the `reactor-netty-core/src/test` suite. ([central.sonatype.com](https://central.sonatype.com/artifact/io.projectreactor.netty/reactor-netty-core/1.0.39))
+
+Validation run: `jq . build/discovered-artifact-metadata/io.projectreactor.netty-reactor-netty-core-1.0.39.json`.
+Ran agent for io.projectreactor.netty:reactor-netty-core:1.0.39 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c/build/agent-artifact-discovery-logs/io.projectreactor.netty-reactor-netty-core-1.0.39.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1447-7e0be28c/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 8s
+9 actionable tasks: 4 executed, 5 from cache
