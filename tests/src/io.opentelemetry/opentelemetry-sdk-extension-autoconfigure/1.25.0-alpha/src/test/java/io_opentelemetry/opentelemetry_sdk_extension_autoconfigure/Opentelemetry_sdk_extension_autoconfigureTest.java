@@ -18,7 +18,9 @@ import io.opentelemetry.api.trace.SpanContext;
 import io.opentelemetry.api.trace.TraceFlags;
 import io.opentelemetry.api.trace.TraceState;
 import io.opentelemetry.context.Context;
+import io.opentelemetry.context.ContextKey;
 import io.opentelemetry.context.propagation.TextMapGetter;
+import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk;
 import io.opentelemetry.sdk.autoconfigure.spi.ConfigProperties;
@@ -51,6 +53,7 @@ public class Opentelemetry_sdk_extension_autoconfigureTest {
     private static final AttributeKey<String> SERVICE_VERSION = AttributeKey.stringKey("service.version");
     private static final AttributeKey<String> DEPLOYMENT_ENVIRONMENT = AttributeKey.stringKey("deployment.environment");
     private static final AttributeKey<String> CUSTOM_RESOURCE = AttributeKey.stringKey("custom.resource");
+    private static final ContextKey<String> TENANT_ID = ContextKey.named("tenant-id");
     private static final TextMapSetter<Map<String, String>> MAP_SETTER = Map::put;
     private static final TextMapGetter<Map<String, String>> MAP_GETTER = new MapGetter();
 
@@ -132,6 +135,44 @@ public class Opentelemetry_sdk_extension_autoconfigureTest {
             assertThat(Span.fromContext(extracted).getSpanContext().getTraceId())
                     .isEqualTo("4bf92f3577b34da6a3ce929d0e0e4736");
             assertThat(Baggage.fromContext(extracted).getEntryValue("tenant")).isEqualTo("green");
+        } finally {
+            configured.getOpenTelemetrySdk().close();
+        }
+    }
+
+    @Test
+    void propagatorCustomizerCanReplaceConfiguredPropagator() {
+        Map<String, String> properties = Map.of(
+                "otel.sdk.disabled", "false",
+                "otel.traces.exporter", "none",
+                "otel.metrics.exporter", "none",
+                "otel.logs.exporter", "none",
+                "otel.propagators", "tracecontext",
+                "custom.propagation.header", "x-test-tenant");
+        AutoConfiguredOpenTelemetrySdk configured = AutoConfiguredOpenTelemetrySdk.builder()
+                .registerShutdownHook(false)
+                .setResultAsGlobal(false)
+                .addPropertiesSupplier(() -> properties)
+                .addPropertiesCustomizer(config -> properties)
+                .addPropagatorCustomizer((propagator, config) -> {
+                    assertThat(propagator.fields()).contains("traceparent");
+                    String headerName = config.getString("custom.propagation.header");
+                    assertThat(headerName).isEqualTo("x-test-tenant");
+                    return new TenantPropagator(headerName);
+                })
+                .build();
+
+        try {
+            TextMapPropagator propagator = configured.getOpenTelemetrySdk().getPropagators().getTextMapPropagator();
+            assertThat(propagator.fields()).containsExactly("x-test-tenant");
+
+            Map<String, String> carrier = new HashMap<>();
+            propagator.inject(Context.root().with(TENANT_ID, "blue-team"), carrier, MAP_SETTER);
+            assertThat(carrier).containsEntry("x-test-tenant", "blue-team");
+
+            carrier.put("x-test-tenant", "red-team");
+            Context extracted = propagator.extract(Context.root(), carrier, MAP_GETTER);
+            assertThat(extracted.get(TENANT_ID)).isEqualTo("red-team");
         } finally {
             configured.getOpenTelemetrySdk().close();
         }
@@ -291,6 +332,33 @@ public class Opentelemetry_sdk_extension_autoconfigureTest {
                 .addPropertiesSupplier(() -> properties)
                 .addPropertiesCustomizer(config -> properties)
                 .build();
+    }
+
+    private static final class TenantPropagator implements TextMapPropagator {
+        private final String headerName;
+
+        private TenantPropagator(String headerName) {
+            this.headerName = headerName;
+        }
+
+        @Override
+        public Collection<String> fields() {
+            return List.of(headerName);
+        }
+
+        @Override
+        public <C> void inject(Context context, C carrier, TextMapSetter<C> setter) {
+            String tenantId = context.get(TENANT_ID);
+            if (tenantId != null) {
+                setter.set(carrier, headerName, tenantId);
+            }
+        }
+
+        @Override
+        public <C> Context extract(Context context, C carrier, TextMapGetter<C> getter) {
+            String tenantId = getter.get(carrier, headerName);
+            return tenantId == null ? context : context.with(TENANT_ID, tenantId);
+        }
     }
 
     private static final class RecordingSpanExporter implements SpanExporter {
