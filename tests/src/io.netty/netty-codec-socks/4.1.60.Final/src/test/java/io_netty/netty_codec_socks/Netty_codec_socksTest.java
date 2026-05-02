@@ -94,6 +94,29 @@ public class Netty_codec_socksTest {
     }
 
     @Test
+    void socks4aCommandRequestSupportsDomainNames() {
+        EmbeddedChannel clientEncoder = new EmbeddedChannel(Socks4ClientEncoder.INSTANCE);
+        EmbeddedChannel serverDecoder = new EmbeddedChannel(new Socks4ServerDecoder());
+        try {
+            Socks4CommandRequest request = new DefaultSocks4CommandRequest(
+                    Socks4CommandType.BIND, "destination.example.test", 9020, "domain-user");
+
+            Socks4CommandRequest decodedRequest = decode(
+                    serverDecoder, encode(clientEncoder, request), Socks4CommandRequest.class);
+
+            assertThat(decodedRequest.decoderResult().isSuccess()).isTrue();
+            assertThat(decodedRequest.version()).isEqualTo(SocksVersion.SOCKS4a);
+            assertThat(decodedRequest.type()).isEqualTo(Socks4CommandType.BIND);
+            assertThat(decodedRequest.dstAddr()).isEqualTo("destination.example.test");
+            assertThat(decodedRequest.dstPort()).isEqualTo(9020);
+            assertThat(decodedRequest.userId()).isEqualTo("domain-user");
+        } finally {
+            clientEncoder.finishAndReleaseAll();
+            serverDecoder.finishAndReleaseAll();
+        }
+    }
+
+    @Test
     void socks5InitialNegotiationAndPasswordAuthenticationRoundTrip() {
         EmbeddedChannel clientEncoder = new EmbeddedChannel(Socks5ClientEncoder.DEFAULT);
         EmbeddedChannel serverEncoder = new EmbeddedChannel(Socks5ServerEncoder.DEFAULT);
