@@ -1,0 +1,2231 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de61c-fcac-7ba1-84ae-d45a486c3a63
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: javax.servlet:jsp-api:2.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+- Set "coordinates" to "javax.servlet:jsp-api:2.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the existing metadata file, then trace the artifact back through Maven coordinates and any published source/test/doc artifacts so the URLs are version-specific where possible.
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+-rw-rw-r-- 1 vjovanov vjovanov 50 May  2 02:35 build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+{
+  "coordinates" : "javax.servlet:jsp-api:2.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"javax\\.servlet.*jsp-api|jsp-api\" -S ." in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+./metadata/javax.servlet.jsp/jsp-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.1/jsp-api-2.1-sources.jar",
+./metadata/javax.servlet.jsp/jsp-api/index.json:8:    "documentation-url" : "https://javadoc.io/doc/javax.servlet.jsp/jsp-api/2.1",
+./stats/javax.servlet.jsp/jsp-api/2.1/execution-metrics.json:4:    "library": "javax.servlet.jsp:jsp-api:2.1",
+./stats/javax.servlet.jsp/jsp-api/2.1/execution-metrics.json:59:      "test_file": "tests/src/javax.servlet.jsp/jsp-api/2.1/src/test/java/javax_servlet_jsp/jsp_api/BeanELResolverTest.java",
+./stats/javax.servlet.jsp/jsp-api/2.1/execution-metrics.json:60:      "metadata_file": "metadata/javax.servlet.jsp/jsp-api/2.1/reachability-metadata.json"
+./tests/src/javax.servlet.jsp/jsp-api/2.1/build.gradle:14:    testImplementation "javax.servlet.jsp:jsp-api:$libraryVersion"
+./tests/src/javax.servlet.jsp/jsp-api/2.1/settings.gradle:20:rootProject.name = 'javax.servlet.jsp.jsp-api_tests'
+./tests/src/javax.servlet.jsp/jsp-api/2.1/gradle.properties:4:library.coordinates = javax.servlet.jsp:jsp-api:2.1
+./tests/src/javax.servlet.jsp/jsp-api/2.1/gradle.properties:6:metadata.dir = javax.servlet.jsp/jsp-api/2.1/
+
+web search: 
+web search: Maven javax.servlet jsp-api 2.0 pom source repository
+web search: 
+web search: https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/
+web search: 
+web search: 
+codex
+The local file only has coordinates so far. Maven Central has the exact `javax.servlet:jsp-api:2.0` binary and POM, but the listing does not show source, test, or javadoc classifier artifacts, so I’m checking the POM and upstream project history rather than inventing Maven URLs.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/servlet/jsp/jsp-api/2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/servlet/jsp/jsp-api/2.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jsp-api-2.0-sources.jar" title="jsp-api-2.0-sources.jar">jsp-api-2.0-sources.jar</a>                           2006-07-17 11:09    118348      
+<a href="jsp-api-2.0-sources.jar.md5" title="jsp-api-2.0-sources.jar.md5">jsp-api-2.0-sources.jar.md5</a>                       2006-07-17 11:09        32      
+<a href="jsp-api-2.0-sources.jar.sha1" title="jsp-api-2.0-sources.jar.sha1">jsp-api-2.0-sources.jar.sha1</a>                      2006-07-17 11:09        40      
+<a href="jsp-api-2.0.jar" title="jsp-api-2.0.jar">jsp-api-2.0.jar</a>                                   2006-07-17 11:09     48457      
+<a href="jsp-api-2.0.jar.md5" title="jsp-api-2.0.jar.md5">jsp-api-2.0.jar.md5</a>                               2006-07-17 11:09        32      
+<a href="jsp-api-2.0.jar.sha1" title="jsp-api-2.0.jar.sha1">jsp-api-2.0.jar.sha1</a>                              2006-07-17 11:09        40      
+<a href="jsp-api-2.0.pom" title="jsp-api-2.0.pom">jsp-api-2.0.pom</a>                                   2006-07-17 11:09       157      
+<a href="jsp-api-2.0.pom.md5" title="jsp-api-2.0.pom.md5">jsp-api-2.0.pom.md5</a>                               2006-07-17 11:09        32      
+<a href="jsp-api-2.0.pom.sha1" title="jsp-api-2.0.pom.sha1">jsp-api-2.0.pom.sha1</a>                              2006-07-17 11:09        40      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-07-17 11:09       121      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-07-17 11:09        85      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-07-17 11:09        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0.pom' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/servlet/jsp-api/2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/servlet/jsp-api/2.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jsp-api-2.0.jar" title="jsp-api-2.0.jar">jsp-api-2.0.jar</a>                                   2006-11-06 01:08     50493      
+<a href="jsp-api-2.0.jar.md5" title="jsp-api-2.0.jar.md5">jsp-api-2.0.jar.md5</a>                               2006-11-06 01:08        32      
+<a href="jsp-api-2.0.jar.sha1" title="jsp-api-2.0.jar.sha1">jsp-api-2.0.jar.sha1</a>                              2006-11-06 01:08        40      
+<a href="jsp-api-2.0.pom" title="jsp-api-2.0.pom">jsp-api-2.0.pom</a>                                   2006-11-06 01:08       362      
+<a href="jsp-api-2.0.pom.md5" title="jsp-api-2.0.pom.md5">jsp-api-2.0.pom.md5</a>                               2006-11-06 01:08       134      
+<a href="jsp-api-2.0.pom.sha1" title="jsp-api-2.0.pom.sha1">jsp-api-2.0.pom.sha1</a>                              2006-11-06 01:08       142      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-11-06 01:08       172      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-11-06 01:08        81      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-11-06 01:08       136      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.servlet</groupId>
+  <artifactId>jsp-api</artifactId>
+  <version>2.0</version>
+  <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.4</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0.pom' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.servlet.jsp</groupId>
+  <artifactId>jsp-api</artifactId>
+  <version>2.0</version>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://search.maven.org/solrsearch/select?q=g:%22javax.servlet%22%20AND%20a:%22jsp-api%22%20AND%20v:%222.0%22&rows=20&wt=json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://javadoc.io/doc/javax.servlet/jsp-api/2.0 >/tmp/javadoc_headers.txt && sed -n '1,40p' /tmp/javadoc_headers.txt" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://javadoc.io/doc/javax.servlet.jsp/jsp-api/2.0 >/tmp/javadoc_headers2.txt && sed -n '1,40p' /tmp/javadoc_headers2.txt" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/maven-metadata.xml' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?><metadata>
+  <groupId>javax.servlet</groupId>
+  <artifactId>jsp-api</artifactId>
+  <versioning>
+    <versions>
+      <version>2.0</version>
+      <version>2.0.public_draft</version>
+    </versions>
+  </versioning>
+</metadata>
+ succeeded in 50ms:
+ succeeded in 241ms:
+HTTP/2 303 
+date: Sat, 02 May 2026 00:36:22 GMT
+content-length: 0
+location: /doc/javax.servlet/jsp-api/2.0/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=I61yUJ5%2B9Lv6SzxNSz%2F14GvAJIMGu8ogjx%2FJH5Bl5JNmLFwvGxlrYGSQb8GisHQ8R6nXrs%2BtDsSAan048fVzMgv5GknvonsB7zgX9psT7URtPZnSIk2kxVagnNyL72KtU4l%2FlXlgJqfV"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f52f386cf5f24c2-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 02 May 2026 00:36:22 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/javax.servlet/jsp-api/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=e5PwCRWb3HmGONjEjY2SDIjnfRlFcu%2Bh7lVaWsOkuT8lodG8S7he%2FzcwkKozO%2BzMzfmoZ8O9dz2Pu6XKo3RzWHNCITlFjQ5b%2FTSa1Fw%2F45Db4RzLMc1%2BYjVmR7wM7%2BYES528n7CKCO9P"}]}
+server: cloudflare
+cf-ray: 9f52f3878fd524c2-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 227ms:
+HTTP/2 303 
+date: Sat, 02 May 2026 00:36:22 GMT
+content-length: 0
+location: /doc/javax.servlet.jsp/jsp-api/2.0/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=4azWfx0Ode7Pi54SKbcqE29eID6S5wuyEcdAOuFyvAJMCXEIyBz%2BRQQ6KO1lXqueygHxwS9CP%2BqM6F5gr7ww9HQF4RyStErU7%2Bu%2BlIFySqjc69RUINZ9ZaaVLUXwnRnkxuZSCljvgukK"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f52f386ebda4f9a-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 02 May 2026 00:36:22 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/javax.servlet.jsp/jsp-api/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=vB8v89u%2Fe1muqLZ1EgaVe0ihC%2FoDaM10Pv5C9cDI2J4St3t%2BdwgEfZ1U%2F6TX4CkhMLBJW8QG5E3z7W2vZ54DNRMAQ9xh5t57nhCKXezSNY7G0MV01L5X2rJVyim4A3tCSwEDphtFdOvc"}]}
+server: cloudflare
+cf-ray: 9f52f387ac9a4f9a-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0-sources.jar -o "$tmp/sources.jar"; printf '"'sources jar:\\n'; jar tf \""'$tmp/sources.jar" | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+sources jar:
+dtd/
+javax/
+javax/servlet/
+javax/servlet/jsp/
+javax/servlet/jsp/el/
+javax/servlet/jsp/tagext/
+javax/servlet/jsp/tagext/doc-files/
+dtd/jsp_2_0.xsd
+dtd/jspxml.dtd
+dtd/jspxml.xsd
+dtd/web-jsptaglibrary_1_1.dtd
+dtd/web-jsptaglibrary_1_2.dtd
+dtd/web-jsptaglibrary_2_0.xsd
+javax/servlet/jsp/ErrorData.java
+javax/servlet/jsp/HttpJspPage.java
+javax/servlet/jsp/JspContext.java
+javax/servlet/jsp/JspEngineInfo.java
+javax/servlet/jsp/JspException.java
+javax/servlet/jsp/JspFactory.java
+javax/servlet/jsp/JspPage.java
+javax/servlet/jsp/JspTagException.java
+javax/servlet/jsp/JspWriter.java
+javax/servlet/jsp/PageContext.java
+javax/servlet/jsp/SkipPageException.java
+javax/servlet/jsp/el/ELException.java
+javax/servlet/jsp/el/ELParseException.java
+javax/servlet/jsp/el/Expression.java
+javax/servlet/jsp/el/ExpressionEvaluator.java
+javax/servlet/jsp/el/FunctionMapper.java
+javax/servlet/jsp/el/VariableResolver.java
+javax/servlet/jsp/el/package.html
+javax/servlet/jsp/package.html
+javax/servlet/jsp/tagext/BodyContent.java
+javax/servlet/jsp/tagext/BodyTag.java
+javax/servlet/jsp/tagext/BodyTagSupport.java
+javax/servlet/jsp/tagext/DynamicAttributes.java
+javax/servlet/jsp/tagext/FunctionInfo.java
+javax/servlet/jsp/tagext/IterationTag.java
+javax/servlet/jsp/tagext/JspFragment.java
+javax/servlet/jsp/tagext/JspTag.java
+javax/servlet/jsp/tagext/PageData.java
+javax/servlet/jsp/tagext/SimpleTag.java
+javax/servlet/jsp/tagext/SimpleTagSupport.java
+javax/servlet/jsp/tagext/Tag.java
+javax/servlet/jsp/tagext/TagAdapter.java
+javax/servlet/jsp/tagext/TagAttributeInfo.java
+javax/servlet/jsp/tagext/TagData.java
+javax/servlet/jsp/tagext/TagExtraInfo.java
+javax/servlet/jsp/tagext/TagFileInfo.java
+javax/servlet/jsp/tagext/TagInfo.java
+javax/servlet/jsp/tagext/TagLibraryInfo.java
+javax/servlet/jsp/tagext/TagLibraryValidator.java
+javax/servlet/jsp/tagext/TagSupport.java
+javax/servlet/jsp/tagext/TagVariableInfo.java
+javax/servlet/jsp/tagext/TryCatchFinally.java
+javax/servlet/jsp/tagext/ValidationMessage.java
+javax/servlet/jsp/tagext/VariableInfo.java
+javax/servlet/jsp/tagext/doc-files/BodyTagProtocol.gif
+javax/servlet/jsp/tagext/doc-files/IterationTagProtocol.gif
+javax/servlet/jsp/tagext/doc-files/TagProtocol.gif
+javax/servlet/jsp/tagext/doc-files/VariableInfo-1.gif
+javax/servlet/jsp/tagext/package.html
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0.jar -o "$tmp/old.jar"; curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0.jar -o "$tmp/new.jar"; printf '"'javax.servlet jar:\\n'; jar tf \""'$tmp/old.jar" | sed -n '"'1,80p'; printf '\\njavax.servlet.jsp jar:\\n'; jar tf \""'$tmp/new.jar" | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22javax.servlet%22%20AND%20a:%22jsp-api%22%20AND%20v:%222.0%22&rows=20&wt=json'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+{"responseHeader":{"status":0,"QTime":1,"params":{"q":"g:\"javax.servlet\" AND a:\"jsp-api\" AND v:\"2.0\"","core":"","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"javax.servlet:jsp-api:2.0","g":"javax.servlet","a":"jsp-api","v":"2.0","p":"jar","timestamp":1131487092000,"ec":[".jar",".pom"]}]}}
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22javax.servlet.jsp%22%20AND%20a:%22jsp-api%22%20AND%20v:%222.0%22&rows=20&wt=json'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+{"responseHeader":{"status":0,"QTime":1,"params":{"q":"g:\"javax.servlet.jsp\" AND a:\"jsp-api\" AND v:\"2.0\"","core":"","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"javax.servlet.jsp:jsp-api:2.0","g":"javax.servlet.jsp","a":"jsp-api","v":"2.0","p":"jar","timestamp":1153134596000,"ec":["-sources.jar",".jar",".pom"]}]}}
+ succeeded in 134ms:
+META-INF/
+META-INF/MANIFEST.MF
+javax/
+javax/servlet/
+javax/servlet/jsp/
+javax/servlet/jsp/el/
+javax/servlet/jsp/resources/
+javax/servlet/jsp/tagext/
+javax/servlet/jsp/ErrorData.class
+javax/servlet/jsp/HttpJspPage.class
+javax/servlet/jsp/JspContext.class
+javax/servlet/jsp/JspEngineInfo.class
+javax/servlet/jsp/JspException.class
+javax/servlet/jsp/JspFactory.class
+javax/servlet/jsp/JspPage.class
+javax/servlet/jsp/JspTagException.class
+javax/servlet/jsp/JspWriter.class
+javax/servlet/jsp/PageContext.class
+javax/servlet/jsp/SkipPageException.class
+javax/servlet/jsp/el/ELException.class
+javax/servlet/jsp/el/ELParseException.class
+javax/servlet/jsp/el/Expression.class
+javax/servlet/jsp/el/ExpressionEvaluator.class
+javax/servlet/jsp/el/FunctionMapper.class
+javax/servlet/jsp/el/VariableResolver.class
+javax/servlet/jsp/resources/jsp_2_0.xsd
+javax/servlet/jsp/resources/jspxml.dtd
+javax/servlet/jsp/resources/jspxml.xsd
+javax/servlet/jsp/resources/web-jsptaglibrary_1_1.dtd
+javax/servlet/jsp/resources/web-jsptaglibrary_1_2.dtd
+javax/servlet/jsp/resources/web-jsptaglibrary_2_0.xsd
+javax/servlet/jsp/tagext/BodyContent.class
+javax/servlet/jsp/tagext/BodyTag.class
+javax/servlet/jsp/tagext/BodyTagSupport.class
+javax/servlet/jsp/tagext/DynamicAttributes.class
+javax/servlet/jsp/tagext/FunctionInfo.class
+javax/servlet/jsp/tagext/IterationTag.class
+javax/servlet/jsp/tagext/JspFragment.class
+javax/servlet/jsp/tagext/JspTag.class
+javax/servlet/jsp/tagext/PageData.class
+javax/servlet/jsp/tagext/SimpleTag.class
+javax/servlet/jsp/tagext/SimpleTagSupport.class
+javax/servlet/jsp/tagext/Tag.class
+javax/servlet/jsp/tagext/TagAdapter.class
+javax/servlet/jsp/tagext/TagAttributeInfo.class
+javax/servlet/jsp/tagext/TagData.class
+javax/servlet/jsp/tagext/TagExtraInfo.class
+javax/servlet/jsp/tagext/TagFileInfo.class
+javax/servlet/jsp/tagext/TagInfo.class
+javax/servlet/jsp/tagext/TagLibraryInfo.class
+javax/servlet/jsp/tagext/TagLibraryValidator.class
+javax/servlet/jsp/tagext/TagSupport.class
+javax/servlet/jsp/tagext/TagVariableInfo.class
+javax/servlet/jsp/tagext/TryCatchFinally.class
+javax/servlet/jsp/tagext/ValidationMessage.class
+javax/servlet/jsp/tagext/VariableInfo.class
+
+javax.servlet.jsp jar:
+META-INF/
+META-INF/MANIFEST.MF
+javax/
+javax/servlet/
+javax/servlet/jsp/
+javax/servlet/jsp/el/
+javax/servlet/jsp/resources/
+javax/servlet/jsp/tagext/
+javax/servlet/jsp/ErrorData.class
+javax/servlet/jsp/HttpJspPage.class
+javax/servlet/jsp/JspContext.class
+javax/servlet/jsp/JspEngineInfo.class
+javax/servlet/jsp/JspException.class
+javax/servlet/jsp/JspFactory.class
+javax/servlet/jsp/JspPage.class
+javax/servlet/jsp/JspTagException.class
+javax/servlet/jsp/JspWriter.class
+javax/servlet/jsp/PageContext.class
+javax/servlet/jsp/SkipPageException.class
+javax/servlet/jsp/el/ELException.class
+javax/servlet/jsp/el/ELParseException.class
+javax/servlet/jsp/el/Expression.class
+javax/servlet/jsp/el/ExpressionEvaluator.class
+javax/servlet/jsp/el/FunctionMapper.class
+javax/servlet/jsp/el/VariableResolver.class
+javax/servlet/jsp/resources/jsp_2_0.xsd
+javax/servlet/jsp/resources/jspxml.dtd
+javax/servlet/jsp/resources/jspxml.xsd
+javax/servlet/jsp/resources/web-jsptaglibrary_1_1.dtd
+javax/servlet/jsp/resources/web-jsptaglibrary_1_2.dtd
+javax/servlet/jsp/resources/web-jsptaglibrary_2_0.xsd
+javax/servlet/jsp/tagext/BodyContent.class
+javax/servlet/jsp/tagext/BodyTag.class
+javax/servlet/jsp/tagext/BodyTagSupport.class
+javax/servlet/jsp/tagext/DynamicAttributes.class
+javax/servlet/jsp/tagext/FunctionInfo.class
+javax/servlet/jsp/tagext/IterationTag.class
+javax/servlet/jsp/tagext/JspFragment.class
+javax/servlet/jsp/tagext/JspTag.class
+javax/servlet/jsp/tagext/PageData.class
+javax/servlet/jsp/tagext/SimpleTag.class
+javax/servlet/jsp/tagext/SimpleTagSupport.class
+javax/servlet/jsp/tagext/Tag.class
+javax/servlet/jsp/tagext/TagAdapter.class
+javax/servlet/jsp/tagext/TagAttributeInfo.class
+javax/servlet/jsp/tagext/TagData.class
+javax/servlet/jsp/tagext/TagExtraInfo.class
+javax/servlet/jsp/tagext/TagFileInfo.class
+javax/servlet/jsp/tagext/TagInfo.class
+javax/servlet/jsp/tagext/TagLibraryInfo.class
+javax/servlet/jsp/tagext/TagLibraryValidator.class
+javax/servlet/jsp/tagext/TagSupport.class
+javax/servlet/jsp/tagext/TagVariableInfo.class
+javax/servlet/jsp/tagext/TryCatchFinally.class
+javax/servlet/jsp/tagext/ValidationMessage.class
+javax/servlet/jsp/tagext/VariableInfo.class
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0.jar -o "$tmp/old.jar"; curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0.jar -o "$tmp/new.jar"; printf '"'old manifest\\n'; unzip -p \""'$tmp/old.jar" META-INF/MANIFEST.MF; printf '"'\\nnew manifest\\n'; unzip -p \""'$tmp/new.jar" META-INF/MANIFEST.MF; rm -rf "$tmp"' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+old manifest
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.6.2
+Created-By: 1.4.2_06-b03 (Sun Microsystems Inc.)
+
+Name: javax/servlet/jsp/
+Specification-Title: Java API for JavaServer Pages
+Specification-Version: 2.0
+Specification-Vendor: Sun Microsystems, Inc.
+Implementation-Title: javax.servlet.jsp
+Implementation-Version: 2.0.public_draft
+Implementation-Vendor: Apache Software Foundation
+
+
+new manifest
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.6.5
+Created-By: 1.5.0_04-b05 (Sun Microsystems Inc.)
+Extension-Name: javax.servlet.jsp
+Specification-Title: JavaServer Pages(TM) Specification
+Specification-Version: 2.0
+Specification-Vendor: Sun Microsystems, Inc.
+Implementation-Version: 2.0
+Implementation-Vendor: Sun Microsystems, Inc.
+Implementation-Vendor-Id: org.apache
+Implementation-Title: Sun Java System Application Server
+
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0.jar -o "$tmp/old.jar"; curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0.jar -o "$tmp/new.jar"; (cd "$tmp" && mkdir old new && cd old && jar xf ../old.jar && cd ../new && jar xf ../new.jar && cd .. && find old new -type f | sed '"'s#"'^[''^/]*/##'"' | sort -u | while read f; do [ -f \"old/"'$f" ] && [ -f "new/$f" ] && cmp -s "old/$f" "new/$f" || printf '"'%s differs or missing\\n' \""'$f"; done | sed -n '"'1,80p'); rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0.jar -o "$tmp/old.jar"; curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0.jar -o "$tmp/new.jar"; printf '"'old javap\\n'; javap -classpath \""'$tmp/old.jar" -public javax.servlet.jsp.JspFactory | sed -n '"'1,80p'; printf '\\nnew javap\\n'; javap -classpath \""'$tmp/new.jar" -public javax.servlet.jsp.JspFactory | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 199ms:
+META-INF/MANIFEST.MF differs or missing
+javax/servlet/jsp/ErrorData.class differs or missing
+javax/servlet/jsp/HttpJspPage.class differs or missing
+javax/servlet/jsp/JspContext.class differs or missing
+javax/servlet/jsp/JspEngineInfo.class differs or missing
+javax/servlet/jsp/JspException.class differs or missing
+javax/servlet/jsp/JspFactory.class differs or missing
+javax/servlet/jsp/JspPage.class differs or missing
+javax/servlet/jsp/JspTagException.class differs or missing
+javax/servlet/jsp/JspWriter.class differs or missing
+javax/servlet/jsp/PageContext.class differs or missing
+javax/servlet/jsp/SkipPageException.class differs or missing
+javax/servlet/jsp/el/ELException.class differs or missing
+javax/servlet/jsp/el/ELParseException.class differs or missing
+javax/servlet/jsp/el/Expression.class differs or missing
+javax/servlet/jsp/el/ExpressionEvaluator.class differs or missing
+javax/servlet/jsp/el/FunctionMapper.class differs or missing
+javax/servlet/jsp/el/VariableResolver.class differs or missing
+javax/servlet/jsp/resources/jsp_2_0.xsd differs or missing
+javax/servlet/jsp/resources/jspxml.dtd differs or missing
+javax/servlet/jsp/resources/jspxml.xsd differs or missing
+javax/servlet/jsp/resources/web-jsptaglibrary_1_1.dtd differs or missing
+javax/servlet/jsp/resources/web-jsptaglibrary_1_2.dtd differs or missing
+javax/servlet/jsp/resources/web-jsptaglibrary_2_0.xsd differs or missing
+javax/servlet/jsp/tagext/BodyContent.class differs or missing
+javax/servlet/jsp/tagext/BodyTag.class differs or missing
+javax/servlet/jsp/tagext/BodyTagSupport.class differs or missing
+javax/servlet/jsp/tagext/DynamicAttributes.class differs or missing
+javax/servlet/jsp/tagext/FunctionInfo.class differs or missing
+javax/servlet/jsp/tagext/IterationTag.class differs or missing
+javax/servlet/jsp/tagext/JspFragment.class differs or missing
+javax/servlet/jsp/tagext/JspTag.class differs or missing
+javax/servlet/jsp/tagext/PageData.class differs or missing
+javax/servlet/jsp/tagext/SimpleTag.class differs or missing
+javax/servlet/jsp/tagext/SimpleTagSupport.class differs or missing
+javax/servlet/jsp/tagext/Tag.class differs or missing
+javax/servlet/jsp/tagext/TagAdapter.class differs or missing
+javax/servlet/jsp/tagext/TagAttributeInfo.class differs or missing
+javax/servlet/jsp/tagext/TagData.class differs or missing
+javax/servlet/jsp/tagext/TagExtraInfo.class differs or missing
+javax/servlet/jsp/tagext/TagFileInfo.class differs or missing
+javax/servlet/jsp/tagext/TagInfo.class differs or missing
+javax/servlet/jsp/tagext/TagLibraryInfo.class differs or missing
+javax/servlet/jsp/tagext/TagLibraryValidator.class differs or missing
+javax/servlet/jsp/tagext/TagSupport.class differs or missing
+javax/servlet/jsp/tagext/TagVariableInfo.class differs or missing
+javax/servlet/jsp/tagext/TryCatchFinally.class differs or missing
+javax/servlet/jsp/tagext/ValidationMessage.class differs or missing
+javax/servlet/jsp/tagext/VariableInfo.class differs or missing
+
+ succeeded in 250ms:
+Compiled from "JspFactory.java"
+public abstract class javax.servlet.jsp.JspFactory {
+  public javax.servlet.jsp.JspFactory();
+  public static synchronized void setDefaultFactory(javax.servlet.jsp.JspFactory);
+  public static synchronized javax.servlet.jsp.JspFactory getDefaultFactory();
+  public abstract javax.servlet.jsp.PageContext getPageContext(javax.servlet.Servlet, javax.servlet.ServletRequest, javax.servlet.ServletResponse, java.lang.String, boolean, int, boolean);
+  public abstract void releasePageContext(javax.servlet.jsp.PageContext);
+  public abstract javax.servlet.jsp.JspEngineInfo getEngineInfo();
+}
+
+new javap
+Compiled from "JspFactory.java"
+public abstract class javax.servlet.jsp.JspFactory {
+  public javax.servlet.jsp.JspFactory();
+  public static synchronized void setDefaultFactory(javax.servlet.jsp.JspFactory);
+  public static synchronized javax.servlet.jsp.JspFactory getDefaultFactory();
+  public abstract javax.servlet.jsp.PageContext getPageContext(javax.servlet.Servlet, javax.servlet.ServletRequest, javax.servlet.ServletResponse, java.lang.String, boolean, int, boolean);
+  public abstract void releasePageContext(javax.servlet.jsp.PageContext);
+  public abstract javax.servlet.jsp.JspEngineInfo getEngineInfo();
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0.public_draft/jsp-api-2.0.public_draft.pom' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.servlet</groupId>
+  <artifactId>jsp-api</artifactId>
+  <version>2.0.public_draft</version>
+  <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.4.public_draft</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0.public_draft/' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/servlet/jsp-api/2.0.public_draft</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/servlet/jsp-api/2.0.public_draft</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jsp-api-2.0.public_draft.pom" title="jsp-api-2.0.public_draft.pom">jsp-api-2.0.public_draft.pom</a>                      2006-11-06 01:08       388      
+<a href="jsp-api-2.0.public_draft.pom.md5" title="jsp-api-2.0.public_draft.pom.md5">jsp-api-2.0.public_draft.pom.md5</a>                  2006-11-06 01:08       160      
+<a href="jsp-api-2.0.public_draft.pom.sha1" title="jsp-api-2.0.public_draft.pom.sha1">jsp-api-2.0.public_draft.pom.sha1</a>                 2006-11-06 01:08       168      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-11-06 01:08       185      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-11-06 01:08        94      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-11-06 01:08       149      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22javax.servlet%22%20AND%20a:%22jsp-api%22&rows=20&wt=json'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+{"responseHeader":{"status":0,"QTime":1,"params":{"q":"g:\"javax.servlet\" AND a:\"jsp-api\"","core":"","indent":"off","spellcheck":"true","fl":"id,g,a,latestVersion,p,ec,repositoryId,text,timestamp,versionCount","start":"","spellcheck.count":"5","sort":"score desc,timestamp desc,g asc,a asc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"javax.servlet:jsp-api","g":"javax.servlet","a":"jsp-api","latestVersion":"2.0.public_draft","repositoryId":"central","p":"jar","timestamp":1131487092000,"versionCount":2,"text":["javax.servlet","jsp-api",".pom"],"ec":[".pom"]}]},"spellcheck":{"suggestions":[]}}
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/javax.servlet.jsp/jsp-api/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.1/jsp-api-2.1-sources.jar",
+    "repository-url" : "N/A",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://javadoc.io/doc/javax.servlet.jsp/jsp-api/2.1",
+    "description" : "This artifact provides the JavaServer Pages 2.1 API contracts, including core JSP, tag extension, and expression language interfaces used by JSP containers and applications. It defines standard types that JSP engines and custom tag libraries implement at compile time and runtime.",
+    "tested-versions" : [
+      "2.1"
+    ],
+    "allowed-packages" : [
+      "javax.el",
+      "javax.servlet.jsp"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/javax.servlet/jsp-api/2.0/index.html | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/javax.servlet.jsp/jsp-api/2.0/index.html | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 200ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>jsp-api 2.0 javadoc (javax.servlet)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/javax.servlet">javax.servlet</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						jsp-api
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/javax.servlet/javax.servlet-api" class="dropdown-item">
+							javax.servlet-api
+						</a>
+						
+						<a href="/doc/javax.servlet/jsp-api" class="dropdown-item">
+							jsp-api
+						</a>
+						
+						<a href="/doc/javax.servlet/jstl" class="dropdown-item">
+							jstl
+						</a>
+						
+						<a href="/doc/javax.servlet/servlet-api" class="dropdown-item">
+							servlet-api
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						2.0
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						<a href="/doc/javax.servlet/jsp-api/latest/index.html" class="dropdown-item">
+							2.0.public_draft
+						</a>
+
+						
+						<a href="/doc/javax.servlet/jsp-api/2.0/index.html" class="dropdown-item">
+							2.0
+						</a>
+						
+					</div>
+				</li>
+				
+			</ul>
+			<ul class="navbar-nav">
+				<li class="nav-item mr-2">
+					<a id="bookmarkModal" class='nav-link' href='javascript:void(0)' data-toggle="modal" data-target="#bookmarksModal">
+						<i class="fa fa-bookmark"></i>
+					</a>
+				</li>
+				<li class="nav-item mr-2">
+					<a class='nav-link' href='/task/sync_latest/javax.servlet/jsp-api'
+						data-toggle="popover" data-placement="bottom"
+						title="sync latest version"
+						data-content="By default, latest version will be picked up in one week.
+							You can click this button to force sync now.
+							This page will be redirect to the latest version if there is any." >
+						<i class="fa fa-sync" aria-hidden="true"></i>
+					</a>
+				</li>
+				<li class="nav-item mr-2">
+					<a class='nav-link' href='/'
+						data-toggle="popover" data-placement="bottom"
+						title="host javadoc for your own project"
+						data-content="If you want, you can easily host your own project with javadoc.io. Click to start." >
+						<i class="fa fa-plus" aria-hidden="true"></i>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="modal" id="bookmarksModal">
+		<div class="modal-dialog modal-lg">
+
+ succeeded in 199ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>jsp-api 2.0 javadoc (javax.servlet.jsp)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/javax.servlet.jsp">javax.servlet.jsp</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						jsp-api
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/javax.servlet.jsp/javax.servlet.jsp-api" class="dropdown-item">
+							javax.servlet.jsp-api
+						</a>
+						
+						<a href="/doc/javax.servlet.jsp/jsp-api" class="dropdown-item">
+							jsp-api
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						2.0
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						<a href="/doc/javax.servlet.jsp/jsp-api/latest/index.html" class="dropdown-item">
+							2.2.1-b03
+						</a>
+
+						
+						<a href="/doc/javax.servlet.jsp/jsp-api/2.2.1-b02/index.html" class="dropdown-item">
+							2.2.1-b02
+						</a>
+						
+						<a href="/doc/javax.servlet.jsp/jsp-api/2.2.1-b01/index.html" class="dropdown-item">
+							2.2.1-b01
+						</a>
+						
+						<a href="/doc/javax.servlet.jsp/jsp-api/2.2/index.html" class="dropdown-item">
+							2.2
+						</a>
+						
+						<a href="/doc/javax.servlet.jsp/jsp-api/2.1.3-b06/index.html" class="dropdown-item">
+							2.1.3-b06
+						</a>
+						
+						<a href="/doc/javax.servlet.jsp/jsp-api/2.1.3-b05/index.html" class="dropdown-item">
+							2.1.3-b05
+						</a>
+						
+						<a href="/doc/javax.servlet.jsp/jsp-api/2.1.3-b04/index.html" class="dropdown-item">
+							2.1.3-b04
+						</a>
+						
+						<a href="/doc/javax.servlet.jsp/jsp-api/2.1.3-b03/index.html" class="dropdown-item">
+							2.1.3-b03
+						</a>
+						
+						<a href="/doc/javax.servlet.jsp/jsp-api/2.1.3-b02/index.html" class="dropdown-item">
+							2.1.3-b02
+						</a>
+						
+						<a href="/doc/javax.servlet.jsp/jsp-api/2.1.3-b01/index.html" class="dropdown-item">
+							2.1.3-b01
+						</a>
+						
+						<a href="/doc/javax.servlet.jsp/jsp-api/2.1.2/index.html" class="dropdown-item">
+							2.1.2
+						</a>
+						
+						<a href="/doc/javax.servlet.jsp/jsp-api/2.1.1/index.html" class="dropdown-item">
+							2.1.1
+						</a>
+						
+						<a href="/doc/javax.servlet.jsp/jsp-api/2.1-rev-1/index.html" class="dropdown-item">
+							2.1-rev-1
+
+web search: 
+web search: "Implementation-Version: 2.0.public_draft" "jsp-api"
+exec
+/usr/bin/bash -lc 'curl -fsSL https://javadoc.io/doc/javax.servlet/jsp-api/2.0/index.html | rg -n "source|src-html|JspFactory|package-list|element-list|javax.servlet.jsp" -i' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+exec
+/usr/bin/bash -lc "curl -fsSL -o /dev/null -w '%{http_code} %{url_effective}\\n' https://javadoc.io/static/javax.servlet/jsp-api/2.0/src-html/javax/servlet/jsp/JspFactory.html" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+exec
+/usr/bin/bash -lc "curl -fsSL -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0-sources.jar" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 125ms:
+59:						<a href="/doc/javax.servlet/jsp-api" class="dropdown-item">
+78:						<a href="/doc/javax.servlet/jsp-api/latest/index.html" class="dropdown-item">
+83:						<a href="/doc/javax.servlet/jsp-api/2.0/index.html" class="dropdown-item">
+98:					<a class='nav-link' href='/task/sync_latest/javax.servlet/jsp-api'
+127:					<div>Latest version of <span class="text-monospace">javax.servlet:jsp-api</span></div>
+129:						https://javadoc.io/doc/javax.servlet/jsp-api
+130:						<a href="/doc/javax.servlet/jsp-api" target="_blank" class="float-right">
+136:						https://javadoc.io/doc/javax.servlet/jsp-api/2.0
+137:						<a href="/doc/javax.servlet/jsp-api/2.0" target="_blank" class="float-right">
+141:					<div><span class="text-monospace">package-list</span> path (used for javadoc generation <span class="text-monospace">-link</span> option)</div>
+143:						https://javadoc.io/doc/javax.servlet/jsp-api/2.0/package-list
+144:						<a href="/doc/javax.servlet/jsp-api/2.0/package-list" target="_blank" class="float-right">
+161:  No JavaDoc is released for artifact <span class="font-italic">javax.servlet:jsp-api:2.0</span>.
+169:      <a href='/retry/javax.servlet/jsp-api/2.0'>Retry</a> this version.
+
+exec
+/usr/bin/bash -lc "curl -fsSL -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0-test-sources.jar" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ exited 22 in 124ms:
+curl: (22) The requested URL returned error: 404
+404 https://javadoc.io/static/javax.servlet/jsp-api/2.0/src-html/javax/servlet/jsp/JspFactory.html
+
+ exited 22 in 163ms:
+curl: (22) The requested URL returned error: 404
+404 https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0-sources.jar
+
+ exited 22 in 239ms:
+curl: (22) The requested URL returned error: 404
+404 https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0-test-sources.jar
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -name '*.json' | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+{
+  "coordinates" : "javax.servlet:jsp-api:2.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\" : \"N/A\"|\"documentation-url\" : \"N/A\"|javadoc.io/doc' metadata build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+metadata/net.jcip/jcip-annotations/index.json:8:    "documentation-url" : "https://javadoc.io/doc/net.jcip/jcip-annotations/1.0/index.html",
+metadata/javax.servlet.jsp/jsp-api/index.json:8:    "documentation-url" : "https://javadoc.io/doc/javax.servlet.jsp/jsp-api/2.1",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/1.0.0.Beta1/index.html",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:8:    "documentation-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:9:    "documentation-url": "https://javadoc.io/doc/com.google.cloud.tools/jib-build-plan/0.4.0",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/1.0.0-M20/",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:8:    "documentation-url" : "N/A",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:23:    "documentation-url" : "N/A",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.apache.activemq/activemq-openwire-legacy/5.18.1",
+metadata/xmlpull/xmlpull/index.json:5:    "source-code-url" : "N/A",
+metadata/xmlpull/xmlpull/index.json:8:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/com.google.auto.value/auto-value-annotations/index.json:28:    "documentation-url" : "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/1.9/index.html",
+metadata/org.glassfish/javax.servlet/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.glassfish/javax.servlet/3.1",
+metadata/org.glassfish/javax.annotation/index.json:14:    "documentation-url" : "N/A",
+metadata/org.glassfish/javax.annotation/index.json:22:    "documentation-url" : "https://javadoc.io/doc/org.glassfish/javax.annotation/3.1",
+metadata/io.opentelemetry/opentelemetry-context/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.opentelemetry/opentelemetry-context/1.19.0/index.html",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.opentelemetry/opentelemetry-sdk-metrics/1.59.0/index.html",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:25:    "documentation-url" : "https://javadoc.io/doc/io.opentelemetry/opentelemetry-sdk-metrics/1.56.0/index.html",
+metadata/io.smallrye.common/smallrye-common-function/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.smallrye.common/smallrye-common-function/2.10.0/",
+metadata/io.smallrye.common/smallrye-common-function/index.json:42:    "documentation-url" : "https://javadoc.io/doc/io.smallrye.common/smallrye-common-function/2.2.0/",
+
+web search: 
+web search: JavaServer Pages Specification 2.0 Javadoc javax.servlet.jsp
+web search: 
+web search: https://jcp.org/aboutJava/communityprocess/final/jsr152/index.html
+web search: 
+web search: "javax.servlet.jsp" "JspFactory.java" "2.0.public_draft"
+web search: 
+web search: github jsp-api JspFactory.java javax.servlet.jsp 2.0
+codex
+The exact `javax.servlet:jsp-api:2.0` artifact has only `.jar` and `.pom` entries on Maven Central, and javadoc.io reports that no JavaDoc was released for that artifact. I found the JSP 2.0 final specification download page, but no confident source repository or public test suite URL tied to this exact Maven artifact, so I’ll use `N/A` for those unavailable fields.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..3c55f6ce0a5ff203923e7e3ccf13724a75223554
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+ }
+
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..3c55f6ce0a5ff203923e7e3ccf13724a75223554
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+{
+  "coordinates" : "javax.servlet:jsp-api:2.0",
+  "source-code-url" : "N/A",
+  "repository-url" : "N/A",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/",
+  "description" : "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+}
+
+exec
+/usr/bin/bash -lc "python -m json.tool build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json >/tmp/javax.servlet-jsp-api-2.0.pretty && sed -n '1,120p' /tmp/javax.servlet-jsp-api-2.0.pretty" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+{
+    "coordinates": "javax.servlet:jsp-api:2.0",
+    "source-code-url": "N/A",
+    "repository-url": "N/A",
+    "test-code-url": "N/A",
+    "documentation-url": "https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/",
+    "description": "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+}
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/ | sed -n '1,40p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..3c55f6ce0a5ff203923e7e3ccf13724a75223554
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+ }
+
+ succeeded in 175ms:
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Length: 15491
+Content-Type: text/html
+ETag: "f9b5fa84a3a379339154fc73816d55c6:1320665538"
+Last-Modified: Fri, 25 Mar 2011 21:02:10 GMT
+Server: AkamaiNetStorage
+Date: Sat, 02 May 2026 00:37:36 GMT
+Connection: keep-alive
+
+
+web search: 
+web search: https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..3c55f6ce0a5ff203923e7e3ccf13724a75223554
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+ }
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://jcp.org/aboutJava/communityprocess/final/jsr152/index.html | sed -n '1,220p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..3c55f6ce0a5ff203923e7e3ccf13724a75223554
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+ }
+
+ succeeded in 1048ms:
+
+<!-- ** BEGIN: header.jsp ** //-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3c.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+    
+
+   
+    <link href="/includes/css/menu.css" rel="stylesheet" type="text/css"></link>
+    <link href="/includes/css/style.css" rel="stylesheet" type="text/css"></link>
+    <!--[if lt IE 6]><link href="/includes/css/style5.css" rel="stylesheet" type="text/css" ></link><![endif]-->
+    <!--[if gte IE 5]><link href="/includes/css/style6.css" rel="stylesheet" type="text/css" ></link><![endif]-->
+    <link href="/includes/css/tabs.css"  rel="stylesheet" type="text/css"></link>
+
+    <script type="text/javascript" src="/includes/scripts/tabs.js"></script>
+    <script type="text/javascript" src="/includes/scripts/menu.js"></script>
+   
+
+    
+
+    
+        <title>The Java Community Process(SM) Program - communityprocess - final</title>
+    
+
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+                                <script>!function(a){var e="https://s.go-mpulse.net/boomerang/",t="addEventListener";if("False"=="True")a.BOOMR_config=a.BOOMR_config||{},a.BOOMR_config.PageParams=a.BOOMR_config.PageParams||{},a.BOOMR_config.PageParams.pci=!0,e="https://s2.go-mpulse.net/boomerang/";if(window.BOOMR_API_key="UE9G5-FVEGY-MA38N-LMMNY-SBQP2",function(){function n(e){a.BOOMR_onload=e&&e.timeStamp||(new Date).getTime()}if(!a.BOOMR||!a.BOOMR.version&&!a.BOOMR.snippetExecuted){a.BOOMR=a.BOOMR||{},a.BOOMR.snippetExecuted=!0;var i,_,o,r=document.createElement("iframe");if(a[t])a[t]("load",n,!1);else if(a.attachEvent)a.attachEvent("onload",n);r.src="javascript:void(0)",r.title="",r.role="presentation",(r.frameElement||r).style.cssText="width:0;height:0;border:0;display:none;",o=document.getElementsByTagName("script")[0],o.parentNode.insertBefore(r,o);try{_=r.contentWindow.document}catch(O){i=document.domain,r.src="javascript:var d=document.open();d.domain='"+i+"';void(0);",_=r.contentWindow.document}_.open()._l=function(){var a=this.createElement("script");if(i)this.domain=i;a.id="boomr-if-as",a.src=e+"UE9G5-FVEGY-MA38N-LMMNY-SBQP2",BOOMR_lstart=(new Date).getTime(),this.body.appendChild(a)},_.write("<bo"+'dy onload="document._l();">'),_.close()}}(),"".length>0)if(a&&"performance"in a&&a.performance&&"function"==typeof a.performance.setResourceTimingBufferSize)a.performance.setResourceTimingBufferSize();!function(){if(BOOMR=a.BOOMR||{},BOOMR.plugins=BOOMR.plugins||{},!BOOMR.plugins.AK){var e=""=="true"?1:0,t="",n="fico4qiaqsynokqce3ydaaaaabu7kr3a-f-4b3faa734-clienttons-s.akamaihd.net",i="false"=="true"?2:1,_={"ak.v":"41","ak.cp":"1164872","ak.ai":parseInt("695954",10),"ak.ol":"0","ak.cr":11,"ak.ipv":6,"ak.proto":"h2","ak.rid":"a8c2655","ak.r":47307,"ak.a2":e,"ak.m":"dscx","ak.n":"essl","ak.cport":33738,"ak.gh":"92.123.27.119","ak.quicv":"","ak.tlsv":"tls1.3","ak.0rtt":"","ak.0rtt.ed":"","ak.csrc":"-","ak.acc":"","ak.t":"1777682272","ak.ak":"hOBiQwZUYzCg5VSAfCLimQ==TTsiXlXWMMbhemMwBeP+ViF3UdernP1ZbEXS+IY/36SxNYepwP9A7zJD54BpB/bjghWeo0s5Z73wj/tcDXm0yTUhUBW32VQ+JbzsGx01J/OiMmQxHs8VRSPow/fPXWGoWKzUrAmHug+utgGA2zRnjpgTmUv7iKjFyi7/sVf/U75ZSrodI4Ua6yoxRTnCdxg8EnEElOAvsKTRlWUds5+boF3HL3QYQrVhondNBt726s6SzPzGSobfkQifuUvgJXRtUyjfq0JuHlGX0VczI9Zw79H3+8lT9siw9P5+BZ5BK4RV/QTIfx1Ya5vqCQRHYDg8Qyr/THC8otbiR+YfZ8MwcYIE21D6QCO5awPDTohpLlwtp2iuLj9RpL3tCeMOLF1A9Dvnv54L6H2z1P9yhJ5M2eVj+J476afGIUIX8LZd088=","ak.pv":"27","ak.dpoabenc":"","ak.tf":i};if(""!==t)_["ak.ruds"]=t;var o={i:!1,av:function(e){var t="http.initiator";if(e&&(!e[t]||"spa_hard"===e[t]))_["ak.feo"]=void 0!==a.aFeoApplied?1:0,BOOMR.addVar(_)},rv:function(){var a=["ak.cport","ak.cr","ak.csrc","ak.gh","ak.ipv","ak.m","ak.n","ak.ol","ak.proto","ak.quicv","ak.tlsv","ak.0rtt","ak.0rtt.ed","ak.r","ak.acc","ak.t","ak.tf"];BOOMR.removeVar(a)}};BOOMR.plugins.AK={akVars:_,akDNSPreFetchDomain:n,init:function(){if(!o.i){var a=BOOMR.subscribe;a("before_beacon",o.av,null,null),a("onbeacon",o.rv,null,null),o.i=!0}return this},is_complete:function(){return!0}}}}()}(window);</script></head>
+
+
+
+<body onload="P7_initPM(0,1,0,0,-1)">
+
+    <a name="top"></a>
+
+    <div id="header">
+	<div id="logo">
+		<a href="/en/home/index"><img src="/images/spacer.gif" alt="Java Community Process" height="81" width="151"></a>
+	</div>
+	<div id="tools">
+		<div class="search">
+			<form name="search" action="/en/jsr/summary" method="get" onsubmit="return validate_search()">
+				<input name="id" value="Search JSRs" size="16" class="form" onfocus="nullify_if_equal(this, 'Search JSRs')" type="text">
+				<a href="javascript:document.search.submit()" onclick="return validate_search()"><img src="/images/button_go.gif" width="21" height="16" border="0" alt="Submit this Search" name="sub_search"></a>
+			</form>
+		</div>
+		<div class="tools">
+			<a href="/en/press/pressroom">Press Room</a> &nbsp;|&nbsp;
+			<a href="https://www.oracle.com/java/technologies/downloads/" alt="Oracle's Java download page">Get Java Here</a> &nbsp;|&nbsp;
+			<!-- <a href="javascript:void(0)">Print Format</a> &nbsp;|&nbsp;&nbsp; -->
+		</div>
+
+	</div>
+	<div style="clear: right;"></div>
+
+        
+
+	<div class="topbar"><img src="/images/spacer.gif" alt="" height="3" width="154"></div>
+	<div id="update"> </div>
+    </div>
+
+
+    
+
+        <!-- ** BEGIN: Content Table ** //-->
+
+        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+
+            <tr>
+
+                <!-- ** BEGIN: Navigation Column ** //-->
+                <td width="150" id="leftcontent" valign="top">
+                    <!-- Navigation Placeholder //-->
+
+                    
+
+                    <div class="bar"><img src="/images/hr_dots1.gif" alt="" height="3" width="150"></div>
+
+        <!-- begin find JSRs form -->
+        <!-- IMPORTANT! do not convert this form to Struts < html : form > tag.  javascript change of form.action property fails. -->
+        <img src="/images/hd_find-jsrs.gif" alt="Find JSRs" height="18" width="150">
+        <form name="findjsr" action="/en/jsr/summary" method="get" class="pt5" onsubmit="return validate_findjsr()">
+            <input name="id" size="18" class="form" value="Search JSRs" onfocus="nullify_if_equal(this, 'Search JSRs')" type="text">
+	    <a href="javascript:document.findjsr.submit()" onclick="return validate_findjsr()"><img src="/images/button_go.gif" width="21" height="16" border="0" alt="Submit this Search" name="sub_search"></a>
+        </form><br><br>
+
+        <!-- ** Menu Start ** //-->
+
+        <ul id="p7PMnav">
+            <li><a href="/en/jsr/platform">JSRs by Platform</a></li>
+            <li><a href="/en/jsr/tech">JSRs by Technology</a></li>
+            <li><a href="/en/jsr/stage">JSRs by Stage</a></li>
+            <li><a href="/en/jsr/ec">JSRs by Committee</a></li>
+            <li><a href="/en/jsr/all">List of All JSRs</a></li>
+
+            <!--end find JSRs form -->
+            <div style="clear: both;"><img src="/images/spacer.gif" alt="" height="25" width="1"></div>
+
+            <!--begin my JCP -->
+            <img src="/images/hd_my-jcp.gif" alt="My JCP" height="18" width="150">
+            
+
+          <form name="login" method="get" action="/en/user/login" >
+            <input name="Sign-in" type="submit" title="Sign-in" value="Sign-in" />
+          </form>
+
+            <div style="clear:both"><img src="/images/global/spacer.gif" width="1" height="3" alt=""></div>
+            <div class="noNav">
+                <a href="/en/user/register">Register for Site</a>
+            </div>
+
+             <div class="bar"><img src="/images/hr_dots1.gif" alt="" height="3" width="150"></div>
+           <div class="noNav" style="color: #666666; padding: 0;">
+              Use of JCP site is subject to the
+              <a href="/en/home/terms" style="display:inline;padding: 0">JCP Terms of Use</a> and the
+              <a href="http://www.oracle.com/us/legal/privacy/index.html" style="display:inline;padding: 0" href="">Oracle Privacy Policy</a>
+          </div>
+
+            
+
+            <div style="clear:both"><img src="/images/global/spacer.gif" width="1" height="25" alt=""></div>
+
+            <!--begin JCP info -->
+            <img src="/images/hd_jcp-info.gif" alt="JCP Info" height="18" width="150">
+
+            <li><a href="/en/procedures/overview" class="p7PMtrg">About JCP</a>
+                <ul>
+                    <li><a href="/en/procedures/overview">Program Overview</a></li>
+                    <li><a href="/en/procedures/jcp2">JCP Process Document</a></li>
+                    <li><a href="/en/whatsnew/calendar">Calendar</a></li>
+                    <li><a href="/en/participation/members">JCP Members</a></li>
+                    <li><a href="/en/participation/committee">Executive Committee</a></li>
+                    <li><a href="/en/whatsnew/elections">Elections</a></li>
+                </ul>
+            </li>
+
+            <li><a href="/en/participation/overview" class="p7PMtrg">Get Involved</a>
+		<ul>
+                    <li><a href="/en/participation/overview">Overview</a></li>
+                    <li><a href="/en/participation/membership">Becoming a JCP Member</a></li>
+		    <li><a href="/java-in-education">Java in Education</a></li>
+		</ul>
+            </li>
+
+            <li><a href="/en/resources/contents" class="p7PMtrg">Community Resources</a>
+                <ul>
+                    <li><a href="/en/resources/contents">Overview</a></li>
+                    <li><a href="/en/resources/tutorials">Tutorials</a></li>
+                    <li><a href="/en/resources/multimedia">JCP Podcasts</a></li>
+                    <li><a href="/en/resources/guide">Spec Lead Guide</a></li>
+                    <li><a href="/en/resources/tdk">TCK Tool & Info</a></li>
+                    <li><a href="/en/resources/license_reference">License Reference</a></li>
+                </ul>
+            </li>
+
+            <li><a href="/en/press/pmo" class="p7PMtrg">Community News</a>
+                <ul>
+                    <li><a href="/en/press/pmo">News</a></li>
+                    <li><a href="/en/press/news/awards/awards_main">Programs &amp; Awards</a></li>
+                    <li><a href="/en/press/releases">Press Releases</a></li>
+                    <li><a href="/en/press/success">Success Stories</a></li>
+                </ul>
+            </li>
+
+            <li><a href="/en/introduction/faq">FAQ</a></li>
+
+            <li><a href="/en/resources/contacts">Contact Us</a></li>
+
+            <div style="clear: both;"><img src="/images/spacer.gif" alt="" height="25" width="1"></div>
+
+            <!--[if lte IE 6]><style>#p7PMnav a{height:1em;}#p7PMnav li{height:1em;float:left;clear:both;width:100%}</style><![endif]-->
+            <!--[if IE 6]><style>#p7PMnav li{clear:none;}</style><![endif]-->
+            <!--[if IE 7]><style>#p7PMnav a{zoom:100%;}#p7PMnav li{float:left;clear:both;width:100%;}</style><![endif]-->
+        </ul>
+
+        
+
+        <!--begin ad space -->
+        <div class="ads">
+            <a href="https://www.oracle.com/java/technologies/downloads/" target="_blank"><img style="display: ;" src="/images/ad_banner2.gif" alt="Ad Banner" border="1" height="70" width="150"></a>
+        </div>
+        <!--end ad space -->
+
+<!-- ** Menu End ** //-->
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+
+    
+
+                    &nbsp;<br>
+                    <img src="/images/common/trans.gif" alt="" width="1" height="150"><br>
+
+              
+
+
+
+                </td>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://jcp.org/aboutJava/communityprocess/final/jsr152/index.html | rg -n "Download|Final|Specification|jsp|href|TCK|Reference|Implementation" -i' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..3c55f6ce0a5ff203923e7e3ccf13724a75223554
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+ }
+
+ succeeded in 189ms:
+2:<!-- ** BEGIN: header.jsp ** //-->
+32:    <link href="/includes/css/menu.css" rel="stylesheet" type="text/css"></link>
+33:    <link href="/includes/css/style.css" rel="stylesheet" type="text/css"></link>
+34:    <!--[if lt IE 6]><link href="/includes/css/style5.css" rel="stylesheet" type="text/css" ></link><![endif]-->
+35:    <!--[if gte IE 5]><link href="/includes/css/style6.css" rel="stylesheet" type="text/css" ></link><![endif]-->
+36:    <link href="/includes/css/tabs.css"  rel="stylesheet" type="text/css"></link>
+45:        <title>The Java Community Process(SM) Program - communityprocess - final</title>
+60:		<a href="/en/home/index"><img src="/images/spacer.gif" alt="Java Community Process" height="81" width="151"></a>
+66:				<a href="javascript:document.search.submit()" onclick="return validate_search()"><img src="/images/button_go.gif" width="21" height="16" border="0" alt="Submit this Search" name="sub_search"></a>
+70:			<a href="/en/press/pressroom">Press Room</a> &nbsp;|&nbsp;
+71:			<a href="https://www.oracle.com/java/technologies/downloads/" alt="Oracle's Java download page">Get Java Here</a> &nbsp;|&nbsp;
+72:			<!-- <a href="javascript:void(0)">Print Format</a> &nbsp;|&nbsp;&nbsp; -->
+106:	    <a href="javascript:document.findjsr.submit()" onclick="return validate_findjsr()"><img src="/images/button_go.gif" width="21" height="16" border="0" alt="Submit this Search" name="sub_search"></a>
+112:            <li><a href="/en/jsr/platform">JSRs by Platform</a></li>
+113:            <li><a href="/en/jsr/tech">JSRs by Technology</a></li>
+114:            <li><a href="/en/jsr/stage">JSRs by Stage</a></li>
+115:            <li><a href="/en/jsr/ec">JSRs by Committee</a></li>
+116:            <li><a href="/en/jsr/all">List of All JSRs</a></li>
+131:                <a href="/en/user/register">Register for Site</a>
+137:              <a href="/en/home/terms" style="display:inline;padding: 0">JCP Terms of Use</a> and the
+138:              <a href="http://www.oracle.com/us/legal/privacy/index.html" style="display:inline;padding: 0" href="">Oracle Privacy Policy</a>
+148:            <li><a href="/en/procedures/overview" class="p7PMtrg">About JCP</a>
+150:                    <li><a href="/en/procedures/overview">Program Overview</a></li>
+151:                    <li><a href="/en/procedures/jcp2">JCP Process Document</a></li>
+152:                    <li><a href="/en/whatsnew/calendar">Calendar</a></li>
+153:                    <li><a href="/en/participation/members">JCP Members</a></li>
+154:                    <li><a href="/en/participation/committee">Executive Committee</a></li>
+155:                    <li><a href="/en/whatsnew/elections">Elections</a></li>
+159:            <li><a href="/en/participation/overview" class="p7PMtrg">Get Involved</a>
+161:                    <li><a href="/en/participation/overview">Overview</a></li>
+162:                    <li><a href="/en/participation/membership">Becoming a JCP Member</a></li>
+163:		    <li><a href="/java-in-education">Java in Education</a></li>
+167:            <li><a href="/en/resources/contents" class="p7PMtrg">Community Resources</a>
+169:                    <li><a href="/en/resources/contents">Overview</a></li>
+170:                    <li><a href="/en/resources/tutorials">Tutorials</a></li>
+171:                    <li><a href="/en/resources/multimedia">JCP Podcasts</a></li>
+172:                    <li><a href="/en/resources/guide">Spec Lead Guide</a></li>
+173:                    <li><a href="/en/resources/tdk">TCK Tool & Info</a></li>
+174:                    <li><a href="/en/resources/license_reference">License Reference</a></li>
+178:            <li><a href="/en/press/pmo" class="p7PMtrg">Community News</a>
+180:                    <li><a href="/en/press/pmo">News</a></li>
+181:                    <li><a href="/en/press/news/awards/awards_main">Programs &amp; Awards</a></li>
+182:                    <li><a href="/en/press/releases">Press Releases</a></li>
+183:                    <li><a href="/en/press/success">Success Stories</a></li>
+187:            <li><a href="/en/introduction/faq">FAQ</a></li>
+189:            <li><a href="/en/resources/contacts">Contact Us</a></li>
+202:            <a href="https://www.oracle.com/java/technologies/downloads/" target="_blank"><img style="display: ;" src="/images/ad_banner2.gif" alt="Ad Banner" border="1" height="70" width="150"></a>
+267:<!-- ** END: header.jsp ** //-->
+291:<TITLE>JSR-000152 JavaServer Pages 2.0 Specification - Final Release</TITLE>
+346:JSR-000152 JavaServer Pages<sup><font size="-2">TM</font></sup> 2.0 Specification
+349:<STRONG>(Final Release)</STRONG>
+389:<P>This is the Final Release of this Specification, as
+390:described in <A HREF="http://jcp.org/en/procedures/jcp2_1#3.4">Section 3.4</A>
+393:<B>Specification:</B>
+398:href="http://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/"><img src="/images/download.png" alt="Download" border="0"></a>
+409:<B>Reference Implementation and Technology Compatibility Kit:</B>
+411:<LI><a href="http://java.sun.com/j2ee/1.4/download-dr.html">JSR 152 RI</a>
+412:<LI>The TCK will be available to Qualified Not-for-Profits and Qualified Individuals for no charge as per Section F.III of the <a href="http://jcp.org/aboutJava/communityprocess/JSPA2.pdf">JSPA 2</a>. Details on the Compatibility Testing Scholarship Program can be found at <a href="http://java.sun.com/scholarship/">http://java.sun.com/scholarship/</a>.
+417:<LI><a href="../../maintenance/jsr152/JSR152ChangeLog.html">Change Log for JSR 152</a>
+437:          <A HREF="http://jcp.org/en/jsr/detail?id=152">JSR-000152 JavaServer Pages<sup><font size="-2">TM</font></sup> 2.0 Specification Page</A><BR>
+438:          <a href="http://jcp.org/en/jsr/stage?listBy=final">Final Release Page</a><BR>
+439:          <A HREF="http://jcp.org/">Community Process Main Page</A>
+474:<!-- ** BEGIN: footer.jsp ** //-->
+493:        <a href="/en/resources/contacts">Contact Us</a>
+500:        <a href="/en/home/terms">Terms of Use</a>. <a href="http://www.oracle.com/us/legal/privacy/index.html">Privacy Policy</a>. <a href="http://www.oracle.com/us/legal/third-party-trademarks/third-party-trademarks-078568.html">Trademarks</a>
+520:<!-- ** END: footer.jsp ** //-->
+
+exec
+/usr/bin/bash -lc "curl -I -L -s http://java.sun.com/j2ee/1.4/download-dr.html | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+exec
+/usr/bin/bash -lc "curl -I -L -s https://java.sun.com/j2ee/1.4/download-dr.html | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..3c55f6ce0a5ff203923e7e3ccf13724a75223554
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+ }
+
+ succeeded in 202ms:
+HTTP/1.1 301 Moved Permanently
+Server: AkamaiGHost
+Content-Length: 0
+Location: https://java.sun.com/j2ee/1.4/download-dr.html
+Cache-Control: max-age=0
+Expires: Sat, 02 May 2026 00:38:00 GMT
+Date: Sat, 02 May 2026 00:38:00 GMT
+Connection: keep-alive
+Akamai-Request-BC: [a=92.123.27.52,b=20448526,c=g,n=CH_ZH_GLATTBRUGG,o=20940]
+Akamai-GRN: 0.341b7b5c.1777682280.138050e
+
+HTTP/2 301 
+server: AkamaiGHost
+content-length: 0
+location: http://www.oracle.com/technetwork/java/index.html
+cache-control: max-age=0
+expires: Sat, 02 May 2026 00:38:01 GMT
+date: Sat, 02 May 2026 00:38:01 GMT
+akamai-request-bc: [a=92.123.27.87,b=114078699,c=g,n=CH_ZH_GLATTBRUGG,o=20940]
+akamai-grn: 0.571b7b5c.1777682280.6ccb3eb
+
+HTTP/1.1 301 Moved Permanently
+Server: AkamaiGHost
+Content-Length: 0
+Location: http://www.oracle.com/java/technologies/
+Date: Sat, 02 May 2026 00:38:01 GMT
+Connection: keep-alive
+Akamai-Request-BC: [a=173.222.108.103,b=69060355,c=g,n=CH_ZH_GLATTBRUGG,o=20940]
+Akamai-GRN: 0.676cdead.1777682281.41dc703
+X-Frame-Options: sameorigin
+Content-Security-Policy: frame-ancestors 'self' https://my.oracle.com https://eeho.fa.us2.oraclecloud.com https://blogs.oracle.com *.khapps.com *.khapps.jp *.lsapps.oracle.com *.lsapps.oracle.jp *.dev-lsapps.oracle.com https://oraclesso.sharepoint.com https://oracle.sharepoint.com https://partners.oracle.com https://partners-stage.oracle.com https://partners-test.oracle.com https://partners-sit.oracle.com https://partners-dev.oracle.com
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1
+Origin-Cache-Control: NO_HEADER_PRESENTED
+Origin-Edge-Control: NO_HEADER_PRESENTED
+Actual-Object-TTL: -1
+Server-Timing: ak_p; desc="1777682281046_2917035111_69060355_10_8777_7_0_-";dur=1
+
+HTTP/1.1 301 Moved Permanently
+Server: AkamaiGHost
+Content-Length: 0
+Location: https://www.oracle.com/java/technologies/
+Cache-Control: max-age=1800
+Expires: Sat, 02 May 2026 01:08:01 GMT
+Date: Sat, 02 May 2026 00:38:01 GMT
+Connection: keep-alive
+Akamai-Request-BC: [a=173.222.108.103,b=69060356,c=g,n=CH_ZH_GLATTBRUGG,o=20940]
+Akamai-GRN: 0.676cdead.1777682281.41dc704
+Set-Cookie: akaas_aud-seg-ocom-prod=2147483647~rv=30~id=4041c204b470113a23ae72c7c2e9f2c7; path=/
+X-Frame-Options: sameorigin
+Content-Security-Policy: frame-ancestors 'self' https://my.oracle.com https://eeho.fa.us2.oraclecloud.com https://blogs.oracle.com *.khapps.com *.khapps.jp *.lsapps.oracle.com *.lsapps.oracle.jp *.dev-lsapps.oracle.com https://oraclesso.sharepoint.com https://oracle.sharepoint.com https://partners.oracle.com https://partners-stage.oracle.com https://partners-test.oracle.com https://partners-sit.oracle.com https://partners-dev.oracle.com
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1
+Origin-Cache-Control: NO_HEADER_PRESENTED
+Origin-Edge-Control: NO_HEADER_PRESENTED
+Actual-Object-TTL: -1
+Server-Timing: ak_p; desc="1777682281062_2917035111_69060356_50_5368_6_0_-";dur=1
+
+HTTP/2 200 
+content-type: text/html; charset=UTF-8
+strict-transport-security: max-age=31536000; includeSubDomains
+last-modified: Thu, 30 Apr 2026 19:47:09 GMT
+x-oracle-dms-ecid: 006KBTeU3fSFw0KimTXvWJ000Rpk000D^K
+custom_cache_rule_location: Default
+x-oracle-dms-rid: 0:1
+device_type: Any
+x-content-type-options: nosniff
+host_service: FutureTenseContentServer:12c
+custom_akamai_autopurge: NO
+content-language: en-US
+cache-control: max-age=1800
+expires: Sat, 02 May 2026 01:08:01 GMT
+date: Sat, 02 May 2026 00:38:01 GMT
+akamai-request-bc: [a=173.222.108.103,b=69060361,c=g,n=CH_ZH_GLATTBRUGG,o=20940],[c=c,n=IT_25_MILANO,o=20940]
+akamai-grn: 0.676cdead.1777682281.41dc709
+set-cookie: akaas_aud-seg-ocom-prod=2147483647~rv=45~id=bbb5ddc6c8b42ca63a6bf6f19861ab3c; path=/; Secure; SameSite=None
+x-frame-options: sameorigin
+content-security-policy: frame-ancestors 'self' https://my.oracle.com https://eeho.fa.us2.oraclecloud.com https://blogs.oracle.com *.khapps.com *.khapps.jp *.lsapps.oracle.com *.lsapps.oracle.jp *.dev-lsapps.oracle.com https://oraclesso.sharepoint.com https://oracle.sharepoint.com https://partners.oracle.com https://partners-stage.oracle.com https://partners-test.oracle.com https://partners-sit.oracle.com https://partners-dev.oracle.com
+x-content-type-options: nosniff
+x-xss-protection: 1
+
+ succeeded in 185ms:
+HTTP/2 301 
+server: AkamaiGHost
+content-length: 0
+location: http://www.oracle.com/technetwork/java/index.html
+cache-control: max-age=0
+expires: Sat, 02 May 2026 00:38:01 GMT
+date: Sat, 02 May 2026 00:38:01 GMT
+akamai-request-bc: [a=92.123.27.52,b=20448541,c=g,n=CH_ZH_GLATTBRUGG,o=20940]
+akamai-grn: 0.341b7b5c.1777682280.138051d
+
+HTTP/1.1 301 Moved Permanently
+Server: AkamaiGHost
+Content-Length: 0
+Location: http://www.oracle.com/java/technologies/
+Date: Sat, 02 May 2026 00:38:01 GMT
+Connection: keep-alive
+Akamai-Request-BC: [a=173.222.108.102,b=107914241,c=g,n=CH_ZH_GLATTBRUGG,o=20940]
+Akamai-GRN: 0.666cdead.1777682281.66ea401
+X-Frame-Options: sameorigin
+Content-Security-Policy: frame-ancestors 'self' https://my.oracle.com https://eeho.fa.us2.oraclecloud.com https://blogs.oracle.com *.khapps.com *.khapps.jp *.lsapps.oracle.com *.lsapps.oracle.jp *.dev-lsapps.oracle.com https://oraclesso.sharepoint.com https://oracle.sharepoint.com https://partners.oracle.com https://partners-stage.oracle.com https://partners-test.oracle.com https://partners-sit.oracle.com https://partners-dev.oracle.com
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1
+Origin-Cache-Control: NO_HEADER_PRESENTED
+Origin-Edge-Control: NO_HEADER_PRESENTED
+Actual-Object-TTL: -1
+Server-Timing: ak_p; desc="1777682281045_2917035110_107914241_11_58756_7_0_-";dur=1
+
+HTTP/1.1 301 Moved Permanently
+Server: AkamaiGHost
+Content-Length: 0
+Location: https://www.oracle.com/java/technologies/
+Cache-Control: max-age=1800
+Expires: Sat, 02 May 2026 01:08:01 GMT
+Date: Sat, 02 May 2026 00:38:01 GMT
+Connection: keep-alive
+Akamai-Request-BC: [a=173.222.108.102,b=107914248,c=g,n=CH_ZH_GLATTBRUGG,o=20940]
+Akamai-GRN: 0.666cdead.1777682281.66ea408
+Set-Cookie: akaas_aud-seg-ocom-prod=2147483647~rv=48~id=4c1029b432c654901394632f37537be3; path=/
+X-Frame-Options: sameorigin
+Content-Security-Policy: frame-ancestors 'self' https://my.oracle.com https://eeho.fa.us2.oraclecloud.com https://blogs.oracle.com *.khapps.com *.khapps.jp *.lsapps.oracle.com *.lsapps.oracle.jp *.dev-lsapps.oracle.com https://oraclesso.sharepoint.com https://oracle.sharepoint.com https://partners.oracle.com https://partners-stage.oracle.com https://partners-test.oracle.com https://partners-sit.oracle.com https://partners-dev.oracle.com
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1
+Origin-Cache-Control: NO_HEADER_PRESENTED
+Origin-Edge-Control: NO_HEADER_PRESENTED
+Actual-Object-TTL: -1
+Server-Timing: ak_p; desc="1777682281111_2917035110_107914248_20_5741_6_0_-";dur=1
+
+HTTP/2 200 
+content-type: text/html; charset=UTF-8
+strict-transport-security: max-age=31536000; includeSubDomains
+last-modified: Thu, 30 Apr 2026 19:47:09 GMT
+x-oracle-dms-ecid: 006KBTeU3fSFw0KimTXvWJ000Rpk000D^K
+custom_cache_rule_location: Default
+x-oracle-dms-rid: 0:1
+device_type: Any
+x-content-type-options: nosniff
+host_service: FutureTenseContentServer:12c
+custom_akamai_autopurge: NO
+content-language: en-US
+content-length: 36745
+mpulse_cdn_cache: HIT
+mpulse_origin_time: 0
+cache-control: max-age=1800
+expires: Sat, 02 May 2026 01:08:01 GMT
+date: Sat, 02 May 2026 00:38:01 GMT
+akamai-request-bc: [a=173.222.108.102,b=107914254,c=g,n=CH_ZH_GLATTBRUGG,o=20940]
+akamai-grn: 0.666cdead.1777682281.66ea40e
+set-cookie: akaas_aud-seg-ocom-prod=2147483647~rv=59~id=07af4dd0097c1de9dee9007e7cd3741e; path=/; Secure; SameSite=None
+x-frame-options: sameorigin
+content-security-policy: frame-ancestors 'self' https://my.oracle.com https://eeho.fa.us2.oraclecloud.com https://blogs.oracle.com *.khapps.com *.khapps.jp *.lsapps.oracle.com *.lsapps.oracle.jp *.dev-lsapps.oracle.com https://oraclesso.sharepoint.com https://oracle.sharepoint.com https://partners.oracle.com https://partners-stage.oracle.com https://partners-test.oracle.com https://partners-sit.oracle.com https://partners-dev.oracle.com
+x-content-type-options: nosniff
+x-xss-protection: 1
+origin-cache-control: NO_HEADER_PRESENTED
+origin-edge-control: NO_HEADER_PRESENTED
+actual-object-ttl: 86400
+server-timing: ak_p; desc="1777682281131_2917035110_107914254_38_8058_6_14_15";dur=1
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/ | sed -n '1,100p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..3c55f6ce0a5ff203923e7e3ccf13724a75223554
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+ }
+
+ succeeded in 887ms:
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script language='javascript'>
+<!--
+var varWebRoot = "../assets/";
+-->
+</script>
+
+<html lang="en-US">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link href="../assets/css/menu.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/style.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/tabs.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="../assets/css/k5.css">
+<link href="../assets/css/smi-advanced-snippet.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../assets/scripts/tabs.js"></script>
+<script type="text/javascript" src="../assets/scripts/menu.js"></script>
+<script type="text/javascript" src="../assets/scripts/getdate.js"></script>
+<script type="text/javascript" src="../assets/js/sniff.js"></script>
+<script language="javascript1.2" type="text/javascript" src="../assets/js/menucontent.js"></script>
+<script type="text/javascript" src="../assets/js/software_config_validation.js"></script>
+<title>
+JavaServer Pages(TM) Specification 2.0 Final Release
+</title>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+</head>
+<body onload="P7_initPM(0,1,0,0,-1)">
+<a name="top"></a>
+<div id="header">
+<div id="logo">
+<a href="http://jcp.org/en/home/index"><img src="../assets/images/spacer.gif" alt="Java Community Process" height="81" width="151"></a>
+</div>
+<div id="tools">
+<div class="tools">
+<a href="http://java.com/en/download/index.jsp">Get Java Here</a>
+</div>
+</div>
+<div style="clear: right;"></div>
+<div class="topbar"><img src="../assets/images/spacer.gif" alt="" height="3" width="154"></div>
+</div>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<!-- BEGIN LEFT NAV -->
+<td id="leftcontent" valign="top">
+<div class="bar"><img src="../assets/images/hr_dots1.gif" alt="" height="3" width="150"></div>
+<!-- begin find JSRs form -->
+<!-- IMPORTANT! do not convert this form to Struts < html : form > tag. javascript change of form.action property fails. -->
+<img src="../assets/images/hd_find-jsrs.gif" alt="Find JSRs" height="18" width="150">
+<!-- ** Menu Start ** //-->
+<ul id="p7PMnav">
+<li><a href="http://jcp.org/en/jsr/platform">JSRs by Platform</a></li>
+<li><a href="http://jcp.org/en/jsr/tech">JSRs by Technology</a></li>
+<li><a href="http://jcp.org/en/jsr/stage">JSRs by Stage</a></li>
+<li><a href="http://jcp.org/en/jsr/ec">JSRs by Committee</a></li>
+<li><a href="http://jcp.org/en/jsr/all">List of All JSRs</a></li>
+<!--end find JSRs form -->
+<div style="clear: both;"><img src="../assets/images/spacer.gif" alt="" height="25" width="1"></div>
+<!--begin JCP info -->
+<img src="../assets/images/hd_jcp-info.gif" alt="JCP Info" height="18" width="150">
+<li><a href="http://jcp.org/en/whatsnew/jcp" class="p7PMtrg">Updates</a>
+<ul>
+<li><a href="http://jcp.org/en/whatsnew/jcp">Recent Updates</a></li>
+<li><a href="http://jcp.org/en/whatsnew/calendar">Calendar</a></li>
+</ul>
+</li>
+<li><a href="http://jcp.org/en/procedures/overview" class="p7PMtrg">About JCP</a>
+<ul>
+<li><a href="http://jcp.org/en/procedures/overview">Program Overview</a></li>
+<li><a href="http://jcp.org/en/procedures/jcp2">JCP Procedures</a></li>
+<li><a href="http://jcp.org/en/participation/members">JCP Members</a></li>
+<li><a href="http://jcp.org/en/participation/committee">Executive Committee</a></li>
+<li><a href="http://jcp.org/en/whatsnew/elections">Elections</a></li>
+</ul>
+</li>
+<li><a href="http://jcp.org/en/introduction/faq">FAQ</a></li>
+<li><a href="http://jcp.org/en/resources/contacts">Contacts</a></li>
+<li><a href="http://jcp.org/en/participation/overview" class="p7PMtrg">Participation</a>
+<ul>
+<li><a href="http://jcp.org/en/participation/overview">Getting Involved</a></li>
+<li><a href="http://jcp.org/en/participation/membership">Becoming a JCP Member</a></li>
+</ul>
+</li>
+<li><a href="http://jcp.org/en/resources/contents" class="p7PMtrg">Community Resources</a>
+<ul>
+<li><a href="http://jcp.org/en/resources/contents">Resources Overview</a></li>
+<li><a href="http://jcp.org/en/resources/guide">Spec Lead Guide</a></li>
+<li><a href="http://jcp.org/en/resources/tdk">TCK Tool & Info</a></li>
+</ul>
+</li>
+<li><a href="http://jcp.org/en/press/pmo" class="p7PMtrg">Community News</a>
+<ul>
+<li><a href="http://jcp.org/en/press/pmo">News from PMO</a></li>
+<li><a href="http://jcp.org/en/press/news">News Stories</a></li>
+<li><a href="http://jcp.org/en/press/releases">Press Releases</a></li>
+<li><a href="http://jcp.org/en/press/success">Success Stories</a></li>
+<li><a href="http://jcp.org/en/press/whitepapers">White Papers</a></li>
+</ul>
+</li>
+<div style="clear: both;"><img src="../assets/images/spacer.gif" alt="" height="25" width="1"></div>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/ | rg -n "href|zip|pdf|spec" -i' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+11:<link href="../assets/css/menu.css" rel="stylesheet" type="text/css">
+12:<link href="../assets/css/style.css" rel="stylesheet" type="text/css">
+13:<link href="../assets/css/tabs.css" rel="stylesheet" type="text/css">
+14:<link rel="stylesheet" type="text/css" href="../assets/css/k5.css">
+15:<link href="../assets/css/smi-advanced-snippet.css" rel="stylesheet" type="text/css">
+23:JavaServer Pages(TM) Specification 2.0 Final Release
+32:<a href="http://jcp.org/en/home/index"><img src="../assets/images/spacer.gif" alt="Java Community Process" height="81" width="151"></a>
+36:<a href="http://java.com/en/download/index.jsp">Get Java Here</a>
+52:<li><a href="http://jcp.org/en/jsr/platform">JSRs by Platform</a></li>
+53:<li><a href="http://jcp.org/en/jsr/tech">JSRs by Technology</a></li>
+54:<li><a href="http://jcp.org/en/jsr/stage">JSRs by Stage</a></li>
+55:<li><a href="http://jcp.org/en/jsr/ec">JSRs by Committee</a></li>
+56:<li><a href="http://jcp.org/en/jsr/all">List of All JSRs</a></li>
+61:<li><a href="http://jcp.org/en/whatsnew/jcp" class="p7PMtrg">Updates</a>
+63:<li><a href="http://jcp.org/en/whatsnew/jcp">Recent Updates</a></li>
+64:<li><a href="http://jcp.org/en/whatsnew/calendar">Calendar</a></li>
+67:<li><a href="http://jcp.org/en/procedures/overview" class="p7PMtrg">About JCP</a>
+69:<li><a href="http://jcp.org/en/procedures/overview">Program Overview</a></li>
+70:<li><a href="http://jcp.org/en/procedures/jcp2">JCP Procedures</a></li>
+71:<li><a href="http://jcp.org/en/participation/members">JCP Members</a></li>
+72:<li><a href="http://jcp.org/en/participation/committee">Executive Committee</a></li>
+73:<li><a href="http://jcp.org/en/whatsnew/elections">Elections</a></li>
+76:<li><a href="http://jcp.org/en/introduction/faq">FAQ</a></li>
+77:<li><a href="http://jcp.org/en/resources/contacts">Contacts</a></li>
+78:<li><a href="http://jcp.org/en/participation/overview" class="p7PMtrg">Participation</a>
+80:<li><a href="http://jcp.org/en/participation/overview">Getting Involved</a></li>
+81:<li><a href="http://jcp.org/en/participation/membership">Becoming a JCP Member</a></li>
+84:<li><a href="http://jcp.org/en/resources/contents" class="p7PMtrg">Community Resources</a>
+86:<li><a href="http://jcp.org/en/resources/contents">Resources Overview</a></li>
+87:<li><a href="http://jcp.org/en/resources/guide">Spec Lead Guide</a></li>
+88:<li><a href="http://jcp.org/en/resources/tdk">TCK Tool & Info</a></li>
+91:<li><a href="http://jcp.org/en/press/pmo" class="p7PMtrg">Community News</a>
+93:<li><a href="http://jcp.org/en/press/pmo">News from PMO</a></li>
+94:<li><a href="http://jcp.org/en/press/news">News Stories</a></li>
+95:<li><a href="http://jcp.org/en/press/releases">Press Releases</a></li>
+96:<li><a href="http://jcp.org/en/press/success">Success Stories</a></li>
+97:<li><a href="http://jcp.org/en/press/whitepapers">White Papers</a></li>
+110:JavaServer Pages(TM) Specification 2.0 Final Release
+130:        var href = obj.getAttribute("href");
+131:        if (href && href != "" && href != null) {
+132:            obj.setAttribute('href_bak', href);
+135:        // obj.setAttribute('href', 'http://www.oracle.com/technetwork/licenses/sorry-150381.html');
+136:        obj.removeAttribute('href');
+140:        obj.setAttribute('href', obj.getAttribute('href_bak'));
+166:function disableAnchorByName(doc, anchorname, disable, enabledHref, onclickFtn) {
+176:    disableAnchor(o, disable, enabledHref, onclickFtn);
+180:function disableAnchor(obj, disable, enabledHref, onclickFtn) {
+183:        // obj.setAttribute('onclick', disabledHref );
+184:        // obj.removeAttribute('href');
+185:        // obj.setAttribute('href', onclickFtn );
+189:        obj.setAttribute('href', enabledHref);
+202:    var uuid_9rXACUFBV4EAAAEYkek5AXha = 'http://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec-docs.zip';
+205:    var uuid_9rXACUFBV4EAAAEYkek5AXha = 'http://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec-docs.zip';
+208:    var uuid_rJbACUFBqBQAAAEYmOk5AXha = 'http://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec-docs.zip';
+211:    var uuid_fRHACUFBrGAAAAEYlOk5AXha = 'http://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec.pdf';
+234:    window.open('jsp-2.0-fr-oth-JSpec-license.html','LicenseAgreement','status=1,scrollbars=1,width=500,height=400,top=150,left=400');
+238:	location.href="http://www.oracle.com/technetwork/licenses/sorry-150381.html";
+264:<span>You must accept the <a href="javascript:showAgreement();">Software License Agreement</a> to download this software.</span>
+294:<!-- BEGIN PRODUCT SPECIFIC TEXT-->
+299:<!-- END PRODUCT SPECIFIC TEXT-->
+340:<a onclick="youMustAgreePrompt();" name="uuid_9rXACUFBV4EAAAEYkek5AXha" id="uuid_9rXACUFBV4EAAAEYkek5AXha" href=""><img src="../assets/images/ic_download.gif" class="g15download-icon" border="0" alt="">jsp-2_0-fr-spec-docs.zip</a></td>
+346:<a onclick="youMustAgreePrompt();" name="uuid_9rXACUFBV4EAAAEYkek5AXha" id="uuid_9rXACUFBV4EAAAEYkek5AXha" href=""><img src="../assets/images/ic_download.gif" class="g15download-icon" border="0" alt="">jsp-2_0-fr-spec-docs.zip</a></td>
+352:<a onclick="youMustAgreePrompt();" name="uuid_rJbACUFBqBQAAAEYmOk5AXha" id="uuid_rJbACUFBqBQAAAEYmOk5AXha" href=""><img src="../assets/images/ic_download.gif" class="g15download-icon" border="0" alt="">jsp-2_0-fr-spec-docs.zip</a></td>
+357:Specification<br>
+358:<a onclick="youMustAgreePrompt();" name="uuid_fRHACUFBrGAAAAEYlOk5AXha" id="uuid_fRHACUFBrGAAAAEYlOk5AXha" href=""><img src="../assets/images/ic_download.gif" class="g15download-icon" border="0" alt="">jsp-2_0-fr-spec.pdf</a></td>
+372:If you need assistance with downloads, please contact <a href="https://www.sun.com/secure/contact/feedback/sdlc.jsp">Customer Service</a>. For all other JCP related questions, please see our <a href="http://jcp.org/en/introduction/faq">Frequently Asked Questions (FAQ)</a>.
+397:<li class="hasmenu"><a href="http://www.sun.com/aboutsun/media/index.html">News Center</a></li>
+398:<li class="hasmenu"><a href="http://www.sun.com/aboutsun/">About Sun</a></li>
+399:<li class="hasmenu"><a href="http://www.sun.com/contact/">Contact Sun</a></li>
+400:<li class="hasmenu"><a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a></li>
+401:<li><a href="http://www.sun.com/privacy/">Privacy</a></li>
+402:<li><a href="http://www.sun.com/sitemap/">Site Map</a></li>
+403:<li><a href="http://www.sun.com/aboutsun/copyright/inquiries.jsp">&copy; <script language="javascript" type="text/javascript">document.write(new Date().getFullYear())</script>, Oracle Corporation and/or its affiliates</a></li>
+
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..3c55f6ce0a5ff203923e7e3ccf13724a75223554
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+ }
+
+exec
+/usr/bin/bash -lc "curl -I -L -s http://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec.pdf | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+exec
+/usr/bin/bash -lc "curl -I -L -s https://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec.pdf | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+exec
+/usr/bin/bash -lc "curl -I -L -s https://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec-docs.zip | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..3c55f6ce0a5ff203923e7e3ccf13724a75223554
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+ }
+
+ succeeded in 1113ms:
+HTTP/1.1 302 Moved Temporarily
+Server: AkamaiGHost
+Content-Length: 0
+Location: https://edelivery.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec.pdf
+Date: Sat, 02 May 2026 00:38:16 GMT
+Connection: keep-alive
+
+HTTP/1.1 302 Moved Temporarily
+Content-Type: text/html
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1;mode=block
+X-Content-Type-Options: nosniff
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Location: https://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec.pdf?AuthParam=1777682417_6ea4fb84526e7909c361823de6039672
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Content-Length: 0
+Date: Sat, 02 May 2026 00:38:17 GMT
+Connection: keep-alive
+Set-Cookie: X-Oracle-BMC-LBS-Route=aca519ff4c85cd73b4ea64898fa6574861f57219; Path=/; Secure; HttpOnly
+Akamai-GRN: 0.646cdead.1777682296.310c437b
+
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Length: 3885863
+Content-Type: application/pdf
+ETag: "382845c5d9d8b695ee56ce863421f74b:1320050952"
+Last-Modified: Mon, 17 Nov 2003 23:25:17 GMT
+Server: AkamaiNetStorage
+Date: Sat, 02 May 2026 00:38:17 GMT
+Connection: keep-alive
+
+
+ succeeded in 1138ms:
+HTTP/1.1 302 Moved Temporarily
+Server: AkamaiGHost
+Content-Length: 0
+Location: https://edelivery.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec.pdf
+Date: Sat, 02 May 2026 00:38:16 GMT
+Connection: keep-alive
+
+HTTP/1.1 302 Moved Temporarily
+Content-Type: text/html
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1;mode=block
+X-Content-Type-Options: nosniff
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Location: https://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec.pdf?AuthParam=1777682417_6ea4fb84526e7909c361823de6039672
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Content-Length: 0
+Date: Sat, 02 May 2026 00:38:17 GMT
+Connection: keep-alive
+Set-Cookie: X-Oracle-BMC-LBS-Route=aca519ff4c85cd73b4ea64898fa6574861f57219; Path=/; Secure; HttpOnly
+Akamai-GRN: 0.646cdead.1777682296.310c437a
+
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Length: 3885863
+Content-Type: application/pdf
+ETag: "382845c5d9d8b695ee56ce863421f74b:1320050952"
+Last-Modified: Mon, 17 Nov 2003 23:25:17 GMT
+Server: AkamaiNetStorage
+Date: Sat, 02 May 2026 00:38:17 GMT
+Connection: keep-alive
+
+
+ succeeded in 1158ms:
+HTTP/1.1 302 Moved Temporarily
+Server: AkamaiGHost
+Content-Length: 0
+Location: https://edelivery.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec-docs.zip
+Date: Sat, 02 May 2026 00:38:16 GMT
+Connection: keep-alive
+
+HTTP/1.1 302 Moved Temporarily
+Content-Type: text/html
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1;mode=block
+X-Content-Type-Options: nosniff
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Location: https://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec-docs.zip?AuthParam=1777682417_774f1a6411c2853aeec603d7707c2ab1
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Content-Length: 0
+Date: Sat, 02 May 2026 00:38:17 GMT
+Connection: keep-alive
+Set-Cookie: X-Oracle-BMC-LBS-Route=23b86ad44a260e6acc974c00763b06f73d05a370; Path=/; Secure; HttpOnly
+Akamai-GRN: 0.646cdead.1777682296.310c437c
+
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Length: 294494
+Content-Type: application/zip
+ETag: "51d069e1690cdacbf20dde62598c6520:1320050949"
+Last-Modified: Mon, 17 Nov 2003 23:25:05 GMT
+Server: AkamaiNetStorage
+Date: Sat, 02 May 2026 00:38:17 GMT
+Connection: keep-alive
+
+
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..3c55f6ce0a5ff203923e7e3ccf13724a75223554
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+ }
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec-docs.zip -o "$tmp/docs.zip"; unzip -l "$tmp/docs.zip" | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..3c55f6ce0a5ff203923e7e3ccf13724a75223554
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+ }
+
+ succeeded in 2736ms:
+Archive:  /tmp/tmp.TyGPZJRCgF/docs.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2003-10-16 19:58   META-INF/
+       68  2003-10-16 19:58   META-INF/MANIFEST.MF
+        0  2003-10-16 19:57   docs/
+        0  2003-10-16 19:57   docs/api/
+        0  2003-10-16 19:57   docs/api/javax/
+        0  2003-10-16 19:57   docs/api/javax/servlet/
+        0  2003-10-16 19:57   docs/api/javax/servlet/jsp/
+        0  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/
+     3880  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/package-frame.html
+        0  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/
+     7616  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/TagSupport.html
+     7618  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/BodyTag.html
+     5832  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/SimpleTagSupport.html
+     9398  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/FunctionInfo.html
+    11101  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/TagData.html
+     7970  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/PageData.html
+    13387  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/TagLibraryInfo.html
+    12301  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/TagInfo.html
+     5784  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/TagAdapter.html
+    15414  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/Tag.html
+     5856  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/TagLibraryValidator.html
+     9048  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/IterationTag.html
+    11952  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/BodyContent.html
+    16374  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/JspTag.html
+     5816  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/BodyTagSupport.html
+     9370  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/TagFileInfo.html
+     8672  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/VariableInfo.html
+     8619  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/SimpleTag.html
+    13367  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/TagExtraInfo.html
+     9408  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/JspFragment.html
+     9449  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/ValidationMessage.html
+    14461  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/TagAttributeInfo.html
+     5860  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/DynamicAttributes.html
+     5844  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/TryCatchFinally.html
+    11302  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/class-use/TagVariableInfo.html
+    30574  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/TagSupport.html
+    23095  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/SimpleTagSupport.html
+        0  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/doc-files/
+     2306  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/doc-files/VariableInfo-1.gif
+     4152  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/doc-files/TagProtocol.gif
+     4647  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/doc-files/BodyTagProtocol.gif
+     3762  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/doc-files/IterationTagProtocol.gif
+    21261  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/BodyTag.html
+    12018  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/FunctionInfo.html
+    14748  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/package-summary.html
+     8337  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/JspTag.html
+    28961  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/TagLibraryInfo.html
+    10431  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/PageData.html
+    16794  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/TagData.html
+    24074  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/Tag.html
+    20776  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/TagAdapter.html
+    15958  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/IterationTag.html
+    17213  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/SimpleTag.html
+    13941  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/package-use.html
+    22277  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/VariableInfo.html
+    29329  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/BodyTagSupport.html
+    40129  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/TagInfo.html
+    12323  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/ValidationMessage.html
+    17283  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/TagExtraInfo.html
+    10237  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/DynamicAttributes.html
+    20454  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/BodyContent.html
+    13199  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/TagFileInfo.html
+    14287  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/TagVariableInfo.html
+    10974  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/TryCatchFinally.html
+    13625  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/JspFragment.html
+    18961  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/TagAttributeInfo.html
+    16265  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/TagLibraryValidator.html
+    11175  2003-10-16 19:57   docs/api/javax/servlet/jsp/tagext/package-tree.html
+    12659  2003-10-16 19:57   docs/api/javax/servlet/jsp/ErrorData.html
+        0  2003-10-16 19:57   docs/api/javax/servlet/jsp/class-use/
+     7435  2003-10-16 19:57   docs/api/javax/servlet/jsp/class-use/JspPage.html
+     8435  2003-10-16 19:57   docs/api/javax/servlet/jsp/class-use/JspFactory.html
+    16102  2003-10-16 19:57   docs/api/javax/servlet/jsp/class-use/JspException.html
+     5717  2003-10-16 19:57   docs/api/javax/servlet/jsp/class-use/JspTagException.html
+    11183  2003-10-16 19:57   docs/api/javax/servlet/jsp/class-use/JspContext.html
+    12578  2003-10-16 19:57   docs/api/javax/servlet/jsp/class-use/PageContext.html
+     5733  2003-10-16 19:57   docs/api/javax/servlet/jsp/class-use/SkipPageException.html
+     7440  2003-10-16 19:57   docs/api/javax/servlet/jsp/class-use/ErrorData.html
+     7539  2003-10-16 19:57   docs/api/javax/servlet/jsp/class-use/JspEngineInfo.html
+    12347  2003-10-16 19:57   docs/api/javax/servlet/jsp/class-use/JspWriter.html
+     5705  2003-10-16 19:57   docs/api/javax/servlet/jsp/class-use/HttpJspPage.html
+        0  2003-10-16 19:57   docs/api/javax/servlet/jsp/el/
+    11351  2003-10-16 19:57   docs/api/javax/servlet/jsp/el/ELParseException.html
+    11236  2003-10-16 19:57   docs/api/javax/servlet/jsp/el/Expression.html
+        0  2003-10-16 19:57   docs/api/javax/servlet/jsp/el/class-use/
+     7742  2003-10-16 19:57   docs/api/javax/servlet/jsp/el/class-use/ExpressionEvaluator.html
+     7947  2003-10-16 19:57   docs/api/javax/servlet/jsp/el/class-use/Expression.html
+     5800  2003-10-16 19:57   docs/api/javax/servlet/jsp/el/class-use/ELParseException.html
+    10451  2003-10-16 19:57   docs/api/javax/servlet/jsp/el/class-use/VariableResolver.html
+    10764  2003-10-16 19:57   docs/api/javax/servlet/jsp/el/class-use/ELException.html
+     8943  2003-10-16 19:57   docs/api/javax/servlet/jsp/el/class-use/FunctionMapper.html
+    16085  2003-10-16 19:57   docs/api/javax/servlet/jsp/el/ExpressionEvaluator.html
+     9268  2003-10-16 19:57   docs/api/javax/servlet/jsp/el/VariableResolver.html
+    13155  2003-10-16 19:57   docs/api/javax/servlet/jsp/el/ELException.html
+     8965  2003-10-16 19:57   docs/api/javax/servlet/jsp/el/FunctionMapper.html
+     7050  2003-10-16 19:57   docs/api/javax/servlet/jsp/el/package-tree.html
+     8946  2003-10-16 19:57   docs/api/javax/servlet/jsp/el/package-use.html
+     1886  2003-10-16 19:57   docs/api/javax/servlet/jsp/el/package-frame.html
+     9088  2003-10-16 19:57   docs/api/javax/servlet/jsp/el/package-summary.html
+    43501  2003-10-16 19:57   docs/api/javax/servlet/jsp/JspWriter.html
+    11455  2003-10-16 19:57   docs/api/javax/servlet/jsp/JspPage.html
+     2331  2003-10-16 19:57   docs/api/javax/servlet/jsp/package-frame.html
+    10330  2003-10-16 19:57   docs/api/javax/servlet/jsp/package-summary.html
+    13715  2003-10-16 19:57   docs/api/javax/servlet/jsp/SkipPageException.html
+    10527  2003-10-16 19:57   docs/api/javax/servlet/jsp/JspEngineInfo.html
+    11213  2003-10-16 19:57   docs/api/javax/servlet/jsp/HttpJspPage.html
+    14486  2003-10-16 19:57   docs/api/javax/servlet/jsp/JspException.html
+    14432  2003-10-16 19:57   docs/api/javax/servlet/jsp/JspTagException.html
+    17527  2003-10-16 19:57   docs/api/javax/servlet/jsp/JspFactory.html
+    28194  2003-10-16 19:57   docs/api/javax/servlet/jsp/JspContext.html
+    11515  2003-10-16 19:57   docs/api/javax/servlet/jsp/package-use.html
+     7631  2003-10-16 19:57   docs/api/javax/servlet/jsp/package-tree.html
+    47807  2003-10-16 19:57   docs/api/javax/servlet/jsp/PageContext.html
+    14026  2003-10-16 19:57   docs/api/overview-tree.html
+    19638  2003-10-16 19:57   docs/api/constant-values.html
+     1291  2003-10-16 19:57   docs/api/overview-frame.html
+   120490  2003-10-16 19:57   docs/api/index-all.html
+
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..3c55f6ce0a5ff203923e7e3ccf13724a75223554
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+ }
+
+codex
+The Oracle final-release download includes an API documentation ZIP for JSP 2.0, so I’m making the documentation field point directly at that versioned docs archive instead of the download landing page.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..fad0bb8b2a285e5d5ceef868bdb6d7c2a3e3e8e5
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec-docs.zip",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+ }
+
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..fad0bb8b2a285e5d5ceef868bdb6d7c2a3e3e8e5
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec-docs.zip",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+{
+  "coordinates" : "javax.servlet:jsp-api:2.0",
+  "source-code-url" : "N/A",
+  "repository-url" : "N/A",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec-docs.zip",
+  "description" : "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+}
+
+exec
+/usr/bin/bash -lc 'python -m json.tool build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json >/dev/null' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec-docs.zip | tail -20' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..fad0bb8b2a285e5d5ceef868bdb6d7c2a3e3e8e5
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec-docs.zip",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+ }
+
+ succeeded in 220ms:
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Location: https://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec-docs.zip?AuthParam=1777682442_4119276ea78afa13c046a62d81434a80
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Content-Length: 0
+Date: Sat, 02 May 2026 00:38:42 GMT
+Connection: keep-alive
+Set-Cookie: X-Oracle-BMC-LBS-Route=aca519ff4c85cd73b4ea64898fa6574861f57219; Path=/; Secure; HttpOnly
+Akamai-GRN: 0.576cdead.1777682322.5bb918f
+
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Type: application/zip
+ETag: "51d069e1690cdacbf20dde62598c6520:1320050949"
+Last-Modified: Mon, 17 Nov 2003 23:25:05 GMT
+Server: AkamaiNetStorage
+Content-Length: 294494
+Date: Sat, 02 May 2026 00:38:42 GMT
+Connection: keep-alive
+
+
+codex
+Updated [javax.servlet-jsp-api-2.0.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json) with the discovered metadata.
+
+I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library. Validation: `python -m json.tool` passes.
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..fad0bb8b2a285e5d5ceef868bdb6d7c2a3e3e8e5
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/jsp-2_0-fr-spec-docs.zip",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API contracts for JSP pages, tag extensions, and legacy JSP expression language integration in servlet-based web applications. It supplies compile-time interfaces and classes such as PageContext, JspFactory, JspWriter, and tag library support types that are implemented by JSP containers."
+ }
+
+tokens used
+96,047
+Updated [javax.servlet-jsp-api-2.0.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json) with the discovered metadata.
+
+I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library. Validation: `python -m json.tool` passes.
+Ran agent for javax.servlet:jsp-api:2.0 (exit 0). Log: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9/build/agent-artifact-discovery-logs/javax.servlet-jsp-api-2.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-551b26a9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m
+9 actionable tasks: 4 executed, 5 from cache
