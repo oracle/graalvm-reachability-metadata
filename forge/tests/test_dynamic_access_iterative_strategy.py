@@ -238,6 +238,63 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
             strategy._should_stop_for_large_library_chunk(report, set(), 0, 3),
         )
 
+    def test_auto_large_library_series_starts_for_report_above_class_limit(self) -> None:
+        report = DynamicAccessCoverageReport(
+            coordinate="org.example:lib:1.0.0",
+            has_dynamic_access=True,
+            total_calls=7,
+            covered_calls=0,
+            classes=[
+                self._class_coverage("org.example.A", 3, 0),
+                self._class_coverage("org.example.B", 4, 0),
+            ],
+        )
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            strategy = self._strategy(
+                large_library_issue_number=1412,
+                large_library_request_label="library-new-request",
+                large_library_metrics_repo_root=tmpdir,
+                large_library_strategy_name="dynamic_access_main_sources_pi_gpt-5.5",
+                chunk_class_limit=1,
+            )
+
+            strategy._maybe_activate_large_library_series(report)
+
+            self.assertIsNotNone(strategy.large_library_progress_state)
+            self.assertIsNotNone(strategy.large_library_progress_state_path)
+            saved_state = LargeLibraryProgressState.load(strategy.large_library_progress_state_path)
+
+        self.assertEqual(saved_state.issue_number, 1412)
+        self.assertEqual(saved_state.request_label, "library-new-request")
+        self.assertEqual(saved_state.class_order, ["org.example.A", "org.example.B"])
+        self.assertEqual(saved_state.covered_calls, 0)
+        self.assertEqual(saved_state.total_calls, 7)
+
+    def test_auto_large_library_series_skips_report_within_configured_limits(self) -> None:
+        report = DynamicAccessCoverageReport(
+            coordinate="org.example:lib:1.0.0",
+            has_dynamic_access=True,
+            total_calls=3,
+            covered_calls=0,
+            classes=[self._class_coverage("org.example.A", 3, 0)],
+        )
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            strategy = self._strategy(
+                large_library_issue_number=1412,
+                large_library_request_label="library-new-request",
+                large_library_metrics_repo_root=tmpdir,
+                large_library_strategy_name="dynamic_access_main_sources_pi_gpt-5.5",
+                chunk_class_limit=1,
+                chunk_call_limit=3,
+            )
+
+            strategy._maybe_activate_large_library_series(report)
+
+        self.assertIsNone(strategy.large_library_progress_state)
+        self.assertIsNone(strategy.large_library_progress_state_path)
+
     def test_increase_coverage_strategy_propagates_chunk_ready_from_dynamic_access_phase(self) -> None:
         class ChunkReadyDynamicAccess:
             def __init__(self, strategy_obj: dict, **context) -> None:
@@ -274,7 +331,7 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
         )
 
     @staticmethod
-    def _strategy() -> DynamicAccessIterativeStrategy:
+    def _strategy(**context) -> DynamicAccessIterativeStrategy:
         return DynamicAccessIterativeStrategy(
             {
                 "model": "test-model",
@@ -286,6 +343,7 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
             },
             library="org.example:lib:1.0.0",
             reachability_repo_path="/tmp/reachability",
+            **context,
         )
 
 

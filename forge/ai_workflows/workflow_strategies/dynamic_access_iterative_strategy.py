@@ -62,6 +62,10 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             "large_library_progress_state",
         )
         self.large_library_progress_state_path: str | None = self.context.get("large_library_progress_state_path")
+        self.large_library_issue_number: int | None = self.context.get("large_library_issue_number")
+        self.large_library_request_label = str(self.context.get("large_library_request_label") or "")
+        self.large_library_metrics_repo_root: str | None = self.context.get("large_library_metrics_repo_root")
+        self.large_library_strategy_name = str(self.context.get("large_library_strategy_name") or "")
         self.chunk_class_limit = int(self.context.get("chunk_class_limit") or 0)
         self.chunk_call_limit = int(self.context.get("chunk_call_limit") or 0)
         self._last_phase_status = RUN_STATUS_SUCCESS
@@ -88,6 +92,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 f"coordinate={self.library}"
             )
             return self._run_basic_iterative_fallback(agent, checkpoint_commit_hash)
+        self._maybe_activate_large_library_series(initial_report)
 
         global_iterations = 0
         phase_ok, extra_iterations = self._run_dynamic_access_phase(agent, initial_report)
@@ -469,6 +474,42 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         )
         self.large_library_progress_state.save(self.large_library_progress_state_path)
 
+    def _maybe_activate_large_library_series(self, current_report: DynamicAccessCoverageReport) -> None:
+        """Start resumable chunking when the first dynamic-access report is too large."""
+        if self.large_library_progress_state is not None:
+            return
+        if self.large_library_metrics_repo_root is None:
+            return
+        if not self._is_large_dynamic_access_report(current_report):
+            return
+
+        self.large_library_progress_state = LargeLibraryProgressState.create(
+            coordinate=self.library,
+            issue_number=self.large_library_issue_number,
+            request_label=self.large_library_request_label,
+            strategy_name=self.large_library_strategy_name,
+        )
+        self.large_library_progress_state_path = self.large_library_progress_state.default_path(
+            self.large_library_metrics_repo_root,
+        )
+        self.large_library_progress_state.mark_class_order([
+            class_coverage.class_name for class_coverage in current_report.classes
+        ])
+        self._save_large_library_progress(current_report)
+        self._print_dynamic_access_message(
+            "Large dynamic-access report detected; starting large-library series "
+            "with {classes} uncovered class(es) and {calls} uncovered call(s).".format(
+                classes=self._uncovered_class_count(current_report),
+                calls=self._uncovered_call_count(current_report),
+            )
+        )
+
+    def _is_large_dynamic_access_report(self, current_report: DynamicAccessCoverageReport) -> bool:
+        """Return True when the report exceeds a configured chunk boundary."""
+        if self.chunk_class_limit > 0 and self._uncovered_class_count(current_report) > self.chunk_class_limit:
+            return True
+        return self.chunk_call_limit > 0 and self._uncovered_call_count(current_report) > self.chunk_call_limit
+
     def _initial_part_covered_calls(self, current_report: DynamicAccessCoverageReport) -> int:
         """Return the coverage baseline for the current large-library chunk."""
         if self.large_library_progress_state is None:
@@ -565,6 +606,14 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             if class_coverage.uncovered_calls == 0
         )
         return len(completed_class_names)
+
+    @staticmethod
+    def _uncovered_class_count(current_report: DynamicAccessCoverageReport) -> int:
+        return sum(1 for class_coverage in current_report.classes if class_coverage.uncovered_calls > 0)
+
+    @staticmethod
+    def _uncovered_call_count(current_report: DynamicAccessCoverageReport) -> int:
+        return max(current_report.total_calls - current_report.covered_calls, 0)
 
     def _library_test_change_signature(self) -> str:
         """Capture tracked and untracked changes under the generated library test tree."""

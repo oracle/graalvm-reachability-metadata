@@ -608,6 +608,41 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
 
 class SingleIssueProcessingTests(unittest.TestCase):
+    def test_append_large_library_workflow_args_passes_issue_context_for_first_run(self) -> None:
+        claimed_issue = _claimed_issue()
+        pipeline_argv = ["--coordinates", claimed_issue.issue_coordinates]
+
+        with patch.dict(os.environ, {"FORGE_LARGE_LIBRARY_CHUNK_CLASS_LIMIT": "4"}, clear=True):
+            forge_metadata.append_large_library_workflow_args(pipeline_argv, claimed_issue)
+
+        self.assertEqual(
+            pipeline_argv,
+            [
+                "--coordinates", claimed_issue.issue_coordinates,
+                "--issue-number", "1412",
+                "--chunk-class-limit", "4",
+            ],
+        )
+
+    def test_append_large_library_workflow_args_does_not_pass_resume_artifact(self) -> None:
+        claimed_issue = _claimed_issue(
+            large_library_resume_artifact="/tmp/large-library-state.json",
+            large_library_part=2,
+        )
+        pipeline_argv = ["--coordinates", claimed_issue.issue_coordinates]
+
+        with patch.dict(os.environ, {}, clear=True):
+            forge_metadata.append_large_library_workflow_args(pipeline_argv, claimed_issue)
+
+        self.assertEqual(
+            pipeline_argv,
+            [
+                "--coordinates", claimed_issue.issue_coordinates,
+                "--issue-number", "1412",
+                "--large-library-series",
+            ],
+        )
+
     def test_large_library_base_check_uses_pr_merge_commit_for_squash_merges(self) -> None:
         state = forge_metadata.LargeLibraryProgressState.create(
             coordinate="org.example:lib:1.0.0",

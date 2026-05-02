@@ -13,6 +13,7 @@ from utility_scripts.large_library_progress import (
     LargeLibraryProgressState,
     copy_progress_artifacts,
     find_progress_state_path,
+    resolve_workflow_progress_state,
 )
 
 
@@ -74,6 +75,30 @@ class LargeLibraryProgressStateTests(unittest.TestCase):
             self.assertIsNotNone(copied_path)
             self.assertTrue(os.path.isfile(copied_path))
             self.assertEqual(LargeLibraryProgressState.load(copied_path).coordinate, "org.example:lib:1.0.0")
+
+    def test_resolve_workflow_progress_state_loads_issue_state_without_resume_artifact(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            state = LargeLibraryProgressState.create(
+                coordinate="org.example:lib:1.0.0",
+                issue_number=4241,
+                request_label="library-new-request",
+                strategy_name="dynamic_access_main_sources_pi_gpt-5.5",
+            )
+            state.part = 2
+            state.save(state.default_path(tmpdir))
+
+            loaded, loaded_path = resolve_workflow_progress_state(
+                metrics_repo_root=tmpdir,
+                issue_number=4241,
+                coordinate="org.example:lib:1.0.0",
+                request_label="library-new-request",
+                strategy_name="dynamic_access_main_sources_pi_gpt-5.5",
+                large_library_series=True,
+            )
+
+        self.assertIsNotNone(loaded)
+        self.assertEqual(loaded.part, 2)
+        self.assertEqual(loaded_path, state.default_path(tmpdir))
 
 
 if __name__ == "__main__":

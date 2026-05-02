@@ -139,6 +139,13 @@ Every workflow records one of these statuses:
 
 The exit code is `0` for PR-eligible statuses and `1` for failure.
 
+For dynamic-access workflows, Forge passes the issue number and configured
+large-library chunk limits to the workflow on the first run. If the initial
+dynamic-access report exceeds a configured class or call chunk limit, the
+workflow creates a durable progress state, returns `RUN_STATUS_CHUNK_READY`
+at the first chunk boundary, and Forge applies the large-library continuation
+labels after publishing the part PR.
+
 ## 7. Workflow Specifications
 
 - [Workflow strategies](workflow-strategies.md) — registry of strategies
