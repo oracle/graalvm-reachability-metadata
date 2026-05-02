@@ -7,6 +7,7 @@
 package io_netty_incubator.netty_incubator_codec_classes_quic;
 
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -28,6 +29,7 @@ import io.netty.incubator.codec.quic.QuicError;
 import io.netty.incubator.codec.quic.QuicHeaderParser;
 import io.netty.incubator.codec.quic.QuicPacketType;
 import io.netty.incubator.codec.quic.QuicServerCodecBuilder;
+import io.netty.incubator.codec.quic.QuicStreamAddress;
 import io.netty.incubator.codec.quic.QuicStreamFrame;
 import io.netty.incubator.codec.quic.QuicStreamPriority;
 import io.netty.incubator.codec.quic.QuicStreamType;
@@ -279,6 +281,23 @@ public class Netty_incubator_codec_classes_quicTest {
         }
 
         assertThat(processed[0]).isTrue();
+    }
+
+    @Test
+    void streamAddressIdentifiesStreamsByTheirNumericStreamId() {
+        long streamId = 1_234;
+        QuicStreamAddress address = new QuicStreamAddress(streamId);
+        QuicStreamAddress sameAddress = new QuicStreamAddress(streamId);
+        QuicStreamAddress differentAddress = new QuicStreamAddress(streamId + 1);
+        SocketAddress socketAddress = address;
+
+        assertThat(socketAddress).isSameAs(address);
+        assertThat(address.streamId()).isEqualTo(streamId);
+        assertThat(address).isEqualTo(sameAddress).hasSameHashCodeAs(sameAddress);
+        assertThat(address).isNotEqualTo(differentAddress);
+        assertThat(address).isNotEqualTo(new InetSocketAddress("127.0.0.1", 4433));
+        assertThat(address).hasToString("QuicStreamAddress{streamId=1234}");
+        assertThat(new QuicStreamAddress(Long.MAX_VALUE).streamId()).isEqualTo(Long.MAX_VALUE);
     }
 
     @Test
