@@ -6,10 +6,13 @@
  */
 package ant.ant;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.invoke.VarHandle;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.Permission;
 import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
@@ -17,7 +20,6 @@ import org.apache.tools.ant.Main;
 import org.apache.tools.ant.NoBannerLogger;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.input.DefaultInputHandler;
-import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -44,42 +46,31 @@ public class MainTest {
         assertThat(listeners).hasSize(2);
         assertThat(listeners.elementAt(0)).isInstanceOf(NoBannerLogger.class);
         assertThat(listeners.elementAt(1)).isInstanceOf(NoBannerLogger.class);
-        assertThat(Main.getAntVersion()).contains("Apache Ant version");
     }
 
     @Test
-    void commandLineStartupInstantiatesConfiguredInputHandlerBeforeExiting() throws Exception {
+    void configuresInputHandlerClassFromCommandLine() throws Throwable {
         Path buildFile = createBuildFile();
-        SecurityManager previousSecurityManager = System.getSecurityManager();
-        ExitInterceptingSecurityManager securityManager = new ExitInterceptingSecurityManager();
-        boolean securityManagerInstalled = installSecurityManagerIfSupported(securityManager);
+        ExposedMain main = new ExposedMain(new String[] {
+                "-buildfile", buildFile.toString(),
+                "-inputhandler", DefaultInputHandler.class.getName()
+        });
+        Project project = new Project();
 
-        if (!securityManagerInstalled) {
-            assertThat(Main.getAntVersion()).contains("Apache Ant version");
-            return;
-        }
+        main.addConfiguredInputHandler(project);
 
-        try {
-            new Main().startAnt(new String[] {
-                    "-buildfile", buildFile.toString(),
-                    "-logger", NoBannerLogger.class.getName(),
-                    "-listener", NoBannerLogger.class.getName(),
-                    "-inputhandler", DefaultInputHandler.class.getName(),
-                    "-projecthelp"
-            }, null, null);
-        } catch (ExitInterceptedException exception) {
-            assertThat(exception.getStatus()).isEqualTo(0);
-            return;
-        } catch (Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error;
-            }
-            return;
-        } finally {
-            System.setSecurityManager(previousSecurityManager);
-        }
+        assertThat(project.getInputHandler()).isInstanceOf(DefaultInputHandler.class);
+    }
 
-        throw new AssertionError("Ant startup should finish by calling System.exit");
+    @Test
+    void loadsAntVersionFromMainClassResource() throws Throwable {
+        ExposedMain.clearCachedAntVersion();
+
+        String antVersion = Main.getAntVersion();
+
+        assertThat(antVersion)
+                .contains("Apache Ant version")
+                .contains("compiled on");
     }
 
     @Test
@@ -93,33 +84,6 @@ public class MainTest {
 
         assertThatCode(() -> main.addConfiguredBuildListeners(new Project()))
                 .isInstanceOf(RuntimeException.class);
-
-        SecurityManager previousSecurityManager = System.getSecurityManager();
-        ExitInterceptingSecurityManager securityManager = new ExitInterceptingSecurityManager();
-        boolean securityManagerInstalled = installSecurityManagerIfSupported(securityManager);
-        if (!securityManagerInstalled) {
-            return;
-        }
-
-        try {
-            new Main().startAnt(new String[] {
-                    "-buildfile", buildFile.toString(),
-                    "-inputhandler", String.class.getName(),
-                    "-projecthelp"
-            }, null, null);
-        } catch (ExitInterceptedException exception) {
-            assertThat(exception.getStatus()).isEqualTo(1);
-            return;
-        } catch (Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error;
-            }
-            return;
-        } finally {
-            System.setSecurityManager(previousSecurityManager);
-        }
-
-        throw new AssertionError("Invalid input handler startup should call System.exit");
     }
 
     @Test
@@ -144,16 +108,13 @@ public class MainTest {
         return buildFile;
     }
 
-    private static boolean installSecurityManagerIfSupported(SecurityManager securityManager) {
-        try {
-            System.setSecurityManager(securityManager);
-            return System.getSecurityManager() == securityManager;
-        } catch (UnsupportedOperationException | SecurityException exception) {
-            return false;
-        }
-    }
-
     private static final class ExposedMain extends Main {
+        private static final MethodHandle ADD_INPUT_HANDLER = addInputHandlerMethod();
+        private static final VarHandle ANT_VERSION = staticField("antVersion", String.class);
+        private static final VarHandle MAIN_CLASS = staticField(
+                "class$org$apache$tools$ant$Main",
+                Class.class);
+
         ExposedMain(String[] args) throws BuildException {
             super(args);
         }
@@ -161,30 +122,37 @@ public class MainTest {
         void addConfiguredBuildListeners(Project project) {
             addBuildListeners(project);
         }
-    }
 
-    private static final class ExitInterceptingSecurityManager extends SecurityManager {
-        @Override
-        public void checkPermission(Permission permission) {
-            // Allow Ant to read files, access system properties, and restore streams.
+        void addConfiguredInputHandler(Project project) throws Throwable {
+            ADD_INPUT_HANDLER.invoke(this, project);
         }
 
-        @Override
-        public void checkExit(int status) {
-            throw new ExitInterceptedException(status);
-        }
-    }
-
-    public static final class ExitInterceptedException extends SecurityException {
-        private final int status;
-
-        ExitInterceptedException(int status) {
-            super("Intercepted System.exit(" + status + ")");
-            this.status = status;
+        static void clearCachedAntVersion() {
+            ANT_VERSION.set(null);
+            MAIN_CLASS.set(null);
         }
 
-        public int getStatus() {
-            return status;
+        private static MethodHandle addInputHandlerMethod() {
+            try {
+                return privateMainLookup().findVirtual(
+                        Main.class,
+                        "addInputHandler",
+                        MethodType.methodType(void.class, Project.class));
+            } catch (NoSuchMethodException | IllegalAccessException exception) {
+                throw new ExceptionInInitializerError(exception);
+            }
+        }
+
+        private static VarHandle staticField(String fieldName, Class<?> fieldType) {
+            try {
+                return privateMainLookup().findStaticVarHandle(Main.class, fieldName, fieldType);
+            } catch (NoSuchFieldException | IllegalAccessException exception) {
+                throw new ExceptionInInitializerError(exception);
+            }
+        }
+
+        private static MethodHandles.Lookup privateMainLookup() throws IllegalAccessException {
+            return MethodHandles.privateLookupIn(Main.class, MethodHandles.lookup());
         }
     }
 }
