@@ -29,6 +29,7 @@ public class Closure_compiler_externsTest {
             "es5.js",
             "es6.js",
             "es6_collections.js",
+            "fetchapi.js",
             "fileapi.js",
             "flash.js",
             "gecko_css.js",
@@ -65,6 +66,7 @@ public class Closure_compiler_externsTest {
             "w3c_range.js",
             "w3c_rtc.js",
             "w3c_selectors.js",
+            "w3c_serviceworker.js",
             "w3c_webcrypto.js",
             "w3c_xml.js",
             "webgl.js",
@@ -76,11 +78,11 @@ public class Closure_compiler_externsTest {
             "window.js");
 
     @Test
-    void packagedExternsZipExposesCompleteV20150505FileSet() throws IOException {
+    void packagedExternsZipExposesCompleteV20150609FileSet() throws IOException {
         Map<String, String> externFiles = loadExternFiles();
 
         assertThat(externFiles.keySet()).containsExactlyInAnyOrderElementsOf(EXPECTED_EXTERN_FILES);
-        assertThat(externFiles).hasSize(51);
+        assertThat(externFiles).hasSize(53);
         assertThat(externFiles.keySet()).allSatisfy(name -> assertThat(name).endsWith(".js"));
         assertThat(externFiles.values()).allSatisfy(content -> assertThat(content).isNotBlank());
     }
@@ -157,6 +159,20 @@ public class Closure_compiler_externsTest {
                 .contains("function FileReader() {}")
                 .contains("FileReader.prototype.readAsArrayBuffer = function(blob) {};")
                 .contains("function Blob(opt_blobParts, opt_options) {}");
+        assertThat(externFiles.get("fetchapi.js"))
+                .contains("function Headers(opt_headersInit) {}")
+                .contains("function Request(input, opt_init) {}")
+                .contains("Request.prototype.headers;")
+                .contains("function Response(opt_body, opt_init) {}")
+                .contains("Response.prototype.json = function() {};")
+                .contains("Window.prototype.fetch = function(input, opt_init) {};");
+        assertThat(externFiles.get("w3c_serviceworker.js"))
+                .contains("function ServiceWorker() {}")
+                .contains("function ServiceWorkerRegistration() {}")
+                .contains("ServiceWorkerContainer.prototype.register = function(scriptURL, opt_options) {};")
+                .contains("Navigator.prototype.serviceWorker;")
+                .contains("function Cache() {}")
+                .contains("CacheStorage.prototype.open = function(cacheName) {};");
     }
 
     @Test
