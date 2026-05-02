@@ -13,6 +13,7 @@ import tools.jackson.core.JsonParser;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.DeserializationContext;
 import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.EnumNamingStrategies;
 import tools.jackson.databind.JavaType;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.MappingIterator;
@@ -198,6 +199,24 @@ public class Jackson_databindTest {
         assertThat(names).containsExactly("alpha", "beta");
         assertThat(numbers).containsExactly(5, 8, 13);
         assertThat(encodedNames).isEqualTo("[\"alpha\",\"beta\"]");
+    }
+
+    @Test
+    void appliesEnumNamingStrategyForEnumValues() throws JacksonException {
+        ObjectMapper mapper = JsonMapper.builder().enumNamingStrategy(EnumNamingStrategies.KEBAB_CASE).build();
+        List<ReleaseStage> stages = List.of(ReleaseStage.RELEASE_CANDIDATE, ReleaseStage.GENERAL_AVAILABILITY);
+
+        String json = mapper.writeValueAsString(stages);
+        List<ReleaseStage> result = mapper.readerFor(new TypeReference<List<ReleaseStage>>() { }).readValue(json);
+
+        assertThat(json).isEqualTo("[\"release-candidate\",\"general-availability\"]");
+        assertThat(result).containsExactly(ReleaseStage.RELEASE_CANDIDATE, ReleaseStage.GENERAL_AVAILABILITY);
+    }
+
+    public enum ReleaseStage {
+        ALPHA_BUILD,
+        RELEASE_CANDIDATE,
+        GENERAL_AVAILABILITY
     }
 
     public static final class Token {
