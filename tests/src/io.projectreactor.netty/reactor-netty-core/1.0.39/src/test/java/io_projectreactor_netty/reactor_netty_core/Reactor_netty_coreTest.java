@@ -32,6 +32,8 @@ import reactor.netty.tcp.TcpClient;
 import reactor.netty.tcp.TcpServer;
 import reactor.netty.transport.NameResolverProvider;
 import reactor.netty.transport.ProxyProvider;
+import reactor.netty.udp.UdpClient;
+import reactor.netty.udp.UdpServer;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -162,6 +164,55 @@ public class Reactor_netty_coreTest {
 
         assertThat(clientDisconnected.await(1, TimeUnit.SECONDS)).isTrue();
         assertThat(serverUnbound.await(1, TimeUnit.SECONDS)).isTrue();
+    }
+
+    @Test
+    void udpClientSendsDatagramToServer() throws Exception {
+        LoopResources loops = LoopResources.create("rn-udp-test", 1, true);
+        CountDownLatch serverBound = new CountDownLatch(1);
+        CountDownLatch messageReceived = new CountDownLatch(1);
+        AtomicReference<String> receivedMessage = new AtomicReference<>();
+        Connection server = null;
+        Connection client = null;
+
+        try {
+            server = UdpServer.create()
+                    .host(LOCALHOST)
+                    .port(0)
+                    .runOn(loops)
+                    .doOnBound(connection -> serverBound.countDown())
+                    .handle((inbound, outbound) -> inbound.receive()
+                            .asString(StandardCharsets.UTF_8)
+                            .next()
+                            .doOnNext(message -> {
+                                receivedMessage.set(message);
+                                messageReceived.countDown();
+                            })
+                            .then())
+                    .bindNow(TIMEOUT);
+
+            int serverPort = ((InetSocketAddress) server.address()).getPort();
+            client = UdpClient.create()
+                    .host(LOCALHOST)
+                    .port(serverPort)
+                    .runOn(loops)
+                    .handle((inbound, outbound) -> outbound.sendString(
+                            Mono.just("udp-payload"),
+                            StandardCharsets.UTF_8).then())
+                    .connectNow(TIMEOUT);
+
+            assertThat(serverBound.await(TIMEOUT.toSeconds(), TimeUnit.SECONDS)).isTrue();
+            assertThat(messageReceived.await(TIMEOUT.toSeconds(), TimeUnit.SECONDS)).isTrue();
+            assertThat(receivedMessage.get()).isEqualTo("udp-payload");
+        } finally {
+            if (client != null) {
+                client.disposeNow(TIMEOUT);
+            }
+            if (server != null) {
+                server.disposeNow(TIMEOUT);
+            }
+            loops.disposeLater(Duration.ZERO, TIMEOUT).block(TIMEOUT);
+        }
     }
 
     @Test
