@@ -68,8 +68,8 @@ public class Osgi_annotationTest {
         assertThat(requirement.filter()).isEqualTo("(component.name=example)");
         assertThat(requirement.effective()).isEqualTo("resolve");
         assertThat(requirement.attribute()).containsExactly("objectClass:List<String>=org.example.Service");
-        assertThat(requirement.cardinality()).isSameAs(Requirement.Cardinality.MULTIPLE);
-        assertThat(requirement.resolution()).isSameAs(Requirement.Resolution.OPTIONAL);
+        assertThat(requirement.cardinality()).isEqualTo(Requirement.Cardinality.MULTIPLE);
+        assertThat(requirement.resolution()).isEqualTo(Requirement.Resolution.OPTIONAL);
         assertThat(requirements.annotationType()).isSameAs(Requirements.class);
         assertThat(requirements.value()).containsExactly(requirement);
     }
@@ -97,7 +97,7 @@ public class Osgi_annotationTest {
         assertThat(export.annotationType()).isSameAs(Export.class);
         assertThat(export.uses()).containsExactly("java.time", "java.util");
         assertThat(export.attribute()).containsExactly("mandatory:=version", "status=stable");
-        assertThat(export.substitution()).isSameAs(Export.Substitution.PROVIDER);
+        assertThat(export.substitution()).isEqualTo(Export.Substitution.PROVIDER);
     }
 
     @Test
@@ -124,17 +124,15 @@ public class Osgi_annotationTest {
     }
 
     @Test
-    void enumConstantsExposeManifestDirectiveValues() {
-        assertThat(Requirement.Cardinality.SINGLE.toString()).isEqualTo("single");
-        assertThat(Requirement.Cardinality.MULTIPLE.toString()).isEqualTo("multiple");
-        assertThat(Requirement.Resolution.MANDATORY.toString()).isEqualTo("mandatory");
-        assertThat(Requirement.Resolution.OPTIONAL.toString()).isEqualTo("optional");
-        assertThat(Export.Substitution.values())
-                .containsExactly(
-                        Export.Substitution.CONSUMER,
-                        Export.Substitution.PROVIDER,
-                        Export.Substitution.NOIMPORT,
-                        Export.Substitution.CALCULATED);
+    void stringConstantsExposeManifestDirectiveValues() {
+        assertThat(Requirement.Cardinality.SINGLE).isEqualTo("SINGLE");
+        assertThat(Requirement.Cardinality.MULTIPLE).isEqualTo("MULTIPLE");
+        assertThat(Requirement.Resolution.MANDATORY).isEqualTo("MANDATORY");
+        assertThat(Requirement.Resolution.OPTIONAL).isEqualTo("OPTIONAL");
+        assertThat(Export.Substitution.CONSUMER).isEqualTo("CONSUMER");
+        assertThat(Export.Substitution.PROVIDER).isEqualTo("PROVIDER");
+        assertThat(Export.Substitution.NOIMPORT).isEqualTo("NOIMPORT");
+        assertThat(Export.Substitution.CALCULATED).isEqualTo("CALCULATED");
     }
 
     @Test
@@ -149,16 +147,14 @@ public class Osgi_annotationTest {
     }
 
     @Test
-    void enumConstantsCanBeSelectedByPublicNamesForManifestConfiguration() {
-        Requirement.Cardinality cardinality = Requirement.Cardinality.valueOf("MULTIPLE");
-        Requirement.Resolution resolution = Requirement.Resolution.valueOf("OPTIONAL");
-        Export.Substitution substitution = Export.Substitution.valueOf("NOIMPORT");
+    void stringConstantsCanBeSelectedByPublicNamesForManifestConfiguration() {
+        String cardinality = Requirement.Cardinality.MULTIPLE;
+        String resolution = Requirement.Resolution.OPTIONAL;
+        String substitution = Export.Substitution.NOIMPORT;
 
-        assertThat(cardinality).isSameAs(Requirement.Cardinality.MULTIPLE);
-        assertThat(cardinality.toString()).isEqualTo("multiple");
-        assertThat(resolution).isSameAs(Requirement.Resolution.OPTIONAL);
-        assertThat(resolution.toString()).isEqualTo("optional");
-        assertThat(substitution).isSameAs(Export.Substitution.NOIMPORT);
+        assertThat(cardinality).isEqualTo("MULTIPLE");
+        assertThat(resolution).isEqualTo("OPTIONAL");
+        assertThat(substitution).isEqualTo("NOIMPORT");
     }
 
     @Test
@@ -310,8 +306,8 @@ public class Osgi_annotationTest {
         private final String filter;
         private final String effective;
         private final String[] attribute;
-        private final Requirement.Cardinality cardinality;
-        private final Requirement.Resolution resolution;
+        private final String cardinality;
+        private final String resolution;
 
         RequirementSpec(
                 String namespace,
@@ -320,8 +316,8 @@ public class Osgi_annotationTest {
                 String filter,
                 String effective,
                 String[] attribute,
-                Requirement.Cardinality cardinality,
-                Requirement.Resolution resolution) {
+                String cardinality,
+                String resolution) {
             this.namespace = namespace;
             this.name = name;
             this.version = version;
@@ -363,12 +359,12 @@ public class Osgi_annotationTest {
         }
 
         @Override
-        public Requirement.Cardinality cardinality() {
+        public String cardinality() {
             return cardinality;
         }
 
         @Override
-        public Requirement.Resolution resolution() {
+        public String resolution() {
             return resolution;
         }
 
@@ -442,9 +438,9 @@ public class Osgi_annotationTest {
     private static final class ExportSpec implements Export {
         private final String[] uses;
         private final String[] attribute;
-        private final Export.Substitution substitution;
+        private final String substitution;
 
-        ExportSpec(String[] uses, String[] attribute, Export.Substitution substitution) {
+        ExportSpec(String[] uses, String[] attribute, String substitution) {
             this.uses = uses.clone();
             this.attribute = attribute.clone();
             this.substitution = substitution;
@@ -461,7 +457,7 @@ public class Osgi_annotationTest {
         }
 
         @Override
-        public Export.Substitution substitution() {
+        public String substitution() {
             return substitution;
         }
 
