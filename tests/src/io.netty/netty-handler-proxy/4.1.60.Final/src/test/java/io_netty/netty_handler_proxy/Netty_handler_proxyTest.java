@@ -247,6 +247,35 @@ public class Netty_handler_proxyTest {
     }
 
     @Test
+    void reportsSocks5CommandFailureStatus() throws Exception {
+        try (FakeProxyServer proxyServer = FakeProxyServer.start((input, output) -> {
+            assertNextBytes(input, 0x05, 0x01, 0x00);
+            writeBytes(output, 0x05, 0x00);
+
+            assertNextBytes(input, 0x05, 0x01, 0x00, 0x03);
+            int hostLength = readUnsignedByte(input);
+            assertThat(readAscii(input, hostLength)).isEqualTo("destination.example");
+            assertThat(readUnsignedShort(input)).isEqualTo(8443);
+            writeBytes(output, 0x05, 0x02, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
+        })) {
+            Socks5ProxyHandler handler = new Socks5ProxyHandler(proxyServer.address());
+
+            try (ClientConnection client = ClientConnection.connect(handler, SOCKS_DOMAIN_DESTINATION, false)) {
+                Future<Channel> connectFuture = handler.connectFuture();
+                assertThat(connectFuture.isDone()).isTrue();
+                assertThat(connectFuture.isSuccess()).isFalse();
+                assertThat(connectFuture.cause()).isInstanceOf(ProxyConnectException.class);
+                assertThat(connectFuture.cause().getMessage())
+                        .contains("socks5")
+                        .contains("none")
+                        .contains("status: FORBIDDEN");
+                assertThat(client.recorder().event()).isNull();
+            }
+            proxyServer.awaitSuccess();
+        }
+    }
+
+    @Test
     void performsSocks5NoAuthenticationConnectToIpv6Address() throws Exception {
         byte[] loopbackAddress = new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
         InetSocketAddress ipv6Destination = new InetSocketAddress(InetAddress.getByAddress(loopbackAddress), 9443);
