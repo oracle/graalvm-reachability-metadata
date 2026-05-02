@@ -66,7 +66,7 @@ public class Builder_modelTest {
 
     @Test
     public void exposesStableVersionArtifactOutputAndSeverityConstants() {
-        assertThat(Version.ANDROID_GRADLE_PLUGIN_VERSION).isEqualTo("2.0.0");
+        assertThat(Version.ANDROID_GRADLE_PLUGIN_VERSION).isEqualTo("2.1.0");
         assertThat(Version.BUILDER_MODEL_API_VERSION).isEqualTo(3);
 
         assertThat(AndroidProject.PROPERTY_BUILD_MODEL_ONLY).isEqualTo("android.injected.build.model.only");
@@ -107,7 +107,10 @@ public class Builder_modelTest {
         assertThat(SyncIssue.SEVERITY_WARNING).isEqualTo(1);
         assertThat(SyncIssue.SEVERITY_ERROR).isEqualTo(2);
         assertThat(SyncIssue.TYPE_GENERIC).isEqualTo(0);
-        assertThat(SyncIssue.TYPE_MAX).isEqualTo(SyncIssue.TYPE_GRADLE_TOO_OLD);
+        assertThat(SyncIssue.TYPE_GRADLE_TOO_OLD).isEqualTo(12);
+        assertThat(SyncIssue.TYPE_BUILD_TOOLS_TOO_LOW).isEqualTo(13);
+        assertThat(SyncIssue.TYPE_JACK_REQUIRED_FOR_JAVA_8_LANGUAGE_FEATURES).isEqualTo(14);
+        assertThat(SyncIssue.TYPE_MAX).isEqualTo(SyncIssue.TYPE_JACK_REQUIRED_FOR_JAVA_8_LANGUAGE_FEATURES);
     }
 
     @Test
@@ -322,6 +325,7 @@ public class Builder_modelTest {
         assertThat(mainSourceProvider.getResDirectories()).containsExactly(file("src/main/res"));
         assertThat(mainSourceProvider.getAssetsDirectories()).containsExactly(file("src/main/assets"));
         assertThat(mainSourceProvider.getJniLibsDirectories()).containsExactly(file("src/main/jniLibs"));
+        assertThat(mainSourceProvider.getShadersDirectories()).containsExactly(file("src/main/shaders"));
         assertThat(androidTestSources.getArtifactName()).isEqualTo(AndroidProject.ARTIFACT_ANDROID_TEST);
         assertThat(androidTestSources.getSourceProvider()).isEqualTo(androidTestSourceProvider);
 
@@ -1218,6 +1222,11 @@ public class Builder_modelTest {
         @Override
         public Collection<File> getJniLibsDirectories() {
             return Collections.singletonList(file(basePath + "/jniLibs"));
+        }
+
+        @Override
+        public Collection<File> getShadersDirectories() {
+            return Collections.singletonList(file(basePath + "/shaders"));
         }
     }
 
