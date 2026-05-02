@@ -6,11 +6,37 @@
  */
 package com_zaxxer.HikariCP;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikaricp.test.support.RecordingDataSource;
 import org.junit.jupiter.api.Test;
 
-class HikariCPTest {
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class HikariCPTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void createsPoolAndReturnsReusableConnectionsFromConfiguredDataSource() throws SQLException {
+        HikariConfig config = new HikariConfig();
+        config.setPoolName("basic-hikari-pool");
+        config.setDataSource(new RecordingDataSource());
+        config.setMaximumPoolSize(2);
+        config.setMinimumIdle(0);
+        config.setConnectionTimeout(1_000);
+        config.setValidationTimeout(500);
+        config.setInitializationFailTimeout(1_000);
+
+        try (HikariDataSource dataSource = new HikariDataSource(config)) {
+            try (Connection firstConnection = dataSource.getConnection();
+                    Connection secondConnection = dataSource.getConnection()) {
+                assertThat(firstConnection.isValid(1)).isTrue();
+                assertThat(secondConnection.isValid(1)).isTrue();
+                assertThat(dataSource.getHikariPoolMXBean().getActiveConnections()).isEqualTo(2);
+            }
+
+            assertThat(dataSource.isRunning()).isTrue();
+        }
     }
 }
