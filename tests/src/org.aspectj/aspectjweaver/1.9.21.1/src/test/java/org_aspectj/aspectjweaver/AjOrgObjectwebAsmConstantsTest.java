@@ -13,49 +13,79 @@ import aj.org.objectweb.asm.MethodVisitor;
 import aj.org.objectweb.asm.ModuleVisitor;
 import aj.org.objectweb.asm.Opcodes;
 import aj.org.objectweb.asm.RecordComponentVisitor;
-import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.fail;
 
 public class AjOrgObjectwebAsmConstantsTest {
+    private static final String NON_PREVIEW_BYTECODE_MESSAGE =
+            "ASM9_EXPERIMENTAL can only be used by classes compiled with --enable-preview";
+    private static final String CLASS_VISITOR_REJECTION_MESSAGE = readClassVisitorRejectionMessage();
+
     @Test
     void checksExperimentalClassVisitorCallerBytecode() {
-        assertExperimentalApiRejected(ExperimentalClassApiVisitor::new);
+        assertThat(CLASS_VISITOR_REJECTION_MESSAGE).isEqualTo(NON_PREVIEW_BYTECODE_MESSAGE);
     }
 
     @Test
     void checksExperimentalAnnotationVisitorCallerBytecode() {
-        assertExperimentalApiRejected(ExperimentalAnnotationApiVisitor::new);
+        try {
+            new ExperimentalAnnotationApiVisitor();
+            fail("Expected experimental AnnotationVisitor API to reject non-preview bytecode");
+        } catch (IllegalStateException exception) {
+            assertThat(exception).hasMessage(NON_PREVIEW_BYTECODE_MESSAGE);
+        }
     }
 
     @Test
     void checksExperimentalFieldVisitorCallerBytecode() {
-        assertExperimentalApiRejected(ExperimentalFieldApiVisitor::new);
+        try {
+            new ExperimentalFieldApiVisitor();
+            fail("Expected experimental FieldVisitor API to reject non-preview bytecode");
+        } catch (IllegalStateException exception) {
+            assertThat(exception).hasMessage(NON_PREVIEW_BYTECODE_MESSAGE);
+        }
     }
 
     @Test
     void checksExperimentalMethodVisitorCallerBytecode() {
-        assertExperimentalApiRejected(ExperimentalMethodApiVisitor::new);
+        try {
+            new ExperimentalMethodApiVisitor();
+            fail("Expected experimental MethodVisitor API to reject non-preview bytecode");
+        } catch (IllegalStateException exception) {
+            assertThat(exception).hasMessage(NON_PREVIEW_BYTECODE_MESSAGE);
+        }
     }
 
     @Test
     void checksExperimentalModuleVisitorCallerBytecode() {
-        assertExperimentalApiRejected(ExperimentalModuleApiVisitor::new);
+        try {
+            new ExperimentalModuleApiVisitor();
+            fail("Expected experimental ModuleVisitor API to reject non-preview bytecode");
+        } catch (IllegalStateException exception) {
+            assertThat(exception).hasMessage(NON_PREVIEW_BYTECODE_MESSAGE);
+        }
     }
 
     @Test
     void checksExperimentalRecordComponentVisitorCallerBytecode() {
-        assertExperimentalApiRejected(ExperimentalRecordComponentApiVisitor::new);
+        try {
+            new ExperimentalRecordComponentApiVisitor();
+            fail("Expected experimental RecordComponentVisitor API to reject non-preview bytecode");
+        } catch (IllegalStateException exception) {
+            assertThat(exception).hasMessage(NON_PREVIEW_BYTECODE_MESSAGE);
+        }
     }
 
-    private static void assertExperimentalApiRejected(ThrowingCallable callable) {
-        assertThatThrownBy(callable)
-                .isInstanceOf(IllegalStateException.class)
-                .satisfies(throwable -> assertThat(throwable.getMessage()).isIn(
-                        "ASM9_EXPERIMENTAL can only be used by classes compiled with --enable-preview",
-                        "Bytecode not available, can't check class version"));
+    private static String readClassVisitorRejectionMessage() {
+        try {
+            new ExperimentalClassApiVisitor();
+            fail("Expected experimental ClassVisitor API to reject non-preview bytecode");
+        } catch (IllegalStateException exception) {
+            return exception.getMessage();
+        }
+        throw new AssertionError("Unreachable");
     }
 }
 

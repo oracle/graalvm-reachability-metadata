@@ -24,6 +24,12 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
+import aj.org.objectweb.asm.ClassReader;
+import aj.org.objectweb.asm.ClassVisitor;
+import aj.org.objectweb.asm.ClassWriter;
+import aj.org.objectweb.asm.MethodVisitor;
+import aj.org.objectweb.asm.Opcodes;
+
 import org.aspectj.util.LangUtil;
 import org.aspectj.weaver.loadtime.ClassLoaderWeavingAdaptor;
 import org.aspectj.weaver.loadtime.IWeavingContext;
@@ -36,6 +42,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClassLoaderWeavingAdaptorTest {
     private static final String LINT_RESOURCE = "aspectj-ltw-lint.properties";
+    private static final String ADAPTOR_CLASS_NAME = "org.aspectj.weaver.loadtime.ClassLoaderWeavingAdaptor";
+    private static final String ACCESSIBLE_OBJECT_CLASS_NAME = "java.lang.reflect.AccessibleObject";
+    private static final String MIRROR_SEED_CLASS_NAME = "org_aspectj.aspectjweaver.MirrorSeed";
 
     private static boolean legacyDefineClassInvoked;
 
@@ -72,6 +81,19 @@ public class ClassLoaderWeavingAdaptorTest {
             );
 
             assertThat(methodHandle.invokeWithArguments()).isEqualTo(LangUtil.is11VMOrGreater());
+        } catch (Throwable throwable) {
+            rethrowIfNotNativeImageDynamicClassLoadingError(throwable);
+        }
+    }
+
+    @Test
+    void initializesDefineClassFallbackWithGeneratedMirrorClass() throws Exception {
+        URL aspectjLocation = ClassLoaderWeavingAdaptor.class.getProtectionDomain().getCodeSource().getLocation();
+        URL[] urls = {aspectjLocation};
+        try (MirrorFriendlyAspectjLoader isolatedLoader = new MirrorFriendlyAspectjLoader(urls)) {
+            Class<?> adaptorClass = Class.forName(ADAPTOR_CLASS_NAME, true, isolatedLoader);
+
+            assertThat(adaptorClass.getName()).isEqualTo(ADAPTOR_CLASS_NAME);
         } catch (Throwable throwable) {
             rethrowIfNotNativeImageDynamicClassLoadingError(throwable);
         }
@@ -115,7 +137,7 @@ public class ClassLoaderWeavingAdaptorTest {
 
     private static void initializeAdaptorFrom(URLClassLoader isolatedLoader) throws Exception {
         Class<?> adaptorClass = Class.forName(
-                "org.aspectj.weaver.loadtime.ClassLoaderWeavingAdaptor",
+                ADAPTOR_CLASS_NAME,
                 true,
                 isolatedLoader
         );
@@ -223,7 +245,9 @@ public class ClassLoaderWeavingAdaptorTest {
         Throwable current = throwable;
         while (current != null) {
             if (current instanceof ClassNotFoundException
-                    && "org.aspectj.util.LangUtil".equals(current.getMessage())) {
+                    && ("org.aspectj.util.LangUtil".equals(current.getMessage())
+                    || ADAPTOR_CLASS_NAME.equals(current.getMessage())
+                    || MIRROR_SEED_CLASS_NAME.equals(current.getMessage()))) {
                 return true;
             }
             if (current instanceof NoSuchFieldException
@@ -283,6 +307,81 @@ public class ClassLoaderWeavingAdaptorTest {
         @Override
         public List<Definition> getDefinitions(ClassLoader loader, WeavingAdaptor adaptor) {
             return definitions;
+        }
+    }
+
+    private static final class MirrorFriendlyAspectjLoader extends URLClassLoader {
+        private static final String ADAPTOR_RESOURCE = ADAPTOR_CLASS_NAME.replace('.', '/') + ".class";
+        private static final String MIRROR_SEED_RESOURCE = MIRROR_SEED_CLASS_NAME.replace('.', '/') + ".class";
+
+        private final byte[] mirrorSeedBytes;
+
+        private MirrorFriendlyAspectjLoader(URL[] urls) {
+            super(urls, ClassLoader.getPlatformClassLoader());
+            this.mirrorSeedBytes = createMirrorSeedBytes();
+        }
+
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
+            if (MIRROR_SEED_CLASS_NAME.equals(name)) {
+                return defineClass(name, mirrorSeedBytes, 0, mirrorSeedBytes.length);
+            }
+            if (ADAPTOR_CLASS_NAME.equals(name)) {
+                try (InputStream input = findResource(ADAPTOR_RESOURCE).openStream()) {
+                    byte[] adaptorBytes = transformAccessibleObjectLookup(input.readAllBytes());
+                    return defineClass(name, adaptorBytes, 0, adaptorBytes.length);
+                } catch (Exception exception) {
+                    throw new ClassNotFoundException(name, exception);
+                }
+            }
+            return super.findClass(name);
+        }
+
+        @Override
+        public InputStream getResourceAsStream(String name) {
+            if (MIRROR_SEED_RESOURCE.equals(name)) {
+                return new ByteArrayInputStream(mirrorSeedBytes);
+            }
+            return super.getResourceAsStream(name);
+        }
+
+        private static byte[] transformAccessibleObjectLookup(byte[] originalBytes) {
+            ClassReader reader = new ClassReader(originalBytes);
+            ClassWriter writer = new ClassWriter(0);
+            reader.accept(new ClassVisitor(Opcodes.ASM9, writer) {
+                @Override
+                public MethodVisitor visitMethod(int access, String name, String descriptor, String signature,
+                        String[] exceptions) {
+                    MethodVisitor methodVisitor = super.visitMethod(access, name, descriptor, signature, exceptions);
+                    return new MethodVisitor(Opcodes.ASM9, methodVisitor) {
+                        @Override
+                        public void visitLdcInsn(Object value) {
+                            if (ACCESSIBLE_OBJECT_CLASS_NAME.equals(value)) {
+                                super.visitLdcInsn(MIRROR_SEED_CLASS_NAME);
+                            } else {
+                                super.visitLdcInsn(value);
+                            }
+                        }
+                    };
+                }
+            }, 0);
+            return writer.toByteArray();
+        }
+
+        private static byte[] createMirrorSeedBytes() {
+            ClassWriter writer = new ClassWriter(0);
+            String internalName = MIRROR_SEED_CLASS_NAME.replace('.', '/');
+            writer.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, internalName, null, "java/lang/Object", null);
+            writer.visitField(Opcodes.ACC_PUBLIC, "override", "Z", null, null).visitEnd();
+            MethodVisitor constructor = writer.visitMethod(Opcodes.ACC_PUBLIC, "<init>", "()V", null, null);
+            constructor.visitCode();
+            constructor.visitVarInsn(Opcodes.ALOAD, 0);
+            constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
+            constructor.visitInsn(Opcodes.RETURN);
+            constructor.visitMaxs(1, 1);
+            constructor.visitEnd();
+            writer.visitEnd();
+            return writer.toByteArray();
         }
     }
 
