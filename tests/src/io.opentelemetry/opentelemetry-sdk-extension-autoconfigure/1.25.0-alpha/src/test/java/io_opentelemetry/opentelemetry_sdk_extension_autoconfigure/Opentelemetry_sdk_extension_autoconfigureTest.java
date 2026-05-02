@@ -248,6 +248,53 @@ public class Opentelemetry_sdk_extension_autoconfigureTest {
     }
 
     @Test
+    void configuredSpanLimitsAreAppliedToExportedSpanData() {
+        RecordingSpanExporter spanExporter = new RecordingSpanExporter();
+        Map<String, String> properties = Map.of(
+                "otel.sdk.disabled", "false",
+                "otel.traces.exporter", "none",
+                "otel.metrics.exporter", "none",
+                "otel.logs.exporter", "none",
+                "otel.propagators", "tracecontext",
+                "otel.traces.sampler", "always_on",
+                "otel.span.attribute.count.limit", "2",
+                "otel.span.event.count.limit", "1");
+        AutoConfiguredOpenTelemetrySdk configured = AutoConfiguredOpenTelemetrySdk.builder()
+                .registerShutdownHook(false)
+                .setResultAsGlobal(false)
+                .addPropertiesSupplier(() -> properties)
+                .addPropertiesCustomizer(config -> properties)
+                .addTracerProviderCustomizer((builder, config) ->
+                        builder.addSpanProcessor(SimpleSpanProcessor.create(spanExporter)))
+                .build();
+
+        try {
+            Span span = configured.getOpenTelemetrySdk().getTracer("span-limits-test")
+                    .spanBuilder("limited-span")
+                    .startSpan();
+            span.setAttribute("first.attribute", "first");
+            span.setAttribute("second.attribute", "second");
+            span.setAttribute("third.attribute", "third");
+            span.addEvent("first-event");
+            span.addEvent("second-event");
+            span.end();
+
+            assertThat(configured.getOpenTelemetrySdk().getSdkTracerProvider().forceFlush()
+                    .join(10, TimeUnit.SECONDS).isSuccess()).isTrue();
+
+            assertThat(spanExporter.getExportedSpans()).hasSize(1);
+            SpanData exportedSpan = spanExporter.getExportedSpans().get(0);
+            assertThat(exportedSpan.getName()).isEqualTo("limited-span");
+            assertThat(exportedSpan.getAttributes().size()).isEqualTo(2);
+            assertThat(exportedSpan.getTotalAttributeCount()).isEqualTo(3);
+            assertThat(exportedSpan.getEvents()).hasSize(1);
+            assertThat(exportedSpan.getTotalRecordedEvents()).isEqualTo(2);
+        } finally {
+            configured.getOpenTelemetrySdk().close();
+        }
+    }
+
+    @Test
     void disabledSdkDoesNotConfigureExportersButStillExposesResourceAndConfig() {
         Map<String, String> properties = Map.of(
                 "otel.sdk.disabled", "true",
