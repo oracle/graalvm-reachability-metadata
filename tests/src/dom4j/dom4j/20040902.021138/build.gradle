@@ -10,8 +10,16 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+repositories {
+    mavenCentral {
+        metadataSources {
+            artifact()
+        }
+    }
+}
+
 dependencies {
-    testImplementation "dom4j:dom4j:$libraryVersion"
+    testImplementation "dom4j:dom4j:$libraryVersion@jar"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 

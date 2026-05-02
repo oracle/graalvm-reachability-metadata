@@ -8,7 +8,8 @@ package dom4j.dom4j;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.reflect.Field;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 
 import org.dom4j.Element;
 import org.dom4j.QName;
@@ -21,7 +22,8 @@ public class BeanDocumentFactoryTest {
     @Test
     void createsBeanBackedElementFromClassAttribute() throws Exception {
         BeanDocumentFactory factory = new BeanDocumentFactory();
-        clearCompilerGeneratedClassCache();
+        VarHandle classCache = compilerGeneratedClassCache();
+        classCache.set(null);
         AttributesImpl attributes = new AttributesImpl();
         attributes.addAttribute("", "class", "class", "CDATA", factory.getClass().getName());
 
@@ -32,11 +34,11 @@ public class BeanDocumentFactoryTest {
         assertThat(element.getName()).isEqualTo("configuredBean");
         assertThat(data).isNotSameAs(factory);
         assertThat(data.getClass()).isEqualTo(factory.getClass());
+        assertThat(classCache.get()).isEqualTo(BeanDocumentFactory.class);
     }
 
-    private static void clearCompilerGeneratedClassCache() throws Exception {
-        Field field = BeanDocumentFactory.class.getDeclaredField("class$org$dom4j$bean$BeanDocumentFactory");
-        field.setAccessible(true);
-        field.set(null, null);
+    private static VarHandle compilerGeneratedClassCache() throws Exception {
+        return MethodHandles.privateLookupIn(BeanDocumentFactory.class, MethodHandles.lookup())
+                .findStaticVarHandle(BeanDocumentFactory.class, "class$org$dom4j$bean$BeanDocumentFactory", Class.class);
     }
 }

@@ -8,57 +8,35 @@ package dom4j.dom4j;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.dom4j.dtd.AttributeDecl;
-import org.dom4j.dtd.ElementDecl;
-import org.dom4j.util.PerThreadSingleton;
+import org.dom4j.DocumentFactory;
+import org.dom4j.Element;
+import org.dom4j.QName;
+import org.dom4j.util.IndexedDocumentFactory;
+import org.dom4j.util.IndexedElement;
 import org.junit.jupiter.api.Test;
 
 public class PerThreadSingletonTest {
     @Test
-    void createsAndCachesInstanceLoadedByContextClassLoader() {
-        PerThreadSingleton singleton = new PerThreadSingleton();
-        singleton.setSingletonClassName(ElementDecl.class.getName());
+    void returnsSharedIndexedDocumentFactoryInstance() {
+        DocumentFactory first = IndexedDocumentFactory.getInstance();
+        DocumentFactory second = IndexedDocumentFactory.getInstance();
 
-        Object first = singleton.instance();
-        Object second = singleton.instance();
-
-        assertThat(first).isInstanceOf(ElementDecl.class);
+        assertThat(first).isInstanceOf(IndexedDocumentFactory.class);
         assertThat(second).isSameAs(first);
     }
 
     @Test
-    void fallsBackToClassForNameWhenContextClassLoaderCannotLoadClass() {
-        String className = AttributeDecl.class.getName();
-        Thread thread = Thread.currentThread();
-        ClassLoader originalClassLoader = thread.getContextClassLoader();
-        thread.setContextClassLoader(new RejectingContextClassLoader(originalClassLoader, className));
+    void createsIndexedElementsThatResolveChildrenByName() {
+        IndexedDocumentFactory factory = new IndexedDocumentFactory();
+        QName rootName = factory.createQName("root");
 
-        try {
-            PerThreadSingleton singleton = new PerThreadSingleton();
-            singleton.setSingletonClassName(className);
+        Element root = factory.createElement(rootName, 3);
+        root.addElement("item").addText("first");
+        root.addElement("item").addText("second");
+        root.addElement("other").addText("ignored");
 
-            Object instance = singleton.instance();
-
-            assertThat(instance).isInstanceOf(AttributeDecl.class);
-        } finally {
-            thread.setContextClassLoader(originalClassLoader);
-        }
-    }
-}
-
-final class RejectingContextClassLoader extends ClassLoader {
-    private final String rejectedClassName;
-
-    RejectingContextClassLoader(ClassLoader parent, String rejectedClassName) {
-        super(parent);
-        this.rejectedClassName = rejectedClassName;
-    }
-
-    @Override
-    public Class<?> loadClass(String name) throws ClassNotFoundException {
-        if (rejectedClassName.equals(name)) {
-            throw new ClassNotFoundException(name);
-        }
-        return super.loadClass(name);
+        assertThat(root).isInstanceOf(IndexedElement.class);
+        assertThat(root.element("item").getText()).isEqualTo("first");
+        assertThat(root.elements("item").size()).isEqualTo(2);
     }
 }

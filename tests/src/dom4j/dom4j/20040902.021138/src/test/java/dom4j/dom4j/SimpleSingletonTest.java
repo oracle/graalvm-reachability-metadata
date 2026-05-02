@@ -8,57 +8,32 @@ package dom4j.dom4j;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.dom4j.dtd.AttributeDecl;
-import org.dom4j.dtd.ElementDecl;
-import org.dom4j.util.SimpleSingleton;
+import org.dom4j.DocumentFactory;
+import org.dom4j.Element;
+import org.dom4j.util.NonLazyDocumentFactory;
+import org.dom4j.util.NonLazyElement;
 import org.junit.jupiter.api.Test;
 
 public class SimpleSingletonTest {
     @Test
-    void createsAndReusesSingletonInstanceLoadedByContextClassLoader() {
-        SimpleSingleton singleton = new SimpleSingleton();
-        singleton.setSingletonClassName(ElementDecl.class.getName());
+    void returnsSharedNonLazyDocumentFactoryInstance() {
+        DocumentFactory first = NonLazyDocumentFactory.getInstance();
+        DocumentFactory second = NonLazyDocumentFactory.getInstance();
 
-        Object first = singleton.instance();
-        Object second = singleton.instance();
-
-        assertThat(first).isInstanceOf(ElementDecl.class);
+        assertThat(first).isInstanceOf(NonLazyDocumentFactory.class);
         assertThat(second).isSameAs(first);
     }
 
     @Test
-    void fallsBackToClassForNameWhenContextClassLoaderCannotLoadClass() {
-        String className = AttributeDecl.class.getName();
-        Thread thread = Thread.currentThread();
-        ClassLoader originalClassLoader = thread.getContextClassLoader();
-        thread.setContextClassLoader(new RejectingContextClassLoader(originalClassLoader, className));
+    void createsNonLazyElementsWithAttributesAndChildren() {
+        DocumentFactory factory = NonLazyDocumentFactory.getInstance();
 
-        try {
-            SimpleSingleton singleton = new SimpleSingleton();
-            singleton.setSingletonClassName(className);
+        Element root = factory.createElement("root");
+        root.addAttribute("id", "42");
+        root.addElement("child").addText("value");
 
-            Object instance = singleton.instance();
-
-            assertThat(instance).isInstanceOf(AttributeDecl.class);
-        } finally {
-            thread.setContextClassLoader(originalClassLoader);
-        }
-    }
-
-    private static final class RejectingContextClassLoader extends ClassLoader {
-        private final String rejectedClassName;
-
-        private RejectingContextClassLoader(ClassLoader parent, String rejectedClassName) {
-            super(parent);
-            this.rejectedClassName = rejectedClassName;
-        }
-
-        @Override
-        public Class<?> loadClass(String name) throws ClassNotFoundException {
-            if (rejectedClassName.equals(name)) {
-                throw new ClassNotFoundException(name);
-            }
-            return super.loadClass(name);
-        }
+        assertThat(root).isInstanceOf(NonLazyElement.class);
+        assertThat(root.attributeValue("id")).isEqualTo("42");
+        assertThat(root.elementText("child")).isEqualTo("value");
     }
 }
