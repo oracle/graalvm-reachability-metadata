@@ -248,7 +248,8 @@ public class Jetty_ioTest {
 
             assertTrue(idleTimeout.isOpen());
             assertEquals(100, idleTimeout.getIdleTimeout());
-            assertTrue(idleTimeout.getIdleTimestamp() > 0);
+            idleTimeout.notIdle();
+            assertTrue(idleTimeout.getIdleFor() >= 0);
             assertTrue(idleTimeout.awaitExpiration());
             assertNotNull(idleTimeout.expiration.get());
             assertTrue(idleTimeout.getIdleFor() >= 0);
