@@ -37,7 +37,6 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -379,8 +378,8 @@ public class R2dbc_spiTest {
         }
 
         @Override
-        public Publisher<Integer> getRowsUpdated() {
-            return new RecordingPublisher<>(List.of(1));
+        public Publisher<Long> getRowsUpdated() {
+            return new RecordingPublisher<>(List.of(1L));
         }
 
         @Override
@@ -480,11 +479,6 @@ public class R2dbc_spiTest {
         @Override
         public List<? extends ColumnMetadata> getColumnMetadatas() {
             return columns;
-        }
-
-        @Override
-        public Collection<String> getColumnNames() {
-            return columnsByName.keySet();
         }
     }
 
