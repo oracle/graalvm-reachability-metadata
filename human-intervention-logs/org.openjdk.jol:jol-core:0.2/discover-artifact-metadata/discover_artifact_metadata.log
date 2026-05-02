@@ -1,0 +1,825 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de60b-45cb-7982-91f3-902a7f110d06
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.openjdk.jol:jol-core:0.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "0.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+- Set "coordinates" to "org.openjdk.jol:jol-core:0.2".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven/repo sources first, then patch the JSON in place with only the fields you requested.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+ succeeded in 0ms:
+{
+  "coordinates" : "org.openjdk.jol:jol-core:0.2"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"org\\.openjdk\\.jol|jol-core\" -S ." in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+ exited 1 in 0ms:
+web search: 
+web search: Maven Central org.openjdk.jol jol-core 0.2 sources jar javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/
+codex
+Maven Central has the 0.2 sources and Javadoc artifacts, so I’m checking those first as the preferred version-specific URLs. I’m also checking the upstream tags to see whether there is an exact 0.2 test-suite URL when Maven does not publish test sources.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+ succeeded in 0ms:
+<!--
+Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+
+This code is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License version 2 only, as
+published by the Free Software Foundation.  Oracle designates this
+particular file as subject to the "Classpath" exception as provided
+by Oracle in the LICENSE file that accompanied this code.
+
+This code is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+version 2 for more details (a copy is included in the LICENSE file that
+accompanied this code).
+
+You should have received a copy of the GNU General Public License version
+2 along with this work; if not, write to the Free Software Foundation,
+Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+
+Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+or visit www.oracle.com if you need additional information or have any
+questions.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.openjdk.jol</groupId>
+        <artifactId>jol-parent</artifactId>
+        <version>0.2</version>
+    </parent>
+
+    <artifactId>jol-core</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Java Object Layout: Core</name>
+    <url>http://maven.apache.org</url>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <compilerVersion>1.6</compilerVersion>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <quiet>true</quiet>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadoc</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.10.b1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <header>file:///${project.basedir}/../src/license/gpl_cpe/header.txt</header>
+                            <skipExistingHeaders>true</skipExistingHeaders>
+                            <strictCheck>true</strictCheck>
+                            <basedir>src/main/</basedir>
+                            <mapping>
+                                <java>PHP</java>
+                            </mapping>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://github.com/openjdk/jol.git' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/ | rg "test|sources|javadoc|pom"' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+ succeeded in 244ms:
+<a href="jol-core-0.2-javadoc.jar" title="jol-core-0.2-javadoc.jar">jol-core-0.2-javadoc.jar</a>                          2014-11-06 21:27    154437      
+<a href="jol-core-0.2-javadoc.jar.asc" title="jol-core-0.2-javadoc.jar.asc">jol-core-0.2-javadoc.jar.asc</a>                      2014-11-06 21:27       819      
+<a href="jol-core-0.2-javadoc.jar.asc.md5" title="jol-core-0.2-javadoc.jar.asc.md5">jol-core-0.2-javadoc.jar.asc.md5</a>                  2014-11-06 21:27        32      
+<a href="jol-core-0.2-javadoc.jar.asc.sha1" title="jol-core-0.2-javadoc.jar.asc.sha1">jol-core-0.2-javadoc.jar.asc.sha1</a>                 2014-11-06 21:27        40      
+<a href="jol-core-0.2-javadoc.jar.md5" title="jol-core-0.2-javadoc.jar.md5">jol-core-0.2-javadoc.jar.md5</a>                      2014-11-06 21:27        32      
+<a href="jol-core-0.2-javadoc.jar.sha1" title="jol-core-0.2-javadoc.jar.sha1">jol-core-0.2-javadoc.jar.sha1</a>                     2014-11-06 21:27        40      
+<a href="jol-core-0.2-sources.jar" title="jol-core-0.2-sources.jar">jol-core-0.2-sources.jar</a>                          2014-11-06 21:27     46283      
+<a href="jol-core-0.2-sources.jar.asc" title="jol-core-0.2-sources.jar.asc">jol-core-0.2-sources.jar.asc</a>                      2014-11-06 21:27       819      
+<a href="jol-core-0.2-sources.jar.asc.md5" title="jol-core-0.2-sources.jar.asc.md5">jol-core-0.2-sources.jar.asc.md5</a>                  2014-11-06 21:27        32      
+<a href="jol-core-0.2-sources.jar.asc.sha1" title="jol-core-0.2-sources.jar.asc.sha1">jol-core-0.2-sources.jar.asc.sha1</a>                 2014-11-06 21:27        40      
+<a href="jol-core-0.2-sources.jar.md5" title="jol-core-0.2-sources.jar.md5">jol-core-0.2-sources.jar.md5</a>                      2014-11-06 21:27        32      
+<a href="jol-core-0.2-sources.jar.sha1" title="jol-core-0.2-sources.jar.sha1">jol-core-0.2-sources.jar.sha1</a>                     2014-11-06 21:27        40      
+<a href="jol-core-0.2.pom" title="jol-core-0.2.pom">jol-core-0.2.pom</a>                                  2014-11-06 21:27      4487      
+<a href="jol-core-0.2.pom.asc" title="jol-core-0.2.pom.asc">jol-core-0.2.pom.asc</a>                              2014-11-06 21:27       819      
+<a href="jol-core-0.2.pom.asc.md5" title="jol-core-0.2.pom.asc.md5">jol-core-0.2.pom.asc.md5</a>                          2014-11-06 21:27        32      
+<a href="jol-core-0.2.pom.asc.sha1" title="jol-core-0.2.pom.asc.sha1">jol-core-0.2.pom.asc.sha1</a>                         2014-11-06 21:27        40      
+<a href="jol-core-0.2.pom.md5" title="jol-core-0.2.pom.md5">jol-core-0.2.pom.md5</a>                              2014-11-06 21:27        32      
+<a href="jol-core-0.2.pom.sha1" title="jol-core-0.2.pom.sha1">jol-core-0.2.pom.sha1</a>                             2014-11-06 21:27        40      
+
+ succeeded in 314ms:
+bd447501a6b119e25cf02c1febb195cc65a16af7	refs/tags/0.1
+ec4b7548a6b27da533c45be87cfe19335d8615aa	refs/tags/0.1^{}
+7314c82305402820e6a42bce5910eb3322e97e98	refs/tags/0.10
+780c43de2254d38c7ea3a2f39ef3d78e87e17705	refs/tags/0.10^{}
+bc40ecccda21baeb7916e0b1aa45caaea0931d28	refs/tags/0.11
+b20943f3367b41f14820e51efb7698f6f64339a7	refs/tags/0.11^{}
+44aae0284e6afcfa772c066a6efbafde7e3d985c	refs/tags/0.12
+d63813f4487900653dad7525f0998da4bd64b162	refs/tags/0.12^{}
+0ff79723d3f579ac3fbea79ce2fa8c590216c52e	refs/tags/0.13
+267cee1b1e0b9c38985f4decaa67ce74021c5490	refs/tags/0.13^{}
+5507a21cf33f4260e36b3aa3f9b8f44f7df76b10	refs/tags/0.14
+e4fe57da718fe315ac2f9d8cf40c1e687c036b31	refs/tags/0.15
+8e6f172b0940a725bf217ab9acb473d4d8082120	refs/tags/0.16
+400c871bd4b7542fdbba96f4081b1ec3a01b5ebe	refs/tags/0.17
+cb17e21360df9443ed3a31125372693fd285ef0c	refs/tags/0.2
+8fde2cec71eff55f11558d1963ce5b00455d3539	refs/tags/0.2^{}
+791dff63f02c8f0c59fd62bc783d03921386303c	refs/tags/0.3
+a6038b045a3defec47333fd39e1b8fff5f6830fa	refs/tags/0.3^{}
+c9ac2ea47f6c55386c1e18a6f3c5eefee71d5658	refs/tags/0.3.2
+8ada3440e2aea718f5a826ed9c19f4139779625c	refs/tags/0.3.2^{}
+3dddae6f8087a45749cf9c8a652bdac6a93af77b	refs/tags/0.4
+6e47d0a76279ef316769bb541c6005413937ce28	refs/tags/0.4^{}
+25c5f28ed341238c591cedbac4564ad06288c361	refs/tags/0.5
+9efa099a9ea7a0a3092fa74d0ef983fc812e8a27	refs/tags/0.5^{}
+d8bfc4a93ffd3e87bc6df4fe589519b3c05f9f79	refs/tags/0.6
+7698dd99171cb63fc3d1b224289e2df1b883055b	refs/tags/0.6^{}
+5c19c9c82977214216523e17b3b2df34b6f6352c	refs/tags/0.7
+88505e94afd2b449235b81819dae8ce9add7fd54	refs/tags/0.7^{}
+888e56c3a6ae92a6b00118f5003fabf206ff833a	refs/tags/0.7.1
+2823fdac2d54199f33b1f2c4607268044fbd01e9	refs/tags/0.7.1^{}
+9ec1a80b644eb9b9da8c2a5aac8da4419fd75de9	refs/tags/0.8
+a41e387d0f0cd96383f5bd0711ab990a5d24bbc3	refs/tags/0.8^{}
+53b67940122089a08a47d2a92237c73c965242d3	refs/tags/0.9
+77242e74effb849c5a1e30d8ef6148bcbbefadc3	refs/tags/0.9^{}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/openjdk/jol/jol-parent/0.2/jol-parent-0.2.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+ succeeded in 0ms:
+<!--
+Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+
+This code is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License version 2 only, as
+published by the Free Software Foundation.  Oracle designates this
+particular file as subject to the "Classpath" exception as provided
+by Oracle in the LICENSE file that accompanied this code.
+
+This code is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+version 2 for more details (a copy is included in the LICENSE file that
+accompanied this code).
+
+You should have received a copy of the GNU General Public License version
+2 along with this work; if not, write to the Free Software Foundation,
+Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+
+Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+or visit www.oracle.com if you need additional information or have any
+questions.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.openjdk.jol</groupId>
+    <artifactId>jol-parent</artifactId>
+    <version>0.2</version>
+    <packaging>pom</packaging>
+
+    <name>Java Object Layout: Parent</name>
+
+    <description>
+        JOL is the set of tools for examining field and object layouts in JVM.
+    </description>
+
+    <url>
+        http://openjdk.java.net/projects/code-tools/jol/
+    </url>
+
+    <scm>
+        <url>http://hg.openjdk.java.net/code-tools/jol/</url>
+        <connection>scm:hg:http://hg.openjdk.java.net/code-tools/jol/</connection>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License (GPL), version 2, with the Classpath exception</name>
+            <url>http://openjdk.java.net/legal/gplv2+ce.html</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>shade</id>
+            <name>Aleksey Shipilev</name>
+            <organization>Oracle</organization>
+            <email>aleksey.shipilev@oracle.com</email>
+        </developer>
+    </developers>
+
+    <modules>
+        <module>jol-core</module>
+        <module>jol-cli</module>
+        <module>jol-samples</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/openjdk/jol/contents?ref=0.2' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/openjdk/jol/contents/jol-core?ref=0.2' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+ succeeded in 163ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "jol-core/pom.xml",
+    "sha": "2cd6f8975e732ae4abee1a50a9da4fec0f6e9c91",
+    "size": 4487,
+    "url": "https://api.github.com/repos/openjdk/jol/contents/jol-core/pom.xml?ref=0.2",
+    "html_url": "https://github.com/openjdk/jol/blob/0.2/jol-core/pom.xml",
+    "git_url": "https://api.github.com/repos/openjdk/jol/git/blobs/2cd6f8975e732ae4abee1a50a9da4fec0f6e9c91",
+    "download_url": "https://raw.githubusercontent.com/openjdk/jol/0.2/jol-core/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/openjdk/jol/contents/jol-core/pom.xml?ref=0.2",
+      "git": "https://api.github.com/repos/openjdk/jol/git/blobs/2cd6f8975e732ae4abee1a50a9da4fec0f6e9c91",
+      "html": "https://github.com/openjdk/jol/blob/0.2/jol-core/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "jol-core/src",
+    "sha": "1a47dc7dcc1fd248ba34aa9bcc41026a8e09fb15",
+    "size": 0,
+    "url": "https://api.github.com/repos/openjdk/jol/contents/jol-core/src?ref=0.2",
+    "html_url": "https://github.com/openjdk/jol/tree/0.2/jol-core/src",
+    "git_url": "https://api.github.com/repos/openjdk/jol/git/trees/1a47dc7dcc1fd248ba34aa9bcc41026a8e09fb15",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/openjdk/jol/contents/jol-core/src?ref=0.2",
+      "git": "https://api.github.com/repos/openjdk/jol/git/trees/1a47dc7dcc1fd248ba34aa9bcc41026a8e09fb15",
+      "html": "https://github.com/openjdk/jol/tree/0.2/jol-core/src"
+    }
+  }
+]
+
+ succeeded in 172ms:
+[
+  {
+    "name": ".hgtags",
+    "path": ".hgtags",
+    "sha": "923e30b3929d28ff14112ab939baf9547f7ed091",
+    "size": 45,
+    "url": "https://api.github.com/repos/openjdk/jol/contents/.hgtags?ref=0.2",
+    "html_url": "https://github.com/openjdk/jol/blob/0.2/.hgtags",
+    "git_url": "https://api.github.com/repos/openjdk/jol/git/blobs/923e30b3929d28ff14112ab939baf9547f7ed091",
+    "download_url": "https://raw.githubusercontent.com/openjdk/jol/0.2/.hgtags",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/openjdk/jol/contents/.hgtags?ref=0.2",
+      "git": "https://api.github.com/repos/openjdk/jol/git/blobs/923e30b3929d28ff14112ab939baf9547f7ed091",
+      "html": "https://github.com/openjdk/jol/blob/0.2/.hgtags"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "b40a0f457d75c638172ceb89da9b91d17c7b7fe3",
+    "size": 19263,
+    "url": "https://api.github.com/repos/openjdk/jol/contents/LICENSE?ref=0.2",
+    "html_url": "https://github.com/openjdk/jol/blob/0.2/LICENSE",
+    "git_url": "https://api.github.com/repos/openjdk/jol/git/blobs/b40a0f457d75c638172ceb89da9b91d17c7b7fe3",
+    "download_url": "https://raw.githubusercontent.com/openjdk/jol/0.2/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/openjdk/jol/contents/LICENSE?ref=0.2",
+      "git": "https://api.github.com/repos/openjdk/jol/git/blobs/b40a0f457d75c638172ceb89da9b91d17c7b7fe3",
+      "html": "https://github.com/openjdk/jol/blob/0.2/LICENSE"
+    }
+  },
+  {
+    "name": "README",
+    "path": "README",
+    "sha": "c2f3f8325f8e3e4b0215a97d0441d5a1ac961d09",
+    "size": 8830,
+    "url": "https://api.github.com/repos/openjdk/jol/contents/README?ref=0.2",
+    "html_url": "https://github.com/openjdk/jol/blob/0.2/README",
+    "git_url": "https://api.github.com/repos/openjdk/jol/git/blobs/c2f3f8325f8e3e4b0215a97d0441d5a1ac961d09",
+    "download_url": "https://raw.githubusercontent.com/openjdk/jol/0.2/README",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/openjdk/jol/contents/README?ref=0.2",
+      "git": "https://api.github.com/repos/openjdk/jol/git/blobs/c2f3f8325f8e3e4b0215a97d0441d5a1ac961d09",
+      "html": "https://github.com/openjdk/jol/blob/0.2/README"
+    }
+  },
+  {
+    "name": "jol-cli",
+    "path": "jol-cli",
+    "sha": "0b7690ce32a6bd53b47f41ab18876ed2e27addac",
+    "size": 0,
+    "url": "https://api.github.com/repos/openjdk/jol/contents/jol-cli?ref=0.2",
+    "html_url": "https://github.com/openjdk/jol/tree/0.2/jol-cli",
+    "git_url": "https://api.github.com/repos/openjdk/jol/git/trees/0b7690ce32a6bd53b47f41ab18876ed2e27addac",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/openjdk/jol/contents/jol-cli?ref=0.2",
+      "git": "https://api.github.com/repos/openjdk/jol/git/trees/0b7690ce32a6bd53b47f41ab18876ed2e27addac",
+      "html": "https://github.com/openjdk/jol/tree/0.2/jol-cli"
+    }
+  },
+  {
+    "name": "jol-core",
+    "path": "jol-core",
+    "sha": "ef6ab33e7ace0832643ef663ec1e6e0d3a17a5b9",
+    "size": 0,
+    "url": "https://api.github.com/repos/openjdk/jol/contents/jol-core?ref=0.2",
+    "html_url": "https://github.com/openjdk/jol/tree/0.2/jol-core",
+    "git_url": "https://api.github.com/repos/openjdk/jol/git/trees/ef6ab33e7ace0832643ef663ec1e6e0d3a17a5b9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/openjdk/jol/contents/jol-core?ref=0.2",
+      "git": "https://api.github.com/repos/openjdk/jol/git/trees/ef6ab33e7ace0832643ef663ec1e6e0d3a17a5b9",
+      "html": "https://github.com/openjdk/jol/tree/0.2/jol-core"
+    }
+  },
+  {
+    "name": "jol-samples",
+    "path": "jol-samples",
+    "sha": "029b72c8802205fc2e4256343c3f580edff54cdd",
+    "size": 0,
+    "url": "https://api.github.com/repos/openjdk/jol/contents/jol-samples?ref=0.2",
+    "html_url": "https://github.com/openjdk/jol/tree/0.2/jol-samples",
+    "git_url": "https://api.github.com/repos/openjdk/jol/git/trees/029b72c8802205fc2e4256343c3f580edff54cdd",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/openjdk/jol/contents/jol-samples?ref=0.2",
+      "git": "https://api.github.com/repos/openjdk/jol/git/trees/029b72c8802205fc2e4256343c3f580edff54cdd",
+      "html": "https://github.com/openjdk/jol/tree/0.2/jol-samples"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "35f7d014065388783280a7c7ecc4834f099191cd",
+    "size": 2694,
+    "url": "https://api.github.com/repos/openjdk/jol/contents/pom.xml?ref=0.2",
+    "html_url": "https://github.com/openjdk/jol/blob/0.2/pom.xml",
+    "git_url": "https://api.github.com/repos/openjdk/jol/git/blobs/35f7d014065388783280a7c7ecc4834f099191cd",
+    "download_url": "https://raw.githubusercontent.com/openjdk/jol/0.2/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/openjdk/jol/contents/pom.xml?ref=0.2",
+      "git": "https://api.github.com/repos/openjdk/jol/git/blobs/35f7d014065388783280a7c7ecc4834f099191cd",
+      "html": "https://github.com/openjdk/jol/blob/0.2/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "50acddf2d360c793e62ce2a683417138b2e0baa1",
+    "size": 0,
+    "url": "https://api.github.com/repos/openjdk/jol/contents/src?ref=0.2",
+    "html_url": "https://github.com/openjdk/jol/tree/0.2/src",
+    "git_url": "https://api.github.com/repos/openjdk/jol/git/trees/50acddf2d360c793e62ce2a683417138b2e0baa1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/openjdk/jol/contents/src?ref=0.2",
+      "git": "https://api.github.com/repos/openjdk/jol/git/trees/50acddf2d360c793e62ce2a683417138b2e0baa1",
+      "html": "https://github.com/openjdk/jol/tree/0.2/src"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/openjdk/jol/contents/jol-core/src/test?ref=0.2' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/openjdk/jol/contents/jol-core/src?ref=0.2' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/openjdk/jol/contents/README?ref=0.2' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+ exited 22 in 142ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 158ms:
+[
+  {
+    "name": "main",
+    "path": "jol-core/src/main",
+    "sha": "a6e702a55cef5e4a5082e1678e82c53db8648733",
+    "size": 0,
+    "url": "https://api.github.com/repos/openjdk/jol/contents/jol-core/src/main?ref=0.2",
+    "html_url": "https://github.com/openjdk/jol/tree/0.2/jol-core/src/main",
+    "git_url": "https://api.github.com/repos/openjdk/jol/git/trees/a6e702a55cef5e4a5082e1678e82c53db8648733",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/openjdk/jol/contents/jol-core/src/main?ref=0.2",
+      "git": "https://api.github.com/repos/openjdk/jol/git/trees/a6e702a55cef5e4a5082e1678e82c53db8648733",
+      "html": "https://github.com/openjdk/jol/tree/0.2/jol-core/src/main"
+    }
+  }
+]
+
+ succeeded in 178ms:
+{
+  "name": "README",
+  "path": "README",
+  "sha": "c2f3f8325f8e3e4b0215a97d0441d5a1ac961d09",
+  "size": 8830,
+  "url": "https://api.github.com/repos/openjdk/jol/contents/README?ref=0.2",
+  "html_url": "https://github.com/openjdk/jol/blob/0.2/README",
+  "git_url": "https://api.github.com/repos/openjdk/jol/git/blobs/c2f3f8325f8e3e4b0215a97d0441d5a1ac961d09",
+  "download_url": "https://raw.githubusercontent.com/openjdk/jol/0.2/README",
+  "type": "file",
+  "content": "SmF2YSBPYmplY3QgTGF5b3V0IChKT0wpCi0tLS0tLS0tLS0tLS0tLS0tLS0t\nLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t\nLS0tLQoKVGhlc2UgYXJlIHRoZSB0aW55IHRvb2xzIHRvIGFuYWx5emUgb2Jq\nZWN0IGxheW91dCBzY2hlbWVzIGluIEpWTXMuClRoZXNlIHRvb2xzIGFyZSB1\nc2luZyBVbnNhZmUgaGVhdmlseSB0byBkZWR1Y2UgdGhlICphY3R1YWwqIG9i\namVjdApsYXlvdXQgYW5kIGZvb3RwcmludC4gVGhpcyBtYWtlcyB0aGUgdG9v\nbHMgbXVjaCBtb3JlIGFjY3VyYXRlIHRoYW4Kb3RoZXJzIHJlbHlpbmcgb24g\naGVhcCBkdW1wcywgc3BlY2lmaWNhdGlvbiBhc3N1bXB0aW9ucywgZXRjLgoK\nU291cmNlIGNvbXBpbGU6CiAgJCBtdm4gY2xlYW4gaW5zdGFsbAoKVGhlIHBy\nb2plY3Qgd29ya3NwYWNlIGlzIGFycmFuZ2VkIGFzIGZvbGxvd3M6CgogIGEp\nIGpvbC1jb3JlOiAgICB0aGUgY29yZSBmdW5jdGlvbmFsaXR5LCB3aGljaCBp\ncyBzdWl0YWJsZSB0bwogICAgICAgICAgICAgICAgICBiZSB1c2VkIGFzIHRo\nZSBkZXBlbmRlbmN5IGZvciB0aGUgaGVhZGxlc3MgdG9vbHMKCiAgYikgam9s\nLWNsaTogICAgIHRoZSBjb21tYW5kIGxpbmUgdXRpbGl0aWVzIHVzaW5nIHRo\nZSBjb3JlLCBnZW5lcmFsbHkKICAgICAgICAgICAgICAgICAgc3VpdGFibGUg\nZm9yIGVuZCB1c2Vycywgc2VlIHRoZSB1c2FnZXMgYmVsb3cKCiAgYykgam9s\nLXNhbXBsZXM6IHNhbXBsZSBwcm9ncmFtcyBzaG93aW5nIG9mZiB0aGUga2lu\nZHMgb2YgaW5mb3JtYXRpb24KICAgICAgICAgICAgICAgICAgYXZhaWxhYmxl\nIHdpdGggdGhlIGhlbHAgb2YgSk9MCgpDb21tYW5kIGxpbmUgdG9vbHM6Cgoq\nKSBHZXQgdGhlIG9iamVjdCBpbnRlcm5hbHMsIHRoYXQgaXMsIHRoZSBmaWVs\nZCBsYXlvdXQgd2l0aGluIHRoZSBvYmplY3QsCiAgIGhlYWRlciBpbmZvcm1h\ndGlvbiwgZmllbGQgdmFsdWVzLCB0aGUgZGF0YSBvbiBhbGlnbm1lbnQgbG9z\nc2VzLgoKICAgICQgamF2YSAtamFyIGpvbC1jbGkvdGFyZ2V0L2pvbC1pbnRl\ncm5hbHMuamFyIGphdmEudXRpbC5IYXNoTWFwCiAgICAgICAgUnVubmluZyA2\nNC1iaXQgSG90U3BvdCBWTS4KICAgICAgICBVc2luZyBjb21wcmVzc2VkIHJl\nZmVyZW5jZXMgd2l0aCAzLWJpdCBzaGlmdC4KICAgICAgICBPYmplY3RzIGFy\nZSA4IGJ5dGVzIGFsaWduZWQuCgogICAgICAgIGphdmEudXRpbC5IYXNoTWFw\nIG9iamVjdCBpbnRlcm5hbHM6CiAgICAgICAgIE9GRlNFVCAgU0laRSAgICAg\nICBUWVBFIERFU0NSSVBUSU9OICAgICAgICAgICAgICAgICAgICBWQUxVRQog\nICAgICAgICAgICAgIDAgICAgIDQgICAgICAgICAgICAob2JqZWN0IGhlYWRl\ncikgICAgICAgICAgICAgICAgMDEgMDAgMDAgMDAgKDAwMDAwMDAxIDAwMDAw\nMDAwIDAwMDAwMDAwIDAwMDAwMDAwKQogICAgICAgICAgICAgIDQgICAgIDQg\nICAgICAgICAgICAob2JqZWN0IGhlYWRlcikgICAgICAgICAgICAgICAgMDAg\nMDAgMDAgMDAgKDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAw\nKQogICAgICAgICAgICAgIDggICAgIDQgICAgICAgICAgICAob2JqZWN0IGhl\nYWRlcikgICAgICAgICAgICAgICAgMGYgMGYgM2UgZTAgKDAwMDAxMTExIDAw\nMDAxMTExIDAwMTExMTEwIDExMTAwMDAwKQogICAgICAgICAgICAgMTIgICAg\nIDQgICAgICAgIFNldCBBYnN0cmFjdE1hcC5rZXlTZXQgICAgICAgICAgICAg\nbnVsbAogICAgICAgICAgICAgMTYgICAgIDQgQ29sbGVjdGlvbiBBYnN0cmFj\ndE1hcC52YWx1ZXMgICAgICAgICAgICAgbnVsbAogICAgICAgICAgICAgMjAg\nICAgIDQgICAgICAgIGludCBIYXNoTWFwLnNpemUgICAgICAgICAgICAgICAg\nICAgMAogICAgICAgICAgICAgMjQgICAgIDQgICAgICAgIGludCBIYXNoTWFw\nLnRocmVzaG9sZCAgICAgICAgICAgICAgMTYKICAgICAgICAgICAgIDI4ICAg\nICA0ICAgICAgZmxvYXQgSGFzaE1hcC5sb2FkRmFjdG9yICAgICAgICAgICAg\nIDAuNzUKICAgICAgICAgICAgIDMyICAgICA0ICAgICAgICBpbnQgSGFzaE1h\ncC5tb2RDb3VudCAgICAgICAgICAgICAgIDAKICAgICAgICAgICAgIDM2ICAg\nICA0ICAgICAgICBpbnQgSGFzaE1hcC5oYXNoU2VlZCAgICAgICAgICAgICAg\nIDAKICAgICAgICAgICAgIDQwICAgICA0ICAgIEVudHJ5W10gSGFzaE1hcC50\nYWJsZSAgICAgICAgICAgICAgICAgIFtdCiAgICAgICAgICAgICA0NCAgICAg\nNCAgICAgICAgU2V0IEhhc2hNYXAuZW50cnlTZXQgICAgICAgICAgICAgICBu\ndWxsCiAgICAgICAgSW5zdGFuY2Ugc2l6ZTogNDggYnl0ZXMgKGVzdGltYXRl\nZCwgYWRkIHRoaXMgSkFSIHZpYSAtamF2YWFnZW50OiB0byBnZXQgYWNjdXJh\ndGUgcmVzdWx0KQogICAgICAgIFNwYWNlIGxvc3NlczogMCBieXRlcyBpbnRl\ncm5hbCArIDAgYnl0ZXMgZXh0ZXJuYWwgPSAwIGJ5dGVzIHRvdGFsCgoqKSBH\nZXQgdGhlIG9iamVjdCBleHRlcm5hbHMsIHRoYXQgaXMsIHRoZSBvYmplY3Rz\nIHJlYWNoYWJsZSBmcm9tIHRoZSBpbnN0YW5jZSwKICAgdGhlaXIgYWRkcmVz\nc2VzLCBwYXRocyB0aHJvdWdoIHRoZSByZWFjaGFiaWxpdHkgZ3JhcHNoLCBl\ndGMgKGlzIGlzIG1vcmUKICAgY29udmVuaWVudCB3aXRoIEFQSSB0aG91Z2gp\nOgoKICAgICQgamF2YSAtamFyIGpvbC1jbGkvdGFyZ2V0L2pvbC1leHRlcm5h\nbHMuamFyIGphdmEudXRpbC5jb25jdXJyZW50LkNvbmN1cnJlbnRIYXNoTWFw\nCiAgICAgICAgUnVubmluZyA2NC1iaXQgSG90U3BvdCBWTS4KICAgICAgICBV\nc2luZyBjb21wcmVzc2VkIHJlZmVyZW5jZXMgd2l0aCAzLWJpdCBzaGlmdC4K\nICAgICAgICBPYmplY3RzIGFyZSA4IGJ5dGVzIGFsaWduZWQuCgogICAgICAg\nIGphdmEudXRpbC5jb25jdXJyZW50LkNvbmN1cnJlbnRIYXNoTWFwQDE0MzYx\nODM3NjQgb2JqZWN0IGV4dGVybmFsczoKICAgICAgICAgICAgICAgICAgQURE\nUkVTUyAgICAgICBTSVpFIFRZUEUgICAgICAgICAgICAgICAgICAgICAgICAg\nICAgICAgICAgICAgICAgICAgICAgICAgUEFUSAogICAgICAgICAgICAgICAg\nN2FkMTM3ZmY4ICAgICAgICAgNDggamF2YS51dGlsLmNvbmN1cnJlbnQuQ29u\nY3VycmVudEhhc2hNYXAKICAgICAgICAgICAgICAgIDdhZDEzODAyOCAgICAg\nICAgIDQwIGphdmEudXRpbC5jb25jdXJyZW50LkNvbmN1cnJlbnRIYXNoTWFw\nJFNlZ21lbnQgICAgICAgLnNlZ21lbnRzWzBdCiAgICAgICAgICAgICAgICA3\nYWQxMzgwNTAgICAgICAgICAyNCBbTGphdmEudXRpbC5jb25jdXJyZW50LkNv\nbmN1cnJlbnRIYXNoTWFwJEhhc2hFbnRyeTsgIC5zZWdtZW50c1swXS50YWJs\nZQogICAgICAgICAgICAgICAgN2FkMTM4MDY4ICAgICAgICAgMzIgamF2YS51\ndGlsLmNvbmN1cnJlbnQubG9ja3MuUmVlbnRyYW50TG9jayROb25mYWlyU3lu\nYyAuc2VnbWVudHNbMF0uc3luYwogICAgICAgICAgICAgICAgN2FkMTM4MDg4\nICAgICAgICAgODAgW0xqYXZhLnV0aWwuY29uY3VycmVudC5Db25jdXJyZW50\nSGFzaE1hcCRTZWdtZW50OyAgICAuc2VnbWVudHMKCgoqKSBHZXQgdGhlIG9i\namVjdCBmb290cHJpbnQgZXN0aW1hdGUsIHNhbWUgYXMgdGhlIG9iamVjdCBl\neHRlcm5hbHMsIGJ1dCB0YWJ1bGF0ZWQ6CgogICAgJCBqYXZhIC1qYXIgam9s\nLWNsaS90YXJnZXQvam9sLWZvb3RwcmludC5qYXIgamF2YS5sYW5nLlRocmVh\nZAogICAgICAgIFJ1bm5pbmcgNjQtYml0IEhvdFNwb3QgVk0uCiAgICAgICAg\nVXNpbmcgY29tcHJlc3NlZCByZWZlcmVuY2VzIHdpdGggMy1iaXQgc2hpZnQu\nCiAgICAgICAgT2JqZWN0cyBhcmUgOCBieXRlcyBhbGlnbmVkLgoKICAgICAg\nICBqYXZhLmxhbmcuVGhyZWFkIGluc3RhbmNlIGZvb3RwcmludDoKICAgICAg\nICAgQ09VTlQgICBBVkcgICBTVU0gREVTQ1JJUFRJT04KICAgICAgICAgICAg\nIDQgICAgMjIgICAgODggW0IKICAgICAgICAgICAxNTUgICAgNjkgMTA3MjAg\nW0MKICAgICAgICAgICAgIDIgICAgMjQgICAgNDggW0xqYXZhLmxhbmcuQ2xh\nc3M7CiAgICAgICAgICAgICAoLi4uLi4uLi4uLi4uLi4uLi4pCiAgICAgICAg\nICAgICAxICAgIDI0ICAgIDI0IHN1bi5uaW8uY3MuVVRGXzgKICAgICAgICAg\nICAgIDEgICAgNDAgICAgNDAgc3VuLm5pby5jcy5VVEZfOCREZWNvZGVyCiAg\nICAgICAgICAgICAyICAgIDQ4ICAgIDk2IHN1bi5uaW8uY3MuVVRGXzgkRW5j\nb2RlcgogICAgICAgICAgIDk1MiAgICAgICAzNzQ2NCAodG90YWwpCgoKKikg\nR2V0IHRoZSBlc3RpbWF0ZWQgb2JqZWN0IGxheW91dCBpbiBkaWZmZXJlbnQg\nVk0gbW9kZXMgKEVYUEVSSU1FTlRBTCk6CgogICAgJCBqYXZhIC1qYXIgam9s\nLWNsaS90YXJnZXQvam9sLWVzdGltYXRlcy5qYXIgamF2YS5tYXRoLkJpZ0lu\ndGVnZXIKICAgICAgICAqKioqKiAzMi1iaXQgVk06ICoqKioqKioqKioqKioq\nKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioK\nICAgICAgICBqYXZhLm1hdGguQmlnSW50ZWdlciBvYmplY3QgaW50ZXJuYWxz\nOgogICAgICAgICBPRkZTRVQgIFNJWkUgIFRZUEUgREVTQ1JJUFRJT04gICAg\nICAgICAgICAgICAgICAgIFZBTFVFCiAgICAgICAgICAgICAgMCAgICAgOCAg\nICAgICAob2JqZWN0IGhlYWRlcikgICAgICAgICAgICAgICAgTi9BCiAgICAg\nICAgICAgICAgOCAgICAgNCAgIGludCBCaWdJbnRlZ2VyLnNpZ251bSAgICAg\nICAgICAgICAgTi9BCiAgICAgICAgICAgICAxMiAgICAgNCBpbnRbXSBCaWdJ\nbnRlZ2VyLm1hZyAgICAgICAgICAgICAgICAgTi9BCiAgICAgICAgICAgICAx\nNiAgICAgNCAgIGludCBCaWdJbnRlZ2VyLmJpdENvdW50ICAgICAgICAgICAg\nTi9BCiAgICAgICAgICAgICAyMCAgICAgNCAgIGludCBCaWdJbnRlZ2VyLmJp\ndExlbmd0aCAgICAgICAgICAgTi9BCiAgICAgICAgICAgICAyNCAgICAgNCAg\nIGludCBCaWdJbnRlZ2VyLmxvd2VzdFNldEJpdCAgICAgICAgTi9BCiAgICAg\nICAgICAgICAyOCAgICAgNCAgIGludCBCaWdJbnRlZ2VyLmZpcnN0Tm9uemVy\nb0ludE51bSAgTi9BCiAgICAgICAgSW5zdGFuY2Ugc2l6ZTogMzIgYnl0ZXMg\nKGVzdGltYXRlZCwgdGhlIHNhbXBsZSBpbnN0YW5jZSBpcyBub3QgYXZhaWxh\nYmxlKQogICAgICAgIFNwYWNlIGxvc3NlczogMCBieXRlcyBpbnRlcm5hbCAr\nIDAgYnl0ZXMgZXh0ZXJuYWwgPSAwIGJ5dGVzIHRvdGFsCgogICAgICAgICoq\nKioqIDY0LWJpdCBWTTogKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq\nKioqKioqKioqKioqKioqKioqKioqKioqKioqKgogICAgICAgIGphdmEubWF0\naC5CaWdJbnRlZ2VyIG9iamVjdCBpbnRlcm5hbHM6CiAgICAgICAgIE9GRlNF\nVCAgU0laRSAgVFlQRSBERVNDUklQVElPTiAgICAgICAgICAgICAgICAgICAg\nVkFMVUUKICAgICAgICAgICAgICAwICAgIDE2ICAgICAgIChvYmplY3QgaGVh\nZGVyKSAgICAgICAgICAgICAgICBOL0EKICAgICAgICAgICAgIDE2ICAgICA4\nIGludFtdIEJpZ0ludGVnZXIubWFnICAgICAgICAgICAgICAgICBOL0EKICAg\nICAgICAgICAgIDI0ICAgICA0ICAgaW50IEJpZ0ludGVnZXIuc2lnbnVtICAg\nICAgICAgICAgICBOL0EKICAgICAgICAgICAgIDI4ICAgICA0ICAgaW50IEJp\nZ0ludGVnZXIuYml0Q291bnQgICAgICAgICAgICBOL0EKICAgICAgICAgICAg\nIDMyICAgICA0ICAgaW50IEJpZ0ludGVnZXIuYml0TGVuZ3RoICAgICAgICAg\nICBOL0EKICAgICAgICAgICAgIDM2ICAgICA0ICAgaW50IEJpZ0ludGVnZXIu\nbG93ZXN0U2V0Qml0ICAgICAgICBOL0EKICAgICAgICAgICAgIDQwICAgICA0\nICAgaW50IEJpZ0ludGVnZXIuZmlyc3ROb256ZXJvSW50TnVtICBOL0EKICAg\nICAgICAgICAgIDQ0ICAgICA0ICAgICAgIChsb3NzIGR1ZSB0byB0aGUgbmV4\ndCBvYmplY3QgYWxpZ25tZW50KQogICAgICAgIEluc3RhbmNlIHNpemU6IDQ4\nIGJ5dGVzIChlc3RpbWF0ZWQsIHRoZSBzYW1wbGUgaW5zdGFuY2UgaXMgbm90\nIGF2YWlsYWJsZSkKICAgICAgICBTcGFjZSBsb3NzZXM6IDAgYnl0ZXMgaW50\nZXJuYWwgKyA0IGJ5dGVzIGV4dGVybmFsID0gNCBieXRlcyB0b3RhbAoKICAg\nICAgICAqKioqKiA2NC1iaXQgVk0sIGNvbXByZXNzZWQgcmVmZXJlbmNlcyBl\nbmFibGVkOiAqKioqKioqKioqKioqKioqKioqKioqKioqKioKICAgICAgICBq\nYXZhLm1hdGguQmlnSW50ZWdlciBvYmplY3QgaW50ZXJuYWxzOgogICAgICAg\nICBPRkZTRVQgIFNJWkUgIFRZUEUgREVTQ1JJUFRJT04gICAgICAgICAgICAg\nICAgICAgIFZBTFVFCiAgICAgICAgICAgICAgMCAgICAxMiAgICAgICAob2Jq\nZWN0IGhlYWRlcikgICAgICAgICAgICAgICAgTi9BCiAgICAgICAgICAgICAx\nMiAgICAgNCAgIGludCBCaWdJbnRlZ2VyLnNpZ251bSAgICAgICAgICAgICAg\nTi9BCiAgICAgICAgICAgICAxNiAgICAgNCBpbnRbXSBCaWdJbnRlZ2VyLm1h\nZyAgICAgICAgICAgICAgICAgTi9BCiAgICAgICAgICAgICAyMCAgICAgNCAg\nIGludCBCaWdJbnRlZ2VyLmJpdENvdW50ICAgICAgICAgICAgTi9BCiAgICAg\nICAgICAgICAyNCAgICAgNCAgIGludCBCaWdJbnRlZ2VyLmJpdExlbmd0aCAg\nICAgICAgICAgTi9BCiAgICAgICAgICAgICAyOCAgICAgNCAgIGludCBCaWdJ\nbnRlZ2VyLmxvd2VzdFNldEJpdCAgICAgICAgTi9BCiAgICAgICAgICAgICAz\nMiAgICAgNCAgIGludCBCaWdJbnRlZ2VyLmZpcnN0Tm9uemVyb0ludE51bSAg\nTi9BCiAgICAgICAgICAgICAzNiAgICAgNCAgICAgICAobG9zcyBkdWUgdG8g\ndGhlIG5leHQgb2JqZWN0IGFsaWdubWVudCkKICAgICAgICBJbnN0YW5jZSBz\naXplOiA0MCBieXRlcyAoZXN0aW1hdGVkLCB0aGUgc2FtcGxlIGluc3RhbmNl\nIGlzIG5vdCBhdmFpbGFibGUpCiAgICAgICAgU3BhY2UgbG9zc2VzOiAwIGJ5\ndGVzIGludGVybmFsICsgNCBieXRlcyBleHRlcm5hbCA9IDQgYnl0ZXMgdG90\nYWwKCgoqKSBDb25zdW1lIHRoZSBoZWFwIGR1bXAgYW5kIGZpZ3VyZSB0aGUg\ncGVyY2VpdmVkIGZvb3RwcmludCBpbiBkaWZmZXJlbnQgVk0KICAgbW9kZXMg\nKEVYUEVSSU1FTlRBTCk6CgogICAgJCBqYXZhIC1qYXIgam9sLWNsaS90YXJn\nZXQvam9sLWhlYXBkdW1wLmphciBoZWFwZHVtcC5ocHJvZgogICAgICAgIEhl\nYXAgRHVtcDogaGVhcGR1bXAuaHByb2YKICAgICAgICBFc3RpbWF0ZWQgaGVh\ncCBjb25zdW1lZCwgYnl0ZXM6CiAgICAgICAgICAgICAgICAgICAgMTczLDU2\nNCw5ODU6IFJhdyBkYXRhIChYMzIgbW9kZWwpCiAgICAgICAgICAgICAgICAg\nICAgMTc5LDQ4MCwzMzk6IFZNIExheW91dCBTaW11bGF0aW9uIChYMzIgbW9k\nZWwpCiAgICAgICAgLTAuMDAwJSAgICAgMTc5LDQ4MCwwNjc6IFZNIExheW91\ndCBTaW11bGF0aW9uIChYMzIgbW9kZWwsIGhpZXJhcmNoeSBnYXBzKQogICAg\nICAgIC0wLjAwMCUgICAgIDE3OSw0ODAsMDQzOiBWTSBMYXlvdXQgU2ltdWxh\ndGlvbiAoWDMyIG1vZGVsLCBzdXBlciBnYXBzKQogICAgICAgIC0yLjY5MiUg\nICAgIDE3NCw2NDksMTY3OiBWTSBMYXlvdXQgU2ltdWxhdGlvbiAoWDMyIG1v\nZGVsLCBhdXRvYWxpZ24pCiAgICAgICAgLTIuNjkzJSAgICAgMTc0LDY0Nyw4\nMTU6IFZNIExheW91dCBTaW11bGF0aW9uIChYMzIgbW9kZWwsIGhpZXJhcmNo\neSBnYXBzLCBhdXRvYWxpZ24pCiAgICAgICAgLTIuNjkzJSAgICAgMTc0LDY0\nNyw4MDM6IFZNIExheW91dCBTaW11bGF0aW9uIChYMzIgbW9kZWwsIHN1cGVy\nIGdhcHMsIGF1dG9hbGlnbikKCiAgICAgICAgICAgICAgICAgICAgMjMyLDEy\nMCwyMzM6IFJhdyBkYXRhIChYNjQgbW9kZWwpCiAgICAgICAgICAgICAgICAg\nICAgMjM3LDYyOSw0NTE6IFZNIExheW91dCBTaW11bGF0aW9uIChYNjQgbW9k\nZWwpCiAgICAgICAgLTAuMDAwJSAgICAgMjM3LDYyOSwxNTU6IFZNIExheW91\ndCBTaW11bGF0aW9uIChYNjQgbW9kZWwsIGhpZXJhcmNoeSBnYXBzKQogICAg\nICAgIC0wLjAwMSUgICAgIDIzNyw2MjYsNzc5OiBWTSBMYXlvdXQgU2ltdWxh\ndGlvbiAoWDY0IG1vZGVsLCBzdXBlciBnYXBzKQogICAgICAgIC0wLjA1OSUg\nICAgIDIzNyw0ODgsNzM1OiBWTSBMYXlvdXQgU2ltdWxhdGlvbiAoWDY0IG1v\nZGVsLCBhdXRvYWxpZ24pCiAgICAgICAgLTAuMDU5JSAgICAgMjM3LDQ4OCw0\nMzk6IFZNIExheW91dCBTaW11bGF0aW9uIChYNjQgbW9kZWwsIGhpZXJhcmNo\neSBnYXBzLCBhdXRvYWxpZ24pCiAgICAgICAgLTAuMDYwJSAgICAgMjM3LDQ4\nNiwwNjM6IFZNIExheW91dCBTaW11bGF0aW9uIChYNjQgbW9kZWwsIHN1cGVy\nIGdhcHMsIGF1dG9hbGlnbikKCiAgICAgICAgICAgICAgICAgICAgMTkwLDM5\nNyw3OTM6IFJhdyBkYXRhIChYNjQgbW9kZWwgKGNvbXByZXNzZWQgb29wcykp\nCiAgICAgICAgICAgICAgICAgICAgMTk5LDIwNSwwMzE6IFZNIExheW91dCBT\naW11bGF0aW9uIChYNjQgbW9kZWwgKGNvbXByZXNzZWQgb29wcykpCiAgICAg\nICAgLTAuMDAxJSAgICAgMTk5LDIwMiwzMDM6IFZNIExheW91dCBTaW11bGF0\naW9uIChYNjQgbW9kZWwgKGNvbXByZXNzZWQgb29wcyksIGhpZXJhcmNoeSBn\nYXBzKQogICAgICAgIC0wLjAxNCUgICAgIDE5OSwxNzcsNzkxOiBWTSBMYXlv\ndXQgU2ltdWxhdGlvbiAoWDY0IG1vZGVsIChjb21wcmVzc2VkIG9vcHMpLCBz\ndXBlciBnYXBzKQogICAgICAgIC0zLjg0NSUgICAgIDE5MSw1NDQsODU5OiBW\nTSBMYXlvdXQgU2ltdWxhdGlvbiAoWDY0IG1vZGVsIChjb21wcmVzc2VkIG9v\ncHMpLCBhdXRvYWxpZ24pCiAgICAgICAgLTMuODQ2JSAgICAgMTkxLDU0Mywy\nMTE6IFZNIExheW91dCBTaW11bGF0aW9uIChYNjQgbW9kZWwgKGNvbXByZXNz\nZWQgb29wcyksIGhpZXJhcmNoeSBnYXBzLCBhdXRvYWxpZ24pCiAgICAgICAg\nLTMuODU5JSAgICAgMTkxLDUxOCw2ODc6IFZNIExheW91dCBTaW11bGF0aW9u\nIChYNjQgbW9kZWwgKGNvbXByZXNzZWQgb29wcyksIHN1cGVyIGdhcHMsIGF1\ndG9hbGlnbikKCg==\n",
+  "encoding": "base64",
+  "_links": {
+    "self": "https://api.github.com/repos/openjdk/jol/contents/README?ref=0.2",
+    "git": "https://api.github.com/repos/openjdk/jol/git/blobs/c2f3f8325f8e3e4b0215a97d0441d5a1ac961d09",
+    "html": "https://github.com/openjdk/jol/blob/0.2/README"
+  }
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"documentation-url\"|\"test-code-url\"' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/openjdk/jol/git/trees/0.2?recursive=1 | rg '\"path\": \".*(test|Test|README|doc|javadoc).*\"|\"path\": \"jol-core/src'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-sources.jar.sha1 && printf '\\n' && curl -fsSL https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-javadoc.jar.sha1" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+ succeeded in 236ms:
+      "path": "README",
+      "path": "jol-core/src",
+      "path": "jol-core/src/main",
+      "path": "jol-core/src/main/java",
+      "path": "jol-core/src/main/java/org",
+      "path": "jol-core/src/main/java/org/openjdk",
+      "path": "jol-core/src/main/java/org/openjdk/jol",
+      "path": "jol-core/src/main/java/org/openjdk/jol/datamodel",
+      "path": "jol-core/src/main/java/org/openjdk/jol/datamodel/CurrentDataModel.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/datamodel/DataModel.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/datamodel/X86_32_DataModel.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/datamodel/X86_64_COOPS_DataModel.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/datamodel/X86_64_DataModel.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/heap",
+      "path": "jol-core/src/main/java/org/openjdk/jol/heap/HeapDumpReader.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/info",
+      "path": "jol-core/src/main/java/org/openjdk/jol/info/ClassData.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/info/ClassLayout.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/info/FieldData.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/info/FieldLayout.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/info/GraphLayout.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/info/GraphPathRecord.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/info/GraphVisitor.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/info/GraphWalker.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/layouters",
+      "path": "jol-core/src/main/java/org/openjdk/jol/layouters/CurrentLayouter.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/layouters/HotSpotLayouter.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/layouters/Layouter.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/layouters/RawLayouter.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/util",
+      "path": "jol-core/src/main/java/org/openjdk/jol/util/MathUtil.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/util/Multiset.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/util/VMSupport.java",
+      "path": "jol-core/src/main/resources",
+      "path": "jol-core/src/main/resources/LICENSE",
+
+ succeeded in 259ms:
+3c4619ecb57864e2a48773a87fe2f4f3f2c6e242
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -name '*.json' | head -20" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+
+exec
+/usr/bin/bash -lc "rg -n 'documentation-url|source-code-url|test-code-url' . -g '*.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+ succeeded in 0ms:
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/8.0.01/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/8.0.01/kotlin-logging-jvm-8.0.01-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/1.14.0/htmlunit-cssparser-1.14.0-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/1.14.0/src/test",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/1.14.0/htmlunit-cssparser-1.14.0-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.70.0/neko-htmlunit-2.70.0-sources.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.70.0/neko-htmlunit-2.70.0-tests.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.70.0/neko-htmlunit-2.70.0-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.40.v20210413/websocket-common-9.4.40.v20210413-javadoc.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apiguardian/apiguardian-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/org.apache.arrow/arrow-format/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/15.0.0/arrow-format-15.0.0-sources.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.arrow/arrow-format/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/15.0.0/arrow-format-15.0.0-javadoc.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-sources.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:31:    "test-code-url" : "N/A",
+./metadata/org.apache.arrow/arrow-format/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0-javadoc.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/2.0.0.Final/jboss-interceptor-spi-2.0.0.Final-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:8:    "documentation-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/jakarta.websocket-client-api-2.1.0-sources.jar",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/jakarta.websocket-client-api-2.1.0-javadoc.jar",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/2.1.0/jakarta.websocket-api-2.1.0-sources.jar",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/2.1.0/jakarta.websocket-api-2.1.0-javadoc.jar",
+./metadata/org.junit.platform/junit-platform-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2-sources.jar",
+./metadata/org.junit.platform/junit-platform-commons/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.junit.platform/junit-platform-commons/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2-javadoc.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/2.0.1/mail/src/test",
+./metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine/src/snakeyaml-engine-3.0.1/src/test/java/",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20250515-f04e4c0e/google-closure-library-third-party-0.0-20250515-f04e4c0e-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20250515-f04e4c0e/google-closure-library-third-party-0.0-20250515-f04e4c0e-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:8:    "documentation-url" : "https://github.com/google/closure-library/blob/f04e4c0e/README.md",
+./metadata/org.clojure/google-closure-library-third-party/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20150505-021ed5b3/google-closure-library-third-party-0.0-20150505-021ed5b3-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-20150505-021ed5b3/google-closure-library-third-party-0.0-20150505-021ed5b3-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:22:    "documentation-url" : "https://github.com/google/closure-library/blob/021ed5b313da392a7139d0d3cf7011999ac8b672/README.md",
+./metadata/org.postgresql/postgresql/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-jdbc-src.tar.gz",
+./metadata/org.postgresql/postgresql/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:27:    "source-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:29:    "test-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-jdbc-src.tar.gz",
+./metadata/org.postgresql/postgresql/index.json:30:    "documentation-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.servlet/javax.servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+./metadata/com.android.tools/annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/android/tools/annotations/24.5.0/annotations-24.5.0-sources.jar",
+./metadata/com.android.tools/annotations/index.json:7:    "test-code-url" : "N/A",
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"' . -g '*.json' | head -40" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+ succeeded in 0ms:
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.apiguardian/apiguardian-api/index.json:6:    "repository-url" : "https://github.com/apiguardian-team/apiguardian",
+./metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+./metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+./metadata/org.apache.arrow/arrow-format/index.json:6:    "repository-url" : "https://github.com/apache/arrow",
+./metadata/org.apache.arrow/arrow-format/index.json:30:    "repository-url" : "https://github.com/apache/arrow",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:6:    "repository-url" : "https://github.com/jbossinterceptors/jbossinterceptors",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/websocket",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/websocket",
+./metadata/org.junit.platform/junit-platform-commons/index.json:6:    "repository-url" : "https://github.com/junit-team/junit5",
+./metadata/com.sun.mail/jakarta.mail/index.json:10:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:6:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:6:    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+./metadata/org.clojure/google-closure-library-third-party/index.json:6:    "repository-url" : "https://github.com/google/closure-library",
+./metadata/org.clojure/google-closure-library-third-party/index.json:20:    "repository-url" : "https://github.com/google/closure-library",
+./metadata/org.postgresql/postgresql/index.json:6:    "repository-url" : "https://github.com/pgjdbc/pgjdbc",
+./metadata/org.postgresql/postgresql/index.json:28:    "repository-url" : "https://github.com/pgjdbc/pgjdbc",
+./metadata/javax.servlet/javax.servlet-api/index.json:6:    "repository-url" : "https://github.com/javaee/servlet-spec",
+./metadata/com.android.tools/annotations/index.json:6:    "repository-url" : "https://android.googlesource.com/platform/tools/base",
+./metadata/org.eclipse.aether/aether-util/index.json:6:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git",
+./metadata/org.eclipse.aether/aether-api/index.json:6:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git/tree/",
+./metadata/org.eclipse.aether/aether-spi/index.json:6:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git/tree/",
+./metadata/org.eclipse.aether/aether-impl/index.json:6:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:7:    "repository-url": "https://github.com/spotbugs/spotbugs",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:6:    "repository-url" : "https://github.com/FasterXML/stax2-api",
+./metadata/org.dom4j/dom4j/index.json:6:    "repository-url" : "https://github.com/dom4j/dom4j",
+./metadata/org.latencyutils/LatencyUtils/index.json:6:    "repository-url" : "https://github.com/LatencyUtils/LatencyUtils",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:7:    "repository-url": "https://github.com/fusesource/hawtbuf",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/validation",
+./metadata/org.xmlunit/xmlunit-placeholders/index.json:6:    "repository-url" : "https://github.com/xmlunit/xmlunit",
+./metadata/org.xmlunit/xmlunit-core/index.json:6:    "repository-url" : "https://github.com/xmlunit/xmlunit",
+./metadata/aopalliance/aopalliance/index.json:6:    "repository-url" : "https://sourceforge.net/p/aopalliance/code/",
+
+codex
+The 0.2 tag has `jol-core/src/main` but no `jol-core/src/test`, and Maven Central does not publish a tests artifact for this version. I’m going to use Maven Central for the sources and Javadocs, the current OpenJDK GitHub repository for the repository URL, and `N/A` for the missing test suite.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+diff --git a/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json b/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+index 9a46817575992e693ba6c09dd6a718e654f692e4..da2e38fa8a2086e4376b7f0d3c0fd2074026aaac
+--- a/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
++++ b/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.openjdk.jol:jol-core:0.2"
++  "coordinates" : "org.openjdk.jol:jol-core:0.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-sources.jar",
++  "repository-url" : "https://github.com/openjdk/jol",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-javadoc.jar",
++  "description" : "JOL Core provides APIs for analyzing Java object layouts, field offsets, alignment, and memory footprint on JVMs. It uses JVM runtime details to report object internals and graph sizes for tools that need accurate heap-layout information."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json b/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+index 9a46817575992e693ba6c09dd6a718e654f692e4..da2e38fa8a2086e4376b7f0d3c0fd2074026aaac
+--- a/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
++++ b/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.openjdk.jol:jol-core:0.2"
++  "coordinates" : "org.openjdk.jol:jol-core:0.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-sources.jar",
++  "repository-url" : "https://github.com/openjdk/jol",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-javadoc.jar",
++  "description" : "JOL Core provides APIs for analyzing Java object layouts, field offsets, alignment, and memory footprint on JVMs. It uses JVM runtime details to report object internals and graph sizes for tools that need accurate heap-layout information."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+ succeeded in 0ms:
+{
+  "coordinates" : "org.openjdk.jol:jol-core:0.2",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-sources.jar",
+  "repository-url" : "https://github.com/openjdk/jol",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-javadoc.jar",
+  "description" : "JOL Core provides APIs for analyzing Java object layouts, field offsets, alignment, and memory footprint on JVMs. It uses JVM runtime details to report object internals and graph sizes for tools that need accurate heap-layout information."
+}
+
+exec
+/usr/bin/bash -lc 'python3 -m json.tool build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json >/dev/null' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json b/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+index 9a46817575992e693ba6c09dd6a718e654f692e4..da2e38fa8a2086e4376b7f0d3c0fd2074026aaac
+--- a/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
++++ b/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.openjdk.jol:jol-core:0.2"
++  "coordinates" : "org.openjdk.jol:jol-core:0.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-sources.jar",
++  "repository-url" : "https://github.com/openjdk/jol",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-javadoc.jar",
++  "description" : "JOL Core provides APIs for analyzing Java object layouts, field offsets, alignment, and memory footprint on JVMs. It uses JVM runtime details to report object internals and graph sizes for tools that need accurate heap-layout information."
+ }
+
+codex
+Updated [org.openjdk.jol-jol-core-0.2.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json) with Maven Central sources/Javadocs, the OpenJDK JOL repository URL, `N/A` for tests, and a two-sentence description.
+
+No `language` field was added because this is not Kotlin, Groovy, or Scala-specific. JSON validation passed.
+diff --git a/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json b/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+index 9a46817575992e693ba6c09dd6a718e654f692e4..da2e38fa8a2086e4376b7f0d3c0fd2074026aaac
+--- a/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
++++ b/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.openjdk.jol:jol-core:0.2"
++  "coordinates" : "org.openjdk.jol:jol-core:0.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-sources.jar",
++  "repository-url" : "https://github.com/openjdk/jol",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-javadoc.jar",
++  "description" : "JOL Core provides APIs for analyzing Java object layouts, field offsets, alignment, and memory footprint on JVMs. It uses JVM runtime details to report object internals and graph sizes for tools that need accurate heap-layout information."
+ }
+
+tokens used
+44,347
+Updated [org.openjdk.jol-jol-core-0.2.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json) with Maven Central sources/Javadocs, the OpenJDK JOL repository URL, `N/A` for tests, and a two-sentence description.
+
+No `language` field was added because this is not Kotlin, Groovy, or Scala-specific. JSON validation passed.
+Ran agent for org.openjdk.jol:jol-core:0.2 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf/build/agent-artifact-discovery-logs/org.openjdk.jol-jol-core-0.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2697-e0f255cf/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 56s
+9 actionable tasks: 4 executed, 5 from cache
