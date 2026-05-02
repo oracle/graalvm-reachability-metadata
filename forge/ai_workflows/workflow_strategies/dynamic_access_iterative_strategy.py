@@ -6,8 +6,14 @@
 import os
 import subprocess
 
-from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
+from ai_workflows.workflow_strategies.workflow_strategy import (
+    RUN_STATUS_CHUNK_READY,
+    RUN_STATUS_FAILURE,
+    RUN_STATUS_SUCCESS,
+    WorkflowStrategy,
+)
 from utility_scripts.dynamic_access_report import compute_class_delta, format_call_sites, load_dynamic_access_coverage_report
+from utility_scripts.large_library_progress import LargeLibraryProgressState
 from utility_scripts.native_test_verification import (
     STATUS_FAILED as NATIVE_TEST_GATE_FAILED,
     per_class_output_dir,
@@ -47,6 +53,13 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             "max-native-test-verification-iterations",
             DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS,
         )
+        self.large_library_progress_state: LargeLibraryProgressState | None = self.context.get(
+            "large_library_progress_state",
+        )
+        self.large_library_progress_state_path: str | None = self.context.get("large_library_progress_state_path")
+        self.chunk_class_limit = int(self.context.get("chunk_class_limit") or 0)
+        self.chunk_call_limit = int(self.context.get("chunk_call_limit") or 0)
+        self._last_phase_status = RUN_STATUS_SUCCESS
         self.dynamic_access_report_path = os.path.join(
             self.reachability_repo_path,
             "tests",
@@ -74,6 +87,8 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         global_iterations = 0
         phase_ok, extra_iterations = self._run_dynamic_access_phase(agent, initial_report)
         global_iterations += extra_iterations
+        if self._last_phase_status == RUN_STATUS_CHUNK_READY:
+            return RUN_STATUS_CHUNK_READY, global_iterations, 1
         if not phase_ok:
             subprocess.run(["git", "reset", "--hard", checkpoint_commit_hash], check=False)
             return RUN_STATUS_FAILURE, global_iterations, 0
@@ -96,9 +111,19 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             return True, 0
 
         exhausted_classes: set[str] = set()
+        if self.large_library_progress_state is not None:
+            exhausted_classes.update(self.large_library_progress_state.exhausted_classes)
         previous_report = None
         prompt_iterations = 0
         successful_classes = 0
+        processed_classes_this_part = 0
+        initial_part_covered_calls = current_report.covered_calls
+        if self.large_library_progress_state is not None:
+            initial_part_covered_calls = self.large_library_progress_state.covered_calls
+            self.large_library_progress_state.mark_class_order([
+                class_coverage.class_name for class_coverage in current_report.classes
+            ])
+            self._save_large_library_progress(current_report)
         initial_test_change_signature = self._library_test_change_signature()
         initial_class_positions = {
             class_coverage.class_name: index
@@ -256,11 +281,13 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                             exhausted_classes.add(class_name)
                             break
                         current_report = self._refresh_report_after_gate(class_name) or current_report
+                        self._mark_large_library_completed(class_name, current_report)
                     else:
                         self._print_dynamic_access_detail(
                             "result: class disappeared without coverage gain, skipping",
                             indent_level=2,
                         )
+                        self._mark_large_library_exhausted(class_name, current_report)
                     exhausted_classes.add(class_name)
                     break
                 if updated_class.uncovered_calls == 0:
@@ -275,6 +302,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         gate_failed = True
                         break
                     current_report = self._refresh_report_after_gate(class_name) or current_report
+                    self._mark_large_library_completed(class_name, current_report)
                     break
                 if updated_class.covered_calls > active_class.covered_calls:
                     # Coverage improved but class is not fully resolved yet.
@@ -302,6 +330,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     if refreshed is not None:
                         current_report = refreshed
                         updated_class = current_report.get_class(class_name) or updated_class
+                    self._save_large_library_progress(current_report)
                 else:
                     self._print_dynamic_access_detail(
                         "result: no new coverage, {remaining} {call_label} still uncovered".format(
@@ -334,6 +363,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     class_name=class_name,
                 )
                 exhausted_classes.add(class_name)
+                self._mark_large_library_failed(class_name, current_report)
                 self._print_class_completion_progress(
                     class_name,
                     self._completed_class_count(current_report, exhausted_classes),
@@ -362,12 +392,29 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 exhausted_classes.add(class_name)
                 if class_committed:
                     successful_classes += 1
+                    self._save_large_library_progress(current_report)
+                else:
+                    self._mark_large_library_exhausted(class_name, current_report)
             self._print_class_completion_progress(
                 class_name,
                 self._completed_class_count(current_report, exhausted_classes),
                 self._class_completion_total(initial_class_count, current_report, exhausted_classes),
                 current_report,
             )
+            processed_classes_this_part += 1
+            if self._should_stop_for_large_library_chunk(
+                    current_report,
+                    processed_classes_this_part,
+                    initial_part_covered_calls,
+            ):
+                self._last_phase_status = RUN_STATUS_CHUNK_READY
+                self._print_dynamic_access_message(
+                    "Large-library chunk boundary reached after {count} class(es).".format(
+                        count=processed_classes_this_part,
+                    )
+                )
+                self._save_large_library_progress(current_report)
+                return True, prompt_iterations
 
     def _run_native_test_verification_gate(self, class_name: str) -> bool:
         """Run the per-class native-test verification gate; return True if PASSED."""
@@ -407,6 +454,54 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 indent_level=2,
             )
         return refreshed
+
+    def _save_large_library_progress(self, current_report) -> None:
+        """Persist resumable large-library state, when enabled."""
+        if self.large_library_progress_state is None or self.large_library_progress_state_path is None:
+            return
+        self.large_library_progress_state.update_coverage(
+            current_report.covered_calls,
+            current_report.total_calls,
+        )
+        self.large_library_progress_state.save(self.large_library_progress_state_path)
+
+    def _mark_large_library_completed(self, class_name: str, current_report) -> None:
+        """Persist a completed class boundary for large-library continuation."""
+        if self.large_library_progress_state is None:
+            return
+        self.large_library_progress_state.mark_completed(class_name)
+        self._save_large_library_progress(current_report)
+
+    def _mark_large_library_exhausted(self, class_name: str, current_report) -> None:
+        """Persist an exhausted or skipped class boundary for large-library continuation."""
+        if self.large_library_progress_state is None:
+            return
+        self.large_library_progress_state.mark_exhausted(class_name)
+        self._save_large_library_progress(current_report)
+
+    def _mark_large_library_failed(self, class_name: str, current_report) -> None:
+        """Persist a failed class boundary for large-library diagnostics."""
+        if self.large_library_progress_state is None:
+            return
+        self.large_library_progress_state.mark_failed(class_name)
+        self.large_library_progress_state.mark_exhausted(class_name)
+        self._save_large_library_progress(current_report)
+
+    def _should_stop_for_large_library_chunk(
+            self,
+            current_report,
+            processed_classes_this_part: int,
+            initial_part_covered_calls: int,
+    ) -> bool:
+        """Return True when the current large-library part reached its configured boundary."""
+        if self.large_library_progress_state is None:
+            return False
+        if current_report.next_uncovered_class(set(self.large_library_progress_state.exhausted_classes)) is None:
+            return False
+        if self.chunk_class_limit > 0 and processed_classes_this_part >= self.chunk_class_limit:
+            return True
+        newly_covered_calls = max(current_report.covered_calls - initial_part_covered_calls, 0)
+        return self.chunk_call_limit > 0 and newly_covered_calls >= self.chunk_call_limit
 
     @staticmethod
     def _resolve_class_progress(

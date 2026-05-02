@@ -26,12 +26,14 @@ import ai_workflows.workflow_strategies  # noqa: F401 — triggers strategy regi
 from ai_workflows.agents import Agent
 from ai_workflows.workflow_strategies.workflow_strategy import (
     RUN_STATUS_FAILURE,
+    RUN_STATUS_CHUNK_READY,
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
 )
 from ai_workflows.workflow_strategies.workflow_strategy import WorkflowStrategy
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
 from utility_scripts import metrics_writer
+from utility_scripts.large_library_progress import LargeLibraryProgressState
 from utility_scripts.metadata_index import is_not_for_native_image, write_not_for_native_image_marker
 from utility_scripts.native_image_artifact import evaluate_native_image_eligibility
 from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, resolve_repo_roots
@@ -144,6 +146,32 @@ def build_parser():
             "dynamic-access coverage."
         ),
     )
+    parser.add_argument(
+        "--large-library-series",
+        action="store_true",
+        help="Enable resumable large-library chunking for dynamic-access workflows.",
+    )
+    parser.add_argument(
+        "--chunk-class-limit",
+        type=int,
+        default=0,
+        help="Stop a large-library part after this many resolved, skipped, or exhausted classes. 0 disables it.",
+    )
+    parser.add_argument(
+        "--chunk-call-limit",
+        type=int,
+        default=0,
+        help="Stop a large-library part after this many newly covered calls. 0 disables it.",
+    )
+    parser.add_argument(
+        "--resume-artifact",
+        help="Path to a large-library progress state JSON artifact to resume from.",
+    )
+    parser.add_argument(
+        "--issue-number",
+        type=int,
+        help="GitHub issue number for durable large-library progress state.",
+    )
     return parser
 
 
@@ -177,6 +205,11 @@ def parse_flags(argv_list):
         flags.benchmark_mode,
         flags.keep_tests_without_dynamic_access,
         flags.in_metadata_repo,
+        flags.large_library_series,
+        flags.chunk_class_limit,
+        flags.chunk_call_limit,
+        flags.resume_artifact,
+        flags.issue_number,
     )
 
 
@@ -365,6 +398,11 @@ def main(argv=None):
         is_benchmark_mode,
         keep_tests_without_dynamic_access,
         in_metadata_repo,
+        large_library_series,
+        chunk_class_limit,
+        chunk_call_limit,
+        resume_artifact,
+        issue_number,
     ) = parse_flags(argv if argv is not None else sys.argv[1:])
 
     strategy = require_strategy_by_name(strategy_name)
@@ -385,6 +423,20 @@ def main(argv=None):
         print("ERROR: Strategy is missing required field: workflow", file=sys.stderr)
         sys.exit(1)
     StrategyClass = WorkflowStrategy.get_class(workflow_name)
+    large_library_state = None
+    large_library_state_path = None
+    if resume_artifact:
+        large_library_state = LargeLibraryProgressState.load(resume_artifact)
+        large_library_state.part += 1
+        large_library_state_path = large_library_state.default_path(metrics_repo_root)
+    elif large_library_series:
+        large_library_state = LargeLibraryProgressState.create(
+            coordinate=library,
+            issue_number=issue_number,
+            request_label="library-new-request",
+            strategy_name=strategy_name,
+        )
+        large_library_state_path = large_library_state.default_path(metrics_repo_root)
 
     validate_repo_paths(reachability_repo_path, metrics_repo_dir)
 
@@ -433,6 +485,10 @@ def main(argv=None):
         source_context_available=prepared_source_context.is_available,
         source_context_files=prepared_source_context.read_only_files,
         keep_tests_without_dynamic_access=keep_tests_without_dynamic_access,
+        large_library_progress_state=large_library_state,
+        large_library_progress_state_path=large_library_state_path,
+        chunk_class_limit=chunk_class_limit,
+        chunk_call_limit=chunk_call_limit,
         test_language=test_source_layout.language,
         test_language_display_name=test_source_layout.display_language,
         test_source_dir_name=test_source_layout.source_dir_name,
@@ -444,6 +500,9 @@ def main(argv=None):
     subprocess.run(["git", "add", directory_path, index_json_path], check=False)
     subprocess.run(["git", "commit", "-m", f"Scaffold {library}"], check=False, capture_output=True, text=True)
     checkpoint_commit_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    if large_library_state is not None and not large_library_state.scaffold_commit:
+        large_library_state.scaffold_commit = checkpoint_commit_hash
+        large_library_state.save(large_library_state_path)
     log_stage("scaffold", f"Committed scaffold at {checkpoint_commit_hash}")
 
     editable_files = list_all_files(test_source_layout.source_root)
@@ -486,7 +545,8 @@ def main(argv=None):
         checkpoint_commit_hash=checkpoint_commit_hash,
     )
 
-    if workflow_status == RUN_STATUS_SUCCESS:
+    scaffold_placeholder_quality_gate_failed = False
+    if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:
         placeholder_cleanup = cleanup_scaffold_placeholder_tests(
             test_source_layout.source_root,
             reachability_repo_path,
@@ -505,7 +565,7 @@ def main(argv=None):
                     f"{format_placeholder_occurrence(occurrence, reachability_repo_path)}",
                 )
 
-    if workflow_status == RUN_STATUS_SUCCESS:
+    if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:
         if is_benchmark_mode:
             log_stage("generate-metadata", f"Benchmark mode: running generateMetadata and generateLibraryStats for {library}")
             if not strategy_obj._run_gradle_command([
@@ -525,7 +585,10 @@ def main(argv=None):
                 workflow_status = RUN_STATUS_FAILURE
         else:
             finalize_status, _ = strategy_obj._finalize_successful_iteration()
-            workflow_status = finalize_status
+            if finalize_status == RUN_STATUS_SUCCESS and workflow_status == RUN_STATUS_CHUNK_READY:
+                workflow_status = RUN_STATUS_CHUNK_READY
+            else:
+                workflow_status = finalize_status
 
     ending_commit_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     if workflow_status == RUN_STATUS_SUCCESS:
@@ -580,7 +643,7 @@ def main(argv=None):
         library_version=library_version,
         metrics_repo_root=metrics_repo_root,
     )
-    return 0 if workflow_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS} else 1
+    return 0 if workflow_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS, RUN_STATUS_CHUNK_READY} else 1
 
 
 if __name__ == "__main__":

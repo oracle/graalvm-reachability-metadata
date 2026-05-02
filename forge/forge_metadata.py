@@ -53,7 +53,7 @@ from ai_workflows.fix_ni_run import (
 from ai_workflows.improve_library_coverage import (
     main as run_improve_library_coverage_workflow,
 )
-from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_FAILURE
+from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE
 from git_scripts.common_git import (
     GitHubRateLimitExceeded,
     ensure_gh_authenticated,
@@ -71,6 +71,15 @@ from git_scripts.make_pr_ni_run_fix import main as run_make_pr_ni_run_fix
 from git_scripts.make_pr_improve_coverage import main as run_make_pr_improve_coverage
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
 from utility_scripts.library_stats import resolve_stats_file_path
+from utility_scripts.large_library_progress import (
+    LABEL_LARGE_LIBRARY_BLOCKED,
+    LABEL_LARGE_LIBRARY_NEXT_PART,
+    LABEL_LARGE_LIBRARY_PART,
+    LABEL_LARGE_LIBRARY_SERIES,
+    LargeLibraryProgressState,
+    copy_progress_artifacts,
+    find_progress_state_path,
+)
 from utility_scripts.metadata_index import (
     coordinate_parts as metadata_coordinate_parts,
     get_not_for_native_image_marker,
@@ -176,6 +185,11 @@ NOT_FOR_NATIVE_IMAGE_LABEL_COLOR = "5319E7"
 NOT_FOR_NATIVE_IMAGE_LABEL_DESCRIPTION = (
     "Artifact is tracked but is not applicable to GraalVM Native Image reachability metadata"
 )
+LARGE_LIBRARY_LABEL_COLOR = "C5DEF5"
+LARGE_LIBRARY_SERIES_LABEL_DESCRIPTION = "Issue is intentionally split across multiple reviewable PR parts"
+LARGE_LIBRARY_NEXT_PART_LABEL_DESCRIPTION = "Previous large-library part merged; automation may resume the next part"
+LARGE_LIBRARY_BLOCKED_LABEL_DESCRIPTION = "Large-library series cannot continue without manual help"
+LARGE_LIBRARY_PART_LABEL_DESCRIPTION = "Pull request is one part of a large-library series"
 
 
 DEFAULT_REVIEW_MODEL = "gpt-5.4"
@@ -204,6 +218,8 @@ class ClaimedIssue:
     issue_coordinates: str
     current_coordinates: str | None = None
     new_version: str | None = None
+    large_library_resume_artifact: str | None = None
+    large_library_part: int | None = None
 
 
 @dataclass(frozen=True)
@@ -2385,6 +2401,18 @@ def add_issue_label(issue_number: int, label_name: str) -> None:
     if label_name == LABEL_NOT_FOR_NATIVE_IMAGE:
         label_color = NOT_FOR_NATIVE_IMAGE_LABEL_COLOR
         label_description = NOT_FOR_NATIVE_IMAGE_LABEL_DESCRIPTION
+    elif label_name == LABEL_LARGE_LIBRARY_SERIES:
+        label_color = LARGE_LIBRARY_LABEL_COLOR
+        label_description = LARGE_LIBRARY_SERIES_LABEL_DESCRIPTION
+    elif label_name == LABEL_LARGE_LIBRARY_NEXT_PART:
+        label_color = LARGE_LIBRARY_LABEL_COLOR
+        label_description = LARGE_LIBRARY_NEXT_PART_LABEL_DESCRIPTION
+    elif label_name == LABEL_LARGE_LIBRARY_BLOCKED:
+        label_color = LARGE_LIBRARY_LABEL_COLOR
+        label_description = LARGE_LIBRARY_BLOCKED_LABEL_DESCRIPTION
+    elif label_name == LABEL_LARGE_LIBRARY_PART:
+        label_color = LARGE_LIBRARY_LABEL_COLOR
+        label_description = LARGE_LIBRARY_PART_LABEL_DESCRIPTION
     ensure_repo_label_exists(
         label_name,
         label_color,
@@ -2399,6 +2427,22 @@ def add_issue_label(issue_number: int, label_name: str) -> None:
         "--add-label",
         label_name,
     )
+
+
+def remove_issue_label(issue_number: int, label_name: str) -> None:
+    """Remove a label from a GitHub issue if it is present."""
+    result = gh(
+        "issue",
+        "edit",
+        str(issue_number),
+        "--repo",
+        REPO,
+        "--remove-label",
+        label_name,
+        check=False,
+    )
+    if result.returncode != 0 and "not found" not in (result.stderr or "").lower():
+        result.check_returncode()
 
 
 def add_pull_request_label(pr_number: int, label_name: str) -> None:
@@ -2655,6 +2699,22 @@ def apply_failed_run_follow_up(
     post_human_intervention_comment_and_label(claimed_issue.issue["number"], comment_body)
 
 
+def append_large_library_workflow_args(pipeline_argv: list[str], claimed_issue: ClaimedIssue) -> None:
+    """Append large-library workflow flags when a series is active or resuming."""
+    if not claimed_issue.large_library_resume_artifact and not issue_has_label(claimed_issue.issue, LABEL_LARGE_LIBRARY_SERIES):
+        return
+    issue_number = claimed_issue.issue["number"]
+    pipeline_argv.extend(["--large-library-series", "--issue-number", str(issue_number)])
+    if claimed_issue.large_library_resume_artifact:
+        pipeline_argv.extend(["--resume-artifact", claimed_issue.large_library_resume_artifact])
+    chunk_class_limit = os.environ.get("FORGE_LARGE_LIBRARY_CHUNK_CLASS_LIMIT")
+    if chunk_class_limit:
+        pipeline_argv.extend(["--chunk-class-limit", chunk_class_limit])
+    chunk_call_limit = os.environ.get("FORGE_LARGE_LIBRARY_CHUNK_CALL_LIMIT")
+    if chunk_call_limit:
+        pipeline_argv.extend(["--chunk-call-limit", chunk_call_limit])
+
+
 def invoke_pipeline(
         claimed_issue: ClaimedIssue,
         strategy_name: str | None,
@@ -2680,6 +2740,7 @@ def invoke_pipeline(
             pipeline_argv.extend(["--strategy-name", strategy_name])
         if keep_tests_without_dynamic_access:
             pipeline_argv.append("--keep-tests-without-dynamic-access")
+        append_large_library_workflow_args(pipeline_argv, claimed_issue)
         rc = run_add_new_library_support_workflow(pipeline_argv)
         if is_interrupt_exit_code(rc):
             mark_user_interrupt_requested()
@@ -2784,6 +2845,7 @@ def invoke_pipeline(
             pipeline_argv.append("--in-metadata-repo")
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
+        append_large_library_workflow_args(pipeline_argv, claimed_issue)
         rc = run_improve_library_coverage_workflow(pipeline_argv)
         if is_interrupt_exit_code(rc):
             mark_user_interrupt_requested()
@@ -3178,6 +3240,11 @@ def create_issue_workspace(
 
 def cleanup_issue_workspace(claimed_issue: ClaimedIssue, canonical_metrics_repo_path: str) -> None:
     """Remove the isolated issue worktrees for reachability-metadata and metrics."""
+    copy_progress_artifacts(
+        claimed_issue.scratch_metrics_repo_path,
+        canonical_metrics_repo_path,
+        claimed_issue.issue["number"],
+    )
     if claimed_issue.worktree_path in preservation_failed_worktree_paths:
         print(
             (
@@ -3222,6 +3289,41 @@ def build_claim_metadata(
 
     current_coordinates = f"{group}:{artifact}:{current_version}"
     return issue_coordinates, current_coordinates, new_version
+
+
+def resolve_large_library_resume_artifact(issue: dict, canonical_metrics_repo_path: str) -> str | None:
+    """Resolve a durable resume artifact for a large-library continuation issue."""
+    if not issue_has_label(issue, LABEL_LARGE_LIBRARY_NEXT_PART):
+        return None
+    state_path = find_progress_state_path(canonical_metrics_repo_path, issue["number"])
+    if state_path is None:
+        raise RuntimeError(f"No large-library progress state found for issue #{issue['number']}")
+    state = LargeLibraryProgressState.load(state_path)
+    verify_large_library_previous_part_merged(state)
+    return state_path
+
+
+def verify_large_library_previous_part_merged(state: LargeLibraryProgressState) -> None:
+    """Fail fast when continuation is requested before the previous PR merged."""
+    if not state.created_pull_requests:
+        return
+    previous_pr = state.created_pull_requests[-1]
+    result = gh(
+        "pr",
+        "view",
+        str(previous_pr),
+        "--repo",
+        REPO,
+        "--json",
+        "state,merged",
+        check=True,
+    )
+    payload = json.loads(result.stdout)
+    if not payload.get("merged"):
+        raise RuntimeError(
+            f"Large-library series {state.series_id} cannot continue before PR #{previous_pr} is merged "
+            f"(state={payload.get('state')})."
+        )
 
 
 def maybe_handle_not_for_native_image_issue(issue: dict, base_reachability_metadata_path: str) -> bool:
@@ -3280,6 +3382,17 @@ def claim_issue_for_processing(
     claim_metadata = build_claim_metadata(issue, label, base_reachability_metadata_path)
     if claim_metadata is None:
         return None
+    try:
+        large_library_resume_artifact = resolve_large_library_resume_artifact(issue, canonical_metrics_repo_path)
+        large_library_part = None
+        if large_library_resume_artifact:
+            large_library_part = LargeLibraryProgressState.load(large_library_resume_artifact).part + 1
+    except Exception as exc:
+        print(
+            f"ERROR: Cannot resume large-library issue #{issue['number']}: {exc}",
+            file=sys.stderr,
+        )
+        return None
 
     item_id = try_claim_issue(issue, authenticated_user)
     if not item_id:
@@ -3315,6 +3428,8 @@ def claim_issue_for_processing(
         issue_coordinates=issue_coordinates,
         current_coordinates=current_coordinates,
         new_version=new_version,
+        large_library_resume_artifact=large_library_resume_artifact,
+        large_library_part=large_library_part,
     )
 
 
@@ -3375,10 +3490,74 @@ def revert_claimed_issue(claimed_issue: ClaimedIssue, reason: str) -> None:
     revert_issue_claim(claimed_issue.item_id, claimed_issue.issue["number"], reason)
 
 
+def ensure_large_library_labels_exist_if_needed(claimed_issue: ClaimedIssue) -> None:
+    """Ensure supplemental large-library labels exist before PR creation uses them."""
+    label_descriptions = {
+        LABEL_LARGE_LIBRARY_SERIES: LARGE_LIBRARY_SERIES_LABEL_DESCRIPTION,
+        LABEL_LARGE_LIBRARY_NEXT_PART: LARGE_LIBRARY_NEXT_PART_LABEL_DESCRIPTION,
+        LABEL_LARGE_LIBRARY_BLOCKED: LARGE_LIBRARY_BLOCKED_LABEL_DESCRIPTION,
+        LABEL_LARGE_LIBRARY_PART: LARGE_LIBRARY_PART_LABEL_DESCRIPTION,
+    }
+    for label_name, description in label_descriptions.items():
+        ensure_repo_label_exists(label_name, LARGE_LIBRARY_LABEL_COLOR, description)
+
+
+def build_large_library_pr_args(
+        claimed_issue: ClaimedIssue,
+        large_library_state: LargeLibraryProgressState | None,
+        large_library_state_path: str | None,
+        workflow_status: str | None,
+) -> list[str]:
+    """Build part-aware PR flags for an active large-library series."""
+    if large_library_state is None:
+        return []
+    args = [
+        "--issue-number", str(claimed_issue.issue["number"]),
+        "--large-library-part", str(large_library_state.part),
+        "--series-id", large_library_state.series_id,
+        "--large-library-state-path", large_library_state_path or "",
+    ]
+    if workflow_status != RUN_STATUS_CHUNK_READY:
+        args.append("--large-library-final")
+    return args
+
+
+def apply_large_library_completion_follow_up(claimed_issue: ClaimedIssue) -> None:
+    """Apply issue labels after a large-library part was published."""
+    run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
+    workflow_status = None if run_metrics is None else run_metrics.get("status")
+    state_path = find_progress_state_path(claimed_issue.scratch_metrics_repo_path, claimed_issue.issue["number"])
+    if state_path is None and not issue_has_label(claimed_issue.issue, LABEL_LARGE_LIBRARY_SERIES):
+        return
+    issue_number = claimed_issue.issue["number"]
+    if workflow_status == RUN_STATUS_CHUNK_READY:
+        add_issue_label(issue_number, LABEL_LARGE_LIBRARY_SERIES)
+        add_issue_label(issue_number, LABEL_LARGE_LIBRARY_NEXT_PART)
+        remove_issue_label(issue_number, LABEL_LARGE_LIBRARY_BLOCKED)
+        return
+    remove_issue_label(issue_number, LABEL_LARGE_LIBRARY_NEXT_PART)
+    remove_issue_label(issue_number, LABEL_LARGE_LIBRARY_BLOCKED)
+
+
 def finalize_successful_issue(
         claimed_issue: ClaimedIssue,
 ) -> None:
     """Create the PR for a successful isolated workflow run."""
+    large_library_state_path = find_progress_state_path(
+        claimed_issue.scratch_metrics_repo_path,
+        claimed_issue.issue["number"],
+    )
+    large_library_state = LargeLibraryProgressState.load(large_library_state_path) if large_library_state_path else None
+    if large_library_state is not None:
+        ensure_large_library_labels_exist_if_needed(claimed_issue)
+    run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
+    workflow_status = None if run_metrics is None else run_metrics.get("status")
+    large_library_pr_args = build_large_library_pr_args(
+        claimed_issue,
+        large_library_state,
+        large_library_state_path,
+        workflow_status,
+    )
     if claimed_issue.label == LABEL_LIBRARY_NEW:
         group, artifact, _version = metadata_coordinate_parts(claimed_issue.issue_coordinates)
         if is_not_for_native_image(claimed_issue.worktree_path, group, artifact):
@@ -3395,6 +3574,7 @@ def finalize_successful_issue(
                 "--coordinates", claimed_issue.issue_coordinates,
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+                *large_library_pr_args,
                 *(["--in-metadata-repo"] if claimed_issue.in_metadata_repo else []),
             ]
         )
@@ -3441,6 +3621,7 @@ def finalize_successful_issue(
                 "--coordinates", claimed_issue.issue_coordinates,
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+                *large_library_pr_args,
                 *(["--in-metadata-repo"] if claimed_issue.in_metadata_repo else []),
             ]
         )
@@ -3520,6 +3701,7 @@ def handle_completed_run(run_result: WorkflowRunResult) -> bool:
                 started_at=run_result.started_at,
             )
             return False
+        apply_large_library_completion_follow_up(claimed_issue)
         maybe_apply_human_intervention_follow_up(
             claimed_issue,
             workflow_success=True,
@@ -3985,7 +4167,11 @@ def should_skip_issue_from_preflight(
         )
         return True
 
-    if preflight.project_status != STATUS_TODO:
+    large_library_continuation = (
+        issue_has_label(issue, LABEL_LARGE_LIBRARY_NEXT_PART)
+        and preflight.project_status == STATUS_IN_PROGRESS
+    )
+    if preflight.project_status != STATUS_TODO and not large_library_continuation:
         print()
         log_stage("issue-claim", f"Issue #{number} is not Todo (it is '{preflight.project_status}'). Skipping.")
         return True
@@ -4114,7 +4300,11 @@ def try_claim_issue_with_local_lock(issue: dict, authenticated_user: str) -> Opt
         ])
         return None
 
-    if current_status != STATUS_TODO:
+    large_library_continuation = (
+        issue_has_label(issue, LABEL_LARGE_LIBRARY_NEXT_PART)
+        and current_status == STATUS_IN_PROGRESS
+    )
+    if current_status != STATUS_TODO and not large_library_continuation:
         print()
         log_stage("issue-claim", f"Issue #{number} is not Todo (it is '{current_status}'). Skipping.")
         reason = (
@@ -4507,6 +4697,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="Process all configured issue and review queues in one Python process.",
     )
+    mode.add_argument(
+        "--continue-large-library-artifact",
+        metavar="PATH",
+        help="Resume a large-library series from a durable progress state JSON artifact.",
+    )
 
     parser.add_argument(
         "--limit", type=int, default=DEFAULT_MAX_ISSUES,
@@ -4620,6 +4815,54 @@ def process_single_issue(
     )
 
 
+def process_large_library_continuation(
+        resume_artifact: str,
+        base_reachability_metadata_path: str,
+        canonical_metrics_repo_path: str,
+        strategy_name: str | None,
+        keep_tests_without_dynamic_access: bool,
+        authenticated_user: str,
+        in_metadata_repo: bool = True,
+) -> bool:
+    """Resume a large-library issue from a durable progress artifact."""
+    state = LargeLibraryProgressState.load(resume_artifact)
+    if state.issue_number is None:
+        raise ValueError("Large-library continuation requires `issueNumber` in the progress state")
+    verify_large_library_previous_part_merged(state)
+    issue, label = get_issue_by_number(state.issue_number)
+    claimed_issue = claim_issue_for_processing(
+        issue,
+        label,
+        base_reachability_metadata_path,
+        canonical_metrics_repo_path,
+        authenticated_user,
+        in_metadata_repo=in_metadata_repo,
+    )
+    if not claimed_issue:
+        print(f"ERROR: Could not claim issue #{state.issue_number}.", file=sys.stderr)
+        sys.exit(1)
+    claimed_issue = ClaimedIssue(
+        issue=claimed_issue.issue,
+        label=claimed_issue.label,
+        item_id=claimed_issue.item_id,
+        base_reachability_metadata_path=claimed_issue.base_reachability_metadata_path,
+        worktree_path=claimed_issue.worktree_path,
+        scratch_metrics_repo_path=claimed_issue.scratch_metrics_repo_path,
+        in_metadata_repo=claimed_issue.in_metadata_repo,
+        issue_coordinates=claimed_issue.issue_coordinates,
+        current_coordinates=claimed_issue.current_coordinates,
+        new_version=claimed_issue.new_version,
+        large_library_resume_artifact=resume_artifact,
+        large_library_part=state.part + 1,
+    )
+    return process_claimed_issue_lifecycle(
+        claimed_issue,
+        strategy_name,
+        keep_tests_without_dynamic_access,
+        canonical_metrics_repo_path,
+    )
+
+
 def main() -> None:
     clear_user_interrupt_requested()
     previous_sigint_handler = signal.getsignal(signal.SIGINT)
@@ -4666,6 +4909,17 @@ def main() -> None:
             authenticated_user = resolve_authenticated_user()
             process_single_issue(
                 args.issue_number,
+                reachability_metadata_path,
+                metrics_repo_path,
+                args.strategy_name,
+                args.keep_tests_without_dynamic_access,
+                authenticated_user,
+                in_metadata_repo=args.in_metadata_repo,
+            )
+        elif args.continue_large_library_artifact is not None:
+            authenticated_user = resolve_authenticated_user()
+            process_large_library_continuation(
+                args.continue_large_library_artifact,
                 reachability_metadata_path,
                 metrics_repo_path,
                 args.strategy_name,

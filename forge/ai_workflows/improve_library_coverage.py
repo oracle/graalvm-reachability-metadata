@@ -29,12 +29,14 @@ import ai_workflows.workflow_strategies  # noqa: F401 — triggers strategy regi
 from ai_workflows.agents import Agent
 from ai_workflows.workflow_strategies.workflow_strategy import (
     RUN_STATUS_FAILURE,
+    RUN_STATUS_CHUNK_READY,
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
     WorkflowStrategy,
 )
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated, load_library_stats
 from utility_scripts import metrics_writer
+from utility_scripts.large_library_progress import LargeLibraryProgressState
 from utility_scripts.metrics_writer import count_metadata_entries, count_test_only_metadata_entries, create_failure_run_metrics_output
 from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, resolve_repo_roots
 from utility_scripts.schema_validator import validate_run_metrics
@@ -104,6 +106,32 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional path with additional read-only docs/sources for agent context",
     )
     parser.add_argument("-v", "--verbose", action="store_true", help="enable verbose mode for the configured agent")
+    parser.add_argument(
+        "--large-library-series",
+        action="store_true",
+        help="Enable resumable large-library chunking for dynamic-access workflows.",
+    )
+    parser.add_argument(
+        "--chunk-class-limit",
+        type=int,
+        default=0,
+        help="Stop a large-library part after this many resolved, skipped, or exhausted classes. 0 disables it.",
+    )
+    parser.add_argument(
+        "--chunk-call-limit",
+        type=int,
+        default=0,
+        help="Stop a large-library part after this many newly covered calls. 0 disables it.",
+    )
+    parser.add_argument(
+        "--resume-artifact",
+        help="Path to a large-library progress state JSON artifact to resume from.",
+    )
+    parser.add_argument(
+        "--issue-number",
+        type=int,
+        help="GitHub issue number for durable large-library progress state.",
+    )
     return parser
 
 
@@ -128,6 +156,11 @@ def parse_flags(argv_list: list[str]):
         flags.reachability_metadata_path,
         flags.metrics_repo_path,
         flags.in_metadata_repo,
+        flags.large_library_series,
+        flags.chunk_class_limit,
+        flags.chunk_call_limit,
+        flags.resume_artifact,
+        flags.issue_number,
     )
 
 
@@ -181,6 +214,11 @@ def main(argv=None) -> int:
         explicit_repo_path,
         explicit_metrics_repo_path,
         in_metadata_repo,
+        large_library_series,
+        chunk_class_limit,
+        chunk_call_limit,
+        resume_artifact,
+        issue_number,
     ) = parse_flags(argv if argv is not None else sys.argv[1:])
 
     library = f"{group}:{artifact}:{version}"
@@ -197,6 +235,20 @@ def main(argv=None) -> int:
 
     log_stage("setup", f"Selected strategy: {strategy_name}")
     model_name = strategy.get("model") or DEFAULT_MODEL_NAME
+    large_library_state = None
+    large_library_state_path = None
+    if resume_artifact:
+        large_library_state = LargeLibraryProgressState.load(resume_artifact)
+        large_library_state.part += 1
+        large_library_state_path = large_library_state.default_path(metrics_repo_root)
+    elif large_library_series:
+        large_library_state = LargeLibraryProgressState.create(
+            coordinate=library,
+            issue_number=issue_number,
+            request_label="library-update-request",
+            strategy_name=strategy_name,
+        )
+        large_library_state_path = large_library_state.default_path(metrics_repo_root)
 
     # Create feature branch
     new_branch = build_ai_branch_name(f"improve-coverage-{group}-{artifact}-{version}")
@@ -223,6 +275,11 @@ def main(argv=None) -> int:
         "metadata_entries": baseline_metadata_entries,
         "test_only_metadata_entries": baseline_test_only_entries,
     }
+    if large_library_state is not None and large_library_state.baseline_stats is None:
+        large_library_state.baseline_stats = baseline_stats
+        large_library_state.baseline_metadata_entries = baseline_metadata_entries
+        large_library_state.baseline_test_only_metadata_entries = baseline_test_only_entries
+        large_library_state.save(large_library_state_path)
     baseline_stats_path = os.path.join(tests_dir, BASELINE_STATS_FILENAME)
     with open(baseline_stats_path, "w", encoding="utf-8") as f:
         json.dump(baseline_snapshot, f, indent=2)
@@ -257,6 +314,10 @@ def main(argv=None) -> int:
         test_language=test_source_layout.language,
         test_language_display_name=test_source_layout.display_language,
         test_source_dir_name=test_source_layout.source_dir_name,
+        large_library_progress_state=large_library_state,
+        large_library_progress_state_path=large_library_state_path,
+        chunk_class_limit=chunk_class_limit,
+        chunk_call_limit=chunk_call_limit,
     )
 
     # Initialize agent
@@ -286,13 +347,16 @@ def main(argv=None) -> int:
 
     workflow_status, iterations = strategy_obj.run(agent=agent)
 
-    if workflow_status == RUN_STATUS_SUCCESS:
+    if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:
         finalize_status, _ = strategy_obj._finalize_successful_iteration()
-        workflow_status = finalize_status
+        if finalize_status == RUN_STATUS_SUCCESS and workflow_status == RUN_STATUS_CHUNK_READY:
+            workflow_status = RUN_STATUS_CHUNK_READY
+        else:
+            workflow_status = finalize_status
 
     ending_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
 
-    if workflow_status not in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS}:
+    if workflow_status not in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS, RUN_STATUS_CHUNK_READY}:
         log_stage("status", "Coverage improvement failed")
         subprocess.run(["git", "reset", "--hard", checkpoint_commit], check=True)
         ending_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
@@ -329,7 +393,7 @@ def main(argv=None) -> int:
         )
 
     write_metrics(run_metrics, metrics_repo_dir, metrics_repo_root)
-    return 0 if workflow_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS} else 1
+    return 0 if workflow_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS, RUN_STATUS_CHUNK_READY} else 1
 
 
 if __name__ == "__main__":
