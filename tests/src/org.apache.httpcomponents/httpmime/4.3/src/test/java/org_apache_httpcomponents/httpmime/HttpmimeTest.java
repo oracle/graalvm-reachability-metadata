@@ -7,12 +7,13 @@
 package org_apache_httpcomponents.httpmime;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.FormBodyPart;
-import org.apache.http.entity.mime.HttpMultipart;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MIME;
 import org.apache.http.entity.mime.MinimalField;
-import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.InputStreamBody;
@@ -46,7 +47,7 @@ public class HttpmimeTest {
     @Test
     void stringBodyExposesTextContentAndDescriptors() throws Exception {
         String text = "Plain body with accented text: caf\u00e9";
-        StringBody body = new StringBody(text, "text/plain", UTF_8);
+        StringBody body = new StringBody(text, textContentType(UTF_8));
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         body.writeTo(outputStream);
@@ -63,11 +64,11 @@ public class HttpmimeTest {
     }
 
     @Test
-    void stringBodyFactoryMethodsApplyProvidedContentTypeAndDefaultCharset() throws Exception {
+    void stringBodyAppliesProvidedContentTypeAndAsciiDefaultEncoding() throws Exception {
         String defaultText = "factory generated text";
         String unicodeText = "factory generated snowman: \u2603";
-        StringBody defaultBody = StringBody.create(defaultText, "text/plain", null);
-        StringBody utf8Body = StringBody.create(unicodeText, "text/plain", UTF_8);
+        StringBody defaultBody = new StringBody(defaultText, ContentType.create("text/plain"));
+        StringBody utf8Body = new StringBody(unicodeText, textContentType(UTF_8));
         ByteArrayOutputStream defaultOutputStream = new ByteArrayOutputStream();
         ByteArrayOutputStream utf8OutputStream = new ByteArrayOutputStream();
 
@@ -77,7 +78,7 @@ public class HttpmimeTest {
         assertThat(defaultBody.getMimeType()).isEqualTo("text/plain");
         assertThat(defaultBody.getMediaType()).isEqualTo("text");
         assertThat(defaultBody.getSubType()).isEqualTo("plain");
-        assertThat(defaultBody.getCharset()).isEqualTo("US-ASCII");
+        assertThat(defaultBody.getCharset()).isNull();
         assertThat(defaultBody.getContentLength()).isEqualTo(defaultText.getBytes(US_ASCII).length);
         assertThat(defaultOutputStream.toByteArray()).isEqualTo(defaultText.getBytes(US_ASCII));
         assertThat(readAll(defaultBody.getReader())).isEqualTo(defaultText);
@@ -90,7 +91,7 @@ public class HttpmimeTest {
     @Test
     void binaryContentBodiesStreamBytesAndExposeMetadata() throws Exception {
         byte[] bytes = new byte[] {0, 1, 2, 3, 4, 5};
-        ByteArrayBody byteArrayBody = new ByteArrayBody(bytes, "application/octet-stream", "bytes.bin");
+        ByteArrayBody byteArrayBody = new ByteArrayBody(bytes, ContentType.APPLICATION_OCTET_STREAM, "bytes.bin");
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         byteArrayBody.writeTo(byteArrayOutputStream);
@@ -107,7 +108,7 @@ public class HttpmimeTest {
         byte[] streamBytes = "streamed content".getBytes(UTF_8);
         InputStreamBody inputStreamBody = new InputStreamBody(
                 new ByteArrayInputStream(streamBytes),
-                "text/plain",
+                textContentType(null),
                 "stream.txt");
         ByteArrayOutputStream inputStreamOutputStream = new ByteArrayOutputStream();
 
@@ -126,7 +127,7 @@ public class HttpmimeTest {
         byte[] fileBytes = "file body payload".getBytes(UTF_8);
         Path file = tempDir.resolve("source-file.txt");
         Files.write(file, fileBytes);
-        FileBody body = new FileBody(file.toFile(), "upload-name.txt", "text/plain", "UTF-8");
+        FileBody body = new FileBody(file.toFile(), textContentType(UTF_8), "upload-name.txt");
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         body.writeTo(outputStream);
@@ -144,7 +145,7 @@ public class HttpmimeTest {
     void formBodyPartCreatesStandardHeadersAndSupportsCaseInsensitiveLookup() throws Exception {
         Path file = tempDir.resolve("report.txt");
         Files.write(file, "report".getBytes(UTF_8));
-        FileBody body = new FileBody(file.toFile(), "report.txt", "text/plain", "UTF-8");
+        FileBody body = new FileBody(file.toFile(), textContentType(UTF_8), "report.txt");
         FormBodyPart part = new FormBodyPart("upload", body);
 
         part.addField("X-Custom", "first");
@@ -176,30 +177,26 @@ public class HttpmimeTest {
 
     @Test
     void strictMultipartWritesAllHeadersAndKnownTotalLength() throws Exception {
-        HttpMultipart multipart = new HttpMultipart("form-data", UTF_8, "strict-boundary", HttpMultipartMode.STRICT);
-        FormBodyPart textPart = new FormBodyPart("comment", new StringBody("hello", "text/plain", UTF_8));
-        textPart.addField("X-Trace", "42");
-        multipart.addBodyPart(textPart);
-        multipart.addBodyPart(new FormBodyPart("file", new ByteArrayBody(
-                "abc".getBytes(UTF_8),
-                "application/octet-stream",
-                "a.bin")));
+        HttpEntity entity = MultipartEntityBuilder.create()
+                .setMode(HttpMultipartMode.STRICT)
+                .setCharset(UTF_8)
+                .setBoundary("strict-boundary")
+                .addPart("comment", new StringBody("hello", textContentType(UTF_8)))
+                .addPart("file", new ByteArrayBody(
+                        "abc".getBytes(UTF_8),
+                        ContentType.APPLICATION_OCTET_STREAM,
+                        "a.bin"))
+                .build();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-        multipart.writeTo(outputStream);
+        entity.writeTo(outputStream);
         String multipartText = outputStream.toString(UTF_8.name());
 
-        assertThat(multipart.getSubType()).isEqualTo("form-data");
-        assertThat(multipart.getCharset()).isEqualTo(UTF_8);
-        assertThat(multipart.getMode()).isEqualTo(HttpMultipartMode.STRICT);
-        assertThat(multipart.getBoundary()).isEqualTo("strict-boundary");
-        assertThat(multipart.getBodyParts()).hasSize(2);
         String expected = String.join("\r\n",
                 "--strict-boundary",
                 "Content-Disposition: form-data; name=\"comment\"",
                 "Content-Type: text/plain; charset=UTF-8",
                 "Content-Transfer-Encoding: 8bit",
-                "X-Trace: 42",
                 "",
                 "hello",
                 "--strict-boundary",
@@ -210,25 +207,27 @@ public class HttpmimeTest {
                 "abc",
                 "--strict-boundary--",
                 "");
+        assertThat(entity.getContentType().getValue())
+                .isEqualTo("multipart/form-data; boundary=strict-boundary; charset=UTF-8");
         assertThat(multipartText).isEqualTo(expected);
-        assertThat(multipart.getTotalLength()).isEqualTo(outputStream.size());
+        assertThat(entity.getContentLength()).isEqualTo(outputStream.size());
     }
 
     @Test
     void browserCompatibleMultipartOmitsNonBrowserHeaders() throws Exception {
-        HttpMultipart multipart = new HttpMultipart(
-                "form-data",
-                UTF_8,
-                "browser-boundary",
-                HttpMultipartMode.BROWSER_COMPATIBLE);
-        multipart.addBodyPart(new FormBodyPart("description", new StringBody("visible text", "text/plain", UTF_8)));
-        multipart.addBodyPart(new FormBodyPart("file", new ByteArrayBody(
-                "PNG".getBytes(UTF_8),
-                "image/png",
-                "image.png")));
+        HttpEntity entity = MultipartEntityBuilder.create()
+                .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                .setCharset(UTF_8)
+                .setBoundary("browser-boundary")
+                .addPart("description", new StringBody("visible text", textContentType(UTF_8)))
+                .addPart("file", new ByteArrayBody(
+                        "PNG".getBytes(UTF_8),
+                        ContentType.create("image/png"),
+                        "image.png"))
+                .build();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-        multipart.writeTo(outputStream);
+        entity.writeTo(outputStream);
         String multipartText = outputStream.toString(UTF_8.name());
 
         String expected = String.join("\r\n",
@@ -249,9 +248,16 @@ public class HttpmimeTest {
 
     @Test
     void multipartEntityReportsRepeatableStateAndContentLength() throws Exception {
-        MultipartEntity entity = new MultipartEntity(HttpMultipartMode.STRICT, "entity-boundary", UTF_8);
-        entity.addPart("message", new StringBody("hello entity", "text/plain", UTF_8));
-        entity.addPart("data", new ByteArrayBody("123".getBytes(UTF_8), "application/octet-stream", "data.bin"));
+        HttpEntity entity = MultipartEntityBuilder.create()
+                .setMode(HttpMultipartMode.STRICT)
+                .setCharset(UTF_8)
+                .setBoundary("entity-boundary")
+                .addPart("message", new StringBody("hello entity", textContentType(UTF_8)))
+                .addPart("data", new ByteArrayBody(
+                        "123".getBytes(UTF_8),
+                        ContentType.APPLICATION_OCTET_STREAM,
+                        "data.bin"))
+                .build();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         entity.writeTo(outputStream);
@@ -271,11 +277,15 @@ public class HttpmimeTest {
     @Test
     void multipartEntityWithUnknownLengthBodyIsStreamingButStillWritable() throws Exception {
         byte[] streamedBytes = "stream-only".getBytes(UTF_8);
-        MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, "stream-boundary", UTF_8);
-        entity.addPart("stream", new InputStreamBody(
-                new ByteArrayInputStream(streamedBytes),
-                "application/octet-stream",
-                "stream.bin"));
+        HttpEntity entity = MultipartEntityBuilder.create()
+                .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                .setCharset(UTF_8)
+                .setBoundary("stream-boundary")
+                .addPart("stream", new InputStreamBody(
+                        new ByteArrayInputStream(streamedBytes),
+                        ContentType.APPLICATION_OCTET_STREAM,
+                        "stream.bin"))
+                .build();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         assertThat(entity.isRepeatable()).isFalse();
@@ -290,8 +300,9 @@ public class HttpmimeTest {
 
     @Test
     void defaultMultipartEntityGeneratesBoundaryAndUsesItWhenWriting() throws Exception {
-        MultipartEntity entity = new MultipartEntity();
-        entity.addPart("field", new StringBody("auto-boundary", "text/plain", UTF_8));
+        HttpEntity entity = MultipartEntityBuilder.create()
+                .addPart("field", new StringBody("auto-boundary", textContentType(UTF_8)))
+                .build();
         Header contentType = entity.getContentType();
         String boundaryParameter = "boundary=";
         String contentTypeValue = contentType.getValue();
@@ -313,30 +324,34 @@ public class HttpmimeTest {
 
     @Test
     void constructorsRejectInvalidArguments() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> new StringBody(null, textContentType(UTF_8)));
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> new StringBody(null, "text/plain", UTF_8))
-                .withMessage("Text may not be null");
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> new ByteArrayBody(null, "application/octet-stream", "missing.bin"))
+                .isThrownBy(() -> new ByteArrayBody(null, ContentType.APPLICATION_OCTET_STREAM, "missing.bin"))
                 .withMessage("byte[] may not be null");
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> new FileBody((File) null))
                 .withMessage("File may not be null");
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> new InputStreamBody(null, "application/octet-stream", "missing.bin"))
+                .isThrownBy(() -> new InputStreamBody(null, ContentType.APPLICATION_OCTET_STREAM, "missing.bin"))
                 .withMessage("Input stream may not be null");
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> new FormBodyPart(null, new StringBody("value", "text/plain", UTF_8)))
+                .isThrownBy(() -> new FormBodyPart(null, new StringBody("value", textContentType(UTF_8))))
                 .withMessage("Name may not be null");
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> new FormBodyPart("field", null))
                 .withMessage("Body may not be null");
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> new HttpMultipart(null, UTF_8, "boundary", HttpMultipartMode.STRICT))
-                .withMessage("Multipart subtype may not be null");
+                .isThrownBy(() -> MultipartEntityBuilder.create()
+                        .addPart(null, new StringBody("value", textContentType(UTF_8))))
+                .withMessage("Name may not be null");
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> new HttpMultipart("form-data", UTF_8, null, HttpMultipartMode.STRICT))
-                .withMessage("Multipart boundary may not be null");
+                .isThrownBy(() -> MultipartEntityBuilder.create().addPart("field", null))
+                .withMessage("Content body may not be null");
+    }
+
+    private static ContentType textContentType(Charset charset) {
+        return ContentType.create("text/plain", charset);
     }
 
     private static String readAll(Reader reader) throws IOException {
