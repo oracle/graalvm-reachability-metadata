@@ -19,6 +19,7 @@ import io.netty.handler.codec.memcache.binary.BinaryMemcacheClientCodec;
 import io.netty.handler.codec.memcache.binary.BinaryMemcacheObjectAggregator;
 import io.netty.handler.codec.memcache.binary.BinaryMemcacheOpcodes;
 import io.netty.handler.codec.memcache.binary.BinaryMemcacheRequest;
+import io.netty.handler.codec.memcache.binary.BinaryMemcacheRequestDecoder;
 import io.netty.handler.codec.memcache.binary.BinaryMemcacheRequestEncoder;
 import io.netty.handler.codec.memcache.binary.BinaryMemcacheResponse;
 import io.netty.handler.codec.memcache.binary.BinaryMemcacheResponseDecoder;
@@ -142,6 +143,40 @@ public class Netty_codec_memcacheTest {
                     .isEqualTo(response.extrasLength() + response.keyLength() + response.content().readableBytes());
         } finally {
             response.release();
+            assertThat(channel.finishAndReleaseAll()).isFalse();
+        }
+    }
+
+    @Test
+    void aggregatesFragmentedSetRequestIntoFullMessage() {
+        EmbeddedChannel channel = new EmbeddedChannel(
+                new BinaryMemcacheRequestDecoder(4),
+                new BinaryMemcacheObjectAggregator(1024));
+        ByteBuf requestBytes = binaryRequest(BinaryMemcacheOpcodes.SET, (short) 0x2211,
+                0x55667788, 0x0102030405060708L, setExtras(0x01020304, 300),
+                ascii("aggregate-request-key"), ascii("request-value"));
+        ByteBuf firstFragment = requestBytes.copy(0, 13);
+        ByteBuf secondFragment = requestBytes.copy(13, requestBytes.readableBytes() - 13);
+        requestBytes.release();
+
+        assertThat(channel.writeInbound(firstFragment)).isFalse();
+        assertThat(channel.writeInbound(secondFragment)).isTrue();
+        FullBinaryMemcacheRequest request = channel.readInbound();
+        try {
+            assertThat(request.magic()).isEqualTo(DefaultBinaryMemcacheRequest.REQUEST_MAGIC_BYTE);
+            assertThat(request.opcode()).isEqualTo(BinaryMemcacheOpcodes.SET);
+            assertThat(request.reserved()).isEqualTo((short) 0x2211);
+            assertThat(request.opaque()).isEqualTo(0x55667788);
+            assertThat(request.cas()).isEqualTo(0x0102030405060708L);
+            assertThat((int) request.extrasLength()).isEqualTo(8);
+            assertThat(request.extras().getInt(request.extras().readerIndex())).isEqualTo(0x01020304);
+            assertThat(request.extras().getInt(request.extras().readerIndex() + 4)).isEqualTo(300);
+            assertThat(request.key().toString(CharsetUtil.UTF_8)).isEqualTo("aggregate-request-key");
+            assertThat(request.content().toString(CharsetUtil.UTF_8)).isEqualTo("request-value");
+            assertThat(request.totalBodyLength())
+                    .isEqualTo(request.extrasLength() + request.keyLength() + request.content().readableBytes());
+        } finally {
+            request.release();
             assertThat(channel.finishAndReleaseAll()).isFalse();
         }
     }
@@ -303,6 +338,10 @@ public class Netty_codec_memcacheTest {
 
     private static ByteBuf flagsExtras(int flags) {
         return Unpooled.buffer(4).writeInt(flags);
+    }
+
+    private static ByteBuf setExtras(int flags, int expiration) {
+        return Unpooled.buffer(8).writeInt(flags).writeInt(expiration);
     }
 
     private static String readAscii(ByteBuf buffer, int length) {
