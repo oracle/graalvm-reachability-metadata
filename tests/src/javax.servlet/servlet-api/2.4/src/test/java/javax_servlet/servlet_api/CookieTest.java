@@ -32,7 +32,7 @@ public class CookieTest {
     void constructorUsesCookieResourceBundleForReservedTokenMessages() {
         assertThatThrownBy(() -> new Cookie("Comment", "ignored"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Cookie name Comment is a reserved token");
+                .hasMessage("Cookie name \"Comment\" is a reserved token");
     }
 
     @Test
