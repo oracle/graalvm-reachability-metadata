@@ -239,7 +239,6 @@ def main(argv=None) -> int:
     large_library_state_path = None
     if resume_artifact:
         large_library_state = LargeLibraryProgressState.load(resume_artifact)
-        large_library_state.part += 1
         large_library_state_path = large_library_state.default_path(metrics_repo_root)
     elif large_library_series:
         large_library_state = LargeLibraryProgressState.create(
@@ -349,7 +348,7 @@ def main(argv=None) -> int:
 
     if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:
         finalize_status, _ = strategy_obj._finalize_successful_iteration()
-        if finalize_status == RUN_STATUS_SUCCESS and workflow_status == RUN_STATUS_CHUNK_READY:
+        if finalize_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS} and workflow_status == RUN_STATUS_CHUNK_READY:
             workflow_status = RUN_STATUS_CHUNK_READY
         else:
             workflow_status = finalize_status

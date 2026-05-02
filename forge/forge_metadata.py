@@ -1931,6 +1931,8 @@ def resolve_human_intervention_candidate(
     strategy_name = run_metrics.get("strategy_name")
     if not strategy_name:
         return None
+    if run_metrics.get("status") == RUN_STATUS_CHUNK_READY:
+        return None
 
     strategy = load_strategy_by_name(strategy_name)
     if strategy is None or strategy.get("workflow") != "dynamic_access_iterative":
@@ -3326,6 +3328,24 @@ def verify_large_library_previous_part_merged(state: LargeLibraryProgressState) 
         )
 
 
+def verify_large_library_base_contains_published_commit(
+        state: LargeLibraryProgressState,
+        worktree_path: str,
+) -> None:
+    """Ensure the continuation worktree includes the latest published part commit."""
+    if not state.last_published_commit:
+        return
+    result = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", state.last_published_commit, "HEAD"],
+        cwd=worktree_path,
+        check=False,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(
+            f"Base branch does not contain latest large-library part commit {state.last_published_commit}"
+        )
+
+
 def maybe_handle_not_for_native_image_issue(issue: dict, base_reachability_metadata_path: str) -> bool:
     """Apply terminal labels and comment when the repository already has a marker for the artifact."""
     issue_coordinates = extract_maven_coordinates(issue["title"])
@@ -3371,6 +3391,7 @@ def claim_issue_for_processing(
         canonical_metrics_repo_path: str,
         authenticated_user: str,
         in_metadata_repo: bool = True,
+        large_library_resume_artifact_override: str | None = None,
 ) -> Optional[ClaimedIssue]:
     """Claim an issue and prepare its isolated execution workspace."""
     in_metadata_repo = True
@@ -3383,10 +3404,13 @@ def claim_issue_for_processing(
     if claim_metadata is None:
         return None
     try:
-        large_library_resume_artifact = resolve_large_library_resume_artifact(issue, canonical_metrics_repo_path)
+        large_library_resume_artifact = (
+            large_library_resume_artifact_override
+            or resolve_large_library_resume_artifact(issue, canonical_metrics_repo_path)
+        )
         large_library_part = None
         if large_library_resume_artifact:
-            large_library_part = LargeLibraryProgressState.load(large_library_resume_artifact).part + 1
+            large_library_part = LargeLibraryProgressState.load(large_library_resume_artifact).part
     except Exception as exc:
         print(
             f"ERROR: Cannot resume large-library issue #{issue['number']}: {exc}",
@@ -3405,6 +3429,11 @@ def claim_issue_for_processing(
             issue["number"],
             in_metadata_repo=in_metadata_repo,
         )
+        if large_library_resume_artifact:
+            verify_large_library_base_contains_published_commit(
+                LargeLibraryProgressState.load(large_library_resume_artifact),
+                worktree_path,
+            )
     except BaseException as exc:
         revert_issue_claim(
             item_id,
@@ -4141,7 +4170,16 @@ def should_skip_issue_from_preflight(
         log_stage("issue-claim", f"Issue #{number} already assigned to {payload_assignees}. Skipping.")
         return True
 
-    if cached_skip is not None and cached_skip_blocks_authenticated_user(cached_skip, authenticated_user):
+    cached_large_library_continuation = (
+        cached_skip is not None
+        and cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS
+        and issue_has_label(issue, LABEL_LARGE_LIBRARY_NEXT_PART)
+    )
+    if (
+            cached_skip is not None
+            and not cached_large_library_continuation
+            and cached_skip_blocks_authenticated_user(cached_skip, authenticated_user)
+    ):
         print()
         log_stage("issue-claim", f"Issue #{number} {format_cached_issue_claim_skip(cached_skip)}. Skipping.")
         return True
@@ -4802,6 +4840,7 @@ def process_single_issue(
         canonical_metrics_repo_path,
         authenticated_user,
         in_metadata_repo=in_metadata_repo,
+        large_library_resume_artifact_override=resume_artifact,
     )
     if not claimed_issue:
         print(f"ERROR: Could not claim issue #{issue_number}.", file=sys.stderr)
@@ -4853,7 +4892,7 @@ def process_large_library_continuation(
         current_coordinates=claimed_issue.current_coordinates,
         new_version=claimed_issue.new_version,
         large_library_resume_artifact=resume_artifact,
-        large_library_part=state.part + 1,
+        large_library_part=state.part,
     )
     return process_claimed_issue_lifecycle(
         claimed_issue,

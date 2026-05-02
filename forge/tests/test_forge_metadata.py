@@ -257,6 +257,15 @@ class IssueClaimPreflightTests(unittest.TestCase):
             )
         )
 
+    def test_large_library_next_part_preflight_allows_in_progress_issue(self) -> None:
+        issue = _search_issue(1412, [forge_metadata.LABEL_LARGE_LIBRARY_NEXT_PART])
+        self.assertFalse(
+            forge_metadata.should_skip_issue_from_preflight(
+                issue,
+                _preflight(project_status=forge_metadata.STATUS_IN_PROGRESS),
+            )
+        )
+
     def test_open_blocker_preflight_skips_issue(self) -> None:
         issue = {"number": 1412, "labels": []}
         self.assertTrue(
@@ -477,7 +486,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
             "api", "--method", "GET", "/search/issues",
             "-f", (
                 f"q=repo:{forge_metadata.REPO} is:issue is:open "
-                f'label:"{forge_metadata.LABEL_LIBRARY_NEW}"'
+                f'label:"{forge_metadata.LABEL_LIBRARY_NEW}" -label:"{forge_metadata.LABEL_NOT_FOR_NATIVE_IMAGE}"'
             ),
             "-f", "sort=created",
             "-f", "order=desc",
@@ -1194,6 +1203,29 @@ class IssueClaimLockTests(unittest.TestCase):
                         forge_metadata,
                         "get_project_item_state",
                         return_value=("project-item", forge_metadata.STATUS_TODO),
+                    ), \
+                    patch.object(forge_metadata, "set_issue_assignee") as set_issue_assignee, \
+                    patch.object(forge_metadata, "set_item_status") as set_item_status, \
+                    patch.object(forge_metadata.random, "uniform", return_value=0), \
+                    patch.object(forge_metadata.time, "sleep"):
+                self.assertEqual(
+                    forge_metadata.try_claim_issue(issue, "automation-user"),
+                    "project-item",
+                )
+
+        set_issue_assignee.assert_called_once_with(1412, "automation-user")
+        set_item_status.assert_called_once_with("project-item", forge_metadata.STATUS_IN_PROGRESS)
+
+    def test_try_claim_issue_accepts_large_library_next_part_in_progress(self) -> None:
+        issue = _search_issue(1412, [forge_metadata.LABEL_LARGE_LIBRARY_NEXT_PART])
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+                    patch.object(forge_metadata, "get_open_blocking_issue_numbers", return_value=[]), \
+                    patch.object(forge_metadata, "get_issue_assignees", side_effect=[[], ["automation-user"]]), \
+                    patch.object(
+                        forge_metadata,
+                        "get_project_item_state",
+                        return_value=("project-item", forge_metadata.STATUS_IN_PROGRESS),
                     ), \
                     patch.object(forge_metadata, "set_issue_assignee") as set_issue_assignee, \
                     patch.object(forge_metadata, "set_item_status") as set_item_status, \
