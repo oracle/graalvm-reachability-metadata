@@ -93,7 +93,7 @@ public class Netty_codec_xmlTest {
 
     @Test
     void decoderHandlesInputSplitAcrossUtf8ByteBoundaries() {
-        byte[] xml = "<root><item>café</item><item>second</item></root>".getBytes(StandardCharsets.UTF_8);
+        byte[] xml = "<root><item>caf\u00e9</item><item>second</item></root>".getBytes(StandardCharsets.UTF_8);
 
         List<Object> events = decodeInChunks(xml, 1);
 
@@ -105,7 +105,7 @@ public class Netty_codec_xmlTest {
                 "start:item",
                 "end:item",
                 "end:root");
-        assertThat(String.join("", characterData(events))).isEqualTo("cafésecond");
+        assertThat(String.join("", characterData(events))).isEqualTo("caf\u00e9second");
     }
 
     @Test
