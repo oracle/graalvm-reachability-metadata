@@ -53,6 +53,7 @@ import java.util.zip.ZipInputStream;
 
 @SuppressWarnings("unused")
 public abstract class TestedVersionUpdaterTask extends DefaultTask {
+    private static final String VERSION_PLACEHOLDER = "$version$";
     private static final Duration URL_VERIFICATION_TIMEOUT = Duration.ofSeconds(20);
     private static final int MAX_VERIFICATION_DOWNLOAD_BYTES = 25 * 1024 * 1024;
     private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
@@ -60,6 +61,9 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
             .connectTimeout(URL_VERIFICATION_TIMEOUT)
             .build();
     private static final List<String> SOURCE_FILE_EXTENSIONS = List.of(".java", ".kt", ".scala", ".groovy");
+    private static final Pattern URL_VERSION_TOKEN_PATTERN = Pattern.compile(
+            "(?i)(?<![A-Za-z0-9])\\d+(?:\\.\\d+)+(?:\\.Final|\\.RELEASE)?(?:[-.](?:alpha\\d*|beta\\d*|rc\\d*|cr\\d*|m\\d+|ea\\d*|b\\d+|\\d+|preview))?(?![A-Za-z0-9])"
+    );
 
     /**
      * Identifies library versions, including optional pre-release, ".Final" and ".RELEASE" suffixes.
@@ -233,7 +237,7 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
 
         String promotedUrl = renderVersionTemplate(currentUrl, oldVersion, newVersion);
         verifyPromotedUrl(fieldName, promotedUrl, oldVersion, newVersion, verification);
-        return promotedUrl;
+        return toStoredVersionTemplate(promotedUrl, newVersion);
     }
 
     private void verifyPromotedUrl(String fieldName, String promotedUrl, String oldVersion, String newVersion, UrlVerification verification) {
@@ -261,11 +265,47 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
     }
 
     private static String renderVersionTemplate(String currentUrl, String oldVersion, String newVersion) {
-        if (!containsIgnoreCase(currentUrl, oldVersion)) {
+        if (currentUrl.contains(VERSION_PLACEHOLDER)) {
+            return currentUrl.replace(VERSION_PLACEHOLDER, newVersion);
+        }
+        if (containsIgnoreCase(currentUrl, oldVersion)) {
+            Pattern oldVersionPattern = Pattern.compile(Pattern.quote(oldVersion), Pattern.CASE_INSENSITIVE);
+            return oldVersionPattern.matcher(currentUrl).replaceAll(Matcher.quoteReplacement(newVersion));
+        }
+
+        String urlVersion = findTemplateVersionToken(currentUrl, newVersion);
+        if (urlVersion == null) {
             return currentUrl;
         }
-        Pattern oldVersionPattern = Pattern.compile(Pattern.quote(oldVersion), Pattern.CASE_INSENSITIVE);
-        return oldVersionPattern.matcher(currentUrl).replaceAll(Matcher.quoteReplacement(newVersion));
+        Pattern urlVersionPattern = Pattern.compile(Pattern.quote(urlVersion), Pattern.CASE_INSENSITIVE);
+        return urlVersionPattern.matcher(currentUrl).replaceAll(Matcher.quoteReplacement(newVersion));
+    }
+
+    private static String findTemplateVersionToken(String currentUrl, String newVersion) {
+        Matcher newVersionMatcher = VERSION_PATTERN.matcher(newVersion);
+        if (!newVersionMatcher.matches() || newVersionMatcher.group(2) != null) {
+            return null;
+        }
+
+        String baseVersion = newVersionMatcher.group(1);
+        Matcher urlVersionMatcher = URL_VERSION_TOKEN_PATTERN.matcher(currentUrl);
+        while (urlVersionMatcher.find()) {
+            String urlVersion = urlVersionMatcher.group();
+            if (urlVersion.equalsIgnoreCase(newVersion)) {
+                continue;
+            }
+
+            Matcher candidateMatcher = VERSION_PATTERN.matcher(urlVersion);
+            if (candidateMatcher.matches() && candidateMatcher.group(2) != null && baseVersion.equals(candidateMatcher.group(1))) {
+                return urlVersion;
+            }
+        }
+        return null;
+    }
+
+    private static String toStoredVersionTemplate(String url, String version) {
+        Pattern versionPattern = Pattern.compile(Pattern.quote(version), Pattern.CASE_INSENSITIVE);
+        return versionPattern.matcher(url).replaceAll(Matcher.quoteReplacement(VERSION_PLACEHOLDER));
     }
 
     private static boolean containsIgnoreCase(String value, String token) {

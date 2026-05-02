@@ -34,6 +34,7 @@ SOURCE_CONTEXT_LABEL_BY_TYPE = {
 
 DEFAULT_POPULATE_AGENT_COMMAND = "codex -a never exec -s danger-full-access"
 DEFAULT_TEST_LANGUAGE = "java"
+VERSION_PLACEHOLDER = "$version$"
 TEST_SOURCE_DIR_BY_LANGUAGE = {
     "java": "java",
     "kotlin": "kotlin",
@@ -199,13 +200,17 @@ def prepare_source_contexts(
         source_context_types: list[str],
 ) -> PreparedSourceContext:
     index_entry = load_index_entry(reachability_repo_path, coordinate)
+    metadata_version = index_entry.get("metadata-version")
+    if not isinstance(metadata_version, str) or not metadata_version.strip():
+        print(f"ERROR: Missing metadata-version in index.json entry for {coordinate}", file=sys.stderr)
+        raise SystemExit(1)
     base_dir = os.path.join(repo_root, "local_repositories", "source_context", *_coordinate_parts(coordinate))
     os.makedirs(base_dir, exist_ok=True)
 
     artifacts: list[SourceArtifactContext] = []
     for source_type in source_context_types:
         field_name = SOURCE_CONTEXT_FIELD_BY_TYPE[source_type]
-        url = normalize_url_value(index_entry.get(field_name))
+        url = render_url_template(normalize_url_value(index_entry.get(field_name)), metadata_version)
         if url is None:
             log_stage("source-context", f"{source_type}: unavailable, no URL in index.json")
             artifacts.append(SourceArtifactContext(source_type, None, None, [], False, "no URL in index.json"))
@@ -309,6 +314,12 @@ def normalize_url_value(value: Any) -> str | None:
     if not normalized or normalized.upper() == "N/A":
         return None
     return normalized
+
+
+def render_url_template(url: str | None, version: str) -> str | None:
+    if url is None:
+        return None
+    return url.replace(VERSION_PLACEHOLDER, version)
 
 
 def download_source_artifact(base_dir: str, source_type: str, url: str) -> SourceArtifactContext:

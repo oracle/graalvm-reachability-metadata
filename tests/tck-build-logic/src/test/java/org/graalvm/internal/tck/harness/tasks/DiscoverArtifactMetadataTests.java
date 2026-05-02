@@ -51,8 +51,10 @@ class DiscoverArtifactMetadataTests {
                 .contains("{ \"name\": \"groovy\", \"version\": \"<groovy major.minor, e.g. 4.0>\" }")
                 .contains("{ \"name\": \"scala\", \"version\": \"3\" }")
                 .contains("If the library is not language-specific, leave the \"language\" field absent.")
+                .contains("The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version \"3.1.0\" when \"$version$\" is replaced with \"3.1.0\".")
                 .contains("Update this file directly:")
                 .contains("Set \"coordinates\" to \"io.ktor:ktor-server-core-jvm:3.1.0\".")
+                .contains("Set \"source-code-url\", \"test-code-url\", and \"documentation-url\" to the discovered values with \"$version$\" replacing version \"3.1.0\".")
                 .contains("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
         assertThat(tempDir.resolve("build/agent-artifact-discovery-logs")).doesNotExist();
     }
