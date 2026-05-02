@@ -8,23 +8,29 @@ package org_scala_sbt.compiler_interface
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import xsbti.FileConverter
 import xsbti.Position
 import xsbti.Problem
 import xsbti.Reporter
 import xsbti.Severity
 import xsbti.T2
 import xsbti.UseScope
+import xsbti.VirtualFile
+import xsbti.VirtualFileRef
 import xsbti.api.{Package => ApiPackage, _}
 import xsbti.compile._
 import xsbti.compile.analysis._
 
+import java.io.ByteArrayInputStream
 import java.io.File
+import java.io.InputStream
 import java.lang.{Boolean => JBoolean, Integer => JInteger, Long => JLong}
 import java.util.EnumSet
 import java.util.Optional
 import java.util.{ArrayList, HashSet, LinkedHashMap, Map => JMap, Set => JSet}
 import java.util.function.Function
 import java.util.function.Supplier
+import java.nio.file.{Path => NioPath}
 
 final class Compiler_interfaceTest {
   @Test
@@ -292,10 +298,12 @@ final class Compiler_interfaceTest {
 
   @Test
   def compileOptionsMiniSetupAndPreviousResultsPreserveIncrementalConfiguration(): Unit = {
-    val classpath = Array(new File("lib/scala-library.jar"), new File("lib/compiler-interface.jar"))
-    val sources = Array(new File("src/main/scala/example/Service.scala"))
-    val classesDirectory = new File("build/classes/scala/main")
-    val temporaryClassesDirectory = new File("build/tmp/classes")
+    val classpathFiles = Array(new File("lib/scala-library.jar"), new File("lib/compiler-interface.jar"))
+    val sourceFiles = Array(new File("src/main/scala/example/Service.scala"))
+    val classpath = classpathFiles.map(virtualFile)
+    val sources = sourceFiles.map(virtualFile)
+    val classesDirectory = new File("build/classes/scala/main").toPath
+    val temporaryClassesDirectory = new File("build/tmp/classes").toPath
     val sourcePositionMapper = new Function[Position, Position] {
       override def apply(position: Position): Position = position
     }
@@ -308,9 +316,9 @@ final class Compiler_interfaceTest {
       7,
       sourcePositionMapper,
       CompileOrder.Mixed,
-      Optional.of(temporaryClassesDirectory)
+      Optional.of[NioPath](temporaryClassesDirectory)
     )
-    val classpathHash = FileHash.of(classpath(0), 123)
+    val classpathHash = FileHash.of(classpathFiles(0).toPath, 123)
     val miniOptions = MiniOptions.of(Array(classpathHash), Array("-unchecked"), Array("-parameters"))
     val output = SingleOutputDirectory(new File("build/classes"))
     val extra = Array[T2[String, String]](Pair("analysis", "enabled"), Pair("scope", "test"))
@@ -327,9 +335,9 @@ final class Compiler_interfaceTest {
     assertThat(compileOptions.order()).isSameAs(CompileOrder.Mixed)
     assertThat(compileOptions.temporaryClassesDirectory()).contains(temporaryClassesDirectory)
     assertThat(compileOptions.withMaxErrors(3).maxErrors()).isEqualTo(3)
-    assertThat(compileOptions.withTemporaryClassesDirectory(Optional.empty[File]()).temporaryClassesDirectory()).isEmpty()
+    assertThat(compileOptions.withTemporaryClassesDirectory(Optional.empty[NioPath]()).temporaryClassesDirectory()).isEmpty()
 
-    assertThat(classpathHash.file()).isEqualTo(classpath(0))
+    assertThat(classpathHash.file()).isEqualTo(classpathFiles(0).toPath)
     assertThat(classpathHash.hash()).isEqualTo(123)
     assertThat(classpathHash.withHash(456).hash()).isEqualTo(456)
     assertThat(miniOptions.classpathHash()).containsExactly(classpathHash)
@@ -351,9 +359,10 @@ final class Compiler_interfaceTest {
 
   @Test
   def compileAnalysisReadersAndResultsExposeIncrementalCompilationState(): Unit = {
-    val source = new File("src/main/scala/example/Main.scala")
-    val product = new File("build/classes/example/Main.class")
-    val binary = new File("lib/dependency.jar")
+    val sourceFile = new File("src/main/scala/example/Main.scala")
+    val source = virtualFile(sourceFile)
+    val product = virtualFileRef(new File("build/classes/example/Main.class"))
+    val binary = virtualFileRef(new File("lib/dependency.jar"))
     val output = SingleOutputDirectory(new File("build/classes/main"))
     val position = StaticPosition(
       Optional.of(JInteger.valueOf(2)),
@@ -361,8 +370,8 @@ final class Compiler_interfaceTest {
       Optional.of(JInteger.valueOf(7)),
       Optional.of(JInteger.valueOf(8)),
       Optional.of("       "),
-      Optional.of(source.getPath),
-      Optional.of(source)
+      Optional.of(sourceFile.getPath),
+      Optional.of(sourceFile)
     )
     val reportedProblem = DiagnosticProblem("lint", Severity.Warn, "unused import", position)
     val unreportedProblem = DiagnosticProblem("parser", Severity.Error, "incomplete input", position)
@@ -370,10 +379,10 @@ final class Compiler_interfaceTest {
     val sourceStamp = StaticStamp(1, "hash:source", Optional.of("source-hash"), Optional.empty[JLong]())
     val productStamp = StaticStamp(2, "lastModified:product", Optional.empty[String](), Optional.of(JLong.valueOf(123456L)))
     val binaryStamp = StaticStamp(3, "hash:binary", Optional.of("binary-hash"), Optional.empty[JLong]())
-    val sourceStamps = new LinkedHashMap[File, Stamp]()
-    val productStamps = new LinkedHashMap[File, Stamp]()
-    val binaryStamps = new LinkedHashMap[File, Stamp]()
-    val sourceInfos = new LinkedHashMap[File, SourceInfo]()
+    val sourceStamps = new LinkedHashMap[VirtualFileRef, Stamp]()
+    val productStamps = new LinkedHashMap[VirtualFileRef, Stamp]()
+    val binaryStamps = new LinkedHashMap[VirtualFileRef, Stamp]()
+    val sourceInfos = new LinkedHashMap[VirtualFileRef, SourceInfo]()
     sourceStamps.put(source, sourceStamp)
     productStamps.put(product, productStamp)
     binaryStamps.put(binary, binaryStamp)
@@ -397,10 +406,10 @@ final class Compiler_interfaceTest {
     assertThat(analysis.readStamps().source(source)).isSameAs(sourceStamp)
     assertThat(analysis.readStamps().source(source).getHash()).contains("source-hash")
     assertThat(analysis.readStamps().product(product).getLastModified()).contains(JLong.valueOf(123456L))
-    assertThat(analysis.readStamps().binary(binary).writeStamp()).isEqualTo("hash:binary")
+    assertThat(analysis.readStamps().library(binary).writeStamp()).isEqualTo("hash:binary")
     assertThat(analysis.readStamps().getAllSourceStamps()).containsEntry(source, sourceStamp)
     assertThat(analysis.readStamps().getAllProductStamps()).containsEntry(product, productStamp)
-    assertThat(analysis.readStamps().getAllBinaryStamps()).containsEntry(binary, binaryStamp)
+    assertThat(analysis.readStamps().getAllLibraryStamps()).containsEntry(binary, binaryStamp)
     assertThat(analysis.readSourceInfos().get(source)).isSameAs(sourceInfo)
     assertThat(analysis.readSourceInfos().get(source).getReportedProblems()).containsExactly(reportedProblem)
     assertThat(analysis.readSourceInfos().get(source).getUnreportedProblems()).containsExactly(unreportedProblem)
@@ -433,8 +442,8 @@ final class Compiler_interfaceTest {
     assertThat(multipleOutput.getOutputGroups()).containsExactly(groups: _*)
     assertThat(multipleOutput.getSingleOutput()).isEmpty()
     assertThat(multipleOutput.getMultipleOutput()).contains(groups)
-    assertThat(groups(0).getSourceDirectory()).isEqualTo(mainSources)
-    assertThat(groups(0).getOutputDirectory()).isEqualTo(mainClasses)
+    assertThat(groups(0).getSourceDirectoryAsPath()).isEqualTo(mainSources.toPath)
+    assertThat(groups(0).getOutputDirectoryAsPath()).isEqualTo(mainClasses.toPath)
 
     assertThat(classpathOptions.bootLibrary()).isTrue()
     assertThat(classpathOptions.compiler()).isTrue()
@@ -510,8 +519,8 @@ final class Compiler_interfaceTest {
     val deleted = Array(new File("build/classes/example/Deleted.class"))
     val wrapped = WrappedClassFileManager.of(internal, Optional.of(external))
 
-    wrapped.generated(generated)
-    wrapped.delete(deleted)
+    wrapped.generated(generated.map(virtualFile))
+    wrapped.delete(deleted.map(virtualFile))
     wrapped.complete(true)
 
     assertThat(external.events).containsExactly(
@@ -550,20 +559,20 @@ final class Compiler_interfaceTest {
     val setup = Setup.of(
       lookup,
       false,
-      new File("build/inc/compile.analysis"),
+      new File("build/inc/compile.analysis").toPath,
       cache,
       IncOptions.of(),
       reporter,
-      Optional.of(progress),
+      Optional.of[CompileProgress](progress),
       Array[T2[String, String]](Pair("origin", "test"))
     )
-    val compileOptions = CompileOptions.of().withSources(Array(new File("src/main/scala/Main.scala")))
+    val compileOptions = CompileOptions.of().withSources(Array(virtualFile(new File("src/main/scala/Main.scala"))))
     val previous = PreviousResult.of(Optional.empty[CompileAnalysis](), Optional.empty[MiniSetup]())
     val inputs = Inputs.of(compilers, compileOptions, setup, previous)
 
     assertThat(scalaInstance.version()).isEqualTo("2.13.16")
     assertThat(scalaInstance.actualVersion()).isEqualTo("2.13.16")
-    assertThat(scalaInstance.libraryJar()).isEqualTo(new File("lib/scala-library.jar"))
+    assertThat(scalaInstance.libraryJars()(0)).isEqualTo(new File("lib/scala-library.jar"))
     assertThat(scalaInstance.allJars()).containsExactly(
       new File("lib/scala-library.jar"),
       new File("lib/scala-compiler.jar"),
@@ -610,8 +619,8 @@ final class Compiler_interfaceTest {
     reporter.log(problem)
     reporter.comment(position, "check inferred type")
     progress.startUnit("example.Answer", "src/main/scala/example/Answer.scala")
-    assertThat(progress.advance(1, 3)).isTrue()
-    assertThat(progress.advance(3, 3)).isFalse()
+    assertThat(progress.advance(1, 3, "typecheck", "example/Answer.scala")).isTrue()
+    assertThat(progress.advance(3, 3, "typecheck", "example/Answer.scala")).isFalse()
 
     assertThat(reporter.hasErrors()).isTrue()
     assertThat(reporter.hasWarnings()).isFalse()
@@ -623,8 +632,8 @@ final class Compiler_interfaceTest {
     assertThat(problem.rendered()).isEmpty()
     assertThat(progress.events).containsExactly(
       "start:example.Answer:src/main/scala/example/Answer.scala",
-      "advance:1/3",
-      "advance:3/3"
+      "advance:1/3:typecheck:example/Answer.scala",
+      "advance:3/3:typecheck:example/Answer.scala"
     )
     assertThat(failed.arguments()).containsExactly("-deprecation")
     assertThat(failed.problems()).containsExactly(problem)
@@ -689,9 +698,10 @@ final class Compiler_interfaceTest {
   @Test
   def analysisCallbackImplementationsCanCaptureCompilerEvents(): Unit = {
     val callback = new RecordingAnalysisCallback(true)
-    val source = new File("src/main/scala/example/Service.scala")
-    val binary = new File("lib/dependency.jar")
-    val product = new File("build/classes/example/Service.class")
+    val sourceFile = new File("src/main/scala/example/Service.scala")
+    val source = virtualFile(sourceFile)
+    val binary = new File("lib/dependency.jar").toPath
+    val product = new File("build/classes/example/Service.class").toPath
     val api = emptyClassApi("example.Service")
     val position = StaticPosition(
       Optional.of(JInteger.valueOf(1)),
@@ -699,13 +709,13 @@ final class Compiler_interfaceTest {
       Optional.of(JInteger.valueOf(0)),
       Optional.of(JInteger.valueOf(1)),
       Optional.of(""),
-      Optional.of(source.getPath),
-      Optional.of(source)
+      Optional.of(sourceFile.getPath),
+      Optional.of(sourceFile)
     )
 
     callback.startSource(source)
     callback.classDependency("example.Service", "example.Dependency", DependencyContext.DependencyByMemberRef)
-    callback.binaryDependency(binary, "example.Service", "example.External", product, DependencyContext.DependencyByInheritance)
+    callback.binaryDependency(binary, "example.Service", "example.External", source, DependencyContext.DependencyByInheritance)
     callback.generatedNonLocalClass(source, product, "example.Service", "example.Service")
     callback.generatedLocalClass(source, product)
     callback.api(source, api)
@@ -719,7 +729,7 @@ final class Compiler_interfaceTest {
     assertThat(callback.events).containsExactly(
       "source:src/main/scala/example/Service.scala",
       "class-dependency:example.Service->example.Dependency:DependencyByMemberRef",
-      "binary-dependency:lib/dependency.jar:example.Service->example.External:build/classes/example/Service.class:DependencyByInheritance",
+      "binary-dependency:lib/dependency.jar:example.Service->example.External:src/main/scala/example/Service.scala:DependencyByInheritance",
       "generated-non-local:src/main/scala/example/Service.scala:build/classes/example/Service.class:example.Service:example.Service",
       "generated-local:src/main/scala/example/Service.scala:build/classes/example/Service.class",
       "api:src/main/scala/example/Service.scala:example.Service",
@@ -765,6 +775,36 @@ final class Compiler_interfaceTest {
     Array.empty[TypeParameter]
   )
 
+  private def virtualFile(file: File): VirtualFile = StaticVirtualFile(file.getPath)
+
+  private def virtualFileRef(file: File): VirtualFileRef = StaticVirtualFileRef(file.getPath)
+
+  private final case class StaticVirtualFileRef(fileId: String) extends VirtualFileRef {
+    private val normalizedId: String = fileId.replace('\\', '/')
+
+    override def id(): String = normalizedId
+
+    override def name(): String = normalizedId.substring(normalizedId.lastIndexOf('/') + 1)
+
+    override def names(): Array[String] = normalizedId.split("/")
+  }
+
+  private final case class StaticVirtualFile(fileId: String) extends VirtualFile {
+    private val ref = StaticVirtualFileRef(fileId)
+
+    override def id(): String = ref.id()
+
+    override def name(): String = ref.name()
+
+    override def names(): Array[String] = ref.names()
+
+    override def contentHash(): Long = id().hashCode.toLong
+
+    override def input(): InputStream = new ByteArrayInputStream(Array.emptyByteArray)
+
+    def toPath: NioPath = new File(id()).toPath
+  }
+
   private final case class Pair[A1, A2](first: A1, second: A2) extends T2[A1, A2] {
     override def get1(): A1 = first
 
@@ -807,28 +847,28 @@ final class Compiler_interfaceTest {
     override def getAllCompilations(): Array[Compilation] = compilations
   }
 
-  private final case class StaticReadSourceInfos(sourceInfos: JMap[File, SourceInfo]) extends ReadSourceInfos {
-    override def get(sourceFile: File): SourceInfo = sourceInfos.get(sourceFile)
+  private final case class StaticReadSourceInfos(sourceInfos: JMap[VirtualFileRef, SourceInfo]) extends ReadSourceInfos {
+    override def get(sourceFile: VirtualFileRef): SourceInfo = sourceInfos.get(sourceFile)
 
-    override def getAllSourceInfos(): JMap[File, SourceInfo] = sourceInfos
+    override def getAllSourceInfos(): JMap[VirtualFileRef, SourceInfo] = sourceInfos
   }
 
   private final case class StaticReadStamps(
-    productStamps: JMap[File, Stamp],
-    sourceStamps: JMap[File, Stamp],
-    binaryStamps: JMap[File, Stamp]
+    productStamps: JMap[VirtualFileRef, Stamp],
+    sourceStamps: JMap[VirtualFileRef, Stamp],
+    libraryStamps: JMap[VirtualFileRef, Stamp]
   ) extends ReadStamps {
-    override def product(productFile: File): Stamp = productStamps.get(productFile)
+    override def product(productFile: VirtualFileRef): Stamp = productStamps.get(productFile)
 
-    override def source(sourceFile: File): Stamp = sourceStamps.get(sourceFile)
+    override def source(sourceFile: VirtualFile): Stamp = sourceStamps.get(sourceFile)
 
-    override def binary(binaryFile: File): Stamp = binaryStamps.get(binaryFile)
+    override def library(libraryFile: VirtualFileRef): Stamp = libraryStamps.get(libraryFile)
 
-    override def getAllBinaryStamps(): JMap[File, Stamp] = binaryStamps
+    override def getAllLibraryStamps(): JMap[VirtualFileRef, Stamp] = libraryStamps
 
-    override def getAllSourceStamps(): JMap[File, Stamp] = sourceStamps
+    override def getAllSourceStamps(): JMap[VirtualFileRef, Stamp] = sourceStamps
 
-    override def getAllProductStamps(): JMap[File, Stamp] = productStamps
+    override def getAllProductStamps(): JMap[VirtualFileRef, Stamp] = productStamps
   }
 
   private final case class StaticStamp(
@@ -902,39 +942,31 @@ final class Compiler_interfaceTest {
     override def classpathOptions(): ClasspathOptions = options
 
     override def compile(
-      sources: Array[File],
-      changes: DependencyChanges,
-      callback: xsbti.AnalysisCallback,
-      log: xsbti.Logger,
-      reporter: Reporter,
-      progress: CompileProgress,
-      cached: CachedCompiler
-    ): Unit = invocations.add(s"cached:${sources.length}")
-
-    override def compile(
-      sources: Array[File],
+      sources: Array[VirtualFile],
+      classpath: Array[VirtualFile],
+      converter: FileConverter,
       changes: DependencyChanges,
       options: Array[String],
       output: Output,
       callback: xsbti.AnalysisCallback,
       reporter: Reporter,
-      cache: GlobalsCache,
-      log: xsbti.Logger,
-      progress: Optional[CompileProgress]
-    ): Unit = invocations.add(s"direct:${sources.length}:${options.mkString(",")}")
+      progress: Optional[CompileProgress],
+      log: xsbti.Logger
+    ): Unit = invocations.add(s"direct:${sources.length}:${classpath.length}:${options.mkString(",")}")
   }
 
   private final class RecordingJavaTool(label: String) extends JavaCompiler with Javadoc {
     val invocations: ArrayList[String] = new ArrayList[String]()
 
     override def run(
-      sources: Array[File],
+      sources: Array[VirtualFile],
       options: Array[String],
+      output: Output,
       incToolOptions: IncToolOptions,
       reporter: Reporter,
       log: xsbti.Logger
     ): Boolean = {
-      invocations.add(s"$label:${sources.map(_.getPath).mkString(",")}:${options.mkString(",")}")
+      invocations.add(s"$label:${sources.map(_.id()).mkString(",")}:${options.mkString(",")}")
       true
     }
   }
@@ -946,9 +978,9 @@ final class Compiler_interfaceTest {
   }
 
   private object EmptyClasspathLookup extends PerClasspathEntryLookup {
-    override def analysis(classpathEntry: File): Optional[CompileAnalysis] = Optional.empty[CompileAnalysis]()
+    override def analysis(classpathEntry: VirtualFile): Optional[CompileAnalysis] = Optional.empty[CompileAnalysis]()
 
-    override def definesClass(classpathEntry: File): DefinesClass = new DefinesClass {
+    override def definesClass(classpathEntry: VirtualFile): DefinesClass = new DefinesClass {
       override def apply(className: String): Boolean = false
     }
   }
@@ -987,8 +1019,8 @@ final class Compiler_interfaceTest {
 
     override def startUnit(phase: String, unitPath: String): Unit = events.add(s"start:$phase:$unitPath")
 
-    override def advance(current: Int, total: Int): Boolean = {
-      events.add(s"advance:$current/$total")
+    override def advance(current: Int, total: Int, phase: String, next: String): Boolean = {
+      events.add(s"advance:$current/$total:$phase:$next")
       current < total
     }
   }
@@ -1072,7 +1104,9 @@ final class Compiler_interfaceTest {
     val events: ArrayList[String] = new ArrayList[String]()
     private val outputJarClasses: HashSet[String] = new HashSet[String]()
 
-    override def startSource(source: File): Unit = events.add(s"source:${source.getPath}")
+    override def startSource(source: File): Unit = startSource(virtualFile(source))
+
+    override def startSource(source: VirtualFile): Unit = events.add(s"source:${source.id()}")
 
     override def classDependency(sourceClassName: String, targetClassName: String, context: DependencyContext): Unit =
       events.add(s"class-dependency:$sourceClassName->$targetClassName:$context")
@@ -1083,19 +1117,42 @@ final class Compiler_interfaceTest {
       targetClassName: String,
       classFile: File,
       context: DependencyContext
-    ): Unit = events.add(s"binary-dependency:${binary.getPath}:$sourceClassName->$targetClassName:${classFile.getPath}:$context")
+    ): Unit = binaryDependency(binary.toPath, sourceClassName, targetClassName, virtualFileRef(classFile), context)
 
-    override def generatedNonLocalClass(source: File, classFile: File, binaryClassName: String, srcClassName: String): Unit = {
+    override def binaryDependency(
+      binary: NioPath,
+      sourceClassName: String,
+      targetClassName: String,
+      sourceFile: VirtualFileRef,
+      context: DependencyContext
+    ): Unit = events.add(s"binary-dependency:$binary:$sourceClassName->$targetClassName:${sourceFile.id()}:$context")
+
+    override def generatedNonLocalClass(source: File, classFile: File, binaryClassName: String, srcClassName: String): Unit =
+      generatedNonLocalClass(virtualFileRef(source), classFile.toPath, binaryClassName, srcClassName)
+
+    override def generatedNonLocalClass(
+      source: VirtualFileRef,
+      classFile: NioPath,
+      binaryClassName: String,
+      srcClassName: String
+    ): Unit = {
       outputJarClasses.add(binaryClassName)
-      events.add(s"generated-non-local:${source.getPath}:${classFile.getPath}:$binaryClassName:$srcClassName")
+      events.add(s"generated-non-local:${source.id()}:$classFile:$binaryClassName:$srcClassName")
     }
 
     override def generatedLocalClass(source: File, classFile: File): Unit =
-      events.add(s"generated-local:${source.getPath}:${classFile.getPath}")
+      generatedLocalClass(virtualFileRef(source), classFile.toPath)
 
-    override def api(sourceFile: File, classApi: ClassLike): Unit = events.add(s"api:${sourceFile.getPath}:${classApi.name()}")
+    override def generatedLocalClass(source: VirtualFileRef, classFile: NioPath): Unit =
+      events.add(s"generated-local:${source.id()}:$classFile")
 
-    override def mainClass(sourceFile: File, className: String): Unit = events.add(s"main:${sourceFile.getPath}:$className")
+    override def api(sourceFile: File, classApi: ClassLike): Unit = api(virtualFileRef(sourceFile), classApi)
+
+    override def api(sourceFile: VirtualFileRef, classApi: ClassLike): Unit = events.add(s"api:${sourceFile.id()}:${classApi.name()}")
+
+    override def mainClass(sourceFile: File, className: String): Unit = mainClass(virtualFileRef(sourceFile), className)
+
+    override def mainClass(sourceFile: VirtualFileRef, className: String): Unit = events.add(s"main:${sourceFile.id()}:$className")
 
     override def usedName(className: String, name: String, scopes: EnumSet[UseScope]): Unit =
       events.add(s"used-name:$className:$name:${scopes.toArray.mkString(",")}")
@@ -1110,5 +1167,9 @@ final class Compiler_interfaceTest {
     override def enabled(): Boolean = enabledValue
 
     override def classesInOutputJar(): JSet[String] = outputJarClasses
+
+    override def isPickleJava(): Boolean = false
+
+    override def getPickleJarPair(): Optional[T2[NioPath, NioPath]] = Optional.empty[T2[NioPath, NioPath]]()
   }
 }
