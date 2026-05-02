@@ -918,11 +918,13 @@ final class Compiler_interfaceTest {
 
     override def loader(): ClassLoader = getClass.getClassLoader
 
+    override def loaderCompilerOnly(): ClassLoader = getClass.getClassLoader
+
     override def loaderLibraryOnly(): ClassLoader = getClass.getClassLoader
 
     override def libraryJars(): Array[File] = libraryJarValues
 
-    override def compilerJar(): File = compilerJarValue
+    override def compilerJars(): Array[File] = Array(compilerJarValue)
 
     override def otherJars(): Array[File] = otherJarValues
 
