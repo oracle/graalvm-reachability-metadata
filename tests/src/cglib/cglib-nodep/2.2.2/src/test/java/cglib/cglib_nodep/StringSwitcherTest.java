@@ -17,8 +17,8 @@ public class StringSwitcherTest {
     void mapsKnownStringsAndReturnsMinusOneForUnknownInput() {
         try {
             StringSwitcher switcher = StringSwitcher.create(
-                    new String[] { "alpha", "FB", "Ea", "omega" },
-                    new int[] { 10, 20, 30, 40 },
+                    new String[] {"alpha", "FB", "Ea", "omega" },
+                    new int[] {10, 20, 30, 40 },
                     false);
 
             assertThat(switcher.intValue("alpha")).isEqualTo(10);
@@ -41,8 +41,8 @@ public class StringSwitcherTest {
     void generatorCreatesFixedInputSwitcherForConfiguredMappings() {
         try {
             StringSwitcher.Generator generator = new StringSwitcher.Generator();
-            generator.setStrings(new String[] { "red", "green", "blue" });
-            generator.setInts(new int[] { 1, 2, 3 });
+            generator.setStrings(new String[] {"red", "green", "blue" });
+            generator.setInts(new int[] {1, 2, 3 });
             generator.setFixedInput(true);
 
             StringSwitcher switcher = generator.create();
@@ -66,6 +66,12 @@ public class StringSwitcherTest {
         while (current != null) {
             if (current instanceof Error && NativeImageSupport.isUnsupportedFeatureError((Error) current)) {
                 return true;
+            }
+            if (current instanceof NoClassDefFoundError) {
+                String message = current.getMessage();
+                if (message != null && message.startsWith("Could not initialize class net.sf.cglib.")) {
+                    return true;
+                }
             }
             current = current.getCause();
         }

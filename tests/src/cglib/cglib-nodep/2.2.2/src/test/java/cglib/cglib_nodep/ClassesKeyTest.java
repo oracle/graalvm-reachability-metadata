@@ -16,9 +16,9 @@ public class ClassesKeyTest {
     @Test
     void createsStableKeyFromRuntimeClassesOfArrayElements() {
         try {
-            Object key = ClassesKey.create(new Object[] { "first", Integer.valueOf(1), new SampleValue("alpha") });
-            Object matchingKey = ClassesKey.create(new Object[] { "second", Integer.valueOf(2), new SampleValue("beta") });
-            Object differentKey = ClassesKey.create(new Object[] { "second", Long.valueOf(2L), new SampleValue("beta") });
+            Object key = ClassesKey.create(new Object[] {"first", Integer.valueOf(1), new SampleValue("alpha") });
+            Object matchingKey = ClassesKey.create(new Object[] {"second", Integer.valueOf(2), new SampleValue("beta") });
+            Object differentKey = ClassesKey.create(new Object[] {"second", Long.valueOf(2L), new SampleValue("beta") });
 
             assertThat(key).isEqualTo(matchingKey);
             assertThat(key).hasSameHashCodeAs(matchingKey);

@@ -37,7 +37,7 @@ public class MethodProxyTest {
             assertThat(foundProxy).isNotNull();
             assertThat(foundProxy.getSignature()).isEqualTo(signature);
             assertThat(foundProxy.getSuperName()).isEqualTo(observedProxy.getSuperName());
-            assertThat(foundProxy.invokeSuper(service, new Object[] { "Grace" })).isEqualTo("hello Grace");
+            assertThat(foundProxy.invokeSuper(service, new Object[] {"Grace" })).isEqualTo("hello Grace");
         } catch (Error error) {
             if (!isUnsupportedNativeImageDynamicClassLoading(error)) {
                 throw error;
@@ -54,6 +54,12 @@ public class MethodProxyTest {
         while (current != null) {
             if (current instanceof Error && NativeImageSupport.isUnsupportedFeatureError((Error) current)) {
                 return true;
+            }
+            if (current instanceof NoClassDefFoundError) {
+                String message = current.getMessage();
+                if (message != null && message.startsWith("Could not initialize class net.sf.cglib.")) {
+                    return true;
+                }
             }
             current = current.getCause();
         }

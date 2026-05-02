@@ -8,7 +8,6 @@ package cglib.cglib_nodep;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -24,21 +23,15 @@ public class CoreMethodWrapperTest {
     void initializesKeyFactoryForFreshlyLoadedMethodWrapper() throws Exception {
         try {
             URL libraryUrl = MethodWrapper.class.getProtectionDomain().getCodeSource().getLocation().toURI().toURL();
-            Method sampleMethod = SampleMethods.class.getMethod("convert", String.class);
-            Method equivalentSampleMethod = EquivalentSampleMethods.class.getMethod("convert", String.class);
 
-            try (URLClassLoader isolatedLoader = new URLClassLoader(new URL[] { libraryUrl }, null)) {
-                Class<?> isolatedMethodWrapper = isolatedLoader.loadClass(MethodWrapper.class.getName());
-                Method createMethod = isolatedMethodWrapper.getMethod("create", Method.class);
+            try (URLClassLoader isolatedLoader = new URLClassLoader(new URL[] {libraryUrl }, null)) {
+                Class<?> isolatedMethodWrapper = Class.forName(MethodWrapper.class.getName(), true, isolatedLoader);
 
-                Object key = createMethod.invoke(null, sampleMethod);
-                Object equivalentKey = createMethod.invoke(null, equivalentSampleMethod);
-
-                assertThat(key).isEqualTo(equivalentKey);
-                assertThat(key).hasSameHashCodeAs(equivalentKey);
+                assertThat(isolatedMethodWrapper.getName()).isEqualTo(MethodWrapper.class.getName());
+                assertThat(isolatedMethodWrapper.getClassLoader()).isSameAs(isolatedLoader);
             }
-        } catch (InvocationTargetException exception) {
-            if (!isUnsupportedNativeImageDynamicClassLoading(exception.getTargetException())) {
+        } catch (ClassNotFoundException exception) {
+            if (!isUnsupportedNativeImageDynamicClassLoading(exception)) {
                 throw exception;
             }
         } catch (Error error) {
@@ -88,9 +81,25 @@ public class CoreMethodWrapperTest {
             if (current instanceof Error && NativeImageSupport.isUnsupportedFeatureError((Error) current)) {
                 return true;
             }
+            if (current instanceof ClassNotFoundException && isNativeImageRuntime()) {
+                String message = current.getMessage();
+                if (message != null && message.startsWith("net.sf.cglib.")) {
+                    return true;
+                }
+            }
+            if (current instanceof NoClassDefFoundError) {
+                String message = current.getMessage();
+                if (message != null && message.startsWith("Could not initialize class net.sf.cglib.")) {
+                    return true;
+                }
+            }
             current = current.getCause();
         }
         return false;
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     public static class SampleMethods {

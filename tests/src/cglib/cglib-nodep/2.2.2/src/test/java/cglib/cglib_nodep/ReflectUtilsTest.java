@@ -37,8 +37,8 @@ public class ReflectUtilsTest {
     void createsInstancesThroughDeclaredConstructors() {
         ConstructedSample sample = (ConstructedSample) ReflectUtils.newInstance(
                 ConstructedSample.class,
-                new Class[] { String.class },
-                new Object[] { "created" });
+                new Class[] {String.class },
+                new Object[] {"created" });
 
         assertThat(sample.value()).isEqualTo("created");
     }
@@ -48,7 +48,7 @@ public class ReflectUtilsTest {
         Method inheritedMethod = ReflectUtils.findDeclaredMethod(
                 ChildSample.class,
                 "inheritedSecret",
-                new Class[] { String.class });
+                new Class[] {String.class });
 
         assertThat(inheritedMethod.getDeclaringClass()).isEqualTo(ParentSample.class);
         assertThat(inheritedMethod.getName()).isEqualTo("inheritedSecret");

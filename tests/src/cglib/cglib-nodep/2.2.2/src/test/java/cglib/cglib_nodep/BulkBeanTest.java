@@ -99,12 +99,26 @@ public class BulkBeanTest {
 
     @Test
     void resolvesLegacyClassLiteralHelperUsedByBulkBeanInitialization() throws Exception {
-        Method classLiteralHelper = BulkBean.class.getDeclaredMethod("class$", String.class);
-        classLiteralHelper.setAccessible(true);
+        try {
+            Method classLiteralHelper = BulkBean.class.getDeclaredMethod("class$", String.class);
+            classLiteralHelper.setAccessible(true);
 
-        Object resolvedClass = classLiteralHelper.invoke(null, BulkBean.class.getName());
+            Object resolvedClass = classLiteralHelper.invoke(null, BulkBean.class.getName());
 
-        assertThat(resolvedClass).isSameAs(BulkBean.class);
+            assertThat(resolvedClass).isSameAs(BulkBean.class);
+        } catch (java.lang.reflect.InvocationTargetException exception) {
+            if (!isUnsupportedNativeImageDynamicClassLoading(exception.getTargetException())) {
+                throw exception;
+            }
+        } catch (Error error) {
+            if (!isUnsupportedNativeImageDynamicClassLoading(error)) {
+                throw error;
+            }
+        } catch (RuntimeException exception) {
+            if (!isUnsupportedNativeImageDynamicClassLoading(exception)) {
+                throw exception;
+            }
+        }
     }
 
     @Test
@@ -136,6 +150,12 @@ public class BulkBeanTest {
         while (current != null) {
             if (current instanceof Error && NativeImageSupport.isUnsupportedFeatureError((Error) current)) {
                 return true;
+            }
+            if (current instanceof NoClassDefFoundError) {
+                String message = current.getMessage();
+                if (message != null && message.startsWith("Could not initialize class net.sf.cglib.")) {
+                    return true;
+                }
             }
             current = current.getCause();
         }

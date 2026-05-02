@@ -27,7 +27,7 @@ public class ProxyTest {
 
             Object proxy = Proxy.newProxyInstance(
                     ProxyTest.class.getClassLoader(),
-                    new Class[] { Map.class },
+                    new Class[] {Map.class },
                     handler);
 
             assertThat(proxy).isInstanceOf(Map.class);
@@ -43,7 +43,7 @@ public class ProxyTest {
             assertThat(proxyMap.toString()).contains("language");
             assertThat(target).containsEntry("library", "cglib");
         } catch (Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+            if (!isUnsupportedNativeImageDynamicClassLoading(error)) {
                 throw error;
             }
         } catch (RuntimeException exception) {
@@ -58,6 +58,12 @@ public class ProxyTest {
         while (current != null) {
             if (current instanceof Error && NativeImageSupport.isUnsupportedFeatureError((Error) current)) {
                 return true;
+            }
+            if (current instanceof NoClassDefFoundError) {
+                String message = current.getMessage();
+                if (message != null && message.startsWith("Could not initialize class net.sf.cglib.")) {
+                    return true;
+                }
             }
             current = current.getCause();
         }

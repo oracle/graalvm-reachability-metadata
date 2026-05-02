@@ -18,7 +18,7 @@ public class MixinEverythingEmitterTest {
         try {
             Mixin.Generator generator = new Mixin.Generator();
             generator.setStyle(Mixin.STYLE_EVERYTHING);
-            generator.setDelegates(new Object[] { new NamedDelegate(), new CountingDelegate() });
+            generator.setDelegates(new Object[] {new NamedDelegate(), new CountingDelegate() });
 
             Object mixin = generator.create();
 

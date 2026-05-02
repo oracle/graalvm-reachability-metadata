@@ -63,7 +63,7 @@ public class AddDelegateTransformerTest {
         TransformingClassGenerator generator = new TransformingClassGenerator(
                 new ClassReaderGenerator(reader, 0),
                 new AddDelegateTransformer(
-                        new Class[] { DelegatedOperations.class },
+                        new Class[] {DelegatedOperations.class },
                         DelegatedOperationsImpl.class));
 
         generator.generateClass(writer);

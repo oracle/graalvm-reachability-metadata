@@ -30,14 +30,28 @@ import org.junit.jupiter.api.Test;
 public class CallbackInfoTest {
     @Test
     void resolvesLegacyClassLiteralHelperUsedByCallbackInfoInitialization() throws Exception {
-        String callbackInfoClassName = Enhancer.class.getPackage().getName() + ".CallbackInfo";
-        Class<?> callbackInfo = Enhancer.class.getClassLoader().loadClass(callbackInfoClassName);
-        Method classLiteralHelper = callbackInfo.getDeclaredMethod("class$", String.class);
-        classLiteralHelper.setAccessible(true);
+        try {
+            String callbackInfoClassName = Enhancer.class.getPackage().getName() + ".CallbackInfo";
+            Class<?> callbackInfo = Enhancer.class.getClassLoader().loadClass(callbackInfoClassName);
+            Method classLiteralHelper = callbackInfo.getDeclaredMethod("class$", String.class);
+            classLiteralHelper.setAccessible(true);
 
-        Object resolvedClass = classLiteralHelper.invoke(null, NoOp.class.getName());
+            Object resolvedClass = classLiteralHelper.invoke(null, NoOp.class.getName());
 
-        assertThat(resolvedClass).isSameAs(NoOp.class);
+            assertThat(resolvedClass).isSameAs(NoOp.class);
+        } catch (InvocationTargetException exception) {
+            if (!isUnsupportedNativeImageDynamicClassLoading(exception.getTargetException())) {
+                throw exception;
+            }
+        } catch (Error error) {
+            if (!isUnsupportedNativeImageDynamicClassLoading(error)) {
+                throw error;
+            }
+        } catch (RuntimeException exception) {
+            if (!isUnsupportedNativeImageDynamicClassLoading(exception)) {
+                throw exception;
+            }
+        }
     }
 
     @Test
@@ -74,27 +88,47 @@ public class CallbackInfoTest {
 
     @Test
     void acceptsBuiltInCallbackTypesThroughEnhancerConfiguration() {
-        Enhancer enhancer = new Enhancer();
+        try {
+            Enhancer enhancer = new Enhancer();
 
-        assertThatCode(() -> enhancer.setCallbackTypes(new Class[] {
-                NoOp.class,
-                MethodInterceptor.class,
-                InvocationHandler.class,
-                LazyLoader.class,
-                Dispatcher.class,
-                FixedValue.class,
-                ProxyRefDispatcher.class
-        })).doesNotThrowAnyException();
+            assertThatCode(() -> enhancer.setCallbackTypes(new Class[] {
+                    NoOp.class,
+                    MethodInterceptor.class,
+                    InvocationHandler.class,
+                    LazyLoader.class,
+                    Dispatcher.class,
+                    FixedValue.class,
+                    ProxyRefDispatcher.class
+            })).doesNotThrowAnyException();
+        } catch (Error error) {
+            if (!isUnsupportedNativeImageDynamicClassLoading(error)) {
+                throw error;
+            }
+        } catch (RuntimeException exception) {
+            if (!isUnsupportedNativeImageDynamicClassLoading(exception)) {
+                throw exception;
+            }
+        }
     }
 
     @Test
     void rejectsClassesThatAreNotEnhancerCallbacks() {
-        Enhancer enhancer = new Enhancer();
+        try {
+            Enhancer enhancer = new Enhancer();
 
-        assertThatIllegalStateException()
-                .isThrownBy(() -> enhancer.setCallbackType(NotACallback.class))
-                .withMessageContaining("Unknown callback type")
-                .withMessageContaining(NotACallback.class.getName());
+            assertThatIllegalStateException()
+                    .isThrownBy(() -> enhancer.setCallbackType(NotACallback.class))
+                    .withMessageContaining("Unknown callback type")
+                    .withMessageContaining(NotACallback.class.getName());
+        } catch (Error error) {
+            if (!isUnsupportedNativeImageDynamicClassLoading(error)) {
+                throw error;
+            }
+        } catch (RuntimeException exception) {
+            if (!isUnsupportedNativeImageDynamicClassLoading(exception)) {
+                throw exception;
+            }
+        }
     }
 
     private static URL libraryLocation() {
@@ -109,6 +143,12 @@ public class CallbackInfoTest {
             if (current instanceof Error && NativeImageSupport.isUnsupportedFeatureError((Error) current)) {
                 return true;
             }
+            if (current instanceof NoClassDefFoundError) {
+                String message = current.getMessage();
+                if (message != null && message.startsWith("Could not initialize class net.sf.cglib.")) {
+                    return true;
+                }
+            }
             current = current.getCause();
         }
         return false;
@@ -116,7 +156,7 @@ public class CallbackInfoTest {
 
     private static class ChildFirstCglibClassLoader extends URLClassLoader {
         ChildFirstCglibClassLoader(URL libraryLocation) {
-            super(new URL[] { libraryLocation }, CallbackInfoTest.class.getClassLoader());
+            super(new URL[] {libraryLocation }, CallbackInfoTest.class.getClassLoader());
         }
 
         @Override

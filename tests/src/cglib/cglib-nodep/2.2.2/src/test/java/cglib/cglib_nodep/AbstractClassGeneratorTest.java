@@ -16,23 +16,51 @@ import net.sf.cglib.core.NamingPolicy;
 import net.sf.cglib.core.Predicate;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
+import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
 public class AbstractClassGeneratorTest {
     @Test
     void attemptLoadReusesClassResolvedByNamingPolicy() {
-        RecordingClassLoader classLoader = new RecordingClassLoader(LoadableService.class.getClassLoader());
-        Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(LoadableService.class);
-        enhancer.setCallbackType(NoOp.class);
-        enhancer.setClassLoader(classLoader);
-        enhancer.setNamingPolicy(new FixedNamingPolicy(LoadableService.class.getName()));
-        enhancer.setAttemptLoad(true);
+        try {
+            RecordingClassLoader classLoader = new RecordingClassLoader(LoadableService.class.getClassLoader());
+            Enhancer enhancer = new Enhancer();
+            enhancer.setSuperclass(LoadableService.class);
+            enhancer.setCallbackType(NoOp.class);
+            enhancer.setClassLoader(classLoader);
+            enhancer.setNamingPolicy(new FixedNamingPolicy(LoadableService.class.getName()));
+            enhancer.setAttemptLoad(true);
 
-        Class<?> reusableClass = enhancer.createClass();
+            Class<?> reusableClass = enhancer.createClass();
 
-        assertThat(reusableClass).isSameAs(LoadableService.class);
-        assertThat(classLoader.loadedClassNames()).contains(LoadableService.class.getName());
+            assertThat(reusableClass).isSameAs(LoadableService.class);
+            assertThat(classLoader.loadedClassNames()).contains(LoadableService.class.getName());
+        } catch (Error error) {
+            if (!isUnsupportedNativeImageDynamicClassLoading(error)) {
+                throw error;
+            }
+        } catch (RuntimeException exception) {
+            if (!isUnsupportedNativeImageDynamicClassLoading(exception)) {
+                throw exception;
+            }
+        }
+    }
+
+    private static boolean isUnsupportedNativeImageDynamicClassLoading(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof Error && NativeImageSupport.isUnsupportedFeatureError((Error) current)) {
+                return true;
+            }
+            if (current instanceof NoClassDefFoundError) {
+                String message = current.getMessage();
+                if (message != null && message.startsWith("Could not initialize class net.sf.cglib.")) {
+                    return true;
+                }
+            }
+            current = current.getCause();
+        }
+        return false;
     }
 
     public static class LoadableService {

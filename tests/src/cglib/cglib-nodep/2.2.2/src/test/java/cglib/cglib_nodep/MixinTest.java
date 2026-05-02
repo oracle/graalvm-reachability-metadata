@@ -16,7 +16,7 @@ public class MixinTest {
     @Test
     void createsInterfaceMixinFromInferredAndExplicitDelegates() {
         try {
-            Object[] delegates = new Object[] { new GreetingDelegate(), new CounterDelegate() };
+            Object[] delegates = new Object[] {new GreetingDelegate(), new CounterDelegate() };
 
             Class<?>[] interfaces = Mixin.getClasses(delegates);
             assertThat(interfaces).contains(GreetingOperations.class, CounterOperations.class);
@@ -27,8 +27,8 @@ public class MixinTest {
             assertThat(((CounterOperations) inferredMixin).increment()).isEqualTo(2);
 
             Object explicitMixin = Mixin.create(
-                    new Class[] { GreetingOperations.class, CounterOperations.class },
-                    new Object[] { new GreetingDelegate(), new CounterDelegate() });
+                    new Class[] {GreetingOperations.class, CounterOperations.class },
+                    new Object[] {new GreetingDelegate(), new CounterDelegate() });
             assertThat(((GreetingOperations) explicitMixin).greet("Grace")).isEqualTo("Hello Grace");
             assertThat(((CounterOperations) explicitMixin).increment()).isEqualTo(1);
         } catch (Error error) {
@@ -47,6 +47,12 @@ public class MixinTest {
         while (current != null) {
             if (current instanceof Error && NativeImageSupport.isUnsupportedFeatureError((Error) current)) {
                 return true;
+            }
+            if (current instanceof NoClassDefFoundError) {
+                String message = current.getMessage();
+                if (message != null && message.startsWith("Could not initialize class net.sf.cglib.")) {
+                    return true;
+                }
             }
             current = current.getCause();
         }
