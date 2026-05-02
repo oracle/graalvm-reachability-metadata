@@ -1,0 +1,1280 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de981-f0c1-7600-b169-88d90e0eaff8
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.eclipse.platform:org.eclipse.osgi:3.18.300
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.18.300" when "$version$" is replaced with "3.18.300".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+- Set "coordinates" to "org.eclipse.platform:org.eclipse.osgi:3.18.300".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.18.300".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven/Eclipse sources first, then patch the JSON in place. I’ll prefer source/test/doc URLs tied to the exact `3.18.300` tag or Maven source artifacts where they exist.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,220p' build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+{
+  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"org\\.eclipse\\.platform:org\\.eclipse\\.osgi|org.eclipse.platform-org.eclipse.osgi|eclipse.osgi\" build/discovered-artifact-metadata metadata tests -S" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json:2:  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300"
+
+web search: 
+web search: Maven org.eclipse.platform org.eclipse.osgi 3.18.300 source jar repository scm tag
+web search: 
+web search: https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/
+web search: 
+web search: 
+web search: 
+web search: site:github.com/eclipse-equinox org.eclipse.osgi 3.18.300.v20230220-1352
+codex
+Maven Central has the `jar`, `sources.jar`, and a tiny `javadoc.jar` for this exact version, so this is a normal JVM artifact and not a `not-for-native-image` case. I’m now checking the Equinox repository tags and test layout so the test-suite URL points at the matching source revision rather than a generic branch.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/org.eclipse.osgi-3.18.300.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.eclipse.platform</groupId>
+  <artifactId>org.eclipse.osgi</artifactId>
+  <version>3.18.300</version>
+  <name>OSGi System Bundle</name>
+  <description>%systemBundle</description>
+  <url>https://projects.eclipse.org/projects/eclipse.equinox</url>
+  <licenses>
+    <license>
+      <name>Eclipse Public License - v 2.0</name>
+      <url>https://www.eclipse.org/legal/epl-2.0/</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <organization>
+    <name>Eclipse Foundation</name>
+    <url>https://www.eclipse.org/</url>
+  </organization>
+  <issueManagement>
+    <system>Github</system>
+    <url>https://github.com/eclipse-equinox/equinox/issues</url>
+  </issueManagement>
+  <scm>
+    <connection>scm:git:https://github.com/eclipse-equinox/equinox.git</connection>
+    <url>https://github.com/eclipse-equinox/equinox</url>
+  </scm>
+  <developers>
+    <developer>
+      <url>https://projects.eclipse.org/projects/eclipse.equinox/who</url>
+    </developer>
+  </developers>
+</project>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/eclipse-equinox/equinox.git | rg '3\\.18\\.300|20230220|4_27|R4|v20230220|I20230220'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles?ref=R4_27 | head -200' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+ succeeded in 190ms:
+[
+  {
+    "name": ".gitignore",
+    "path": "bundles/.gitignore",
+    "sha": "b83d22266ac8aa2f8df2edef68082c789727841d",
+    "size": 9,
+    "url": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/.gitignore?ref=R4_27",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/.gitignore",
+    "git_url": "https://api.github.com/repos/eclipse-equinox/equinox/git/blobs/b83d22266ac8aa2f8df2edef68082c789727841d",
+    "download_url": "https://raw.githubusercontent.com/eclipse-equinox/equinox/R4_27/bundles/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/.gitignore?ref=R4_27",
+      "git": "https://api.github.com/repos/eclipse-equinox/equinox/git/blobs/b83d22266ac8aa2f8df2edef68082c789727841d",
+      "html": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/.gitignore"
+    }
+  },
+  {
+    "name": "org.eclipse.equinox.app",
+    "path": "bundles/org.eclipse.equinox.app",
+    "sha": "362a4b224c2177db335177fc6016ca81cb8f0894",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.app?ref=R4_27",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.app",
+    "git_url": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/362a4b224c2177db335177fc6016ca81cb8f0894",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.app?ref=R4_27",
+      "git": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/362a4b224c2177db335177fc6016ca81cb8f0894",
+      "html": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.app"
+    }
+  },
+  {
+    "name": "org.eclipse.equinox.bidi.tests",
+    "path": "bundles/org.eclipse.equinox.bidi.tests",
+    "sha": "218f096ddb11e130cec0225c2fd0e4492409c5aa",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.bidi.tests?ref=R4_27",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.bidi.tests",
+    "git_url": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/218f096ddb11e130cec0225c2fd0e4492409c5aa",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.bidi.tests?ref=R4_27",
+      "git": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/218f096ddb11e130cec0225c2fd0e4492409c5aa",
+      "html": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.bidi.tests"
+    }
+  },
+  {
+    "name": "org.eclipse.equinox.bidi",
+    "path": "bundles/org.eclipse.equinox.bidi",
+    "sha": "314aab1c292909f43dbc0714903d281aa3bff178",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.bidi?ref=R4_27",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.bidi",
+    "git_url": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/314aab1c292909f43dbc0714903d281aa3bff178",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.bidi?ref=R4_27",
+      "git": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/314aab1c292909f43dbc0714903d281aa3bff178",
+      "html": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.bidi"
+    }
+  },
+  {
+    "name": "org.eclipse.equinox.cm.test",
+    "path": "bundles/org.eclipse.equinox.cm.test",
+    "sha": "d9d86264c361b329d55ad6106b0c63d0bee22bec",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.cm.test?ref=R4_27",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.cm.test",
+    "git_url": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/d9d86264c361b329d55ad6106b0c63d0bee22bec",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.cm.test?ref=R4_27",
+      "git": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/d9d86264c361b329d55ad6106b0c63d0bee22bec",
+      "html": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.cm.test"
+    }
+  },
+  {
+    "name": "org.eclipse.equinox.cm",
+    "path": "bundles/org.eclipse.equinox.cm",
+    "sha": "51461e29f43d9529bcaae25f043ec7b591afe60b",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.cm?ref=R4_27",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.cm",
+    "git_url": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/51461e29f43d9529bcaae25f043ec7b591afe60b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.cm?ref=R4_27",
+      "git": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/51461e29f43d9529bcaae25f043ec7b591afe60b",
+      "html": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.cm"
+    }
+  },
+  {
+    "name": "org.eclipse.equinox.common.tests",
+    "path": "bundles/org.eclipse.equinox.common.tests",
+    "sha": "b3e89493ae16fb9c1327ca9a00e94479c0944bd0",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.common.tests?ref=R4_27",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.common.tests",
+    "git_url": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/b3e89493ae16fb9c1327ca9a00e94479c0944bd0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.common.tests?ref=R4_27",
+      "git": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/b3e89493ae16fb9c1327ca9a00e94479c0944bd0",
+      "html": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.common.tests"
+    }
+  },
+  {
+    "name": "org.eclipse.equinox.common",
+    "path": "bundles/org.eclipse.equinox.common",
+    "sha": "40c04d9d1e91cc2f59b78f3804f803ba588ab162",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.common?ref=R4_27",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.common",
+    "git_url": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/40c04d9d1e91cc2f59b78f3804f803ba588ab162",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.common?ref=R4_27",
+      "git": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/40c04d9d1e91cc2f59b78f3804f803ba588ab162",
+      "html": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.common"
+    }
+  },
+  {
+    "name": "org.eclipse.equinox.compendium.tests",
+    "path": "bundles/org.eclipse.equinox.compendium.tests",
+    "sha": "48574601a66ae67197e3e381fd62b75db28d5948",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.compendium.tests?ref=R4_27",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.compendium.tests",
+    "git_url": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/48574601a66ae67197e3e381fd62b75db28d5948",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.compendium.tests?ref=R4_27",
+      "git": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/48574601a66ae67197e3e381fd62b75db28d5948",
+      "html": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.compendium.tests"
+    }
+  },
+  {
+    "name": "org.eclipse.equinox.concurrent",
+    "path": "bundles/org.eclipse.equinox.concurrent",
+    "sha": "e24b8d20ee0cc78b254c7fb7aff643442d137736",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.concurrent?ref=R4_27",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.concurrent",
+    "git_url": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/e24b8d20ee0cc78b254c7fb7aff643442d137736",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.concurrent?ref=R4_27",
+      "git": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/e24b8d20ee0cc78b254c7fb7aff643442d137736",
+      "html": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.concurrent"
+    }
+  },
+  {
+    "name": "org.eclipse.equinox.console.jaas.fragment",
+    "path": "bundles/org.eclipse.equinox.console.jaas.fragment",
+    "sha": "f46619cb2e741343d0aecbaa6111e83a334bcc0c",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.console.jaas.fragment?ref=R4_27",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.console.jaas.fragment",
+    "git_url": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/f46619cb2e741343d0aecbaa6111e83a334bcc0c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.console.jaas.fragment?ref=R4_27",
+      "git": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/f46619cb2e741343d0aecbaa6111e83a334bcc0c",
+      "html": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.console.jaas.fragment"
+    }
+  },
+  {
+    "name": "org.eclipse.equinox.console.ssh.tests",
+    "path": "bundles/org.eclipse.equinox.console.ssh.tests",
+    "sha": "550189b532a3310447f638b25461568157d917ba",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.console.ssh.tests?ref=R4_27",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.console.ssh.tests",
+    "git_url": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/550189b532a3310447f638b25461568157d917ba",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.console.ssh.tests?ref=R4_27",
+      "git": "https://api.github.com/repos/eclipse-equinox/equinox/git/trees/550189b532a3310447f638b25461568157d917ba",
+      "html": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.console.ssh.tests"
+    }
+  },
+  {
+    "name": "org.eclipse.equinox.console.ssh",
+    "path": "bundles/org.eclipse.equinox.console.ssh",
+    "sha": "f7eec753c7371ae465ccfa7db7b804b872ee6122",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.equinox.console.ssh?ref=R4_27",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.equinox.console.ssh",
+curl: (23) Failure writing output to destination
+
+ succeeded in 417ms:
+dcb36d3f2dd151597b9cd2a6bff2bf0997b751bd	refs/tags/I20230220-0600
+dcb36d3f2dd151597b9cd2a6bff2bf0997b751bd	refs/tags/I20230220-0620
+dcb36d3f2dd151597b9cd2a6bff2bf0997b751bd	refs/tags/I20230220-0640
+dcb36d3f2dd151597b9cd2a6bff2bf0997b751bd	refs/tags/I20230220-0800
+a9db8e97f40f2ae514722225133ab80fff367bb5	refs/tags/I20230220-0920
+a9db8e97f40f2ae514722225133ab80fff367bb5	refs/tags/I20230220-1800
+bb4986fecaf81fc455dddd9bfeb137713cf25295	refs/tags/R4_25
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/R4_25^{}
+56791457cfb5dab68af1d8f3cb54143e2df06461	refs/tags/R4_26
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/R4_26^{}
+ffeb86d1c8035520dfdcf2289392bc439da1dae4	refs/tags/R4_27
+2bd49d911d06b00f71a5919e16d2e6815c656edc	refs/tags/R4_27^{}
+7b06c22402ecf502c78a3b4b0a127da05f1a7978	refs/tags/R4_28
+68477c3e8367323dd14f89eede9e46da69d958b8	refs/tags/R4_28^{}
+9dcee2f7a7a081e341c40c36101001347ddd027f	refs/tags/R4_29
+cfed903b766475c1710d7ae208853f0ba5f1d9cd	refs/tags/R4_29^{}
+e54ccda1efd09404195502f1ffa932cdef8fd19f	refs/tags/R4_30
+814024bf4d175788635cb11c031aa9b9c3379f12	refs/tags/R4_30^{}
+d5c7fcf0c4e25a9ebb023cbd3461d3f22596bc00	refs/tags/R4_31
+0f17d84b6ad9b25fa72a8ecc7897b79c899ce48b	refs/tags/R4_31^{}
+7678de8aab3f2daeb2f66740ae99e2864b1c4ca5	refs/tags/R4_32
+ca6458f635ab4120ca8231a29b9478ba3070cf29	refs/tags/R4_32^{}
+795ae3b5aa389182b05ca3427023f6acaf86d26c	refs/tags/R4_33
+4526f764f444a6217fb614835452cb8a3956f12d	refs/tags/R4_33^{}
+4db59ba194aba036a1c785dc468e3e537cd59955	refs/tags/R4_34
+2815608394cba2ec5529c7a5ec861e7c34113dd2	refs/tags/R4_34^{}
+d7b6febd19c9084f4e9464d61addbd4da641bcbf	refs/tags/R4_35
+95c7e08e8740f9b2384d89efd1a72020d1e65619	refs/tags/R4_35^{}
+a20b1f34b184cc4e20ee84f784e57a58361db76e	refs/tags/R4_36
+ca95c426a7176f95f085f2f08c29f5cc338d9dcb	refs/tags/R4_36^{}
+36530cbb1fa6a0455521a33c259183198c25c342	refs/tags/R4_37
+d2f412dcd26daa40100682d822b5b9c3c33269c9	refs/tags/R4_37^{}
+e6837e23930c7fb2104962774b5a0c464804ebfd	refs/tags/R4_38
+74e38821ef7ea257da027a00117c8484603702fb	refs/tags/R4_38^{}
+fa3750edb0c420d6faaba5bb00dfcf02dd2d5f98	refs/tags/R4_39
+686cf2143b728332562cf24ca0b032ebb9d430f4	refs/tags/R4_39^{}
+f9a55315d98aad32bef14a9f27abf2048f314ead	refs/tags/S4_27_0_M1
+bfbcf87790b03a42fa0b78cff2c65561208ba6a6	refs/tags/S4_27_0_M1^{}
+808c5fea05065c02e0f743fe58745ab3fbb517e5	refs/tags/S4_27_0_M3
+dcb36d3f2dd151597b9cd2a6bff2bf0997b751bd	refs/tags/S4_27_0_M3^{}
+c3700bd8f5000486a2f966a71323343b6574466e	refs/tags/S4_27_0_RC1
+a9db8e97f40f2ae514722225133ab80fff367bb5	refs/tags/S4_27_0_RC1^{}
+446ec973f62a37c1f0c862fc51e079a270d086ee	refs/tags/S4_27_0_RC2
+2bd49d911d06b00f71a5919e16d2e6815c656edc	refs/tags/S4_27_0_RC2^{}
+a9db8e97f40f2ae514722225133ab80fff367bb5	refs/tags/Y20230220-1000
+
+exec
+/usr/bin/bash -lc "curl -fsSLI https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/org.eclipse.osgi-3.18.300-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 16:25:29 GMT
+content-type: application/java-archive
+content-length: 526
+cf-ray: 9f5861d56c9f739d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 547147
+etag: "b3098f9a27931b0b958bf4d637396bb2"
+last-modified: Mon, 13 Mar 2023 10:49:45 GMT
+x-checksum-md5: b3098f9a27931b0b958bf4d637396bb2
+x-checksum-sha1: 29e48043a011258993b15d189733f74519c93124
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSLI https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/org.eclipse.osgi-3.18.300-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 16:25:29 GMT
+content-type: application/java-archive
+content-length: 1172879
+cf-ray: 9f5861d5693efbd6-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 788188
+etag: "eaaf4384081c6e3ee2552138cf67d8e3"
+last-modified: Mon, 13 Mar 2023 10:49:44 GMT
+x-checksum-md5: eaaf4384081c6e3ee2552138cf67d8e3
+x-checksum-sha1: f891c41e35fb48649c6870988508978a38c4107a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSLI https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/org.eclipse.osgi-3.18.300-tests.jar | sed -n '1,20p' || true" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.osgi?ref=R4_27 | rg 'html_url|MANIFEST|pom.xml|src'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.osgi.tests?ref=R4_27 | rg 'html_url|src|pom.xml'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+ succeeded in 192ms:
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi.tests/.classpath",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi.tests/.gitignore",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi.tests/.project",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests/.settings",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi.tests/All%20OSGi%20Tests.launch",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests/META-INF",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi.tests/about.html",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi.tests/build.properties",
+    "name": "bundles_src",
+    "path": "bundles/org.eclipse.osgi.tests/bundles_src",
+    "url": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.osgi.tests/bundles_src?ref=R4_27",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests/bundles_src",
+      "self": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.osgi.tests/bundles_src?ref=R4_27",
+      "html": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests/bundles_src"
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi.tests/forceQualifierUpdate.txt",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi.tests/plugin.xml",
+    "name": "pom.xml",
+    "path": "bundles/org.eclipse.osgi.tests/pom.xml",
+    "url": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.osgi.tests/pom.xml?ref=R4_27",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi.tests/pom.xml",
+    "download_url": "https://raw.githubusercontent.com/eclipse-equinox/equinox/R4_27/bundles/org.eclipse.osgi.tests/pom.xml",
+      "self": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.osgi.tests/pom.xml?ref=R4_27",
+      "html": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi.tests/pom.xml"
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi.tests/profile.list",
+    "name": "src",
+    "path": "bundles/org.eclipse.osgi.tests/src",
+    "url": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.osgi.tests/src?ref=R4_27",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests/src",
+      "self": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.osgi.tests/src?ref=R4_27",
+      "html": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests/src"
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi.tests/test.xml",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests/test_files",
+
+ succeeded in 200ms:
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/.classpath",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/.classpath.osgisource",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/.gitignore",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/.options",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/.project",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi/.settings",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/CDC-1.0_Foundation-1.0.profile",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/CDC-1.1_Foundation-1.1.profile",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/J2SE-1.2.profile",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/J2SE-1.3.profile",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/J2SE-1.4.profile",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/J2SE-1.5.profile",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/JRE-1.1.profile",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/JavaSE-1.6.profile",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/JavaSE-1.7.profile",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/JavaSE-1.8.profile",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/JavaSE-9.profile",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/JavaSE_compact1-1.8.profile",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/JavaSE_compact2-1.8.profile",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/JavaSE_compact3-1.8.profile",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi/META-INF",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/OSGi_Minimum-1.0.profile",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/OSGi_Minimum-1.1.profile",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/OSGi_Minimum-1.2.profile",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/about.html",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi/about_files",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/bnd.bnd",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/build.properties",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi/container",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/customBuildCallbacks.xml",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi/felix",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/forceQualifierUpdate.txt",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi/osgi",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/plugin.xml",
+    "name": "pom.xml",
+    "path": "bundles/org.eclipse.osgi/pom.xml",
+    "url": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.osgi/pom.xml?ref=R4_27",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/pom.xml",
+    "download_url": "https://raw.githubusercontent.com/eclipse-equinox/equinox/R4_27/bundles/org.eclipse.osgi/pom.xml",
+      "self": "https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles/org.eclipse.osgi/pom.xml?ref=R4_27",
+      "html": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/pom.xml"
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/profile.list",
+    "html_url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi/supplement",
+    "html_url": "https://github.com/eclipse-equinox/equinox/blob/R4_27/bundles/org.eclipse.osgi/systembundle.properties",
+
+ succeeded in 265ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 02 May 2026 16:25:29 GMT
+content-type: text/html
+cf-ray: 9f5861d55bc97dd2-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/org.eclipse.osgi-3.18.300-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/eclipse-equinox/equinox/R4_27/bundles/org.eclipse.osgi.tests/pom.xml | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/eclipse-equinox/equinox/R4_27/bundles/org.eclipse.osgi/META-INF/MANIFEST.MF | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/eclipse-equinox/equinox/R4_27/bundles/org.eclipse.osgi/pom.xml | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); curl -fsSL https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/org.eclipse.osgi-3.18.300.jar -o "$tmpdir/osgi.jar"; jar tf "$tmpdir/osgi.jar" | sed -n '"'1,80p'; rm -rf \""'$tmpdir"' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+ succeeded in 172ms:
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Export-Package: org.eclipse.core.runtime.adaptor;x-friends:="org.eclipse.core.runtime",
+ org.eclipse.core.runtime.internal.adaptor;x-internal:=true,
+ org.eclipse.equinox.log;version="1.1";uses:="org.osgi.framework,org.osgi.service.log",
+ org.eclipse.osgi.container;version="1.6";
+  uses:="org.eclipse.osgi.report.resolution,
+   org.osgi.framework.wiring,
+   org.eclipse.osgi.framework.eventmgr,
+   org.osgi.framework.startlevel,
+   org.osgi.framework,
+   org.osgi.framework.hooks.resolver,
+   org.osgi.service.resolver,
+   org.osgi.resource,
+   org.eclipse.osgi.service.debug",
+ org.eclipse.osgi.container.builders;version="1.0";uses:="org.eclipse.osgi.util,org.eclipse.osgi.container",
+ org.eclipse.osgi.container.namespaces;version="1.0";uses:="org.osgi.resource",
+ org.eclipse.osgi.framework.console;version="1.1";uses:="org.osgi.framework",
+ org.eclipse.osgi.framework.eventmgr;version="1.2",
+ org.eclipse.osgi.framework.internal.reliablefile;x-internal:=true,
+ org.eclipse.osgi.framework.log;version="1.1";uses:="org.osgi.framework",
+ org.eclipse.osgi.framework.util;x-internal:=true,
+ org.eclipse.osgi.internal.debug;x-internal:=true,
+ org.eclipse.osgi.internal.framework;x-internal:=true,
+ org.eclipse.osgi.internal.hookregistry;x-friends:="org.eclipse.osgi.tests",
+ org.eclipse.osgi.internal.loader;x-internal:=true,
+ org.eclipse.osgi.internal.loader.buddy;x-internal:=true,
+ org.eclipse.osgi.internal.loader.classpath;x-internal:=true,
+ org.eclipse.osgi.internal.loader.sources;x-internal:=true,
+ org.eclipse.osgi.internal.location;x-internal:=true,
+ org.eclipse.osgi.internal.messages;x-internal:=true,
+ org.eclipse.osgi.internal.provisional.service.security;version="1.0.0";x-friends:="org.eclipse.equinox.security.ui",
+ org.eclipse.osgi.internal.provisional.verifier;x-friends:="org.eclipse.ui.workbench,org.eclipse.equinox.p2.artifact.repository",
+ org.eclipse.osgi.internal.service.security;x-friends:="org.eclipse.equinox.security.ui",
+ org.eclipse.osgi.internal.serviceregistry;x-internal:=true,
+ org.eclipse.osgi.internal.signedcontent;x-internal:=true,
+ org.eclipse.osgi.internal.url;x-internal:=true,
+ org.eclipse.osgi.launch;version="1.1";uses:="org.osgi.framework,org.osgi.framework.launch,org.osgi.framework.connect",
+ org.eclipse.osgi.report.resolution;version="1.0";uses:="org.osgi.service.resolver,org.osgi.resource",
+ org.eclipse.osgi.service.datalocation;version="1.4.0",
+ org.eclipse.osgi.service.debug;version="1.2",
+ org.eclipse.osgi.service.environment;version="1.4",
+ org.eclipse.osgi.service.localization;version="1.1";uses:="org.osgi.framework",
+ org.eclipse.osgi.service.pluginconversion;version="1.0",
+ org.eclipse.osgi.service.resolver;version="1.6";uses:="org.osgi.framework,org.osgi.framework.hooks.resolver,org.osgi.framework.wiring",
+ org.eclipse.osgi.service.runnable;version="1.1",
+ org.eclipse.osgi.service.security;version="1.0",
+ org.eclipse.osgi.service.urlconversion;version="1.0",
+ org.eclipse.osgi.signedcontent;version="1.1";uses:="org.osgi.framework",
+ org.eclipse.osgi.storage;x-friends:="org.eclipse.osgi.tests",
+ org.eclipse.osgi.storage.bundlefile;x-internal:=true,
+ org.eclipse.osgi.storage.url.reference;x-internal:=true,
+ org.eclipse.osgi.storagemanager;version="1.0",
+ org.eclipse.osgi.util;version="1.1",
+ org.osgi.dto;version="1.1.1",
+ org.osgi.framework;version="1.10",
+ org.osgi.framework.connect;version="1.0";uses:="org.osgi.framework.launch",
+ org.osgi.framework.dto;version="1.8";uses:="org.osgi.dto",
+ org.osgi.framework.hooks.bundle;version="1.1";uses:="org.osgi.framework",
+ org.osgi.framework.hooks.resolver;version="1.0";uses:="org.osgi.framework.wiring",
+ org.osgi.framework.hooks.service;version="1.1";uses:="org.osgi.framework",
+ org.osgi.framework.hooks.weaving;version="1.1";uses:="org.osgi.framework.wiring",
+ org.osgi.framework.launch;version="1.2";uses:="org.osgi.framework",
+ org.osgi.framework.namespace;version="1.2";uses:="org.osgi.resource",
+ org.osgi.framework.startlevel;version="1.0";uses:="org.osgi.framework",
+ org.osgi.framework.startlevel.dto;version="1.0";uses:="org.osgi.dto",
+ org.osgi.framework.wiring;version="1.2";uses:="org.osgi.framework,org.osgi.resource",
+ org.osgi.framework.wiring.dto;version="1.3";uses:="org.osgi.dto,org.osgi.resource.dto",
+ org.osgi.resource;version="1.0.1",
+ org.osgi.resource.dto;version="1.0.1";uses:="org.osgi.dto",
+ org.osgi.service.condition;version="1.0",
+ org.osgi.service.condpermadmin;version="1.1.2";uses:="org.osgi.framework",
+ org.osgi.service.log;version="1.5";uses:="org.osgi.framework",
+ org.osgi.service.log.admin;version="1.0";uses:="org.osgi.service.log",
+ org.osgi.service.packageadmin;version="1.2.1";uses:="org.osgi.framework",
+ org.osgi.service.permissionadmin;version="1.2.1",
+ org.osgi.service.resolver;version="1.1.1";uses:="org.osgi.resource",
+ org.osgi.service.startlevel;version="1.1.1";uses:="org.osgi.framework",
+ org.osgi.service.url;version="1.0.1",
+ org.osgi.util.tracker;version="1.5.3";uses:="org.osgi.framework"
+
+ succeeded in 165ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2012, 2013 Eclipse Foundation.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the Eclipse Distribution License v1.0
+  which accompanies this distribution, and is available at
+  http://www.eclipse.org/org/documents/edl-v10.php
+
+  Contributors:
+     Igor Fedorenko - initial implementation
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+<parent>
+    <groupId>org.eclipse.equinox</groupId>
+    <artifactId>parent</artifactId>
+    <version>4.27.0-SNAPSHOT</version>
+    <relativePath>../../</relativePath>
+</parent>
+  <groupId>org.eclipse.osgi</groupId>
+  <artifactId>org.eclipse.osgi</artifactId>
+  <version>3.18.300-SNAPSHOT</version>
+  <packaging>eclipse-plugin</packaging>
+  <properties>
+	  <!-- The actual TCKs are executed in the org.eclipse.osgi.tck module because of reference to other service implementations -->
+	  <tck.skip>true</tck.skip>
+  </properties>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-compiler-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <compilerArgs>
+            <arg>-nowarn:[${project.basedir}/osgi/src${path.separator}${project.basedir}/felix/src]</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+      <plugin>
+       <!--Unless next tycho release we need to explicitly enable this here, once 2.7.4 or 3.x is out we can switch to full pomless here! -->
+       <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>bnd-process</id>
+            <goals>
+              <goal>bnd-process</goal>
+            </goals>
+            <configuration>
+              <packagingTypes>eclipse-plugin</packagingTypes>
+              <manifestPath>${project.build.directory}/BND.MF</manifestPath>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
+
+ succeeded in 189ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2012, 2022 Eclipse Foundation.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the Eclipse Distribution License v1.0
+  which accompanies this distribution, and is available at
+  http://www.eclipse.org/org/documents/edl-v10.php
+ 
+  Contributors:
+     Igor Fedorenko - initial implementation
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+<parent>
+    <groupId>org.eclipse.equinox</groupId>
+    <artifactId>parent</artifactId>
+    <version>4.27.0-SNAPSHOT</version>
+    <relativePath>../../</relativePath>
+</parent>
+  <groupId>org.eclipse.osgi</groupId>
+  <artifactId>org.eclipse.osgi.tests</artifactId>
+  <version>3.16.1000-SNAPSHOT</version>
+  <packaging>eclipse-test-plugin</packaging>
+
+  <properties>
+    <defaultSigning-excludeInnerJars>true</defaultSigning-excludeInnerJars>
+    <code.ignoredWarnings>${tests.ignoredWarnings}</code.ignoredWarnings>
+    <testSuite>${project.artifactId}</testSuite>
+    <testClass>org.eclipse.osgi.tests.AutomatedTests</testClass>
+    <skipAPIAnalysis>true</skipAPIAnalysis>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <dependency-resolution>
+            <extraRequirements>
+              <requirement>
+                <id>org.eclipse.osgi.compatibility.state</id>
+                <type>p2-installable-unit</type>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+            </extraRequirements>
+          </dependency-resolution>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
+
+ succeeded in 330ms:
+META-INF/MANIFEST.MF
+META-INF/ECLIPSE_.SF
+META-INF/ECLIPSE_.RSA
+META-INF/
+META-INF/services/
+META-INF/services/org.osgi.framework.connect.ConnectFrameworkFactory
+META-INF/services/org.osgi.framework.launch.FrameworkFactory
+META-INF/native-image/
+META-INF/native-image/native-image.properties
+META-INF/native-image/proxy-config.json
+META-INF/native-image/reflect-config.json
+META-INF/native-image/resource-config.json
+org/
+org/eclipse/
+org/eclipse/osgi/
+org/eclipse/osgi/storage/
+org/eclipse/osgi/storage/url/
+org/eclipse/osgi/storage/url/reference/
+org/eclipse/osgi/storage/url/reference/ReferenceInputStream.class
+org/eclipse/osgi/storage/url/reference/ReferenceURLConnection.class
+org/eclipse/osgi/storage/url/reference/Handler.class
+org/eclipse/osgi/storage/url/bundleresource/
+org/eclipse/osgi/storage/url/bundleresource/Handler.class
+org/eclipse/osgi/storage/url/bundleentry/
+org/eclipse/osgi/storage/url/bundleentry/Handler.class
+org/eclipse/osgi/storage/url/BundleURLConnection.class
+org/eclipse/osgi/storage/url/BundleURLConverter.class
+org/eclipse/osgi/storage/url/BundleResourceHandler.class
+org/eclipse/osgi/storage/bundlefile/
+org/eclipse/osgi/storage/bundlefile/DirZipBundleEntry.class
+org/eclipse/osgi/storage/bundlefile/FileBundleEntry.class
+org/eclipse/osgi/storage/bundlefile/ZipBundleEntry.class
+org/eclipse/osgi/storage/bundlefile/NestedDirBundleFile.class
+org/eclipse/osgi/storage/bundlefile/NestedDirBundleFile$1.class
+org/eclipse/osgi/storage/bundlefile/BundleEntry.class
+org/eclipse/osgi/storage/bundlefile/CloseableBundleFile.class
+org/eclipse/osgi/storage/bundlefile/CloseableBundleFile$BundleEntryInputStream.class
+org/eclipse/osgi/storage/bundlefile/BundleFileWrapper.class
+org/eclipse/osgi/storage/bundlefile/BundleFileWrapperChain.class
+org/eclipse/osgi/storage/bundlefile/DirBundleFile.class
+org/eclipse/osgi/storage/bundlefile/BundleFile.class
+org/eclipse/osgi/storage/bundlefile/ZipBundleFile.class
+org/eclipse/osgi/storage/bundlefile/ZipBundleFile$1.class
+org/eclipse/osgi/storage/bundlefile/MRUBundleFileList.class
+org/eclipse/osgi/storage/ManifestLocalization$BundleResourceBundle.class
+org/eclipse/osgi/storage/ManifestLocalization.class
+org/eclipse/osgi/storage/ManifestLocalization$LocalizationResourceBundle.class
+org/eclipse/osgi/storage/ManifestLocalization$EmptyResouceBundle.class
+org/eclipse/osgi/storage/BundleInfo.class
+org/eclipse/osgi/storage/BundleInfo$CachedManifest.class
+org/eclipse/osgi/storage/BundleInfo$Generation.class
+org/eclipse/osgi/storage/FrameworkExtensionInstaller.class
+org/eclipse/osgi/storage/NativeCodeFinder.class
+org/eclipse/osgi/storage/BundleLocalizationImpl.class
+org/eclipse/osgi/storage/Storage.class
+org/eclipse/osgi/storage/Storage$1.class
+org/eclipse/osgi/storage/Storage$2.class
+org/eclipse/osgi/storage/Storage$StorageException.class
+org/eclipse/osgi/storage/PermissionData.class
+org/eclipse/osgi/storage/StorageUtil.class
+org/eclipse/osgi/storage/StorageUtil$1.class
+org/eclipse/osgi/storage/SystemBundleFile$1.class
+org/eclipse/osgi/storage/SystemBundleFile.class
+org/eclipse/osgi/storage/ContentProvider.class
+org/eclipse/osgi/storage/ContentProvider$Type.class
+org/eclipse/osgi/internal/
+org/eclipse/osgi/internal/hooks/
+org/eclipse/osgi/internal/hooks/EclipseLazyStarter.class
+org/eclipse/osgi/internal/hooks/DevClassLoadingHook.class
+org/eclipse/osgi/internal/framework/
+org/eclipse/osgi/internal/framework/legacy/
+org/eclipse/osgi/internal/framework/legacy/StartLevelImpl.class
+org/eclipse/osgi/internal/framework/legacy/PackageAdminImpl$RequiredBundleImpl.class
+org/eclipse/osgi/internal/framework/legacy/PackageAdminImpl.class
+org/eclipse/osgi/internal/framework/legacy/PackageAdminImpl$ExportedPackageImpl.class
+org/eclipse/osgi/internal/framework/EquinoxBundle$1.class
+org/eclipse/osgi/internal/framework/EquinoxBundle$SystemBundle.class
+org/eclipse/osgi/internal/framework/EquinoxBundle$SystemBundle$EquinoxSystemModule$1.class
+org/eclipse/osgi/internal/framework/EquinoxBundle$SystemBundle$EquinoxSystemModule$2.class
+org/eclipse/osgi/internal/framework/EquinoxBundle$SystemBundle$EquinoxSystemModule.class
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -name 'org.eclipse*json' -maxdepth 1 -print | head -50" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://repo1.maven.org|\"documentation-url\" : \"https://javadoc.io|\"test-code-url\" : \"https://github.com/.*/tree/.*tests' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\" : \"https://repo1.maven.org' build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"language\"|\"not-for-native-image\"|\"replacement\"|\"description\"' build/discovered-artifact-metadata metadata | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata metadata | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+ succeeded in 0ms:
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:9:    "description" : "Provides Bouncy Castle Java APIs for PKIX, CMS, PKCS, EAC, TSP, CMP, CRMF, OCSP, and certificate generation. It targets JDK 1.5 through JDK 1.8 and is typically used alongside a JCE/JCA provider such as Bouncy Castle's cryptography provider.",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:9:    "description" : "Bouncy Castle PKIX provides Java APIs for CMS, PKCS, EAC, TSP, CMP, CRMF, OCSP, and X.509 certificate generation on JDK 1.8 and later. It is typically used with a JCE/JCA provider such as Bouncy Castle to build and process public-key infrastructure and related cryptographic message formats.",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:12:    "description": "Bouncy Castle PKIX provides Java APIs for CMS, PKCS, EAC, TSP, CMP, CRMF, OCSP, and certificate generation. It supports parsing, creating, and processing PKIX- and certificate-related cryptographic structures on JDK 1.5 and later.",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:16:    "description": "Provides the Jakarta Servlet 4.0 specification API as a JBoss-packaged artifact for Java web applications. It defines the standard server-side interfaces for handling HTTP requests, responses, and related web container interactions."
+metadata/log4j/log4j/index.json:11:    "description": "Apache Log4j 1.2 is a Java logging framework that lets applications route log events to appenders such as the console, files, sockets, JDBC, and JMS. It provides hierarchical loggers plus configurable layouts, filters, and XML or properties-based configuration.",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:20:    "description" : "ParaNamer is a Java library that exposes constructor and method parameter names at runtime. It can read parameter names from generated metadata, annotations, debug symbols, or bytecode so frameworks can bind arguments without manual name declarations.",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:9:    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:9:    "description" : "HtmlUnit CSS Parser is a Java library that parses CSS for the HtmlUnit browser automation project. It provides CSS syntax parsing components used to read and process stylesheets in Java applications.",
+metadata/org.glassfish.hk2/hk2-utils/index.json:9:    "description" : "HK2 Utils provides utility classes used by the HK2 dependency injection framework, including reflection helpers, cache abstractions, weak-reference collections, and general-purpose support code. It supports HK2 internals and applications built on HK2 by centralizing reusable Java utilities for type inspection, cache management, and lightweight data structures.",
+metadata/org.glassfish.hk2/hk2-utils/index.json:24:    "description" : "HK2 Utils provides utility classes used by the HK2 dependency injection framework, including reflection helpers, cache abstractions, weak-reference collections, and general-purpose support code. It supports HK2 internals and applications built on HK2 by centralizing reusable Java utilities for type inspection, cache management, and lightweight data structures.",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:9:    "description" : "NekoHtmlUnit is HtmlUnit's adaptation of NekoHTML, a tolerant HTML parser for Java. It preserves NekoHTML-style parsing while exposing HTML element classes in a way HtmlUnit can override and integrate into its browser simulation stack.",
+metadata/org.apache.directory.api/api-i18n/index.json:9:    "description" : "Apache Directory LDAP API I18n provides the internationalized message and error-code resources used by the Apache Directory LDAP API modules. It exposes the I18n enum and resource bundles that format localized diagnostics for LDAP, ASN1, DSML, and related Directory API components.",
+metadata/org.apache.directory.api/api-i18n/index.json:37:    "description" : "Apache Directory LDAP API I18n provides the internationalized message and error-code resources used by the Apache Directory LDAP API modules. It exposes the I18n enum and resource bundles that format localized diagnostics for LDAP, ASN1, DSML, and related Directory API components.",
+metadata/org.apache.yetus/audience-annotations/index.json:9:    "description" : "Apache Yetus Audience Annotations provides Java annotations for declaring intended API audience and stability, such as public, limited-private, private, stable, evolving, and unstable. It also includes doclet tooling that can include or exclude annotated elements when generating audience-specific Javadocs.",
+metadata/org.apache.yetus/audience-annotations/index.json:26:    "description" : "Apache Yetus Audience Annotations provides Java annotations for marking intended API audience boundaries such as public, limited-private, and private. It also includes doclet support for generating Javadocs filtered to the intended audience.",
+metadata/org.apache.xbean/xbean-reflect/index.json:9:    "description" : "Apache XBean Reflect provides utilities for constructing and configuring Java objects from recipes, resolving dependencies, references, collections, maps, and factory methods through reflection. It also includes property editors and converters that coerce string or generic values into Java types used during object assembly.",
+metadata/org.apache.directory.api/api-util/index.json:9:    "description" : "Apache Directory LDAP API Utilities provides shared helper classes for the Apache Directory LDAP API, including string and Unicode processing, hexadecimal and Base64 handling, generalized time parsing, collections, reflection, and OSGi helpers. It is a Java utility module used by the broader Directory API components rather than a standalone LDAP client or server.",
+metadata/com.ibm.async/asyncutil/index.json:9:    "description" : "AsyncUtil provides Java utilities for composing and coordinating CompletionStage-based asynchronous workflows. It includes helpers for async iteration, locks, queues, and stage collection so applications can build non-blocking control flow on top of CompletableFuture.",
+metadata/org.openjfx/javafx-base/index.json:9:    "description" : "JavaFX Base defines the core APIs that underpin the JavaFX toolkit, including properties, bindings, collections, and events. It provides the foundational observable and event infrastructure that higher-level JavaFX modules build on.",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:9:    "description" : "Jetty WebSocket Client provides Jetty 9's Java client implementation for opening, configuring, and managing WebSocket connections from applications. It builds on Jetty's HTTP client and WebSocket common runtime to perform handshakes, create sessions, and send or receive WebSocket messages asynchronously.",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:9:    "description" : "Apache XBean xbean-asm9-shaded repackages and shades ASM 9 classes under the org.apache.xbean.asm9 namespace. It provides an isolated bytecode manipulation dependency for XBean and consumers that need ASM without package conflicts.",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:23:    "description" : "Apache XBean xbean-asm9-shaded repackages and shades ASM 9 classes under the org.apache.xbean.asm9 namespace. It provides an isolated bytecode manipulation dependency for XBean and consumers that need ASM without package conflicts.",
+metadata/library-and-framework-list.json:4:    "description": "DataStax Java Driver for Apache Cassandra",
+metadata/library-and-framework-list.json:21:    "description": "ISBN core is a small library that contains a representation object of ISBN-10 and ISBN-13 and tools to parse, validate and format one",
+metadata/library-and-framework-list.json:37:    "description": "HTTP classes. These classes are shared among the HTTP client and the HTTP server.",
+metadata/library-and-framework-list.json:52:    "description": "HTTP client supporting SSL, cookies, WebSockets, and HTTP/2. Requires an adapter to be used.",
+metadata/library-and-framework-list.json:67:    "description": "HTTP client adapter for the JDK HTTP client.",
+metadata/library-and-framework-list.json:82:    "description": "HTTP client adapter for Jetty (without WebSockets support).",
+metadata/library-and-framework-list.json:97:    "description": "HTTP client adapter for Jetty (with WebSockets support).",
+metadata/library-and-framework-list.json:112:    "description": "HTTP handlers used to apply many callbacks to HTTP calls.",
+metadata/library-and-framework-list.json:127:    "description": "HTTP server supporting SSL, cookies, WebSockets, and HTTP/2. Requires an adapter to be used.",
+metadata/library-and-framework-list.json:142:    "description": "HTTP server adapter for Helidon (using Java Virtual Threads).",
+metadata/library-and-framework-list.json:157:    "description": "HTTP server adapter for JDK HTTP server.",
+metadata/library-and-framework-list.json:172:    "description": "HTTP server adapter for Jetty (using Servlets under the hood).",
+metadata/library-and-framework-list.json:187:    "description": "HTTP server adapter for Netty.",
+metadata/library-and-framework-list.json:202:    "description": "HTTP server adapter for Netty (using Linux Epoll).",
+metadata/library-and-framework-list.json:217:    "description": "HTTP server extensions to ease the development of REST APIs.",
+metadata/library-and-framework-list.json:232:    "description": "Tools to test and document REST services.",
+metadata/library-and-framework-list.json:247:    "description": "HTTP server extensions to ease the development of dynamic Web applications.",
+metadata/library-and-framework-list.json:262:    "description": "Hexagon serialization module.",
+metadata/library-and-framework-list.json:277:    "description": "Hexagon JSON serialization format (using DSL-JSON).",
+metadata/library-and-framework-list.json:292:    "description": "Jackson's serialization utilities (used in several serialization formats).",
+metadata/library-and-framework-list.json:307:    "description": "Hexagon CSV serialization format (using Jackson).",
+metadata/library-and-framework-list.json:322:    "description": "Hexagon JSON serialization format (using Jackson).",
+metadata/library-and-framework-list.json:337:    "description": "Hexagon TOML serialization format (using Jackson).",
+metadata/library-and-framework-list.json:352:    "description": "Hexagon XML serialization format (using Jackson).",
+metadata/library-and-framework-list.json:367:    "description": "Hexagon YAML serialization format (using Jackson).",
+metadata/library-and-framework-list.json:382:    "description": "Template processing port. Supports template loading and context passing. Allow multiple adapters at once.",
+metadata/library-and-framework-list.json:397:    "description": "Template processor adapter for Freemarker.",
+metadata/library-and-framework-list.json:412:    "description": "Template processor adapter for 'jte'.",
+metadata/library-and-framework-list.json:427:    "description": "Template processor adapter for Pebble.",
+metadata/library-and-framework-list.json:442:    "description": "Template processor adapter for Rocker. Don't support dynamic template loading.",
+metadata/library-and-framework-list.json:457:    "description": "Hexagon core utilities (dates, exceptions, logging, etc.).",
+metadata/library-and-framework-list.json:474:    "description": "Handlers to be applied on events processing.",
+metadata/library-and-framework-list.json:489:    "description": "Hexagon helpers. Not used inside the toolkit but useful for applications.",
+metadata/library-and-framework-list.json:504:    "description": "iText Core module for barcodes creation.",
+metadata/library-and-framework-list.json:532:    "description": "iText Core module which allows to pick cryptography library, bouncy castle or bouncy castle fips, for PDF manipulations.",
+metadata/library-and-framework-list.json:560:    "description": "iText Asian fonts for use in conjunction with iText.",
+metadata/library-and-framework-list.json:576:    "description": "iText Core module for form fields manipulations.",
+metadata/library-and-framework-list.json:592:    "description": "pdfHTML is an iText add-on that lets you to parse (X)HTML snippets and the associated CSS and converts them to PDF.",
+metadata/library-and-framework-list.json:608:    "description": "XML files that can be used for hyphenation in layout module.",
+metadata/library-and-framework-list.json:624:    "description": "Low level iText Core module for reading data to be used in PDF (image streams, font programs etc).",
+metadata/library-and-framework-list.json:640:    "description": "Umbrella module which includes all iText Core modules.",
+metadata/library-and-framework-list.json:669:    "description": "iText Core module responsible for low level PDF creation and manipulation.",
+metadata/library-and-framework-list.json:685:    "description": "iText Core module that performs operations of transforming abstract elements (like Paragraph, Table, List etc) into low level PDF syntax on actual document pages.",
+metadata/library-and-framework-list.json:701:    "description": "iText Core module to ease PDF/A documents creation.",
+metadata/library-and-framework-list.json:715:    "description": "iText Core module containing a set of tools to execute iText Core tests.",
+metadata/library-and-framework-list.json:729:    "description": "iText Core module to ease PDF/UA documents creation.",
+metadata/library-and-framework-list.json:743:    "description": "iText Core module used to sign PDF documents and validate signatures.",
+metadata/library-and-framework-list.json:757:    "description": "iText Core module to parse HTML and XML.",
+metadata/library-and-framework-list.json:771:    "description": "iText Core module that allows you to integrate SVG images in your PDF creation and manipulation process.",
+metadata/library-and-framework-list.json:787:    "description": "The OpenAI Java SDK provides convenient access to the OpenAI REST API from applications written in Java.",
+metadata/library-and-framework-list.json:803:    "description": "Oracle Application Performance Monoitoring(APM) Java Tracer for Helidon 2.x based applications",
+metadata/library-and-framework-list.json:819:    "description": "Oracle Application Performance Monoitoring(APM) Java Tracer for Helidon 3.x based applications",
+metadata/library-and-framework-list.json:835:    "description": "Oracle Application Performance Monoitoring(APM) Java Tracer for Micronaut based applications",
+metadata/library-and-framework-list.json:851:    "description": "Oracle JDBC Driver compatible with JDK11, JDK12, JDK13, JDK14 and JDK15",
+metadata/library-and-framework-list.json:867:    "description": "Oracle JDBC Driver compatible with JDK8, JDK11, JDK12, JDK13, JDK14 and JDK15",
+metadata/library-and-framework-list.json:883:    "description": "Oracle Cloud Infrastructure Java SDK",
+metadata/library-and-framework-list.json:901:    "description": "Avaje Configuration.",
+metadata/library-and-framework-list.json:918:    "description": "Avaje Validator.",
+metadata/library-and-framework-list.json:935:    "description": "Ebean database migration runner.",
+metadata/library-and-framework-list.json:952:    "description": "Helidon Configuration.",
+metadata/library-and-framework-list.json:968:    "description": "Helidon MicroProfile Bundle. Requires Helidon native image features.",
+metadata/library-and-framework-list.json:987:    "description": "Helidon MicroProfile Core Bundle. Requires Helidon native image features.",
+metadata/library-and-framework-list.json:1006:    "description": "Helidon Reactive WebClient.",
+metadata/library-and-framework-list.json:1023:    "description": "Helidon Reactive WebServer. Requires Helidon native image feature.",
+metadata/library-and-framework-list.json:1687:    "description": "Netty project - an event-driven asynchronous network application framework",
+metadata/library-and-framework-list.json:1703:    "description": "Apache Tomcat",
+metadata/library-and-framework-list.json:1720:    "description": "Core modules of Fugerit Venus Doc framework. Contains XML source and simple markdown doc handler.",
+metadata/library-and-framework-list.json:1737:    "description": "FreeMarker extensions for Fugerit Venus Doc framework. Contains doc handler for HTML and AsciiDoc.",
+metadata/library-and-framework-list.json:1754:    "description": "OpenCSV Module for Fugerit Venus Doc. Contains doc handler for CSV format (based on com.opencsv:opencsv).",
+metadata/library-and-framework-list.json:1771:    "description": "MongoDB's Java implementation of the BSON specification",
+metadata/library-and-framework-list.json:1788:    "description": "MongoDB client-side crypto support",
+metadata/library-and-framework-list.json:1805:    "description": "Shared components for the Synchronous and Reactive Streams implementations of the MongoDB Java Driver.",
+metadata/library-and-framework-list.json:1822:    "description": "A Reactive Streams implementation of the MongoDB Java Driver",
+metadata/library-and-framework-list.json:1837:    "description": "The official MongoDB driver for synchronous Java applications",
+metadata/library-and-framework-list.json:1852:    "description": "Official Java Driver for Neo4j",
+metadata/library-and-framework-list.json:1868:    "description": "RESTHeart Core - Core HTTP microservices platform for MongoDB and other data stores",
+metadata/library-and-framework-list.json:1886:    "description": "RESTHeart Commons - Common utilities and interfaces for RESTHeart modules",
+metadata/library-and-framework-list.json:1904:    "description": "RESTHeart GraphQL - GraphQL services and plugins for RESTHeart",
+metadata/library-and-framework-list.json:1922:    "description": "RESTHeart Metrics - Metrics and monitoring services for RESTHeart",
+metadata/library-and-framework-list.json:1940:    "description": "RESTHeart MongoDB - MongoDB services and plugins for RESTHeart",
+metadata/library-and-framework-list.json:1958:    "description": "RESTHeart Polyglot - JavaScript and polyglot language support for RESTHeart plugins",
+metadata/library-and-framework-list.json:1976:    "description": "RESTHeart Security - Authentication and authorization services for RESTHeart",
+metadata/library-and-framework-list.json:1994:    "description": "Provides core abstractions and infrastructure for building message-driven applications using AMQP brokers such as RabbitMQ.",
+metadata/library-and-framework-list.json:2008:    "description": "Starter for using Spring Boot's Actuator which provides production ready features to help you monitor and manage your application",
+metadata/library-and-framework-list.json:2024:    "description": "Starter for using Spring AMQP and Rabbit MQ",
+metadata/library-and-framework-list.json:2040:    "description": "Starter for using Spring Framework's caching support",
+metadata/library-and-framework-list.json:2056:    "description": "Starter for using Spring Data JDBC",
+metadata/library-and-framework-list.json:2072:    "description": "Starter for using Spring Data JPA with Hibernate",
+metadata/library-and-framework-list.json:2090:    "description": "Starter for using MongoDB document-oriented database and Spring Data MongoDB",
+metadata/library-and-framework-list.json:2109:    "description": "Starter for using MongoDB document-oriented database and Spring Data MongoDB Reactive",
+metadata/library-and-framework-list.json:2128:    "description": "Starter for using Spring Data R2DBC",
+metadata/library-and-framework-list.json:2144:    "description": "Starter for using Redis key-value data store with Spring Data Redis and the Lettuce client",
+metadata/library-and-framework-list.json:2161:    "description": "Starter for using Redis key-value data store with Spring Data Redis reactive and the Lettuce client",
+metadata/library-and-framework-list.json:2178:    "description": "Starter for exposing Spring Data repositories over REST using Spring Data REST",
+metadata/library-and-framework-list.json:2195:    "description": "Starter for building MVC web applications using FreeMarker views",
+metadata/library-and-framework-list.json:2211:    "description": "Starter for building GraphQL applications with Spring for GraphQL",
+metadata/library-and-framework-list.json:2228:    "description": "Starter for building hypermedia-based RESTful web application with Spring MVC and Spring HATEOAS",
+
+ succeeded in 0ms:
+metadata/org.jline/jline-terminal-jna/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jna/index.json:6:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.jline/jline-terminal-jna/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/terminal-jna/src/test",
+metadata/org.jline/jline-terminal-jna/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-javadoc.jar",
+metadata/org.jline/jline-console/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:6:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.jline/jline-console/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/console/src/test",
+metadata/org.jline/jline-console/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-javadoc.jar",
+metadata/org.jline/jline-console/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:51:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.jline/jline-console/index.json:52:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/console/src/test",
+metadata/org.jline/jline-console/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-javadoc.jar",
+metadata/org.jline/jline/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/$version$/jline-$version$-sources.jar",
+metadata/org.jline/jline/index.json:10:    "repository-url": "https://github.com/jline/jline3",
+metadata/org.jline/jline/index.json:11:    "test-code-url": "https://github.com/jline/jline3/tree/jline-parent-$version$",
+metadata/org.jline/jline/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/jline/jline/$version$/jline-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:22:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:37:    "repository-url" : "https://github.com/javaee/metro-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+metadata/org.ehcache/ehcache/index.json:12:    "repository-url": "https://github.com/ehcache/ehcache3",
+metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:7:    "repository-url": "https://github.com/census-instrumentation/opencensus-java",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/rnorth/duct-tape/duct-tape/$version$/duct-tape-$version$-sources.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:7:    "repository-url": "https://github.com/rnorth/duct-tape",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:8:    "test-code-url": "https://github.com/rnorth/duct-tape/tree/$version$/src/test/java",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:9:    "documentation-url": "https://github.com/rnorth/duct-tape/blob/$version$/docs/index.md",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:48:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-sources.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:49:    "repository-url" : "https://github.com/spring-projects/spring-security",
+metadata/org.springframework.security/spring-security-crypto/index.json:50:    "test-code-url" : "https://github.com/spring-projects/spring-security/tree/$version$/crypto/src/test",
+metadata/org.springframework.security/spring-security-crypto/index.json:51:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-javadoc.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:100:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-sources.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:101:    "repository-url" : "https://github.com/spring-projects/spring-security",
+metadata/org.springframework.security/spring-security-crypto/index.json:102:    "test-code-url" : "https://github.com/spring-projects/spring-security/tree/$version$/crypto/src/test",
+metadata/org.springframework.security/spring-security-crypto/index.json:103:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-javadoc.jar",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/$version$/apacheds-i18n-$version$-sources.jar",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/apacheds",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/$version$/apacheds-i18n-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/ch.qos.cal10n/cal10n-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/cal10n/cal10n-api/$version$/cal10n-api-$version$-sources.jar",
+metadata/ch.qos.cal10n/cal10n-api/index.json:6:    "repository-url" : "https://github.com/qos-ch/cal10n",
+metadata/ch.qos.cal10n/cal10n-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/cal10n/cal10n-api/$version$/cal10n-api-$version$-tests.jar",
+metadata/ch.qos.cal10n/cal10n-api/index.json:8:    "documentation-url" : "https://github.com/qos-ch/cal10n/blob/v$version$/cal10n-site/src/site/pages/documentation.html",
+metadata/org.apache.ant/ant-antlr/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/ant/ant-antlr/$version$/ant-antlr-$version$-sources.jar",
+metadata/org.apache.ant/ant-antlr/index.json:6:    "repository-url" : "https://github.com/apache/ant",
+metadata/org.apache.ant/ant-antlr/index.json:7:    "test-code-url" : "https://github.com/apache/ant/blob/rel/$version$/src/tests/junit/org/apache/tools/ant/taskdefs/optional/ANTLRTest.java",
+metadata/org.apache.ant/ant-antlr/index.json:8:    "documentation-url" : "https://github.com/apache/ant/blob/rel/$version$/manual/Tasks/antlr.html",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/$version$/jboss-classfilewriter-$version$-sources.jar",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:6:    "repository-url" : "https://github.com/wildfly/jboss-classfilewriter",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/$version$/jboss-classfilewriter-$version$-source-release.zip",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/$version$/jboss-classfilewriter-$version$-javadoc.jar",
+metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+metadata/org.datanucleus/javax.jdo/index.json:6:    "repository-url" : "https://github.com/datanucleus/javax.jdo",
+metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:5:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.slf4j/slf4j-api/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-tests.jar",
+metadata/org.slf4j/slf4j-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/$version$/slf4j-site-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:20:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.slf4j/slf4j-api/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-tests.jar",
+metadata/org.slf4j/slf4j-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:5:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.httpcomponents/httpclient/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:20:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.httpcomponents/httpclient/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-javadoc.jar",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.implementation/$version$/org.osgi.namespace.implementation-$version$-sources.jar",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:7:    "test-code-url" : "N/A",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.implementation/$version$/org.osgi.namespace.implementation-$version$-javadoc.jar",
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/
+web search: 
+web search: 
+web search: 
+web search: org.eclipse.platform org.eclipse.osgi 3.18.300 pom scm github eclipse-equinox
+web search: 
+web search: github eclipse-equinox equinox R4_27 org.eclipse.osgi META-INF MANIFEST Bundle-Version 3.18.300
+codex
+I found no Maven `-tests.jar`, so the test URL will point to the `org.eclipse.osgi.tests` bundle in the matching Equinox `R4_27` tag. The artifact JAR contains JVM class files, so I’m leaving `not-for-native-image` and `language` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+diff --git a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+index 975645e05adde825a5974f4ca0c6b4098485ba1d..9e78b5c3e55eaf66255f656e567f0589b4981e77
+--- a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
++++ b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300"
++  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300",
++  "repository-url" : "https://github.com/eclipse-equinox/equinox",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-javadoc.jar",
++  "description" : "Eclipse Equinox OSGi is the Eclipse implementation of the OSGi Framework system bundle for Java applications. It provides bundle lifecycle management, class loading, service registry, module resolution, and framework launch support used by the Eclipse Platform and standalone OSGi runtimes."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+index 975645e05adde825a5974f4ca0c6b4098485ba1d..9e78b5c3e55eaf66255f656e567f0589b4981e77
+--- a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
++++ b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300"
++  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300",
++  "repository-url" : "https://github.com/eclipse-equinox/equinox",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-javadoc.jar",
++  "description" : "Eclipse Equinox OSGi is the Eclipse implementation of the OSGi Framework system bundle for Java applications. It provides bundle lifecycle management, class loading, service registry, module resolution, and framework launch support used by the Eclipse Platform and standalone OSGi runtimes."
+ }
+
+codex
+The JSON is patched. I’ll do a quick validity check and verify that the substituted source, test, and documentation URLs resolve.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+ succeeded in 0ms:
+{
+  "coordinates": "org.eclipse.platform:org.eclipse.osgi:3.18.300",
+  "repository-url": "https://github.com/eclipse-equinox/equinox",
+  "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-sources.jar",
+  "test-code-url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests",
+  "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-javadoc.jar",
+  "description": "Eclipse Equinox OSGi is the Eclipse implementation of the OSGi Framework system bundle for Java applications. It provides bundle lifecycle management, class loading, service registry, module resolution, and framework launch support used by the Eclipse Platform and standalone OSGi runtimes."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSLI https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/org.eclipse.osgi-3.18.300-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 16:26:15 GMT
+content-type: application/java-archive
+content-length: 526
+cf-ray: 9f5862f44a22e5d9-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 547193
+etag: "b3098f9a27931b0b958bf4d637396bb2"
+last-modified: Mon, 13 Mar 2023 10:49:45 GMT
+x-checksum-md5: b3098f9a27931b0b958bf4d637396bb2
+x-checksum-sha1: 29e48043a011258993b15d189733f74519c93124
+
+exec
+/usr/bin/bash -lc "curl -fsSLI https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/org.eclipse.osgi-3.18.300-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 16:26:15 GMT
+content-type: application/java-archive
+content-length: 1172879
+cf-ray: 9f5862f44b32bb08-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 788234
+etag: "eaaf4384081c6e3ee2552138cf67d8e3"
+last-modified: Mon, 13 Mar 2023 10:49:44 GMT
+x-checksum-md5: eaaf4384081c6e3ee2552138cf67d8e3
+x-checksum-sha1: f891c41e35fb48649c6870988508978a38c4107a
+
+exec
+/usr/bin/bash -lc "curl -fsSLI https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests | sed -n '1,16p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+diff --git a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+index 975645e05adde825a5974f4ca0c6b4098485ba1d..9e78b5c3e55eaf66255f656e567f0589b4981e77
+--- a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
++++ b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300"
++  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300",
++  "repository-url" : "https://github.com/eclipse-equinox/equinox",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-javadoc.jar",
++  "description" : "Eclipse Equinox OSGi is the Eclipse implementation of the OSGi Framework system bundle for Java applications. It provides bundle lifecycle management, class loading, service registry, module resolution, and framework launch support used by the Eclipse Platform and standalone OSGi runtimes."
+ }
+
+ succeeded in 558ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 16:26:15 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"e85a8c39d25bad78a3e10da98d3e5405"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=wYcdkfyA2o3kT7Z5iWWfALqWNCCkjCMfkS7aLAXRrMecd25RFhWm86ZtzZHEYOQ6NsFyC7l%2BBy3MyvWJVzAkMwhVFYzZAtCFwjGlDPZsibhJ4bknz6HShUkrJFsAMMXQ%2FHohrUcTswtkW1kCwPc713COatN%2BIzY3AMZ8A4Az2OUTW1miivVZnMsDydJGTuBDagMaeR0XabDDRov7vuRMJFTCZ5x0xwGIUUDnfWmiEXLWru1fNiwHeO7Cy4vN7niKDXZ%2Fo7fwT%2FKga0Np8Vguvw%3D%3D--RnxbLd8z0E%2BPYjPE--WdSP1UzptC0SCfql3iUdTQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.245274429.1777739175; expires=Sun, 02 May 2027 16:26:15 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+index 975645e05adde825a5974f4ca0c6b4098485ba1d..9e78b5c3e55eaf66255f656e567f0589b4981e77
+--- a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
++++ b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300"
++  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300",
++  "repository-url" : "https://github.com/eclipse-equinox/equinox",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-javadoc.jar",
++  "description" : "Eclipse Equinox OSGi is the Eclipse implementation of the OSGi Framework system bundle for Java applications. It provides bundle lifecycle management, class loading, service registry, module resolution, and framework launch support used by the Eclipse Platform and standalone OSGi runtimes."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json && sed -n '1,120p' build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1
+ succeeded in 0ms:
+{
+  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300",
+  "repository-url" : "https://github.com/eclipse-equinox/equinox",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-sources.jar",
+  "test-code-url" : "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-javadoc.jar",
+  "description" : "Eclipse Equinox OSGi is the Eclipse implementation of the OSGi Framework system bundle for Java applications. It provides bundle lifecycle management, class loading, service registry, module resolution, and framework launch support used by the Eclipse Platform and standalone OSGi runtimes."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+index 975645e05adde825a5974f4ca0c6b4098485ba1d..9e78b5c3e55eaf66255f656e567f0589b4981e77
+--- a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
++++ b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300"
++  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300",
++  "repository-url" : "https://github.com/eclipse-equinox/equinox",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-javadoc.jar",
++  "description" : "Eclipse Equinox OSGi is the Eclipse implementation of the OSGi Framework system bundle for Java applications. It provides bundle lifecycle management, class loading, service registry, module resolution, and framework launch support used by the Eclipse Platform and standalone OSGi runtimes."
+ }
+
+web search: 
+web search: Maven Central org.eclipse.platform org.eclipse.osgi 3.18.300 sources javadoc jar
+web search: 
+web search: https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/
+web search: 
+web search: 
+codex
+Updated [org.eclipse.platform-org.eclipse.osgi-3.18.300.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json).
+
+I used Maven Central for the exact `3.18.300` source and javadoc artifacts, and the Equinox `R4_27` GitHub tag for the matching `org.eclipse.osgi.tests` suite. Maven Central also lists the normal JVM JAR for this version, so I left `not-for-native-image` absent; the GitHub test bundle exists under `R4_27`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/))
+
+Verified with `jq` and HTTP checks for the substituted source, documentation, and test URLs.
+diff --git a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+index 975645e05adde825a5974f4ca0c6b4098485ba1d..9e78b5c3e55eaf66255f656e567f0589b4981e77
+--- a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
++++ b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300"
++  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300",
++  "repository-url" : "https://github.com/eclipse-equinox/equinox",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-javadoc.jar",
++  "description" : "Eclipse Equinox OSGi is the Eclipse implementation of the OSGi Framework system bundle for Java applications. It provides bundle lifecycle management, class loading, service registry, module resolution, and framework launch support used by the Eclipse Platform and standalone OSGi runtimes."
+ }
+
+tokens used
+80,953
+Updated [org.eclipse.platform-org.eclipse.osgi-3.18.300.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json).
+
+I used Maven Central for the exact `3.18.300` source and javadoc artifacts, and the Equinox `R4_27` GitHub tag for the matching `org.eclipse.osgi.tests` suite. Maven Central also lists the normal JVM JAR for this version, so I left `not-for-native-image` absent; the GitHub test bundle exists under `R4_27`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/))
+
+Verified with `jq` and HTTP checks for the substituted source, documentation, and test URLs.
+Ran agent for org.eclipse.platform:org.eclipse.osgi:3.18.300 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1/build/agent-artifact-discovery-logs/org.eclipse.platform-org.eclipse.osgi-3.18.300.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-3fca47b1/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 40s
+9 actionable tasks: 4 executed, 5 from cache
