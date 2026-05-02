@@ -163,8 +163,13 @@ public class Commons_fileupload2_javaxTest {
         Map<String, List<DiskFileItem>> parameterMap = upload.parseParameterMap(request);
 
         assertThat(parameterMap).containsOnlyKeys("tag", "single");
-        assertThat(parameterMap.get("tag")).extracting(DiskFileItem::getString).containsExactly("red", "blue");
-        assertThat(parameterMap.get("single")).singleElement().extracting(DiskFileItem::getString).isEqualTo("value");
+        List<DiskFileItem> tags = parameterMap.get("tag");
+        assertThat(tags).hasSize(2);
+        assertThat(tags.get(0).getString()).isEqualTo("red");
+        assertThat(tags.get(1).getString()).isEqualTo("blue");
+        List<DiskFileItem> single = parameterMap.get("single");
+        assertThat(single).hasSize(1);
+        assertThat(single.get(0).getString()).isEqualTo("value");
     }
 
     @Test
