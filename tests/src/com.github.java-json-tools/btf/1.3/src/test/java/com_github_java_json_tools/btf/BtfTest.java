@@ -74,7 +74,22 @@ public class BtfTest {
         assertThat(refrozen.tags()).containsExactly("builder");
     }
 
+    @Test
+    void buildersCanCreateValuesWithoutFreezeThawLifecycle() {
+        SearchQuery query = buildSearchQuery(new SearchQueryBuilder()
+                .term("native image")
+                .includeField("title")
+                .includeField("summary"));
+
+        assertThat(query.term()).isEqualTo("native image");
+        assertThat(query.fields()).containsExactly("title", "summary");
+    }
+
     private static Document build(Builder<Document> builder) {
+        return builder.build();
+    }
+
+    private static SearchQuery buildSearchQuery(Builder<SearchQuery> builder) {
         return builder.build();
     }
 
@@ -138,6 +153,44 @@ public class BtfTest {
         @Override
         public Document freeze() {
             return new Document(title, tags);
+        }
+    }
+
+    private static final class SearchQuery {
+        private final String term;
+        private final List<String> fields;
+
+        private SearchQuery(String term, List<String> fields) {
+            this.term = term;
+            this.fields = List.copyOf(fields);
+        }
+
+        private String term() {
+            return term;
+        }
+
+        private List<String> fields() {
+            return fields;
+        }
+    }
+
+    private static final class SearchQueryBuilder implements Builder<SearchQuery> {
+        private String term = "";
+        private final List<String> fields = new ArrayList<>();
+
+        private SearchQueryBuilder term(String term) {
+            this.term = term;
+            return this;
+        }
+
+        private SearchQueryBuilder includeField(String field) {
+            fields.add(field);
+            return this;
+        }
+
+        @Override
+        public SearchQuery build() {
+            return new SearchQuery(term, fields);
         }
     }
 }
