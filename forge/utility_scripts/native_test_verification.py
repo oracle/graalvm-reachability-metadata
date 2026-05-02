@@ -61,6 +61,7 @@ _LOG_TASK_TYPE = "native-test-verify"
 # Gradle's own exit code does not include it.
 _EXIT_VALUE_PATTERN = re.compile(r"exit\s+value\s+(\d+)", re.IGNORECASE)
 _TRACE_SENTINEL_FILE_NAMES = frozenset({"binary-exit-code"})
+_AGGREGATED_METADATA_FILE_NAME = "reachability-metadata.json"
 
 
 @dataclass
@@ -417,12 +418,22 @@ def _merge_into_output(
             check=False,
             timeout=_MERGE_TIMEOUT_SECONDS,
         )
+        _print_aggregated_metadata_path(output_dir)
     except subprocess.TimeoutExpired:
         log_stage(
             _GATE_STAGE,
             f"mergeNativeTraceMetadata exceeded {_MERGE_TIMEOUT_SECONDS}s timeout",
             indent_level=1,
         )
+
+
+def _print_aggregated_metadata_path(output_dir: str) -> None:
+    """Print only the path to the merged reachability metadata file."""
+    log_stage(
+        _GATE_STAGE,
+        os.path.join(output_dir, _AGGREGATED_METADATA_FILE_NAME),
+        indent_level=1,
+    )
 
 
 def _reset_directory(path: str) -> None:

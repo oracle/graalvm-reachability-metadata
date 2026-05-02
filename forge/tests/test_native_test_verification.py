@@ -271,6 +271,25 @@ class GateRoutingTests(unittest.TestCase):
         self.assertEqual(result.iterations_used, 3)
         self.assertEqual(len(result.accepted_run_dirs), 2)
 
+    def test_prints_aggregated_metadata_path_after_merge(self) -> None:
+        fake, _calls = self._fake_run_factory([172, 0])
+        output = io.StringIO()
+        with patch(
+            "utility_scripts.native_test_verification.subprocess.run",
+            side_effect=fake,
+        ), redirect_stdout(output):
+            result = ntv.verify_native_test_passes(
+                reachability_repo_path=self.repo,
+                coordinate="g:a:1.0",
+                output_dir=self.output_dir,
+                max_iterations=5,
+            )
+        self.assertEqual(result.status, ntv.STATUS_PASSED)
+        self.assertIn(
+            os.path.join(self.output_dir, "reachability-metadata.json"),
+            output.getvalue(),
+        )
+
     def test_failed_when_budget_exhausted_with_only_172(self) -> None:
         fake, _calls = self._fake_run_factory([172, 172])
         with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake):
