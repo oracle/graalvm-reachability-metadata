@@ -14,7 +14,7 @@ Usage:
     [--reachability-metadata-path /path/to/graalvm-reachability-metadata] \
     [--metrics-repo-path /path/to/metrics-storage] \
     [--docs-path /path/to/docs] \
-    [--strategy-name "coverage_only_pi_gpt-5.5"] \
+    [--strategy-name "library_update_pi_gpt-5.5"] \
     [-v]
 """
 
@@ -51,7 +51,7 @@ from utility_scripts.strategy_loader import require_strategy_by_name
 from utility_scripts.workflow_setup import resolve_graalvm_java_home, validate_repo_paths
 
 DEFAULT_MODEL_NAME = "oca/gpt-5.5"
-DEFAULT_STRATEGY_NAME = "coverage_only_pi_gpt-5.5"
+DEFAULT_STRATEGY_NAME = "library_update_pi_gpt-5.5"
 METRICS_TASK_TYPE = "improve_library_coverage"
 BASELINE_STATS_FILENAME = ".baseline-stats.json"
 
