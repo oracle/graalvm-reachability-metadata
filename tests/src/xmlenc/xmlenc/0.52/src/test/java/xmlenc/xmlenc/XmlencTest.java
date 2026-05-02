@@ -100,6 +100,26 @@ public class XmlencTest {
     }
 
     @Test
+    void outputterWritesDocumentTypeDeclarationsWithExternalIdentifiers() throws Exception {
+        StringWriter systemWriter = new StringWriter();
+        XMLOutputter systemOutputter = new XMLOutputter(systemWriter, "UTF-8");
+
+        systemOutputter.dtd("catalog", null, "catalog.dtd");
+
+        assertThat(systemWriter.toString()).isEqualTo("<!DOCTYPE catalog SYSTEM \"catalog.dtd\">");
+        assertThat(systemOutputter.getState()).isSameAs(XMLEventListenerStates.BEFORE_ROOT_ELEMENT);
+
+        StringWriter publicWriter = new StringWriter();
+        XMLOutputter publicOutputter = new XMLOutputter(publicWriter, "UTF-8");
+
+        publicOutputter.dtd("html", "-//W3C//DTD XHTML 1.0 Strict//EN", "xhtml1-strict.dtd");
+
+        assertThat(publicWriter.toString())
+                .isEqualTo("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"xhtml1-strict.dtd\">");
+        assertThat(publicOutputter.getState()).isSameAs(XMLEventListenerStates.BEFORE_ROOT_ELEMENT);
+    }
+
+    @Test
     void outputterFormatsNestedElementsAndClosesOpenElements() throws Exception {
         StringWriter writer = new StringWriter();
         XMLOutputter outputter = new XMLOutputter(writer, "UTF-8");
