@@ -82,7 +82,7 @@ public class Commons_fileupload2_coreTest {
         assertThat(description.getName()).isNull();
         assertThat(description.getContentType()).isEqualTo("text/plain; charset=UTF-8");
         assertThat(description.getCharset()).isEqualTo(StandardCharsets.UTF_8);
-        assertThat(description.getString()).isEqualTo(text);
+        assertThat(readUtf8(description.getInputStream())).isEqualTo(text);
         assertThat(description.getHeaders().getHeader("x-custom")).isEqualTo("first");
         assertThat(iteratorToList(description.getHeaders().getHeaders("X-Custom"))).containsExactly("first", "second");
 
@@ -116,7 +116,7 @@ public class Commons_fileupload2_coreTest {
             assertThat(item.isFormField()).isFalse();
             assertThat(item.getName()).isEqualTo("r\u00e9sum\u00e9.txt");
             assertThat(item.getContentType()).isEqualTo("text/plain; charset=UTF-8");
-            assertThat(item.getString()).isEqualTo("contents");
+            assertThat(item.getString(StandardCharsets.UTF_8)).isEqualTo("contents");
         });
     }
 
@@ -132,8 +132,8 @@ public class Commons_fileupload2_coreTest {
         Map<String, List<DiskFileItem>> parameterMap = upload.parseParameterMap(request(boundary, body));
 
         assertThat(parameterMap).containsOnlyKeys("tag", "single");
-        assertThat(parameterMap.get("tag")).extracting(item -> item.getString()).containsExactly("red", "blue");
-        assertThat(parameterMap.get("single")).singleElement().satisfies(item -> assertThat(item.getString()).isEqualTo("value"));
+        assertThat(parameterMap.get("tag")).extracting(item -> item.getString(StandardCharsets.UTF_8)).containsExactly("red", "blue");
+        assertThat(parameterMap.get("single")).singleElement().satisfies(item -> assertThat(item.getString(StandardCharsets.UTF_8)).isEqualTo("value"));
     }
 
     @Test
@@ -257,7 +257,7 @@ public class Commons_fileupload2_coreTest {
         headers.addHeader("Content-Language", "en");
         DiskFileItem inMemory = DiskFileItem.builder()
                 .setPath(tempDir)
-                .setBufferSize(64)
+                .setThreshold(64)
                 .setFieldName("comment")
                 .setFileName("comment.txt")
                 .setContentType("text/plain; charset=UTF-8")
@@ -270,8 +270,8 @@ public class Commons_fileupload2_coreTest {
 
         assertThat(inMemory.isInMemory()).isTrue();
         assertThat(inMemory.getPath()).isNull();
-        assertThat(inMemory.get()).containsExactly("hello".getBytes(StandardCharsets.UTF_8));
-        assertThat(inMemory.getString()).isEqualTo("hello");
+        assertThat(readBytes(inMemory)).containsExactly("hello".getBytes(StandardCharsets.UTF_8));
+        assertThat(readUtf8(inMemory.getInputStream())).isEqualTo("hello");
         assertThat(inMemory.getHeaders().getHeader("content-language")).isEqualTo("en");
         inMemory.setFieldName("renamed").setFormField(false);
         assertThat(inMemory.getFieldName()).isEqualTo("renamed");
@@ -282,7 +282,7 @@ public class Commons_fileupload2_coreTest {
 
         DiskFileItem onDisk = DiskFileItem.builder()
                 .setPath(tempDir)
-                .setBufferSize(4)
+                .setThreshold(4)
                 .setFieldName("upload")
                 .setFileName("large.txt")
                 .setContentType("application/octet-stream")
@@ -358,7 +358,7 @@ public class Commons_fileupload2_coreTest {
     private Upload newUpload(final int threshold) {
         DiskFileItemFactory factory = DiskFileItemFactory.builder()
                 .setPath(tempDir)
-                .setBufferSize(threshold)
+                .setThreshold(threshold)
                 .setCharset(StandardCharsets.ISO_8859_1)
                 .get();
         Upload upload = new Upload();
@@ -381,6 +381,12 @@ public class Commons_fileupload2_coreTest {
 
     private static String part(final String... lines) {
         return String.join(CRLF, lines);
+    }
+
+    private static byte[] readBytes(final DiskFileItem item) throws IOException {
+        try (InputStream stream = item.getInputStream()) {
+            return stream.readAllBytes();
+        }
     }
 
     private static String readUtf8(final InputStream inputStream) throws IOException {
