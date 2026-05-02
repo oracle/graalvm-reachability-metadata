@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FormattersAnonymous12Test {
     private static final String BOOTSTRAP_FRAME_CLASS = String.class.getName();
+    private static final String BOOTSTRAP_FALLBACK_FRAME_CLASS = StackWalker.class.getName();
 
     @Test
     void extendedExceptionFormattingUsesThreadContextClassLoaderForBootstrapFrameClass() {
@@ -56,9 +57,10 @@ public class FormattersAnonymous12Test {
             Class<?> formatterClass = classLoader.loadClass(PatternFormatter.class.getName());
             Formatter formatter = (Formatter) formatterClass.getConstructor(String.class).newInstance("%E");
 
-            String formatted = formatWithTccl(null, formatter, newFailure(BOOTSTRAP_FRAME_CLASS));
+            String formatted = formatWithTccl(null, formatter, newFailure(BOOTSTRAP_FALLBACK_FRAME_CLASS));
 
-            assertThat(formatted).contains("\tat " + BOOTSTRAP_FRAME_CLASS + ".invoke");
+            assertThat(formatted).contains("\tat " + BOOTSTRAP_FALLBACK_FRAME_CLASS + ".invoke");
+            assertThat(classLoader.rejectedBootstrapLookupCount()).isPositive();
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
@@ -100,6 +102,8 @@ public class FormattersAnonymous12Test {
     }
 
     private static final class IsolatedLogManagerClassLoader extends URLClassLoader {
+        private int rejectedBootstrapLookupCount;
+
         private IsolatedLogManagerClassLoader(final URL[] urls) {
             super(urls, FormattersAnonymous12Test.class.getClassLoader());
         }
@@ -107,7 +111,8 @@ public class FormattersAnonymous12Test {
         @Override
         protected Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
             synchronized (getClassLoadingLock(name)) {
-                if (BOOTSTRAP_FRAME_CLASS.equals(name) && isGuessClassLookup()) {
+                if (BOOTSTRAP_FALLBACK_FRAME_CLASS.equals(name) && isGuessClassLookup()) {
+                    rejectedBootstrapLookupCount++;
                     throw new ClassNotFoundException(name);
                 }
                 Class<?> loadedClass = findLoadedClass(name);
@@ -126,6 +131,10 @@ public class FormattersAnonymous12Test {
                 }
                 return loadedClass;
             }
+        }
+
+        private int rejectedBootstrapLookupCount() {
+            return rejectedBootstrapLookupCount;
         }
 
         private boolean isGuessClassLookup() {

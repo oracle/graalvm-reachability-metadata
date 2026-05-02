@@ -9,6 +9,7 @@ package org_jboss_logmanager.jboss_logmanager;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.net.URI;
 import java.net.URL;
 import java.security.PrivilegedAction;
 
@@ -22,7 +23,7 @@ public class FormattersAnonymous12Anonymous2Test {
     @Test
     void resourceActionUsesClassLoaderResourceWhenFrameClassHasAClassLoader() throws Throwable {
         final String resourceName = "org/example/FrameClass.class";
-        final URL resourceUrl = new URL("file:/active-class-loader-resource");
+        final URL resourceUrl = URI.create("file:/active-class-loader-resource").toURL();
         final TrackingResourceClassLoader classLoader = new TrackingResourceClassLoader(resourceName, resourceUrl);
 
         final URL result = newResourceLookupAction(classLoader, resourceName).run();
