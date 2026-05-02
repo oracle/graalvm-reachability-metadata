@@ -120,40 +120,29 @@ class LargeLibraryProgressState:
     def from_dict(cls, payload: dict[str, Any]) -> "LargeLibraryProgressState":
         """Build a progress state from a JSON payload."""
         return cls(
-            schema_version=int(payload.get("schemaVersion", payload.get("schema_version", 1))),
+            schema_version=int(payload.get("schemaVersion", 1)),
             coordinate=str(payload["coordinate"]),
-            issue_number=_optional_int(payload.get("issueNumber", payload.get("issue_number"))),
-            request_label=str(payload.get("requestLabel", payload.get("request_label", ""))),
-            series_id=str(payload.get("seriesId", payload.get("series_id", ""))),
-            strategy_name=str(payload.get("strategyName", payload.get("strategy_name", ""))),
+            issue_number=_optional_int(payload.get("issueNumber")),
+            request_label=str(payload.get("requestLabel", "")),
+            series_id=str(payload.get("seriesId", "")),
+            strategy_name=str(payload.get("strategyName", "")),
             part=int(payload.get("part", 1)),
-            base_branch=str(payload.get("baseBranch", payload.get("base_branch", "master"))),
-            last_published_branch=payload.get("lastPublishedBranch", payload.get("last_published_branch")),
-            last_published_commit=payload.get("lastPublishedCommit", payload.get("last_published_commit")),
-            scaffold_commit=payload.get("scaffoldCommit", payload.get("scaffold_commit")),
-            baseline_stats=payload.get("baselineStats", payload.get("baseline_stats")),
-            baseline_metadata_entries=payload.get(
-                "baselineMetadataEntries", payload.get("baseline_metadata_entries"),
-            ),
-            baseline_test_only_metadata_entries=payload.get(
-                "baselineTestOnlyMetadataEntries",
-                payload.get("baseline_test_only_metadata_entries"),
-            ),
-            class_order=list(payload.get("classOrder", payload.get("class_order", []))),
-            completed_classes=list(payload.get("completedClasses", payload.get("completed_classes", []))),
-            exhausted_classes=list(payload.get("exhaustedClasses", payload.get("exhausted_classes", []))),
-            failed_classes=list(payload.get("failedClasses", payload.get("failed_classes", []))),
-            covered_calls=int(payload.get("coveredCalls", payload.get("covered_calls", 0))),
-            total_calls=int(payload.get("totalCalls", payload.get("total_calls", 0))),
-            dynamic_access_report_sha256=payload.get(
-                "dynamicAccessReportSha256",
-                payload.get("dynamic_access_report_sha256"),
-            ),
-            created_pull_requests=[
-                int(value)
-                for value in payload.get("createdPullRequests", payload.get("created_pull_requests", []))
-            ],
-            updated_at=str(payload.get("updatedAt", payload.get("updated_at", utc_now_iso()))),
+            base_branch=str(payload.get("baseBranch", "master")),
+            last_published_branch=payload.get("lastPublishedBranch"),
+            last_published_commit=payload.get("lastPublishedCommit"),
+            scaffold_commit=payload.get("scaffoldCommit"),
+            baseline_stats=payload.get("baselineStats"),
+            baseline_metadata_entries=payload.get("baselineMetadataEntries"),
+            baseline_test_only_metadata_entries=payload.get("baselineTestOnlyMetadataEntries"),
+            class_order=list(payload.get("classOrder", [])),
+            completed_classes=list(payload.get("completedClasses", [])),
+            exhausted_classes=list(payload.get("exhaustedClasses", [])),
+            failed_classes=list(payload.get("failedClasses", [])),
+            covered_calls=int(payload.get("coveredCalls", 0)),
+            total_calls=int(payload.get("totalCalls", 0)),
+            dynamic_access_report_sha256=payload.get("dynamicAccessReportSha256"),
+            created_pull_requests=[int(value) for value in payload.get("createdPullRequests", [])],
+            updated_at=str(payload.get("updatedAt", utc_now_iso())),
         )
 
     @classmethod

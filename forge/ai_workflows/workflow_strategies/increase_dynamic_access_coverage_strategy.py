@@ -4,7 +4,11 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 from ai_workflows.workflow_strategies.dynamic_access_iterative_strategy import DynamicAccessIterativeStrategy
-from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_SUCCESS, WorkflowStrategy
+from ai_workflows.workflow_strategies.workflow_strategy import (
+    RUN_STATUS_CHUNK_READY,
+    RUN_STATUS_SUCCESS,
+    WorkflowStrategy,
+)
 
 
 @WorkflowStrategy.register("increase_dynamic_access_coverage")
@@ -66,6 +70,8 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
 
         if not phase_ok:
             self._print_message("keeping primary workflow result because dynamic-access coverage phase did not succeed")
+        elif da._last_phase_status == RUN_STATUS_CHUNK_READY:
+            status = RUN_STATUS_CHUNK_READY
 
         if self.primary is None:
             return status, iterations

@@ -7,11 +7,29 @@ import os
 import tempfile
 import unittest
 
+from git_scripts.make_pr_improve_coverage import _parse_pr_number as parse_improve_pr_number
+from git_scripts.make_pr_new_library_support import _parse_pr_number as parse_new_lib_pr_number
 from utility_scripts.large_library_progress import (
     LargeLibraryProgressState,
     copy_progress_artifacts,
     find_progress_state_path,
 )
+
+
+class ParsePrNumberTests(unittest.TestCase):
+    def test_pr_number_extracted_from_url(self) -> None:
+        output = "https://github.com/oracle/graalvm-reachability-metadata/pull/4242\n"
+        self.assertEqual(parse_new_lib_pr_number(output), 4242)
+        self.assertEqual(parse_improve_pr_number(output), 4242)
+
+    def test_pr_number_ignores_org_or_repo_with_digits(self) -> None:
+        output = "https://github.com/owner123/repo456/pull/77\n"
+        self.assertEqual(parse_new_lib_pr_number(output), 77)
+        self.assertEqual(parse_improve_pr_number(output), 77)
+
+    def test_pr_number_returns_none_when_url_absent(self) -> None:
+        self.assertIsNone(parse_new_lib_pr_number(""))
+        self.assertIsNone(parse_improve_pr_number("Pull request already exists for branch foo.\n"))
 
 
 class LargeLibraryProgressStateTests(unittest.TestCase):
