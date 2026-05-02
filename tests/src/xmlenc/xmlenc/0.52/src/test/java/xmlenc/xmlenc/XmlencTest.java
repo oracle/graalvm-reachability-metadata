@@ -41,15 +41,15 @@ public class XmlencTest {
         StringWriter utf8Output = new StringWriter();
 
         utf8Encoder.declaration(utf8Output);
-        utf8Encoder.text(utf8Output, "café <tag> & data", true);
+        utf8Encoder.text(utf8Output, "caf\u00e9 <tag> & data", true);
 
         assertThat(utf8Encoder.getEncoding()).isEqualTo("UTF-8");
         assertThat(utf8Output.toString())
-                .isEqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\"?>café &lt;tag&gt; &amp; data");
+                .isEqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\"?>caf\u00e9 &lt;tag&gt; &amp; data");
 
         XMLEncoder asciiEncoder = new XMLEncoder("US-ASCII");
         StringWriter asciiOutput = new StringWriter();
-        asciiEncoder.text(asciiOutput, "snowman ☃ <&>", true);
+        asciiEncoder.text(asciiOutput, "snowman \u2603 <&>", true);
 
         assertThat(asciiOutput.toString()).isEqualTo("snowman &#9731; &lt;&amp;&gt;");
     }
