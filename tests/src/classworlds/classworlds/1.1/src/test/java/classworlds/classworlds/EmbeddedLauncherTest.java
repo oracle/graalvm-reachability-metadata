@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 
 import org.codehaus.classworlds.ClassWorld;
@@ -26,6 +27,20 @@ public class EmbeddedLauncherTest {
     @BeforeEach
     void resetEntryPoint() {
         EmbeddedEntryPoint.reset();
+        OneArgumentEntryPoint.reset();
+    }
+
+    @Test
+    void launchXInvokesResolvedExecuteMethod() throws Exception {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        ClassWorld world = new ClassWorld(MAIN_REALM, classLoader);
+        LaunchXProbe launcher = new LaunchXProbe();
+        launcher.setWorld(world);
+        launcher.setAppMain(OneArgumentEntryPoint.class.getName(), MAIN_REALM);
+
+        launcher.launchConfiguredApplication();
+
+        assertThat(OneArgumentEntryPoint.world).isSameAs(world);
     }
 
     @Test
@@ -99,6 +114,29 @@ public class EmbeddedLauncherTest {
         static void reset() {
             arguments = null;
             world = null;
+        }
+    }
+
+    public static class OneArgumentEntryPoint {
+        static ClassWorld world;
+
+        public static void execute(ClassWorld classWorld) {
+            world = classWorld;
+        }
+
+        static void reset() {
+            world = null;
+        }
+    }
+
+    private static class LaunchXProbe extends EmbeddedLauncher {
+        void launchConfiguredApplication() throws Exception {
+            launchX();
+        }
+
+        @Override
+        protected Method getEnhancedMainMethod() throws NoSuchMethodException {
+            return OneArgumentEntryPoint.class.getMethod("execute", ClassWorld.class);
         }
     }
 
