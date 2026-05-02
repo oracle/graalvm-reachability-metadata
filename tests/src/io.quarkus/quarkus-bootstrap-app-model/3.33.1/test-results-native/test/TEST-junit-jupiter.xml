@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="JUnit Jupiter" tests="4" skipped="0" failures="0" errors="2" time="0.003" hostname="kung-fu-workstation" timestamp="2026-05-02T19:51:53">
+<testsuite name="JUnit Jupiter" tests="5" skipped="0" failures="0" errors="1" time="0.003" hostname="kung-fu-workstation" timestamp="2026-05-02T20:00:13">
 <properties>
 <property name="file.encoding" value="UTF-8"/>
 <property name="file.separator" value="/"/>
@@ -52,90 +52,48 @@
 <property name="user.name" value="vjovanov"/>
 <property name="user.timezone" value="Europe/Zurich"/>
 </properties>
-<testcase name="serializesAndDeserializesConfiguredDirectoriesAndData()" classname="io_quarkus.quarkus_bootstrap_app_model.LazySourceDirTest" time="0.001">
+<testcase name="exposesCurrentJavaVersion()" classname="io_quarkus.quarkus_bootstrap_app_model.PathTreeWithManifestTest" time="0">
+<error type="java.lang.ExceptionInInitializerError"><![CDATA[java.lang.ExceptionInInitializerError
+	at io_quarkus.quarkus_bootstrap_app_model.PathTreeWithManifestTest.exposesCurrentJavaVersion(PathTreeWithManifestTest.java:20)
+	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+	at java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
+	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
+Caused by: java.lang.IllegalStateException: Failed to obtain the Java version from java.lang.Runtime
+	at io.quarkus.paths.PathTreeWithManifest.<clinit>(PathTreeWithManifest.java:36)
+	... 13 more
+Caused by: java.lang.NoSuchMethodException: java.lang.Runtime$Version.version()
+	at java.base@25.0.2/java.lang.Class.checkMethod(DynamicHub.java:1649)
+	at java.base@25.0.2/java.lang.Class.getMethod(DynamicHub.java:1643)
+	at io.quarkus.paths.PathTreeWithManifest.<clinit>(PathTreeWithManifest.java:33)
+	... 13 more
+]]></error>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:io_quarkus.quarkus_bootstrap_app_model.PathTreeWithManifestTest]/[method:exposesCurrentJavaVersion()]
+display-name: exposesCurrentJavaVersion()
+]]></system-out>
+</testcase>
+<testcase name="serializesAndDeserializesConfiguredDirectoriesAndData()" classname="io_quarkus.quarkus_bootstrap_app_model.LazySourceDirTest" time="0">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:io_quarkus.quarkus_bootstrap_app_model.LazySourceDirTest]/[method:serializesAndDeserializesConfiguredDirectoriesAndData()]
 display-name: serializesAndDeserializesConfiguredDirectoriesAndData()
 ]]></system-out>
 </testcase>
 <testcase name="serializesAndDeserializesQuarkusModel()" classname="io_quarkus.quarkus_bootstrap_app_model.BootstrapUtilsTest" time="0.001">
-<error message="Failed to deserialize quarkus model" type="io.quarkus.bootstrap.resolver.AppModelResolverException"><![CDATA[io.quarkus.bootstrap.resolver.AppModelResolverException: Failed to deserialize quarkus model
-	at io.quarkus.bootstrap.util.BootstrapUtils.deserializeQuarkusModel(BootstrapUtils.java:108)
-	at io_quarkus.quarkus_bootstrap_app_model.BootstrapUtilsTest.serializesAndDeserializesQuarkusModel(BootstrapUtilsTest.java:43)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
-	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
-	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
-	at java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
-	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
-	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
-	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
-	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
-	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
-	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
-Caused by: java.lang.ClassNotFoundException: java.util.CollSer
-	at org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:263)
-	at java.base@25.0.2/java.lang.Class.forName0(DynamicHub.java:1975)
-	at java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:547)
-	at java.base@25.0.2/java.io.ObjectInputStream.resolveClass(ObjectInputStream.java:745)
-	at java.base@25.0.2/java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:1912)
-	at java.base@25.0.2/java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1785)
-	at java.base@25.0.2/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2101)
-	at java.base@25.0.2/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
-	at java.base@25.0.2/java.io.ObjectInputStream$FieldValues.<init>(ObjectInputStream.java:2480)
-	at java.base@25.0.2/java.io.ObjectInputStream.readSerialData(ObjectInputStream.java:2327)
-	at java.base@25.0.2/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2133)
-	at java.base@25.0.2/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
-	at java.base@25.0.2/java.io.ObjectInputStream$FieldValues.<init>(ObjectInputStream.java:2480)
-	at java.base@25.0.2/java.io.ObjectInputStream.readSerialData(ObjectInputStream.java:2327)
-	at java.base@25.0.2/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2133)
-	at java.base@25.0.2/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
-	at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:487)
-	at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:445)
-	at io.quarkus.bootstrap.util.BootstrapUtils.deserializeQuarkusModel(BootstrapUtils.java:104)
-	... 13 more
-]]></error>
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:io_quarkus.quarkus_bootstrap_app_model.BootstrapUtilsTest]/[method:serializesAndDeserializesQuarkusModel()]
 display-name: serializesAndDeserializesQuarkusModel()
 ]]></system-out>
 </testcase>
 <testcase name="writesAndReadsAppModelWithWorkspaceId()" classname="io_quarkus.quarkus_bootstrap_app_model.BootstrapUtilsTest" time="0">
-<error message="java.util.CollSer" type="java.lang.ClassNotFoundException"><![CDATA[java.lang.ClassNotFoundException: java.util.CollSer
-	at org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:263)
-	at java.base@25.0.2/java.lang.Class.forName0(DynamicHub.java:1975)
-	at java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:547)
-	at java.base@25.0.2/java.io.ObjectInputStream.resolveClass(ObjectInputStream.java:745)
-	at java.base@25.0.2/java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:1912)
-	at java.base@25.0.2/java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1785)
-	at java.base@25.0.2/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2101)
-	at java.base@25.0.2/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
-	at java.base@25.0.2/java.io.ObjectInputStream$FieldValues.<init>(ObjectInputStream.java:2480)
-	at java.base@25.0.2/java.io.ObjectInputStream.readSerialData(ObjectInputStream.java:2327)
-	at java.base@25.0.2/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2133)
-	at java.base@25.0.2/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
-	at java.base@25.0.2/java.io.ObjectInputStream$FieldValues.<init>(ObjectInputStream.java:2480)
-	at java.base@25.0.2/java.io.ObjectInputStream.readSerialData(ObjectInputStream.java:2327)
-	at java.base@25.0.2/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2133)
-	at java.base@25.0.2/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
-	at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:487)
-	at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:445)
-	at io.quarkus.bootstrap.util.BootstrapUtils.readAppModelWithWorkspaceId(BootstrapUtils.java:187)
-	at io_quarkus.quarkus_bootstrap_app_model.BootstrapUtilsTest.writesAndReadsAppModelWithWorkspaceId(BootstrapUtilsTest.java:60)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
-	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
-	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
-	at java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
-	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
-	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
-	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
-	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
-	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
-	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
-]]></error>
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:io_quarkus.quarkus_bootstrap_app_model.BootstrapUtilsTest]/[method:writesAndReadsAppModelWithWorkspaceId()]
 display-name: writesAndReadsAppModelWithWorkspaceId()
