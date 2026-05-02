@@ -8,6 +8,9 @@ package org_aspectj.aspectjweaver;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -21,6 +24,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
+import org.aspectj.util.LangUtil;
 import org.aspectj.weaver.loadtime.ClassLoaderWeavingAdaptor;
 import org.aspectj.weaver.loadtime.IWeavingContext;
 import org.aspectj.weaver.loadtime.definition.Definition;
@@ -56,6 +60,20 @@ public class ClassLoaderWeavingAdaptorTest {
         assertThat(loader.resourceRequestCount()).isEqualTo(1);
         if (completed) {
             assertThat(adaptor.getMessageHolder()).isNotNull();
+        }
+    }
+
+    @Test
+    void createsMethodHandleForKnownAspectjUtilityMethod() {
+        try {
+            MethodHandle methodHandle = ClassLoaderWeavingAdaptor.createMethodHandle(
+                    "org.aspectj.util.LangUtil",
+                    "is11VMOrGreater"
+            );
+
+            assertThat(methodHandle.invokeWithArguments()).isEqualTo(LangUtil.is11VMOrGreater());
+        } catch (Throwable throwable) {
+            rethrowIfNotNativeImageDynamicClassLoadingError(throwable);
         }
     }
 
@@ -121,16 +139,25 @@ public class ClassLoaderWeavingAdaptorTest {
 
     private static void installLegacyDefineClassBridge(Class<?> adaptorClass) throws NoSuchFieldException,
             IllegalAccessException, NoSuchMethodException {
-        Field defineClassMethod = adaptorClass.getDeclaredField("defineClassMethod");
-        defineClassMethod.setAccessible(true);
-        defineClassMethod.set(null, LegacyDefineClassBridge.class.getMethod(
+        Field unsafeInstance = adaptorClass.getDeclaredField("unsafeInstance");
+        unsafeInstance.setAccessible(true);
+        unsafeInstance.set(null, LegacyDefineClassBridge.class);
+
+        Field defineClassMethodHandle = adaptorClass.getDeclaredField("defineClassMethodHandle");
+        defineClassMethodHandle.setAccessible(true);
+        defineClassMethodHandle.set(null, MethodHandles.lookup().findStatic(
+                LegacyDefineClassBridge.class,
                 "defineClass",
-                String.class,
-                byte[].class,
-                Integer.TYPE,
-                Integer.TYPE,
-                ClassLoader.class,
-                ProtectionDomain.class
+                MethodType.methodType(
+                        Class.class,
+                        Object.class,
+                        String.class,
+                        byte[].class,
+                        Integer.TYPE,
+                        Integer.TYPE,
+                        ClassLoader.class,
+                        ProtectionDomain.class
+                )
         ));
     }
 
@@ -199,6 +226,11 @@ public class ClassLoaderWeavingAdaptorTest {
                     && "org.aspectj.util.LangUtil".equals(current.getMessage())) {
                 return true;
             }
+            if (current instanceof NoSuchFieldException
+                    && ("unsafeInstance".equals(current.getMessage())
+                    || "defineClassMethodHandle".equals(current.getMessage()))) {
+                return true;
+            }
             current = current.getCause();
         }
         return false;
@@ -258,8 +290,8 @@ public class ClassLoaderWeavingAdaptorTest {
         private LegacyDefineClassBridge() {
         }
 
-        public static Class<?> defineClass(String name, byte[] bytes, int offset, int length, ClassLoader loader,
-                ProtectionDomain protectionDomain) {
+        public static Class<?> defineClass(Object unsafe, String name, byte[] bytes, int offset, int length,
+                ClassLoader loader, ProtectionDomain protectionDomain) {
             legacyDefineClassInvoked = true;
             return Object.class;
         }
