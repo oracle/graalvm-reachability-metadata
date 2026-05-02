@@ -27,8 +27,8 @@ public class FieldAttributesTest {
         assertThat(attributes.getDeclaredType()).isEqualTo(String.class);
         assertThat(attributes.getDeclaredClass()).isEqualTo(String.class);
         // Checkstyle: allow direct annotation access
-        assertThat(attributes.getAnnotation(Deprecated.class)).isNotNull();
-        assertThat(attributes.getAnnotations())
+        assertThat(((java.util.function.Function<Class<Deprecated>, Deprecated>) attributes::getAnnotation).apply(Deprecated.class)).isNotNull();
+        assertThat(((java.util.function.Supplier<java.util.Collection<Annotation>>) attributes::getAnnotations).get())
                 .extracting(Annotation::annotationType)
                 .contains(Deprecated.class);
         // Checkstyle: disallow direct annotation access
