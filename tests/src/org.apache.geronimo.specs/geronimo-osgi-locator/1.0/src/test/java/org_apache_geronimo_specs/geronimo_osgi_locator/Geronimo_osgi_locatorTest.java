@@ -90,6 +90,23 @@ public class Geronimo_osgi_locatorTest {
     }
 
     @Test
+    void loadsDiscoveredProviderClassFromCallerClassLoaderWhenResourceClassLoaderCannotLoadIt() throws Exception {
+        URL serviceDefinition = writeServiceDefinition("caller-loader-provider", CallerLoadedProvider.class.getName());
+        ResourceBackedClassLoader classLoader = new ResourceBackedClassLoader(
+                Map.of(serviceResourceName(), List.of(serviceDefinition)),
+                List.of(CallerLoadedProvider.class.getName()));
+
+        Class<?> serviceClass = ProviderLocator.getServiceClass(
+                TestService.class.getName(), Geronimo_osgi_locatorTest.class, classLoader);
+        Object service = ProviderLocator.getService(
+                TestService.class.getName(), Geronimo_osgi_locatorTest.class, classLoader);
+
+        assertThat(serviceClass).isSameAs(CallerLoadedProvider.class);
+        assertThat(service).isInstanceOf(CallerLoadedProvider.class);
+        assertThat(((TestService) service).value()).isEqualTo("caller");
+    }
+
+    @Test
     void readsAllServiceDefinitionsInOrderAndDeduplicatesProviderClasses() throws Exception {
         URL firstServiceDefinition = writeServiceDefinition(
                 "ordered-providers-1",
@@ -134,7 +151,11 @@ public class Geronimo_osgi_locatorTest {
             assertThat(ProviderLocator.lookupByJREPropertyFile(relativePropertiesPath.toString(), "missing")).isNull();
             assertThat(ProviderLocator.lookupByJREPropertyFile(missingPropertiesPath.toString(), "provider")).isNull();
         } finally {
-            System.setProperty("java.home", originalJavaHome);
+            if (originalJavaHome == null) {
+                System.clearProperty("java.home");
+            } else {
+                System.setProperty("java.home", originalJavaHome);
+            }
         }
     }
 
@@ -173,12 +194,36 @@ public class Geronimo_osgi_locatorTest {
         }
     }
 
+    public static class CallerLoadedProvider implements TestService {
+        public CallerLoadedProvider() {
+        }
+
+        @Override
+        public String value() {
+            return "caller";
+        }
+    }
+
     private static final class ResourceBackedClassLoader extends ClassLoader {
         private final Map<String, List<URL>> resources;
+        private final List<String> unavailableClasses;
 
         private ResourceBackedClassLoader(Map<String, List<URL>> resources) {
+            this(resources, List.of());
+        }
+
+        private ResourceBackedClassLoader(Map<String, List<URL>> resources, List<String> unavailableClasses) {
             super(Geronimo_osgi_locatorTest.class.getClassLoader());
             this.resources = resources;
+            this.unavailableClasses = unavailableClasses;
+        }
+
+        @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            if (unavailableClasses.contains(name)) {
+                throw new ClassNotFoundException(name);
+            }
+            return super.loadClass(name);
         }
 
         @Override
