@@ -142,6 +142,24 @@ public class XmlencTest {
     }
 
     @Test
+    void outputterResumesWritingFromExplicitStateAndElementStack() throws Exception {
+        StringWriter writer = new StringWriter();
+        writer.write("<root><parent");
+        XMLOutputter outputter = new XMLOutputter(writer, "UTF-8");
+
+        outputter.setState(XMLEventListenerStates.START_TAG_OPEN, new String[] {"root", "parent"});
+        outputter.attribute("id", "p1");
+        outputter.startTag("child");
+        outputter.pcdata("resumed");
+        outputter.endTag();
+        outputter.endDocument();
+
+        assertThat(writer.toString()).isEqualTo("<root><parent id=\"p1\"><child>resumed</child></parent></root>");
+        assertThat(outputter.getState()).isSameAs(XMLEventListenerStates.DOCUMENT_ENDED);
+        assertThat(outputter.getElementStack()).isNull();
+    }
+
+    @Test
     void xmlCheckerValidatesXmlProductions() {
         XMLChecker.checkS(" \t\r\n");
         XMLChecker.checkName("ns:element-1");
