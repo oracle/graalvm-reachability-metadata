@@ -33,11 +33,17 @@ public class AntClassLoaderTest {
         assertThatCode(() -> AntClassLoader.initializeClass(
                 AntClassLoaderInitializationTarget.class))
                 .doesNotThrowAnyException();
+        assertThatCode(() -> AntClassLoader.initializeClass(Project.class))
+                .doesNotThrowAnyException();
+        assertThatCode(() -> AntClassLoader.initializeClass(AntClassLoader.class))
+                .doesNotThrowAnyException();
     }
 
     @Test
     void loadsResourcesFromParentBeforeAndAfterLoaderPath() throws IOException {
-        AntClassLoader loader = new AntClassLoader(AntClassLoaderTest.class.getClassLoader(), true);
+        AntClassLoader loader = new AntClassLoader(
+                AntClassLoaderTest.class.getClassLoader(),
+                true);
 
         URL parentFirstUrl = loader.getResource(TEST_CLASS_RESOURCE);
         assertThat(parentFirstUrl).isNotNull();
@@ -58,6 +64,10 @@ public class AntClassLoaderTest {
 
     @Test
     void delegatesSystemClassLoadingToParentLoader() throws ClassNotFoundException {
+        AntClassLoader defaultParentLoader = new AntClassLoader();
+        Class<?> defaultParentClass = defaultParentLoader
+                .forceLoadSystemClass(String.class.getName());
+
         AntClassLoader loader = new AntClassLoader(
                 AntClassLoaderTest.class.getClassLoader(),
                 false);
@@ -69,6 +79,7 @@ public class AntClassLoaderTest {
                 .forceLoadSystemClass(String.class.getName());
         Class<?> loadedClassFromSystemLoader = nullParentLoader.loadClass(String.class.getName());
 
+        assertThat(defaultParentClass).isSameAs(String.class);
         assertThat(systemClass).isSameAs(String.class);
         assertThat(projectClass).isSameAs(Project.class);
         assertThat(systemClassFromSystemLoader).isSameAs(String.class);
@@ -89,6 +100,11 @@ public class AntClassLoaderTest {
             assertThat(loadedClass.getName()).isEqualTo(FIXTURE_CLASS_NAME);
             assertThat(loadedClass.getClassLoader()).isSameAs(loader);
             assertThat(loader.forceLoadClass(FIXTURE_CLASS_NAME)).isSameAs(loadedClass);
+
+            copyClassToTemporaryClasspath(AntClassLoader.class.getName());
+            Class<?> reloadedAntClassLoader = loader.forceLoadClass(AntClassLoader.class.getName());
+            assertThat(reloadedAntClassLoader).isNotSameAs(AntClassLoader.class);
+            AntClassLoader.initializeClass(reloadedAntClassLoader);
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
@@ -97,17 +113,21 @@ public class AntClassLoaderTest {
     }
 
     private Path copyFixtureClassToTemporaryClasspath() throws IOException {
-        String fixtureResourceName = FIXTURE_CLASS_NAME.replace('.', '/') + ".class";
-        Path fixtureClassFile = temporaryDirectory.resolve(fixtureResourceName);
-        Files.createDirectories(fixtureClassFile.getParent());
-
-        try (InputStream inputStream = AntClassLoaderTest.class.getClassLoader()
-                .getResourceAsStream(fixtureResourceName)) {
-            assertThat(inputStream).isNotNull();
-            Files.copy(inputStream, fixtureClassFile);
-        }
+        copyClassToTemporaryClasspath(FIXTURE_CLASS_NAME);
 
         return temporaryDirectory;
+    }
+
+    private void copyClassToTemporaryClasspath(String className) throws IOException {
+        String classResourceName = className.replace('.', '/') + ".class";
+        Path classFile = temporaryDirectory.resolve(classResourceName);
+        Files.createDirectories(classFile.getParent());
+
+        try (InputStream inputStream = AntClassLoaderTest.class.getClassLoader()
+                .getResourceAsStream(classResourceName)) {
+            assertThat(inputStream).isNotNull();
+            Files.copy(inputStream, classFile);
+        }
     }
 }
 
