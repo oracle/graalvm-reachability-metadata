@@ -1,0 +1,869 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de962-963f-7853-bca7-f3fd9849c147
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.ivy:ivy:2.5.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.5.0" when "$version$" is replaced with "2.5.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json
+- Set "coordinates" to "org.apache.ivy:ivy:2.5.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.5.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the nearby metadata files first so the updated JSON matches this repo’s conventions, then verify Ivy’s URLs from primary sources before editing the target file.
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -40' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d
+build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.ivy:ivy:2.5.0"
+}
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d
+ succeeded in 0ms:
+codex
+The target file is currently just the coordinates, so I’m filling all fields from scratch. I’m checking Maven metadata first because this repo’s prompt explicitly prefers Maven-hosted source/test artifacts when available.
+web search: 
+web search: org.apache.ivy ivy 2.5.0 Maven Central sources jar tests jar pom scm url
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.0/
+web search: 
+web search: Apache Ivy GitHub 2.5.0 tag ant-ivy
+web search: 
+web search: https://github.com/apache/ant-ivy
+exec
+/usr/bin/bash -lc "rg '\"documentation-url\"' -g '*.json' . | head -40" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d
+ succeeded in 0ms:
+./metadata/org.yaml/snakeyaml/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+./metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/$version$/tagsoup-$version$-javadoc.jar",
+./metadata/org.mortbay.jetty/servlet-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+./metadata/io.r2dbc/r2dbc-spi/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-javadoc.jar",
+./metadata/javax.validation/validation-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+./metadata/javax.validation/validation-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+./metadata/javax.validation/validation-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-javadoc.jar",
+./metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-javadoc.jar",
+./metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./metadata/org.apache.kerby/kerby-util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/$version$/kerby-util-$version$-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+./metadata/javax.el/javax.el-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/javax.el/el-api/index.json:    "documentation-url" : "https://docs.oracle.com/javaee/5/api/javax/el/package-summary.html",
+./metadata/org.apache-extras.beanshell/bsh/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache-extras/beanshell/bsh/$version$/bsh-$version$-javadoc.jar",
+./metadata/org.apache.kerby/kerby-asn1/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-asn1/$version$/kerby-asn1-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/com.android.databinding/baseLibrary/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-javadoc.jar",
+./metadata/com.android.databinding/baseLibrary/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-javadoc.jar",
+./metadata/org.apache.activemq/activemq-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-javadoc.jar",
+./metadata/org.apache.activemq/activemq-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-javadoc.jar",
+./metadata/org.apache.kerby/kerby-config/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-config/$version$/kerby-config-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+./metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:    "documentation-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-site.tar.gz",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+./metadata/org.apache.activemq/activemq-broker/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-javadoc.jar",
+./metadata/org.apache.activemq/activemq-broker/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-javadoc.jar",
+./metadata/org.apache.kerby/kerby-xdr/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-xdr/$version$/kerby-xdr-$version$-javadoc.jar",
+./metadata/org.apache.kerby/kerby-xdr/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-xdr/$version$/kerby-xdr-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+./metadata/org.hibernate.models/hibernate-models/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/hibernate/models/hibernate-models/$version$/hibernate-models-$version$-javadoc.jar",
+./metadata/log4j/log4j/index.json:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+./metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"' -g '*.json' . | head -40" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d
+ succeeded in 0ms:
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-sources.jar",
+./metadata/javax.activation/activation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/$version$/activation-$version$-sources.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+./metadata/org.javamoney.moneta/moneta-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-sources.jar",
+./metadata/org.javamoney.moneta/moneta-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-sources.jar",
+./metadata/nekohtml/xercesMinimal/index.json:    "source-code-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/branches/nekohtml-$version$/",
+./metadata/org.aspectj/aspectjweaver/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjweaver/1.9.7/aspectjweaver-1.9.7-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/$version$/animal-sniffer-annotation-$version$-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/$version$/jboss-interceptor-spi-$version$-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/$version$/jboss-interceptor-api-$version$-sources.jar",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/$version$/jakarta.websocket-client-api-$version$-sources.jar",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/$version$/jakarta.websocket-api-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/$version$/jackson-datatype-jdk8-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/$version$/jackson-datatype-jsr310-$version$-sources.jar",
+./metadata/org.junit.platform/junit-platform-commons/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/$version$/junit-platform-commons-$version$-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/$version$/jakarta.mail-$version$-sources.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/$version$/snakeyaml-engine-$version$-sources.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/$version$/google-auth-library-credentials-$version$-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-sources.jar",
+./metadata/javax.servlet/servlet-api/index.json:    "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share",
+./metadata/javax.servlet/servlet-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/servlet-api/$version$/servlet-api-$version$-sources.jar",
+./metadata/javax.servlet/servlet-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/servlet-api/$version$/servlet-api-$version$-sources.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/$version$/javax.servlet-api-$version$-sources.jar",
+./metadata/com.android.tools/annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/android/tools/annotations/$version$/annotations-$version$-sources.jar",
+./metadata/org.eclipse.aether/aether-util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/$version$/aether-util-$version$-sources.jar",
+./metadata/org.eclipse.aether/aether-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/$version$/aether-api-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg '\"test-code-url\"' -g '*.json' . | head -40" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d
+ succeeded in 0ms:
+./metadata/org.yaml/snakeyaml/index.json:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml/src/snakeyaml-$version$/src/test/",
+./metadata/org.mortbay.jetty/servlet-api/index.json:    "test-code-url" : "N/A",
+./metadata/javax.validation/validation-api/index.json:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+./metadata/javax.validation/validation-api/index.json:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+./metadata/javax.validation/validation-api/index.json:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+./metadata/log4j/log4j/index.json:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+./metadata/org.glassfish.hk2/hk2-utils/index.json:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+./metadata/org.glassfish.hk2/hk2-utils/index.json:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+./metadata/org.apache.activemq/activemq-client/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-tests.jar",
+./metadata/org.apache.activemq/activemq-client/index.json:    "test-code-url" : "https://github.com/apache/activemq/tree/activemq-$version$/activemq-client/src/test",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+./metadata/org.apache.activemq/activemq-broker/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+./metadata/org.apache.activemq/activemq-broker/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+./metadata/org.apache.directory.api/api-i18n/index.json:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "N/A",
+./metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-log-annotation-processor/tests",
+./metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-log-annotation-processor/tests",
+./metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:    "test-code-url" : "https://github.com/apache/activemq-artemis/tree/$version$/artemis-log-annotation-processor/src/test",
+./metadata/org.apache.directory.api/api-util/index.json:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+./metadata/org.apache.activemq/activemq-openwire-legacy/index.json:    "test-code-url" : "N/A",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+./metadata/org.openjfx/javafx-base/index.json:    "test-code-url" : "https://github.com/javafxports/openjdk-jfx/tree/$version$+1/tests",
+./metadata/com.github.stephenc.jcip/jcip-annotations/index.json:    "test-code-url" : "N/A",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+./metadata/com.diffplug.durian/durian-swt.os/index.json:    "test-code-url" : "https://github.com/diffplug/durian-swt/tree/release/$version$/durian-swt.os/src/test/java/com/diffplug/common/swt/os",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+./metadata/org.jline/jline-terminal-jna/index.json:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/terminal-jna/src/test",
+./metadata/org.apiguardian/apiguardian-api/index.json:    "test-code-url" : "N/A",
+./metadata/org.jline/jline-console/index.json:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/console/src/test",
+./metadata/org.jline/jline-console/index.json:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/console/src/test",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/ivy/ivy/2.5.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/ivy/ivy/2.5.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="ivy-2.5.0-javadoc.jar" title="ivy-2.5.0-javadoc.jar">ivy-2.5.0-javadoc.jar</a>                             2019-10-20 10:40   2292715      
+<a href="ivy-2.5.0-javadoc.jar.asc" title="ivy-2.5.0-javadoc.jar.asc">ivy-2.5.0-javadoc.jar.asc</a>                         2019-10-20 10:40       821      
+<a href="ivy-2.5.0-javadoc.jar.md5" title="ivy-2.5.0-javadoc.jar.md5">ivy-2.5.0-javadoc.jar.md5</a>                         2019-10-20 10:40        32      
+<a href="ivy-2.5.0-javadoc.jar.sha1" title="ivy-2.5.0-javadoc.jar.sha1">ivy-2.5.0-javadoc.jar.sha1</a>                        2019-10-20 10:40        40      
+<a href="ivy-2.5.0-sources.jar" title="ivy-2.5.0-sources.jar">ivy-2.5.0-sources.jar</a>                             2019-10-20 10:40    953581      
+<a href="ivy-2.5.0-sources.jar.asc" title="ivy-2.5.0-sources.jar.asc">ivy-2.5.0-sources.jar.asc</a>                         2019-10-20 10:40       821      
+<a href="ivy-2.5.0-sources.jar.md5" title="ivy-2.5.0-sources.jar.md5">ivy-2.5.0-sources.jar.md5</a>                         2019-10-20 10:40        32      
+<a href="ivy-2.5.0-sources.jar.sha1" title="ivy-2.5.0-sources.jar.sha1">ivy-2.5.0-sources.jar.sha1</a>                        2019-10-20 10:40        40      
+<a href="ivy-2.5.0.jar" title="ivy-2.5.0.jar">ivy-2.5.0.jar</a>                                     2019-10-20 10:40   1402646      
+<a href="ivy-2.5.0.jar.asc" title="ivy-2.5.0.jar.asc">ivy-2.5.0.jar.asc</a>                                 2019-10-20 10:40       821      
+<a href="ivy-2.5.0.jar.md5" title="ivy-2.5.0.jar.md5">ivy-2.5.0.jar.md5</a>                                 2019-10-20 10:40        32      
+<a href="ivy-2.5.0.jar.sha1" title="ivy-2.5.0.jar.sha1">ivy-2.5.0.jar.sha1</a>                                2019-10-20 10:40        40      
+<a href="ivy-2.5.0.pom" title="ivy-2.5.0.pom">ivy-2.5.0.pom</a>                                     2019-10-20 10:40      6751      
+<a href="ivy-2.5.0.pom.asc" title="ivy-2.5.0.pom.asc">ivy-2.5.0.pom.asc</a>                                 2019-10-20 10:40       821      
+<a href="ivy-2.5.0.pom.md5" title="ivy-2.5.0.pom.md5">ivy-2.5.0.pom.md5</a>                                 2019-10-20 10:40        32      
+<a href="ivy-2.5.0.pom.sha1" title="ivy-2.5.0.pom.sha1">ivy-2.5.0.pom.sha1</a>                                2019-10-20 10:40        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.0/ivy-2.5.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+
+     https://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.    
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>7</version>
+  </parent>
+  <groupId>org.apache.ivy</groupId>
+  <artifactId>ivy</artifactId>
+  <version>2.5.0</version>
+  <name>Apache Ivy</name>
+  <url>http://ant.apache.org/ivy/</url>
+  <scm>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/ant/ivy/core/trunk/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/ant/ivy/core/trunk</developerConnection>
+    <url>https://svn.apache.org/repos/asf/ant/ivy/core/trunk</url>
+  </scm>
+  <mailingLists>
+    <mailingList>
+      <name>Ant/Ivy Developers List</name>
+      <subscribe>dev-subscribe@ant.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@ant.apache.org</unsubscribe>
+      <post>dev@ant.apache.org</post>
+      <archive>https://mail-archives.apache.org/mod_mbox/ant-dev</archive>
+    </mailingList>
+    <mailingList>
+      <name>Ivy Users List</name>
+      <subscribe>ivy-user-subscribe@ant.apache.org</subscribe>
+      <unsubscribe>ivy-user-unsubscribe@ant.apache.org</unsubscribe>
+      <post>ivy-user@ant.apache.org</post>
+      <archive>https://mail-archives.apache.org/mod_mbox/ant-ivy-user</archive>
+    </mailingList>
+  </mailingLists>
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.apache.org/jira/browse/IVY</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant</artifactId>
+      <version>1.9.14</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.5.9</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>oro</groupId>
+      <artifactId>oro</artifactId>
+      <version>2.0.8</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-vfs2</artifactId>
+      <version>2.2</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.jcraft</groupId>
+      <artifactId>jsch</artifactId>
+      <version>0.1.55</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.jcraft</groupId>
+      <artifactId>jsch.agentproxy</artifactId>
+      <version>0.0.9</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.jcraft</groupId>
+      <artifactId>jsch.agentproxy.connector-factory</artifactId>
+      <version>0.0.9</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.jcraft</groupId>
+      <artifactId>jsch.agentproxy.jsch</artifactId>
+      <version>0.0.9</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpg-jdk15on</artifactId>
+      <version>1.62</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk15on</artifactId>
+      <version>1.62</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+      <version>1.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+      <version>1.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant-testutil</artifactId>
+      <version>1.9.14</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant-launcher</artifactId>
+      <version>1.9.14</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant-junit</artifactId>
+      <version>1.9.14</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant-junit4</artifactId>
+      <version>1.9.14</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>ant-contrib</groupId>
+      <artifactId>ant-contrib</artifactId>
+      <version>1.0b3</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <version>1.6</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsI https://github.com/apache/ant-ivy/tree/rel/2.5.0/src/java | sed -n '1,20p' && curl -fsI https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/java | sed -n '1,20p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d
+ succeeded in 995ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:51:16 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"10891b3e14559b1d682c3f01c078705c"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=genJW8vi1baEv3XRLzzGVXEww%2FYBbHOa8uGVKozAzvpZ%2B01EMiXZ2EkXy34EFYNM%2B46hQHoe6fbEqWQEjq%2Fe%2Bwe4xIuppyTXgaQry%2Fb6Ysk2b9bXHKJgTfmkH0Q3sSObtgOz7EirFAQEpXA%2BU1JB2Xu8GvGWZAbY4S65lSuUjQv7%2Bq0K0QX4iBBxvLU%2BFYBmwRRumXMfSwvAJba9FGeLrrsLDpYbJdXJGRmh4X5ZvhNe6lt7P8ciQEHEuEHRePBe62%2Bro8%2Fz07eLsDR1PX2YkQ%3D%3D--Jra0twq3TNFNTi2j--VpqXIexSsMvwF8GGOx5hHA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1824418377.1777737075; expires=Sun, 02 May 2027 15:51:15 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 02 May 2027 15:51:15 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5118:167D:B956269:8A636E1:69F61D73
+
+HTTP/2 200 
+date: Sat, 02 May 2026 15:51:16 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"6cc8a7d67ae45fb496cf7d5c922958e3"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=b%2F4WfjXCjo4Hr058UsqlocVjcfwonT4sljR%2BjawAHHTogalZV%2FQLT7VTtHiBByir7Bod7oG9pPSiv9xx14fjWcIiSwT%2Fv76jJoEwKnuV7ViCe7jFL%2Fa8m%2BaNsXjJxzTWMum5GGgK8B24I6csuzNjwFe3Qi1T5sMq1g0JV6z%2BxNlefKEuP8e%2BGaFsRGuP3W1J01bmxaLglwb3svnCRGbv2PE5f51Lwj7pI7ulhuSnsJFD8na8XuKZ7xV0DR5AoOJwaIm8ElXelGPfTtKGiLgFHA%3D%3D--UQY7Faj4RKpyHv2n--05dfLrq3EERfF27men%2BHBQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1693032295.1777737076; expires=Sun, 02 May 2027 15:51:16 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 02 May 2027 15:51:16 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5116:1692:A297215:79CF894:69F61D74
+
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/ant-ivy.git 'refs/tags/*2.5.0*'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/ant-ivy/contents/test?ref=rel/2.5.0 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/ant-ivy/contents/src/java?ref=rel/2.5.0 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d
+exec
+/usr/bin/bash -lc "curl -fsI https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.0/ivy-2.5.0-sources.jar | sed -n '1,18p'; curl -fsI https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.0/ivy-2.5.0-javadoc.jar | sed -n '1,18p'; curl -fsI https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.0/ivy-2.5.0-tests.jar | sed -n '1,18p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d
+ succeeded in 154ms:
+[
+  {
+    "name": "org",
+    "path": "src/java/org",
+    "sha": "1c186f0ccaa8bdcfc460ddc09b7bf4c99524ec6c",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/ant-ivy/contents/src/java/org?ref=rel/2.5.0",
+    "html_url": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/src/java/org",
+    "git_url": "https://api.github.com/repos/apache/ant-ivy/git/trees/1c186f0ccaa8bdcfc460ddc09b7bf4c99524ec6c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/ant-ivy/contents/src/java/org?ref=rel/2.5.0",
+      "git": "https://api.github.com/repos/apache/ant-ivy/git/trees/1c186f0ccaa8bdcfc460ddc09b7bf4c99524ec6c",
+      "html": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/src/java/org"
+    }
+  }
+]
+
+ succeeded in 180ms:
+[
+  {
+    "name": "buildlist",
+    "path": "test/buildlist",
+    "sha": "d21db407727bdf8c3581792312d535cc06b8bd6f",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/ant-ivy/contents/test/buildlist?ref=rel/2.5.0",
+    "html_url": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/buildlist",
+    "git_url": "https://api.github.com/repos/apache/ant-ivy/git/trees/d21db407727bdf8c3581792312d535cc06b8bd6f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/ant-ivy/contents/test/buildlist?ref=rel/2.5.0",
+      "git": "https://api.github.com/repos/apache/ant-ivy/git/trees/d21db407727bdf8c3581792312d535cc06b8bd6f",
+      "html": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/buildlist"
+    }
+  },
+  {
+    "name": "buildlists",
+    "path": "test/buildlists",
+    "sha": "9e8a677e37ce95cb970914ed85c968b123c720df",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/ant-ivy/contents/test/buildlists?ref=rel/2.5.0",
+    "html_url": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/buildlists",
+    "git_url": "https://api.github.com/repos/apache/ant-ivy/git/trees/9e8a677e37ce95cb970914ed85c968b123c720df",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/ant-ivy/contents/test/buildlists?ref=rel/2.5.0",
+      "git": "https://api.github.com/repos/apache/ant-ivy/git/trees/9e8a677e37ce95cb970914ed85c968b123c720df",
+      "html": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/buildlists"
+    }
+  },
+  {
+    "name": "custom-classpath",
+    "path": "test/custom-classpath",
+    "sha": "5dedafdb07247f7c61737171011d78d4e4183f3c",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/ant-ivy/contents/test/custom-classpath?ref=rel/2.5.0",
+    "html_url": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/custom-classpath",
+    "git_url": "https://api.github.com/repos/apache/ant-ivy/git/trees/5dedafdb07247f7c61737171011d78d4e4183f3c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/ant-ivy/contents/test/custom-classpath?ref=rel/2.5.0",
+      "git": "https://api.github.com/repos/apache/ant-ivy/git/trees/5dedafdb07247f7c61737171011d78d4e4183f3c",
+      "html": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/custom-classpath"
+    }
+  },
+  {
+    "name": "java",
+    "path": "test/java",
+    "sha": "f8464c6c8ae6a43f23bf7088f328c5a14b2ee345",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/ant-ivy/contents/test/java?ref=rel/2.5.0",
+    "html_url": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/java",
+    "git_url": "https://api.github.com/repos/apache/ant-ivy/git/trees/f8464c6c8ae6a43f23bf7088f328c5a14b2ee345",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/ant-ivy/contents/test/java?ref=rel/2.5.0",
+      "git": "https://api.github.com/repos/apache/ant-ivy/git/trees/f8464c6c8ae6a43f23bf7088f328c5a14b2ee345",
+      "html": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/java"
+    }
+  },
+  {
+    "name": "repositories",
+    "path": "test/repositories",
+    "sha": "8fde2f9a0e69f53f7a1cf0578c9c882d45f3c100",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/ant-ivy/contents/test/repositories?ref=rel/2.5.0",
+    "html_url": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/repositories",
+    "git_url": "https://api.github.com/repos/apache/ant-ivy/git/trees/8fde2f9a0e69f53f7a1cf0578c9c882d45f3c100",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/ant-ivy/contents/test/repositories?ref=rel/2.5.0",
+      "git": "https://api.github.com/repos/apache/ant-ivy/git/trees/8fde2f9a0e69f53f7a1cf0578c9c882d45f3c100",
+      "html": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/repositories"
+    }
+  },
+  {
+    "name": "test-obr",
+    "path": "test/test-obr",
+    "sha": "a3776a74bdf7acc57e39f80511c654a13aaea410",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/ant-ivy/contents/test/test-obr?ref=rel/2.5.0",
+    "html_url": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/test-obr",
+    "git_url": "https://api.github.com/repos/apache/ant-ivy/git/trees/a3776a74bdf7acc57e39f80511c654a13aaea410",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/ant-ivy/contents/test/test-obr?ref=rel/2.5.0",
+      "git": "https://api.github.com/repos/apache/ant-ivy/git/trees/a3776a74bdf7acc57e39f80511c654a13aaea410",
+      "html": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/test-obr"
+    }
+  },
+  {
+    "name": "test-p2",
+    "path": "test/test-p2",
+    "sha": "2092b3aabf02388761486e5fd5ce01c2848a72d3",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/ant-ivy/contents/test/test-p2?ref=rel/2.5.0",
+    "html_url": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/test-p2",
+    "git_url": "https://api.github.com/repos/apache/ant-ivy/git/trees/2092b3aabf02388761486e5fd5ce01c2848a72d3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/ant-ivy/contents/test/test-p2?ref=rel/2.5.0",
+      "git": "https://api.github.com/repos/apache/ant-ivy/git/trees/2092b3aabf02388761486e5fd5ce01c2848a72d3",
+      "html": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/test-p2"
+    }
+  },
+  {
+    "name": "test-repo",
+    "path": "test/test-repo",
+    "sha": "f402ec27fe38068f751678c1ced7733f29f4f580",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/ant-ivy/contents/test/test-repo?ref=rel/2.5.0",
+    "html_url": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/test-repo",
+    "git_url": "https://api.github.com/repos/apache/ant-ivy/git/trees/f402ec27fe38068f751678c1ced7733f29f4f580",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/ant-ivy/contents/test/test-repo?ref=rel/2.5.0",
+      "git": "https://api.github.com/repos/apache/ant-ivy/git/trees/f402ec27fe38068f751678c1ced7733f29f4f580",
+      "html": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/test-repo"
+    }
+  },
+  {
+    "name": "triggers",
+    "path": "test/triggers",
+    "sha": "0be61bb4e226edb8965a4f17b841f94466750841",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/ant-ivy/contents/test/triggers?ref=rel/2.5.0",
+    "html_url": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/triggers",
+    "git_url": "https://api.github.com/repos/apache/ant-ivy/git/trees/0be61bb4e226edb8965a4f17b841f94466750841",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/ant-ivy/contents/test/triggers?ref=rel/2.5.0",
+      "git": "https://api.github.com/repos/apache/ant-ivy/git/trees/0be61bb4e226edb8965a4f17b841f94466750841",
+      "html": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/triggers"
+    }
+  },
+  {
+    "name": "workspace",
+    "path": "test/workspace",
+    "sha": "dc66922b5c27debd778edd930f25b618ed438f51",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/ant-ivy/contents/test/workspace?ref=rel/2.5.0",
+    "html_url": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/workspace",
+    "git_url": "https://api.github.com/repos/apache/ant-ivy/git/trees/dc66922b5c27debd778edd930f25b618ed438f51",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/ant-ivy/contents/test/workspace?ref=rel/2.5.0",
+      "git": "https://api.github.com/repos/apache/ant-ivy/git/trees/dc66922b5c27debd778edd930f25b618ed438f51",
+      "html": "https://github.com/apache/ant-ivy/tree/rel/2.5.0/test/workspace"
+    }
+
+ succeeded in 349ms:
+7d4634929ee1dff62f1d88aeab2c6e091a3192e5	refs/tags/2.5.0-rc1
+887fd46f3e90016e313f7724ca259b936d30a03e	refs/tags/2.5.0-rc1^{}
+eb52423b759bc99157fce81f541399125ba0d730	refs/tags/2.5.0_Vote_RC1
+48234fc5ede85a865eb874a96c08472ce1751fd1	refs/tags/2.5.0_Vote_RC1^{}
+5a157abdfc8aa23371b5583a54f7170944eccbda	refs/tags/rel/2.5.0
+48234fc5ede85a865eb874a96c08472ce1751fd1	refs/tags/rel/2.5.0^{}
+
+ succeeded in 675ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:51:27 GMT
+content-type: application/java-archive
+content-length: 2292715
+cf-ray: 9f582ff96e5170cb-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "1cc06a556b418bb6abfe3f0add69f1eb"
+last-modified: Sun, 20 Oct 2019 10:43:33 GMT
+x-checksum-md5: 1cc06a556b418bb6abfe3f0add69f1eb
+x-checksum-sha1: 6e9f75d34bb9ac1c7948a58d3804e43cdd6fee09
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Sat, 02 May 2026 15:51:27 GMT
+content-type: text/html
+cf-ray: 9f582ffbcb1dbe77-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/ivy/ivy/2.5.0/ivy-2.5.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+I found Maven Central has `sources` and `javadoc` jars for `ivy:2.5.0`, but no `tests` jar. The release tag exists as `rel/2.5.0` in the Apache GitHub repository, and its `test` directory is present, so I’ll use Maven for sources/docs and the tagged repository path for tests.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json
+diff --git a/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json b/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json
+index edf5548b66215a862a443de5df6fa0e47b6f3c87..b124ceb7234311e38c257566a173a01996dac52a
+--- a/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json
++++ b/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.ivy:ivy:2.5.0"
++  "coordinates" : "org.apache.ivy:ivy:2.5.0",
++  "repository-url" : "https://github.com/apache/ant-ivy",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/ivy/ivy/$version$/ivy-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/ant-ivy/tree/rel/$version$/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/ivy/ivy/$version$/ivy-$version$-javadoc.jar",
++  "description" : "Apache Ivy is a flexible dependency manager for Java projects, integrated with Apache Ant and usable as a standalone tool. It resolves, downloads, and publishes project dependencies using configurable repositories and transitive dependency metadata."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json b/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json
+index edf5548b66215a862a443de5df6fa0e47b6f3c87..b124ceb7234311e38c257566a173a01996dac52a
+--- a/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json
++++ b/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.ivy:ivy:2.5.0"
++  "coordinates" : "org.apache.ivy:ivy:2.5.0",
++  "repository-url" : "https://github.com/apache/ant-ivy",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/ivy/ivy/$version$/ivy-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/ant-ivy/tree/rel/$version$/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/ivy/ivy/$version$/ivy-$version$-javadoc.jar",
++  "description" : "Apache Ivy is a flexible dependency manager for Java projects, integrated with Apache Ant and usable as a standalone tool. It resolves, downloads, and publishes project dependencies using configurable repositories and transitive dependency metadata."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.ivy:ivy:2.5.0",
+  "repository-url": "https://github.com/apache/ant-ivy",
+  "source-code-url": "https://repo1.maven.org/maven2/org/apache/ivy/ivy/$version$/ivy-$version$-sources.jar",
+  "test-code-url": "https://github.com/apache/ant-ivy/tree/rel/$version$/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/apache/ivy/ivy/$version$/ivy-$version$-javadoc.jar",
+  "description": "Apache Ivy is a flexible dependency manager for Java projects, integrated with Apache Ant and usable as a standalone tool. It resolves, downloads, and publishes project dependencies using configurable repositories and transitive dependency metadata."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/apache/ant-ivy >/dev/null && curl -fsI https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.0/ivy-2.5.0-sources.jar >/dev/null && curl -fsI https://github.com/apache/ant-ivy/tree/rel/2.5.0/test >/dev/null && curl -fsI https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.0/ivy-2.5.0-javadoc.jar >/dev/null' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d
+diff --git a/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json b/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json
+index edf5548b66215a862a443de5df6fa0e47b6f3c87..b124ceb7234311e38c257566a173a01996dac52a
+--- a/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json
++++ b/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.ivy:ivy:2.5.0"
++  "coordinates" : "org.apache.ivy:ivy:2.5.0",
++  "repository-url" : "https://github.com/apache/ant-ivy",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/ivy/ivy/$version$/ivy-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/ant-ivy/tree/rel/$version$/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/ivy/ivy/$version$/ivy-$version$-javadoc.jar",
++  "description" : "Apache Ivy is a flexible dependency manager for Java projects, integrated with Apache Ant and usable as a standalone tool. It resolves, downloads, and publishes project dependencies using configurable repositories and transitive dependency metadata."
+ }
+
+ succeeded in 1252ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json b/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json
+index edf5548b66215a862a443de5df6fa0e47b6f3c87..b124ceb7234311e38c257566a173a01996dac52a
+--- a/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json
++++ b/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.ivy:ivy:2.5.0"
++  "coordinates" : "org.apache.ivy:ivy:2.5.0",
++  "repository-url" : "https://github.com/apache/ant-ivy",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/ivy/ivy/$version$/ivy-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/ant-ivy/tree/rel/$version$/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/ivy/ivy/$version$/ivy-$version$-javadoc.jar",
++  "description" : "Apache Ivy is a flexible dependency manager for Java projects, integrated with Apache Ant and usable as a standalone tool. It resolves, downloads, and publishes project dependencies using configurable repositories and transitive dependency metadata."
+ }
+
+web search: 
+web search: Maven Central org.apache.ivy ivy 2.5.0 sources javadoc
+web search: 
+web search: https://github.com/apache/ant-ivy/tree/rel/2.5.0/test
+web search: 
+web search: https://ant.apache.org/ivy/
+codex
+Updated [org.apache.ivy-ivy-2.5.0.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json:1).
+
+I used Maven Central for the source and Javadoc artifacts, and the tagged Apache GitHub test directory for tests because no Maven tests jar is published for `2.5.0`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.0/?utm_source=openai)) The description is based on Apache Ivy’s own project description as a dependency manager focused on flexibility and simplicity. ([ant.apache.org](https://ant.apache.org/ivy/))
+
+Validation done: `jq .` passed, and the substituted repository/source/test/documentation URLs all returned successfully. I left `language` and `not-for-native-image` absent because this is a normal JVM Java artifact.
+diff --git a/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json b/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json
+index edf5548b66215a862a443de5df6fa0e47b6f3c87..b124ceb7234311e38c257566a173a01996dac52a
+--- a/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json
++++ b/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.ivy:ivy:2.5.0"
++  "coordinates" : "org.apache.ivy:ivy:2.5.0",
++  "repository-url" : "https://github.com/apache/ant-ivy",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/ivy/ivy/$version$/ivy-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/ant-ivy/tree/rel/$version$/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/ivy/ivy/$version$/ivy-$version$-javadoc.jar",
++  "description" : "Apache Ivy is a flexible dependency manager for Java projects, integrated with Apache Ant and usable as a standalone tool. It resolves, downloads, and publishes project dependencies using configurable repositories and transitive dependency metadata."
+ }
+
+tokens used
+55,476
+Updated [org.apache.ivy-ivy-2.5.0.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d/build/discovered-artifact-metadata/org.apache.ivy-ivy-2.5.0.json:1).
+
+I used Maven Central for the source and Javadoc artifacts, and the tagged Apache GitHub test directory for tests because no Maven tests jar is published for `2.5.0`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.0/?utm_source=openai)) The description is based on Apache Ivy’s own project description as a dependency manager focused on flexibility and simplicity. ([ant.apache.org](https://ant.apache.org/ivy/))
+
+Validation done: `jq .` passed, and the substituted repository/source/test/documentation URLs all returned successfully. I left `language` and `not-for-native-image` absent because this is a normal JVM Java artifact.
+Ran agent for org.apache.ivy:ivy:2.5.0 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d/build/agent-artifact-discovery-logs/org.apache.ivy-ivy-2.5.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2456-7b6b3c8d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 12s
+9 actionable tasks: 4 executed, 5 from cache
