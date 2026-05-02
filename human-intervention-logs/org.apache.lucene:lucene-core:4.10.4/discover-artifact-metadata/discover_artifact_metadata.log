@@ -1,0 +1,745 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de93c-fb2d-7d52-93a6-6106b8a098d8
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.lucene:lucene-core:4.10.4
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.10.4" when "$version$" is replaced with "4.10.4".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json
+- Set "coordinates" to "org.apache.lucene:lucene-core:4.10.4".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.10.4".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven/Apache sources first, then patch the JSON in place. I’m also checking the existing file shape so the edit matches the repository’s formatting.
+exec
+/usr/bin/zsh -lc "rg '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"description\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata/org.apache.lucene*.json build/discovered-artifact-metadata/*lucene*.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43
+ exited 1 in 0ms:
+exec
+/usr/bin/zsh -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.lucene:lucene-core:4.10.4"
+}
+
+exec
+/usr/bin/zsh -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.apache\\.lucene-lucene-core-4\\.10\\.4\\.json"'$|org'"\\.apache\\.lucene'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43
+ succeeded in 0ms:
+/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43
+build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json
+
+web search: 
+web search: org.apache.lucene lucene-core 4.10.4 Maven Central sources tests jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/4.10.4/
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/4.10.4/
+web search: 
+web search: 
+web search: 
+web search: site:github.com/apache/lucene-solr lucene_solr_4_10_4
+web search: 
+web search: https://svn.apache.org/repos/asf/lucene/dev/tags/
+web search: 
+web search: https://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_4_10_4/
+web search: 
+web search: 
+web search: 
+web search: https://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_4_10_4/lucene/
+web search: 
+web search: https://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_4_10_4/lucene/core/
+web search: 
+web search: https://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_4_10_4/lucene/core/src/
+web search: 
+web search: "releases/lucene-solr/4.10.4" lucene-solr git tag
+web search: 
+web search: https://apache.googlesource.com/lucene-solr/%2B/refs/tags/releases/lucene-solr/4.10.4/
+web search: 
+web search: 
+web search: 
+web search: https://apache.googlesource.com/lucene-solr/%2B/refs/tags/releases/lucene-solr/4.10.4/lucene/
+web search: 
+web search: https://apache.googlesource.com/lucene-solr/%2B/refs/tags/releases/lucene-solr/4.10.4/lucene/core/
+web search: 
+web search: https://apache.googlesource.com/lucene-solr/%2B/refs/tags/releases/lucene-solr/4.10.4/lucene/core/src/
+web search: 
+web search: https://apache.googlesource.com/lucene-solr/%2B/refs/tags/releases/lucene-solr/4.10.4/lucene/core/src/java/
+codex
+Maven Central has the 4.10.4 binary, sources, and javadoc artifacts, but it does not publish a tests jar for `lucene-core`. For the test suite I’m using the Apache Gitiles tag `refs/tags/releases/lucene-solr/4.10.4`, which preserves the dotted version required by the metadata placeholder.
+exec
+/usr/bin/zsh -lc 'curl -L --fail --silent https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/4.10.4/lucene-core-4.10.4.pom' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43
+exec
+/usr/bin/zsh -lc 'curl -I -L --fail --silent https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/4.10.4/lucene-core-4.10.4-tests.jar' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43
+exec
+/usr/bin/zsh -lc 'curl -I -L --fail --silent https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/4.10.4/lucene-core-4.10.4-sources.jar && curl -I -L --fail --silent https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/4.10.4/lucene-core-4.10.4-javadoc.jar' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43
+exec
+/usr/bin/zsh -lc 'curl -I -L --fail --silent https://apache.googlesource.com/lucene-solr/+/refs/tags/releases/lucene-solr/4.10.4/lucene/core/src/test/org/apache/lucene' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43
+ succeeded in 144ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+    
+    http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+  -->
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.lucene</groupId>
+    <artifactId>lucene-parent</artifactId>
+    <version>4.10.4</version>
+    <relativePath>../../../pom.xml</relativePath>
+  </parent>
+  <groupId>org.apache.lucene</groupId>
+  <artifactId>lucene-core</artifactId>
+  <packaging>jar</packaging>
+  <name>Lucene Core</name>
+  <description>Apache Lucene Java Core</description>
+  <properties>
+    <module-directory>lucene/core</module-directory>
+    <relative-top-level>../../../../..</relative-top-level>
+    <module-path>${relative-top-level}/${module-directory}/src/java</module-path>
+  </properties>
+  <scm>
+    <connection>scm:svn:${vc-anonymous-base-url}/${module-directory}</connection>
+    <developerConnection>scm:svn:${vc-dev-base-url}/${module-directory}</developerConnection>
+    <url>${vc-browse-base-url}/${module-directory}</url>
+  </scm>
+  <build>
+    <sourceDirectory>${module-path}</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>${module-path}/../resources</directory>
+      </resource>
+    </resources>
+    <testSourceDirectory/>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>true</skip> <!-- Tests are run from lucene-codecs-tests module -->
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <skip>true</skip> <!-- This skips test compilation - tests are run from lucene-codecs-tests module -->
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>de.thetaphi</groupId>
+        <artifactId>forbiddenapis</artifactId>
+        <executions>
+          <execution>
+            <id>lucene-shared-check-forbidden-apis</id>
+            <phase>none</phase> <!-- Block inherited execution -->
+          </execution>
+          <execution>
+            <id>lucene-shared-test-check-forbidden-apis</id>
+            <phase>none</phase>  <!-- Block inherited execution -->
+          </execution>
+          <execution>
+            <id>check-forbidden-apis</id>
+            <configuration>
+              <!-- disallow undocumented classes like sun.misc.Unsafe: -->
+              <internalRuntimeForbidden>true</internalRuntimeForbidden>
+              <bundledSignatures>
+                <bundledSignature>jdk-unsafe</bundledSignature>
+                <bundledSignature>jdk-deprecated</bundledSignature>
+              </bundledSignatures>
+              <signaturesFiles>
+                <signaturesFile>${top-level}/lucene/tools/forbiddenApis/base.txt</signaturesFile>
+              </signaturesFiles>
+            </configuration>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>check-system-out</id> <!-- separate execution to specify excludes -->
+            <configuration>
+              <bundledSignatures>
+                <bundledSignature>jdk-system-out</bundledSignature>
+              </bundledSignatures>
+              <excludes>
+                <!-- exclude command line tools -->
+                <exclude>org/apache/lucene/index/CheckIndex.class</exclude>
+                <exclude>org/apache/lucene/index/IndexUpgrader.class</exclude>
+                <exclude>org/apache/lucene/store/LockVerifyServer.class</exclude>
+                <exclude>org/apache/lucene/store/LockStressTest.class</exclude>
+                <!-- not printing, just checking if it's a system stream -->
+                <exclude>org/apache/lucene/util/PrintStreamInfoStream.class</exclude>
+              </excludes>
+            </configuration>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+ succeeded in 271ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:10:40 GMT
+content-type: application/java-archive
+content-length: 1969441
+cf-ray: 9f57f440eb6ae290-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 571082
+etag: "27a956a0f5682f85b756875b51ea489e"
+last-modified: Tue, 03 Mar 2015 08:21:21 GMT
+x-checksum-md5: 27a956a0f5682f85b756875b51ea489e
+x-checksum-sha1: e4c2a4817bc3d7942bb650eaa1cad20d51631edb
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 02 May 2026 15:10:40 GMT
+content-type: application/java-archive
+content-length: 4877350
+cf-ray: 9f57f4418a6bb311-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 258409
+etag: "ecd4c27aa88db5a3feca033a1bd3c720"
+last-modified: Tue, 03 Mar 2015 08:21:22 GMT
+x-checksum-md5: ecd4c27aa88db5a3feca033a1bd3c720
+x-checksum-sha1: d67ea287ae704a6812312528154ee7d8824f7914
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 363ms:
+HTTP/2 404 
+date: Sat, 02 May 2026 15:10:40 GMT
+content-type: text/html
+cf-ray: 9f57f4404c95c687-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/lucene/lucene-core/4.10.4/lucene-core-4.10.4-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 493ms:
+HTTP/2 200 
+cache-control: no-cache, no-store, max-age=0, must-revalidate
+content-length: 6655
+content-security-policy: script-src 'nonce-la1e6P35KjYksKh6HPMRNA' 'unsafe-inline' 'strict-dynamic' https: http: 'unsafe-eval';object-src 'none';base-uri 'self';report-uri https://csp.withgoogle.com/csp/gerritcodereview/1
+content-type: text/html; charset=utf-8
+date: Sat, 02 May 2026 15:10:41 GMT
+expires: Mon, 01 Jan 1990 00:00:00 GMT
+pragma: no-cache
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 0
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+
+web search: 
+web search: 
+web search: 
+web search: apache.googlesource.com lucene-solr refs/tags/releases/lucene-solr/4.10.4 lucene/core/src/test
+exec
+/usr/bin/zsh -lc "rg 'repo1\\.maven\\.org|apache\\.googlesource\\.com|github\\.com/apache/lucene-solr|lucene' build/discovered-artifact-metadata -g '*.json'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json:  "coordinates" : "org.apache.lucene:lucene-core:4.10.4"
+
+exec
+/usr/bin/zsh -lc "find . -path '*lucene-core*' -o -path '*lucene*' | head -200" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43
+exec
+/usr/bin/zsh -lc "curl -L --fail --silent 'https://apache.googlesource.com/lucene-solr/+/refs/tags/releases/lucene-solr/4.10.4/lucene/core/src/test/org/apache/lucene/?format=TEXT' | head -20" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43
+ succeeded in 157ms:
+./build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json
+./build/agent-artifact-discovery-logs/org.apache.lucene-lucene-core-4.10.4.log
+
+ succeeded in 1185ms:
+MTAwNjQ0IGJsb2IgNWFkM2E4MDg3OGQ4ZmEyN2RmY2I2NzlkMDI5MTc4Yzk5MDJhZGIwYglUZXN0QXNzZXJ0aW9ucy5qYXZhCjEwMDY0NCBibG9iIDA0NmE1OGRjNjY5ZjVjMGM3NWFiYTJiZGU2MmRkMTY4ZWNiOWNkNDMJVGVzdERlbW8uamF2YQoxMDA2NDQgYmxvYiAxMjdiMzE5MTUwMmFlZjFhMjYwMDVhMTU5MDlkZjlhYTQ4MWIyZWZjCVRlc3RFeHRlcm5hbENvZGVjcy5qYXZhCjEwMDY0NCBibG9iIDI1ZDAyZDQ3NzI5N2VlNGY1YmQ2NzViYTVkYTY0NTg1NzFkMGMxMTkJVGVzdE1lcmdlU2NoZWR1bGVyRXh0ZXJuYWwuamF2YQoxMDA2NDQgYmxvYiBhMGM2NTdjNDVmMDZlZWJmNjM3ODlkOTk4MTRhYzU4YjZlY2QyOWNiCVRlc3RTZWFyY2guamF2YQoxMDA2NDQgYmxvYiBhZGRiODdkODBiYjk1MzM1MzJkYjU1MjgyZGJjN2NlMmQ1ZGRmZmQ1CVRlc3RTZWFyY2hGb3JEdXBsaWNhdGVzLmphdmEKMTAwNjQ0IGJsb2IgZTk1MDlhYjAyMGU0ZjIyZGIxMDkwNTllYTVjZGM1NzVkYzZkZGNjOAlUZXN0V29yc3RDYXNlVGVzdEJlaGF2aW9yLmphdmEKMDQwMDAwIHRyZWUgZDZlM2RiNGI4ODQ1MDk5NWI5YmZkZmI4M2NmZTFkNjliZjNiNjE5ZglhbmFseXNpcwowNDAwMDAgdHJlZSAwNGJhNjMzM2Q4ZDZhMDQ2M2E0M2EzZmE4MGFlMDZiMDgxMWU4M2Q4CWNvZGVjcwowNDAwMDAgdHJlZSA5NzYzM2I5ZjdhYWQ2ZTEyZWM0NzE2NzM4MTI4Nzk2MmRhYzUzODU5CWRvY3VtZW50CjA0MDAwMCB0cmVlIGViZjM2NWZiNGQ0MmNhZmEyNjAwOTk4YmViM2EyYmM5ODliODFmZDYJaW5kZXgKMDQwMDAwIHRyZWUgZmViZDg4MjFlYTE0OGRiMDg2OTY0NTcxODg1ZGY0ZDBhM2MyZGRmYglzZWFyY2gKMDQwMDAwIHRyZWUgODJkOGQwMWEzNmVmMTRhNmVkYzIxMDczZTc5OGY3OTdhN2I1NDQ5MwlzdG9yZQowNDAwMDAgdHJlZSBjNmY5YzZlNzFjYTlkN2EwZDVlMjlhNTk4YjYwNWVjODg5ODcwMDJlCXV0aWwK
+exec
+/usr/bin/zsh -lc "curl -L --fail --silent https://repo1.maven.org/maven2/org/apache/lucene/lucene-parent/4.10.4/lucene-parent-4.10.4.pom | sed -n '1,220p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43
+exec
+/usr/bin/zsh -lc "curl -L --fail --silent https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/4.10.4/ | rg 'sources|javadoc|tests|lucene-core-4.10.4.jar'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43
+exec
+/usr/bin/zsh -lc 'curl -I -L --fail --silent https://apache.googlesource.com/lucene-solr/+/refs/tags/releases/lucene-solr/4.10.4/' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43
+ succeeded in 143ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+    
+    http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+  -->
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.lucene</groupId>
+    <artifactId>lucene-solr-grandparent</artifactId>
+    <version>4.10.4</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <groupId>org.apache.lucene</groupId>
+  <artifactId>lucene-parent</artifactId>
+  <packaging>pom</packaging>
+  <name>Lucene parent POM</name>
+  <description>Lucene parent POM</description>
+  <properties>
+    <module-directory>lucene</module-directory>
+  </properties>
+  <scm>
+    <connection>scm:svn:${vc-anonymous-base-url}/${module-directory}</connection>
+    <developerConnection>scm:svn:${vc-dev-base-url}/${module-directory}</developerConnection>
+    <url>${vc-browse-base-url}/${module-directory}</url>
+  </scm>
+  <modules>
+    <module>core</module>
+    <module>codecs</module>
+    <module>test-framework</module>
+    <module>analysis</module>
+    <module>benchmark</module>
+    <module>classification</module>
+    <module>demo</module>
+    <module>expressions</module>
+    <module>facet</module>
+    <module>grouping</module>
+    <module>highlighter</module>
+    <module>join</module>
+    <module>memory</module>
+    <module>misc</module>
+    <module>queries</module>
+    <module>queryparser</module>
+    <module>replicator</module>
+    <module>sandbox</module>
+    <module>spatial</module>
+    <module>suggest</module>
+  </modules>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>de.thetaphi</groupId>
+        <artifactId>forbiddenapis</artifactId>
+        <executions>
+          <execution>
+            <id>lucene-shared-check-forbidden-apis</id>
+            <configuration>
+              <!-- disallow undocumented classes like sun.misc.Unsafe: -->
+              <internalRuntimeForbidden>true</internalRuntimeForbidden>
+              <bundledSignatures>
+                <bundledSignature>jdk-unsafe</bundledSignature>
+                <bundledSignature>jdk-deprecated</bundledSignature>
+                <bundledSignature>jdk-system-out</bundledSignature>
+              </bundledSignatures>
+              <signaturesFiles>
+                <signaturesFile>${top-level}/lucene/tools/forbiddenApis/base.txt</signaturesFile>
+              </signaturesFiles>
+            </configuration>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>lucene-shared-test-check-forbidden-apis</id>
+            <configuration>
+              <!-- disallow undocumented classes like sun.misc.Unsafe: -->
+              <internalRuntimeForbidden>true</internalRuntimeForbidden>
+              <bundledSignatures>
+                <bundledSignature>jdk-unsafe</bundledSignature>
+                <bundledSignature>jdk-deprecated</bundledSignature>
+              </bundledSignatures>
+              <signaturesFiles>
+                <signaturesFile>${top-level}/lucene/tools/forbiddenApis/tests.txt</signaturesFile>
+                <signaturesFile>${top-level}/lucene/tools/forbiddenApis/base.txt</signaturesFile>
+              </signaturesFiles>
+            </configuration>
+            <goals>
+              <goal>testCheck</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+ succeeded in 169ms:
+<a href="lucene-core-4.10.4-javadoc.jar" title="lucene-core-4.10.4-javadoc.jar">lucene-core-4.10.4-javadoc.jar</a>                    2015-03-03 08:21   4877350      
+<a href="lucene-core-4.10.4-javadoc.jar.asc" title="lucene-core-4.10.4-javadoc.jar.asc">lucene-core-4.10.4-javadoc.jar.asc</a>                2015-03-03 08:21       181      
+<a href="lucene-core-4.10.4-javadoc.jar.asc.md5" title="lucene-core-4.10.4-javadoc.jar.asc.md5">lucene-core-4.10.4-javadoc.jar.asc.md5</a>            2015-03-03 08:21        32      
+<a href="lucene-core-4.10.4-javadoc.jar.asc.sha1" title="lucene-core-4.10.4-javadoc.jar.asc.sha1">lucene-core-4.10.4-javadoc.jar.asc.sha1</a>           2015-03-03 08:21        40      
+<a href="lucene-core-4.10.4-javadoc.jar.md5" title="lucene-core-4.10.4-javadoc.jar.md5">lucene-core-4.10.4-javadoc.jar.md5</a>                2015-03-03 08:21        32      
+<a href="lucene-core-4.10.4-javadoc.jar.sha1" title="lucene-core-4.10.4-javadoc.jar.sha1">lucene-core-4.10.4-javadoc.jar.sha1</a>               2015-03-03 08:21        40      
+<a href="lucene-core-4.10.4-sources.jar" title="lucene-core-4.10.4-sources.jar">lucene-core-4.10.4-sources.jar</a>                    2015-03-03 08:21   1969441      
+<a href="lucene-core-4.10.4-sources.jar.asc" title="lucene-core-4.10.4-sources.jar.asc">lucene-core-4.10.4-sources.jar.asc</a>                2015-03-03 08:21       181      
+<a href="lucene-core-4.10.4-sources.jar.asc.md5" title="lucene-core-4.10.4-sources.jar.asc.md5">lucene-core-4.10.4-sources.jar.asc.md5</a>            2015-03-03 08:21        32      
+<a href="lucene-core-4.10.4-sources.jar.asc.sha1" title="lucene-core-4.10.4-sources.jar.asc.sha1">lucene-core-4.10.4-sources.jar.asc.sha1</a>           2015-03-03 08:21        40      
+<a href="lucene-core-4.10.4-sources.jar.md5" title="lucene-core-4.10.4-sources.jar.md5">lucene-core-4.10.4-sources.jar.md5</a>                2015-03-03 08:21        32      
+<a href="lucene-core-4.10.4-sources.jar.sha1" title="lucene-core-4.10.4-sources.jar.sha1">lucene-core-4.10.4-sources.jar.sha1</a>               2015-03-03 08:21        40      
+<a href="lucene-core-4.10.4.jar" title="lucene-core-4.10.4.jar">lucene-core-4.10.4.jar</a>                            2015-03-03 08:21   2563490      
+<a href="lucene-core-4.10.4.jar.asc" title="lucene-core-4.10.4.jar.asc">lucene-core-4.10.4.jar.asc</a>                        2015-03-03 08:21       181      
+<a href="lucene-core-4.10.4.jar.asc.md5" title="lucene-core-4.10.4.jar.asc.md5">lucene-core-4.10.4.jar.asc.md5</a>                    2015-03-03 08:21        32      
+<a href="lucene-core-4.10.4.jar.asc.sha1" title="lucene-core-4.10.4.jar.asc.sha1">lucene-core-4.10.4.jar.asc.sha1</a>                   2015-03-03 08:21        40      
+<a href="lucene-core-4.10.4.jar.md5" title="lucene-core-4.10.4.jar.md5">lucene-core-4.10.4.jar.md5</a>                        2015-03-03 08:21        32      
+<a href="lucene-core-4.10.4.jar.sha1" title="lucene-core-4.10.4.jar.sha1">lucene-core-4.10.4.jar.sha1</a>                       2015-03-03 08:21        40      
+
+ succeeded in 201ms:
+HTTP/2 200 
+cache-control: no-cache, no-store, max-age=0, must-revalidate
+content-length: 3537
+content-security-policy: script-src 'nonce-H94Hkuiln-GMc7MkfIdt4g' 'unsafe-inline' 'strict-dynamic' https: http: 'unsafe-eval';object-src 'none';base-uri 'self';report-uri https://csp.withgoogle.com/csp/gerritcodereview/1
+content-type: text/html; charset=utf-8
+date: Sat, 02 May 2026 15:11:06 GMT
+expires: Mon, 01 Jan 1990 00:00:00 GMT
+pragma: no-cache
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 0
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+
+exec
+/usr/bin/zsh -lc "curl -L --fail --silent https://repo1.maven.org/maven2/org/apache/lucene/lucene-solr-grandparent/4.10.4/lucene-solr-grandparent-4.10.4.pom | rg -n 'vc-|scm|url|description|name' -C 2" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43
+ succeeded in 192ms:
+31-  <version>4.10.4</version>
+32-  <packaging>pom</packaging>
+33:  <name>Grandparent POM for Apache Lucene Core and Apache Solr</name>
+34:  <description>Grandparent POM for Apache Lucene Core and Apache Solr</description>
+35:  <url>http://lucene.apache.org</url>
+36-  <modules>
+37-    <module>lucene</module>
+--
+39-  </modules>
+40-  <properties>
+41:    <vc-anonymous-base-url>http://svn.apache.org/repos/asf/lucene/dev/branches/branch_4x</vc-anonymous-base-url>
+42:    <vc-dev-base-url>https://svn.apache.org/repos/asf/lucene/dev/branches/branch_4x</vc-dev-base-url>
+43:    <vc-browse-base-url>http://svn.apache.org/viewvc/lucene/dev/branches/branch_4x</vc-browse-base-url>
+44-    <specification.version>@spec.version@</specification.version>
+45-    <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+--
+69-  <issueManagement>
+70-    <system>JIRA</system>
+71:    <url>https://issues.apache.org/jira/browse/LUCENE</url>
+72-  </issueManagement>
+73-  <ciManagement>
+74-    <system>Jenkins</system>
+75:    <url>https://builds.apache.org/computer/lucene/</url>
+76-  </ciManagement>
+77-  <mailingLists>
+78-    <mailingList>
+79:      <name>General List</name>
+80-      <subscribe>general-subscribe@lucene.apache.org</subscribe>
+81-      <unsubscribe>general-unsubscribe@lucene.apache.org</unsubscribe>
+--
+85-    </mailingList>
+86-    <mailingList>
+87:      <name>Java User List</name>
+88-      <subscribe>java-user-subscribe@lucene.apache.org</subscribe>
+89-      <unsubscribe>java-user-unsubscribe@lucene.apache.org</unsubscribe>
+--
+93-    </mailingList>
+94-    <mailingList>
+95:      <name>Java Developer List</name>
+96-      <subscribe>dev-subscribe@lucene.apache.org</subscribe>
+97-      <unsubscribe>dev-unsubscribe@lucene.apache.org</unsubscribe>
+--
+99-    </mailingList>
+100-    <mailingList>
+101:      <name>Java Commits List</name>
+102-      <subscribe>commits-subscribe@lucene.apache.org</subscribe>
+103-      <unsubscribe>commits-unsubscribe@lucene.apache.org</unsubscribe>
+--
+108-  </mailingLists>
+109-  <inceptionYear>2000</inceptionYear>
+110:  <scm>
+111:    <connection>scm:svn:${vc-anonymous-base-url}</connection>
+112:    <developerConnection>scm:svn:${vc-dev-base-url}</developerConnection>
+113:    <url>${vc-browse-base-url}</url>
+114:  </scm>
+115-  <licenses>
+116-    <license>
+117:      <name>Apache 2</name>
+118:      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+119-    </license>
+120-  </licenses>
+--
+122-    <repository>
+123-      <id>apache.snapshots</id>
+124:      <name>Apache Snapshot Repository</name>
+125:      <url>http://repository.apache.org/snapshots</url>
+126-      <releases>
+127-        <enabled>false</enabled>
+--
+5459-      </dependency>
+5460-      <dependency>
+5461:        <groupId>com.thoughtworks.paranamer</groupId>
+5462:        <artifactId>paranamer</artifactId>
+5463-        <version>2.3</version>
+5464-      </dependency>
+--
+5698-        <exclusions>
+5699-          <exclusion>
+5700:            <groupId>com.thoughtworks.paranamer</groupId>
+5701:            <artifactId>paranamer</artifactId>
+5702-          </exclusion>
+5703-          <exclusion>
+--
+8253-
+8254-              <!-- See <http://wiki.apache.org/lucene-java/RunningTests>
+8255:                   for a description of the tests.* system properties. -->
+8256-
+8257-              <!-- RandomizedTesting library system properties -->
+--
+8290-                <Extension-Name>${project.groupId}</Extension-Name>
+8291-                <Implementation-Title>${project.groupId}</Implementation-Title>
+8292:                <Specification-Title>${project.name}</Specification-Title>
+8293-                <Specification-Version>${specification.version}</Specification-Version>
+8294-                <Specification-Vendor>The Apache Software Foundation</Specification-Vendor>
+8295-                <!-- impl version can be any string -->
+8296:                <Implementation-Version>${project.version} ${svn.revision} - ${user.name} - ${now.timestamp}</Implementation-Version>
+8297-                <Implementation-Vendor>The Apache Software Foundation</Implementation-Vendor>
+8298-                <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
+--
+8364-          <revisionOnScmFailure>NO-REVISION-AVAILABLE</revisionOnScmFailure>
+8365-          <buildNumberPropertyName>svn.revision</buildNumberPropertyName>
+8366:          <scmDirectory>${top-level}</scmDirectory>
+8367-        </configuration>
+8368-      </plugin>
+--
+8416-            <Extension-Name>${project.groupId}</Extension-Name>
+8417-            <Implementation-Title>${project.groupId}</Implementation-Title>
+8418:            <Specification-Title>${project.name}</Specification-Title>
+8419-            <Specification-Version>${specification.version}</Specification-Version>
+8420-            <Specification-Vendor>The Apache Software Foundation</Specification-Vendor>
+8421-            <!-- impl version can be any string -->
+8422:            <Implementation-Version>${project.version} ${svn.revision} - ${user.name} - ${now.timestamp}</Implementation-Version>
+8423-            <Implementation-Vendor>The Apache Software Foundation</Implementation-Vendor>
+8424-            <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/4.10.4/
+web search: 
+web search: site:apache.googlesource.com/lucene-solr "refs/tags/releases/lucene-solr/4.10.4" "lucene/core/src/test"
+web search: 
+web search: https://apache.googlesource.com/lucene-solr/+/refs/tags/releases/lucene-solr/4.10.4/lucene/core/src/test/org/apache/lucene/
+web search: 
+web search: 'releases/lucene-solr/4.10.4' in https://apache.googlesource.com/lucene-solr/%2Brefs
+web search: 
+web search: 
+web search: 
+web search: https://apache.googlesource.com/lucene-solr/%2B/refs/tags/releases/lucene-solr/4.10.4
+web search: 
+web search: https://apache.googlesource.com/lucene-solr/%2B/refs/tags/releases/lucene-solr/4.10.4/lucene/
+web search: 
+web search: https://apache.googlesource.com/lucene-solr/%2B/refs/tags/releases/lucene-solr/4.10.4/lucene/core/
+web search: 
+web search: https://apache.googlesource.com/lucene-solr/%2B/refs/tags/releases/lucene-solr/4.10.4/lucene/core/src/
+web search: 
+web search: https://apache.googlesource.com/lucene-solr/%2B/refs/tags/releases/lucene-solr/4.10.4/lucene/core/src/test/
+web search: 
+web search: Apache Lucene core library indexing search Java official
+codex
+I found the relevant release tag and confirmed the Lucene core test tree exists under that tag. I’m patching the metadata now with Maven source/javadoc URLs and the tagged Gitiles test URL, leaving language and not-for-native-image fields absent because this is a normal JVM jar rather than a Kotlin/Groovy/Scala or non-JVM artifact.
+apply patch
+patch: completed
+/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json
+diff --git a/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json b/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json
+index 3e687d9b84753586d23adaeecb4907076d41c3c3..d137ea19a8c67019c33b89dae0e75fe6eff0075a
+--- a/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json
++++ b/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.lucene:lucene-core:4.10.4"
++  "coordinates" : "org.apache.lucene:lucene-core:4.10.4",
++  "repository-url" : "https://apache.googlesource.com/lucene-solr",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
++  "test-code-url" : "https://apache.googlesource.com/lucene-solr/+/refs/tags/releases/lucene-solr/$version$/lucene/core/src/test/org/apache/lucene",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-javadoc.jar",
++  "description" : "Apache Lucene Core is the core Java search library for building high-performance, full-featured text indexing and search into applications. It provides index storage, document and query APIs, scoring, and low-level search components used directly or by higher-level search platforms."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json b/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json
+index 3e687d9b84753586d23adaeecb4907076d41c3c3..d137ea19a8c67019c33b89dae0e75fe6eff0075a
+--- a/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json
++++ b/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.lucene:lucene-core:4.10.4"
++  "coordinates" : "org.apache.lucene:lucene-core:4.10.4",
++  "repository-url" : "https://apache.googlesource.com/lucene-solr",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
++  "test-code-url" : "https://apache.googlesource.com/lucene-solr/+/refs/tags/releases/lucene-solr/$version$/lucene/core/src/test/org/apache/lucene",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-javadoc.jar",
++  "description" : "Apache Lucene Core is the core Java search library for building high-performance, full-featured text indexing and search into applications. It provides index storage, document and query APIs, scoring, and low-level search components used directly or by higher-level search platforms."
+ }
+
+exec
+/usr/bin/zsh -lc 'jq . build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.lucene:lucene-core:4.10.4",
+  "repository-url": "https://apache.googlesource.com/lucene-solr",
+  "source-code-url": "https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
+  "test-code-url": "https://apache.googlesource.com/lucene-solr/+/refs/tags/releases/lucene-solr/$version$/lucene/core/src/test/org/apache/lucene",
+  "documentation-url": "https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-javadoc.jar",
+  "description": "Apache Lucene Core is the core Java search library for building high-performance, full-featured text indexing and search into applications. It provides index storage, document and query APIs, scoring, and low-level search components used directly or by higher-level search platforms."
+}
+
+exec
+/usr/bin/zsh -lc 'git diff -- build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc 'curl -I -L --fail --silent https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/4.10.4/lucene-core-4.10.4-sources.jar >/dev/null && curl -I -L --fail --silent https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/4.10.4/lucene-core-4.10.4-javadoc.jar >/dev/null && curl -I -L --fail --silent https://apache.googlesource.com/lucene-solr/+/refs/tags/releases/lucene-solr/4.10.4/lucene/core/src/test/org/apache/lucene >/dev/null' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43
+diff --git a/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json b/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json
+index 3e687d9b84753586d23adaeecb4907076d41c3c3..d137ea19a8c67019c33b89dae0e75fe6eff0075a
+--- a/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json
++++ b/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.lucene:lucene-core:4.10.4"
++  "coordinates" : "org.apache.lucene:lucene-core:4.10.4",
++  "repository-url" : "https://apache.googlesource.com/lucene-solr",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
++  "test-code-url" : "https://apache.googlesource.com/lucene-solr/+/refs/tags/releases/lucene-solr/$version$/lucene/core/src/test/org/apache/lucene",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-javadoc.jar",
++  "description" : "Apache Lucene Core is the core Java search library for building high-performance, full-featured text indexing and search into applications. It provides index storage, document and query APIs, scoring, and low-level search components used directly or by higher-level search platforms."
+ }
+
+ succeeded in 1144ms:
+codex
+The JSON parses cleanly. I’m just waiting on the URL probe to finish so I can confirm the substituted 4.10.4 URLs resolve.
+diff --git a/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json b/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json
+index 3e687d9b84753586d23adaeecb4907076d41c3c3..d137ea19a8c67019c33b89dae0e75fe6eff0075a
+--- a/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json
++++ b/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.lucene:lucene-core:4.10.4"
++  "coordinates" : "org.apache.lucene:lucene-core:4.10.4",
++  "repository-url" : "https://apache.googlesource.com/lucene-solr",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
++  "test-code-url" : "https://apache.googlesource.com/lucene-solr/+/refs/tags/releases/lucene-solr/$version$/lucene/core/src/test/org/apache/lucene",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-javadoc.jar",
++  "description" : "Apache Lucene Core is the core Java search library for building high-performance, full-featured text indexing and search into applications. It provides index storage, document and query APIs, scoring, and low-level search components used directly or by higher-level search platforms."
+ }
+
+web search: 
+web search: lucene-core 4.10.4 Maven Central sources javadoc jar
+web search: 
+web search: Apache Lucene official high-performance full-featured text search engine library written in Java
+codex
+Updated [org.apache.lucene-lucene-core-4.10.4.json](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json:1).
+
+I used Maven Central for the source and javadoc artifacts, and the Apache Gitiles `releases/lucene-solr/4.10.4` tag for the test suite because no Maven tests jar exists for this artifact. Maven Central lists the 4.10.4 sources and javadoc jars, and Apache Gitiles lists the matching 4.10.4 release tag. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/4.10.4/?utm_source=openai))
+
+No `language` field was added, and no `not-for-native-image` fields were added. Verified with `jq` and HTTP probes for the substituted `4.10.4` URLs.
+diff --git a/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json b/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json
+index 3e687d9b84753586d23adaeecb4907076d41c3c3..d137ea19a8c67019c33b89dae0e75fe6eff0075a
+--- a/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json
++++ b/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.lucene:lucene-core:4.10.4"
++  "coordinates" : "org.apache.lucene:lucene-core:4.10.4",
++  "repository-url" : "https://apache.googlesource.com/lucene-solr",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
++  "test-code-url" : "https://apache.googlesource.com/lucene-solr/+/refs/tags/releases/lucene-solr/$version$/lucene/core/src/test/org/apache/lucene",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-javadoc.jar",
++  "description" : "Apache Lucene Core is the core Java search library for building high-performance, full-featured text indexing and search into applications. It provides index storage, document and query APIs, scoring, and low-level search components used directly or by higher-level search platforms."
+ }
+
+2026-05-02T15:12:10.164805Z ERROR codex_core::session: failed to record rollout items: thread 019de93c-fb2d-7d52-93a6-6106b8a098d8 not found
+tokens used
+98,147
+Updated [org.apache.lucene-lucene-core-4.10.4.json](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43/build/discovered-artifact-metadata/org.apache.lucene-lucene-core-4.10.4.json:1).
+
+I used Maven Central for the source and javadoc artifacts, and the Apache Gitiles `releases/lucene-solr/4.10.4` tag for the test suite because no Maven tests jar exists for this artifact. Maven Central lists the 4.10.4 sources and javadoc jars, and Apache Gitiles lists the matching 4.10.4 release tag. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/lucene/lucene-core/4.10.4/?utm_source=openai))
+
+No `language` field was added, and no `not-for-native-image` fields were added. Verified with `jq` and HTTP probes for the substituted `4.10.4` URLs.
+Ran agent for org.apache.lucene:lucene-core:4.10.4 (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43/build/agent-artifact-discovery-logs/org.apache.lucene-lucene-core-4.10.4.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3612-12aedc43/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 36s
+9 actionable tasks: 4 executed, 5 from cache
