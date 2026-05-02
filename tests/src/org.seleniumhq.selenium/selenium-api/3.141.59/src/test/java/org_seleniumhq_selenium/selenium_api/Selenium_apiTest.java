@@ -43,6 +43,7 @@ import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.mobile.NetworkConnection.ConnectionType;
 
 public class Selenium_apiTest {
     @Test
@@ -344,6 +345,29 @@ public class Selenium_apiTest {
         assertThatThrownBy(() -> new Sequence(keyboard, 0).addAction(mouse.createPointerDown(0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("wrong kind of input device");
+    }
+
+    @Test
+    void mobileConnectionTypesExposeStateAndWireMask() {
+        ConnectionType wifiAndData = new ConnectionType(true, true, false);
+
+        assertThat(wifiAndData.isWifiEnabled()).isTrue();
+        assertThat(wifiAndData.isDataEnabled()).isTrue();
+        assertThat(wifiAndData.isAirplaneMode()).isFalse();
+        assertThat(wifiAndData).isEqualTo(ConnectionType.ALL);
+        assertThat(wifiAndData.hashCode()).isEqualTo(ConnectionType.ALL.hashCode());
+        assertThat(wifiAndData.toJson()).isEqualTo(ConnectionType.ALL.toJson());
+        assertThat(wifiAndData).hasToString(ConnectionType.ALL.toString());
+
+        ConnectionType airplaneMode = new ConnectionType(ConnectionType.AIRPLANE_MODE.toJson());
+        assertThat(airplaneMode.isAirplaneMode()).isTrue();
+        assertThat(airplaneMode.isWifiEnabled()).isFalse();
+        assertThat(airplaneMode.isDataEnabled()).isFalse();
+        assertThat(airplaneMode).isEqualTo(ConnectionType.AIRPLANE_MODE);
+
+        ConnectionType noConnection = new ConnectionType(-1);
+        assertThat(noConnection).isEqualTo(ConnectionType.NONE);
+        assertThat(noConnection.toJson()).isZero();
     }
 
     @Test
