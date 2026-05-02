@@ -9,6 +9,11 @@ package io_netty.netty_resolver_dns_classes_macos;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import io.netty.resolver.dns.DnsServerAddressStream;
 import io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider;
@@ -95,6 +100,48 @@ public class Netty_resolver_dns_classes_macosTest {
                     .isInstanceOf(UnsatisfiedLinkError.class)
                     .hasCause(MacOSDnsServerAddressStreamProvider.unavailabilityCause());
         }
+    }
+
+    @Test
+    void providerCanResolveNameServerStreamsConcurrently() throws Exception {
+        if (MacOSDnsServerAddressStreamProvider.isAvailable()) {
+            MacOSDnsServerAddressStreamProvider provider = new MacOSDnsServerAddressStreamProvider();
+            ExecutorService executor = Executors.newFixedThreadPool(4);
+
+            try {
+                List<Callable<InetSocketAddress>> lookups = List.of(
+                        () -> firstNameServer(provider, "example.com"),
+                        () -> firstNameServer(provider, "netty.io"),
+                        () -> firstNameServer(provider, "localhost"),
+                        () -> firstNameServer(provider, "service.example.com"),
+                        () -> firstNameServer(provider, "example.org"),
+                        () -> firstNameServer(provider, "subdomain.netty.io"),
+                        () -> firstNameServer(provider, "example.net"),
+                        () -> firstNameServer(provider, "service.example.org"));
+
+                List<Future<InetSocketAddress>> futures = executor.invokeAll(lookups, 5, TimeUnit.SECONDS);
+
+                assertThat(futures).hasSize(lookups.size());
+                for (Future<InetSocketAddress> future : futures) {
+                    assertThat(future).isNotCancelled();
+                    assertValidNameServer(future.get());
+                }
+            } finally {
+                executor.shutdownNow();
+                assertThat(executor.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+            }
+        } else {
+            assertThatThrownBy(MacOSDnsServerAddressStreamProvider::new)
+                    .isInstanceOf(UnsatisfiedLinkError.class)
+                    .hasCause(MacOSDnsServerAddressStreamProvider.unavailabilityCause());
+        }
+    }
+
+    private static InetSocketAddress firstNameServer(MacOSDnsServerAddressStreamProvider provider, String hostName) {
+        DnsServerAddressStream stream = provider.nameServerAddressStream(hostName);
+
+        assertThat(stream.size()).isGreaterThan(0);
+        return stream.next();
     }
 
     private static List<InetSocketAddress> nextNameServers(DnsServerAddressStream stream, int count) {
