@@ -16,6 +16,7 @@ import javaslang.Tuple0;
 import javaslang.Tuple1;
 import javaslang.Tuple2;
 import javaslang.Tuple3;
+import javaslang.Tuple4;
 import javaslang.control.Option;
 import javaslang.match.PatternsProcessor;
 import javaslang.match.annotation.Patterns;
@@ -53,6 +54,20 @@ public class Javaslang_matchTest {
         assertThat(exactMatch.isDefined()).isTrue();
         assertThat(exactMatch.get()).isEqualTo("native-image:8:HIGH");
         assertThat(wrongEstimate.isEmpty()).isTrue();
+    }
+
+    @Test
+    void generatedPattern4PassesAllTupleElementsToMatchCase() {
+        Deployment deployment = new Deployment("metadata-service", "eu-west", 3, true);
+
+        String result = API.Match(deployment)
+                .of(API.Case(
+                        Javaslang_matchTest_PatternDefinitionsPatterns.deployment(
+                                API.$("metadata-service"), API.$("eu-west"), API.$(3), API.$(true)),
+                        (String service, String region, Integer replicas, Boolean healthy) ->
+                                service + "@" + region + ":" + replicas + ":" + healthy));
+
+        assertThat(result).isEqualTo("metadata-service@eu-west:3:true");
     }
 
     @Test
@@ -157,6 +172,11 @@ public class Javaslang_matchTest {
         public static Tuple3<String, Integer, Priority> task(Task task) {
             return Tuple.of(task.title, task.estimate, task.priority);
         }
+
+        @Unapply
+        public static Tuple4<String, String, Integer, Boolean> deployment(Deployment deployment) {
+            return Tuple.of(deployment.service, deployment.region, deployment.replicas, deployment.healthy);
+        }
     }
 
     public static final class Person {
@@ -210,6 +230,20 @@ public class Javaslang_matchTest {
             this.title = title;
             this.estimate = estimate;
             this.priority = priority;
+        }
+    }
+
+    public static final class Deployment {
+        private final String service;
+        private final String region;
+        private final int replicas;
+        private final boolean healthy;
+
+        private Deployment(String service, String region, int replicas, boolean healthy) {
+            this.service = service;
+            this.region = region;
+            this.replicas = replicas;
+            this.healthy = healthy;
         }
     }
 }
