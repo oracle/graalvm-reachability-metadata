@@ -6,6 +6,7 @@
  */
 package io_netty.netty_transport_native_epoll;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,6 +24,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
@@ -45,6 +47,7 @@ import io.netty.channel.epoll.EpollTcpInfo;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.unix.DomainSocketAddress;
 import io.netty.channel.unix.DomainSocketReadMode;
+import io.netty.channel.unix.PeerCredentials;
 import io.netty.util.CharsetUtil;
 import org.junit.jupiter.api.Test;
 
@@ -286,6 +289,89 @@ public class Netty_transport_native_epollTest {
             assertThat(responseReceived.await(5, TimeUnit.SECONDS)).isTrue();
             assertThat(failure.get()).isNull();
             assertThat(response.get()).isEqualTo("echo:domain");
+        } finally {
+            if (clientChannel != null) {
+                clientChannel.close().syncUninterruptibly();
+            }
+            if (serverChannel != null) {
+                serverChannel.close().syncUninterruptibly();
+            }
+            clientGroup.shutdownGracefully().syncUninterruptibly();
+            serverGroup.shutdownGracefully().syncUninterruptibly();
+            Files.deleteIfExists(socketPath);
+        }
+    }
+
+    @Test
+    void epollDomainSocketChannelsExposePeerCredentialsWhenAvailable() throws Exception {
+        if (!Epoll.isAvailable()) {
+            assertThatThrownBy(EpollEventLoopGroup::new).isInstanceOf(LinkageError.class);
+            return;
+        }
+
+        Path socketPath = Files.createTempFile("netty-epoll-peer-", ".sock");
+        Files.deleteIfExists(socketPath);
+        DomainSocketAddress socketAddress = new DomainSocketAddress(socketPath.toFile());
+        EventLoopGroup serverGroup = new EpollEventLoopGroup(1);
+        EventLoopGroup clientGroup = new EpollEventLoopGroup(1);
+        Channel serverChannel = null;
+        Channel clientChannel = null;
+        try {
+            CountDownLatch credentialsReceived = new CountDownLatch(1);
+            AtomicReference<PeerCredentials> credentials = new AtomicReference<>();
+            AtomicReference<Throwable> failure = new AtomicReference<>();
+
+            ServerBootstrap serverBootstrap = new ServerBootstrap()
+                    .group(serverGroup)
+                    .channel(EpollServerDomainSocketChannel.class)
+                    .childHandler(new ChannelInitializer<Channel>() {
+                        @Override
+                        protected void initChannel(Channel channel) {
+                            channel.pipeline().addLast(new ChannelInboundHandlerAdapter() {
+                                @Override
+                                public void channelActive(ChannelHandlerContext ctx) {
+                                    try {
+                                        credentials.set(((EpollDomainSocketChannel) ctx.channel()).peerCredentials());
+                                    } catch (IOException e) {
+                                        failure.compareAndSet(null, e);
+                                    } finally {
+                                        credentialsReceived.countDown();
+                                        ctx.close();
+                                    }
+                                }
+
+                                @Override
+                                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+                                    failure.compareAndSet(null, cause);
+                                    credentialsReceived.countDown();
+                                    ctx.close();
+                                }
+                            });
+                        }
+                    });
+            serverChannel = serverBootstrap.bind(socketAddress).syncUninterruptibly().channel();
+
+            Bootstrap clientBootstrap = new Bootstrap()
+                    .group(clientGroup)
+                    .channel(EpollDomainSocketChannel.class)
+                    .handler(new ChannelInitializer<Channel>() {
+                        @Override
+                        protected void initChannel(Channel channel) {
+                        }
+                    });
+            clientChannel = clientBootstrap.connect(socketAddress).syncUninterruptibly().channel();
+            clientChannel.closeFuture().syncUninterruptibly();
+
+            assertThat(credentialsReceived.await(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(failure.get()).isNull();
+            PeerCredentials peerCredentials = credentials.get();
+            assertThat(peerCredentials).isNotNull();
+            assertThat(peerCredentials.pid()).isPositive();
+            assertThat(peerCredentials.uid()).isGreaterThanOrEqualTo(0);
+            assertThat(peerCredentials.gids()).isNotNull();
+            for (int gid : peerCredentials.gids()) {
+                assertThat(gid).isGreaterThanOrEqualTo(0);
+            }
         } finally {
             if (clientChannel != null) {
                 clientChannel.close().syncUninterruptibly();
