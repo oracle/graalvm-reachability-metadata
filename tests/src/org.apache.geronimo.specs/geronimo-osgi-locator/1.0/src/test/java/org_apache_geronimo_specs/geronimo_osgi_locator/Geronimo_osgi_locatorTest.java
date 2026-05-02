@@ -10,8 +10,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -133,6 +137,19 @@ public class Geronimo_osgi_locatorTest {
     }
 
     @Test
+    void continuesServiceDiscoveryAfterUnreadableServiceDefinition() throws Exception {
+        URL unreadableServiceDefinition = unreadableServiceDefinition("unreadable-providers");
+        URL readableServiceDefinition = writeServiceDefinition("readable-providers", PrimaryProvider.class.getName());
+        ResourceBackedClassLoader classLoader = new ResourceBackedClassLoader(
+                Map.of(serviceResourceName(), List.of(unreadableServiceDefinition, readableServiceDefinition)));
+
+        List<Class<?>> serviceClasses = ProviderLocator.getServiceClasses(
+                TestService.class.getName(), null, classLoader);
+
+        assertThat(serviceClasses).containsExactly(PrimaryProvider.class);
+    }
+
+    @Test
     void readsPropertiesFromConfiguredJavaHomeRelativeFile() throws Exception {
         Path relativePropertiesPath = Path.of("conf", "locator.properties");
         Path missingPropertiesPath = Path.of("conf", "missing.properties");
@@ -164,6 +181,10 @@ public class Geronimo_osgi_locatorTest {
         Path serviceDefinition = servicesDirectory.resolve(TestService.class.getName());
         Files.writeString(serviceDefinition, contents, StandardCharsets.UTF_8);
         return serviceDefinition.toUri().toURL();
+    }
+
+    private URL unreadableServiceDefinition(String path) throws IOException {
+        return URL.of(URI.create("test://service-definitions/" + path), new UnreadableUrlStreamHandler());
     }
 
     private String serviceResourceName() {
@@ -201,6 +222,22 @@ public class Geronimo_osgi_locatorTest {
         @Override
         public String value() {
             return "caller";
+        }
+    }
+
+    private static final class UnreadableUrlStreamHandler extends URLStreamHandler {
+        @Override
+        protected URLConnection openConnection(URL url) {
+            return new URLConnection(url) {
+                @Override
+                public void connect() {
+                }
+
+                @Override
+                public InputStream getInputStream() throws IOException {
+                    throw new IOException("Service definition is not readable");
+                }
+            };
         }
     }
 
