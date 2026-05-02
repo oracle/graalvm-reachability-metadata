@@ -226,6 +226,31 @@ public class Json_patchTest {
     }
 
     @Test
+    public void objectMergePatchTreatsNonObjectTargetAsEmptyObject() throws Exception {
+        JsonNode patchJson = json("""
+                {
+                  "title": "Hello!",
+                  "author": {
+                    "givenName": "Ada"
+                  },
+                  "ignored": null
+                }
+                """);
+        JsonMergePatch patch = JsonMergePatch.fromJson(patchJson);
+        JsonNode expected = json("""
+                {
+                  "title": "Hello!",
+                  "author": {
+                    "givenName": "Ada"
+                  }
+                }
+                """);
+
+        assertThat(patch.apply(json("[\"not\", \"an\", \"object\"]"))).isEqualTo(expected);
+        assertThat(patch.apply(json("\"not an object\""))).isEqualTo(expected);
+    }
+
+    @Test
     public void removingMissingPathReportsPatchException() throws Exception {
         JsonPatch patch = JsonPatch.fromJson(json("""
                 [
