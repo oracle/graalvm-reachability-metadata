@@ -16,48 +16,46 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.aspectj.AnnotationCacheAspect;
+import org.springframework.cache.aspectj.AspectJCachingConfiguration;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.cache.config.CacheManagementConfigUtils;
-import org.springframework.context.annotation.AdviceMode;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.context.annotation.aspectj.SpringConfiguredConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Role;
 import org.springframework.core.task.SyncTaskExecutor;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.aspectj.AnnotationAsyncExecutionAspect;
+import org.springframework.scheduling.aspectj.AspectJAsyncConfiguration;
 import org.springframework.scheduling.config.TaskManagementConfigUtils;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.aspectj.AnnotationTransactionAspect;
+import org.springframework.transaction.aspectj.AspectJTransactionManagementConfiguration;
 import org.springframework.transaction.config.TransactionManagementConfigUtils;
 import org.springframework.transaction.support.SimpleTransactionStatus;
 
+import java.lang.reflect.Method;
 import java.util.Properties;
-import java.util.concurrent.Executor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class Spring_aspectsTest {
     @Test
-    void springConfiguredRegistersTheSingletonBeanConfigurerAspect() {
-        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguredTestConfiguration.class)) {
-            BeanDefinition beanDefinition = context.getBeanFactory()
-                    .getBeanDefinition(SpringConfiguredConfiguration.BEAN_CONFIGURER_ASPECT_BEAN_NAME);
-            AnnotationBeanConfigurerAspect aspect = context.getBean(
-                    SpringConfiguredConfiguration.BEAN_CONFIGURER_ASPECT_BEAN_NAME,
-                    AnnotationBeanConfigurerAspect.class);
+    void springConfiguredRegistersTheSingletonBeanConfigurerAspect() throws Exception {
+        SpringConfiguredConfiguration configuration = new SpringConfiguredConfiguration();
+        Method beanMethod = SpringConfiguredConfiguration.class.getDeclaredMethod("beanConfigurerAspect");
+        Method beanMethodAnnotationAccess = beanMethod;
+        Bean bean = beanMethodAnnotationAccess.getAnnotation(Bean.class);
+        Role role = beanMethodAnnotationAccess.getAnnotation(Role.class);
+        AnnotationBeanConfigurerAspect aspect = configuration.beanConfigurerAspect();
 
-            assertThat(beanDefinition.getRole()).isEqualTo(BeanDefinition.ROLE_INFRASTRUCTURE);
-            assertThat(aspect).isSameAs(AnnotationBeanConfigurerAspect.aspectOf());
-            assertThat(AnnotationBeanConfigurerAspect.hasAspect()).isTrue();
-        }
+        assertThat(bean).isNotNull();
+        assertThat(bean.name()).containsExactly(SpringConfiguredConfiguration.BEAN_CONFIGURER_ASPECT_BEAN_NAME);
+        assertThat(role).isNotNull();
+        assertThat(role.value()).isEqualTo(BeanDefinition.ROLE_INFRASTRUCTURE);
+        assertThat(aspect).isSameAs(AnnotationBeanConfigurerAspect.aspectOf());
+        assertThat(AnnotationBeanConfigurerAspect.hasAspect()).isTrue();
     }
 
     @Test
@@ -95,31 +93,26 @@ public class Spring_aspectsTest {
     }
 
     @Test
-    void aspectjModeRegistersCacheTransactionAndAsyncInfrastructureAspects() {
-        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AspectJInfrastructureConfiguration.class)) {
-            AnnotationCacheAspect cacheAspect = context.getBean(
-                    CacheManagementConfigUtils.CACHE_ASPECT_BEAN_NAME,
-                    AnnotationCacheAspect.class);
-            AnnotationTransactionAspect transactionAspect = context.getBean(
-                    TransactionManagementConfigUtils.TRANSACTION_ASPECT_BEAN_NAME,
-                    AnnotationTransactionAspect.class);
-            AnnotationAsyncExecutionAspect asyncAspect = context.getBean(
-                    TaskManagementConfigUtils.ASYNC_EXECUTION_ASPECT_BEAN_NAME,
-                    AnnotationAsyncExecutionAspect.class);
+    void aspectjModeRegistersCacheTransactionAndAsyncInfrastructureAspects() throws Exception {
+        AspectJCachingConfiguration cachingConfiguration = new AspectJCachingConfiguration();
+        AspectJTransactionManagementConfiguration transactionConfiguration = new AspectJTransactionManagementConfiguration();
+        AspectJAsyncConfiguration asyncConfiguration = new AspectJAsyncConfiguration();
 
-            assertThat(cacheAspect).isSameAs(AnnotationCacheAspect.aspectOf());
-            assertThat(transactionAspect).isSameAs(AnnotationTransactionAspect.aspectOf());
-            assertThat(asyncAspect).isSameAs(AnnotationAsyncExecutionAspect.aspectOf());
-            assertThat(context.getBeanFactory()
-                    .getBeanDefinition(CacheManagementConfigUtils.CACHE_ASPECT_BEAN_NAME)
-                    .getRole()).isEqualTo(BeanDefinition.ROLE_INFRASTRUCTURE);
-            assertThat(context.getBeanFactory()
-                    .getBeanDefinition(TransactionManagementConfigUtils.TRANSACTION_ASPECT_BEAN_NAME)
-                    .getRole()).isEqualTo(BeanDefinition.ROLE_INFRASTRUCTURE);
-            assertThat(context.getBeanFactory()
-                    .getBeanDefinition(TaskManagementConfigUtils.ASYNC_EXECUTION_ASPECT_BEAN_NAME)
-                    .getRole()).isEqualTo(BeanDefinition.ROLE_INFRASTRUCTURE);
-        }
+        assertInfrastructureBean(
+                AspectJCachingConfiguration.class.getDeclaredMethod("cacheAspect"),
+                CacheManagementConfigUtils.CACHE_ASPECT_BEAN_NAME
+        );
+        assertInfrastructureBean(
+                AspectJTransactionManagementConfiguration.class.getDeclaredMethod("transactionAspect"),
+                TransactionManagementConfigUtils.TRANSACTION_ASPECT_BEAN_NAME
+        );
+        assertInfrastructureBean(
+                AspectJAsyncConfiguration.class.getDeclaredMethod("asyncAdvisor"),
+                TaskManagementConfigUtils.ASYNC_EXECUTION_ASPECT_BEAN_NAME
+        );
+        assertThat(cachingConfiguration.cacheAspect()).isSameAs(AnnotationCacheAspect.aspectOf());
+        assertThat(transactionConfiguration.transactionAspect()).isSameAs(AnnotationTransactionAspect.aspectOf());
+        assertThat(asyncConfiguration.asyncAdvisor()).isSameAs(AnnotationAsyncExecutionAspect.aspectOf());
     }
 
     @Test
@@ -177,32 +170,6 @@ public class Spring_aspectsTest {
 
         assertThat(service.getMessage()).isEqualTo("configured through interface aspect");
         assertThat(aspect.wasInvoked()).isTrue();
-    }
-
-    @EnableSpringConfigured
-    @Configuration(proxyBeanMethods = false)
-    static class SpringConfiguredTestConfiguration {
-    }
-
-    @EnableAsync(mode = AdviceMode.ASPECTJ)
-    @EnableCaching(mode = AdviceMode.ASPECTJ)
-    @EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
-    @Configuration(proxyBeanMethods = false)
-    static class AspectJInfrastructureConfiguration {
-        @Bean
-        CacheManager cacheManager() {
-            return new ConcurrentMapCacheManager("books");
-        }
-
-        @Bean
-        PlatformTransactionManager transactionManager() {
-            return new RecordingTransactionManager();
-        }
-
-        @Bean
-        Executor taskExecutor() {
-            return new SyncTaskExecutor();
-        }
     }
 
     @Configurable("configurableService")
@@ -293,5 +260,16 @@ public class Spring_aspectsTest {
         @Override
         public void rollback(TransactionStatus status) {
         }
+    }
+
+    private static void assertInfrastructureBean(Method beanMethod, String beanName) {
+        Method beanMethodAnnotationAccess = beanMethod;
+        Bean bean = beanMethodAnnotationAccess.getAnnotation(Bean.class);
+        Role role = beanMethodAnnotationAccess.getAnnotation(Role.class);
+
+        assertThat(bean).isNotNull();
+        assertThat(bean.name()).containsExactly(beanName);
+        assertThat(role).isNotNull();
+        assertThat(role.value()).isEqualTo(BeanDefinition.ROLE_INFRASTRUCTURE);
     }
 }
