@@ -35,7 +35,7 @@ public class DefaultConversionHandlerTest {
 
     @Test
     void convertsWrapperArrayToPrimitiveArray() {
-        final Object array = conversionHandler.toArray(new Integer[] { 2, 3, 5 }, int.class, null);
+        final Object array = conversionHandler.toArray(new Integer[] {2, 3, 5}, int.class, null);
 
         assertThat(array).isInstanceOf(int[].class);
         assertThat((int[]) array).containsExactly(2, 3, 5);
