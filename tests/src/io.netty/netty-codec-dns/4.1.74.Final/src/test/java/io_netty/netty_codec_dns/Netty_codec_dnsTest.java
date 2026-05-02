@@ -17,6 +17,9 @@ import io.netty.channel.socket.InternetProtocolFamily;
 import io.netty.handler.codec.dns.DatagramDnsQuery;
 import io.netty.handler.codec.dns.DatagramDnsQueryDecoder;
 import io.netty.handler.codec.dns.DatagramDnsQueryEncoder;
+import io.netty.handler.codec.dns.DatagramDnsResponse;
+import io.netty.handler.codec.dns.DatagramDnsResponseDecoder;
+import io.netty.handler.codec.dns.DatagramDnsResponseEncoder;
 import io.netty.handler.codec.dns.DefaultDnsOptEcsRecord;
 import io.netty.handler.codec.dns.DefaultDnsPtrRecord;
 import io.netty.handler.codec.dns.DefaultDnsQuestion;
@@ -227,6 +230,47 @@ public class Netty_codec_dnsTest {
             assertQuestion(decoded.recordAt(DnsSection.QUESTION),
                     "service.example.com.", DnsRecordType.SRV, DnsRecord.CLASS_IN);
             assertThat(decoded.<DnsRecord>recordAt(DnsSection.ADDITIONAL).type()).isSameAs(DnsRecordType.OPT);
+        } finally {
+            if (decoded != null) {
+                decoded.release();
+            }
+            encoder.finishAndReleaseAll();
+            decoder.finishAndReleaseAll();
+        }
+    }
+
+    @Test
+    void datagramResponseEncoderAndDecoderRoundTripEnvelopeResponseCodeAndTruncatedFlag() {
+        DatagramDnsResponse response = new DatagramDnsResponse(
+                SERVER, CLIENT, 0xD00D, DnsOpCode.QUERY, DnsResponseCode.NXDOMAIN)
+                .setAuthoritativeAnswer(true)
+                .setTruncated(true)
+                .addRecord(DnsSection.QUESTION, new DefaultDnsQuestion("missing.example.com.", DnsRecordType.A));
+        EmbeddedChannel encoder = new EmbeddedChannel(new DatagramDnsResponseEncoder());
+        EmbeddedChannel decoder = new EmbeddedChannel(new DatagramDnsResponseDecoder());
+        DatagramDnsResponse decoded = null;
+
+        try {
+            assertThat(encoder.writeOutbound(response)).isTrue();
+            DatagramPacket packet = encoder.readOutbound();
+
+            assertThat(packet.sender()).isNull();
+            assertThat(packet.recipient()).isEqualTo(CLIENT);
+            assertThat(packet.content().readableBytes()).isGreaterThan(12);
+
+            assertThat(decoder.writeInbound(packet)).isTrue();
+            decoded = decoder.readInbound();
+
+            assertThat(decoded.sender()).isNull();
+            assertThat(decoded.recipient()).isEqualTo(CLIENT);
+            assertThat(decoded.id()).isEqualTo(0xD00D);
+            assertThat(decoded.code()).isSameAs(DnsResponseCode.NXDOMAIN);
+            assertThat(decoded.isAuthoritativeAnswer()).isTrue();
+            assertThat(decoded.isTruncated()).isTrue();
+            assertThat(decoded.count(DnsSection.QUESTION)).isOne();
+            assertThat(decoded.count(DnsSection.ANSWER)).isZero();
+            assertQuestion(decoded.recordAt(DnsSection.QUESTION),
+                    "missing.example.com.", DnsRecordType.A, DnsRecord.CLASS_IN);
         } finally {
             if (decoded != null) {
                 decoded.release();
