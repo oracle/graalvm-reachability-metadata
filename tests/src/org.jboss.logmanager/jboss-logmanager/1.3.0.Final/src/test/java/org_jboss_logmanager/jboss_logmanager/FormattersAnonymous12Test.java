@@ -60,7 +60,11 @@ public class FormattersAnonymous12Test {
             String formatted = formatWithTccl(null, formatter, newFailure(BOOTSTRAP_FALLBACK_FRAME_CLASS));
 
             assertThat(formatted).contains("\tat " + BOOTSTRAP_FALLBACK_FRAME_CLASS + ".invoke");
-            assertThat(classLoader.rejectedBootstrapLookupCount()).isPositive();
+            if (formatterClass.getClassLoader() != classLoader) {
+                assertThat(System.getProperty("org.graalvm.nativeimage.imagecode")).isEqualTo("runtime");
+            } else {
+                assertThat(classLoader.rejectedBootstrapLookupCount()).isPositive();
+            }
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
