@@ -63,6 +63,13 @@ public class MainTest {
     }
 
     @Test
+    void compilerGeneratedClassLookupResolvesMainType() throws Throwable {
+        Class<?> resolvedClass = ExposedMain.lookupCompilerGeneratedClass(Main.class.getName());
+
+        assertThat(resolvedClass).isSameAs(Main.class);
+    }
+
+    @Test
     void loadsAntVersionFromMainClassResource() throws Throwable {
         ExposedMain.clearCachedAntVersion();
 
@@ -110,6 +117,7 @@ public class MainTest {
 
     private static final class ExposedMain extends Main {
         private static final MethodHandle ADD_INPUT_HANDLER = addInputHandlerMethod();
+        private static final MethodHandle CLASS_LOOKUP = classLookupMethod();
         private static final VarHandle ANT_VERSION = staticField("antVersion", String.class);
         private static final VarHandle MAIN_CLASS = staticField(
                 "class$org$apache$tools$ant$Main",
@@ -127,6 +135,10 @@ public class MainTest {
             ADD_INPUT_HANDLER.invoke(this, project);
         }
 
+        static Class<?> lookupCompilerGeneratedClass(String className) throws Throwable {
+            return (Class<?>) CLASS_LOOKUP.invoke(className);
+        }
+
         static void clearCachedAntVersion() {
             ANT_VERSION.set(null);
             MAIN_CLASS.set(null);
@@ -138,6 +150,17 @@ public class MainTest {
                         Main.class,
                         "addInputHandler",
                         MethodType.methodType(void.class, Project.class));
+            } catch (NoSuchMethodException | IllegalAccessException exception) {
+                throw new ExceptionInInitializerError(exception);
+            }
+        }
+
+        private static MethodHandle classLookupMethod() {
+            try {
+                return privateMainLookup().findStatic(
+                        Main.class,
+                        "class$",
+                        MethodType.methodType(Class.class, String.class));
             } catch (NoSuchMethodException | IllegalAccessException exception) {
                 throw new ExceptionInInitializerError(exception);
             }
