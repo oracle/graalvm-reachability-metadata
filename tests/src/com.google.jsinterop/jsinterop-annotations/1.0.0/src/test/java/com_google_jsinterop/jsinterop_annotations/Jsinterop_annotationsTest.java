@@ -56,6 +56,16 @@ public class Jsinterop_annotationsTest {
     }
 
     @Test
+    void autoNamedAnnotationsCanOmitOptionalMembers() {
+        AutoNamedCounter counter = new AutoNamedCounter(3);
+
+        assertThat(counter.currentValue()).isEqualTo(3);
+        counter.setCurrentValue(6);
+        assertThat(counter.multiply(7)).isEqualTo(42);
+        assertThat(counter.summary()).isEqualTo("value=6");
+    }
+
+    @Test
     void annotationInterfacesExposeTheirPublicMembers() {
         JsType jsType = new JsTypeLiteral("Widget", "example.widgets", true);
         JsMethod jsMethod = new JsMethodLiteral("calculate", "example.methods");
@@ -91,6 +101,35 @@ public class Jsinterop_annotationsTest {
 
     private static int applyMapping(int value, ValueMapper mapper) {
         return mapper.map(value);
+    }
+
+    @JsType
+    private static final class AutoNamedCounter {
+        private int value;
+
+        private AutoNamedCounter(int value) {
+            this.value = value;
+        }
+
+        @JsProperty
+        private int currentValue() {
+            return value;
+        }
+
+        @JsProperty
+        private void setCurrentValue(int value) {
+            this.value = value;
+        }
+
+        @JsMethod
+        private int multiply(int factor) {
+            return value * factor;
+        }
+
+        @JsOverlay
+        private String summary() {
+            return "value=" + value;
+        }
     }
 
     @JsType(namespace = "test.widgets", name = "Widget")
