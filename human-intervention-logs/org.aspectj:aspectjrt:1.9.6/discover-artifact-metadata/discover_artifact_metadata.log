@@ -1,0 +1,1103 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de698-8720-77b3-a28b-c9bf904ed98d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.aspectj:aspectjrt:1.9.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.9.6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+- Set "coordinates" to "org.aspectj:aspectjrt:1.9.6".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata format first, then verify the exact 1.9.6 artifact URLs from Maven and upstream tags before editing the JSON.
+exec
+/usr/bin/zsh -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+ succeeded in 0ms:
+{
+  "coordinates" : "org.aspectj:aspectjrt:1.9.6"
+}
+
+exec
+/usr/bin/zsh -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+ succeeded in 0ms:
+/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+
+exec
+/usr/bin/zsh -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' build/discovered-artifact-metadata | head -60" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+ succeeded in 0ms:
+web search: 
+web search: Maven Central org.aspectj aspectjrt 1.9.6 sources javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/
+web search: 
+web search: github eclipse org.aspectj aspectj 1.9.6 tag
+web search: 
+web search: https://github.com/eclipse/org.aspectj/releases/tag/V1_9_6
+codex
+The artifact page confirms Maven Central has exact-version `sources` and `javadoc` jars for `1.9.6`; I’m checking whether a Maven test artifact exists before falling back to the tagged upstream test tree.
+exec
+/usr/bin/zsh -lc "rg -n '\"source-code-url\"' . --glob '*.json' | head -50" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+ succeeded in 0ms:
+./metadata/org.mockito/mockito-core/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/5.0.0/mockito-core-5.0.0-sources.jar",
+./metadata/org.mockito/mockito-core/index.json:50:    "source-code-url": "https://repo1.maven.org/maven2/org/mockito/mockito-core/4.8.1/mockito-core-4.8.1-sources.jar",
+./metadata/javax.transaction/transaction-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/transaction/transaction-api/1.1/transaction-api-1.1-sources.jar",
+./metadata/info.picocli/picocli/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-sources.jar",
+./metadata/javax.transaction/jta/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/transaction/jta/1.1/jta-1.1-sources.jar",
+./metadata/redis.clients/jedis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/4.0.0/jedis-4.0.0-sources.jar",
+./metadata/redis.clients/jedis/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/3.6.0/jedis-3.6.0-sources.jar",
+./metadata/redis.clients/jedis/index.json:51:    "source-code-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/3.0.0/jedis-3.0.0-sources.jar",
+./metadata/redis.clients/jedis/index.json:74:    "source-code-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/2.9.0/jedis-2.9.0-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/2.0.0.Final/jboss-interceptor-spi-2.0.0.Final-sources.jar",
+./metadata/org.reactivestreams/reactive-streams/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-sources.jar",
+./metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/2.7.18/spring-boot-configuration-processor-2.7.18-sources.jar",
+./metadata/org.glassfish/javax.servlet/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/javax.servlet/3.1/javax.servlet-3.1-sources.jar",
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/4.20/xbean-asm9-shaded-4.20-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+./metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/2.0.8/oro-2.0.8-sources.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-sources.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:40:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-sources.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/2.0.0/stax-ex-2.0.0-sources.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8.2/stax-ex-1.8.2-sources.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8/stax-ex-1.8-sources.jar",
+./metadata/org.glassfish/javax.ejb/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/javax.ejb/10.0-b28/javax.ejb-10.0-b28-sources.jar",
+./metadata/org.glassfish/javax.ejb/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/javax.ejb/3.1/javax.ejb-3.1-sources.jar",
+./metadata/org.objenesis/objenesis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/3.2/objenesis-3.2-sources.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/1.5.0/jackrabbit-jcr-commons-1.5.0-sources.jar",
+./metadata/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-atinject_1.0_spec/1.0/geronimo-atinject_1.0_spec-1.0-sources.jar",
+./metadata/org.apache.xbean/xbean-asm7-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm7-shaded/4.15/xbean-asm7-shaded-4.15-sources.jar",
+./metadata/software.amazon.awssdk/s3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-sources.jar",
+./metadata/org.iq80.leveldb/leveldb-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/iq80/leveldb/leveldb-api/0.6/leveldb-api-0.6-sources.jar",
+./metadata/org.atteo.classindex/classindex/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/atteo/classindex/classindex/3.13/classindex-3.13-sources.jar",
+./metadata/com.mysema.commons/mysema-commons-lang/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/mysema/commons/mysema-commons-lang/0.2.4/mysema-commons-lang-0.2.4-sources.jar",
+./metadata/org.glassfish/javax.annotation/index.json:11:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/javax.annotation/10.0-b28/javax.annotation-10.0-b28-sources.jar",
+./metadata/org.glassfish/javax.annotation/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/javax.annotation/3.1/javax.annotation-3.1-sources.jar",
+./metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.1_spec/1.0/geronimo-annotation_1.1_spec-1.0-sources.jar",
+./metadata/org.sonatype.aether/aether-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-sources.jar",
+./metadata/aopalliance/aopalliance/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar",
+./metadata/org.apache.geronimo.specs/geronimo-osgi-registry/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-osgi-registry/1.0/geronimo-osgi-registry-1.0-sources.jar",
+./metadata/org.glassfish/javax.transaction/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/javax.transaction/3.1/javax.transaction-3.1-sources.jar",
+./metadata/com.vaadin.external.google/android-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1-sources.jar",
+./metadata/com.esotericsoftware/minlog/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/1.3.0/minlog-1.3.0-sources.jar",
+./metadata/org.antlr/antlr4-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-sources.jar",
+./metadata/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-interceptor_1.2_spec/1.1/geronimo-interceptor_1.2_spec-1.1-sources.jar",
+./metadata/io.smallrye.common/smallrye-common-resource/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-resource/2.14.0/smallrye-common-resource-2.14.0-sources.jar",
+./metadata/org.sonatype.aether/aether-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/1.7/aether-util-1.7-sources.jar",
+./metadata/org.junit.platform/junit-platform-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2-sources.jar",
+./metadata/com.google.cloud.tools/jib-build-plan/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/cloud/tools/jib-build-plan/0.4.0/jib-build-plan-0.4.0-sources.jar",
+./metadata/org.antlr/antlr-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr-runtime/3.5.2/antlr-runtime-3.5.2-sources.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.13.1/aether-api-1.13.1-sources.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.9/aether-api-1.9-sources.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:38:    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.8/aether-api-1.8-sources.jar",
+
+exec
+/usr/bin/zsh -lc "find . -name '*artifact-metadata*.json' -o -path '*metadata/index/*.json' | head -50" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/ | rg 'test|sources|javadoc|\\.pom'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+ succeeded in 146ms:
+ succeeded in 181ms:
+<a href="aspectjrt-1.9.6-javadoc.jar" title="aspectjrt-1.9.6-javadoc.jar">aspectjrt-1.9.6-javadoc.jar</a>                       2020-07-22 19:25    348502      
+<a href="aspectjrt-1.9.6-javadoc.jar.asc" title="aspectjrt-1.9.6-javadoc.jar.asc">aspectjrt-1.9.6-javadoc.jar.asc</a>                   2020-07-22 19:25       488      
+<a href="aspectjrt-1.9.6-javadoc.jar.asc.md5" title="aspectjrt-1.9.6-javadoc.jar.asc.md5">aspectjrt-1.9.6-javadoc.jar.asc.md5</a>               2020-07-22 19:25        32      
+<a href="aspectjrt-1.9.6-javadoc.jar.asc.sha1" title="aspectjrt-1.9.6-javadoc.jar.asc.sha1">aspectjrt-1.9.6-javadoc.jar.asc.sha1</a>              2020-07-22 19:25        40      
+<a href="aspectjrt-1.9.6-javadoc.jar.asc.sha256" title="aspectjrt-1.9.6-javadoc.jar.asc.sha256">aspectjrt-1.9.6-javadoc.jar.asc.sha256</a>            2020-07-22 19:25        64      
+<a href="aspectjrt-1.9.6-javadoc.jar.asc.sha512" title="aspectjrt-1.9.6-javadoc.jar.asc.sha512">aspectjrt-1.9.6-javadoc.jar.asc.sha512</a>            2020-07-22 19:25       128      
+<a href="aspectjrt-1.9.6-javadoc.jar.md5" title="aspectjrt-1.9.6-javadoc.jar.md5">aspectjrt-1.9.6-javadoc.jar.md5</a>                   2020-07-22 19:25        32      
+<a href="aspectjrt-1.9.6-javadoc.jar.sha1" title="aspectjrt-1.9.6-javadoc.jar.sha1">aspectjrt-1.9.6-javadoc.jar.sha1</a>                  2020-07-22 19:25        40      
+<a href="aspectjrt-1.9.6-javadoc.jar.sha256" title="aspectjrt-1.9.6-javadoc.jar.sha256">aspectjrt-1.9.6-javadoc.jar.sha256</a>                2020-07-22 19:25        64      
+<a href="aspectjrt-1.9.6-javadoc.jar.sha512" title="aspectjrt-1.9.6-javadoc.jar.sha512">aspectjrt-1.9.6-javadoc.jar.sha512</a>                2020-07-22 19:25       128      
+<a href="aspectjrt-1.9.6-sources.jar" title="aspectjrt-1.9.6-sources.jar">aspectjrt-1.9.6-sources.jar</a>                       2020-07-22 19:25    110058      
+<a href="aspectjrt-1.9.6-sources.jar.asc" title="aspectjrt-1.9.6-sources.jar.asc">aspectjrt-1.9.6-sources.jar.asc</a>                   2020-07-22 19:25       488      
+<a href="aspectjrt-1.9.6-sources.jar.asc.md5" title="aspectjrt-1.9.6-sources.jar.asc.md5">aspectjrt-1.9.6-sources.jar.asc.md5</a>               2020-07-22 19:25        32      
+<a href="aspectjrt-1.9.6-sources.jar.asc.sha1" title="aspectjrt-1.9.6-sources.jar.asc.sha1">aspectjrt-1.9.6-sources.jar.asc.sha1</a>              2020-07-22 19:25        40      
+<a href="aspectjrt-1.9.6-sources.jar.asc.sha256" title="aspectjrt-1.9.6-sources.jar.asc.sha256">aspectjrt-1.9.6-sources.jar.asc.sha256</a>            2020-07-22 19:25        64      
+<a href="aspectjrt-1.9.6-sources.jar.asc.sha512" title="aspectjrt-1.9.6-sources.jar.asc.sha512">aspectjrt-1.9.6-sources.jar.asc.sha512</a>            2020-07-22 19:25       128      
+<a href="aspectjrt-1.9.6-sources.jar.md5" title="aspectjrt-1.9.6-sources.jar.md5">aspectjrt-1.9.6-sources.jar.md5</a>                   2020-07-22 19:25        32      
+<a href="aspectjrt-1.9.6-sources.jar.sha1" title="aspectjrt-1.9.6-sources.jar.sha1">aspectjrt-1.9.6-sources.jar.sha1</a>                  2020-07-22 19:25        40      
+<a href="aspectjrt-1.9.6-sources.jar.sha256" title="aspectjrt-1.9.6-sources.jar.sha256">aspectjrt-1.9.6-sources.jar.sha256</a>                2020-07-22 19:25        64      
+<a href="aspectjrt-1.9.6-sources.jar.sha512" title="aspectjrt-1.9.6-sources.jar.sha512">aspectjrt-1.9.6-sources.jar.sha512</a>                2020-07-22 19:25       128      
+<a href="aspectjrt-1.9.6.pom" title="aspectjrt-1.9.6.pom">aspectjrt-1.9.6.pom</a>                               2020-07-22 19:25      1017      
+<a href="aspectjrt-1.9.6.pom.asc" title="aspectjrt-1.9.6.pom.asc">aspectjrt-1.9.6.pom.asc</a>                           2020-07-22 19:25       488      
+<a href="aspectjrt-1.9.6.pom.asc.md5" title="aspectjrt-1.9.6.pom.asc.md5">aspectjrt-1.9.6.pom.asc.md5</a>                       2020-07-22 19:25        32      
+<a href="aspectjrt-1.9.6.pom.asc.sha1" title="aspectjrt-1.9.6.pom.asc.sha1">aspectjrt-1.9.6.pom.asc.sha1</a>                      2020-07-22 19:25        40      
+<a href="aspectjrt-1.9.6.pom.asc.sha256" title="aspectjrt-1.9.6.pom.asc.sha256">aspectjrt-1.9.6.pom.asc.sha256</a>                    2020-07-22 19:25        64      
+<a href="aspectjrt-1.9.6.pom.asc.sha512" title="aspectjrt-1.9.6.pom.asc.sha512">aspectjrt-1.9.6.pom.asc.sha512</a>                    2020-07-22 19:25       128      
+<a href="aspectjrt-1.9.6.pom.md5" title="aspectjrt-1.9.6.pom.md5">aspectjrt-1.9.6.pom.md5</a>                           2020-07-22 19:25        32      
+<a href="aspectjrt-1.9.6.pom.sha1" title="aspectjrt-1.9.6.pom.sha1">aspectjrt-1.9.6.pom.sha1</a>                          2020-07-22 19:25        40      
+<a href="aspectjrt-1.9.6.pom.sha256" title="aspectjrt-1.9.6.pom.sha256">aspectjrt-1.9.6.pom.sha256</a>                        2020-07-22 19:25        64      
+<a href="aspectjrt-1.9.6.pom.sha512" title="aspectjrt-1.9.6.pom.sha512">aspectjrt-1.9.6.pom.sha512</a>                        2020-07-22 19:25       128      
+
+web search: 
+web search: https://github.com/eclipse/org.aspectj/tree/V1_9_6
+web search: 
+web search: repo.maven.apache.org maven2 org aspectj aspectjrt 1.9.6 aspectjrt-1.9.6-sources.jar
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6.pom' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+exec
+/usr/bin/zsh -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-tests.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+exec
+/usr/bin/zsh -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-sources.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-javadoc.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+ succeeded in 114ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.aspectj</groupId>
+  <artifactId>aspectjrt</artifactId>
+  <packaging>jar</packaging>
+  <version>1.9.6</version>
+  <name>AspectJ runtime</name>
+  <description>The runtime needed to execute a program using AspectJ</description>
+  <url>https://www.eclipse.org/aspectj/</url>
+
+  <licenses>
+    <license>
+      <name>Eclipse Public License - v 1.0</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>aclement</id>
+      <name>Andy Clement</name>
+      <email>aclement@vmware.com</email>
+    </developer>
+  </developers>
+
+  <scm>
+    <url>https://github.com/eclipse/org.aspectj</url>
+  </scm>
+</project>
+
+ exited 22 in 346ms:
+HTTP/2 404 
+date: Sat, 02 May 2026 02:51:29 GMT
+content-type: text/html
+cf-ray: 9f53b9721b0396e0-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 446ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 02:51:29 GMT
+content-type: application/java-archive
+content-length: 110058
+cf-ray: 9f53b9724e33c239-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1134640
+etag: "f52b6bef93d940e80ef4ab0cd0a4816b"
+last-modified: Wed, 22 Jul 2020 19:25:33 GMT
+x-checksum-md5: f52b6bef93d940e80ef4ab0cd0a4816b
+x-checksum-sha1: fa2628e30084aaa5228d551c3bfa6065948fdd63
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 02 May 2026 02:51:29 GMT
+content-type: application/java-archive
+content-length: 348502
+cf-ray: 9f53b97319b4a8bc-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "ca612d81e77f2025c01e4c952016a184"
+last-modified: Wed, 22 Jul 2020 19:25:33 GMT
+x-checksum-md5: ca612d81e77f2025c01e4c952016a184
+x-checksum-sha1: 73911881b1f42b1faa5599f5ae3d465d903fa248
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://api.github.com/repos/eclipse/org.aspectj/contents?ref=V1_9_6 | head -120' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+ succeeded in 0ms:
+zsh:1: no matches found: https://api.github.com/repos/eclipse/org.aspectj/contents?ref=V1_9_6
+
+exec
+/usr/bin/zsh -lc "curl -fsSL https://api.github.com/repos/eclipse/org.aspectj/git/trees/V1_9_6?recursive=1 | rg 'aspectjrt|test' | head -80" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+ succeeded in 0ms:
+zsh:1: no matches found: https://api.github.com/repos/eclipse/org.aspectj/git/trees/V1_9_6?recursive=1
+
+exec
+/usr/bin/zsh -lc "git ls-remote --tags https://github.com/eclipse/org.aspectj.git | rg 'V1_9_6'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+ succeeded in 634ms:
+3d7bc042885bb01697fbd5004fe36cf6c274cfea	refs/tags/V1_9_6
+
+codex
+The POM points repository metadata at `https://github.com/eclipse/org.aspectj`, and the `V1_9_6` tag exists there. The Maven directory has no `tests` jar, so I’m locating the closest exact-version upstream test tree under that tag.
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/eclipse/org.aspectj/contents?ref=V1_9_6' | sed -n '1,180p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+exec
+/usr/bin/zsh -lc 'curl -I -fsSL https://github.com/eclipse/org.aspectj/tree/V1_9_6/tests' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/eclipse/org.aspectj/git/trees/V1_9_6?recursive=1' | rg 'aspectjrt|test' | head -120" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+ succeeded in 495ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "09871eb4ebf7861971d944291968b2960f417659",
+    "size": 333,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/.gitignore?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/.gitignore",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/09871eb4ebf7861971d944291968b2960f417659",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/.gitignore?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/09871eb4ebf7861971d944291968b2960f417659",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/.gitignore"
+    }
+  },
+  {
+    "name": ".mvn",
+    "path": ".mvn",
+    "sha": "de748caea71b4c50b7a6da4b0cf787b7f1bb8474",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/.mvn?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/.mvn",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/de748caea71b4c50b7a6da4b0cf787b7f1bb8474",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/.mvn?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/de748caea71b4c50b7a6da4b0cf787b7f1bb8474",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/.mvn"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "871f341afaa815dceb15298d0c50528f9161fc80",
+    "size": 1343,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/README.md?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/README.md",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/871f341afaa815dceb15298d0c50528f9161fc80",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/README.md?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/871f341afaa815dceb15298d0c50528f9161fc80",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/README.md"
+    }
+  },
+  {
+    "name": "ajbrowser",
+    "path": "ajbrowser",
+    "sha": "8c59956f1bc587e1844a791442ac901976df2f70",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/ajbrowser?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/ajbrowser",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/8c59956f1bc587e1844a791442ac901976df2f70",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/ajbrowser?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/8c59956f1bc587e1844a791442ac901976df2f70",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/ajbrowser"
+    }
+  },
+  {
+    "name": "ajde.core",
+    "path": "ajde.core",
+    "sha": "6f2f3f0515c8a7f73677a259d2cfbe3265b3eeab",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/ajde.core?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/ajde.core",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/6f2f3f0515c8a7f73677a259d2cfbe3265b3eeab",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/ajde.core?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/6f2f3f0515c8a7f73677a259d2cfbe3265b3eeab",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/ajde.core"
+    }
+  },
+  {
+    "name": "ajde",
+    "path": "ajde",
+    "sha": "9a5222e08f7065b8afe4070a3d5cbeba3e9488e7",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/ajde?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/ajde",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/9a5222e08f7065b8afe4070a3d5cbeba3e9488e7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/ajde?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/9a5222e08f7065b8afe4070a3d5cbeba3e9488e7",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/ajde"
+    }
+  },
+  {
+    "name": "ajdoc",
+    "path": "ajdoc",
+    "sha": "afdd6061014f1b6e05a9bb0f22270a85cc9c776c",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/ajdoc?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/ajdoc",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/afdd6061014f1b6e05a9bb0f22270a85cc9c776c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/ajdoc?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/afdd6061014f1b6e05a9bb0f22270a85cc9c776c",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/ajdoc"
+    }
+  },
+  {
+    "name": "asm",
+    "path": "asm",
+    "sha": "614360e6a4ae2b3301b883704cb4c3fed0dcf60b",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/asm?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/asm",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/614360e6a4ae2b3301b883704cb4c3fed0dcf60b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/asm?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/614360e6a4ae2b3301b883704cb4c3fed0dcf60b",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/asm"
+    }
+  },
+  {
+    "name": "aspectjmatcher",
+    "path": "aspectjmatcher",
+    "sha": "402c1db9803b9590ab0c060fe35e2989be9b8df5",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/aspectjmatcher?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/aspectjmatcher",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/402c1db9803b9590ab0c060fe35e2989be9b8df5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/aspectjmatcher?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/402c1db9803b9590ab0c060fe35e2989be9b8df5",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/aspectjmatcher"
+    }
+  },
+  {
+    "name": "aspectjrt",
+    "path": "aspectjrt",
+    "sha": "62adfd193ceec41afd7ed080c94a71b22d124d7d",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/aspectjrt?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/aspectjrt",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/62adfd193ceec41afd7ed080c94a71b22d124d7d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/aspectjrt?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/62adfd193ceec41afd7ed080c94a71b22d124d7d",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/aspectjrt"
+    }
+  },
+  {
+    "name": "aspectjtools",
+    "path": "aspectjtools",
+    "sha": "22fe85f316d7e295f83750df8bb4a90dcf8177a9",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/aspectjtools?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/aspectjtools",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/22fe85f316d7e295f83750df8bb4a90dcf8177a9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/aspectjtools?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/trees/22fe85f316d7e295f83750df8bb4a90dcf8177a9",
+      "html": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/aspectjtools"
+    }
+  },
+  {
+    "name": "aspectjweaver",
+    "path": "aspectjweaver",
+
+ succeeded in 867ms:
+HTTP/2 301 
+date: Sat, 02 May 2026 02:51:43 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=7Mu16wfApl5TV08NaZmAX09dYBsz%2F5wWGBlQqflYnRusjuLQIFZHeX4PitMv0MzZIoyTFBqcY%2FsqJfhk4C7fyzPqh3Kzj0awOd9b2U997r6lLgG4809pFJ77vP6CgBvZnM89Oqv6KYwynEGb%2FjhWx81BzFd2pgvFDwIBLrYut4zljTzg0R3sARbV8PGlKYLqrcAUdyQg0s8JDGMI9%2FrJolnPu5WTP2v0K7429h5IwlPnYqeVciMXA9GAtin2vRwg9oWxCPdmoJ21JKMWClnEtg%3D%3D--2G6zzrIS9PV6UfdK--GX5sRJE9X238bMvUFILb1w%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1308640507.1777690303; expires=Sun, 02 May 2027 02:51:43 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 02 May 2027 02:51:43 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 1930:1692:3B8ECF7:2D99B29:69F566BF
+
+HTTP/2 200 
+date: Sat, 02 May 2026 02:51:43 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"41126c908ad84640f3bb06bab602ab33"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=vyFaFRkpWp7EVl0XurxTwXRut382VvEFHJBWhi2e1vufw74IOt81VdUx7JvFMT%2F1SWE3ZQm16Gb3z994ZpAegzsR39miSNYczai5yTIMNkHtEGlZQLgU7HGUYKWnSo8gZLP5g3vkJ74Sum7H2AwzBSU9yMDA7vpo9yiwYxfy%2Bh0QXoCgyCD05sqoG7L221O3NB6da2vS7t016Kz%2FxOU3YDn3mk4ORt1UBuTB2D5YqvbuCxGQFVrNYTrzOxuKP0kNCvmHzFuxwDbM6QXWHxxsag%3D%3D--OUay8erFxuNztVV7--qzaqn%2FRgBvJa5UkffNabYA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1994825192.1777690303; expires=Sun, 02 May 2027 02:51:43 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 02 May 2027 02:51:43 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 1930:1692:3B8EDFB:2D99BF6:69F566BF
+
+
+ succeeded in 1066ms:
+      "path": "ajbrowser/src/test",
+      "path": "ajbrowser/src/test/java",
+      "path": "ajbrowser/src/test/java/org",
+      "path": "ajbrowser/src/test/java/org/aspectj",
+      "path": "ajbrowser/src/test/java/org/aspectj/tools",
+      "path": "ajbrowser/src/test/java/org/aspectj/tools/ajbrowser",
+      "path": "ajbrowser/src/test/java/org/aspectj/tools/ajbrowser/JemmyDriver.java",
+      "path": "ajbrowser/testdata",
+      "path": "ajbrowser/testdata/.cvsignore",
+      "path": "ajde.core/src/test",
+      "path": "ajde.core/src/test/java",
+      "path": "ajde.core/src/test/java/org",
+      "path": "ajde.core/src/test/java/org/aspectj",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/AjdeCoreModuleTests.java",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/AjdeCoreTestCase.java",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/TestBuildProgressMonitor.java",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/TestCompilerConfiguration.java",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/TestMessageHandler.java",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/TestOutputLocationManager.java",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/tests",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/tests/AjConfigTest.java",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/tests/BuildCancellingTest.java",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/tests/CompilerMessagesTest.java",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/tests/DuplicateManifestTest.java",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/tests/InpathTest.java",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/tests/JarManifestTest.java",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/tests/OutxmlTest.java",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/tests/ResourceCopyTest.java",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/tests/ReweavableTest.java",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/tests/ShowWeaveMessagesTest.java",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/tests/model",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/tests/model/AsmDeclarationsTest.java",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/tests/model/AsmRelationshipsTest.java",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/tests/model/SavedModelConsistencyTest.java",
+      "path": "ajde.core/src/test/java/org/aspectj/ajde/core/tests/model/StructureModelTest.java",
+      "path": "ajde.core/testdata",
+      "path": "ajde.core/testdata/BuildCancelling",
+      "path": "ajde.core/testdata/BuildCancelling/.cvsignore",
+      "path": "ajde.core/testdata/BuildCancelling/A1.aj",
+      "path": "ajde.core/testdata/BuildCancelling/A2.aj",
+      "path": "ajde.core/testdata/BuildCancelling/A3.aj",
+      "path": "ajde.core/testdata/BuildCancelling/A4.aj",
+      "path": "ajde.core/testdata/BuildCancelling/Cl1.java",
+      "path": "ajde.core/testdata/BuildCancelling/Cl2.java",
+      "path": "ajde.core/testdata/BuildCancelling/Cl3.java",
+      "path": "ajde.core/testdata/BuildCancelling/EvenMoreCode.lst",
+      "path": "ajde.core/testdata/BuildCancelling/HW.java",
+      "path": "ajde.core/testdata/BuildCancelling/LoadsaCode.lst",
+      "path": "ajde.core/testdata/DuplicateManifestTest",
+      "path": "ajde.core/testdata/DuplicateManifestTest/META-INF",
+      "path": "ajde.core/testdata/DuplicateManifestTest/META-INF/MANIFEST.MF",
+      "path": "ajde.core/testdata/DuplicateManifestTest/META-INF/test.xml",
+      "path": "ajde.core/testdata/DuplicateManifestTest/aspectjar.jar",
+      "path": "ajde.core/testdata/DuplicateManifestTest/injar.jar",
+      "path": "ajde.core/testdata/DuplicateManifestTest/update-injar.xml",
+      "path": "ajde.core/testdata/InpathTest",
+      "path": "ajde.core/testdata/InpathTest/build.lst",
+      "path": "ajde.core/testdata/InpathTest/build2.lst",
+      "path": "ajde.core/testdata/InpathTest/indir1",
+      "path": "ajde.core/testdata/InpathTest/indir1/META-INF",
+      "path": "ajde.core/testdata/InpathTest/indir1/META-INF/MANIFEST.MF",
+      "path": "ajde.core/testdata/InpathTest/indir1/META-INF/test.xml",
+      "path": "ajde.core/testdata/InpathTest/indir1/test",
+      "path": "ajde.core/testdata/InpathTest/indir1/test/TestProperties.class",
+      "path": "ajde.core/testdata/InpathTest/indir1/test/test.props",
+      "path": "ajde.core/testdata/InpathTest/indir2",
+      "path": "ajde.core/testdata/InpathTest/indir2/example",
+      "path": "ajde.core/testdata/InpathTest/indir2/example/HelloWorld.class",
+      "path": "ajde.core/testdata/InpathTest/indir2/example/HelloWorld.java",
+      "path": "ajde.core/testdata/InpathTest/injar.jar",
+      "path": "ajde.core/testdata/InpathTest/src1",
+      "path": "ajde.core/testdata/InpathTest/src1/Main.java",
+      "path": "ajde.core/testdata/InpathTest/src2",
+      "path": "ajde.core/testdata/InpathTest/src2/Aspect.java",
+      "path": "ajde.core/testdata/JarManifestTest",
+      "path": "ajde.core/testdata/JarManifestTest/noweave.lst",
+      "path": "ajde.core/testdata/JarManifestTest/src",
+      "path": "ajde.core/testdata/JarManifestTest/src/Logging.aj",
+      "path": "ajde.core/testdata/JarManifestTest/src/Main.java",
+      "path": "ajde.core/testdata/JarManifestTest/weave.lst",
+      "path": "ajde.core/testdata/OutxmlTest",
+      "path": "ajde.core/testdata/OutxmlTest/outxml-to-file.lst",
+      "path": "ajde.core/testdata/OutxmlTest/outxml-to-outjar-with-aop_xml.ajsym",
+      "path": "ajde.core/testdata/OutxmlTest/outxml-to-outjar-with-aop_xml.lst",
+      "path": "ajde.core/testdata/OutxmlTest/outxml-to-outjar.lst",
+      "path": "ajde.core/testdata/OutxmlTest/outxmlfile-to-file.lst",
+      "path": "ajde.core/testdata/OutxmlTest/outxmlfile-to-outjar.lst",
+      "path": "ajde.core/testdata/OutxmlTest/src-resources",
+      "path": "ajde.core/testdata/OutxmlTest/src-resources/META-INF",
+      "path": "ajde.core/testdata/OutxmlTest/src-resources/META-INF/aop-ajc.xml",
+      "path": "ajde.core/testdata/OutxmlTest/src-resources/testjar.jar",
+      "path": "ajde.core/testdata/OutxmlTest/src",
+      "path": "ajde.core/testdata/OutxmlTest/src/TestAbstractAspect.aj",
+      "path": "ajde.core/testdata/OutxmlTest/src/TestClass.java",
+      "path": "ajde.core/testdata/OutxmlTest/src/TestConcreteAspect.aj",
+      "path": "ajde.core/testdata/OutxmlTest/src/TestInterface.java",
+      "path": "ajde.core/testdata/ReweavableTest",
+      "path": "ajde.core/testdata/ReweavableTest/CalculatePI.java",
+      "path": "ajde.core/testdata/ReweavableTest/Logger.aj",
+      "path": "ajde.core/testdata/ReweavableTest/NonReweavable1.lst",
+      "path": "ajde.core/testdata/ReweavableTest/Reweavable1.lst",
+      "path": "ajde.core/testdata/ReweavableTest/Reweavable2.lst",
+      "path": "ajde.core/testdata/ReweavableTest/ReweavableCompress1.lst",
+      "path": "ajde.core/testdata/ReweavableTest/Second.lst",
+      "path": "ajde.core/testdata/ReweavableTest/SecondAspect.aj",
+      "path": "ajde.core/testdata/ReweavableTest/TJP1.lst",
+      "path": "ajde.core/testdata/ReweavableTest/TJP2.lst",
+      "path": "ajde.core/testdata/ReweavableTest/ThirdAspect.aj",
+      "path": "ajde.core/testdata/ReweavableTest/tjp",
+      "path": "ajde.core/testdata/ReweavableTest/tjp/Demo.java",
+      "path": "ajde.core/testdata/ReweavableTest/tjp/GetInfo.java",
+      "path": "ajde.core/testdata/SimpleProject",
+      "path": "ajde.core/testdata/SimpleProject/C.java",
+      "path": "ajde.core/testdata/WeaveInfoMessagesTest",
+      "path": "ajde.core/testdata/WeaveInfoMessagesTest/AspectAdvice.aj",
+      "path": "ajde.core/testdata/WeaveInfoMessagesTest/AspectAdvice.jar",
+      "path": "ajde.core/testdata/WeaveInfoMessagesTest/AspectAdvice_nodebug.jar",
+      "path": "ajde.core/testdata/WeaveInfoMessagesTest/AspectDeclare.aj",
+curl: (23) Failure writing output to destination
+
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/eclipse/org.aspectj/contents/aspectjrt?ref=V1_9_6' | sed -n '1,220p'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/eclipse/org.aspectj/git/trees/V1_9_6?recursive=1' | rg '\"path\": \"aspectjrt' | head -120" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/eclipse/org.aspectj/git/trees/V1_9_6?recursive=1' | rg '\"path\": \"tests/(src|bugs|features|java5|java7|java8|new|pureJava)' | head -80" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+ succeeded in 452ms:
+[
+  {
+    "name": "aspectjrt-assembly.xml",
+    "path": "aspectjrt/aspectjrt-assembly.xml",
+    "sha": "d4108da92d225dc29505f8e682378b234476a032",
+    "size": 569,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/aspectjrt/aspectjrt-assembly.xml?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/aspectjrt/aspectjrt-assembly.xml",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/d4108da92d225dc29505f8e682378b234476a032",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/aspectjrt/aspectjrt-assembly.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/aspectjrt/aspectjrt-assembly.xml?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/d4108da92d225dc29505f8e682378b234476a032",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/aspectjrt/aspectjrt-assembly.xml"
+    }
+  },
+  {
+    "name": "aspectjrt-sources-assembly.xml",
+    "path": "aspectjrt/aspectjrt-sources-assembly.xml",
+    "sha": "ec393398e57d011d7588eee35de01ac00cf7b546",
+    "size": 757,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/aspectjrt/aspectjrt-sources-assembly.xml?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/aspectjrt/aspectjrt-sources-assembly.xml",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/ec393398e57d011d7588eee35de01ac00cf7b546",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/aspectjrt/aspectjrt-sources-assembly.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/aspectjrt/aspectjrt-sources-assembly.xml?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/ec393398e57d011d7588eee35de01ac00cf7b546",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/aspectjrt/aspectjrt-sources-assembly.xml"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "aspectjrt/pom.xml",
+    "sha": "26e89c83aff486a2e58c99629be7cfb25819f485",
+    "size": 3177,
+    "url": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/aspectjrt/pom.xml?ref=V1_9_6",
+    "html_url": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/aspectjrt/pom.xml",
+    "git_url": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/26e89c83aff486a2e58c99629be7cfb25819f485",
+    "download_url": "https://raw.githubusercontent.com/eclipse-aspectj/aspectj/V1_9_6/aspectjrt/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-aspectj/aspectj/contents/aspectjrt/pom.xml?ref=V1_9_6",
+      "git": "https://api.github.com/repos/eclipse-aspectj/aspectj/git/blobs/26e89c83aff486a2e58c99629be7cfb25819f485",
+      "html": "https://github.com/eclipse-aspectj/aspectj/blob/V1_9_6/aspectjrt/pom.xml"
+    }
+  }
+]
+
+ succeeded in 1097ms:
+      "path": "tests/bugs",
+      "path": "tests/bugs/AbstractBaseAndInterTypeInterface.java",
+      "path": "tests/bugs/AbstractPointcutCE.java",
+      "path": "tests/bugs/AdviceExec.java",
+      "path": "tests/bugs/AdviceInteraction.java",
+      "path": "tests/bugs/AfterStaticCall.java",
+      "path": "tests/bugs/AfterThrowingAdviceSyntaxError.java",
+      "path": "tests/bugs/AfterThrowingCtor.java",
+      "path": "tests/bugs/AmbiguousBindings.aj",
+      "path": "tests/bugs/AroundAccess.java",
+      "path": "tests/bugs/AroundAdviceJPs",
+      "path": "tests/bugs/AroundAdviceJPs/FieldGetJoinPointsInAroundAdvice.java",
+      "path": "tests/bugs/AroundAdviceJPs/FieldJoinPointsInAroundAdvice.java",
+      "path": "tests/bugs/AroundAdviceJPs/JoinPointInAroundAdvice.java",
+      "path": "tests/bugs/AroundNames.java",
+      "path": "tests/bugs/ArrayCloning.java",
+      "path": "tests/bugs/AspectInitError.java",
+      "path": "tests/bugs/BadBindingError.java",
+      "path": "tests/bugs/BogusMessage.java",
+      "path": "tests/bugs/BogusMessage2.java",
+      "path": "tests/bugs/CallReference.java",
+      "path": "tests/bugs/CatchSig.java",
+      "path": "tests/bugs/CflowBinding.java",
+      "path": "tests/bugs/CflowBindingOrig.java",
+      "path": "tests/bugs/CflowConcrete.java",
+      "path": "tests/bugs/CircularAdvicePrecedence.java",
+      "path": "tests/bugs/CircularDominates.java",
+      "path": "tests/bugs/CircularPrecedence.java",
+      "path": "tests/bugs/ClassLiteralField.java",
+      "path": "tests/bugs/CloneMethod.java",
+      "path": "tests/bugs/CloseConnectionsCflow.java",
+      "path": "tests/bugs/ConstructorArgTracing.java",
+      "path": "tests/bugs/ConstructorDeclaration.java",
+      "path": "tests/bugs/ConstructorMain.java",
+      "path": "tests/bugs/ConvertToUnchecked.java",
+      "path": "tests/bugs/Cosmetic.java",
+      "path": "tests/bugs/CtorITD.aj",
+      "path": "tests/bugs/DeclareErrorNamedPointcutCE.java",
+      "path": "tests/bugs/DeclareSoftCf.java",
+      "path": "tests/bugs/DeclareSoftDynamicPCDs.java",
+      "path": "tests/bugs/DeclareWarningAndInterfaceMethodCW.java",
+      "path": "tests/bugs/DeclaredExceptions.java",
+      "path": "tests/bugs/DeclaringTypeWarning.java",
+      "path": "tests/bugs/DecwClassCastException.java",
+      "path": "tests/bugs/DecwInitializationITD.java",
+      "path": "tests/bugs/DisjunctVarBinding.java",
+      "path": "tests/bugs/DisjunctVarBinding_2.java",
+      "path": "tests/bugs/DisjunctVarBinding_3.java",
+      "path": "tests/bugs/EllipsesStar.java",
+      "path": "tests/bugs/EnsureOverriding.java",
+      "path": "tests/bugs/ErroneousExceptionConversion.java",
+      "path": "tests/bugs/ErroneousExceptionConversion1.java",
+      "path": "tests/bugs/ExceptionsOnInters.java",
+      "path": "tests/bugs/ExecutionCflow.java",
+      "path": "tests/bugs/FinalFields.java",
+      "path": "tests/bugs/Finalizer.java",
+      "path": "tests/bugs/GetCauseOnSoftException.java",
+      "path": "tests/bugs/HandlerSig.java",
+      "path": "tests/bugs/IfPerThis",
+      "path": "tests/bugs/IfPerThis/Testcase1.java",
+      "path": "tests/bugs/IfPerThis/Testcase2.java",
+      "path": "tests/bugs/IfPerThis/Testcase3.java",
+      "path": "tests/bugs/IncompatibleClassChangeErrorBug.java",
+      "path": "tests/bugs/IncorrectXlintOnInterface.java",
+      "path": "tests/bugs/InnerPointcut.java",
+      "path": "tests/bugs/InstanceAsClassRefToConstant.java",
+      "path": "tests/bugs/InterFieldArrays.java",
+      "path": "tests/bugs/InterPerCall.java",
+      "path": "tests/bugs/InterfaceConstructor.java",
+      "path": "tests/bugs/InterfaceInitializerOrder.java",
+      "path": "tests/bugs/IntertypeDifferentThrows.java",
+      "path": "tests/bugs/LongFile.java",
+      "path": "tests/bugs/MissingImport.java",
+      "path": "tests/bugs/MultipleSuperCf.java",
+      "path": "tests/bugs/NewSwitch.java",
+      "path": "tests/bugs/NewVoid.java",
+      "path": "tests/bugs/NoByteToInt.java",
+      "path": "tests/bugs/NotIf.java",
+      "path": "tests/bugs/OverloadedITDNPE.java",
+      "path": "tests/bugs/OverloadedPointcutsInAspect.java",
+curl: (23) Failure writing output to destination
+
+ succeeded in 2076ms:
+      "path": "aspectjrt",
+      "path": "aspectjrt/aspectjrt-assembly.xml",
+      "path": "aspectjrt/aspectjrt-sources-assembly.xml",
+      "path": "aspectjrt/pom.xml",
+
+exec
+/usr/bin/zsh -lc "sed -n '1,80p' metadata/org.mockito/mockito-core/index.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages": [
+      "org.mockito"
+    ],
+    "metadata-version": "5.0.0",
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/5.0.0/mockito-core-5.0.0-sources.jar",
+    "repository-url": "https://github.com/mockito/mockito",
+    "test-code-url": "https://github.com/mockito/mockito/tree/v5.0.0/src/test",
+    "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/5.0.0/mockito-core-5.0.0-javadoc.jar",
+    "description": "Mockito Core is a Java mocking framework for creating, stubbing, and verifying mock objects in tests. It helps isolate code under test by simulating collaborators and asserting interactions.",
+    "tested-versions": [
+      "5.0.0",
+      "5.1.0",
+      "5.1.1",
+      "5.2.0",
+      "5.3.0",
+      "5.3.1",
+      "5.4.0",
+      "5.5.0",
+      "5.6.0",
+      "5.7.0",
+      "5.8.0",
+      "5.9.0",
+      "5.10.0",
+      "5.11.0",
+      "5.12.0",
+      "5.13.0",
+      "5.14.0",
+      "5.14.1",
+      "5.14.2",
+      "5.15.2",
+      "5.16.0",
+      "5.16.1",
+      "5.17.0",
+      "5.18.0",
+      "5.19.0",
+      "5.20.0",
+      "5.21.0",
+      "5.22.0",
+      "5.23.0"
+    ]
+  },
+  {
+    "allowed-packages": [
+      "org.mockito"
+    ],
+    "metadata-version": "4.8.1",
+    "source-code-url": "https://repo1.maven.org/maven2/org/mockito/mockito-core/4.8.1/mockito-core-4.8.1-sources.jar",
+    "repository-url": "https://github.com/mockito/mockito",
+    "test-code-url": "https://github.com/mockito/mockito/tree/v4.8.1/src/test",
+    "documentation-url": "https://github.com/mockito/mockito/blob/v4.8.1/README.md",
+    "description": "Mockito Core is a Java mocking framework for creating and configuring mock objects in tests. It helps isolate code under test by stubbing behavior and verifying interactions.",
+    "tested-versions": [
+      "4.8.1",
+      "4.9.0",
+      "4.10.0",
+      "4.11.0"
+    ]
+  }
+]
+
+exec
+/usr/bin/zsh -lc "sed -n '1,60p' metadata/info.picocli/picocli/index.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.7.6",
+    "source-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-sources.jar",
+    "repository-url" : "https://github.com/remkop/picocli",
+    "test-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-test-sources.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-javadoc.jar",
+    "description" : "Picocli is a Java command line parser for building command line applications with annotation-based and programmatic APIs. It generates usage help with ANSI colors, supports nested subcommands and autocomplete, and can be embedded as source or used as a dependency.",
+    "tested-versions" : [
+      "4.7.6",
+      "4.7.7"
+    ],
+    "allowed-packages" : [
+      "picocli"
+    ]
+  }
+]
+
+exec
+/usr/bin/zsh -lc "rg -n '\"test-code-url\"|\"documentation-url\"|\"repository-url\"|\"language\"' metadata --glob 'index.json' | head -100" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+ succeeded in 0ms:
+metadata/com.google.cloud.tools/jib-build-plan/index.json:7:    "repository-url": "https://github.com/GoogleContainerTools/jib",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:8:    "test-code-url": "https://github.com/GoogleContainerTools/jib/tree/v0.4.0-build-plan/jib-build-plan/src/test",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:9:    "documentation-url": "https://javadoc.io/doc/com.google.cloud.tools/jib-build-plan/0.4.0",
+metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:9:    "repository-url": "https://github.com/eclipse-paho/paho.mqtt.java",
+metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:10:    "test-code-url": "https://github.com/eclipse-paho/paho.mqtt.java/tree/v1.2.5/org.eclipse.paho.mqttv5.client.test/src/test",
+metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:11:    "documentation-url": "https://github.com/eclipse-paho/paho.mqtt.java/blob/v1.2.5/MQTTv5.md",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:6:    "repository-url" : "https://github.com/apache/geronimo-xbean",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:6:    "repository-url" : "https://github.com/apache/geronimo-xbean",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/org.eclipse.paho/org.eclipse.paho.client.mqttv3/index.json:9:    "repository-url": "https://github.com/eclipse-paho/paho.mqtt.java",
+metadata/org.eclipse.paho/org.eclipse.paho.client.mqttv3/index.json:10:    "test-code-url": "https://github.com/eclipse-paho/paho.mqtt.java/tree/v1.2.5/org.eclipse.paho.client.mqttv3.test",
+metadata/org.eclipse.paho/org.eclipse.paho.client.mqttv3/index.json:11:    "documentation-url": "https://github.com/eclipse-paho/paho.mqtt.java/blob/v1.2.5/MQTTv3.md",
+metadata/org.apache.zookeeper/zookeeper/index.json:6:    "repository-url" : "https://github.com/apache/zookeeper",
+metadata/org.apache.zookeeper/zookeeper/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-tests.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:6:    "repository-url" : "https://gitbox.apache.org/repos/asf/zookeeper.git",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/3.8.1/zookeeper-jute-3.8.1-tests.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:8:    "documentation-url" : "https://zookeeper.apache.org/doc/r3.8.1/index.html",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-2.3/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.3/paranamer-2.3-javadoc.jar",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:7:    "repository-url": "https://github.com/fusesource/hawtbuf",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-tests.jar",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-javadoc.jar",
+metadata/org.freemarker/freemarker/index.json:10:    "repository-url": "https://github.com/apache/freemarker",
+metadata/org.freemarker/freemarker/index.json:11:    "test-code-url": "https://github.com/apache/freemarker/tree/v2.3.31/src/test",
+metadata/org.freemarker/freemarker/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/freemarker/freemarker/2.3.31/freemarker-2.3.31-javadoc.jar",
+metadata/org.atteo.classindex/classindex/index.json:6:    "repository-url" : "https://github.com/atteo/classindex",
+metadata/org.atteo.classindex/classindex/index.json:7:    "test-code-url" : "https://github.com/atteo/classindex/tree/3.13/classindex/src/test",
+metadata/org.atteo.classindex/classindex/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/atteo/classindex/classindex/3.13/classindex-3.13-javadoc.jar",
+metadata/aopalliance/aopalliance/index.json:6:    "repository-url" : "https://sourceforge.net/p/aopalliance/code/",
+metadata/aopalliance/aopalliance/index.json:7:    "test-code-url" : "N/A",
+metadata/aopalliance/aopalliance/index.json:8:    "documentation-url" : "https://sourceforge.net/projects/aopalliance/files/aopalliance/1.0/aopalliance.zip/download",
+metadata/io.projectreactor/reactor-core/index.json:6:    "repository-url" : "https://github.com/reactor/reactor-core",
+metadata/io.projectreactor/reactor-core/index.json:7:    "test-code-url" : "https://github.com/reactor/reactor-core/tree/v3.5.1/reactor-core/src/test/java",
+metadata/io.projectreactor/reactor-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/3.5.1/reactor-core-3.5.1-docs.zip",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:6:    "repository-url" : "https://github.com/apache/jackrabbit",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/1.5.0/jackrabbit-jcr-commons/src/test/java",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/1.5.0/jackrabbit-jcr-commons/README.txt",
+metadata/info.picocli/picocli/index.json:6:    "repository-url" : "https://github.com/remkop/picocli",
+metadata/info.picocli/picocli/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-test-sources.jar",
+metadata/info.picocli/picocli/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-javadoc.jar",
+metadata/software.amazon.awssdk/s3/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/s3/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/2.25.3/services/s3/src/test",
+metadata/software.amazon.awssdk/s3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common/",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.14.0/resource/src/test",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-resource/2.14.0/smallrye-common-resource-2.14.0-javadoc.jar",
+metadata/org.osgi/org.osgi.core/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.core/index.json:7:    "test-code-url" : "https://github.com/osgi/osgi/tree/r4v431-core-cmpn-spec-final/org.osgi.test.cases.framework",
+metadata/org.osgi/org.osgi.core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.1/org.osgi.core-4.3.1-javadoc.jar",
+metadata/org.osgi/org.osgi.core/index.json:22:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.core/index.json:23:    "test-code-url" : "https://github.com/osgi/osgi/tree/r4v43-core-ri-ct-final",
+metadata/org.osgi/org.osgi.core/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.0/org.osgi.core-4.3.0-javadoc.jar",
+metadata/portlet-api/portlet-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/portals/portlet-spec",
+metadata/portlet-api/portlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/portlet-api/portlet-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/portals/portlet-api_1.0_spec/1.0/portlet-api_1.0_spec-1.0-javadoc.jar",
+metadata/org.iq80.leveldb/leveldb-api/index.json:6:    "repository-url" : "https://github.com/dain/leveldb",
+metadata/org.iq80.leveldb/leveldb-api/index.json:7:    "test-code-url" : "https://github.com/dain/leveldb/tree/0.6/leveldb/src/test",
+metadata/org.iq80.leveldb/leveldb-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/iq80/leveldb/leveldb-api/0.6/leveldb-api-0.6-javadoc.jar",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:20:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-api",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api-test/3.0.0/jakarta.xml.bind-api-test-3.0.0-sources.jar",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/3.0.0/jakarta.xml.bind-api-3.0.0-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-ref/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-ref/index.json:7:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-ref/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-ref/2.2.0/smallrye-common-ref-2.2.0-javadoc.jar",
+metadata/com.diffplug.durian/durian-swt.os/index.json:6:    "repository-url" : "https://github.com/diffplug/durian-swt",
+metadata/com.diffplug.durian/durian-swt.os/index.json:7:    "test-code-url" : "https://github.com/diffplug/durian-swt/tree/release/4.2.2/durian-swt.os/src/test/java/com/diffplug/common/swt/os",
+metadata/com.diffplug.durian/durian-swt.os/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/4.2.2/durian-swt.os-4.2.2-javadoc.jar",
+metadata/org.eclipse.jetty.alpn/alpn-api/index.json:7:    "repository-url": "https://github.com/jetty/jetty-alpn-api",
+metadata/org.eclipse.jetty.alpn/alpn-api/index.json:8:    "test-code-url": "N/A",
+metadata/org.eclipse.jetty.alpn/alpn-api/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/alpn/alpn-api/1.1.3.v20160715/alpn-api-1.1.3.v20160715-javadoc.jar",
+metadata/org.attoparser/attoparser/index.json:6:    "repository-url" : "https://github.com/attoparser/attoparser",
+metadata/org.attoparser/attoparser/index.json:7:    "test-code-url" : "https://github.com/attoparser/attoparser/tree/attoparser-2.0.5.RELEASE/src/test",
+metadata/org.attoparser/attoparser/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/2.0.5.RELEASE/attoparser-2.0.5.RELEASE-javadoc.jar",
+metadata/org.asynchttpclient/async-http-client-netty-utils/index.json:6:    "repository-url" : "https://github.com/AsyncHttpClient/async-http-client",
+metadata/org.asynchttpclient/async-http-client-netty-utils/index.json:7:    "test-code-url" : "https://github.com/AsyncHttpClient/async-http-client/tree/async-http-client-project-2.12.3/netty-utils/src/test",
+metadata/org.asynchttpclient/async-http-client-netty-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/asynchttpclient/async-http-client-netty-utils/2.12.3/async-http-client-netty-utils-2.12.3-javadoc.jar",
+metadata/org.reactivestreams/reactive-streams/index.json:6:    "repository-url" : "https://github.com/reactive-streams/reactive-streams-jvm",
+metadata/org.reactivestreams/reactive-streams/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams-tck/1.0.3/reactive-streams-tck-1.0.3-sources.jar",
+metadata/org.reactivestreams/reactive-streams/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-javadoc.jar",
+metadata/com.esotericsoftware/minlog/index.json:6:    "repository-url" : "https://github.com/EsotericSoftware/minlog",
+metadata/com.esotericsoftware/minlog/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/1.3.0/minlog-1.3.0-tests.jar",
+metadata/com.esotericsoftware/minlog/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/1.3.0/minlog-1.3.0-javadoc.jar",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:7:    "test-code-url" : "N/A",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.versioning/1.1.2/org.osgi.annotation.versioning-1.1.2-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v2.7.18/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/test",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/2.7.18/spring-boot-configuration-processor-2.7.18-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-os/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-os/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/2.2.0/os/src/test/java",
+metadata/io.smallrye.common/smallrye-common-os/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-os/2.2.0/smallrye-common-os-2.2.0-javadoc.jar",
+metadata/org.osgi/org.osgi.compendium/index.json:7:    "repository-url": "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.compendium/index.json:8:    "test-code-url": "https://github.com/osgi/osgi/tree/r5-cmpn-ri-ct-final",
+metadata/org.osgi/org.osgi.compendium/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.compendium/5.0.0/org.osgi.compendium-5.0.0-javadoc.jar",
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:6:    "repository-url" : "https://github.com/scoverage/scalac-scoverage-plugin",
+
+codex
+I’ve got enough to edit: Maven Central has exact `sources` and `javadoc` artifacts, no exact test artifact, and the upstream test suite is available under the `V1_9_6` tag. I’m keeping the language field absent because this is not one of the requested Kotlin/Groovy/Scala language-specific cases.
+apply patch
+patch: completed
+/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+diff --git a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+index 45789cae1d8f526530ddc080041fdcc27fb7e525..248879cd58f7ee4ce5d196445a048cafc9763d07
+--- a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
++++ b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.aspectj:aspectjrt:1.9.6"
++  "coordinates" : "org.aspectj:aspectjrt:1.9.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-sources.jar",
++  "repository-url" : "https://github.com/eclipse-aspectj/aspectj",
++  "test-code-url" : "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-javadoc.jar",
++  "description" : "AspectJ Runtime provides the runtime classes needed by applications compiled or woven with AspectJ. It supports AspectJ join point, signature, annotation, and reflection APIs used by woven aspect code at execution time."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+index 45789cae1d8f526530ddc080041fdcc27fb7e525..248879cd58f7ee4ce5d196445a048cafc9763d07
+--- a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
++++ b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.aspectj:aspectjrt:1.9.6"
++  "coordinates" : "org.aspectj:aspectjrt:1.9.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-sources.jar",
++  "repository-url" : "https://github.com/eclipse-aspectj/aspectj",
++  "test-code-url" : "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-javadoc.jar",
++  "description" : "AspectJ Runtime provides the runtime classes needed by applications compiled or woven with AspectJ. It supports AspectJ join point, signature, annotation, and reflection APIs used by woven aspect code at execution time."
+ }
+
+web search: 
+web search: https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests
+web search: 
+web search: repo.maven.apache.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/
+web search: 
+web search: 
+web search: 
+web search: https://central.sonatype.com/artifact/org.aspectj/aspectjrt/1.9.6
+exec
+/usr/bin/zsh -lc 'jq . build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+ succeeded in 0ms:
+{
+  "coordinates": "org.aspectj:aspectjrt:1.9.6",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-sources.jar",
+  "repository-url": "https://github.com/eclipse-aspectj/aspectj",
+  "test-code-url": "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-javadoc.jar",
+  "description": "AspectJ Runtime provides the runtime classes needed by applications compiled or woven with AspectJ. It supports AspectJ join point, signature, annotation, and reflection APIs used by woven aspect code at execution time."
+}
+
+exec
+/usr/bin/zsh -lc 'git diff -- build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+index 45789cae1d8f526530ddc080041fdcc27fb7e525..248879cd58f7ee4ce5d196445a048cafc9763d07
+--- a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
++++ b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.aspectj:aspectjrt:1.9.6"
++  "coordinates" : "org.aspectj:aspectjrt:1.9.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-sources.jar",
++  "repository-url" : "https://github.com/eclipse-aspectj/aspectj",
++  "test-code-url" : "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-javadoc.jar",
++  "description" : "AspectJ Runtime provides the runtime classes needed by applications compiled or woven with AspectJ. It supports AspectJ join point, signature, annotation, and reflection APIs used by woven aspect code at execution time."
+ }
+
+exec
+/usr/bin/zsh -lc 'git check-ignore -v build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json || true' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+ succeeded in 0ms:
+.gitignore:33:**/build	build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+
+exec
+/usr/bin/zsh -lc 'git status --short -- build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+index 45789cae1d8f526530ddc080041fdcc27fb7e525..248879cd58f7ee4ce5d196445a048cafc9763d07
+--- a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
++++ b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.aspectj:aspectjrt:1.9.6"
++  "coordinates" : "org.aspectj:aspectjrt:1.9.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-sources.jar",
++  "repository-url" : "https://github.com/eclipse-aspectj/aspectj",
++  "test-code-url" : "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-javadoc.jar",
++  "description" : "AspectJ Runtime provides the runtime classes needed by applications compiled or woven with AspectJ. It supports AspectJ join point, signature, annotation, and reflection APIs used by woven aspect code at execution time."
+ }
+
+web search: 
+web search: Maven Central aspectjrt 1.9.6 sources javadoc POM scm github eclipse org.aspectj
+web search: 
+web search: https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests
+codex
+Updated [org.aspectj-aspectjrt-1.9.6.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json) with the exact Maven `sources` and `javadoc` artifacts, canonical AspectJ repository, tagged upstream test suite, and a two-sentence description. Maven Central lists the 1.9.6 sources and javadoc jars, and the AspectJ repo exposes the `V1_9_6/tests` tree; the Maven listing did not include a test artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/?utm_source=openai))
+
+No `language` field was added. I validated the JSON with `jq`.
+diff --git a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+index 45789cae1d8f526530ddc080041fdcc27fb7e525..248879cd58f7ee4ce5d196445a048cafc9763d07
+--- a/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
++++ b/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.aspectj:aspectjrt:1.9.6"
++  "coordinates" : "org.aspectj:aspectjrt:1.9.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-sources.jar",
++  "repository-url" : "https://github.com/eclipse-aspectj/aspectj",
++  "test-code-url" : "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjrt/1.9.6/aspectjrt-1.9.6-javadoc.jar",
++  "description" : "AspectJ Runtime provides the runtime classes needed by applications compiled or woven with AspectJ. It supports AspectJ join point, signature, annotation, and reflection APIs used by woven aspect code at execution time."
+ }
+
+2026-05-02T02:52:47.556671Z ERROR codex_core::session: failed to record rollout items: thread 019de698-8720-77b3-a28b-c9bf904ed98d not found
+tokens used
+101,301
+Updated [org.aspectj-aspectjrt-1.9.6.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0/build/discovered-artifact-metadata/org.aspectj-aspectjrt-1.9.6.json) with the exact Maven `sources` and `javadoc` artifacts, canonical AspectJ repository, tagged upstream test suite, and a two-sentence description. Maven Central lists the 1.9.6 sources and javadoc jars, and the AspectJ repo exposes the `V1_9_6/tests` tree; the Maven listing did not include a test artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/aspectj/aspectjrt/1.9.6/?utm_source=openai))
+
+No `language` field was added. I validated the JSON with `jq`.
+Ran agent for org.aspectj:aspectjrt:1.9.6 (exit 0). Log: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0/build/agent-artifact-discovery-logs/org.aspectj-aspectjrt-1.9.6.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2623-8fca26a0/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 2s
+9 actionable tasks: 4 executed, 5 from cache
