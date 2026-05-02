@@ -195,6 +195,29 @@ public class LeveldbjniTest {
     }
 
     @Test
+    public void suspendAndResumeCompactionsKeepsDatabaseAvailableForWrites() throws Exception {
+        Path databasePath = Files.createTempDirectory("leveldbjni-compactions-");
+        try {
+            try (DB db = factory.open(databasePath.toFile(), databaseOptions())) {
+                db.suspendCompactions();
+                try {
+                    for (int i = 0; i < 12; i++) {
+                        db.put(bytes(String.format("paused-%02d", i)), bytes("value-" + i));
+                    }
+                    assertThat(asString(db.get(bytes("paused-05")))).isEqualTo("value-5");
+                } finally {
+                    db.resumeCompactions();
+                }
+
+                db.put(bytes("after-resume"), bytes("writes continue"));
+                assertThat(asString(db.get(bytes("after-resume")))).isEqualTo("writes continue");
+            }
+        } finally {
+            deleteRecursively(databasePath);
+        }
+    }
+
+    @Test
     public void factoryRejectsInvalidOpenModesAndConvertsStrings() throws Exception {
         Path databasePath = Files.createTempDirectory("leveldbjni-factory-");
         try {
