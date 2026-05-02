@@ -15,10 +15,10 @@ import java.util.Map;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.helper.AssignHelper;
-import com.github.jknack.handlebars.helper.IncludeHelper;
-import com.github.jknack.handlebars.helper.JodaHelper;
-import com.github.jknack.handlebars.helper.NumberHelper;
+import com.github.jknack.handlebars.helper.ext.AssignHelper;
+import com.github.jknack.handlebars.helper.ext.IncludeHelper;
+import com.github.jknack.handlebars.helper.ext.JodaHelper;
+import com.github.jknack.handlebars.helper.ext.NumberHelper;
 import com.github.jknack.handlebars.io.StringTemplateSource;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.io.TemplateSource;
