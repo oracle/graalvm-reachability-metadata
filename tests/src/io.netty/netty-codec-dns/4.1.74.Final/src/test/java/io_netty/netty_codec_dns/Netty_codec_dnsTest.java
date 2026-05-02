@@ -21,6 +21,7 @@ import io.netty.handler.codec.dns.DefaultDnsOptEcsRecord;
 import io.netty.handler.codec.dns.DefaultDnsPtrRecord;
 import io.netty.handler.codec.dns.DefaultDnsQuestion;
 import io.netty.handler.codec.dns.DefaultDnsRawRecord;
+import io.netty.handler.codec.dns.DefaultDnsRecordDecoder;
 import io.netty.handler.codec.dns.DefaultDnsResponse;
 import io.netty.handler.codec.dns.DnsOpCode;
 import io.netty.handler.codec.dns.DnsOptEcsRecord;
@@ -152,6 +153,46 @@ public class Netty_codec_dnsTest {
             }
             rawRecordBuffer.release();
             ptrRecordBuffer.release();
+        }
+    }
+
+    @Test
+    void recordDecoderExpandsCompressedRecordNamesAndCanonicalNameData() throws Exception {
+        ByteBuf packet = Unpooled.buffer();
+        DnsRawRecord decodedCnameRecord = null;
+
+        try {
+            int canonicalNameOffset = packet.writerIndex();
+            writeName(packet, "canonical.example.com.");
+            int sharedSuffixOffset = canonicalNameOffset + 1 + "canonical".length();
+            packet.writeShort(DnsRecordType.A.intValue());
+            packet.writeShort(DnsRecord.CLASS_IN);
+
+            packet.writeByte("alias".length());
+            packet.writeCharSequence("alias", StandardCharsets.US_ASCII);
+            packet.writeShort(0xC000 | sharedSuffixOffset);
+            packet.writeShort(DnsRecordType.CNAME.intValue());
+            packet.writeShort(DnsRecord.CLASS_IN);
+            packet.writeInt(180);
+            packet.writeShort(Short.BYTES);
+            packet.writeShort(0xC000 | canonicalNameOffset);
+
+            DnsRecordDecoder.DEFAULT.decodeQuestion(packet);
+            decodedCnameRecord = DnsRecordDecoder.DEFAULT.decodeRecord(packet);
+
+            assertThat(decodedCnameRecord.name()).isEqualTo("alias.example.com.");
+            assertThat(decodedCnameRecord.type()).isSameAs(DnsRecordType.CNAME);
+            assertThat(decodedCnameRecord.dnsClass()).isEqualTo(DnsRecord.CLASS_IN);
+            assertThat(decodedCnameRecord.timeToLive()).isEqualTo(180);
+
+            ByteBuf canonicalNameContent = decodedCnameRecord.content().duplicate();
+            assertThat(DefaultDnsRecordDecoder.decodeName(canonicalNameContent)).isEqualTo("canonical.example.com.");
+            assertThat(canonicalNameContent.isReadable()).isFalse();
+        } finally {
+            if (decodedCnameRecord != null) {
+                decodedCnameRecord.release();
+            }
+            packet.release();
         }
     }
 
