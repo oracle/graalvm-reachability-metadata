@@ -1,0 +1,1242 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de954-85ac-7af2-a68d-d595663c102b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.james:apache-mime4j-storage:0.8.13
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "0.8.13" when "$version$" is replaced with "0.8.13".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json
+- Set "coordinates" to "org.apache.james:apache-mime4j-storage:0.8.13".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "0.8.13".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact’s published metadata and the repo’s existing URL conventions first, then update the JSON directly with the version-templated URLs.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.james:apache-mime4j-storage:0.8.13"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'apache-mime4j|source-code-url|test-code-url|documentation-url|repository-url' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json:2:  "coordinates" : "org.apache.james:apache-mime4j-storage:0.8.13"
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:6:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:22:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:62:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:63:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:64:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:65:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:116:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:117:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:118:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-session/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-io/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:49:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:50:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-io/index.json:51:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:52:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:64:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:65:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-io/index.json:66:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:67:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:90:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:91:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:92:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:93:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:112:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:113:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:114:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:6:    "repository-url" : "https://github.com/google/j2objc",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-util/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-util/src/test",
+metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-javadoc.jar",
+metadata/org.mockito/mockito-core/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+metadata/org.mockito/mockito-core/index.json:9:    "repository-url": "https://github.com/mockito/mockito",
+metadata/org.mockito/mockito-core/index.json:10:    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json
+
+web search: 
+web search: Maven org.apache.james apache-mime4j-storage 0.8.13 sources jar tests jar javadoc
+web search: 
+web search: https://james.apache.org/download.cgi
+web search: 
+web search: repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-storage/0.8.13/apache-mime4j-storage-0.8.13-sources.jar
+codex
+The initial file only has `coordinates`. The local metadata conventions prefer Maven Central sources/javadoc/test jars when they exist, so I’m checking Maven Central and the Apache source tag shape before writing the URLs.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-storage/0.8.13/apache-mime4j-storage-0.8.13.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership. The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied. See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>apache-mime4j-project</artifactId>
+        <groupId>org.apache.james</groupId>
+        <version>0.8.13</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>apache-mime4j-storage</artifactId>
+    <packaging>bundle</packaging>
+
+    <name>Apache James :: Mime4j :: Storage</name>
+    <description>Java MIME Document Object Model Storage</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.james</groupId>
+            <artifactId>apache-mime4j-dom</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-storage/0.8.13/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/james/apache-mime4j-storage/0.8.13</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/james/apache-mime4j-storage/0.8.13</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="apache-mime4j-storage-0.8.13-sources.jar" title="apache-mime4j-storage-0.8.13-sources.jar">apache-mime4j-storage-0.8.13-sources.jar</a>          2025-07-18 06:18     28926      
+<a href="apache-mime4j-storage-0.8.13-sources.jar.asc" title="apache-mime4j-storage-0.8.13-sources.jar.asc">apache-mime4j-storage-0.8.13-sources.jar.asc</a>      2025-07-18 06:18       833      
+<a href="apache-mime4j-storage-0.8.13-sources.jar.md5" title="apache-mime4j-storage-0.8.13-sources.jar.md5">apache-mime4j-storage-0.8.13-sources.jar.md5</a>      2025-07-18 06:18        32      
+<a href="apache-mime4j-storage-0.8.13-sources.jar.sha1" title="apache-mime4j-storage-0.8.13-sources.jar.sha1">apache-mime4j-storage-0.8.13-sources.jar.sha1</a>     2025-07-18 06:18        40      
+<a href="apache-mime4j-storage-0.8.13-tests.jar" title="apache-mime4j-storage-0.8.13-tests.jar">apache-mime4j-storage-0.8.13-tests.jar</a>            2025-07-18 06:18     15180      
+<a href="apache-mime4j-storage-0.8.13-tests.jar.asc" title="apache-mime4j-storage-0.8.13-tests.jar.asc">apache-mime4j-storage-0.8.13-tests.jar.asc</a>        2025-07-18 06:18       833      
+<a href="apache-mime4j-storage-0.8.13-tests.jar.md5" title="apache-mime4j-storage-0.8.13-tests.jar.md5">apache-mime4j-storage-0.8.13-tests.jar.md5</a>        2025-07-18 06:18        32      
+<a href="apache-mime4j-storage-0.8.13-tests.jar.sha1" title="apache-mime4j-storage-0.8.13-tests.jar.sha1">apache-mime4j-storage-0.8.13-tests.jar.sha1</a>       2025-07-18 06:18        40      
+<a href="apache-mime4j-storage-0.8.13.jar" title="apache-mime4j-storage-0.8.13.jar">apache-mime4j-storage-0.8.13.jar</a>                  2025-07-18 06:18     31334      
+<a href="apache-mime4j-storage-0.8.13.jar.asc" title="apache-mime4j-storage-0.8.13.jar.asc">apache-mime4j-storage-0.8.13.jar.asc</a>              2025-07-18 06:18       833      
+<a href="apache-mime4j-storage-0.8.13.jar.md5" title="apache-mime4j-storage-0.8.13.jar.md5">apache-mime4j-storage-0.8.13.jar.md5</a>              2025-07-18 06:18        32      
+<a href="apache-mime4j-storage-0.8.13.jar.sha1" title="apache-mime4j-storage-0.8.13.jar.sha1">apache-mime4j-storage-0.8.13.jar.sha1</a>             2025-07-18 06:18        40      
+<a href="apache-mime4j-storage-0.8.13.pom" title="apache-mime4j-storage-0.8.13.pom">apache-mime4j-storage-0.8.13.pom</a>                  2025-07-18 06:18      2460      
+<a href="apache-mime4j-storage-0.8.13.pom.asc" title="apache-mime4j-storage-0.8.13.pom.asc">apache-mime4j-storage-0.8.13.pom.asc</a>              2025-07-18 06:18       833      
+<a href="apache-mime4j-storage-0.8.13.pom.md5" title="apache-mime4j-storage-0.8.13.pom.md5">apache-mime4j-storage-0.8.13.pom.md5</a>              2025-07-18 06:18        32      
+<a href="apache-mime4j-storage-0.8.13.pom.sha1" title="apache-mime4j-storage-0.8.13.pom.sha1">apache-mime4j-storage-0.8.13.pom.sha1</a>             2025-07-18 06:18        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/james-mime4j.git | rg '0\\.8\\.13|mime4j'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 316ms:
+0b5deda3d7a77ca09e6dc9c443fb7f2ac45d3b11	refs/tags/apache-mime4j-0.3
+044ef054a3f930c0781a770ff2b48eead633fe0c	refs/tags/apache-mime4j-0.3^{}
+6c898a6b7d70689f52e94cd90ca865fee661afb2	refs/tags/apache-mime4j-0.4
+3d65d468e95ab38baf3bb5413986c49c210aa2d9	refs/tags/apache-mime4j-0.4^{}
+e377d56af8573acbbe88871d94d073355489972f	refs/tags/apache-mime4j-0.5
+ce45fc575b016f82f511d418e072be0259ac0236	refs/tags/apache-mime4j-0.5^{}
+1e6a2dc59ef1a76bcbda6c25e40b02fddb6ee3cc	refs/tags/apache-mime4j-0.6
+247ee1bc45af78de968bc407c2fff12b40047d21	refs/tags/apache-mime4j-0.6^{}
+a2430e45b1c1c2692950c7bc602a11792fa2b558	refs/tags/apache-mime4j-0.6.1
+a8558274c80f7780d95c709f7157f1b00e37d40d	refs/tags/apache-mime4j-0.6.1^{}
+6e4413a4bbb144efc0eba218bbe3fe1ddfb357e5	refs/tags/apache-mime4j-project-0.7
+a25a0b67ed2d59befd71d9cd1bf523a2593eed6e	refs/tags/apache-mime4j-project-0.7^{}
+3324f6b2a960e8dba438714475a5a44b934004e0	refs/tags/apache-mime4j-project-0.7.1
+fec4338a6cd2a41e0cae6ac3c44a8b87f9cd83ca	refs/tags/apache-mime4j-project-0.7.1^{}
+e47bf1d25793fa0e33a8a0a1c103942f812a1ea2	refs/tags/apache-mime4j-project-0.7.2
+1f0805a7546b9b4151b44fb519c5c959432860a0	refs/tags/apache-mime4j-project-0.7.2^{}
+0193ed6b5c79ef9be86f5db9f2d8a217bbdb2d04	refs/tags/apache-mime4j-project-0.8.0
+2aaa6715e57feb7d7c537d041b0147ff23f46db1	refs/tags/apache-mime4j-project-0.8.0^{}
+83bbff730a3e21e58e6b39cf7573189c4a7421d5	refs/tags/apache-mime4j-project-0.8.1
+6473fdc3ed59ef60e485249d3c493d669362e26d	refs/tags/apache-mime4j-project-0.8.1^{}
+0eccebbb19d0c73a105aa76858021d4339f90989	refs/tags/apache-mime4j-project-0.8.10
+e4278a55e70da172f7dfb51d73747ac453a7b738	refs/tags/apache-mime4j-project-0.8.10^{}
+5e1bdf379e093469a470e47e0abdebdf9f978e1e	refs/tags/apache-mime4j-project-0.8.11
+1f8283f0bda5bcaf58611a3e42421371f6fb13cb	refs/tags/apache-mime4j-project-0.8.11^{}
+1789ff20b91c6746beddb53cbb6fa8c780d026e8	refs/tags/apache-mime4j-project-0.8.12
+acc45aab9d076c980bf94b9acfd3a76bb7f93485	refs/tags/apache-mime4j-project-0.8.12^{}
+8570c8bc8a79f624664e1c3d7270563f0cc93e39	refs/tags/apache-mime4j-project-0.8.13
+993ad664c7ec51f77c167f9ff388ed1b0a1b7aa7	refs/tags/apache-mime4j-project-0.8.14
+168f2dbf0f7744a14a7bff09dde0a00c81724ffe	refs/tags/apache-mime4j-project-0.8.14^{}
+67e3e06c0f7724d2edbcdab64a6aaa81b1193699	refs/tags/apache-mime4j-project-0.8.2
+d2343e91fe64428db4cd079dd2b024c8ce93cd16	refs/tags/apache-mime4j-project-0.8.2^{}
+26ba88eb928c1c96b94759c79f3070b181ebc6f1	refs/tags/apache-mime4j-project-0.8.3
+b0fd973013f1c68d5200594054ddab890c559d45	refs/tags/apache-mime4j-project-0.8.3^{}
+26db2d8b95415742b3d8e31a23f1900517d985f2	refs/tags/apache-mime4j-project-0.8.4
+048e8076c63ee4090eb1533bf2bfd3435331ebe2	refs/tags/apache-mime4j-project-0.8.4^{}
+603024f1d3f3f8703795610e98b5f52ca61fceb8	refs/tags/apache-mime4j-project-0.8.5
+d90928ca69f7e6e9eef5d9f96d24e1e67f63ca7a	refs/tags/apache-mime4j-project-0.8.5^{}
+2778dc9946bd3598cc6dda7dd6b6d8e2cf17ad83	refs/tags/apache-mime4j-project-0.8.6
+d54eee85ba1ed703b8da2fd02f0d4776633cfb15	refs/tags/apache-mime4j-project-0.8.6^{}
+7cefd7edf69f4f716fcb1575f550778fbb6d1d08	refs/tags/apache-mime4j-project-0.8.7
+ed5a50c8071080b4eaedd6ab13baf25843d691a3	refs/tags/apache-mime4j-project-0.8.7^{}
+fd174be9e500aab8df8b79d466c55101179e5d76	refs/tags/apache-mime4j-project-0.8.8
+3105188d68d824baff0570f9dd91edb2050c0d79	refs/tags/apache-mime4j-project-0.8.8^{}
+dadae9bba51fb3deeaab5293078efb9032c8236a	refs/tags/apache-mime4j-project-0.8.9
+8964fbd808a823672a516b669be4edebc191aa17	refs/tags/apache-mime4j-project-0.8.9^{}
+97f55d7fa4e44c569c72f69b3a7c9ed226609468	refs/tags/mime4j_0_2
+a931901255172bcde1e9f82b3c013ca65d5f5793	refs/tags/mime4j_0_2^{}
+
+web search: 
+web search: Apache Mime4j GitHub repository james-mime4j apache
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-storage/0.8.13/apache-mime4j-storage-0.8.13-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ exited 22 in 0ms:
+HTTP/2 404 
+date: Sat, 02 May 2026 15:35:56 GMT
+content-type: text/html
+cf-ray: 9f58193f19458628-ZRH
+cf-cache-status: HIT
+age: 774
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/james/apache-mime4j-storage/0.8.13/apache-mime4j-storage-0.8.13-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'rm -rf /tmp/james-mime4j-0.8.13-check && git clone --depth 1 --branch apache-mime4j-project-0.8.13 --filter=blob:none https://github.com/apache/james-mime4j.git /tmp/james-mime4j-0.8.13-check' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-storage/0.8.13/apache-mime4j-storage-0.8.13-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-storage/0.8.13/apache-mime4j-storage-0.8.13.jar -o /tmp/apache-mime4j-storage-0.8.13.jar && jar tf /tmp/apache-mime4j-storage-0.8.13.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 120ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/DEPENDENCIES
+META-INF/LICENSE
+META-INF/NOTICE
+META-INF/maven/
+META-INF/maven/org.apache.james/
+META-INF/maven/org.apache.james/apache-mime4j-storage/
+META-INF/maven/org.apache.james/apache-mime4j-storage/pom.properties
+META-INF/maven/org.apache.james/apache-mime4j-storage/pom.xml
+org/
+org/apache/
+org/apache/james/
+org/apache/james/mime4j/
+org/apache/james/mime4j/storage/
+org/apache/james/mime4j/storage/AbstractStorageProvider.class
+org/apache/james/mime4j/storage/CipherStorageProvider$CipherStorage.class
+org/apache/james/mime4j/storage/CipherStorageProvider$CipherStorageOutputStream.class
+org/apache/james/mime4j/storage/CipherStorageProvider.class
+org/apache/james/mime4j/storage/DefaultStorageProvider.class
+org/apache/james/mime4j/storage/MemoryStorageProvider$1.class
+org/apache/james/mime4j/storage/MemoryStorageProvider$MemoryStorage.class
+org/apache/james/mime4j/storage/MemoryStorageProvider$MemoryStorageOutputStream.class
+org/apache/james/mime4j/storage/MemoryStorageProvider.class
+org/apache/james/mime4j/storage/MultiReferenceStorage.class
+org/apache/james/mime4j/storage/Storage.class
+org/apache/james/mime4j/storage/StorageBinaryBody.class
+org/apache/james/mime4j/storage/StorageBodyFactory.class
+org/apache/james/mime4j/storage/StorageOutputStream.class
+org/apache/james/mime4j/storage/StorageProvider.class
+org/apache/james/mime4j/storage/StorageTextBody.class
+org/apache/james/mime4j/storage/StringTextBody.class
+org/apache/james/mime4j/storage/TempFileStorageProvider$TempFileStorage.class
+org/apache/james/mime4j/storage/TempFileStorageProvider$TempFileStorageOutputStream.class
+org/apache/james/mime4j/storage/TempFileStorageProvider.class
+org/apache/james/mime4j/storage/ThresholdStorageProvider$ThresholdStorage.class
+org/apache/james/mime4j/storage/ThresholdStorageProvider$ThresholdStorageOutputStream.class
+org/apache/james/mime4j/storage/ThresholdStorageProvider.class
+
+ exited 22 in 226ms:
+HTTP/2 404 
+date: Sat, 02 May 2026 15:35:56 GMT
+content-type: text/html
+cf-ray: 9f58193f0cacb86b-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/james/apache-mime4j-storage/0.8.13/apache-mime4j-storage-0.8.13-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 1247ms:
+Note: switching to '8570c8bc8a79f624664e1c3d7270563f0cc93e39'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+
+codex
+Maven Central has both the source jar and the test jar for this exact version, but not a module javadoc jar. The artifact jar contains JVM `.class` files, so it remains a Native Image metadata target and does not need `not-for-native-image`.
+exec
+/usr/bin/bash -lc "find /tmp/james-mime4j-0.8.13-check -maxdepth 3 -type d | sort | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+/tmp/james-mime4j-0.8.13-check
+/tmp/james-mime4j-0.8.13-check/.git
+/tmp/james-mime4j-0.8.13-check/.git/branches
+/tmp/james-mime4j-0.8.13-check/.git/hooks
+/tmp/james-mime4j-0.8.13-check/.git/info
+/tmp/james-mime4j-0.8.13-check/.git/logs
+/tmp/james-mime4j-0.8.13-check/.git/objects
+/tmp/james-mime4j-0.8.13-check/.git/objects/info
+/tmp/james-mime4j-0.8.13-check/.git/objects/pack
+/tmp/james-mime4j-0.8.13-check/.git/refs
+/tmp/james-mime4j-0.8.13-check/.git/refs/heads
+/tmp/james-mime4j-0.8.13-check/.git/refs/tags
+/tmp/james-mime4j-0.8.13-check/assemble
+/tmp/james-mime4j-0.8.13-check/assemble/src
+/tmp/james-mime4j-0.8.13-check/assemble/src/assemble
+/tmp/james-mime4j-0.8.13-check/assemble/src/reporting-site
+/tmp/james-mime4j-0.8.13-check/benchmark
+/tmp/james-mime4j-0.8.13-check/benchmark/src
+/tmp/james-mime4j-0.8.13-check/benchmark/src/main
+/tmp/james-mime4j-0.8.13-check/benchmark/src/reporting-site
+/tmp/james-mime4j-0.8.13-check/core
+/tmp/james-mime4j-0.8.13-check/core/src
+/tmp/james-mime4j-0.8.13-check/core/src/main
+/tmp/james-mime4j-0.8.13-check/core/src/reporting-site
+/tmp/james-mime4j-0.8.13-check/core/src/test
+/tmp/james-mime4j-0.8.13-check/docs
+/tmp/james-mime4j-0.8.13-check/docs/modules
+/tmp/james-mime4j-0.8.13-check/docs/modules/ROOT
+/tmp/james-mime4j-0.8.13-check/dom
+/tmp/james-mime4j-0.8.13-check/dom/src
+/tmp/james-mime4j-0.8.13-check/dom/src/main
+/tmp/james-mime4j-0.8.13-check/dom/src/reporting-site
+/tmp/james-mime4j-0.8.13-check/dom/src/test
+/tmp/james-mime4j-0.8.13-check/examples
+/tmp/james-mime4j-0.8.13-check/examples/src
+/tmp/james-mime4j-0.8.13-check/examples/src/main
+/tmp/james-mime4j-0.8.13-check/examples/src/reporting-site
+/tmp/james-mime4j-0.8.13-check/james-utils
+/tmp/james-mime4j-0.8.13-check/james-utils/src
+/tmp/james-mime4j-0.8.13-check/james-utils/src/main
+/tmp/james-mime4j-0.8.13-check/james-utils/src/test
+/tmp/james-mime4j-0.8.13-check/mbox
+/tmp/james-mime4j-0.8.13-check/mbox/src
+/tmp/james-mime4j-0.8.13-check/mbox/src/main
+/tmp/james-mime4j-0.8.13-check/mbox/src/test
+/tmp/james-mime4j-0.8.13-check/src
+/tmp/james-mime4j-0.8.13-check/src/reporting-site
+/tmp/james-mime4j-0.8.13-check/src/site
+/tmp/james-mime4j-0.8.13-check/src/site/apt
+/tmp/james-mime4j-0.8.13-check/src/site/resources
+/tmp/james-mime4j-0.8.13-check/src/site/xdoc
+/tmp/james-mime4j-0.8.13-check/storage
+/tmp/james-mime4j-0.8.13-check/storage/src
+/tmp/james-mime4j-0.8.13-check/storage/src/main
+/tmp/james-mime4j-0.8.13-check/storage/src/reporting-site
+/tmp/james-mime4j-0.8.13-check/storage/src/test
+
+exec
+/usr/bin/bash -lc "sed -n '1,260p' /tmp/james-mime4j-0.8.13-check/pom.xml" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements. See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership. The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied. See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.apache</groupId>
+        <artifactId>apache</artifactId>
+        <version>35</version>
+        <relativePath />
+    </parent>
+
+    <groupId>org.apache.james</groupId>
+    <artifactId>apache-mime4j-project</artifactId>
+    <version>0.8.13</version>
+    <packaging>pom</packaging>
+
+    <name>Apache James :: Mime4j :: Project</name>
+    <description>Java stream based MIME message parser</description>
+    <url>http://james.apache.org/mime4j</url>
+    <inceptionYear>2004</inceptionYear>
+
+    <modules>
+        <module>core</module>
+        <module>dom</module>
+        <module>storage</module>
+        <module>benchmark</module>
+        <module>examples</module>
+        <module>assemble</module>
+        <module>mbox</module>
+        <module>james-utils</module>
+    </modules>
+
+    <scm>
+        <connection>scm:git:http://git-wip-us.apache.org/repos/asf/james-mime4j.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/apache/james-mime4j.git</developerConnection>
+        <url>https://git-wip-us.apache.org/repos/asf/james-mime4j.git</url>
+      <tag>apache-mime4j-project-0.8.13</tag>
+  </scm>
+    <issueManagement>
+        <url>http://issues.apache.org/jira/browse/MIME4J</url>
+    </issueManagement>
+
+    <distributionManagement>
+        <site>
+            <id>mime4j-website</id>
+            <url>scpexe://people.apache.org/www/james.apache.org/mime4j/</url>
+        </site>
+    </distributionManagement>
+
+    <properties>
+        <james-skin.version>1.8</james-skin.version>
+
+        <target.jdk>1.8</target.jdk>
+        <commons-logging.version>1.3.5</commons-logging.version>
+        <log4j.version>2.25.0</log4j.version>
+        <junit.version>4.13.2</junit.version>
+        <mockito.version>4.11.0</mockito.version>
+        <commons-io.version>2.19.0</commons-io.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>apache-mime4j-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>apache-mime4j-dom</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>apache-mime4j-mbox-iterator</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>apache-mime4j-examples</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>apache-mime4j-storage</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>apache-mime4j-benchmark</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${commons-logging.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>3.27.3</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <inherited>true</inherited>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/docs/**</exclude>
+                                <exclude>CHANGELOG.*</exclude>
+                                <exclude>NOTICE.*</exclude>
+                                <exclude>LICENSE.*</exclude>
+                                <exclude>**/README.*</exclude>
+                                <exclude>**/main/resources/long-multipart.msg</exclude>
+                                <exclude>
+                                    **/main/resources/META-INF/services/org.apache.james.mime4j.dom.MessageServiceFactory
+                                </exclude>
+                                <exclude>**/test/resources/testmsgs/*</exclude>
+                                <exclude>**/test/resources/mimetools-testmsgs/*</exclude>
+                                <exclude>**/test/resources/test-1/*</exclude>
+                                <exclude>**/test/resources/*.msg</exclude>
+                                <exclude>**/main/resources/*.msg</exclude>
+                                <exclude>**/main/resources/mbox-example/*</exclude>
+                                <!-- Generated by Maven -->
+                                <exclude>release.properties</exclude>
+                                <exclude>dist/**/*</exclude>
+                                <!-- Eclipse -->
+                                <exclude>**/.*</exclude>
+                                <exclude>.*/**/*</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
+                <executions>
+                    <execution>
+                        <id>jar</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>test-jar</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>5.1.9</version>
+                <extensions>true</extensions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.14.0</version>
+                <configuration>
+                    <optimize>true</optimize>
+                    <source>${target.jdk}</source>
+                    <target>${target.jdk}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <profiles>
+        <profile>
+            <id>jdk9</id>
+            <activation>
+                <jdk>[1.9,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <release>8</release>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.11.2</version>
+                <reportSets>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <id>default</id>
+                        <reports>
+                            <report>javadoc</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+                <configuration>
+
+exec
+/usr/bin/bash -lc "find /tmp/james-mime4j-0.8.13-check -maxdepth 3 -type f | sed 's#/tmp/james-mime4j-0.8.13-check/##' | sort | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+.git/HEAD
+.git/config
+.git/description
+.git/hooks/applypatch-msg.sample
+.git/hooks/commit-msg.sample
+.git/hooks/fsmonitor-watchman.sample
+.git/hooks/post-update.sample
+.git/hooks/pre-applypatch.sample
+.git/hooks/pre-commit.sample
+.git/hooks/pre-merge-commit.sample
+.git/hooks/pre-push.sample
+.git/hooks/pre-rebase.sample
+.git/hooks/pre-receive.sample
+.git/hooks/prepare-commit-msg.sample
+.git/hooks/push-to-checkout.sample
+.git/hooks/sendemail-validate.sample
+.git/hooks/update.sample
+.git/index
+.git/info/exclude
+.git/logs/HEAD
+.git/packed-refs
+.git/shallow
+.gitignore
+BUILDING.txt
+CHANGELOG.md
+Jenkinsfile
+LICENSE
+NOTICE
+README.adoc
+assemble/pom.xml
+benchmark/pom.xml
+core/pom.xml
+doap_James_Mime4j.rdf
+docs/antora.yml
+dom/pom.xml
+examples/pom.xml
+james-logo.png
+james-utils/pom.xml
+mbox/README.mdtext
+mbox/pom.xml
+pom.xml
+src/reporting-site/site.xml
+src/site/site.xml
+storage/pom.xml
+
+exec
+/usr/bin/bash -lc "rg -n '<url>|<scm>|<connection>|<developerConnection>|github|gitbox|javadoc|site|maven-javadoc|description|storage' /tmp/james-mime4j-0.8.13-check -g 'pom.xml' -g '*.md' -g '*.apt' -g '*.xdoc'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+/tmp/james-mime4j-0.8.13-check/james-utils/pom.xml:35:    <description>Mime tools to be shared across James implementation. It is separated from other mime4J projects as it depends on James guava version.</description>
+/tmp/james-mime4j-0.8.13-check/pom.xml:36:    <description>Java stream based MIME message parser</description>
+/tmp/james-mime4j-0.8.13-check/pom.xml:37:    <url>http://james.apache.org/mime4j</url>
+/tmp/james-mime4j-0.8.13-check/pom.xml:43:        <module>storage</module>
+/tmp/james-mime4j-0.8.13-check/pom.xml:51:    <scm>
+/tmp/james-mime4j-0.8.13-check/pom.xml:52:        <connection>scm:git:http://git-wip-us.apache.org/repos/asf/james-mime4j.git</connection>
+/tmp/james-mime4j-0.8.13-check/pom.xml:53:        <developerConnection>scm:git:ssh://git@github.com/apache/james-mime4j.git</developerConnection>
+/tmp/james-mime4j-0.8.13-check/pom.xml:54:        <url>https://git-wip-us.apache.org/repos/asf/james-mime4j.git</url>
+/tmp/james-mime4j-0.8.13-check/pom.xml:58:        <url>http://issues.apache.org/jira/browse/MIME4J</url>
+/tmp/james-mime4j-0.8.13-check/pom.xml:62:        <site>
+/tmp/james-mime4j-0.8.13-check/pom.xml:63:            <id>mime4j-website</id>
+/tmp/james-mime4j-0.8.13-check/pom.xml:64:            <url>scpexe://people.apache.org/www/james.apache.org/mime4j/</url>
+/tmp/james-mime4j-0.8.13-check/pom.xml:65:        </site>
+/tmp/james-mime4j-0.8.13-check/pom.xml:104:                <artifactId>apache-mime4j-storage</artifactId>
+/tmp/james-mime4j-0.8.13-check/pom.xml:243:                <artifactId>maven-javadoc-plugin</artifactId>
+/tmp/james-mime4j-0.8.13-check/pom.xml:256:                            <report>javadoc</report>
+/tmp/james-mime4j-0.8.13-check/examples/pom.xml:34:    <description>Examples for Mime4J stream based MIME message parser</description>
+/tmp/james-mime4j-0.8.13-check/examples/pom.xml:47:            <artifactId>apache-mime4j-storage</artifactId>
+/tmp/james-mime4j-0.8.13-check/src/site/apt/status.apt:39:	code. Mime4J has been restructured into three separate modules: 'core', 'dom' and 'storage'. 
+/tmp/james-mime4j-0.8.13-check/src/site/apt/status.apt:44:	content of individual body parts in memory. The 'storage' package provides support for more
+/tmp/james-mime4j-0.8.13-check/src/site/apt/status.apt:45:	complex storage backends such on-disk storage systems, overflow on max limit, or encrypted storage 
+/tmp/james-mime4j-0.8.13-check/CHANGELOG.md:97: - Add maven-javadoc-plugin (#54)
+/tmp/james-mime4j-0.8.13-check/CHANGELOG.md:209:code. Mime4J has been restructured into three separate modules: 'core', 'dom' and 'storage'. 
+/tmp/james-mime4j-0.8.13-check/CHANGELOG.md:214:content of individual body parts in memory. The 'storage' package provides support for more
+/tmp/james-mime4j-0.8.13-check/CHANGELOG.md:215:complex storage backends such on-disk storage systems, overflow on max limit, or encrypted storage 
+/tmp/james-mime4j-0.8.13-check/CHANGELOG.md:279: * BodyFactory introduced allowing more flexible storage for Message parts. TempFileTextBody
+/tmp/james-mime4j-0.8.13-check/CHANGELOG.md:283:   has been superseded by StorageProvider in package org.apache.james.mime4j.storage.
+/tmp/james-mime4j-0.8.13-check/CHANGELOG.md:286: * Temporary text body storage for Message parts now defaults to US-ASCII (was ISO-8859-1)
+/tmp/james-mime4j-0.8.13-check/dom/pom.xml:34:    <description>Java MIME Document Object Model</description>
+/tmp/james-mime4j-0.8.13-check/storage/pom.xml:30:    <artifactId>apache-mime4j-storage</artifactId>
+/tmp/james-mime4j-0.8.13-check/storage/pom.xml:34:    <description>Java MIME Document Object Model Storage</description>
+/tmp/james-mime4j-0.8.13-check/mbox/pom.xml:34:    <description>Provides a fast iterator like interface for Mbox files using NIO.</description>
+/tmp/james-mime4j-0.8.13-check/benchmark/pom.xml:34:    <description>Benchmarks for MIME4J stream based MIME message parser</description>
+/tmp/james-mime4j-0.8.13-check/benchmark/pom.xml:57:            <artifactId>apache-mime4j-storage</artifactId>
+
+exec
+/usr/bin/bash -lc "find /tmp/james-mime4j-0.8.13-check/docs -type f | sed 's#/tmp/james-mime4j-0.8.13-check/##' | sort | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+docs/antora.yml
+docs/modules/ROOT/pages/index.adoc
+
+exec
+/usr/bin/bash -lc "find /tmp/james-mime4j-0.8.13-check/storage/src -type f | sed 's#/tmp/james-mime4j-0.8.13-check/##' | sort | sed -n '1,240p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+storage/src/main/java/org/apache/james/mime4j/storage/AbstractStorageProvider.java
+storage/src/main/java/org/apache/james/mime4j/storage/CipherStorageProvider.java
+storage/src/main/java/org/apache/james/mime4j/storage/DefaultStorageProvider.java
+storage/src/main/java/org/apache/james/mime4j/storage/MemoryStorageProvider.java
+storage/src/main/java/org/apache/james/mime4j/storage/MultiReferenceStorage.java
+storage/src/main/java/org/apache/james/mime4j/storage/Storage.java
+storage/src/main/java/org/apache/james/mime4j/storage/StorageBinaryBody.java
+storage/src/main/java/org/apache/james/mime4j/storage/StorageBodyFactory.java
+storage/src/main/java/org/apache/james/mime4j/storage/StorageOutputStream.java
+storage/src/main/java/org/apache/james/mime4j/storage/StorageProvider.java
+storage/src/main/java/org/apache/james/mime4j/storage/StorageTextBody.java
+storage/src/main/java/org/apache/james/mime4j/storage/StringTextBody.java
+storage/src/main/java/org/apache/james/mime4j/storage/TempFileStorageProvider.java
+storage/src/main/java/org/apache/james/mime4j/storage/ThresholdStorageProvider.java
+storage/src/reporting-site/site.xml
+storage/src/test/java/org/apache/james/mime4j/storage/DefaultStorageProviderTest.java
+storage/src/test/java/org/apache/james/mime4j/storage/MultiReferenceStorageTest.java
+storage/src/test/java/org/apache/james/mime4j/storage/SingleBodyCopyTest.java
+storage/src/test/java/org/apache/james/mime4j/storage/StorageProviderTest.java
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' /tmp/james-mime4j-0.8.13-check/src/site/apt/status.apt" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+
+~~   Licensed to the Apache Software Foundation (ASF) under one
+~~   or more contributor license agreements.  See the NOTICE file
+~~   distributed with this work for additional information
+~~   regarding copyright ownership.  The ASF licenses this file
+~~   to you under the Apache License, Version 2.0 (the
+~~   "License"); you may not use this file except in compliance
+~~   with the License.  You may obtain a copy of the License at
+~~
+~~     http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing,
+~~   software distributed under the License is distributed on an
+~~   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+~~   KIND, either express or implied.  See the License for the
+~~   specific language governing permissions and limitations
+~~   under the License.
+
+ -------------
+ Status
+ -------------
+
+{Status}
+
+    The 0.4 release brought a number of significant improvements in terms of 
+    supported capabilities, flexibility and performance.
+
+    The 0.5 release addressed a number of important issues discovered since
+    the 0.4 release. In particular it improved Mime4j ability to deal with
+    malformed data streams including those intentionally crafted to cause 
+    excessive CPU and memory utilization that can lead to DoS conditions.
+
+    The 0.6 release brought another round of API enhancements and performance 
+    optimizations. As of this release Mime4j requires a Java 1.5 compatible 
+    runtime.    
+    
+    The 0.7 release brings another round of API enhancements, bug fixes and performance optimizations. 
+	A major effort has been put in code reorganization, separating parsing code from DOM manipulation
+	code. Mime4J has been restructured into three separate modules: 'core', 'dom' and 'storage'. 
+	The 'core' package provides an event-driven SAX style parser that relies on a callback mechanism 
+	to report parsing events such as the start of an entity header the start of a body, etc. 
+	The 'dom' package contains base/abstract classes and interfaces for MIME-DOM manipulation aiming 
+	to provide the base for a full featured traversable DOM. Per default the Mime4J DOM builder stores 
+	content of individual body parts in memory. The 'storage' package provides support for more
+	complex storage backends such on-disk storage systems, overflow on max limit, or encrypted storage 
+	through JSSE API. 
+
+    The next release will be version 0.8. As of this release Mime4j requires a Java 1.6 compatible 
+    runtime.
+
+exec
+/usr/bin/bash -lc "find /tmp/james-mime4j-0.8.13-check/src/site -type f | sed 's#/tmp/james-mime4j-0.8.13-check/##' | sort | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+src/site/apt/status.apt
+src/site/apt/usage.apt
+src/site/resources/images/james-logo.png
+src/site/site.xml
+src/site/xdoc/index.xml
+src/site/xdoc/samples.xml
+src/site/xdoc/start/build.xml
+src/site/xdoc/start/download.xml
+src/site/xdoc/start/index.xml
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://github.com/.+\\"'$version'"\\"'$'"' metadata -g 'index.json' | head -50" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+metadata/org.slf4j/slf4j-nop/index.json:8:    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_$version$/slf4j-site/src/site/pages/manual.html",
+metadata/org.slf4j/slf4j-nop/index.json:22:    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_$version$/slf4j-site/src/site/pages/manual.html",
+metadata/ch.qos.cal10n/cal10n-api/index.json:8:    "documentation-url" : "https://github.com/qos-ch/cal10n/blob/v$version$/cal10n-site/src/site/pages/documentation.html",
+metadata/org.apache.ant/ant-antlr/index.json:8:    "documentation-url" : "https://github.com/apache/ant/blob/rel/$version$/manual/Tasks/antlr.html",
+metadata/org.apache.httpcomponents/httpcore/index.json:78:    "documentation-url" : "https://github.com/apache/httpcomponents-core/tree/rel/v$version$/src/docbkx",
+metadata/org.slf4j/jcl-over-slf4j/index.json:85:    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_$version$_FINAL/slf4j-site/src/site/pages/legacy.html",
+metadata/org.slf4j/jcl-over-slf4j/index.json:111:    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_$version$/slf4j-site/src/site/pages/legacy.html",
+metadata/org.slf4j/slf4j-jdk14/index.json:8:    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_$version$/slf4j-site/src/site/pages/manual.html",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:8:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/$version$/README.md",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:28:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/$version$/README.md",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:42:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v$version$/sdk/metrics/README.md",
+metadata/io.jsonwebtoken/jjwt-api/index.json:7:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/$version$/README.md",
+metadata/io.jsonwebtoken/jjwt-api/index.json:22:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/$version$/README.md",
+metadata/io.opentelemetry/opentelemetry-sdk-trace/index.json:26:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v$version$/sdk/trace/README.md",
+metadata/org.apache.tomcat/tomcat-jdbc/index.json:69:    "documentation-url" : "https://github.com/apache/tomcat/tree/$version$/webapps/docs",
+metadata/io.opentelemetry/opentelemetry-exporter-jaeger/index.json:40:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v$version$/exporters/jaeger/README.md",
+metadata/org.apache.tomcat.embed/tomcat-embed-el/index.json:8:    "documentation-url" : "https://github.com/apache/tomcat/tree/$version$/webapps/docs/elapi",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:9:    "documentation-url" : "https://github.com/apache/tomcat/tree/$version$/webapps/docs",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:88:    "documentation-url" : "https://github.com/apache/tomcat/tree/$version$/webapps/docs",
+metadata/org.apache.tomcat/tomcat-juli/index.json:8:    "documentation-url" : "https://github.com/apache/tomcat/blob/$version$/webapps/docs/logging.xml",
+metadata/org.apache.tomcat/tomcat-juli/index.json:40:    "documentation-url" : "https://github.com/apache/tomcat/blob/$version$/webapps/docs/logging.xml",
+metadata/io.opentelemetry/opentelemetry-exporter-zipkin/index.json:8:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v$version$/exporters/zipkin/README.md",
+metadata/io.opentelemetry/opentelemetry-exporter-zipkin/index.json:40:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v$version$/exporters/zipkin/README.md",
+metadata/org.apache.tomcat/tomcat-annotations-api/index.json:8:    "documentation-url" : "https://github.com/apache/tomcat/tree/$version$/webapps/docs/annotationapi",
+metadata/org.apache.tomcat/tomcat-annotations-api/index.json:40:    "documentation-url" : "https://github.com/apache/tomcat/tree/$version$/webapps/docs/annotationapi",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/$version$/jackrabbit-jcr-commons/README.txt",
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:8:    "documentation-url" : "https://github.com/Kotlin/kotlinx-atomicfu/blob/$version$/README.md",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:8:    "documentation-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v$version$/docs",
+metadata/io.opentelemetry/opentelemetry-exporter-otlp/index.json:9:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v$version$/exporters/otlp/all/README.md",
+metadata/org.testcontainers/junit-jupiter/index.json:8:    "documentation-url" : "https://github.com/testcontainers/testcontainers-java/blob/$version$/docs/test_framework_integration/junit_5.md",
+metadata/io.opentelemetry/opentelemetry-exporter-logging/index.json:8:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v$version$/exporters/logging/README.md",
+metadata/io.opentelemetry/opentelemetry-exporter-logging/index.json:40:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v$version$/exporters/logging/README.md",
+metadata/org.thymeleaf/thymeleaf/index.json:23:    "documentation-url" : "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-$version$/README.txt",
+metadata/org.thymeleaf/thymeleaf/index.json:40:    "documentation-url" : "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-$version$/README.txt",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:8:    "documentation-url" : "https://github.com/apache/commons-fileupload/blob/rel/commons-fileupload-$version$/src/site/xdoc/index.xml",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:22:    "documentation-url" : "https://github.com/apache/commons-fileupload/blob/rel/commons-fileupload-$version$/src/site/xdoc/index.xml",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:36:    "documentation-url" : "https://github.com/apache/commons-fileupload/blob/rel/commons-fileupload-$version$/src/site/xdoc/index.xml",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:50:    "documentation-url" : "https://github.com/apache/commons-fileupload/blob/rel/commons-fileupload-$version$/src/site/xdoc/index.xml",
+metadata/org.apache.james/apache-mime4j-core/index.json:8:    "documentation-url" : "https://github.com/apache/james-mime4j/tree/apache-mime4j-project-$version$/src/site/xdoc",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:8:    "documentation-url" : "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-$version$/lib/thymeleaf-extras-springsecurity6/README.markdown",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:22:    "documentation-url" : "https://github.com/apache/commons-fileupload/blob/rel/commons-fileupload-$version$/src/site/xdoc/index.xml",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:36:    "documentation-url" : "https://github.com/apache/commons-fileupload/blob/rel/commons-fileupload-$version$/src/site/xdoc/index.xml",
+metadata/org.glassfish/javax.ejb/index.json:24:    "documentation-url" : "https://github.com/javaee/glassfish/blob/$version$/ejb/javax.ejb/src/main/java/javax/ejb/package.html",
+metadata/org.flywaydb/flyway-core/index.json:9:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+metadata/org.flywaydb/flyway-core/index.json:27:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+metadata/org.flywaydb/flyway-core/index.json:97:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+metadata/org.flywaydb/flyway-core/index.json:114:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+metadata/org.flywaydb/flyway-core/index.json:131:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+metadata/org.flywaydb/flyway-core/index.json:148:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+metadata/org.jboss/jandex/index.json:8:    "documentation-url" : "https://github.com/smallrye/jandex/blob/$version$/README.md",
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/org.apache.james/apache-mime4j-core/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "0.8.13",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-core/$version$/apache-mime4j-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/james-mime4j",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-core/$version$/apache-mime4j-core-$version$-tests.jar",
+    "documentation-url" : "https://github.com/apache/james-mime4j/tree/apache-mime4j-project-$version$/src/site/xdoc",
+    "description" : "Apache James Mime4j Core provides a stream-based parser for RFC 822 and MIME email messages. It reports message structure through parsing events and supports tolerant handling of malformed real-world messages.",
+    "tested-versions" : [
+      "0.8.13",
+      "0.8.14"
+    ],
+    "allowed-packages" : [
+      "org.apache.james.mime4j"
+    ]
+  }
+]
+
+web search: 
+web search: https://github.com/apache/james-mime4j/tree/apache-mime4j-project-0.8.13/src/site/xdoc
+web search: 
+web search: repo.maven.apache.org maven2 org/apache/james/apache-mime4j-storage/0.8.13 sources tests jar
+codex
+I found a sibling metadata entry for `apache-mime4j-core` that uses the same GitHub repository and the `apache-mime4j-project-$version$` tag pattern. I’m going to mirror that convention for storage, with Maven-hosted source/test jars and tagged project docs.
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-storage/0.8.13/apache-mime4j-storage-0.8.13-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:36:37 GMT
+content-type: application/java-archive
+content-length: 28926
+cf-ray: 9f581a432da3ff00-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 830307
+etag: "d5fa03bc0c1a9a1db7ec041cb840488b"
+last-modified: Fri, 18 Jul 2025 06:18:07 GMT
+x-checksum-md5: d5fa03bc0c1a9a1db7ec041cb840488b
+x-checksum-sha1: 85a4c85b4dcce5a187e111d05672299eec6cea5e
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-storage/0.8.13/apache-mime4j-storage-0.8.13-tests.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:36:37 GMT
+content-type: application/java-archive
+content-length: 15180
+cf-ray: 9f581a432833bc08-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 72753
+etag: "b6c0cacccafdf6055f99b5a9fa976093"
+last-modified: Fri, 18 Jul 2025 06:18:09 GMT
+x-checksum-md5: b6c0cacccafdf6055f99b5a9fa976093
+x-checksum-sha1: 5d0dd2f2cb580d715320d07bd2de59c4892f1bb8
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/apache/james-mime4j/tree/apache-mime4j-project-0.8.13/src/site/xdoc' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/apache/james-mime4j' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 351ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:36:37 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"560e2f538763a24ae8152ecb29163686"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=aZRmgyY97riFIR2EPaqQcTCVaWgG0Uen77WA1evQ1eC363enSlwF8%2BoILQFe%2BADV9%2FlNbXA2G9C9R6mOhfm3bS3%2BZIiQz8IMoIohTp0uCfO54k72yEir1JK7s4C6bcwCjdD0GsQKuo9Auu6s%2FI%2Bh1Ps0nFSCNTkNRm7txLop9AuucqYnkSbclUfQWIfqhHmCwkt3jn2%2FG3XRS6ag1VT8N%2BAeHblzAw4AoPAln50GiRGhqyesGUiuSyTTKPtlxD7%2FMtMQtUW%2FatcE8g10ZWqvkQ%3D%3D--ekuPh95fMsQYSJGG--STdntRxmygw561RWbLAu8A%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1395550396.1777736197; expires=Sun, 02 May 2027 15:36:37 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 02 May 2027 15:36:37 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5101:3C4DFD:B9738F0:8A7801F:69F61A05
+
+
+ succeeded in 628ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:36:38 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"7ea97b016f02b2273c1dfb7bc41d44a3"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=OpCA1Veai28wYsf0NSeqpsuA%2B8hHtt840DxEyvboxDkAkFQAS5JwNDXw1ICGUfMXtFEjdzM2iwcV7lkijBtb%2FcJov97r%2Fli%2BpCJ8K1Qiapw2NxMDWA8D5BwKvnm7mfxpRvvkgEx%2B4f0w%2BEmH130tavpVmTVD63ixWqnb44%2BMbi4XRWsGbhh1uQ16TxxoRjpkImOsbapcrl4CYZpmafh4o75xh8n2b2We3kgWynYkABuHRDiWJTSH4Q9o6%2F1i%2FbCmNE1uprjMLAXYUw1iBOHFxQ%3D%3D--1oGO%2FuT24cLUP8uG--o7ki3OLquWqEqiqu4RrGAQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.252020570.1777736197; expires=Sun, 02 May 2027 15:36:37 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 02 May 2027 15:36:37 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510B:3C4DFD:B973930:8A7804D:69F61A05
+
+
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json
+diff --git a/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json b/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json
+index 24941264e2c840e1587d2b2c4390eb8321b7fbf3..7caaf049b7cc5e46d0066986ba99887301e81420
+--- a/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json
++++ b/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.james:apache-mime4j-storage:0.8.13"
++  "coordinates" : "org.apache.james:apache-mime4j-storage:0.8.13",
++  "repository-url" : "https://github.com/apache/james-mime4j",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-storage/$version$/apache-mime4j-storage-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-storage/$version$/apache-mime4j-storage-$version$-tests.jar",
++  "documentation-url" : "https://github.com/apache/james-mime4j/tree/apache-mime4j-project-$version$/src/site/xdoc",
++  "description" : "Apache James Mime4j Storage provides storage abstractions and implementations for MIME body content used by Mime4j's DOM APIs. It supports memory, temporary-file, threshold, and encrypted storage providers so applications can control how message parts are buffered."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json b/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json
+index 24941264e2c840e1587d2b2c4390eb8321b7fbf3..7caaf049b7cc5e46d0066986ba99887301e81420
+--- a/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json
++++ b/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.james:apache-mime4j-storage:0.8.13"
++  "coordinates" : "org.apache.james:apache-mime4j-storage:0.8.13",
++  "repository-url" : "https://github.com/apache/james-mime4j",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-storage/$version$/apache-mime4j-storage-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-storage/$version$/apache-mime4j-storage-$version$-tests.jar",
++  "documentation-url" : "https://github.com/apache/james-mime4j/tree/apache-mime4j-project-$version$/src/site/xdoc",
++  "description" : "Apache James Mime4j Storage provides storage abstractions and implementations for MIME body content used by Mime4j's DOM APIs. It supports memory, temporary-file, threshold, and encrypted storage providers so applications can control how message parts are buffered."
+ }
+
+codex
+The JSON has been updated. I’m doing a quick parse check and final diff review now to catch formatting or field issues.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.james:apache-mime4j-storage:0.8.13",
+  "repository-url": "https://github.com/apache/james-mime4j",
+  "source-code-url": "https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-storage/$version$/apache-mime4j-storage-$version$-sources.jar",
+  "test-code-url": "https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-storage/$version$/apache-mime4j-storage-$version$-tests.jar",
+  "documentation-url": "https://github.com/apache/james-mime4j/tree/apache-mime4j-project-$version$/src/site/xdoc",
+  "description": "Apache James Mime4j Storage provides storage abstractions and implementations for MIME body content used by Mime4j's DOM APIs. It supports memory, temporary-file, threshold, and encrypted storage providers so applications can control how message parts are buffered."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json b/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json
+index 24941264e2c840e1587d2b2c4390eb8321b7fbf3..7caaf049b7cc5e46d0066986ba99887301e81420
+--- a/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json
++++ b/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.james:apache-mime4j-storage:0.8.13"
++  "coordinates" : "org.apache.james:apache-mime4j-storage:0.8.13",
++  "repository-url" : "https://github.com/apache/james-mime4j",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-storage/$version$/apache-mime4j-storage-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-storage/$version$/apache-mime4j-storage-$version$-tests.jar",
++  "documentation-url" : "https://github.com/apache/james-mime4j/tree/apache-mime4j-project-$version$/src/site/xdoc",
++  "description" : "Apache James Mime4j Storage provides storage abstractions and implementations for MIME body content used by Mime4j's DOM APIs. It supports memory, temporary-file, threshold, and encrypted storage providers so applications can control how message parts are buffered."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json && sed -n '1,80p' build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.james:apache-mime4j-storage:0.8.13",
+  "repository-url" : "https://github.com/apache/james-mime4j",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-storage/$version$/apache-mime4j-storage-$version$-sources.jar",
+  "test-code-url" : "https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-storage/$version$/apache-mime4j-storage-$version$-tests.jar",
+  "documentation-url" : "https://github.com/apache/james-mime4j/tree/apache-mime4j-project-$version$/src/site/xdoc",
+  "description" : "Apache James Mime4j Storage provides storage abstractions and implementations for MIME body content used by Mime4j's DOM APIs. It supports memory, temporary-file, threshold, and encrypted storage providers so applications can control how message parts are buffered."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json b/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json
+index 24941264e2c840e1587d2b2c4390eb8321b7fbf3..7caaf049b7cc5e46d0066986ba99887301e81420
+--- a/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json
++++ b/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.james:apache-mime4j-storage:0.8.13"
++  "coordinates" : "org.apache.james:apache-mime4j-storage:0.8.13",
++  "repository-url" : "https://github.com/apache/james-mime4j",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-storage/$version$/apache-mime4j-storage-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-storage/$version$/apache-mime4j-storage-$version$-tests.jar",
++  "documentation-url" : "https://github.com/apache/james-mime4j/tree/apache-mime4j-project-$version$/src/site/xdoc",
++  "description" : "Apache James Mime4j Storage provides storage abstractions and implementations for MIME body content used by Mime4j's DOM APIs. It supports memory, temporary-file, threshold, and encrypted storage providers so applications can control how message parts are buffered."
+ }
+
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-storage/0.8.13/ apache-mime4j-storage-0.8.13-sources.jar apache-mime4j-storage-0.8.13-tests.jar
+web search: 
+web search: https://github.com/apache/james-mime4j/tree/apache-mime4j-project-0.8.13/src/site/xdoc
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/james/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-storage/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-storage/0.8.13/
+codex
+Updated [org.apache.james-apache-mime4j-storage-0.8.13.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json).
+
+I used Maven Central for the source and test jars, and the tagged `apache-mime4j-project-0.8.13` GitHub docs path for documentation. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-storage/0.8.13/)) I left `language` absent and did not set `not-for-native-image` because this is a normal JVM jar.
+
+Verification: `jq .` parses the JSON successfully.
+diff --git a/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json b/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json
+index 24941264e2c840e1587d2b2c4390eb8321b7fbf3..7caaf049b7cc5e46d0066986ba99887301e81420
+--- a/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json
++++ b/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.james:apache-mime4j-storage:0.8.13"
++  "coordinates" : "org.apache.james:apache-mime4j-storage:0.8.13",
++  "repository-url" : "https://github.com/apache/james-mime4j",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-storage/$version$/apache-mime4j-storage-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/apache/james/apache-mime4j-storage/$version$/apache-mime4j-storage-$version$-tests.jar",
++  "documentation-url" : "https://github.com/apache/james-mime4j/tree/apache-mime4j-project-$version$/src/site/xdoc",
++  "description" : "Apache James Mime4j Storage provides storage abstractions and implementations for MIME body content used by Mime4j's DOM APIs. It supports memory, temporary-file, threshold, and encrypted storage providers so applications can control how message parts are buffered."
+ }
+
+tokens used
+87,675
+Updated [org.apache.james-apache-mime4j-storage-0.8.13.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe/build/discovered-artifact-metadata/org.apache.james-apache-mime4j-storage-0.8.13.json).
+
+I used Maven Central for the source and test jars, and the tagged `apache-mime4j-project-0.8.13` GitHub docs path for documentation. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-storage/0.8.13/)) I left `language` absent and did not set `not-for-native-image` because this is a normal JVM jar.
+
+Verification: `jq .` parses the JSON successfully.
+Ran agent for org.apache.james:apache-mime4j-storage:0.8.13 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe/build/agent-artifact-discovery-logs/org.apache.james-apache-mime4j-storage-0.8.13.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3296-dc7ad8fe/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 54s
+9 actionable tasks: 4 executed, 5 from cache
