@@ -11,7 +11,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.XSLTLiaison;
 import org.apache.tools.ant.taskdefs.XSLTProcess;
@@ -79,7 +78,7 @@ public class XSLTProcessTest {
     @Test
     void resolvesCustomProcessorThroughConfiguredAntClasspath() {
         ExposedXSLTProcess task = newTask(TRAX_LIAISON);
-        task.setClasspath(new org.apache.tools.ant.types.Path(task.getProject()));
+        task.createClasspath();
 
         XSLTLiaison liaison = task.exposeLiaison();
 
@@ -89,17 +88,9 @@ public class XSLTProcessTest {
     private void assertOptionalProcessorResolution(String processor, String expectedClassName) {
         ExposedXSLTProcess task = newTask(processor);
 
-        try {
-            XSLTLiaison liaison = task.exposeLiaison();
+        XSLTLiaison liaison = task.exposeLiaison();
 
-            assertThat(liaison.getClass().getName()).isEqualTo(expectedClassName);
-        } catch (BuildException exception) {
-            assertThat(exception.getException())
-                    .isNotNull()
-                    .isNotInstanceOf(ClassNotFoundException.class);
-        } catch (LinkageError error) {
-            assertThat(error).isInstanceOf(NoClassDefFoundError.class);
-        }
+        assertThat(liaison.getClass().getName()).isEqualTo(expectedClassName);
     }
 
     private ExposedXSLTProcess newTask(String processor) {
