@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.Method;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
@@ -114,6 +115,24 @@ public class ReflectUtilsTest {
     }
 
     @Test
+    void defineClassUsesClassicClassLoaderDefineClassWhenNoContextClassIsAvailable() throws Exception {
+        ClassLoader classLoader = new ClassLoader(ReflectUtilsTest.class.getClassLoader()) {
+        };
+
+        try {
+            Class<?> definedClass = defineGeneratedClass("GeneratedReflectUtilsClassic", classLoader, null);
+
+            assertThat(definedClass.getClassLoader()).isSameAs(classLoader);
+        }
+        catch (CodeGenerationException ex) {
+            ignoreUnsupportedDynamicClassLoadingOrInaccessibleObjectException(ex);
+        }
+        catch (Error error) {
+            ignoreUnsupportedDynamicClassLoading(error);
+        }
+    }
+
+    @Test
     void defineClassFallsBackToLookupWithDifferentTargetClassLoader() throws Exception {
         ClassLoader childClassLoader = new ClassLoader(ReflectUtilsTest.class.getClassLoader()) {
         };
@@ -199,6 +218,14 @@ public class ReflectUtilsTest {
             return;
         }
         throw ex;
+    }
+
+    private static void ignoreUnsupportedDynamicClassLoadingOrInaccessibleObjectException(CodeGenerationException ex) {
+        Throwable cause = ex.getCause();
+        if (cause instanceof InaccessibleObjectException) {
+            return;
+        }
+        ignoreUnsupportedDynamicClassLoading(ex);
     }
 
     private static void ignoreUnsupportedDynamicClassLoading(Error error) {
