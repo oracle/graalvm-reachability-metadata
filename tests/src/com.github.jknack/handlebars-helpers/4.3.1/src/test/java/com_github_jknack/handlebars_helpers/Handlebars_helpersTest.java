@@ -95,6 +95,26 @@ public class Handlebars_helpersTest {
     }
 
     @Test
+    void includeHelperResolvesTemplateLoaderPrefixAndSuffixWithCallerContext() throws IOException {
+        final MapBackedTemplateLoader loader = new MapBackedTemplateLoader();
+        loader.setPrefix("/templates/");
+        loader.setSuffix(".hbs");
+        loader.put("/templates/summary.hbs", "{{firstName}} {{lastName}} is {{role}}");
+
+        final Handlebars handlebars = new Handlebars(loader);
+        handlebars.registerHelper(IncludeHelper.NAME, IncludeHelper.INSTANCE);
+
+        final Template template = handlebars.compileInline("{{include \"summary\"}}");
+
+        final Map<String, Object> model = new HashMap<>();
+        model.put("firstName", "Ada");
+        model.put("lastName", "Lovelace");
+        model.put("role", "mathematician");
+
+        assertThat(template.apply(model)).isEqualTo("Ada Lovelace is mathematician");
+    }
+
+    @Test
     void jodaHelpersFormatReadableInstantsWithPatternStyleAndIsoOutput() throws IOException {
         final Locale originalLocale = Locale.getDefault();
         Locale.setDefault(Locale.US);
