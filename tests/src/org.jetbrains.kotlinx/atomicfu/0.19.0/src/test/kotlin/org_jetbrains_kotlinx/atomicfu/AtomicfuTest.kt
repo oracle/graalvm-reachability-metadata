@@ -196,6 +196,23 @@ public class AtomicfuTest {
     }
 
     @Test
+    fun tracesRetainNewestEventsWhenCapacityIsExceededByBatchedAppends() {
+        val trace = Trace(size = 4, format = TraceFormat { index, event -> "$index=$event" })
+
+        trace.append("zero")
+        trace.append("one", "two", "three")
+        trace.append("four")
+        trace.named("overflow").append("five", "six", "seven", "eight")
+
+        assertThat(trace.toString().lines()).containsExactly(
+            "5=overflow.five",
+            "6=overflow.six",
+            "7=overflow.seven",
+            "8=overflow.eight",
+        )
+    }
+
+    @Test
     fun loopRetriesWithLatestAtomicReferenceValueUntilOperationCompletes() {
         val pending = atomic(listOf("alpha", "beta"))
         val observedSnapshots = mutableListOf<List<String>>()
