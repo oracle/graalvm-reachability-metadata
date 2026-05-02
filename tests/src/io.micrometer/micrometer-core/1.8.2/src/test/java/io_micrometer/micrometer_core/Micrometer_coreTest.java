@@ -8,7 +8,7 @@ package io_micrometer.micrometer_core;
 
 import org.junit.jupiter.api.Test;
 
-class Micrometer_coreTest {
+public class Micrometer_coreTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
