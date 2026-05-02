@@ -62,6 +62,18 @@ class Silencer_lib_2_13Test {
   }
 
   @Test
+  def annotationCanBeUsedOnExpressionsWithoutChangingEvaluation(): Unit = {
+    val blockResult: Int = ({
+      val values: Vector[Int] = Vector(2, 4, 8)
+      values.foldLeft(1)(_ + _)
+    }: @silent("block expression annotation"))
+    val methodCallResult: String = (Vector("native", "image").mkString("-"): @silent("method call expression annotation"))
+
+    assertEquals(15, blockResult)
+    assertEquals("native-image", methodCallResult)
+  }
+
+  @Test
   def annotationCanBeUsedOnTypeAliasesWithoutChangingTypeSemantics(): Unit = {
     val fixture: SilencerTypeAliasFixture = new SilencerTypeAliasFixture()
     val label: fixture.Label = "metadata"
