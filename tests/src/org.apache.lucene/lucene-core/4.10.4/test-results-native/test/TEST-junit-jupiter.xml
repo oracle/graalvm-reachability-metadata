@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="JUnit Jupiter" tests="6" skipped="0" failures="0" errors="0" time="0.001" hostname="kung-fu-workstation" timestamp="2026-05-02T20:26:03">
+<testsuite name="JUnit Jupiter" tests="10" skipped="0" failures="1" errors="3" time="0.021" hostname="kung-fu-workstation" timestamp="2026-05-02T20:39:59">
 <properties>
 <property name="file.encoding" value="UTF-8"/>
 <property name="file.separator" value="/"/>
@@ -52,10 +52,103 @@
 <property name="user.name" value="vjovanov"/>
 <property name="user.timezone" value="Europe/Zurich"/>
 </properties>
+<testcase name="reportsNonFSDirectoryClassNames()" classname="org_apache_lucene.lucene_core.CommandLineUtilTest" time="0.003">
+<failure message="
+Expecting actual throwable to be an instance of:
+  java.lang.ClassCastException
+but was:
+  java.lang.ClassNotFoundException: org.apache.lucene.store.RAMDirectory
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:263)
+	at java.base@25.0.2/java.lang.Class.forName0(DynamicHub.java:1975)
+	at java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:467)
+	...(20 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceElementsDisplayed)" type="java.lang.AssertionError"><![CDATA[java.lang.AssertionError: 
+Expecting actual throwable to be an instance of:
+  java.lang.ClassCastException
+but was:
+  java.lang.ClassNotFoundException: org.apache.lucene.store.RAMDirectory
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:263)
+	at java.base@25.0.2/java.lang.Class.forName0(DynamicHub.java:1975)
+	at java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:467)
+	...(20 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceElementsDisplayed)
+	at org_apache_lucene.lucene_core.CommandLineUtilTest.reportsNonFSDirectoryClassNames(CommandLineUtilTest.java:63)
+	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+	at java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
+	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
+]]></failure>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:org_apache_lucene.lucene_core.CommandLineUtilTest]/[method:reportsNonFSDirectoryClassNames()]
+display-name: reportsNonFSDirectoryClassNames()
+]]></system-out>
+</testcase>
+<testcase name="createsFSDirectoryByClassNameUsingFileConstructor()" classname="org_apache_lucene.lucene_core.CommandLineUtilTest" time="0">
+<error message="FSDirectory implementation not found: NIOFSDirectory" type="java.lang.IllegalArgumentException"><![CDATA[java.lang.IllegalArgumentException: FSDirectory implementation not found: NIOFSDirectory
+	at org.apache.lucene.util.CommandLineUtil.newFSDirectory(CommandLineUtil.java:48)
+	at org_apache_lucene.lucene_core.CommandLineUtilTest.createsFSDirectoryByClassNameUsingFileConstructor(CommandLineUtilTest.java:51)
+	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+	at java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
+	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
+Caused by: java.lang.ClassNotFoundException: org.apache.lucene.store.NIOFSDirectory
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:263)
+	at java.base@25.0.2/java.lang.Class.forName0(DynamicHub.java:1975)
+	at java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:467)
+	at java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:458)
+	at org.apache.lucene.util.CommandLineUtil.loadFSDirectoryClass(CommandLineUtil.java:80)
+	at org.apache.lucene.util.CommandLineUtil.newFSDirectory(CommandLineUtil.java:45)
+	... 13 more
+]]></error>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:org_apache_lucene.lucene_core.CommandLineUtilTest]/[method:createsFSDirectoryByClassNameUsingFileConstructor()]
+display-name: createsFSDirectoryByClassNameUsingFileConstructor()
+]]></system-out>
+</testcase>
 <testcase name="estimatesShallowSizeForLuceneClassWithPrimitiveAndReferenceFields()" classname="org_apache_lucene.lucene_core.RamUsageEstimatorTest" time="0">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_apache_lucene.lucene_core.RamUsageEstimatorTest]/[method:estimatesShallowSizeForLuceneClassWithPrimitiveAndReferenceFields()]
 display-name: estimatesShallowSizeForLuceneClassWithPrimitiveAndReferenceFields()
+]]></system-out>
+</testcase>
+<testcase name="loadsFSDirectoryImplementationFromSimpleName()" classname="org_apache_lucene.lucene_core.CommandLineUtilTest" time="0.002">
+<error message="org.apache.lucene.store.SimpleFSDirectory" type="java.lang.ClassNotFoundException"><![CDATA[java.lang.ClassNotFoundException: org.apache.lucene.store.SimpleFSDirectory
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:263)
+	at java.base@25.0.2/java.lang.Class.forName0(DynamicHub.java:1975)
+	at java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:467)
+	at java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:458)
+	at org.apache.lucene.util.CommandLineUtil.loadFSDirectoryClass(CommandLineUtil.java:80)
+	at org_apache_lucene.lucene_core.CommandLineUtilTest.loadsFSDirectoryImplementationFromSimpleName(CommandLineUtilTest.java:42)
+	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+	at java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
+	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
+]]></error>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:org_apache_lucene.lucene_core.CommandLineUtilTest]/[method:loadsFSDirectoryImplementationFromSimpleName()]
+display-name: loadsFSDirectoryImplementationFromSimpleName()
 ]]></system-out>
 </testcase>
 <testcase name="rejectsArrayClassesForInstanceSizing()" classname="org_apache_lucene.lucene_core.RamUsageEstimatorTest" time="0">
@@ -64,13 +157,39 @@ unique-id: [engine:junit-jupiter]/[class:org_apache_lucene.lucene_core.RamUsageE
 display-name: rejectsArrayClassesForInstanceSizing()
 ]]></system-out>
 </testcase>
-<testcase name="estimatesArraySizesUsingPublicHelpers()" classname="org_apache_lucene.lucene_core.RamUsageEstimatorTest" time="0">
+<testcase name="loadsDirectoryImplementationFromSimpleAndFullyQualifiedNames()" classname="org_apache_lucene.lucene_core.CommandLineUtilTest" time="0.001">
+<error message="org.apache.lucene.store.RAMDirectory" type="java.lang.ClassNotFoundException"><![CDATA[java.lang.ClassNotFoundException: org.apache.lucene.store.RAMDirectory
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:263)
+	at java.base@25.0.2/java.lang.Class.forName0(DynamicHub.java:1975)
+	at java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:467)
+	at java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:458)
+	at org.apache.lucene.util.CommandLineUtil.loadDirectoryClass(CommandLineUtil.java:69)
+	at org_apache_lucene.lucene_core.CommandLineUtilTest.loadsDirectoryImplementationFromSimpleAndFullyQualifiedNames(CommandLineUtilTest.java:32)
+	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+	at java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
+	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
+]]></error>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:org_apache_lucene.lucene_core.CommandLineUtilTest]/[method:loadsDirectoryImplementationFromSimpleAndFullyQualifiedNames()]
+display-name: loadsDirectoryImplementationFromSimpleAndFullyQualifiedNames()
+]]></system-out>
+</testcase>
+<testcase name="estimatesArraySizesUsingPublicHelpers()" classname="org_apache_lucene.lucene_core.RamUsageEstimatorTest" time="0.006">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_apache_lucene.lucene_core.RamUsageEstimatorTest]/[method:estimatesArraySizesUsingPublicHelpers()]
 display-name: estimatesArraySizesUsingPublicHelpers()
 ]]></system-out>
 </testcase>
-<testcase name="reportsLongAndHumanReadableSizes()" classname="org_apache_lucene.lucene_core.RamUsageEstimatorTest" time="0">
+<testcase name="reportsLongAndHumanReadableSizes()" classname="org_apache_lucene.lucene_core.RamUsageEstimatorTest" time="0.003">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_apache_lucene.lucene_core.RamUsageEstimatorTest]/[method:reportsLongAndHumanReadableSizes()]
 display-name: reportsLongAndHumanReadableSizes()
@@ -82,7 +201,7 @@ unique-id: [engine:junit-jupiter]/[class:org_apache_lucene.lucene_core.RamUsageE
 display-name: initializesJvmMemoryConstantsAndFeatureSets()
 ]]></system-out>
 </testcase>
-<testcase name="closingMappedInputUsesCleanerWhenUnmapIsEnabled()" classname="org_apache_lucene.lucene_core.MMapDirectoryAnonymous1Anonymous1Test" time="0">
+<testcase name="closingMappedInputUsesCleanerWhenUnmapIsEnabled()" classname="org_apache_lucene.lucene_core.MMapDirectoryAnonymous1Anonymous1Test" time="0.002">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_apache_lucene.lucene_core.MMapDirectoryAnonymous1Anonymous1Test]/[method:closingMappedInputUsesCleanerWhenUnmapIsEnabled()]
 display-name: closingMappedInputUsesCleanerWhenUnmapIsEnabled()
