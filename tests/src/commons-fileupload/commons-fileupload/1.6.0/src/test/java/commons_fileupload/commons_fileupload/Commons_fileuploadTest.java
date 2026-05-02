@@ -30,6 +30,7 @@ import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.InvalidFileNameException;
 import org.apache.commons.fileupload.ParameterParser;
+import org.apache.commons.fileupload.ProgressListener;
 import org.apache.commons.fileupload.UploadContext;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -119,6 +120,34 @@ public class Commons_fileuploadTest {
         assertThat(Streams.copy(payload.openStream(), copied, true)).isEqualTo(10L);
         assertThat(copied.toByteArray()).isEqualTo("0123456789".getBytes(StandardCharsets.UTF_8));
         assertThat(iterator.hasNext()).isFalse();
+    }
+
+    @Test
+    void reportsUploadProgressWithContentLengthAndCurrentItemIndex() throws Exception {
+        byte[] requestBody = multipartBody(
+                part("Content-Disposition: form-data; name=\"first\"\r\n", "alpha"),
+                part("Content-Disposition: form-data; name=\"second\"; filename=\"second.txt\"\r\n", "bravo"));
+        FileUpload upload = new FileUpload(new DiskFileItemFactory());
+        List<ProgressUpdate> updates = new ArrayList<>();
+        ProgressListener listener = (bytesRead, contentLength, itemIndex) -> updates.add(
+                new ProgressUpdate(bytesRead, contentLength, itemIndex));
+        upload.setProgressListener(listener);
+
+        assertThat(upload.parseRequest(context(requestBody))).hasSize(2);
+
+        assertThat(upload.getProgressListener()).isSameAs(listener);
+        assertThat(updates).isNotEmpty();
+        long previousBytesRead = -1L;
+        for (ProgressUpdate update : updates) {
+            assertThat(update.contentLength).isEqualTo((long) requestBody.length);
+            assertThat(update.bytesRead).isGreaterThanOrEqualTo(previousBytesRead)
+                    .isLessThanOrEqualTo((long) requestBody.length);
+            previousBytesRead = update.bytesRead;
+        }
+        assertThat(updates).extracting(update -> update.itemIndex).contains(1, 2);
+        ProgressUpdate finalUpdate = updates.get(updates.size() - 1);
+        assertThat(finalUpdate.bytesRead).isEqualTo((long) requestBody.length);
+        assertThat(finalUpdate.itemIndex).isEqualTo(2);
     }
 
     @Test
@@ -288,6 +317,18 @@ public class Commons_fileuploadTest {
 
     private static List<String> headerNames(Iterator<String> iterator) {
         return headers(iterator);
+    }
+
+    private static final class ProgressUpdate {
+        private final long bytesRead;
+        private final long contentLength;
+        private final int itemIndex;
+
+        private ProgressUpdate(long bytesRead, long contentLength, int itemIndex) {
+            this.bytesRead = bytesRead;
+            this.contentLength = contentLength;
+            this.itemIndex = itemIndex;
+        }
     }
 
     private static final class ByteArrayUploadContext implements UploadContext {
