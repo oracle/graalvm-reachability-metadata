@@ -225,6 +225,24 @@ public class XercesMinimalTest {
     }
 
     @Test
+    void uriSupportsOpaqueSchemeSpecificIdentifiers() throws Exception {
+        URI mailbox = new URI("mailto", "person@example.org");
+        URI copy = new URI(mailbox);
+
+        assertThat(mailbox.getScheme()).isEqualTo("mailto");
+        assertThat(mailbox.getSchemeSpecificPart()).isEqualTo("person@example.org");
+        assertThat(mailbox.isAbsoluteURI()).isTrue();
+        assertThat(mailbox.isGenericURI()).isFalse();
+        assertThat(mailbox.getAuthority()).isEmpty();
+        assertThat(mailbox.getHost()).isNull();
+        assertThat(mailbox.getUserinfo()).isNull();
+        assertThat(mailbox.getQueryString()).isNull();
+        assertThat(mailbox.getFragment()).isNull();
+        assertThat(copy).isEqualTo(mailbox);
+        assertThat(mailbox.toString()).isEqualTo("mailto:person@example.org");
+    }
+
+    @Test
     void resourceIdentifiersCanBeCopiedIntoInputSourcesAndCleared() throws Exception {
         XMLResourceIdentifierImpl resourceIdentifier = new XMLResourceIdentifierImpl(
                 "public-id",
