@@ -31,6 +31,12 @@ import io.jsonwebtoken.security.SignatureException;
 import org.junit.jupiter.api.Test;
 
 import javax.crypto.SecretKey;
+import java.io.FilterInputStream;
+import java.io.FilterOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.KeyPair;
@@ -93,7 +99,7 @@ public class Jjwt_implTest {
         assertThat(parsed.getHeader().getType()).isEqualTo(Header.JWT_TYPE);
         assertThat(parsed.getBody().getIssuer()).isEqualTo("https://issuer.example");
         assertThat(parsed.getBody().getSubject()).isEqualTo("integration-test-subject");
-        assertThat(parsed.getBody().getAudience()).isEqualTo("native-image-tests");
+        assertThat(parsed.getBody().getAudience()).containsExactly("native-image-tests");
         assertThat(parsed.getBody().getIssuedAt()).isEqualTo(ISSUED_AT);
         assertThat(parsed.getBody().getNotBefore()).isEqualTo(NOT_BEFORE);
         assertThat(parsed.getBody().getExpiration()).isEqualTo(EXPIRATION);
@@ -214,7 +220,7 @@ public class Jjwt_implTest {
                 .claim("roles", List.of("reader", "writer"))
                 .compact();
 
-        JwtParser parser = parserBuilder().build();
+        JwtParser parser = parserBuilder().unsecured().build();
         Jwt<Header, Claims> parsed = parser.parseClaimsJwt(jwt);
         String handledSubject = parser.parse(jwt, new JwtHandlerAdapter<String>() {
             @Override
@@ -247,16 +253,16 @@ public class Jjwt_implTest {
                 .compact();
 
         JwtParser parser = parserBuilder().setSigningKey(key).build();
-        Jws<String> parsed = parser.parsePlaintextJws(jws);
+        Jws<byte[]> parsed = parser.parseSignedContent(jws);
         String handledPayload = parser.parse(jws, new JwtHandlerAdapter<String>() {
             @Override
-            public String onPlaintextJws(Jws<String> jws) {
-                return jws.getBody();
+            public String onVerifiedContent(Jws<byte[]> jws) {
+                return new String(jws.getBody(), StandardCharsets.UTF_8);
             }
         });
 
         assertThat(parsed.getHeader().getContentType()).isEqualTo("text/plain");
-        assertThat(parsed.getBody()).isEqualTo("plain-text-payload");
+        assertThat(new String(parsed.getBody(), StandardCharsets.UTF_8)).isEqualTo("plain-text-payload");
         assertThat(handledPayload).isEqualTo("plain-text-payload");
     }
 
@@ -314,35 +320,83 @@ public class Jjwt_implTest {
     }
 
     private static JwtParserBuilder parserBuilder() {
-        return Jwts.parserBuilder().deserializeJsonWith(JSON);
+        return Jwts.parser().json(JSON);
     }
 
     private static final class ReversingCompressionCodec implements CompressionCodec {
         private static final String ALGORITHM_NAME = "REV";
 
         @Override
-        public String getAlgorithmName() {
+        public String getId() {
             return ALGORITHM_NAME;
         }
 
         @Override
+        public String getAlgorithmName() {
+            return getId();
+        }
+
+        @Override
         public byte[] compress(byte[] bytes) {
-            return reverse(bytes);
+            return transform(bytes);
         }
 
         @Override
         public byte[] decompress(byte[] bytes) {
-            return reverse(bytes);
+            return transform(bytes);
         }
 
-        private static byte[] reverse(byte[] bytes) {
-            byte[] reversed = bytes.clone();
-            for (int left = 0, right = reversed.length - 1; left < right; left++, right--) {
-                byte value = reversed[left];
-                reversed[left] = reversed[right];
-                reversed[right] = value;
+        @Override
+        public OutputStream compress(OutputStream out) {
+            return new FilterOutputStream(out) {
+                @Override
+                public void write(int value) throws IOException {
+                    out.write(transform(value));
+                }
+
+                @Override
+                public void write(byte[] bytes, int offset, int length) throws IOException {
+                    out.write(transform(bytes, offset, length));
+                }
+            };
+        }
+
+        @Override
+        public InputStream decompress(InputStream input) {
+            return new FilterInputStream(input) {
+                @Override
+                public int read() throws IOException {
+                    int value = in.read();
+                    return value == -1 ? -1 : transform(value);
+                }
+
+                @Override
+                public int read(byte[] bytes, int offset, int length) throws IOException {
+                    int read = in.read(bytes, offset, length);
+                    if (read > 0) {
+                        for (int index = offset; index < offset + read; index++) {
+                            bytes[index] = (byte) transform(bytes[index]);
+                        }
+                    }
+                    return read;
+                }
+            };
+        }
+
+        private static byte[] transform(byte[] bytes) {
+            return transform(bytes, 0, bytes.length);
+        }
+
+        private static byte[] transform(byte[] bytes, int offset, int length) {
+            byte[] transformed = new byte[length];
+            for (int index = 0; index < length; index++) {
+                transformed[index] = (byte) transform(bytes[offset + index]);
             }
-            return reversed;
+            return transformed;
+        }
+
+        private static int transform(int value) {
+            return value ^ 0xFF;
         }
     }
 
@@ -353,8 +407,32 @@ public class Jjwt_implTest {
         }
 
         @Override
+        public void serialize(Map<String, ?> map, OutputStream out) throws SerializationException {
+            try {
+                out.write(serialize(map));
+            } catch (IOException exception) {
+                throw new SerializationException("Unable to serialize JSON", exception);
+            }
+        }
+
+        @Override
         public Map<String, ?> deserialize(byte[] bytes) throws DeserializationException {
             return new JsonParser(new String(bytes, StandardCharsets.UTF_8)).parseObject();
+        }
+
+        @Override
+        public Map<String, ?> deserialize(Reader reader) throws DeserializationException {
+            try {
+                StringBuilder json = new StringBuilder();
+                char[] buffer = new char[512];
+                int read;
+                while ((read = reader.read(buffer)) != -1) {
+                    json.append(buffer, 0, read);
+                }
+                return new JsonParser(json.toString()).parseObject();
+            } catch (IOException exception) {
+                throw new DeserializationException("Unable to deserialize JSON", exception);
+            }
         }
 
         private static String toJsonObject(Map<String, ?> map) {
