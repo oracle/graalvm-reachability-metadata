@@ -42,6 +42,7 @@ import org.junit.jupiter.api.Test;
 public class Opentelemetry_sdk_extension_autoconfigureTest {
     private static final AttributeKey<String> SERVICE_NAME = AttributeKey.stringKey("service.name");
     private static final AttributeKey<String> SERVICE_NAMESPACE = AttributeKey.stringKey("service.namespace");
+    private static final AttributeKey<String> SERVICE_INSTANCE_ID = AttributeKey.stringKey("service.instance.id");
     private static final AttributeKey<String> DEPLOYMENT_ENVIRONMENT =
             AttributeKey.stringKey("deployment.environment");
     private static final AttributeKey<String> CUSTOM_RESOURCE = AttributeKey.stringKey("test.custom.resource");
@@ -175,6 +176,38 @@ public class Opentelemetry_sdk_extension_autoconfigureTest {
             assertThat(meterProviderCustomizations).hasValue(1);
             assertThat(loggerProviderCustomizations).hasValue(1);
             assertThat(spanExporterCustomizations).hasValue(1);
+        } finally {
+            if (configured != null) {
+                configured.getOpenTelemetrySdk().close();
+            }
+        }
+    }
+
+    @Test
+    void resourceDisabledKeysFilterDecodedConfiguredAttributes() {
+        AutoConfiguredOpenTelemetrySdk configured = null;
+
+        try {
+            configured = AutoConfiguredOpenTelemetrySdk.builder()
+                    .setResultAsGlobal(false)
+                    .registerShutdownHook(false)
+                    .addPropertiesCustomizer(config -> {
+                        Map<String, String> properties = workingProperties();
+                        properties.put("otel.service.name", "filtered-service");
+                        properties.put("otel.resource.attributes",
+                                "service.namespace=filtered-namespace,service.instance.id=node%201,"
+                                        + "deployment.environment=filtered-environment");
+                        properties.put("otel.experimental.resource.disabled.keys",
+                                "service.name,service.namespace,deployment.environment");
+                        return properties;
+                    })
+                    .build();
+
+            Resource resource = configured.getResource();
+            assertThat(resource.getAttribute(SERVICE_NAME)).isNull();
+            assertThat(resource.getAttribute(SERVICE_NAMESPACE)).isNull();
+            assertThat(resource.getAttribute(DEPLOYMENT_ENVIRONMENT)).isNull();
+            assertThat(resource.getAttribute(SERVICE_INSTANCE_ID)).isEqualTo("node 1");
         } finally {
             if (configured != null) {
                 configured.getOpenTelemetrySdk().close();
