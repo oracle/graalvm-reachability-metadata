@@ -166,6 +166,39 @@ public class Slf4j_jboss_logmanagerTest {
     }
 
     @Test
+    void logRecordsIncludeSlf4jMdcContext() {
+        MDC.clear();
+        org.jboss.logmanager.MDC.clear();
+        String loggerName = LOGGER_PREFIX + ".mdcRecord";
+        CapturingHandler handler = new CapturingHandler();
+        LoggerState state = installCapturingHandler(loggerName, handler);
+        try {
+            MDC.put("requestId", "req-2");
+            MDC.put("tenant", "acme");
+
+            org.slf4j.Logger logger = LoggerFactory.getLogger(loggerName);
+            logger.info("processing request");
+
+            assertThat(handler.records()).hasSize(1);
+            ExtLogRecord record = handler.records().get(0);
+            assertThat(record.getMdc("requestId")).isEqualTo("req-2");
+            assertThat(record.getMdcCopy()).containsOnly(entry("requestId", "req-2"), entry("tenant", "acme"));
+
+            MDC.put("requestId", "req-3");
+            logger.info("processing next request");
+
+            assertThat(handler.records()).hasSize(2);
+            ExtLogRecord nextRecord = handler.records().get(1);
+            assertThat(nextRecord.getMdc("requestId")).isEqualTo("req-3");
+            assertThat(nextRecord.getMdcCopy()).containsOnly(entry("requestId", "req-3"), entry("tenant", "acme"));
+        } finally {
+            MDC.clear();
+            org.jboss.logmanager.MDC.clear();
+            state.restore();
+        }
+    }
+
+    @Test
     void markerFactoryProvidesBasicNamedAndDetachedMarkers() {
         String markerPrefix = LOGGER_PREFIX + ".marker.";
         Marker parent = MarkerFactory.getMarker(markerPrefix + "parent");
