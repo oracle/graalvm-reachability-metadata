@@ -12,7 +12,6 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.CompatibleWith;
 import com.google.errorprone.annotations.CompileTimeConstant;
 import com.google.errorprone.annotations.DoNotCall;
-import com.google.errorprone.annotations.DoNotMock;
 import com.google.errorprone.annotations.ForOverride;
 import com.google.errorprone.annotations.FormatMethod;
 import com.google.errorprone.annotations.FormatString;
@@ -49,7 +48,6 @@ public class Error_prone_annotationsTest {
             LockMethod.class,
             UnlockMethod.class,
             DoNotCall.class,
-            DoNotMock.class,
             FormatMethod.class,
             FormatString.class,
             ForOverride.class,
@@ -72,7 +70,6 @@ public class Error_prone_annotationsTest {
                         LockMethod.class,
                         UnlockMethod.class,
                         DoNotCall.class,
-                        DoNotMock.class,
                         FormatMethod.class,
                         FormatString.class,
                         ForOverride.class,
@@ -98,7 +95,7 @@ public class Error_prone_annotationsTest {
     }
 
     @Test
-    void immutabilityOverrideAndDoNotMockAnnotationsCanDescribeDomainTypes() {
+    void immutabilityAndOverrideAnnotationsCanDescribeDomainTypes() {
         StringBox box = new StringBox("one", "two", "three");
         DocumentedTemplate template = new ConcreteTemplate("verified");
 
@@ -178,10 +175,8 @@ public class Error_prone_annotationsTest {
     @IncompatibleModifiers({Modifier.PRIVATE, Modifier.PROTECTED})
     public @interface PublicApiMarker {}
 
-    @DoNotMock("Use the concrete test implementation instead")
     public @interface ContractAnnotation {}
 
-    @DoNotMock("Use RealDocumentedTemplate in tests")
     private interface DocumentedTemplate {
         String render();
     }
