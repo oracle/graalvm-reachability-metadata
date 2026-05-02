@@ -8,7 +8,7 @@ package com_github_jknack.handlebars;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.github.jknack.handlebars.internal.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.jupiter.api.Test;
 
 public class EqualsBuilderTest {

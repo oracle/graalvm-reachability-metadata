@@ -8,8 +8,8 @@ package com_github_jknack.handlebars;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.github.jknack.handlebars.internal.lang3.builder.ReflectionToStringBuilder;
-import com.github.jknack.handlebars.internal.lang3.builder.ToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.junit.jupiter.api.Test;
 
 public class ReflectionToStringBuilderTest {

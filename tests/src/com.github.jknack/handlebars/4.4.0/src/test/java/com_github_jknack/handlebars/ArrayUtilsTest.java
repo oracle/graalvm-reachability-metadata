@@ -8,18 +8,18 @@ package com_github_jknack.handlebars;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.github.jknack.handlebars.internal.lang3.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.Test;
 
 public class ArrayUtilsTest {
     @Test
-    public void addCreatesArraysForNullAndExistingInputs() {
-        String[] insertedIntoNullArray = ArrayUtils.add((String[]) null, 0, "alpha");
-        String[] insertedIntoExistingArray = ArrayUtils.add(new String[] {"alpha", "gamma"}, 1, "beta");
+    public void addAndInsertCreateArraysForNullAndExistingInputs() {
+        String[] insertedIntoEmptyArray = ArrayUtils.insert(0, new String[0], "alpha");
+        String[] insertedIntoExistingArray = ArrayUtils.insert(1, new String[] {"alpha", "gamma"}, "beta");
         String[] appendedToNullArray = ArrayUtils.add((String[]) null, "delta");
         String[] appendedToExistingArray = ArrayUtils.add(new String[] {"epsilon"}, "zeta");
 
-        assertThat(insertedIntoNullArray).containsExactly("alpha");
+        assertThat(insertedIntoEmptyArray).containsExactly("alpha");
         assertThat(insertedIntoExistingArray).containsExactly("alpha", "beta", "gamma");
         assertThat(appendedToNullArray).containsExactly("delta");
         assertThat(appendedToExistingArray).containsExactly("epsilon", "zeta");
