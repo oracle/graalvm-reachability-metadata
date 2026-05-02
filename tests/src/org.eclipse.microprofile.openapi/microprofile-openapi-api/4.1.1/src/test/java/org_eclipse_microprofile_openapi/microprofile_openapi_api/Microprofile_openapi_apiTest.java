@@ -462,6 +462,53 @@ public class Microprofile_openapi_apiTest {
     }
 
     @Test
+    void supportsOperationCallbacksExternalDocsAndExtensionMaps() {
+        ExternalDocumentation operationDocs = OASFactory.createExternalDocumentation()
+                .description("callback contract")
+                .url("https://example.test/docs/callbacks")
+                .extensions(new LinkedHashMap<>(Map.of("x-document-kind", "runbook")))
+                .addExtension("x-reviewed", Boolean.TRUE);
+        Operation notification = OASFactory.createOperation()
+                .operationId("receiveInventoryEvent")
+                .summary("Receive inventory event")
+                .externalDocs(operationDocs);
+        Callback initialCallback = OASFactory.createCallback()
+                .addPathItem("{$request.body#/subscriptions/initialUrl}",
+                        OASFactory.createPathItem().POST(OASFactory.createOperation().operationId("receiveInitialEvent")));
+        Callback updatedCallback = OASFactory.createCallback()
+                .addPathItem("{$request.body#/subscriptions/updateUrl}", OASFactory.createPathItem().POST(notification))
+                .addExtension("x-event-type", "inventory.updated");
+        Operation subscription = OASFactory.createOperation()
+                .operationId("subscribeToInventory")
+                .externalDocs(operationDocs)
+                .callbacks(new LinkedHashMap<>(Map.of("initial", initialCallback)))
+                .addCallback("updated", updatedCallback)
+                .addExtension("x-audience", "partners");
+        Tag subscriptionTag = OASFactory.createTag()
+                .name("subscriptions")
+                .externalDocs(operationDocs);
+
+        assertThat(subscription.getExternalDocs().getUrl()).contains("callbacks");
+        assertThat(subscription.getCallbacks())
+                .containsEntry("initial", initialCallback)
+                .containsEntry("updated", updatedCallback);
+        assertThat(subscription.getCallbacks().get("updated").getPathItem("{$request.body#/subscriptions/updateUrl}")
+                .getPOST().getOperationId()).isEqualTo("receiveInventoryEvent");
+        assertThat(operationDocs.hasExtension("x-document-kind")).isTrue();
+        assertThat(operationDocs.getExtensions()).containsEntry("x-reviewed", Boolean.TRUE);
+        assertThat(subscription.hasExtension("x-audience")).isTrue();
+        assertThat(updatedCallback.getExtension("x-event-type")).isEqualTo("inventory.updated");
+        assertThat(subscriptionTag.getExternalDocs()).isSameAs(operationDocs);
+
+        subscription.removeCallback("initial");
+        subscription.removeExtension("x-audience");
+        operationDocs.removeExtension("x-reviewed");
+        assertThat(subscription.getCallbacks()).doesNotContainKey("initial");
+        assertThat(subscription.hasExtension("x-audience")).isFalse();
+        assertThat(operationDocs.getExtensions()).doesNotContainKey("x-reviewed");
+    }
+
+    @Test
     void exposesConfigurationConstantsEnumsAndDefaultFilterBehavior() {
         assertThat(OASConfig.MODEL_READER).isEqualTo("mp.openapi.model.reader");
         assertThat(OASConfig.FILTER).isEqualTo("mp.openapi.filter");
