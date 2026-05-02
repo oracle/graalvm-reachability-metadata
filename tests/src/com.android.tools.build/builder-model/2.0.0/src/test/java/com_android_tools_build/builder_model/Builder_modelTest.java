@@ -23,6 +23,7 @@ import com.android.builder.model.BuildTypeContainer;
 import com.android.builder.model.ClassField;
 import com.android.builder.model.DataBindingOptions;
 import com.android.builder.model.Dependencies;
+import com.android.builder.model.InstantRun;
 import com.android.builder.model.JavaArtifact;
 import com.android.builder.model.JavaCompileOptions;
 import com.android.builder.model.JavaLibrary;
@@ -44,6 +45,7 @@ import com.android.builder.model.SourceProvider;
 import com.android.builder.model.SourceProviderContainer;
 import com.android.builder.model.SyncIssue;
 import com.android.builder.model.Variant;
+import com.android.builder.model.VectorDrawablesOptions;
 import com.android.builder.model.Version;
 import java.io.File;
 import java.util.ArrayList;
@@ -64,14 +66,15 @@ public class Builder_modelTest {
 
     @Test
     public void exposesStableVersionArtifactOutputAndSeverityConstants() {
-        assertThat(Version.ANDROID_GRADLE_PLUGIN_VERSION).isEqualTo("1.5.0");
+        assertThat(Version.ANDROID_GRADLE_PLUGIN_VERSION).isEqualTo("2.0.0");
         assertThat(Version.BUILDER_MODEL_API_VERSION).isEqualTo(3);
 
         assertThat(AndroidProject.PROPERTY_BUILD_MODEL_ONLY).isEqualTo("android.injected.build.model.only");
         assertThat(AndroidProject.PROPERTY_BUILD_MODEL_ONLY_ADVANCED)
                 .isEqualTo("android.injected.build.model.only.advanced");
         assertThat(AndroidProject.PROPERTY_BUILD_API).isEqualTo("android.injected.build.api");
-        assertThat(AndroidProject.PROPERTY_BUILD_ARCH).isEqualTo("android.injected.build.arch");
+        assertThat(AndroidProject.PROPERTY_BUILD_ABI).isEqualTo("android.injected.build.abi");
+        assertThat(AndroidProject.PROPERTY_BUILD_DENSITY).isEqualTo("android.injected.build.density");
         assertThat(AndroidProject.PROPERTY_INVOKED_FROM_IDE).isEqualTo("android.injected.invoked.from.ide");
         assertThat(AndroidProject.PROPERTY_SIGNING_STORE_FILE).isEqualTo("android.injected.signing.store.file");
         assertThat(AndroidProject.PROPERTY_SIGNING_STORE_PASSWORD).isEqualTo("android.injected.signing.store.password");
@@ -104,7 +107,7 @@ public class Builder_modelTest {
         assertThat(SyncIssue.SEVERITY_WARNING).isEqualTo(1);
         assertThat(SyncIssue.SEVERITY_ERROR).isEqualTo(2);
         assertThat(SyncIssue.TYPE_GENERIC).isEqualTo(0);
-        assertThat(SyncIssue.TYPE_MAX).isEqualTo(SyncIssue.TYPE_JACK_IS_NOT_SUPPORTED);
+        assertThat(SyncIssue.TYPE_MAX).isEqualTo(SyncIssue.TYPE_GRADLE_TOO_OLD);
     }
 
     @Test
@@ -263,6 +266,8 @@ public class Builder_modelTest {
         assertThat(projectSyncIssue.getType()).isEqualTo(SyncIssue.TYPE_UNRESOLVED_DEPENDENCY);
         assertThat(project.getBuildFolder()).isEqualTo(file("build"));
         assertThat(project.getResourcePrefix()).isEqualTo("demo_");
+        assertThat(project.getBuildToolsVersion()).isEqualTo("23.0.3");
+        assertThat(project.getPluginGeneration()).isEqualTo(AndroidProject.GENERATION_ORIGINAL);
 
         Variant firstVariant = project.getVariants().iterator().next();
         assertThat(firstVariant.getName()).isEqualTo("demoDebug");
@@ -303,7 +308,8 @@ public class Builder_modelTest {
         assertThat(demoFlavor.getTestFunctionalTest()).isTrue();
         assertThat(demoFlavor.getResourceConfigurations()).containsExactly("en", "xxhdpi");
         assertThat(demoFlavor.getSigningConfig()).isEqualTo(signingConfig);
-        assertThat(demoFlavor.getGeneratedDensities()).containsExactly("mdpi", "xxhdpi");
+        assertThat(demoFlavor.getVectorDrawables().getGeneratedDensities()).containsExactly("mdpi", "xxhdpi");
+        assertThat(demoFlavor.getVectorDrawables().getUseSupportLibrary()).isTrue();
         assertThat(demoFlavor.getDimension()).isEqualTo("environment");
 
         assertThat(mainSourceProvider.getName()).isEqualTo("main");
@@ -353,6 +359,10 @@ public class Builder_modelTest {
         assertThat(artifact.getNativeLibraries()).containsExactly(nativeLibrary);
         assertThat(artifact.getBuildConfigFields()).containsEntry("APPLICATION_ID", applicationIdField);
         assertThat(artifact.getResValues()).containsEntry("APPLICATION_ID", applicationIdField);
+        assertThat(artifact.getInstantRun().getIncrementalAssembleTaskName()).isEqualTo("assemble_main_Incremental");
+        assertThat(artifact.getInstantRun().getInfoFile())
+                .isEqualTo(file("build/intermediates/reload-dex/_main_/build-info.xml"));
+        assertThat(artifact.getInstantRun().isSupportedByArtifact()).isTrue();
 
         Dependencies artifactDependencies = artifact.getDependencies();
         assertThat(artifactDependencies.getLibraries()).containsExactly(androidLibrary);
@@ -504,10 +514,14 @@ public class Builder_modelTest {
         assertThat(artifact.getSourceFolders()).containsExactly(sourceFolder);
         assertThat(artifact.getSourceFiles()).containsExactly(sourceFile);
         assertThat(artifact.getOutputFile()).isEqualTo(file("build/intermediates/ndk/debug/lib/x86/libdemo.so"));
+        assertThat(artifact.getGroupName()).isEqualTo("main");
+        assertThat(artifact.getExportedHeaders()).containsExactly(file("src/main/cpp/include"));
         assertThat(sourceFolder.getFolderPath()).isEqualTo(file("src/main/cpp"));
         assertThat(sourceFolder.getPerLanguageSettings()).containsEntry("c++", "debug-cpp");
+        assertThat(sourceFolder.getWorkingDirectory()).isEqualTo(file("src/main/cpp"));
         assertThat(sourceFile.getFilePath()).isEqualTo(file("src/main/cpp/demo.cpp"));
         assertThat(sourceFile.getSettingsName()).isEqualTo("debug-cpp");
+        assertThat(sourceFile.getWorkingDirectory()).isEqualTo(file("src/main/cpp"));
         assertThat(settings.getCompilerFlags()).containsExactly("-DDEBUG", "-std=c++11");
     }
 
@@ -1036,13 +1050,25 @@ public class Builder_modelTest {
         }
 
         @Override
-        public Set<String> getGeneratedDensities() {
-            return linkedSet("mdpi", "xxhdpi");
+        public VectorDrawablesOptions getVectorDrawables() {
+            return new SimpleVectorDrawablesOptions();
         }
 
         @Override
         public String getDimension() {
             return "environment";
+        }
+    }
+
+    private static final class SimpleVectorDrawablesOptions implements VectorDrawablesOptions {
+        @Override
+        public Set<String> getGeneratedDensities() {
+            return linkedSet("mdpi", "xxhdpi");
+        }
+
+        @Override
+        public Boolean getUseSupportLibrary() {
+            return Boolean.TRUE;
         }
     }
 
@@ -1392,10 +1418,38 @@ public class Builder_modelTest {
             return singletonClassFieldMap();
         }
 
+        @Override
+        public InstantRun getInstantRun() {
+            return new SimpleInstantRun(getName());
+        }
+
         private Map<String, ClassField> singletonClassFieldMap() {
             Map<String, ClassField> fields = new LinkedHashMap<String, ClassField>();
             fields.put(classField.getName(), classField);
             return fields;
+        }
+    }
+
+    private static final class SimpleInstantRun implements InstantRun {
+        private final String artifactName;
+
+        private SimpleInstantRun(String artifactName) {
+            this.artifactName = artifactName;
+        }
+
+        @Override
+        public String getIncrementalAssembleTaskName() {
+            return "assemble" + artifactName + "Incremental";
+        }
+
+        @Override
+        public File getInfoFile() {
+            return file("build/intermediates/reload-dex/" + artifactName + "/build-info.xml");
+        }
+
+        @Override
+        public boolean isSupportedByArtifact() {
+            return true;
         }
     }
 
@@ -1846,6 +1900,16 @@ public class Builder_modelTest {
         public String getResourcePrefix() {
             return "demo_";
         }
+
+        @Override
+        public String getBuildToolsVersion() {
+            return "23.0.3";
+        }
+
+        @Override
+        public int getPluginGeneration() {
+            return AndroidProject.GENERATION_ORIGINAL;
+        }
     }
 
     private static final class SimpleAaptOptions implements AaptOptions {
@@ -2121,6 +2185,11 @@ public class Builder_modelTest {
         public Map<String, String> getPerLanguageSettings() {
             return perLanguageSettings;
         }
+
+        @Override
+        public File getWorkingDirectory() {
+            return folderPath;
+        }
     }
 
     private static final class SimpleNativeFile implements NativeFile {
@@ -2140,6 +2209,11 @@ public class Builder_modelTest {
         @Override
         public String getSettingsName() {
             return settingsName;
+        }
+
+        @Override
+        public File getWorkingDirectory() {
+            return filePath.getParentFile();
         }
     }
 
@@ -2177,6 +2251,16 @@ public class Builder_modelTest {
         @Override
         public Collection<NativeFile> getSourceFiles() {
             return sourceFiles;
+        }
+
+        @Override
+        public String getGroupName() {
+            return "main";
+        }
+
+        @Override
+        public Collection<File> getExportedHeaders() {
+            return Collections.singletonList(file("src/main/cpp/include"));
         }
 
         @Override
