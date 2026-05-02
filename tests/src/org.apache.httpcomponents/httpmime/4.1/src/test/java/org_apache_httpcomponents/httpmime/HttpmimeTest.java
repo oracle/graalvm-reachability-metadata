@@ -263,6 +263,29 @@ public class HttpmimeTest {
     }
 
     @Test
+    void defaultMultipartEntityGeneratesBoundaryAndUsesItWhenWriting() throws Exception {
+        MultipartEntity entity = new MultipartEntity();
+        entity.addPart("field", new StringBody("auto-boundary", "text/plain", UTF_8));
+        Header contentType = entity.getContentType();
+        String boundaryParameter = "boundary=";
+        String contentTypeValue = contentType.getValue();
+        int boundaryStart = contentTypeValue.indexOf(boundaryParameter) + boundaryParameter.length();
+        String boundary = contentTypeValue.substring(boundaryStart);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        entity.writeTo(outputStream);
+        String multipartText = outputStream.toString(UTF_8.name());
+
+        assertThat(contentType.getName()).isEqualTo("Content-Type");
+        assertThat(contentTypeValue).startsWith("multipart/form-data; boundary=");
+        assertThat(contentTypeValue).doesNotContain("charset=");
+        assertThat(boundary).isNotEmpty().matches("[-_0-9A-Za-z]+");
+        assertThat(multipartText).startsWith("--" + boundary + "\r\n");
+        assertThat(multipartText).contains("Content-Disposition: form-data; name=\"field\"", "auto-boundary");
+        assertThat(multipartText).endsWith("--" + boundary + "--\r\n");
+    }
+
+    @Test
     void constructorsRejectInvalidArguments() {
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> new StringBody(null, "text/plain", UTF_8))
