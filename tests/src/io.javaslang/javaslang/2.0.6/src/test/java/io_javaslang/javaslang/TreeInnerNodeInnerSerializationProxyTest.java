@@ -40,9 +40,9 @@ public class TreeInnerNodeInnerSerializationProxyTest {
         assertThat(node.getChildren()).hasSize(2);
         assertThat(node.draw()).isEqualTo("""
                 root
-                ├──left
-                └──right
-                   └──leaf""".stripIndent());
+                \u251c\u2500\u2500left
+                \u2514\u2500\u2500right
+                   \u2514\u2500\u2500leaf""".stripIndent());
     }
 
     private static byte[] serialize(Serializable value) throws IOException {
