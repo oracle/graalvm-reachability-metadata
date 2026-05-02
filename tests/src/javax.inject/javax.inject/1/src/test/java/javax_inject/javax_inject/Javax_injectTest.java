@@ -69,6 +69,18 @@ public class Javax_injectTest {
     }
 
     @Test
+    void injectAnnotationsCanDescribeStaticMembersUsedByApplicationWideServices() {
+        ApplicationStartup.reset();
+        ApplicationStartup.environmentName = "native-image";
+        ApplicationStartup.registerHook(new StartupHook("database"));
+        ApplicationStartup.registerHook(new StartupHook("scheduler"));
+
+        assertThat(ApplicationStartup.runHooks()).containsExactly("native-image:database", "native-image:scheduler");
+        ApplicationStartup.reset();
+        assertThat(ApplicationStartup.runHooks()).isEmpty();
+    }
+
+    @Test
     void namedBindingsSelectIndependentProvidersForTheSameServiceType() {
         Map<String, Provider<TextFormatter>> formatters = Map.of(
                 "plain", PlainTextFormatter::new,
@@ -320,6 +332,40 @@ public class Javax_injectTest {
             return requestIdProvider.get() + separator
                     + templateProvider.get().render(resolvedAudience)
                     + suffixProvider.get();
+        }
+    }
+
+    private record StartupHook(String name) {
+        private String start(String environmentName) {
+            return environmentName + ":" + name;
+        }
+    }
+
+    private static final class ApplicationStartup {
+        @Inject
+        private static String environmentName;
+
+        private static final Queue<StartupHook> hooks = new ArrayDeque<>();
+
+        private ApplicationStartup() {
+        }
+
+        @Inject
+        private static void registerHook(StartupHook hook) {
+            hooks.add(hook);
+        }
+
+        private static List<String> runHooks() {
+            Queue<String> startedHooks = new ArrayDeque<>();
+            while (!hooks.isEmpty()) {
+                startedHooks.add(hooks.remove().start(environmentName));
+            }
+            return List.copyOf(startedHooks);
+        }
+
+        private static void reset() {
+            environmentName = "";
+            hooks.clear();
         }
     }
 
