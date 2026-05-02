@@ -171,10 +171,10 @@ class ScaffoldTaskTests {
         Project project = createProject();
         writeDiscoveredArtifactMetadata(project, new DiscoveredArtifactMetadata(
                 coordinates.toString(),
-                "https://example.com/source",
-                "https://example.com/repository",
-                "https://example.com/tests",
-                "https://example.com/docs",
+                "https://repo.maven.apache.org/maven2/io/ktor/ktor-server-core-jvm/3.1.0/ktor-server-core-jvm-3.1.0-sources.jar",
+                "https://github.com/ktorio/ktor",
+                "https://github.com/ktorio/ktor/tree/3.1.0/ktor-server/ktor-server-core/jvm/test",
+                "https://github.com/ktorio/ktor/tree/3.1.0/ktor-server/ktor-server-core",
                 "Ktor provides asynchronous servers. It is designed for Kotlin applications.",
                 new LibraryLanguage("kotlin", "2.0"),
                 null,
@@ -201,10 +201,10 @@ class ScaffoldTaskTests {
                 new TypeReference<>() {}
         );
         assertThat(indexEntries.get(0))
-                .containsEntry("source-code-url", "https://example.com/source")
-                .containsEntry("repository-url", "https://example.com/repository")
-                .containsEntry("test-code-url", "https://example.com/tests")
-                .containsEntry("documentation-url", "https://example.com/docs")
+                .containsEntry("source-code-url", "https://repo.maven.apache.org/maven2/io/ktor/ktor-server-core-jvm/$version$/ktor-server-core-jvm-$version$-sources.jar")
+                .containsEntry("repository-url", "https://github.com/ktorio/ktor")
+                .containsEntry("test-code-url", "https://github.com/ktorio/ktor/tree/$version$/ktor-server/ktor-server-core/jvm/test")
+                .containsEntry("documentation-url", "https://github.com/ktorio/ktor/tree/$version$/ktor-server/ktor-server-core")
                 .containsEntry("description", "Ktor provides asynchronous servers. It is designed for Kotlin applications.")
                 .containsEntry("language", Map.of("name", "kotlin", "version", "2.0"));
     }

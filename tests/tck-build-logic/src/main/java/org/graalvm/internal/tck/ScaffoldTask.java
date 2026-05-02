@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +48,8 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings("unused")
 class ScaffoldTask extends DefaultTask {
+    private static final String VERSION_PLACEHOLDER = "$version$";
+
     private final ObjectMapper objectMapper = new ObjectMapper()
             .enable(SerializationFeature.INDENT_OUTPUT)
             .setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -334,10 +338,10 @@ class ScaffoldTask extends DefaultTask {
                 null, // default-for
                 coordinates.version(), // metadata-version
                 null, // test-version
-                discoveredMetadata == null ? null : discoveredMetadata.sourceCodeUrl(),
+                discoveredMetadata == null ? null : toVersionTemplate(discoveredMetadata.sourceCodeUrl(), coordinates.version()),
                 discoveredMetadata == null ? null : discoveredMetadata.repositoryUrl(),
-                discoveredMetadata == null ? null : discoveredMetadata.testCodeUrl(),
-                discoveredMetadata == null ? null : discoveredMetadata.documentationUrl(),
+                discoveredMetadata == null ? null : toVersionTemplate(discoveredMetadata.testCodeUrl(), coordinates.version()),
+                discoveredMetadata == null ? null : toVersionTemplate(discoveredMetadata.documentationUrl(), coordinates.version()),
                 discoveredMetadata == null ? null : discoveredMetadata.description(),
                 language,
                 List.of(coordinates.version()),
@@ -348,6 +352,14 @@ class ScaffoldTask extends DefaultTask {
                 null, // reason
                 null // replacement
         );
+    }
+
+    private static String toVersionTemplate(String url, String version) {
+        if (url == null || url.isBlank() || "N/A".equalsIgnoreCase(url)) {
+            return url;
+        }
+        Pattern versionPattern = Pattern.compile(Pattern.quote(version), Pattern.CASE_INSENSITIVE);
+        return versionPattern.matcher(url).replaceAll(Matcher.quoteReplacement(VERSION_PLACEHOLDER));
     }
 
     private void writeIndexFile(Path path, List<MetadataVersionsIndexEntry> entries) throws IOException {
