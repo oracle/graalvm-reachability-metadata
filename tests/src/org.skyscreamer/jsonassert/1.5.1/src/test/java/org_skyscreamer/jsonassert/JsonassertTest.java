@@ -6,6 +6,9 @@
  */
 package org_skyscreamer.jsonassert;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -16,7 +19,9 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompare;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.skyscreamer.jsonassert.JSONCompareResult;
+import org.skyscreamer.jsonassert.LocationAwareValueMatcher;
 import org.skyscreamer.jsonassert.RegularExpressionValueMatcher;
+import org.skyscreamer.jsonassert.ValueMatcherException;
 import org.skyscreamer.jsonassert.comparator.ArraySizeComparator;
 import org.skyscreamer.jsonassert.comparator.CustomComparator;
 import org.skyscreamer.jsonassert.comparator.DefaultComparator;
@@ -26,6 +31,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JsonassertTest {
+    private static final Pattern SKU_LOCATION = Pattern.compile("orders\\[(\\d+)]\\.lineItems\\[(\\d+)]\\.sku");
+
     @Test
     void comparesObjectsWithBuiltInModes() throws Exception {
         String expected = """
@@ -202,6 +209,61 @@ public class JsonassertTest {
     }
 
     @Test
+    void appliesLocationAwareMatchersToWildcardCustomizationPaths() throws Exception {
+        String expected = """
+                {
+                  "orders": [
+                    {
+                      "lineItems": [
+                        {"sku": "path-derived"},
+                        {"sku": "path-derived"}
+                      ]
+                    },
+                    {
+                      "lineItems": [
+                        {"sku": "path-derived"}
+                      ]
+                    }
+                  ]
+                }
+                """;
+        String actual = """
+                {
+                  "orders": [
+                    {
+                      "id": "first",
+                      "lineItems": [
+                        {"sku": "ORDER-0-LINE-0", "quantity": 1},
+                        {"sku": "ORDER-0-LINE-1", "quantity": 2}
+                      ]
+                    },
+                    {
+                      "id": "second",
+                      "lineItems": [
+                        {"sku": "ORDER-1-LINE-0", "quantity": 3}
+                      ]
+                    }
+                  ]
+                }
+                """;
+        JSONComparator comparator = new CustomComparator(JSONCompareMode.STRICT_ORDER,
+                Customization.customization("orders[*].lineItems[*].sku", skuMatchesArrayLocation()));
+
+        JSONAssert.assertEquals(expected, actual, comparator);
+
+        String actualWithWrongSku = actual.replace("ORDER-0-LINE-1", "ORDER-9-LINE-9");
+        JSONCompareResult failedResult = JSONCompare.compareJSON(expected, actualWithWrongSku, comparator);
+
+        assertThat(failedResult.failed()).isTrue();
+        assertThat(failedResult.getFieldFailures()).singleElement().satisfies(failure -> {
+            assertThat(failure.getField()).contains("orders[0].lineItems[1].sku", "sku must match its array location");
+            assertThat(failure.getExpected()).isEqualTo("ORDER-0-LINE-1");
+            assertThat(failure.getActual()).isEqualTo("ORDER-9-LINE-9");
+        });
+        assertThat(failedResult.getMessage()).contains("orders[0].lineItems[1].sku", "sku must match its array location");
+    }
+
+    @Test
     void validatesArraySizesAndArrayElementsWithSpecializedComparators() throws Exception {
         JSONComparator arraySizeComparator = new ArraySizeComparator(JSONCompareMode.LENIENT);
 
@@ -239,6 +301,29 @@ public class JsonassertTest {
 
         assertThat(failedItemResult.failed()).isTrue();
         assertThat(failedItemResult.getMessage()).contains("items[1].type", "book", "magazine");
+    }
+
+    private static LocationAwareValueMatcher<Object> skuMatchesArrayLocation() {
+        return new LocationAwareValueMatcher<>() {
+            @Override
+            public boolean equal(Object actualValue, Object expectedValue) {
+                return actualValue.equals(expectedValue);
+            }
+
+            @Override
+            public boolean equal(String prefix, Object actualValue, Object expectedValue, JSONCompareResult result) {
+                Matcher matcher = SKU_LOCATION.matcher(prefix);
+                if (!matcher.matches()) {
+                    throw new ValueMatcherException("unexpected sku path", "orders[n].lineItems[n].sku", prefix);
+                }
+                String expectedSku = "ORDER-" + matcher.group(1) + "-LINE-" + matcher.group(2);
+                String actualSku = String.valueOf(actualValue);
+                if (!expectedSku.equals(actualSku)) {
+                    throw new ValueMatcherException("sku must match its array location", expectedSku, actualSku);
+                }
+                return true;
+            }
+        };
     }
 
     private static boolean withinFive(Object actualValue, Object expectedValue) {
