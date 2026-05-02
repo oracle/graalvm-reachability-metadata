@@ -6,7 +6,7 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_el;
 
-import javax.el.ImportHandler;
+import jakarta.el.ImportHandler;
 
 import org.junit.jupiter.api.Test;
 

@@ -6,9 +6,9 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_el;
 
-import javax.el.ELContext;
-import javax.el.ELManager;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ELManager;
+import jakarta.el.ValueExpression;
 
 import org.apache.el.ExpressionFactoryImpl;
 
