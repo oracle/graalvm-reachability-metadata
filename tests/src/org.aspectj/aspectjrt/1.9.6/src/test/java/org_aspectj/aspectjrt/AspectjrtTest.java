@@ -6,11 +6,14 @@
  */
 package org_aspectj.aspectjrt;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.aspectj.lang.JoinPoint;
 import org.junit.jupiter.api.Test;
 
-class AspectjrtTest {
+public class AspectjrtTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void exposesAspectjRuntimeApi() {
+        assertThat(JoinPoint.class.getName()).isEqualTo("org.aspectj.lang.JoinPoint");
     }
 }
