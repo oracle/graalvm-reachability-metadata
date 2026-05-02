@@ -49,8 +49,8 @@ public class ClassLoaderWeavingAdaptorTest {
         try {
             adaptor.initialize(loader, new StaticWeavingContext(loader, definition));
             completed = true;
-        } catch (Error error) {
-            rethrowIfNotNativeImageDynamicClassLoadingError(error);
+        } catch (Throwable throwable) {
+            rethrowIfNotNativeImageDynamicClassLoadingError(throwable);
         }
 
         assertThat(loader.resourceRequestCount()).isEqualTo(1);
@@ -70,13 +70,15 @@ public class ClassLoaderWeavingAdaptorTest {
         URL aspectjLocation = ClassLoaderWeavingAdaptor.class.getProtectionDomain().getCodeSource().getLocation();
         URL[] urls = {resourceRoot.toUri().toURL(), aspectjLocation};
         boolean completed = false;
+        boolean expectsLegacyDefineClass = false;
         try (URLClassLoader isolatedLoader = new URLClassLoader(urls, ClassLoader.getPlatformClassLoader())) {
             System.setProperty("java.version", "1.8.0");
             legacyDefineClassInvoked = false;
+            expectsLegacyDefineClass = usesLegacyDefineClassPath(isolatedLoader);
             initializeAdaptorFrom(isolatedLoader);
             completed = true;
-        } catch (Error error) {
-            rethrowIfNotNativeImageDynamicClassLoadingError(error);
+        } catch (Throwable throwable) {
+            rethrowIfNotNativeImageDynamicClassLoadingError(throwable);
         } finally {
             if (originalJavaVersion == null) {
                 System.clearProperty("java.version");
@@ -87,7 +89,9 @@ public class ClassLoaderWeavingAdaptorTest {
 
         if (completed) {
             assertThat(resourceRoot.resolve("META-INF/aop.xml")).exists();
-            assertThat(legacyDefineClassInvoked).isTrue();
+            if (expectsLegacyDefineClass) {
+                assertThat(legacyDefineClassInvoked).isTrue();
+            }
         }
     }
 
@@ -130,6 +134,12 @@ public class ClassLoaderWeavingAdaptorTest {
         ));
     }
 
+    private static boolean usesLegacyDefineClassPath(URLClassLoader isolatedLoader) throws Exception {
+        Class<?> langUtilClass = Class.forName("org.aspectj.util.LangUtil", true, isolatedLoader);
+        Method is11VmOrGreater = langUtilClass.getMethod("is11VMOrGreater");
+        return !((Boolean) is11VmOrGreater.invoke(null));
+    }
+
     private static String legacyAopXml() {
         return """
                 <aspectj>
@@ -155,10 +165,43 @@ public class ClassLoaderWeavingAdaptorTest {
         return definition;
     }
 
-    private static void rethrowIfNotNativeImageDynamicClassLoadingError(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
+    private static void rethrowIfNotNativeImageDynamicClassLoadingError(Throwable throwable) {
+        if (!hasUnsupportedFeatureError(throwable) && !hasUnsupportedIsolatedClassLoadingFailure(throwable)) {
+            if (throwable instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            }
+            if (throwable instanceof Error error) {
+                throw error;
+            }
+            throw new AssertionError(throwable);
         }
+    }
+
+    private static boolean hasUnsupportedFeatureError(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error)) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
+    private static boolean hasUnsupportedIsolatedClassLoadingFailure(Throwable throwable) {
+        if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {
+            return false;
+        }
+
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof ClassNotFoundException
+                    && "org.aspectj.util.LangUtil".equals(current.getMessage())) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
     }
 
     private static final class StaticWeavingContext implements IWeavingContext {

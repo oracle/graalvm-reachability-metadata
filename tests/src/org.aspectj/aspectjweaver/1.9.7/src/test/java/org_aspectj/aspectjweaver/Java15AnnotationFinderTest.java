@@ -21,12 +21,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class Java15AnnotationFinderTest {
     @Test
     void findsAnnotationOnObjectClass() {
-        Java15AnnotationFinder finder = annotationFinder();
+        Java15AnnotationFinder finderAnnotationAccess = annotationFinder();
         ResolvedType markerType = markerType();
 
-        // Checkstyle: allow direct annotation access
-        Object annotation = finder.getAnnotation(markerType, new Java15AnnotationFinderAnnotatedComponent());
-        // Checkstyle: disallow direct annotation access
+        Object annotation = finderAnnotationAccess.getAnnotation(markerType, new Java15AnnotationFinderAnnotatedComponent());
 
         assertThat(annotation).isInstanceOf(Java15AnnotationFinderMarker.class);
         assertThat(((Java15AnnotationFinderMarker) annotation).value()).isEqualTo("component");

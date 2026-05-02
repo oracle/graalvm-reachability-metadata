@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LangUtilTest {
     @Test
     void safeCopyCreatesTypedArrayWhenSinkHasWrongSize() {
-        Object[] source = { "alpha", new StringBuilder("ignored"), "beta", null };
+        Object[] source = {"alpha", new StringBuilder("ignored"), "beta", null};
         String[] sink = new String[0];
 
         Object[] copy = LangUtil.safeCopy(source, sink);
