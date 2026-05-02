@@ -52,7 +52,7 @@ public class Jackson_module_parameter_namesTest {
         assertThat(order.amount()).isEqualByComparingTo("19.95");
         assertThat(order.shippingAddress()).isEqualTo(new Address("1 Library Way", "Prague", "11000"));
         assertThat(order.lineItems()).containsExactly(new LineItem("book", 2), new LineItem("pen", 5));
-        assertThat(order.attributes()).containsExactlyEntriesOf(Map.of("priority", "standard", "gift", "false"));
+        assertThat(order.attributes()).containsExactlyInAnyOrderEntriesOf(Map.of("priority", "standard", "gift", "false"));
         assertThat(order.status()).isEqualTo(OrderStatus.CONFIRMED);
     }
 
@@ -141,6 +141,19 @@ public class Jackson_module_parameter_namesTest {
                 AnnotatedCreatorValue.class);
 
         assertThat(value).isEqualTo(new AnnotatedCreatorValue("visible", 3));
+    }
+
+    @Test
+    void explicitCreatorModeIsRespectedWhenDefaultBindingIsDisabled() throws Exception {
+        JsonMapper mapper = JsonMapper.builder()
+                .addModule(new ParameterNamesModule(JsonCreator.Mode.DISABLED))
+                .build();
+
+        ExplicitPropertiesValue value = mapper.readValue(
+                "{\"name\":\"configured\",\"count\":2}",
+                ExplicitPropertiesValue.class);
+
+        assertThat(value).isEqualTo(new ExplicitPropertiesValue("configured", 2));
     }
 
     @Test
@@ -263,6 +276,12 @@ public class Jackson_module_parameter_namesTest {
                 @JsonProperty("external_count") int count) {
             this.name = name;
             this.count = count;
+        }
+    }
+
+    public record ExplicitPropertiesValue(String name, int count) {
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        public ExplicitPropertiesValue {
         }
     }
 
