@@ -279,8 +279,8 @@ public class Error_prone_annotationsTest {
                 explanation = "Only the allow-listed test fixture may create this operation.",
                 link = "https://example.invalid/restricted-create",
                 allowedOnPath = ".*/com_google_errorprone/.*",
-                whitelistAnnotations = AllowInternalUse.class,
-                whitelistWithWarningAnnotations = WarnInternalUse.class)
+                allowlistAnnotations = AllowInternalUse.class,
+                allowlistWithWarningAnnotations = WarnInternalUse.class)
         private RestrictedOperations(List<String> events) {
             this.events = events;
             events.add("create-restricted");
@@ -294,8 +294,8 @@ public class Error_prone_annotationsTest {
         @RestrictedApi(
                 explanation = "Operation is intentionally limited to the annotated fixture.",
                 link = "https://example.invalid/restricted-perform",
-                whitelistAnnotations = AllowInternalUse.class,
-                whitelistWithWarningAnnotations = WarnInternalUse.class)
+                allowlistAnnotations = AllowInternalUse.class,
+                allowlistWithWarningAnnotations = WarnInternalUse.class)
         @CanIgnoreReturnValue
         String perform() {
             events.add("perform-restricted");
