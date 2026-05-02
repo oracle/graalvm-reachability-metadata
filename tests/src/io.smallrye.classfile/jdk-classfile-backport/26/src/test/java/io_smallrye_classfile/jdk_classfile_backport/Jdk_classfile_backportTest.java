@@ -8,7 +8,7 @@ package io_smallrye_classfile.jdk_classfile_backport;
 
 import org.junit.jupiter.api.Test;
 
-class Jdk_classfile_backportTest {
+public class Jdk_classfile_backportTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
