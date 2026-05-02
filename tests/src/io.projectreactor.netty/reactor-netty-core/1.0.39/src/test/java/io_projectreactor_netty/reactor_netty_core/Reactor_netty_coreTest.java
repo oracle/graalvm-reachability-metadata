@@ -15,6 +15,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.proxy.HttpProxyHandler;
+import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.util.AttributeKey;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -30,11 +31,14 @@ import reactor.netty.resources.ConnectionProvider;
 import reactor.netty.resources.LoopResources;
 import reactor.netty.tcp.TcpClient;
 import reactor.netty.tcp.TcpServer;
+import reactor.netty.tcp.TcpSslContextSpec;
 import reactor.netty.transport.NameResolverProvider;
 import reactor.netty.transport.ProxyProvider;
 import reactor.netty.udp.UdpClient;
 import reactor.netty.udp.UdpServer;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
@@ -56,6 +60,57 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 public class Reactor_netty_coreTest {
     private static final Duration TIMEOUT = Duration.ofSeconds(5);
     private static final String LOCALHOST = "127.0.0.1";
+    private static final String TEST_CERTIFICATE = """
+            -----BEGIN CERTIFICATE-----
+            MIIDJTCCAg2gAwIBAgIUUDHuMAJtvwglXLM7Yx4Px8DMWtIwDQYJKoZIhvcNAQEL
+            BQAwFDESMBAGA1UEAwwJbG9jYWxob3N0MB4XDTI2MDUwMjE2MDA1NFoXDTM2MDQy
+            OTE2MDA1NFowFDESMBAGA1UEAwwJbG9jYWxob3N0MIIBIjANBgkqhkiG9w0BAQEF
+            AAOCAQ8AMIIBCgKCAQEA31hq2BQWgjQm6GsjrtoeTs/XqatpFrUFx37UuK/8umTT
+            oNDyoLl/YZZ02ce9KLotfITtsI12ZtpsP184arjc3HC3WSUNo6P5jgcjbI0vss1Y
+            rib9/6dg4SCefOCj3xYVEUlHpop0rnUP9J05alCaFf/yD2b2djVJXd5apUl8ZG2u
+            VNdeulevhYGLdlnppuidSWVe8Y8QxdYBDzotifRp0/VxIOXzy8r5KgouALGGoUS8
+            UYFvSQ8kc1YFNZgNOrsBRylP88aLxqsRe4TiL/LsWOfbN0ezh958HGH1hpL0oN/I
+            ufRq61VAQmf3Np8K9/GKoaxe8FTuVXx4rth6RWj/lQIDAQABo28wbTAdBgNVHQ4E
+            FgQUmOdtzKNjpu3WD2E0+nNHRS5HIIEwHwYDVR0jBBgwFoAUmOdtzKNjpu3WD2E0
+            +nNHRS5HIIEwDwYDVR0TAQH/BAUwAwEB/zAaBgNVHREEEzARgglsb2NhbGhvc3SH
+            BH8AAAEwDQYJKoZIhvcNAQELBQADggEBAFpoiuh1YJXHVkqoOEs85koV3g/bcvN2
+            sj8G6IcHMSGOEiy+jB35XX5YQ1Ik0vUYY3Q8xCPwYOy86KPX7CX/aCIsVAwnU1ua
+            NDDT5LOVUnxWC1z6kqNkDTlYobYZbowtVYXPgmwBhHxdaz3iXQgfoC8F+pH6q7rB
+            onuCtS8Qnz0R0j+HGOwDkLBtGipYZgBqFesUiwoDQKQUsOxzDtDr8CshAklotAbs
+            zlOTnfNN9QF7Ixof/zD/xzospjOMU2XL+bgIYVrt3KnC8+4MH1esNwvVaKSneSTc
+            P8uGlHPBh+CyiH9rFgnDP8AtjHeNavte39XTO5m8P+uMSnE9lFp1P48=
+            -----END CERTIFICATE-----
+            """;
+    private static final String TEST_PRIVATE_KEY = """
+            -----BEGIN PRIVATE KEY-----
+            MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDfWGrYFBaCNCbo
+            ayOu2h5Oz9epq2kWtQXHftS4r/y6ZNOg0PKguX9hlnTZx70oui18hO2wjXZm2mw/
+            XzhquNzccLdZJQ2jo/mOByNsjS+yzViuJv3/p2DhIJ584KPfFhURSUeminSudQ/0
+            nTlqUJoV//IPZvZ2NUld3lqlSXxkba5U1166V6+FgYt2Wemm6J1JZV7xjxDF1gEP
+            Oi2J9GnT9XEg5fPLyvkqCi4AsYahRLxRgW9JDyRzVgU1mA06uwFHKU/zxovGqxF7
+            hOIv8uxY59s3R7OH3nwcYfWGkvSg38i59GrrVUBCZ/c2nwr38YqhrF7wVO5VfHiu
+            2HpFaP+VAgMBAAECggEAD/6/jCEIKaP9g1ik8hFJ6WAGNG8DtC4br1lcd6uW4Gx3
+            IYXFUpBmWIFTdgNRfziyKEBG24WODLio1vMFUdNScfEamGZIb0c/iJXnSg9kcpw1
+            NSeyuhvtGsJgx1W5NrFYqefDG2DAEXxtu5mE8qG6H0g4uDSqAvY2/mN9v2efYnu8
+            HLhLJHn2aSWo0aIij1z4Jyj5zK44OUPAoYSA7pC/bOXpV/v7kgii8XUikHyO57yj
+            +7g0caG3lBtAIeYZC0P69ZrdxlGLu+2DLaLWiiwV2B+MoENJ1OJBKR4As2Z878Lp
+            WGv+qXb/m5ZstlmTmcJphqVVzZeybh0w6K6JB3DGwwKBgQD7lynG0YhikESAyhnz
+            nPyaGwioYRCtjsaCXB2umPA8iLM3+45zNTfGABxPmfUDi+bEoKE7RaAAiuTuDbu9
+            YApRAESu2taGzEFUQICb368NpBHht/NP9iD0869Pq22FRbWm02UzlwL3J58XDkL4
+            ph3tJ5LIDkn3hFQyAVO/ZyMNZwKBgQDjQoYjf7LcwYcBKpM9DfTf91kWlGt3V63J
+            MP2LkITfc9IYiNax3gsBhihygfJoLWsSwIv6pH4L5CRjpRR3tKwKROJtRV+A5wlh
+            3K7LngmP4S9+gxIPEm5bCk7l0EgiMNHgDGTiwwk4dtM494ALs5hdhYHTKFJ4LWJB
+            LQRZrEtxowKBgQCm6HQIuH14lik8H9fzrFRQkFrAChUcbzn2xdHTQRcvsajkHPk2
+            KTolG3GsxYCsp6WjEMWmItyxP3P9EhNY4Vw2vKzUK85igyNcF6a6wjzKGezbCERc
+            6faXSwslGZ+A6OxIDrp27VpESX7bttRrTRlReg2AtyoPETUiL4s10eCJRQKBgQCI
+            QTFlhUG7A7kq5NjkiUKhKY7bb99C7Wm/r8TEccCIrMtxdFGs0OEuZ75GcUziUyDY
+            XGNQwmDkRkPfDnHIF6Xyfjx3oVlSUrMYXpTadgVro2qzYmhoaveJVBPby9YD0dtz
+            hlrSbndPyEZ56EJ4QZR/tfURoiJX9XXsd84c6aVOGwKBgQCqnVvH+udpfPsa5t7U
+            Vze78pMIFRxfLbylyEFoDhck5t+5S3VbAS4xxNMMLyfxsRwDPGtnJOSI3IRF5CFp
+            X52M+E2PVc+Dg3IcQSsdWXWGevSsJJZql1EvTUV7RYj9iHA25Yym9etx9KrafEzp
+            pj0v5FbqpZaDAniSensElxxFKw==
+            -----END PRIVATE KEY-----
+            """;
 
     @TempDir
     Path tempDir;
@@ -164,6 +219,59 @@ public class Reactor_netty_coreTest {
 
         assertThat(clientDisconnected.await(1, TimeUnit.SECONDS)).isTrue();
         assertThat(serverUnbound.await(1, TimeUnit.SECONDS)).isTrue();
+    }
+
+    @Test
+    void tcpClientAndServerCommunicateOverTls() throws Exception {
+        LoopResources loops = LoopResources.create("rn-tls-test", 1, true);
+        CountDownLatch responseReceived = new CountDownLatch(1);
+        AtomicReference<String> response = new AtomicReference<>();
+        DisposableServer server = null;
+        Connection client = null;
+
+        try {
+            server = TcpServer.create()
+                    .host(LOCALHOST)
+                    .port(0)
+                    .runOn(loops)
+                    .secure(spec -> spec.sslContext(TcpSslContextSpec.forServer(
+                            certificateStream(), privateKeyStream())))
+                    .handle((inbound, outbound) -> inbound.receive()
+                            .asString(StandardCharsets.UTF_8)
+                            .take(1)
+                            .flatMap(message -> outbound.sendString(
+                                    Mono.just("secure:" + message),
+                                    StandardCharsets.UTF_8).then()))
+                    .bindNow(TIMEOUT);
+
+            client = TcpClient.newConnection()
+                    .host(LOCALHOST)
+                    .port(server.port())
+                    .runOn(loops)
+                    .secure(spec -> spec.sslContext(SslContextBuilder.forClient()
+                            .trustManager(certificateStream())))
+                    .handle((inbound, outbound) -> outbound.sendString(Mono.just("ping"), StandardCharsets.UTF_8)
+                            .then(inbound.receive()
+                                    .asString(StandardCharsets.UTF_8)
+                                    .next()
+                                    .doOnNext(message -> {
+                                        response.set(message);
+                                        responseReceived.countDown();
+                                    })
+                                    .then()))
+                    .connectNow(TIMEOUT);
+
+            assertThat(responseReceived.await(TIMEOUT.toSeconds(), TimeUnit.SECONDS)).isTrue();
+            assertThat(response.get()).isEqualTo("secure:ping");
+        } finally {
+            if (client != null) {
+                client.disposeNow(TIMEOUT);
+            }
+            if (server != null) {
+                server.disposeNow(TIMEOUT);
+            }
+            loops.disposeLater(Duration.ZERO, TIMEOUT).block(TIMEOUT);
+        }
     }
 
     @Test
@@ -375,6 +483,14 @@ public class Reactor_netty_coreTest {
         }
 
         assertThat(buffer.refCnt()).isZero();
+    }
+
+    private static InputStream certificateStream() {
+        return new ByteArrayInputStream(TEST_CERTIFICATE.getBytes(StandardCharsets.US_ASCII));
+    }
+
+    private static InputStream privateKeyStream() {
+        return new ByteArrayInputStream(TEST_PRIVATE_KEY.getBytes(StandardCharsets.US_ASCII));
     }
 
     private static final class UnpooledByteBufAllocatorHolder {
