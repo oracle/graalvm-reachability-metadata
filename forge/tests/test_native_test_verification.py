@@ -209,33 +209,50 @@ class GateRoutingTests(unittest.TestCase):
         )
         self.addCleanup(_rmtree, os.path.dirname(self.output_dir))
 
-    def _fake_run_factory(self, scripted_exits: list[int]):
+    def _fake_run_factory(
+            self,
+            scripted_exits: list[int],
+            metadata_exit_codes: set[int] | None = None,
+            log_text: str = "BUILD SUCCESSFUL\n",
+    ):
         """Build a subprocess.run replacement that consumes ``scripted_exits``.
 
         Each call corresponds to one ``./gradlew`` invocation. When the
         invocation contains ``runNativeTraceImage``, the script writes the
         next scripted exit code to the sentinel file referenced by the
         ``-PtraceBinaryExitFile=`` argument so the gate's reader returns
-        that value.
+        that value. By default, 172 runs also write synthetic trace metadata
+        so tests that exercise the correction loop represent real progress.
         """
         calls: list[list[str]] = []
         remaining = list(scripted_exits)
+        metadata_exit_codes = {172} if metadata_exit_codes is None else metadata_exit_codes
 
         def _fake(cmd, **kwargs):  # type: ignore[no-untyped-def]
             calls.append(list(cmd))
             stdout = kwargs.get("stdout")
             # Write a synthetic Gradle log if the caller asked us to.
             if hasattr(stdout, "write"):
-                stdout.write("BUILD SUCCESSFUL\n")
+                stdout.write(log_text)
             if "runNativeTraceImage" in cmd:
                 exit_file = next(
                     (a.split("=", 1)[1] for a in cmd if a.startswith("-PtraceBinaryExitFile=")),
+                    None,
+                )
+                run_dir = next(
+                    (a.split("=", 1)[1] for a in cmd if a.startswith("-PtraceMetadataPath=")),
                     None,
                 )
                 rc = remaining.pop(0)
                 if exit_file:
                     Path(exit_file).parent.mkdir(parents=True, exist_ok=True)
                     Path(exit_file).write_text(str(rc), encoding="utf-8")
+                if run_dir and rc in metadata_exit_codes:
+                    Path(run_dir).mkdir(parents=True, exist_ok=True)
+                    Path(run_dir, "reachability-metadata.json").write_text(
+                        json.dumps({"reflection": [{"type": f"com.example.Generated{len(calls)}"}]}),
+                        encoding="utf-8",
+                    )
                 # Gradle-side exit is always 0 (Exec uses ignoreExitValue).
                 return subprocess.CompletedProcess(cmd, 0)
             # mergeNativeTraceMetadata or anything else — succeeds.
@@ -255,7 +272,6 @@ class GateRoutingTests(unittest.TestCase):
         self.assertEqual(result.status, ntv.STATUS_PASSED)
         self.assertEqual(result.iterations_used, 1)
         self.assertEqual(result.last_native_test_exit_code, 0)
-        # First call is runNativeTraceImage; second is mergeNativeTraceMetadata.
         self.assertTrue(any("runNativeTraceImage" in c for c in calls))
 
     def test_continues_on_172_until_pass(self) -> None:
@@ -289,6 +305,48 @@ class GateRoutingTests(unittest.TestCase):
             os.path.join(self.output_dir, "reachability-metadata.json"),
             output.getvalue(),
         )
+
+    def test_merges_final_passing_run_when_it_collected_metadata(self) -> None:
+        fake, calls = self._fake_run_factory([0], metadata_exit_codes={0})
+        with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake):
+            result = ntv.verify_native_test_passes(
+                reachability_repo_path=self.repo,
+                coordinate="g:a:1.0",
+                output_dir=self.output_dir,
+                max_iterations=5,
+            )
+        self.assertEqual(result.status, ntv.STATUS_PASSED)
+        merge_calls = [call for call in calls if "mergeNativeTraceMetadata" in call]
+        self.assertEqual(len(merge_calls), 1)
+        input_dirs = next(arg for arg in merge_calls[0] if arg.startswith("-PinputDirs="))
+        self.assertIn("cycle-0", input_dirs)
+
+    def test_fails_fast_and_prints_stacktrace_when_172_produces_no_metadata(self) -> None:
+        fake, _calls = self._fake_run_factory(
+            [172],
+            metadata_exit_codes=set(),
+            log_text=(
+                "some native output\n"
+                "Exception in thread \"main\" com.example.MissingThingException: boom\n"
+                "\tat com.example.App.main(App.java:12)\n"
+            ),
+        )
+        output = io.StringIO()
+        with patch(
+            "utility_scripts.native_test_verification.subprocess.run",
+            side_effect=fake,
+        ), redirect_stdout(output):
+            result = ntv.verify_native_test_passes(
+                reachability_repo_path=self.repo,
+                coordinate="g:a:1.0",
+                output_dir=self.output_dir,
+                max_iterations=5,
+            )
+        self.assertEqual(result.status, ntv.STATUS_FAILED)
+        self.assertEqual(result.iterations_used, 1)
+        printed = output.getvalue()
+        self.assertIn("produced no trace metadata; failing fast", printed)
+        self.assertIn("com.example.MissingThingException: boom", printed)
 
     def test_failed_when_budget_exhausted_with_only_172(self) -> None:
         fake, _calls = self._fake_run_factory([172, 172])

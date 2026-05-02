@@ -62,6 +62,7 @@ _LOG_TASK_TYPE = "native-test-verify"
 _EXIT_VALUE_PATTERN = re.compile(r"exit\s+value\s+(\d+)", re.IGNORECASE)
 _TRACE_SENTINEL_FILE_NAMES = frozenset({"binary-exit-code"})
 _AGGREGATED_METADATA_FILE_NAME = "reachability-metadata.json"
+_STACKTRACE_EXCERPT_LINE_LIMIT = 160
 
 
 @dataclass
@@ -154,21 +155,33 @@ def verify_native_test_passes(
         last_log_path = log_path
         last_binary_rc = binary_rc if binary_rc is not None else gradle_rc
         _print_collected_metadata(run_dir, cycle + 1)
+        collected_metadata_files = _metadata_files(run_dir)
 
         if binary_rc == 0:
             log_stage(
                 _GATE_STAGE,
-                f"cycle {cycle + 1}: binary passed (exit 0); merging accepted trace dirs",
+                f"cycle {cycle + 1}: binary passed (exit 0); merging trace dirs",
             )
-            _merge_into_output(
+            run_dirs_to_merge = list(accepted_run_dirs)
+            if collected_metadata_files:
+                run_dirs_to_merge.append(run_dir)
+            if not _merge_into_output(
                 reachability_repo_path=reachability_repo_path,
-                run_dirs=accepted_run_dirs,
+                run_dirs=run_dirs_to_merge,
                 output_dir=output_dir,
-            )
+            ):
+                return _make_result(STATUS_FAILED, cycle + 1)
             status = STATUS_PASSED_WITH_INTERVENTION if intervention_used else STATUS_PASSED
             return _make_result(status, cycle + 1)
 
         if binary_rc == MISSING_METADATA_EXIT_CODE:
+            if not collected_metadata_files:
+                log_stage(
+                    _GATE_STAGE,
+                    f"cycle {cycle + 1}: binary exited 172 but produced no trace metadata; failing fast",
+                )
+                _print_failure_stacktrace(log_path, cycle + 1)
+                return _make_result(STATUS_FAILED, cycle + 1)
             log_stage(
                 _GATE_STAGE,
                 f"cycle {cycle + 1}: binary exited 172 (missing metadata); "
@@ -182,6 +195,8 @@ def verify_native_test_passes(
             f"cycle {cycle + 1}: binary failed (gradle_exit={gradle_rc}, binary_exit={binary_rc}); "
             "routing to codex (terminal)",
         )
+        if not collected_metadata_files:
+            _print_failure_stacktrace(log_path, cycle + 1)
         codex_rc, codex_log_path, codex_timed_out = run_codex_metadata_fix(
             reachability_repo_path,
             coordinate,
@@ -318,6 +333,52 @@ def _print_collected_metadata(run_dir: str, cycle_number: int) -> None:
             log_stage(_GATE_STAGE, line, indent_level=3)
 
 
+def _print_failure_stacktrace(log_path: str, cycle_number: int) -> None:
+    """Print the native trace failure stacktrace, or a bounded log tail."""
+    log_stage(
+        _GATE_STAGE,
+        f"cycle {cycle_number}: failure stacktrace from {log_path}:",
+        indent_level=1,
+    )
+    for line in _extract_failure_stacktrace(log_path).splitlines():
+        log_stage(_GATE_STAGE, line, indent_level=2)
+
+
+def _extract_failure_stacktrace(log_path: str) -> str:
+    """Extract a bounded stacktrace-like excerpt from a native trace run log."""
+    try:
+        with open(log_path, "r", encoding="utf-8", errors="replace") as handle:
+            lines = handle.read().splitlines()
+    except OSError as exc:
+        return f"<unable to read log: {exc}>"
+
+    if not lines:
+        return "<empty log>"
+
+    start_index = _find_stacktrace_start(lines)
+    if start_index is None:
+        start_index = max(0, len(lines) - _STACKTRACE_EXCERPT_LINE_LIMIT)
+
+    excerpt = lines[start_index:start_index + _STACKTRACE_EXCERPT_LINE_LIMIT]
+    if not excerpt:
+        return "<no stacktrace excerpt available>"
+    return "\n".join(excerpt)
+
+
+def _find_stacktrace_start(lines: list[str]) -> int | None:
+    """Return the first likely stacktrace line index in ``lines``."""
+    exception_pattern = re.compile(
+        r"(^Exception in thread|^\S.*(?:Exception|Error)(?::|\s|$)|^Caused by:)"
+    )
+    for index, line in enumerate(lines):
+        stripped = line.strip()
+        if exception_pattern.search(stripped):
+            return max(0, index - 2)
+        if stripped.startswith("at ") and index > 0:
+            return max(0, index - 1)
+    return None
+
+
 def _metadata_files(run_dir: str) -> list[str]:
     """Return trace metadata files below ``run_dir`` in deterministic order."""
     result: list[str] = []
@@ -400,10 +461,10 @@ def _merge_into_output(
         reachability_repo_path: str,
         run_dirs: list[str],
         output_dir: str,
-) -> None:
+) -> bool:
     """Merge accepted per-cycle trace dirs into the caller's ``output_dir``."""
     if not run_dirs:
-        return
+        return True
     cmd = [
         "./gradlew",
         "mergeNativeTraceMetadata",
@@ -412,19 +473,28 @@ def _merge_into_output(
     ]
     log_stage(_GATE_STAGE, f"$ {' '.join(cmd)}", indent_level=1)
     try:
-        subprocess.run(
+        result = subprocess.run(
             cmd,
             cwd=reachability_repo_path,
             check=False,
             timeout=_MERGE_TIMEOUT_SECONDS,
         )
+        if result.returncode != 0:
+            log_stage(
+                _GATE_STAGE,
+                f"mergeNativeTraceMetadata failed with exit code {result.returncode}",
+                indent_level=1,
+            )
+            return False
         _print_aggregated_metadata_path(output_dir)
+        return True
     except subprocess.TimeoutExpired:
         log_stage(
             _GATE_STAGE,
             f"mergeNativeTraceMetadata exceeded {_MERGE_TIMEOUT_SECONDS}s timeout",
             indent_level=1,
         )
+        return False
 
 
 def _print_aggregated_metadata_path(output_dir: str) -> None:
