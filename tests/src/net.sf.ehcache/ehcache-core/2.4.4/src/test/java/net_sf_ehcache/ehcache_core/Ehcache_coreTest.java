@@ -8,7 +8,7 @@ package net_sf_ehcache.ehcache_core;
 
 import org.junit.jupiter.api.Test;
 
-class Ehcache_coreTest {
+public class Ehcache_coreTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
