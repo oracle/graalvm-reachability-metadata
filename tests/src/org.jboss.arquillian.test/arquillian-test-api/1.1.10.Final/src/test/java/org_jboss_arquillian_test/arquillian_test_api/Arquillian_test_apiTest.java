@@ -102,6 +102,17 @@ public class Arquillian_test_apiTest {
         assertThat(consumer.configuredText).isSameAs(text);
     }
 
+    @Test
+    public void constructorParametersCanDeclareResourcesWithoutChangingConstruction() {
+        URI deploymentUri = URI.create("urn:arquillian:constructor-resource");
+        String deploymentName = "constructor-resource";
+
+        ConstructorResourceConsumer consumer = new ConstructorResourceConsumer(deploymentUri, deploymentName);
+
+        assertThat(consumer.deploymentUri()).isSameAs(deploymentUri);
+        assertThat(consumer.deploymentName()).isSameAs(deploymentName);
+    }
+
     private static Class<?> resolveFieldResourceType(Field field, ArquillianResource resource) {
         if (resource.value().equals(ArquillianResource.class)) {
             return field.getType();
@@ -153,6 +164,25 @@ public class Arquillian_test_apiTest {
             configuredUrl = url;
             configuredUri = uri;
             configuredText = text;
+        }
+    }
+
+    public static final class ConstructorResourceConsumer {
+        private final URI deploymentUri;
+        private final String deploymentName;
+
+        public ConstructorResourceConsumer(@ArquillianResource(URI.class) URI deploymentUri,
+                @ArquillianResource String deploymentName) {
+            this.deploymentUri = deploymentUri;
+            this.deploymentName = deploymentName;
+        }
+
+        public URI deploymentUri() {
+            return deploymentUri;
+        }
+
+        public String deploymentName() {
+            return deploymentName;
         }
     }
 }
