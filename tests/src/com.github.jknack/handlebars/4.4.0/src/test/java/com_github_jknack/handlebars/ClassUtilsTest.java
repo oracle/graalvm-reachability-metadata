@@ -8,7 +8,7 @@ package com_github_jknack.handlebars;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.github.jknack.handlebars.internal.lang3.ClassUtils;
+import org.apache.commons.lang3.ClassUtils;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
