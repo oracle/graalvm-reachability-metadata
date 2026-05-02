@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="JUnit Jupiter" tests="2" skipped="0" failures="0" errors="1" time="0.001" hostname="kung-fu-workstation" timestamp="2026-05-02T19:29:53">
+<testsuite name="JUnit Jupiter" tests="4" skipped="0" failures="0" errors="2" time="0.003" hostname="kung-fu-workstation" timestamp="2026-05-02T19:51:53">
 <properties>
 <property name="file.encoding" value="UTF-8"/>
 <property name="file.separator" value="/"/>
@@ -52,43 +52,77 @@
 <property name="user.name" value="vjovanov"/>
 <property name="user.timezone" value="Europe/Zurich"/>
 </properties>
-<testcase name="serializesAndDeserializesConfiguredDirectoriesAndData()" classname="io_quarkus.quarkus_bootstrap_app_model.LazySourceDirTest" time="0">
-<error message="Cannot reflectively invoke constructor 'public java.lang.Object()'. To allow this operation, add the following to the 'reflection' section of 'reachability-metadata.json' and rebuild the native image:
-
-    {
-      &quot;type&quot;: &quot;java.lang.Object&quot;,
-      &quot;methods&quot;: [
-        {
-          &quot;name&quot;: &quot;&lt;init&gt;&quot;,
-          &quot;parameterTypes&quot;: []
-        }
-      ]
-    }
-
-The 'reachability-metadata.json' file should be located in 'META-INF/native-image/&lt;group-id&gt;/&lt;artifact-id&gt;/' of your project. For further help, see https://www.graalvm.org/latest/reference-manual/native-image/metadata/#reflection" type="org.graalvm.nativeimage.MissingReflectionRegistrationError"><![CDATA[org.graalvm.nativeimage.MissingReflectionRegistrationError: Cannot reflectively invoke constructor 'public java.lang.Object()'. To allow this operation, add the following to the 'reflection' section of 'reachability-metadata.json' and rebuild the native image:
-
-    {
-      "type": "java.lang.Object",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    }
-
-The 'reachability-metadata.json' file should be located in 'META-INF/native-image/<group-id>/<artifact-id>/' of your project. For further help, see https://www.graalvm.org/latest/reference-manual/native-image/metadata/#reflection
-	at org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.MissingReflectionRegistrationUtils.reportInvokedExecutable(MissingReflectionRegistrationUtils.java:110)
-	at java.base@25.0.2/java.lang.reflect.Constructor.acquireConstructorAccessor(Constructor.java:101)
-	at java.base@25.0.2/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:496)
-	at java.base@25.0.2/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
-	at java.base@25.0.2/java.io.ObjectStreamClass.newInstance(ObjectStreamClass.java:914)
-	at java.base@25.0.2/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2112)
+<testcase name="serializesAndDeserializesConfiguredDirectoriesAndData()" classname="io_quarkus.quarkus_bootstrap_app_model.LazySourceDirTest" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:io_quarkus.quarkus_bootstrap_app_model.LazySourceDirTest]/[method:serializesAndDeserializesConfiguredDirectoriesAndData()]
+display-name: serializesAndDeserializesConfiguredDirectoriesAndData()
+]]></system-out>
+</testcase>
+<testcase name="serializesAndDeserializesQuarkusModel()" classname="io_quarkus.quarkus_bootstrap_app_model.BootstrapUtilsTest" time="0.001">
+<error message="Failed to deserialize quarkus model" type="io.quarkus.bootstrap.resolver.AppModelResolverException"><![CDATA[io.quarkus.bootstrap.resolver.AppModelResolverException: Failed to deserialize quarkus model
+	at io.quarkus.bootstrap.util.BootstrapUtils.deserializeQuarkusModel(BootstrapUtils.java:108)
+	at io_quarkus.quarkus_bootstrap_app_model.BootstrapUtilsTest.serializesAndDeserializesQuarkusModel(BootstrapUtilsTest.java:43)
+	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+	at java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
+	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
+Caused by: java.lang.ClassNotFoundException: java.util.CollSer
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:263)
+	at java.base@25.0.2/java.lang.Class.forName0(DynamicHub.java:1975)
+	at java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:547)
+	at java.base@25.0.2/java.io.ObjectInputStream.resolveClass(ObjectInputStream.java:745)
+	at java.base@25.0.2/java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:1912)
+	at java.base@25.0.2/java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1785)
+	at java.base@25.0.2/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2101)
+	at java.base@25.0.2/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
+	at java.base@25.0.2/java.io.ObjectInputStream$FieldValues.<init>(ObjectInputStream.java:2480)
+	at java.base@25.0.2/java.io.ObjectInputStream.readSerialData(ObjectInputStream.java:2327)
+	at java.base@25.0.2/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2133)
+	at java.base@25.0.2/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
+	at java.base@25.0.2/java.io.ObjectInputStream$FieldValues.<init>(ObjectInputStream.java:2480)
+	at java.base@25.0.2/java.io.ObjectInputStream.readSerialData(ObjectInputStream.java:2327)
+	at java.base@25.0.2/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2133)
 	at java.base@25.0.2/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
 	at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:487)
 	at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:445)
-	at io_quarkus.quarkus_bootstrap_app_model.LazySourceDirTest.serializeAndDeserialize(LazySourceDirTest.java:72)
-	at io_quarkus.quarkus_bootstrap_app_model.LazySourceDirTest.serializesAndDeserializesConfiguredDirectoriesAndData(LazySourceDirTest.java:51)
+	at io.quarkus.bootstrap.util.BootstrapUtils.deserializeQuarkusModel(BootstrapUtils.java:104)
+	... 13 more
+]]></error>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:io_quarkus.quarkus_bootstrap_app_model.BootstrapUtilsTest]/[method:serializesAndDeserializesQuarkusModel()]
+display-name: serializesAndDeserializesQuarkusModel()
+]]></system-out>
+</testcase>
+<testcase name="writesAndReadsAppModelWithWorkspaceId()" classname="io_quarkus.quarkus_bootstrap_app_model.BootstrapUtilsTest" time="0">
+<error message="java.util.CollSer" type="java.lang.ClassNotFoundException"><![CDATA[java.lang.ClassNotFoundException: java.util.CollSer
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:263)
+	at java.base@25.0.2/java.lang.Class.forName0(DynamicHub.java:1975)
+	at java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:547)
+	at java.base@25.0.2/java.io.ObjectInputStream.resolveClass(ObjectInputStream.java:745)
+	at java.base@25.0.2/java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:1912)
+	at java.base@25.0.2/java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1785)
+	at java.base@25.0.2/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2101)
+	at java.base@25.0.2/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
+	at java.base@25.0.2/java.io.ObjectInputStream$FieldValues.<init>(ObjectInputStream.java:2480)
+	at java.base@25.0.2/java.io.ObjectInputStream.readSerialData(ObjectInputStream.java:2327)
+	at java.base@25.0.2/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2133)
+	at java.base@25.0.2/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
+	at java.base@25.0.2/java.io.ObjectInputStream$FieldValues.<init>(ObjectInputStream.java:2480)
+	at java.base@25.0.2/java.io.ObjectInputStream.readSerialData(ObjectInputStream.java:2327)
+	at java.base@25.0.2/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2133)
+	at java.base@25.0.2/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
+	at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:487)
+	at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:445)
+	at io.quarkus.bootstrap.util.BootstrapUtils.readAppModelWithWorkspaceId(BootstrapUtils.java:187)
+	at io_quarkus.quarkus_bootstrap_app_model.BootstrapUtilsTest.writesAndReadsAppModelWithWorkspaceId(BootstrapUtilsTest.java:60)
 	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
 	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
@@ -103,8 +137,8 @@ The 'reachability-metadata.json' file should be located in 'META-INF/native-imag
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
 ]]></error>
 <system-out><![CDATA[
-unique-id: [engine:junit-jupiter]/[class:io_quarkus.quarkus_bootstrap_app_model.LazySourceDirTest]/[method:serializesAndDeserializesConfiguredDirectoriesAndData()]
-display-name: serializesAndDeserializesConfiguredDirectoriesAndData()
+unique-id: [engine:junit-jupiter]/[class:io_quarkus.quarkus_bootstrap_app_model.BootstrapUtilsTest]/[method:writesAndReadsAppModelWithWorkspaceId()]
+display-name: writesAndReadsAppModelWithWorkspaceId()
 ]]></system-out>
 </testcase>
 <testcase name="test()" classname="io_quarkus.quarkus_bootstrap_app_model.Quarkus_bootstrap_app_modelTest" time="0">
