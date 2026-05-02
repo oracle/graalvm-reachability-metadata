@@ -12,10 +12,14 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 public final class FinalizerHidingSystemClassLoader extends URLClassLoader {
+    private static final String DECOUPLED_LOADER_TEST_CLASS_NAME =
+            "com_google_collections.google_collections."
+                    + "FinalizableReferenceQueueInnerDecoupledLoaderTest";
     private static final String FINALIZER_CLASS_NAME =
             "com.google.common.base.internal.Finalizer";
 
     private static volatile boolean rejectedFinalizerLookup;
+    private static volatile boolean resolvedFinalizerLookup;
 
     public FinalizerHidingSystemClassLoader(ClassLoader parent) {
         super(new URL[0], parent);
@@ -24,10 +28,25 @@ public final class FinalizerHidingSystemClassLoader extends URLClassLoader {
     @Override
     public Class<?> loadClass(String name) throws ClassNotFoundException {
         if (FINALIZER_CLASS_NAME.equals(name)) {
-            rejectedFinalizerLookup = true;
-            throw new ClassNotFoundException(name);
+            if (calledFromDecoupledLoaderTest()) {
+                rejectedFinalizerLookup = true;
+                throw new ClassNotFoundException(name);
+            }
+            Class<?> finalizerClass = super.loadClass(name);
+            resolvedFinalizerLookup = true;
+            return finalizerClass;
         }
         return super.loadClass(name);
+    }
+
+    private static boolean calledFromDecoupledLoaderTest() {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        for (StackTraceElement stackTraceElement : stackTrace) {
+            if (DECOUPLED_LOADER_TEST_CLASS_NAME.equals(stackTraceElement.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void appendToClassPathForInstrumentation(String path) {
@@ -41,5 +60,9 @@ public final class FinalizerHidingSystemClassLoader extends URLClassLoader {
 
     public static boolean rejectedFinalizerLookup() {
         return rejectedFinalizerLookup;
+    }
+
+    public static boolean resolvedFinalizerLookup() {
+        return resolvedFinalizerLookup;
     }
 }

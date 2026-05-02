@@ -22,6 +22,7 @@ dependencies {
 
 tasks.withType(Test).configureEach {
     dependsOn(tasks.named("compileTestSystemClassLoaderJava"))
+    forkEvery = 1
     jvmArgs += [
         "--add-opens=java.base/java.lang=ALL-UNNAMED",
         '-Djava.system.class.loader=com_google_collections.google_collections.FinalizerHidingSystemClassLoader'
