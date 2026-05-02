@@ -44,6 +44,7 @@ import io.netty.channel.epoll.EpollServerSocketChannelConfig;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.epoll.EpollSocketChannelConfig;
 import io.netty.channel.epoll.EpollTcpInfo;
+import io.netty.channel.socket.ChannelInputShutdownEvent;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.unix.DomainSocketAddress;
 import io.netty.channel.unix.DomainSocketReadMode;
@@ -245,6 +246,95 @@ public class Netty_transport_native_epollTest {
             assertThat(failure.get()).isNull();
             assertThat(response.get()).isEqualTo("echo:ping");
         } finally {
+            if (serverChannel != null) {
+                serverChannel.close().syncUninterruptibly();
+            }
+            clientGroup.shutdownGracefully().syncUninterruptibly();
+            workerGroup.shutdownGracefully().syncUninterruptibly();
+            bossGroup.shutdownGracefully().syncUninterruptibly();
+        }
+    }
+
+    @Test
+    void epollTcpChannelsSupportHalfClosureWhenAvailable() throws Exception {
+        if (!Epoll.isAvailable()) {
+            assertThatThrownBy(EpollEventLoopGroup::new).isInstanceOf(LinkageError.class);
+            return;
+        }
+
+        EventLoopGroup bossGroup = new EpollEventLoopGroup(1);
+        EventLoopGroup workerGroup = new EpollEventLoopGroup(1);
+        EventLoopGroup clientGroup = new EpollEventLoopGroup(1);
+        Channel serverChannel = null;
+        Channel clientChannel = null;
+        try {
+            CountDownLatch responseReceived = new CountDownLatch(1);
+            CountDownLatch inputShutdownReceived = new CountDownLatch(1);
+            AtomicReference<String> request = new AtomicReference<>();
+            AtomicReference<String> response = new AtomicReference<>();
+            AtomicReference<Throwable> failure = new AtomicReference<>();
+
+            ServerBootstrap serverBootstrap = new ServerBootstrap()
+                    .group(bossGroup, workerGroup)
+                    .channel(EpollServerSocketChannel.class)
+                    .childOption(ChannelOption.ALLOW_HALF_CLOSURE, true)
+                    .childHandler(new ChannelInitializer<Channel>() {
+                        @Override
+                        protected void initChannel(Channel channel) {
+                            channel.pipeline().addLast(new SimpleChannelInboundHandler<ByteBuf>() {
+                                @Override
+                                protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) {
+                                    request.set(msg.toString(CharsetUtil.UTF_8));
+                                }
+
+                                @Override
+                                public void userEventTriggered(ChannelHandlerContext ctx, Object evt) {
+                                    if (evt == ChannelInputShutdownEvent.INSTANCE) {
+                                        inputShutdownReceived.countDown();
+                                        ctx.writeAndFlush(Unpooled.copiedBuffer(
+                                                "ack:" + request.get(),
+                                                CharsetUtil.UTF_8
+                                        )).addListener(ChannelFutureListener.CLOSE);
+                                        return;
+                                    }
+
+                                    ctx.fireUserEventTriggered(evt);
+                                }
+
+                                @Override
+                                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+                                    failure.compareAndSet(null, cause);
+                                    inputShutdownReceived.countDown();
+                                    ctx.close();
+                                }
+                            });
+                        }
+                    });
+            serverChannel = serverBootstrap.bind(new InetSocketAddress("127.0.0.1", 0)).syncUninterruptibly().channel();
+            int port = ((InetSocketAddress) serverChannel.localAddress()).getPort();
+
+            Bootstrap clientBootstrap = new Bootstrap()
+                    .group(clientGroup)
+                    .channel(EpollSocketChannel.class)
+                    .option(ChannelOption.ALLOW_HALF_CLOSURE, true)
+                    .handler(new EchoClientInitializer(response, responseReceived, failure));
+            clientChannel = clientBootstrap.connect("127.0.0.1", port).syncUninterruptibly().channel();
+            clientChannel.writeAndFlush(Unpooled.copiedBuffer("half-close", CharsetUtil.UTF_8)).syncUninterruptibly();
+
+            EpollSocketChannel epollClientChannel = (EpollSocketChannel) clientChannel;
+            epollClientChannel.shutdownOutput().syncUninterruptibly();
+
+            assertThat(epollClientChannel.isOutputShutdown()).isTrue();
+            assertThat(epollClientChannel.isInputShutdown()).isFalse();
+            assertThat(inputShutdownReceived.await(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(responseReceived.await(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(failure.get()).isNull();
+            assertThat(request.get()).isEqualTo("half-close");
+            assertThat(response.get()).isEqualTo("ack:half-close");
+        } finally {
+            if (clientChannel != null) {
+                clientChannel.close().syncUninterruptibly();
+            }
             if (serverChannel != null) {
                 serverChannel.close().syncUninterruptibly();
             }
