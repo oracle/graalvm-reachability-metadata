@@ -43,6 +43,7 @@ import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.logging.SessionLogs;
 import org.openqa.selenium.mobile.NetworkConnection.ConnectionType;
 
 public class Selenium_apiTest {
@@ -293,6 +294,40 @@ public class Selenium_apiTest {
         assertThat(warning.toString()).contains("[WARNING] slow script");
         assertThatThrownBy(() -> entries.getAll().add(new LogEntry(Level.SEVERE, 103L, "failure")))
                 .isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    @Test
+    void sessionLogsAggregateEntriesFromWireJsonByLogType() {
+        Map<String, Object> browserEvent = new LinkedHashMap<String, Object>();
+        browserEvent.put("level", "INFO");
+        browserEvent.put("timestamp", 201L);
+        browserEvent.put("message", "dom ready");
+        Map<String, Object> driverEvent = new LinkedHashMap<String, Object>();
+        driverEvent.put("level", "SEVERE");
+        driverEvent.put("timestamp", 202L);
+        driverEvent.put("message", "navigation failed");
+        Map<String, Object> wireLogs = new LinkedHashMap<String, Object>();
+        wireLogs.put("browser", Collections.singletonList(browserEvent));
+        wireLogs.put("driver", Collections.singletonList(driverEvent));
+
+        SessionLogs sessionLogs = SessionLogs.fromJSON(wireLogs);
+
+        LogEntry browserLog = sessionLogs.getLogs("browser").getAll().get(0);
+        assertThat(browserLog.getLevel()).isEqualTo(Level.INFO);
+        assertThat(browserLog.getTimestamp()).isEqualTo(201L);
+        assertThat(browserLog.getMessage()).isEqualTo("dom ready");
+        assertThat(sessionLogs.getLogs("driver").getAll().get(0).getLevel()).isEqualTo(Level.SEVERE);
+        assertThat(sessionLogs.getLogTypes()).containsExactlyInAnyOrder("browser", "driver");
+        assertThat(sessionLogs.getLogs("server").getAll()).isEmpty();
+        assertThat(sessionLogs.toJson()).containsKeys("browser", "driver");
+        assertThat(sessionLogs.toJson().get("browser").getAll()).containsExactly(browserLog);
+        assertThatThrownBy(() -> sessionLogs.getAll().put("server", new LogEntries(Collections.emptyList())))
+                .isInstanceOf(UnsupportedOperationException.class);
+
+        SessionLogs manuallyBuiltLogs = new SessionLogs();
+        manuallyBuiltLogs.addLog("browser", sessionLogs.getLogs("browser"));
+        assertThat(manuallyBuiltLogs.getAll()).containsOnlyKeys("browser");
+        assertThat(manuallyBuiltLogs.getLogs("browser").getAll()).containsExactly(browserLog);
     }
 
     @Test
