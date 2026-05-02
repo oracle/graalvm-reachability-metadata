@@ -199,6 +199,45 @@ public class Slf4j_jboss_logmanagerTest {
     }
 
     @Test
+    void mdcCloseableScopesValuesAndRemovesThemWhenClosed() {
+        MDC.clear();
+        org.jboss.logmanager.MDC.clear();
+        String loggerName = LOGGER_PREFIX + ".mdcCloseable";
+        CapturingHandler handler = new CapturingHandler();
+        LoggerState state = installCapturingHandler(loggerName, handler);
+        try {
+            org.slf4j.Logger logger = LoggerFactory.getLogger(loggerName);
+
+            try (MDC.MDCCloseable closeable = MDC.putCloseable("operation", "import")) {
+                assertThat(closeable).isNotNull();
+                assertThat(MDC.get("operation")).isEqualTo("import");
+                assertThat(org.jboss.logmanager.MDC.get("operation")).isEqualTo("import");
+
+                logger.info("inside scoped operation");
+
+                assertThat(handler.records()).hasSize(1);
+                ExtLogRecord scopedRecord = handler.records().get(0);
+                assertThat(scopedRecord.getMdc("operation")).isEqualTo("import");
+                assertThat(scopedRecord.getMdcCopy()).containsOnly(entry("operation", "import"));
+            }
+
+            assertThat(MDC.get("operation")).isNull();
+            assertThat(org.jboss.logmanager.MDC.get("operation")).isNull();
+
+            logger.info("outside scoped operation");
+
+            assertThat(handler.records()).hasSize(2);
+            ExtLogRecord unscopedRecord = handler.records().get(1);
+            assertThat(unscopedRecord.getMdc("operation")).isNull();
+            assertThat(unscopedRecord.getMdcCopy()).doesNotContainKey("operation");
+        } finally {
+            MDC.clear();
+            org.jboss.logmanager.MDC.clear();
+            state.restore();
+        }
+    }
+
+    @Test
     void markerFactoryProvidesBasicNamedAndDetachedMarkers() {
         String markerPrefix = LOGGER_PREFIX + ".marker.";
         Marker parent = MarkerFactory.getMarker(markerPrefix + "parent");
