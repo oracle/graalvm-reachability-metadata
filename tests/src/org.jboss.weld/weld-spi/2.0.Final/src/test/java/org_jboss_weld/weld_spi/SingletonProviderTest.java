@@ -34,17 +34,16 @@ public class SingletonProviderTest {
         assertThat(provider).isInstanceOf(IsolatedStaticSingletonProvider.class);
 
         Singleton<String> singleton = provider.create(String.class);
-        String singletonId = "test-application";
-        assertThat(singleton.isSet(singletonId)).isFalse();
-        assertThatThrownBy(() -> singleton.get(singletonId))
+        assertThat(singleton.isSet()).isFalse();
+        assertThatThrownBy(singleton::get)
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("Singleton is not set");
 
-        singleton.set(singletonId, "stored value");
-        assertThat(singleton.isSet(singletonId)).isTrue();
-        assertThat(singleton.get(singletonId)).isEqualTo("stored value");
+        singleton.set("stored value");
+        assertThat(singleton.isSet()).isTrue();
+        assertThat(singleton.get()).isEqualTo("stored value");
 
-        singleton.clear(singletonId);
-        assertThat(singleton.isSet(singletonId)).isFalse();
+        singleton.clear();
+        assertThat(singleton.isSet()).isFalse();
     }
 }
