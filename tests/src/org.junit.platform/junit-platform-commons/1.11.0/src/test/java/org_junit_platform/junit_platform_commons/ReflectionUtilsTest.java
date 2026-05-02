@@ -46,15 +46,12 @@ public class ReflectionUtilsTest {
         assertThat(value).isEqualTo("field-value");
     }
 
-    @SuppressWarnings("deprecation")
     @Test
-    void resolvesOutermostInstanceFromInnerClass() {
-        OuterSubject outer = new OuterSubject("outer-value");
-        OuterSubject.InnerSubject inner = outer.new InnerSubject();
+    void findsNestedInnerClass() {
+        List<Class<?>> nestedClasses = ReflectionUtils.findNestedClasses(OuterSubject.class,
+                ReflectionUtils::isInnerClass);
 
-        Optional<Object> outermostInstance = ReflectionUtils.getOutermostInstance(inner, OuterSubject.class);
-
-        assertThat(outermostInstance).hasValueSatisfying(value -> assertThat(value).isSameAs(outer));
+        assertThat(nestedClasses).containsExactly(OuterSubject.InnerSubject.class);
     }
 
     @Test
