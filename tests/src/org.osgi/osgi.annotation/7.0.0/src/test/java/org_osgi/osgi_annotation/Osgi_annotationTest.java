@@ -161,6 +161,13 @@ public class Osgi_annotationTest {
         assertThat(substitution).isSameAs(Export.Substitution.NOIMPORT);
     }
 
+    @Test
+    void repeatedRequirementAnnotationsSupportMultipleTypeLevelRequirements() {
+        MultiRequirementBundle bundle = new MultiRequirementBundle();
+
+        assertThat(bundle.describe()).isEqualTo("multi-requirement-bundle");
+    }
+
     @Capability(namespace = "example.capability", name = "typed", version = "1.0.0")
     @Requirement(namespace = "example.requirement", name = "typed", resolution = Requirement.Resolution.OPTIONAL)
     private @interface BundleContract {
@@ -180,6 +187,14 @@ public class Osgi_annotationTest {
     private static final class AnnotatedBundle {
         String describe() {
             return "annotated-bundle";
+        }
+    }
+
+    @Requirement(namespace = "osgi.service", name = "sample.primary")
+    @Requirement(namespace = "osgi.ee", filter = "(&(osgi.ee=JavaSE)(version>=11))")
+    private static final class MultiRequirementBundle {
+        String describe() {
+            return "multi-requirement-bundle";
         }
     }
 
