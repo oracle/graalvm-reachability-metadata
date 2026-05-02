@@ -6,21 +6,20 @@
  */
 package org_glassfish_hk2.hk2_utils;
 
-import org.jvnet.tiger_types.Lister;
+import org.glassfish.hk2.utilities.reflection.GenericArrayTypeImpl;
+import org.glassfish.hk2.utilities.reflection.ReflectionHelper;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ListerAnonymous1Test {
     @Test
-    public void convertsAccumulatedItemsToTypedArray() {
-        final Lister<?> lister = Lister.create(String[].class, String[].class);
-        lister.add("alpha");
-        lister.add("beta");
+    public void convertsGenericArrayTypeWithClassComponentToArrayClass() {
+        final GenericArrayTypeImpl stringArrayType = new GenericArrayTypeImpl(String.class);
 
-        final Object collection = lister.toCollection();
+        final Class<?> rawClass = ReflectionHelper.getRawClass(stringArrayType);
 
-        assertThat(collection).isInstanceOf(String[].class);
-        assertThat((String[]) collection).containsExactly("alpha", "beta");
+        assertThat(rawClass).isEqualTo(String[].class);
+        assertThat(rawClass.getComponentType()).isEqualTo(String.class);
     }
 }

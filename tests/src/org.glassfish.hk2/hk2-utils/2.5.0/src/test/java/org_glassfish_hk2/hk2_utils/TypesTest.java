@@ -6,31 +6,35 @@
  */
 package org_glassfish_hk2.hk2_utils;
 
-import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import org.glassfish.hk2.utilities.reflection.GenericArrayTypeImpl;
+import org.glassfish.hk2.utilities.reflection.ParameterizedTypeImpl;
+import org.glassfish.hk2.utilities.reflection.ReflectionHelper;
+import org.glassfish.hk2.utilities.reflection.internal.MethodWrapperImpl;
 import org.junit.jupiter.api.Test;
-import org.jvnet.tiger_types.Types;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TypesTest {
     @Test
-    public void detectsOverriddenMethodDeclaredOnBaseClass() throws NoSuchMethodException {
-        final Method method = ChildService.class.getMethod("describe", String.class);
+    public void treatsOverriddenMethodsAsEquivalentWrappers() throws NoSuchMethodException {
+        final Method childMethod = ChildService.class.getMethod("describe", String.class);
+        final Method parentMethod = ParentService.class.getMethod("describe", String.class);
 
-        assertThat(Types.isOverriding(method, ParentService.class)).isTrue();
+        assertThat(new MethodWrapperImpl(childMethod)).isEqualTo(new MethodWrapperImpl(parentMethod));
     }
 
     @Test
     public void convertsGenericArrayTypeArgumentWithClassComponentToArrayClass() {
-        final Type genericStringArrayType = new SimpleGenericArrayType(String.class);
-        final ParameterizedType listType = Types.createParameterizedType(List.class, genericStringArrayType);
+        final Type genericStringArrayType = new GenericArrayTypeImpl(String.class);
+        final ParameterizedType listType = new ParameterizedTypeImpl(List.class, genericStringArrayType);
 
-        assertThat(Types.getTypeArgument(listType, 0)).isEqualTo(String[].class);
+        assertThat(listType.getRawType()).isEqualTo(List.class);
+        assertThat(ReflectionHelper.getRawClass(listType.getActualTypeArguments()[0])).isEqualTo(String[].class);
     }
 
     public static class ParentService {
@@ -43,19 +47,6 @@ public class TypesTest {
         @Override
         public String describe(String value) {
             return "child:" + value;
-        }
-    }
-
-    private static final class SimpleGenericArrayType implements GenericArrayType {
-        private final Type genericComponentType;
-
-        private SimpleGenericArrayType(Type genericComponentType) {
-            this.genericComponentType = genericComponentType;
-        }
-
-        @Override
-        public Type getGenericComponentType() {
-            return genericComponentType;
         }
     }
 }

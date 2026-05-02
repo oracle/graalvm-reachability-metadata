@@ -6,36 +6,33 @@
  */
 package org_glassfish_hk2.hk2_utils;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jvnet.tiger_types.Lister;
+import org.glassfish.hk2.utilities.reflection.ParameterizedTypeImpl;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ListerTest {
     @Test
-    public void createsRequestedConcreteCollectionType() {
-        final Lister<?> lister = Lister.create(ArrayList.class, ArrayList.class);
-        lister.add("alpha");
-        lister.add("beta");
+    public void createsParameterizedTypeWithRequestedRawTypeAndArgument() {
+        final ParameterizedType type = new ParameterizedTypeImpl(ArrayList.class, String.class);
 
-        final Object collection = lister.toCollection();
-
-        assertThat(collection).isInstanceOf(ArrayList.class);
-        assertThat(collection).isEqualTo(List.of("alpha", "beta"));
+        assertThat(type.getRawType()).isEqualTo(ArrayList.class);
+        assertThat(type.getActualTypeArguments()).containsExactly(String.class);
+        assertThat(type.getOwnerType()).isNull();
     }
 
     @Test
-    public void fallsBackToConcreteCollectionForCollectionInterface() {
-        final Lister<?> lister = Lister.create(List.class, List.class);
-        lister.add("alpha");
-        lister.add("beta");
+    public void comparesParameterizedTypesByRawTypeAndArguments() {
+        final ParameterizedType stringList = new ParameterizedTypeImpl(List.class, String.class);
+        final ParameterizedType anotherStringList = new ParameterizedTypeImpl(List.class, String.class);
+        final ParameterizedType integerList = new ParameterizedTypeImpl(List.class, Integer.class);
 
-        final Object collection = lister.toCollection();
-
-        assertThat(collection).isInstanceOf(ArrayList.class);
-        assertThat(collection).isEqualTo(List.of("alpha", "beta"));
+        assertThat(stringList).isEqualTo(anotherStringList);
+        assertThat(stringList).hasSameHashCodeAs(anotherStringList);
+        assertThat(stringList).isNotEqualTo(integerList);
     }
 }
