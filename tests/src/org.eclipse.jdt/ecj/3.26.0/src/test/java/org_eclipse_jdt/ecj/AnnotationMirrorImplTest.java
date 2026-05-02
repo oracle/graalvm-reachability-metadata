@@ -26,7 +26,6 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 
-import org.eclipse.jdt.internal.compiler.tool.EclipseCompiler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -40,7 +39,7 @@ public class AnnotationMirrorImplTest {
         final Path classesDirectory = Files.createDirectories(this.temporaryDirectory.resolve("classes"));
         final List<Path> sourceFiles = writeSourceFiles(sourceDirectory);
 
-        final JavaCompiler compiler = new EclipseCompiler();
+        final JavaCompiler compiler = EcjTestSupport.newCompiler();
         final AnnotationMirrorImplCoverageProcessor processor = new AnnotationMirrorImplCoverageProcessor();
         try (StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null,
                 StandardCharsets.UTF_8)) {

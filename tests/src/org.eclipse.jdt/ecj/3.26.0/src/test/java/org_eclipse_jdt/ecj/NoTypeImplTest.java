@@ -27,7 +27,6 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 
-import org.eclipse.jdt.internal.compiler.tool.EclipseCompiler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -41,7 +40,7 @@ public class NoTypeImplTest {
         final Path classesDirectory = Files.createDirectories(this.temporaryDirectory.resolve("classes"));
         final List<Path> sourceFiles = writeSourceFiles(sourceDirectory);
         final NoTypeImplCoverageProcessor processor = new NoTypeImplCoverageProcessor();
-        final JavaCompiler compiler = new EclipseCompiler();
+        final JavaCompiler compiler = EcjTestSupport.newCompiler();
 
         try (StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, UTF_8)) {
             fileManager.setLocation(StandardLocation.CLASS_OUTPUT,

@@ -30,7 +30,6 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 
-import org.eclipse.jdt.internal.compiler.tool.EclipseCompiler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -46,7 +45,7 @@ public class TypeParameterElementImplTest {
         final Path classesDirectory = Files.createDirectories(this.temporaryDirectory.resolve("classes"));
         final List<Path> sourceFiles = writeSourceFiles(sourceDirectory);
 
-        final JavaCompiler compiler = new EclipseCompiler();
+        final JavaCompiler compiler = EcjTestSupport.newCompiler();
         final TypeParameterElementImplCoverageProcessor processor = new TypeParameterElementImplCoverageProcessor();
         try (StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, UTF_8)) {
             fileManager.setLocation(StandardLocation.CLASS_OUTPUT,
