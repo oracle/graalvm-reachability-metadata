@@ -8,8 +8,15 @@ package org_aspectj.aspectjweaver;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.ProtectionDomain;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -25,6 +32,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClassLoaderWeavingAdaptorTest {
     private static final String LINT_RESOURCE = "aspectj-ltw-lint.properties";
+
+    private static boolean legacyDefineClassInvoked;
 
     @Test
     void initializesLoadTimeWeaverWithLintResourceAndGeneratedConcreteAspect() {
@@ -48,6 +57,90 @@ public class ClassLoaderWeavingAdaptorTest {
         if (completed) {
             assertThat(adaptor.getMessageHolder()).isNotNull();
         }
+    }
+
+    @Test
+    void initializesLegacyDefinitionPathInIsolatedAspectjLoader() throws Exception {
+        Path resourceRoot = Files.createTempDirectory("aspectj-ltw-resources");
+        Files.createDirectories(resourceRoot.resolve("META-INF"));
+        Files.writeString(resourceRoot.resolve("META-INF/aop.xml"), legacyAopXml());
+        Files.writeString(resourceRoot.resolve(LINT_RESOURCE), "adviceDidNotMatch=ignore\n");
+
+        String originalJavaVersion = System.getProperty("java.version");
+        URL aspectjLocation = ClassLoaderWeavingAdaptor.class.getProtectionDomain().getCodeSource().getLocation();
+        URL[] urls = {resourceRoot.toUri().toURL(), aspectjLocation};
+        boolean completed = false;
+        try (URLClassLoader isolatedLoader = new URLClassLoader(urls, ClassLoader.getPlatformClassLoader())) {
+            System.setProperty("java.version", "1.8.0");
+            legacyDefineClassInvoked = false;
+            initializeAdaptorFrom(isolatedLoader);
+            completed = true;
+        } catch (Error error) {
+            rethrowIfNotNativeImageDynamicClassLoadingError(error);
+        } finally {
+            if (originalJavaVersion == null) {
+                System.clearProperty("java.version");
+            } else {
+                System.setProperty("java.version", originalJavaVersion);
+            }
+        }
+
+        if (completed) {
+            assertThat(resourceRoot.resolve("META-INF/aop.xml")).exists();
+            assertThat(legacyDefineClassInvoked).isTrue();
+        }
+    }
+
+    private static void initializeAdaptorFrom(URLClassLoader isolatedLoader) throws Exception {
+        Class<?> adaptorClass = Class.forName(
+                "org.aspectj.weaver.loadtime.ClassLoaderWeavingAdaptor",
+                true,
+                isolatedLoader
+        );
+        Object adaptor = adaptorClass.getConstructor().newInstance();
+        installLegacyDefineClassBridge(adaptorClass);
+        Class<?> contextClass = Class.forName("org.aspectj.weaver.loadtime.IWeavingContext", false, isolatedLoader);
+        Method initialize = adaptorClass.getMethod("initialize", ClassLoader.class, contextClass);
+        try {
+            initialize.invoke(adaptor, isolatedLoader, null);
+        } catch (InvocationTargetException exception) {
+            Throwable cause = exception.getCause();
+            if (cause instanceof Error) {
+                throw (Error) cause;
+            }
+            if (cause instanceof Exception) {
+                throw (Exception) cause;
+            }
+            throw exception;
+        }
+    }
+
+    private static void installLegacyDefineClassBridge(Class<?> adaptorClass) throws NoSuchFieldException,
+            IllegalAccessException, NoSuchMethodException {
+        Field defineClassMethod = adaptorClass.getDeclaredField("defineClassMethod");
+        defineClassMethod.setAccessible(true);
+        defineClassMethod.set(null, LegacyDefineClassBridge.class.getMethod(
+                "defineClass",
+                String.class,
+                byte[].class,
+                Integer.TYPE,
+                Integer.TYPE,
+                ClassLoader.class,
+                ProtectionDomain.class
+        ));
+    }
+
+    private static String legacyAopXml() {
+        return """
+                <aspectj>
+                    <weaver options="-Xlintfile:%s"/>
+                    <aspects>
+                        <concrete-aspect
+                            name="org_aspectj.aspectjweaver.generated.LegacyConcreteAspect"
+                            precedence="org_aspectj.aspectjweaver..*"/>
+                    </aspects>
+                </aspectj>
+                """.formatted(LINT_RESOURCE);
     }
 
     private static Definition concreteAspectDefinition() {
@@ -115,6 +208,17 @@ public class ClassLoaderWeavingAdaptorTest {
         @Override
         public List<Definition> getDefinitions(ClassLoader loader, WeavingAdaptor adaptor) {
             return definitions;
+        }
+    }
+
+    public static final class LegacyDefineClassBridge {
+        private LegacyDefineClassBridge() {
+        }
+
+        public static Class<?> defineClass(String name, byte[] bytes, int offset, int length, ClassLoader loader,
+                ProtectionDomain protectionDomain) {
+            legacyDefineClassInvoked = true;
+            return Object.class;
         }
     }
 
