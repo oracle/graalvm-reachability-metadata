@@ -1,0 +1,1312 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de985-0374-7ac2-b233-281d207b4531
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: javax.jcr:jcr:1.0.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0.1" when "$version$" is replaced with "1.0.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2/metadata/javax.jcr/jcr/index.json
+- Entry selector: "metadata-version" = "1.0.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing version "1.0.1".
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "1.0.1".
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "1.0.1".
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for entry metadata-version "1.0.1" and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.0.1
+- Entry metadata-version: 1.0.1
+- Entry test-version: 1.0.1
+codex
+I’ll inspect the existing metadata entry first, then verify the artifact’s Maven and upstream URLs before editing only the missing fields.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/javax.jcr/jcr/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.1",
+    "tested-versions" : [
+      "1.0.1"
+    ],
+    "allowed-packages" : [
+      "javax.jcr"
+    ]
+  },
+  {
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/javax/jcr/jcr/$version$/jcr-$version$-sources.jar",
+    "repository-url" : "N/A",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/javax/jcr/jcr/$version$/jcr-$version$-javadoc.jar",
+    "description" : "Defines the Java Content Repository (JCR) 1.0 API for accessing content repositories independently of a specific implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+    "tested-versions" : [
+      "1.0"
+    ],
+    "allowed-packages" : [
+      "javax.jcr"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'javax\\.jcr|\"jcr\"|source-code-url|documentation-url' metadata/javax.jcr metadata | head -80" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+metadata/org.apiguardian/apiguardian-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-sources.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/$version$/activation-$version$-sources.jar",
+metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/org.apache.arrow/arrow-format/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+metadata/org.apache.arrow/arrow-format/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-sources.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-javadoc.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-sources.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-javadoc.jar",
+metadata/nekohtml/xercesMinimal/index.json:5:    "source-code-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/branches/nekohtml-$version$/",
+metadata/nekohtml/xercesMinimal/index.json:8:    "documentation-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/branches/nekohtml-$version$/doc/index.html",
+metadata/org.aspectj/aspectjweaver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjweaver/1.9.7/aspectjweaver-1.9.7-sources.jar",
+metadata/org.aspectj/aspectjweaver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjweaver/1.9.7/aspectjweaver-1.9.7-javadoc.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/$version$/animal-sniffer-annotation-$version$-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/$version$/animal-sniffer-annotation-$version$-javadoc.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/$version$/jboss-interceptor-spi-$version$-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:8:    "documentation-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/$version$/jboss-interceptor-api-$version$-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/$version$/jakarta.websocket-client-api-$version$-sources.jar",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/$version$/jakarta.websocket-client-api-$version$-javadoc.jar",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/$version$/jakarta.websocket-api-$version$-sources.jar",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/$version$/jakarta.websocket-api-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/$version$/jackson-datatype-jdk8-$version$-sources.jar",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/$version$/jackson-datatype-jdk8-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/$version$/jackson-datatype-jsr310-$version$-sources.jar",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/$version$/jackson-datatype-jsr310-$version$-javadoc.jar",
+metadata/org.junit.platform/junit-platform-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/$version$/junit-platform-commons-$version$-sources.jar",
+metadata/org.junit.platform/junit-platform-commons/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/$version$/junit-platform-commons-$version$-javadoc.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/$version$/jakarta.mail-$version$-sources.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/$version$/jakarta.mail-$version$-javadoc.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/$version$/snakeyaml-engine-$version$-sources.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/$version$/snakeyaml-engine-$version$-javadoc.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/$version$/google-auth-library-credentials-$version$-sources.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/$version$/google-auth-library-credentials-$version$-javadoc.jar",
+metadata/org.clojure/google-closure-library-third-party/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+metadata/org.clojure/google-closure-library-third-party/index.json:8:    "documentation-url" : "https://github.com/google/closure-library/blob/f04e4c0e/README.md",
+metadata/org.clojure/google-closure-library-third-party/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+metadata/org.clojure/google-closure-library-third-party/index.json:22:    "documentation-url" : "https://github.com/google/closure-library/blob/021ed5b313da392a7139d0d3cf7011999ac8b672/README.md",
+metadata/org.postgresql/postgresql/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-sources.jar",
+metadata/org.postgresql/postgresql/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:27:    "source-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-sources.jar",
+metadata/org.postgresql/postgresql/index.json:30:    "documentation-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-javadoc.jar",
+metadata/javax.servlet/servlet-api/index.json:5:    "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share",
+metadata/javax.servlet/servlet-api/index.json:8:    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7876-servlet-2.4-prd-spec-oth-JSpec/servlet-2_4-prd-spec.pdf",
+metadata/javax.servlet/servlet-api/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/javax.servlet/servlet-api/index.json:22:    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/servlet-$version$-fr-spec-oth-JSpec/servlet-2_4-fr-spec.pdf",
+metadata/javax.servlet/servlet-api/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/javax.servlet/servlet-api/index.json:36:    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7840-servlet-$version$-spec-oth-JSpec/servlet-2_3-fcs-spec.pdf",
+metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/$version$/javax.servlet-api-$version$-sources.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/$version$/javax.servlet-api-$version$-javadoc.jar",
+metadata/com.android.tools/annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/android/tools/annotations/$version$/annotations-$version$-sources.jar",
+metadata/com.android.tools/annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/android/tools/annotations/$version$/annotations-$version$-javadoc.jar",
+metadata/org.eclipse.aether/aether-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/$version$/aether-util-$version$-sources.jar",
+metadata/org.eclipse.aether/aether-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/$version$/aether-util-$version$-javadoc.jar",
+metadata/org.eclipse.aether/aether-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/$version$/aether-api-$version$-sources.jar",
+metadata/org.eclipse.aether/aether-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/$version$/aether-api-$version$-javadoc.jar",
+
+codex
+The `1.0.1` entry is empty, while the adjacent `1.0` entry already uses Maven Central sources and Javadoc jars. I’m checking Maven Central for the exact `1.0.1` artifacts and whether any test artifact exists before I write templates.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/javax/jcr/jcr/1.0.1/' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/javax/jcr/jcr/1.0.1/jcr-1.0.1.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.jcr</groupId>
+  <artifactId>jcr</artifactId>
+  <name>Content Repository for Java Technology API</name>
+  <version>1.0.1</version>
+  <description>Content Repository for Java technology API.  Specifies a standard API to access content repositories in JavaTM 2 independently of implementation.</description>
+  <url>http://www.jcp.org/en/jsr/detail?id=170</url>
+  <licenses>
+    <license>
+      <name>Day License</name>
+      <url>http://www.day.com/maven/jsr170/licenses/day-spec-license.htm</url>
+    </license>
+  </licenses>
+  <inceptionYear>2004</inceptionYear>
+  <organization>
+    <name>Day Software Management AG</name>
+    <url>http://www.day.com/</url>
+  </organization>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.4</source>
+          <target>1.4</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <distributionManagement>
+    <downloadUrl>http://www.day.com/site/en/index/related/downloads/RI_download.html</downloadUrl>
+  </distributionManagement>
+
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/jcr/jcr/1.0.1/' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/jcr/jcr/1.0.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/jcr/jcr/1.0.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jcr-1.0.1-sources.jar.md5" title="jcr-1.0.1-sources.jar.md5">jcr-1.0.1-sources.jar.md5</a>                         2006-11-24 01:01        32      
+<a href="jcr-1.0.1-sources.jar.sha1" title="jcr-1.0.1-sources.jar.sha1">jcr-1.0.1-sources.jar.sha1</a>                        2006-11-24 01:01        40      
+<a href="jcr-1.0.1.jar.md5" title="jcr-1.0.1.jar.md5">jcr-1.0.1.jar.md5</a>                                 2006-11-24 01:01        32      
+<a href="jcr-1.0.1.jar.sha1" title="jcr-1.0.1.jar.sha1">jcr-1.0.1.jar.sha1</a>                                2006-11-24 01:01        40      
+<a href="jcr-1.0.1.pom" title="jcr-1.0.1.pom">jcr-1.0.1.pom</a>                                     2006-11-24 01:01      1345      
+<a href="jcr-1.0.1.pom.md5" title="jcr-1.0.1.pom.md5">jcr-1.0.1.pom.md5</a>                                 2006-11-24 01:01        36      
+<a href="jcr-1.0.1.pom.sha1" title="jcr-1.0.1.pom.sha1">jcr-1.0.1.pom.sha1</a>                                2006-11-24 01:01        44      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-11-24 01:01       111      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-11-24 01:01        75      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-11-24 01:01       130      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 246ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/jcr/jcr/1.0.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/jcr/jcr/1.0.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jcr-1.0.1-sources.jar.md5" title="jcr-1.0.1-sources.jar.md5">jcr-1.0.1-sources.jar.md5</a>                         2006-11-24 01:01        32      
+<a href="jcr-1.0.1-sources.jar.sha1" title="jcr-1.0.1-sources.jar.sha1">jcr-1.0.1-sources.jar.sha1</a>                        2006-11-24 01:01        40      
+<a href="jcr-1.0.1.jar.md5" title="jcr-1.0.1.jar.md5">jcr-1.0.1.jar.md5</a>                                 2006-11-24 01:01        32      
+<a href="jcr-1.0.1.jar.sha1" title="jcr-1.0.1.jar.sha1">jcr-1.0.1.jar.sha1</a>                                2006-11-24 01:01        40      
+<a href="jcr-1.0.1.pom" title="jcr-1.0.1.pom">jcr-1.0.1.pom</a>                                     2006-11-24 01:01      1345      
+<a href="jcr-1.0.1.pom.md5" title="jcr-1.0.1.pom.md5">jcr-1.0.1.pom.md5</a>                                 2006-11-24 01:01        36      
+<a href="jcr-1.0.1.pom.sha1" title="jcr-1.0.1.pom.sha1">jcr-1.0.1.pom.sha1</a>                                2006-11-24 01:01        44      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-11-24 01:01       111      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-11-24 01:01        75      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-11-24 01:01       130      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/javax/jcr/jcr/1.0/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/jcr/jcr/1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/jcr/jcr/1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jcr-1.0-javadoc.jar" title="jcr-1.0-javadoc.jar">jcr-1.0-javadoc.jar</a>                               2006-11-24 01:01    436646      
+<a href="jcr-1.0-javadoc.jar.md5" title="jcr-1.0-javadoc.jar.md5">jcr-1.0-javadoc.jar.md5</a>                           2006-11-24 01:01       121      
+<a href="jcr-1.0-javadoc.jar.sha1" title="jcr-1.0-javadoc.jar.sha1">jcr-1.0-javadoc.jar.sha1</a>                          2006-11-24 01:01       129      
+<a href="jcr-1.0-sources.jar" title="jcr-1.0-sources.jar">jcr-1.0-sources.jar</a>                               2006-11-24 01:01     94893      
+<a href="jcr-1.0-sources.jar.md5" title="jcr-1.0-sources.jar.md5">jcr-1.0-sources.jar.md5</a>                           2006-11-24 01:01       121      
+<a href="jcr-1.0-sources.jar.sha1" title="jcr-1.0-sources.jar.sha1">jcr-1.0-sources.jar.sha1</a>                          2006-11-24 01:01       129      
+<a href="jcr-1.0.jar" title="jcr-1.0.jar">jcr-1.0.jar</a>                                       2006-11-24 01:01     37948      
+<a href="jcr-1.0.jar.md5" title="jcr-1.0.jar.md5">jcr-1.0.jar.md5</a>                                   2006-11-24 01:01       113      
+<a href="jcr-1.0.jar.sha1" title="jcr-1.0.jar.sha1">jcr-1.0.jar.sha1</a>                                  2006-11-24 01:01       121      
+<a href="jcr-1.0.pom" title="jcr-1.0.pom">jcr-1.0.pom</a>                                       2006-11-24 01:01      1341      
+<a href="jcr-1.0.pom.md5" title="jcr-1.0.pom.md5">jcr-1.0.pom.md5</a>                                   2006-11-24 01:01       113      
+<a href="jcr-1.0.pom.sha1" title="jcr-1.0.pom.sha1">jcr-1.0.pom.sha1</a>                                  2006-11-24 01:01       121      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-11-24 01:01       109      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-11-24 01:01        73      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-11-24 01:01       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/javax/jcr/jcr/1.0.1/jcr-1.0.1-sources.jar' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/javax/jcr/jcr/1.0.1/jcr-1.0.1-javadoc.jar' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/javax/jcr/jcr/1.0.1/jcr-1.0.1-tests.jar' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+ exited 22 in 296ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 02 May 2026 16:28:40 GMT
+content-type: text/html
+cf-ray: 9f58667fabd63d61-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/jcr/jcr/1.0.1/jcr-1.0.1-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 300ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 02 May 2026 16:28:40 GMT
+content-type: text/html
+cf-ray: 9f58667fc8607dd2-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/jcr/jcr/1.0.1/jcr-1.0.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 341ms:
+HTTP/2 404 
+date: Sat, 02 May 2026 16:28:40 GMT
+content-type: text/html
+cf-ray: 9f5866801997fcc9-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/jcr/jcr/1.0.1/jcr-1.0.1-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: javax.jcr jcr 1.0.1 source repository
+codex
+Maven Central has a `1.0.1` POM and main jar, but the directory only exposes checksums for a sources jar and no actual sources, Javadoc, or tests artifact. I’m checking exact-version external documentation/source candidates now so stale `1.0` URLs do not get copied forward.
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://javadoc.io/doc/javax.jcr/jcr/1.0.1" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://javadoc.io/doc/javax.jcr/jcr/1.0.1/javax/jcr/package-summary.html" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://sourceforge.net/projects/openjcr/files/jcr-api/jcr-api-1.0.1/" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/javax/jcr/jcr/maven-metadata.xml' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+ succeeded in 112ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>javax.jcr</groupId>
+  <artifactId>jcr</artifactId>
+  <versioning>
+    <latest>2.0</latest>
+    <release>2.0</release>
+    <versions>
+      <version>1.0</version>
+      <version>1.0.1</version>
+      <version>2.0</version>
+    </versions>
+    <lastUpdated>20210114232212</lastUpdated>
+  </versioning>
+</metadata>
+
+ succeeded in 269ms:
+200 https://javadoc.io/doc/javax.jcr/jcr/1.0.1/index.html
+
+ succeeded in 290ms:
+200 https://javadoc.io/doc/javax.jcr/jcr/1.0.1/index.html
+
+ succeeded in 283ms:
+200 https://sourceforge.net/projects/openjcr/files/jcr-api/jcr-api-1.0.1/
+
+web search: 
+web search: SourceForge openjcr jcr-api 1.0.1 source
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://sourceforge.net/projects/openjcr/files/jcr-api/jcr-api-1.0.1/jcr-api-1.0.1-src.tar.gz/download" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://sourceforge.net/projects/openjcr/files/jcr-api/jcr-api-1.0.1/jcr-api-1.0.1-src.zip/download" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://download.oracle.com/otndocs/jcp/content_repository-1.0.1-mr-oth-JSpec/index.html" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://download.oracle.com/otndocs/jcp/content_repository-1_0_1-mr-source.zip" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+ succeeded in 601ms:
+200 https://download.oracle.com/otndocs/jcp/content_repository-1.0.1-mr-oth-JSpec/index.html
+
+ succeeded in 978ms:
+200 https://master.dl.sourceforge.net/project/openjcr/jcr-api/jcr-api-1.0.1/jcr-api-1.0.1-src.zip?viasf=1&fid=f83d10b4739e2908
+
+ succeeded in 980ms:
+200 https://master.dl.sourceforge.net/project/openjcr/jcr-api/jcr-api-1.0.1/jcr-api-1.0.1-src.tar.gz?viasf=1&fid=63da03132a86bb1a
+
+ succeeded in 1869ms:
+404 https://download.oracle.com/otndocs/jcp/content_repository-1_0_1-mr-source.zip
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://download.oracle.com/otndocs/jcp/content_repository-1.0.1-mr-oth-JSpec/index.html | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+ succeeded in 1480ms:
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script language='javascript'>
+<!--
+var varWebRoot = "../assets/";
+-->
+</script>
+
+<html lang="en-US">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link href="../assets/css/menu.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/style.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/tabs.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="../assets/css/k5.css">
+<link href="../assets/css/smi-advanced-snippet.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../assets/scripts/tabs.js"></script>
+<script type="text/javascript" src="../assets/scripts/menu.js"></script>
+<script type="text/javascript" src="../assets/scripts/getdate.js"></script>
+<script type="text/javascript" src="../assets/js/sniff.js"></script>
+<script language="javascript1.2" type="text/javascript" src="../assets/js/menucontent.js"></script>
+<script type="text/javascript" src="../assets/js/software_config_validation.js"></script>
+<title>
+JSR-000170 Content Repository for Java technology API 1.0.1 
+</title>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+</head>
+<body onload="P7_initPM(0,1,0,0,-1)">
+<a name="top"></a>
+<div id="header">
+<div id="logo">
+<a href="http://jcp.org/en/home/index"><img src="../assets/images/spacer.gif" alt="Java Community Process" height="81" width="151"></a>
+</div>
+<div id="tools">
+<div class="tools">
+<a href="http://java.com/en/download/index.jsp">Get Java Here</a>
+</div>
+</div>
+<div style="clear: right;"></div>
+<div class="topbar"><img src="../assets/images/spacer.gif" alt="" height="3" width="154"></div>
+</div>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<!-- BEGIN LEFT NAV -->
+<td id="leftcontent" valign="top">
+<div class="bar"><img src="../assets/images/hr_dots1.gif" alt="" height="3" width="150"></div>
+<!-- begin find JSRs form -->
+<!-- IMPORTANT! do not convert this form to Struts < html : form > tag. javascript change of form.action property fails. -->
+<img src="../assets/images/hd_find-jsrs.gif" alt="Find JSRs" height="18" width="150">
+<!-- ** Menu Start ** //-->
+<ul id="p7PMnav">
+<li><a href="http://jcp.org/en/jsr/platform">JSRs by Platform</a></li>
+<li><a href="http://jcp.org/en/jsr/tech">JSRs by Technology</a></li>
+<li><a href="http://jcp.org/en/jsr/stage">JSRs by Stage</a></li>
+<li><a href="http://jcp.org/en/jsr/ec">JSRs by Committee</a></li>
+<li><a href="http://jcp.org/en/jsr/all">List of All JSRs</a></li>
+<!--end find JSRs form -->
+<div style="clear: both;"><img src="../assets/images/spacer.gif" alt="" height="25" width="1"></div>
+<!--begin JCP info -->
+<img src="../assets/images/hd_jcp-info.gif" alt="JCP Info" height="18" width="150">
+<li><a href="http://jcp.org/en/whatsnew/jcp" class="p7PMtrg">Updates</a>
+<ul>
+<li><a href="http://jcp.org/en/whatsnew/jcp">Recent Updates</a></li>
+<li><a href="http://jcp.org/en/whatsnew/calendar">Calendar</a></li>
+</ul>
+</li>
+<li><a href="http://jcp.org/en/procedures/overview" class="p7PMtrg">About JCP</a>
+<ul>
+<li><a href="http://jcp.org/en/procedures/overview">Program Overview</a></li>
+<li><a href="http://jcp.org/en/procedures/jcp2">JCP Procedures</a></li>
+<li><a href="http://jcp.org/en/participation/members">JCP Members</a></li>
+<li><a href="http://jcp.org/en/participation/committee">Executive Committee</a></li>
+<li><a href="http://jcp.org/en/whatsnew/elections">Elections</a></li>
+</ul>
+</li>
+<li><a href="http://jcp.org/en/introduction/faq">FAQ</a></li>
+<li><a href="http://jcp.org/en/resources/contacts">Contacts</a></li>
+<li><a href="http://jcp.org/en/participation/overview" class="p7PMtrg">Participation</a>
+<ul>
+<li><a href="http://jcp.org/en/participation/overview">Getting Involved</a></li>
+<li><a href="http://jcp.org/en/participation/membership">Becoming a JCP Member</a></li>
+</ul>
+</li>
+<li><a href="http://jcp.org/en/resources/contents" class="p7PMtrg">Community Resources</a>
+<ul>
+<li><a href="http://jcp.org/en/resources/contents">Resources Overview</a></li>
+<li><a href="http://jcp.org/en/resources/guide">Spec Lead Guide</a></li>
+<li><a href="http://jcp.org/en/resources/tdk">TCK Tool & Info</a></li>
+</ul>
+</li>
+<li><a href="http://jcp.org/en/press/pmo" class="p7PMtrg">Community News</a>
+<ul>
+<li><a href="http://jcp.org/en/press/pmo">News from PMO</a></li>
+<li><a href="http://jcp.org/en/press/news">News Stories</a></li>
+<li><a href="http://jcp.org/en/press/releases">Press Releases</a></li>
+<li><a href="http://jcp.org/en/press/success">Success Stories</a></li>
+<li><a href="http://jcp.org/en/press/whitepapers">White Papers</a></li>
+</ul>
+</li>
+<div style="clear: both;"><img src="../assets/images/spacer.gif" alt="" height="25" width="1"></div>
+</ul>
+</td>
+<!-- END LEFT NAV -->
+<td width="15"><img src="../assets/images/global/spacer.gif" width="15" height="1"></td>
+<!-- BEGIN CENTER CONTENT -->
+<td id="centercontent" valign="top">
+<!-- BEGIN PAGETITLE ONE LINE -->
+<h1>
+<div class="pagetitle">
+JSR-000170 Content Repository for Java technology API 1.0.1 
+</div>
+</h1>
+<!-- END PAGETITLE ONE LINE -->
+<!-- Start ENO Working Area -->
+<style type="text/css">
+.warningred {color:#E76F00}
+</style >
+
+<!-- Content Table -->
+
+<!-- BEGIN PC1 COMPONENT V.0 -->
+<div class="pc1"><div class="pc1v0">
+<div class="cornerTL"><div class="cornerTR">
+<br>
+<!-- OTN License js -->
+<script language="javascript" type="text/javascript">
+
+function disableAnchor(obj, disable) {
+    if (disable) {
+        var href = obj.getAttribute("href");
+        if (href && href != "" && href != null) {
+            obj.setAttribute('href_bak', href);
+
+        }
+        // obj.setAttribute('href', 'http://www.oracle.com/technetwork/licenses/sorry-150381.html');
+        obj.removeAttribute('href');
+        obj.setAttribute('class', 'boldbodylink');
+
+    } else {
+        obj.setAttribute('href', obj.getAttribute('href_bak'));
+        obj.setAttribute('class', 'boldbodylink');
+
+    }
+
+}
+
+function disableAnchorByName(anchorname, disable) {
+    //	var use_gebi=false;
+    var o = null;
+    // if (document.getElementById) { use_gebi=true; }
+    // Logic to find position
+    // if (use_gebi) {
+    // 	o=document.getElementById(anchorname);
+    // } else {
+    for (var i = 0; i < document.anchors.length; i++) {
+        if (document.anchors[i].name == anchorname) {
+            o = document.anchors[i];
+            break;
+        }
+
+    }
+    disableAnchor(o, disable);
+
+}
+
+function disableAnchorByName(doc, anchorname, disable, enabledHref, onclickFtn) {
+    var use_gebi = false;
+    var o = null;
+    for (var i = 0; i < doc.anchors.length; i++) {
+        if (doc.anchors[i].name == anchorname) {
+            o = doc.anchors[i];
+            break;
+        }
+
+    }
+    disableAnchor(o, disable, enabledHref, onclickFtn);
+
+}
+
+function disableAnchor(obj, disable, enabledHref, onclickFtn) {
+    if (disable) {
+        obj.onclick = onclickFtn;
+        // obj.setAttribute('onclick', disabledHref );
+        // obj.removeAttribute('href');
+        // obj.setAttribute('href', onclickFtn );
+        obj.setAttribute('class', 'boldbodylink');
+
+    } else {
+        obj.setAttribute('href', enabledHref);
+        obj.onclick = null;
+        obj.setAttribute('class', 'boldbodylink');
+
+    }
+
+}
+
+function disableDownloadAnchors(doc, disabled) {
+    var agreementPrompt = new Function("alert('Sorry, you must accept the License Agreement before downloading.');");
+    // NOTE: These vars are being passed to the methods below, so the var name  should
+    //       match the parameter passed to the method. Customize var names for download(s) involved
+
+    var uuid__3fACUFBebQAAAEYiak5AXha = 'http://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip';
+    disableAnchorByName(doc, 'uuid__3fACUFBebQAAAEYiak5AXha', disabled, uuid__3fACUFBebQAAAEYiak5AXha, agreementPrompt);
+
+    var uuid_sl3ACUFB0ikAAAEYh6k5AXha = 'http://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip';
+    disableAnchorByName(doc, 'uuid_sl3ACUFB0ikAAAEYh6k5AXha', disabled, uuid_sl3ACUFB0ikAAAEYh6k5AXha, agreementPrompt);
+
+
+}
+
+function youMustAgreePrompt(){
+	alert('Sorry, you must accept the License Agreement before downloading.');
+}
+
+function acceptAgreement(windowRef){
+	var doc = windowRef.document;
+	disableDownloadAnchors(doc, false);
+	hideAgreementDiv(doc);
+}
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://download.oracle.com/otndocs/jcp/content_repository-1.0.1-mr-oth-JSpec/index.html | rg -n "source|spec|download.oracle|Content Repository|Test|TCK"' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+ succeeded in 0ms:
+23:JSR-000170 Content Repository for Java technology API 1.0.1 
+77:<li><a href="http://jcp.org/en/resources/contacts">Contacts</a></li>
+84:<li><a href="http://jcp.org/en/resources/contents" class="p7PMtrg">Community Resources</a>
+86:<li><a href="http://jcp.org/en/resources/contents">Resources Overview</a></li>
+87:<li><a href="http://jcp.org/en/resources/guide">Spec Lead Guide</a></li>
+88:<li><a href="http://jcp.org/en/resources/tdk">TCK Tool & Info</a></li>
+110:JSR-000170 Content Repository for Java technology API 1.0.1 
+202:    var uuid__3fACUFBebQAAAEYiak5AXha = 'http://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip';
+205:    var uuid_sl3ACUFB0ikAAAEYh6k5AXha = 'http://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip';
+333:JSR-000170 Content Repository for Java technology API 1.0.1 MR Source<br>
+334:<a onclick="youMustAgreePrompt();" name="uuid__3fACUFBebQAAAEYiak5AXha" id="uuid__3fACUFBebQAAAEYiak5AXha" href=""><img src="../assets/images/ic_download.gif" class="g15download-icon" border="0" alt="">content_repository-1_0_1-mr-source.zip</a></td>
+339:JSR-000170 Content Repository for Java technology API 1.0.1 MR Specification<br>
+340:<a onclick="youMustAgreePrompt();" name="uuid_sl3ACUFB0ikAAAEYh6k5AXha" id="uuid_sl3ACUFB0ikAAAEYh6k5AXha" href=""><img src="../assets/images/ic_download.gif" class="g15download-icon" border="0" alt="">content_repository-1_0_1-mr-spec.zip</a></td>
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' http://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://www.jcp.org/en/jsr/detail?id=170" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+ succeeded in 1140ms:
+200 https://www.jcp.org/en/jsr/detail?id=170
+
+ succeeded in 1235ms:
+200 https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip?AuthParam=1777739492_46d24c40dbafb90a7c9324491ec8a715
+
+ succeeded in 1827ms:
+200 https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip?AuthParam=1777739492_089fb8f8ecc8cd9e1f74ab583cf47ce4
+
+ succeeded in 1784ms:
+200 https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip?AuthParam=1777739492_089fb8f8ecc8cd9e1f74ab583cf47ce4
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/javax.jcr/jcr/1.0.1/index.html | sed -n '1,160p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+ succeeded in 129ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>jcr 1.0.1 javadoc (javax.jcr)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/javax.jcr">javax.jcr</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						jcr
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/javax.jcr/jcr" class="dropdown-item">
+							jcr
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						1.0.1
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						<a href="/doc/javax.jcr/jcr/latest/index.html" class="dropdown-item">
+							2.0
+						</a>
+
+						
+						<a href="/doc/javax.jcr/jcr/1.0.1/index.html" class="dropdown-item">
+							1.0.1
+						</a>
+						
+						<a href="/doc/javax.jcr/jcr/1.0/index.html" class="dropdown-item">
+							1.0
+						</a>
+						
+					</div>
+				</li>
+				
+			</ul>
+			<ul class="navbar-nav">
+				<li class="nav-item mr-2">
+					<a id="bookmarkModal" class='nav-link' href='javascript:void(0)' data-toggle="modal" data-target="#bookmarksModal">
+						<i class="fa fa-bookmark"></i>
+					</a>
+				</li>
+				<li class="nav-item mr-2">
+					<a class='nav-link' href='/task/sync_latest/javax.jcr/jcr'
+						data-toggle="popover" data-placement="bottom"
+						title="sync latest version"
+						data-content="By default, latest version will be picked up in one week.
+							You can click this button to force sync now.
+							This page will be redirect to the latest version if there is any." >
+						<i class="fa fa-sync" aria-hidden="true"></i>
+					</a>
+				</li>
+				<li class="nav-item mr-2">
+					<a class='nav-link' href='/'
+						data-toggle="popover" data-placement="bottom"
+						title="host javadoc for your own project"
+						data-content="If you want, you can easily host your own project with javadoc.io. Click to start." >
+						<i class="fa fa-plus" aria-hidden="true"></i>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="modal" id="bookmarksModal">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Bookmarks</h5>
+					<button class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div>Latest version of <span class="text-monospace">javax.jcr:jcr</span></div>
+					<div class="alert alert-secondary">
+						https://javadoc.io/doc/javax.jcr/jcr
+						<a href="/doc/javax.jcr/jcr" target="_blank" class="float-right">
+							<i class="fas fa-link"></i>
+						</a>
+					</div>
+					<div>Current version <span class="text-monospace">1.0.1</span></div>
+					<div class="alert alert-secondary">
+						https://javadoc.io/doc/javax.jcr/jcr/1.0.1
+						<a href="/doc/javax.jcr/jcr/1.0.1" target="_blank" class="float-right">
+							<i class="fas fa-link"></i>
+						</a>
+					</div>
+					<div><span class="text-monospace">package-list</span> path (used for javadoc generation <span class="text-monospace">-link</span> option)</div>
+					<div class="alert alert-secondary">
+						https://javadoc.io/doc/javax.jcr/jcr/1.0.1/package-list
+						<a href="/doc/javax.jcr/jcr/1.0.1/package-list" target="_blank" class="float-right">
+							<i class="fas fa-link"></i>
+						</a>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-gray" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="fill">
+		<v id="variables" isLatest="false" versionId="1.0.1"></v>
+
+		
+<div class="alert alert-info">
+  No JavaDoc is released for artifact <span class="font-italic">javax.jcr:jcr:1.0.1</span>.
+  Please try other versions.
+
+  <br>
+  <br>
+  Owner of the project? Troubleshoot following things:
+  <ul>
+    <li>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/javax.jcr/jcr/1.0.1/index.html | sed -n '160,260p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+ succeeded in 326ms:
+    <li>
+      <a href='/retry/javax.jcr/jcr/1.0.1'>Retry</a> this version.
+      Sometimes it's just a matter of time to pick up new versions.
+    </li>
+    <li>Is the <span class='font-italic'>jcr-1.0.1-javadoc.jar</span> actually distributed to either maven or bintray?</li>
+    <li>Does the <span class='font-italic'>jcr-1.0.1-javadoc.jar</span> file contains an <span class='font-italic'>index.html</span> in the extracted root folder? (you can rename .jar to .zip to extract the file)</li>
+  </ul>
+
+  <a href='https://github.com/maxcellent/javadoc.io/issues' rel='nofollow'>
+    <i class="fas fa-link"></i>
+    report to us
+  </a>
+  if you tried everything but still doesn't work.
+</div>
+        
+	</div>
+
+
+		
+
+		
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+
+		<script src="/assets/javascripts/d41d8cd98f00b204e9800998ecf8427e-main.js" type="text/javascript"></script>
+		
+	<script src='/assets/javascripts/069591e6610f5176a604a23ff133be88-doc.js' type="text/javascript"></script>
+
+
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-51748011-3"></script>
+		<script>
+				window.dataLayer = window.dataLayer || [];
+				function gtag(){dataLayer.push(arguments);}
+				gtag('js', new Date());
+
+				gtag('config', 'UA-51748011-3');
+		</script>
+	</body>
+</html>
+
+
+codex
+The official JCP maintenance-release page for JSR 170 exposes exact `1.0.1` source and specification downloads; Maven still has no usable `1.0.1` Javadoc or tests artifact. I’m validating those archives enough to avoid writing a URL that merely returns an HTML placeholder.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/src.zip" https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip; file "$tmp/src.zip"; unzip -l "$tmp/src.zip" | sed -n '"'1,40p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/spec.zip" https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip; file "$tmp/spec.zip"; unzip -l "$tmp/spec.zip" | sed -n '"'1,40p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/sf-src.zip" https://sourceforge.net/projects/openjcr/files/jcr-api/jcr-api-1.0.1/jcr-api-1.0.1-src.zip/download; file "$tmp/sf-src.zip"; unzip -l "$tmp/sf-src.zip" | sed -n '"'1,40p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+ succeeded in 1887ms:
+/tmp/tmp.lLKGnVmTPt/src.zip: Zip archive data, at least v1.0 to extract, compression method=store
+Archive:  /tmp/tmp.lLKGnVmTPt/src.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2006-03-03 01:28   src/
+        0  2006-03-03 01:28   src/java/
+        0  2006-03-03 01:28   src/java/javax/
+        0  2006-03-03 01:28   src/java/javax/jcr/
+     1430  2005-11-17 23:49   src/java/javax/jcr/AccessDeniedException.java
+      520  2005-11-17 23:49   src/java/javax/jcr/Credentials.java
+      651  2005-11-17 23:49   src/java/javax/jcr/ImportUUIDBehavior.java
+     1798  2005-11-17 23:49   src/java/javax/jcr/InvalidItemStateException.java
+     1565  2005-11-17 23:49   src/java/javax/jcr/InvalidSerializedDataException.java
+    20872  2006-02-21 19:48   src/java/javax/jcr/Item.java
+     1490  2005-11-17 23:49   src/java/javax/jcr/ItemExistsException.java
+     1536  2005-11-17 23:49   src/java/javax/jcr/ItemNotFoundException.java
+     1835  2005-11-17 23:49   src/java/javax/jcr/ItemVisitor.java
+        0  2006-03-03 01:29   src/java/javax/jcr/lock/
+     3691  2005-11-17 23:50   src/java/javax/jcr/lock/Lock.java
+     1573  2005-11-17 23:50   src/java/javax/jcr/lock/LockException.java
+      335  2005-11-17 23:50   src/java/javax/jcr/lock/package.html
+     1538  2005-11-17 23:49   src/java/javax/jcr/LoginException.java
+     1426  2005-11-17 23:49   src/java/javax/jcr/MergeException.java
+     1553  2005-11-17 23:50   src/java/javax/jcr/NamespaceException.java
+     6849  2006-02-16 01:51   src/java/javax/jcr/NamespaceRegistry.java
+   131251  2006-02-15 02:33   src/java/javax/jcr/Node.java
+      628  2005-11-17 23:50   src/java/javax/jcr/NodeIterator.java
+        0  2006-03-03 01:29   src/java/javax/jcr/nodetype/
+     1684  2005-11-17 23:50   src/java/javax/jcr/nodetype/ConstraintViolationException.java
+     2979  2005-11-17 23:50   src/java/javax/jcr/nodetype/ItemDefinition.java
+     2302  2005-11-17 23:50   src/java/javax/jcr/nodetype/NodeDefinition.java
+     6762  2005-11-17 23:50   src/java/javax/jcr/nodetype/NodeType.java
+      584  2005-11-17 23:50   src/java/javax/jcr/nodetype/NodeTypeIterator.java
+     1885  2005-11-17 23:50   src/java/javax/jcr/nodetype/NodeTypeManager.java
+     1497  2005-11-17 23:50   src/java/javax/jcr/nodetype/NoSuchNodeTypeException.java
+      341  2005-11-17 23:50   src/java/javax/jcr/nodetype/package.html
+    10951  2005-11-17 23:50   src/java/javax/jcr/nodetype/PropertyDefinition.java
+     1524  2005-11-17 23:50   src/java/javax/jcr/NoSuchWorkspaceException.java
+        0  2006-03-03 01:29   src/java/javax/jcr/observation/
+     3158  2005-11-17 23:50   src/java/javax/jcr/observation/Event.java
+      685  2005-11-17 23:50   src/java/javax/jcr/observation/EventIterator.java
+
+ succeeded in 2514ms:
+/tmp/tmp.CCWhpRtR2p/spec.zip: Zip archive data, at least v2.0 to extract, compression method=deflate
+Archive:  /tmp/tmp.CCWhpRtR2p/spec.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+  1281100  2006-03-03 01:17   jsr-170-1.0.1-diff.pdf
+  1134087  2006-03-03 02:42   jsr-170-1.0.1.pdf
+---------                     -------
+  2415187                     2 files
+
+ succeeded in 7128ms:
+/tmp/tmp.fgj1b1GQMT/sf-src.zip: Zip archive data, at least v1.0 to extract, compression method=store
+Archive:  /tmp/tmp.fgj1b1GQMT/sf-src.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2008-02-11 22:35   jcr-api/
+        0  2008-02-11 22:15   jcr-api/javadoc/
+     8115  2008-02-11 22:15   jcr-api/javadoc/allclasses-frame.html
+     6935  2008-02-11 22:15   jcr-api/javadoc/allclasses-noframe.html
+    32581  2008-02-11 22:15   jcr-api/javadoc/constant-values.html
+     4980  2008-02-11 22:15   jcr-api/javadoc/deprecated-list.html
+     9620  2008-02-11 22:15   jcr-api/javadoc/help-doc.html
+        0  2008-02-11 22:15   jcr-api/javadoc/index-files/
+    12725  2008-02-11 22:15   jcr-api/javadoc/index-files/index-1.html
+    14036  2008-02-11 22:15   jcr-api/javadoc/index-files/index-10.html
+     9531  2008-02-11 22:15   jcr-api/javadoc/index-files/index-11.html
+    17679  2008-02-11 22:15   jcr-api/javadoc/index-files/index-12.html
+     9432  2008-02-11 22:15   jcr-api/javadoc/index-files/index-13.html
+    11458  2008-02-11 22:15   jcr-api/javadoc/index-files/index-14.html
+     7800  2008-02-11 22:15   jcr-api/javadoc/index-files/index-15.html
+    17805  2008-02-11 22:15   jcr-api/javadoc/index-files/index-16.html
+    17354  2008-02-11 22:15   jcr-api/javadoc/index-files/index-17.html
+    11218  2008-02-11 22:15   jcr-api/javadoc/index-files/index-18.html
+     9663  2008-02-11 22:15   jcr-api/javadoc/index-files/index-19.html
+     7184  2008-02-11 22:15   jcr-api/javadoc/index-files/index-2.html
+    13730  2008-02-11 22:15   jcr-api/javadoc/index-files/index-20.html
+     6769  2008-02-11 22:15   jcr-api/javadoc/index-files/index-21.html
+     6680  2008-02-11 22:15   jcr-api/javadoc/index-files/index-22.html
+    18206  2008-02-11 22:15   jcr-api/javadoc/index-files/index-3.html
+     7125  2008-02-11 22:15   jcr-api/javadoc/index-files/index-4.html
+    11506  2008-02-11 22:15   jcr-api/javadoc/index-files/index-5.html
+    45028  2008-02-11 22:15   jcr-api/javadoc/index-files/index-6.html
+     9338  2008-02-11 22:15   jcr-api/javadoc/index-files/index-7.html
+    26583  2008-02-11 22:15   jcr-api/javadoc/index-files/index-8.html
+     7731  2008-02-11 22:15   jcr-api/javadoc/index-files/index-9.html
+     1415  2008-02-11 22:15   jcr-api/javadoc/index.html
+        0  2008-02-11 22:15   jcr-api/javadoc/javax/
+        0  2008-02-11 22:15   jcr-api/javadoc/javax/jcr/
+    18329  2008-02-11 22:15   jcr-api/javadoc/javax/jcr/AccessDeniedException.html
+     7476  2008-02-11 22:15   jcr-api/javadoc/javax/jcr/Credentials.html
+    10879  2008-02-11 22:15   jcr-api/javadoc/javax/jcr/ImportUUIDBehavior.html
+    19037  2008-02-11 22:15   jcr-api/javadoc/javax/jcr/InvalidItemStateException.html
+
+codex
+I’m going to fill the empty `1.0.1` entry with the verified JCP source/spec URLs, mark repository and tests as `N/A`, and leave `language` absent because this is a Java API rather than a Kotlin, Groovy, or Scala-specific artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2/metadata/javax.jcr/jcr/index.json
+diff --git a/metadata/javax.jcr/jcr/index.json b/metadata/javax.jcr/jcr/index.json
+index c5dfcf696037cf1b57cb708e986369fa4fd0d9dc..9f3dc884773101f208c8c77082828da28c31cece
+--- a/metadata/javax.jcr/jcr/index.json
++++ b/metadata/javax.jcr/jcr/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.1",
++    "source-code-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip",
++    "repository-url" : "N/A",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip",
++    "description" : "Defines the Java Content Repository (JCR) 1.0.1 API for accessing content repositories independently of a particular implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+     "tested-versions" : [
+       "1.0.1"
+     ],
+
+diff --git a/metadata/javax.jcr/jcr/index.json b/metadata/javax.jcr/jcr/index.json
+index c5dfcf696037cf1b57cb708e986369fa4fd0d9dc..9f3dc884773101f208c8c77082828da28c31cece
+--- a/metadata/javax.jcr/jcr/index.json
++++ b/metadata/javax.jcr/jcr/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.1",
++    "source-code-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip",
++    "repository-url" : "N/A",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip",
++    "description" : "Defines the Java Content Repository (JCR) 1.0.1 API for accessing content repositories independently of a particular implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+     "tested-versions" : [
+       "1.0.1"
+     ],
+
+codex
+The metadata file is patched. I’m doing a quick JSON parse and metadata validation for the selected coordinate, plus a final render check of the two versioned URLs.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"1.0.1\")' metadata/javax.jcr/jcr/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "1.0.1",
+  "source-code-url": "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip",
+  "repository-url": "N/A",
+  "test-code-url": "N/A",
+  "documentation-url": "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip",
+  "description": "Defines the Java Content Repository (JCR) 1.0.1 API for accessing content repositories independently of a particular implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+  "tested-versions": [
+    "1.0.1"
+  ],
+  "allowed-packages": [
+    "javax.jcr"
+  ]
+}
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w 'source %{http_code} %{url_effective}\\n' https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=javax.jcr:jcr:1.0.1' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w 'docs %{http_code} %{url_effective}\\n' https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+ succeeded in 323ms:
+docs 200 https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip?AuthParam=1777739545_39e4a3e9ddbf03e3e22ae1132af81496
+
+ succeeded in 340ms:
+source 200 https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip?AuthParam=1777739545_09854636e25f6550d35d91e5770e81b9
+
+diff --git a/metadata/javax.jcr/jcr/index.json b/metadata/javax.jcr/jcr/index.json
+index c5dfcf696037cf1b57cb708e986369fa4fd0d9dc..9f3dc884773101f208c8c77082828da28c31cece
+--- a/metadata/javax.jcr/jcr/index.json
++++ b/metadata/javax.jcr/jcr/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.1",
++    "source-code-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip",
++    "repository-url" : "N/A",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip",
++    "description" : "Defines the Java Content Repository (JCR) 1.0.1 API for accessing content repositories independently of a particular implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+     "tested-versions" : [
+       "1.0.1"
+     ],
+
+diff --git a/metadata/javax.jcr/jcr/index.json b/metadata/javax.jcr/jcr/index.json
+index c5dfcf696037cf1b57cb708e986369fa4fd0d9dc..9f3dc884773101f208c8c77082828da28c31cece
+--- a/metadata/javax.jcr/jcr/index.json
++++ b/metadata/javax.jcr/jcr/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.1",
++    "source-code-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip",
++    "repository-url" : "N/A",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip",
++    "description" : "Defines the Java Content Repository (JCR) 1.0.1 API for accessing content repositories independently of a particular implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+     "tested-versions" : [
+       "1.0.1"
+     ],
+
+diff --git a/metadata/javax.jcr/jcr/index.json b/metadata/javax.jcr/jcr/index.json
+index c5dfcf696037cf1b57cb708e986369fa4fd0d9dc..9f3dc884773101f208c8c77082828da28c31cece
+--- a/metadata/javax.jcr/jcr/index.json
++++ b/metadata/javax.jcr/jcr/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.1",
++    "source-code-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip",
++    "repository-url" : "N/A",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip",
++    "description" : "Defines the Java Content Repository (JCR) 1.0.1 API for accessing content repositories independently of a particular implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+     "tested-versions" : [
+       "1.0.1"
+     ],
+
+ exited 1 in 12501ms:
+Starting a Gradle Daemon, 9 busy and 11 incompatible and 220 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for javax.jcr:jcr:1.0.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2/metadata/javax.jcr/jcr/1.0.1/
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> 
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2/build/reports/problems/problems-report.html
+Metadata files check failed for the following coordinates:
+   - javax.jcr:jcr:1.0.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2/metadata/javax.jcr/jcr/1.0.1/
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+9 actionable tasks: 1 executed, 8 up-to-date
+ to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 12s
+
+codex
+`checkMetadataFiles` ran but failed on a pre-existing structural issue: the selected coordinate has no `metadata/javax.jcr/jcr/1.0.1/reachability-metadata.json`. The JSON itself parses, and the rendered source/spec URLs return HTTP 200.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/javax.jcr/jcr/index.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+ succeeded in 0ms:
+diff --git i/metadata/javax.jcr/jcr/index.json w/metadata/javax.jcr/jcr/index.json
+index c5dfcf6960..9f3dc88477 100644
+--- i/metadata/javax.jcr/jcr/index.json
++++ w/metadata/javax.jcr/jcr/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.1",
++    "source-code-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip",
++    "repository-url" : "N/A",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip",
++    "description" : "Defines the Java Content Repository (JCR) 1.0.1 API for accessing content repositories independently of a particular implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+     "tested-versions" : [
+       "1.0.1"
+     ],
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/javax.jcr/jcr/index.json metadata/javax.jcr/jcr/1.0.1' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2
+ succeeded in 0ms:
+ M metadata/javax.jcr/jcr/index.json
+
+diff --git a/metadata/javax.jcr/jcr/index.json b/metadata/javax.jcr/jcr/index.json
+index c5dfcf696037cf1b57cb708e986369fa4fd0d9dc..9f3dc884773101f208c8c77082828da28c31cece
+--- a/metadata/javax.jcr/jcr/index.json
++++ b/metadata/javax.jcr/jcr/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.1",
++    "source-code-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip",
++    "repository-url" : "N/A",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip",
++    "description" : "Defines the Java Content Repository (JCR) 1.0.1 API for accessing content repositories independently of a particular implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+     "tested-versions" : [
+       "1.0.1"
+     ],
+
+codex
+Updated [metadata/javax.jcr/jcr/index.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2/metadata/javax.jcr/jcr/index.json) for `metadata-version` `1.0.1`.
+
+Filled:
+- `source-code-url`: official JCP `1.0.1` MR source zip
+- `repository-url`: `N/A`
+- `test-code-url`: `N/A`
+- `documentation-url`: official JCP `1.0.1` MR spec zip
+- `description`: exactly two sentences
+- `language`: left absent, since this is not Kotlin/Groovy/Scala-specific
+
+Verified JSON parses and the rendered source/docs URLs return HTTP 200. `./gradlew checkMetadataFiles -Pcoordinates=javax.jcr:jcr:1.0.1` fails because `metadata/javax.jcr/jcr/1.0.1/reachability-metadata.json` is missing, which is outside the requested index metadata update.
+diff --git a/metadata/javax.jcr/jcr/index.json b/metadata/javax.jcr/jcr/index.json
+index c5dfcf696037cf1b57cb708e986369fa4fd0d9dc..9f3dc884773101f208c8c77082828da28c31cece
+--- a/metadata/javax.jcr/jcr/index.json
++++ b/metadata/javax.jcr/jcr/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.1",
++    "source-code-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip",
++    "repository-url" : "N/A",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip",
++    "description" : "Defines the Java Content Repository (JCR) 1.0.1 API for accessing content repositories independently of a particular implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+     "tested-versions" : [
+       "1.0.1"
+     ],
+
+tokens used
+57,489
+Updated [metadata/javax.jcr/jcr/index.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2/metadata/javax.jcr/jcr/index.json) for `metadata-version` `1.0.1`.
+
+Filled:
+- `source-code-url`: official JCP `1.0.1` MR source zip
+- `repository-url`: `N/A`
+- `test-code-url`: `N/A`
+- `documentation-url`: official JCP `1.0.1` MR spec zip
+- `description`: exactly two sentences
+- `language`: left absent, since this is not Kotlin/Groovy/Scala-specific
+
+Verified JSON parses and the rendered source/docs URLs return HTTP 200. `./gradlew checkMetadataFiles -Pcoordinates=javax.jcr:jcr:1.0.1` fails because `metadata/javax.jcr/jcr/1.0.1/reachability-metadata.json` is missing, which is outside the requested index metadata update.
+Ran agent for javax.jcr:jcr:1.0.1 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2/build/agent-url-discovery-logs/javax.jcr-jcr-1.0.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-0dd176b2/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 28s
+9 actionable tasks: 1 executed, 8 up-to-date
