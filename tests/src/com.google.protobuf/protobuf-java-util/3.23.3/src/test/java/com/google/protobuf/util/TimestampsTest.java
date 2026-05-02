@@ -433,6 +433,17 @@ public class TimestampsTest {
     }
 
     @Test
+    public void testNowReturnsValidCurrentTimestamp() {
+        long beforeMillis = System.currentTimeMillis();
+        Timestamp timestamp = Timestamps.now();
+        long afterMillis = System.currentTimeMillis();
+
+        assertThat(Timestamps.isValid(timestamp)).isTrue();
+        assertThat(Timestamps.toMillis(timestamp)).isAtLeast(beforeMillis);
+        assertThat(Timestamps.toMillis(timestamp)).isAtMost(afterMillis);
+    }
+
+    @Test
     public void testTimeOperations() throws Exception {
         Timestamp start = Timestamps.parse("0001-01-01T00:00:00Z");
         Timestamp end = Timestamps.parse("9999-12-31T23:59:59.999999999Z");
